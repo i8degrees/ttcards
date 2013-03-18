@@ -5,13 +5,28 @@
 #include "ttcards.h"
 //#include "board.h"
 #include "card.h"
-//#include "keyboard.h"
+//#include "input.h"
 #include "sprite.h"
+
+enum {
+  MENU,
+  PICK_CARDS
+};
+
+struct Player {
+    unsigned int state;
+    struct Card cards[MAX_CARDSET];
+    //struct Sprite *sprite_ptr;
+};
+
+struct Player player1;
+struct Player player2;
+struct Deck deck;
+struct Sprite card[MAX_CARDSET];
 
 int input_poll(void)
 {
   SDL_Event event;
-  //Uint8 *keys;
 
   while ( SDL_PollEvent (&event) )
   {
@@ -34,16 +49,16 @@ int input_poll(void)
             game_running = 0;
             break;
           case SDLK_LEFT:
-            image_x-=80;
+            //card[0].x-=CARD_WIDTH;
             break;
           case SDLK_RIGHT:
-            image_x+=80;
+            //card.x+=CARD_WIDTH;
             break;
           case SDLK_UP:
-            image_y-=100;
+            //card.y-=CARD_HEIGHT;
             break;
           case SDLK_DOWN:
-            image_y+=100;
+            //card.y+=CARD_HEIGHT;
             break;
           case SDLK_q:
             game_running = 0;
@@ -59,67 +74,17 @@ int input_poll(void)
   return 0;
 }
 
-int init_game(void)
+/*
+int load_background(SDL_Surface *screen_ptr, char filename[255])
 {
-  struct Sprite card[110];
-
-  init_sprite(&card[0]);
-  draw_sprite(&card[0]);
-
   return 0;
 }
-
-int load_image(void) // ADD: SDL_Surface *surface
-{
-
-  char csprite_file[255] = "cards.bmp";
-
-  if ( ( image = SDL_LoadBMP ( csprite_file ) ) == NULL )
-  {
-#ifdef DEBUG
-    printf("ERROR: Could not load %s: %s\n", csprite_file, SDL_GetError() );
-    return -1;
-#endif
-  }
-
-  return 0;
-}
-
-int init_image(void) // ADD: SDL_Surface *surface
-{
-  image_x = 120;
-  image_y = 30;
-  //image_y = 130;
-  //image_x = (screen_width / 2) - (IMAGE_WIDTH / 2);
-  //image_y = (screen_height / 2) - (IMAGE_HEIGHT / 2);
-
-  rect.x = image_x;
-  rect.y = image_y;
-  //rect.w = IMAGE_WIDTH;
-  //rect.h = IMAGE_HEIGHT;
-
-  SDL_BlitSurface(image, 0, screen, &rect);
-
-  return 0;
-}
-
-int draw_image(void) // ADD: SDL_Surface *surface
-{
-  //image_x = (screen_width / 2) - (IMAGE_WIDTH / 2);
-  //image_y = (screen_height / 2) - (IMAGE_HEIGHT / 2);
-
-  rect.x = image_x;
-  rect.y = image_y;
-  //rect.w = IMAGE_WIDTH;
-  //rect.h = IMAGE_HEIGHT;
-
-  SDL_BlitSurface(image, 0, screen, &rect);
-
-  return 0;
-}
+*/
 
 int main(int argc, char* argv[])
 {
+  player1.state = PICK_CARDS;
+
   if ( SDL_Init (SDL_INIT_VIDEO) == -1 )
   {
     fprintf (stderr, "Could not initialize SDL: %s\n", SDL_GetError() );
@@ -135,18 +100,77 @@ int main(int argc, char* argv[])
     fprintf (stderr, "Could not set video mode: %s\n", SDL_GetError() );
   }
 
-  init_game();
-  init_card();
-  init_image();
-  load_image();
+  SDL_WM_SetCaption( "TTcards", NULL );
 
-  black = SDL_MapRGB(screen->format, 0, 0, 0);
-  blue = SDL_MapRGB(screen->format, 0, 0, 255);
-  red = SDL_MapRGB(screen->format, 255, 0, 0);
+  if ( ( background = SDL_LoadBMP ( "board.bmp" ) ) == NULL )
+  {
+#ifdef DEBUG
+    printf("ERROR: Could not load %s: %s\n", background, SDL_GetError() );
+#endif
+    return -1;
+  }
+
+  //init_sprite(&card, 96, 18, CARD_WIDTH, CARD_HEIGHT, 0);
+  //load_sprite(&card, "cards.bmp");
+
+  //init_sprite(&card[0], CARD_WIDTH, CARD_HEIGHT, &card[0].id);
+  //draw_sprite(&card[0]);
+
+  /*
+  for ( int i = 0; i < MAX_CARDSET; i++)
+  {
+    //init_card(&cards[i]);
+    load_card(&cards[i], "cards.txt");
+    //load_card(&cards[i], "cards.txt");
+    printf("%d %s\n", cards[i].id, cards[i].name);
+  }
+  */
+
+  load_deck(&deck,"cards.txt");
+
+  for ( int i = 0; i < MAX_DECKSET; i++ )
+  {
+      //printf("%d %s %d %d %d %d\n", deck.cards[i].id, deck.cards[i].name, deck.cards[i].power[0], deck.cards[i].power[1], deck.cards[i].power[2], deck.cards[i].power[3]);
+  }
+
+
+  int r = NULL;
+  srand ( time (NULL) );
+  //r = init_card(player1.cards, &deck);
+
+  init_card (player1.cards, &deck);
+
+  for ( int i = 0; i < MAX_CARDSET; i++ )
+  {
+    printf("%d %s\n", player1.cards[i].id, player1.cards[i].name);
+  }
+
+
+  init_sprite(&card[0], 16, 18, CARD_WIDTH, CARD_HEIGHT, r);
+  load_sprite(&card[0], "cards.bmp");
+
+  /*
+  r = init_card(&deck);
+  init_sprite(&card[1], 16, 50, CARD_WIDTH, CARD_HEIGHT, r);
+  load_sprite(&card[1], "cards.bmp");
+
+  r = init_card(&deck);
+  init_sprite(&card[2], 16, 82, CARD_WIDTH, CARD_HEIGHT, r);
+  load_sprite(&card[2], "cards.bmp");
+
+  r = init_card(&deck);
+  init_sprite(&card[3], 16, 114, CARD_WIDTH, CARD_HEIGHT, r);
+  load_sprite(&card[3], "cards.bmp");
+
+  r = init_card(&deck);
+  init_sprite(&card[4], 16, 146, CARD_WIDTH, CARD_HEIGHT, r);
+  load_sprite(&card[4], "cards.bmp");
+  */
 
   while(game_running) // main loop
   {
-    SDL_FillRect(screen, 0, black);
+
+    SDL_BlitSurface(background, NULL, screen, NULL);
 
     input_poll();
 
@@ -169,7 +193,13 @@ int main(int argc, char* argv[])
       }
     }
 
-    draw_image();
+    draw_sprite(&card[0], screen);
+    draw_sprite(&card[1], screen);
+    draw_sprite(&card[2], screen);
+    draw_sprite(&card[3], screen);
+    draw_sprite(&card[4], screen);
+
+    //draw_image();
 
     if(SDL_MUSTLOCK(screen))
     {
@@ -192,6 +222,10 @@ int main(int argc, char* argv[])
       return -1;
     }
   }
+
+  //destroy_sprite(&card);
+  SDL_FreeSurface(background);
+  SDL_FreeSurface(screen);
 
   return 0;
 }

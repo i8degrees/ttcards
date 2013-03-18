@@ -1,10 +1,10 @@
 #include "board.h"
 
-int init_board(void)
+int init_board (struct Board *board_ptr)
 {
-  board[3][3] = ( 0, 0, 0,
-                  0, 0, 0,
-                  0, 0, 0
-                );
+  board_ptr->grid[3][3] = ( 0, 0, 0,
+                            0, 0, 0,
+                            0, 0, 0
+                            );
   return 0;
 }

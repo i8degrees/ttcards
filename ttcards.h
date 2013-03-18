@@ -4,8 +4,6 @@
 #define SCREEN_WIDTH 384
 #define SCREEN_HEIGHT 224
 #define SCREEN_COLORBIT 24
-#define IMAGE_WIDTH 64
-#define IMAGE_HEIGHT 64
 
 // DEBUG
 #define VERBOSE
@@ -23,15 +21,11 @@ int load_image (void);
 int init_image (void);
 int draw_image (void);
 
-SDL_Surface *screen;
-SDL_Surface *image;
-SDL_Rect rect; // TODO: use rect.w & rect.h as well
-Uint16 black, blue, red;
+SDL_Surface *screen = NULL;
+SDL_Surface *background = NULL;
 
 int screen_width = SCREEN_WIDTH;
 int screen_height = SCREEN_HEIGHT;
-int image_x = 0;
-int image_y = 0;
 
 int screen_lock = 0;
 int screen_unlock = 0;

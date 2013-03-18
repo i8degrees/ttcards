@@ -1,5 +1,8 @@
 #include <SDL.h>
 
-int init_board (void);
+int init_board (struct Board *board_ptr);
 
-int board[3][3];
+struct Board {
+
+    unsigned int grid[3][3];
+};
