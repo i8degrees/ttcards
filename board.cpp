@@ -1,10 +1,18 @@
+/******************************************************************************
+    board.cpp
+
+  Copyright (c) 2013 Jeffrey Carpenter
+
+******************************************************************************/
 #include "board.h"
 
-int init_board (struct Board *board_ptr)
+Board::Board ( void )
 {
-  board_ptr->grid[3][3] = ( 0, 0, 0,
-                            0, 0, 0,
-                            0, 0, 0
-                            );
-  return 0;
+    for ( int y = 0; y < BOARD_HEIGHT; y++ )
+    {
+        for ( int x = 0; x < BOARD_WIDTH; x++ )
+        {
+            grid[y][x] = 0;
+        }
+    }
 }

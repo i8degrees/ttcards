@@ -1,57 +1,65 @@
+/******************************************************************************
+    sprite.cpp
+
+  Basic Sprite Engine written for SDL in C++
+
+  Copyright (c) 2013 Jeffrey Carpenter
+
+******************************************************************************/
+
 #include "sprite.h"
 
-int init_sprite(struct Sprite *sprite_ptr, int x, int y, int width, int height, int id)
+Sprite::Sprite ( int x, int y, int z, int w, int h, int id )
 {
-  sprite_ptr->addr = NULL;
-  sprite_ptr->id = id;
-  sprite_ptr->x = x;
-  sprite_ptr->y = y;
-  sprite_ptr->width = width;
-  sprite_ptr->height = height;
-  sprite_ptr->state = 0;
+  //sprite_buffer = NULL;
 
-    return 0;
+  Sprite::id = id;
+  Sprite::x = x;
+  Sprite::y = y;
+  Sprite::z = z;
+  Sprite::width = w;
+  Sprite::height = h;
 }
 
-int load_sprite(struct Sprite *sprite_ptr, char filename[255])
+bool Sprite::Load ( string filename )
 {
-  if ( ( sprite_ptr->addr = SDL_LoadBMP ( filename ) ) == NULL )
+
+  if ( ( sprite_buffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
   {
 #ifdef DEBUG
-    printf("ERROR: Could not load %s: %s\n", filename, SDL_GetError() );
-
+    std::cout << "ERROR: Could not load " << filename << " " << SDL_GetError() );
 #endif
-    return -1;
+    return false;
   }
 
   //printf("%d %d %d %d %d %s\n", sprite_ptr->id, sprite_ptr->x, sprite_ptr->y, sprite_ptr->width, sprite_ptr->height, filename);
 
-  return 0;
+  return true;
 }
 
-int draw_sprite(struct Sprite *sprite_ptr, struct SDL_Surface *screen_ptr)
+bool Sprite::Draw ( SDL_Surface *video_buffer )
 {
   SDL_Rect dest;
   SDL_Rect src;
 
-  src.x = (sprite_ptr->id) * sprite_ptr->width;
+  src.x = Sprite::id * Sprite::width; // crude sprite sheet
   src.y = 0;
-  src.w = sprite_ptr->width;
-  src.h = sprite_ptr->height;
+  src.w = Sprite::width;
+  src.h = Sprite::height;
 
-  dest.x = sprite_ptr->x;
-  dest.y = sprite_ptr->y;
-  dest.w = sprite_ptr->width;
-  dest.h = sprite_ptr->height;
+  dest.x = Sprite::x;
+  dest.y = Sprite::y;
+  dest.w = Sprite::width;
+  dest.h = Sprite::height;
 
-  SDL_BlitSurface(sprite_ptr->addr, &src, screen_ptr, &dest);
+  SDL_BlitSurface(sprite_buffer, &src, video_buffer, &dest);
 
-  return 0;
+  return true;
 }
 
-int destroy_sprite(struct Sprite *sprite_ptr)
+bool Sprite::Destroy ( void )
 {
-  SDL_FreeSurface(sprite_ptr->addr);
+  SDL_FreeSurface(sprite_buffer);
 
-  return 0;
+  return true;
 }

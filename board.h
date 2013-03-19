@@ -1,8 +1,21 @@
+/******************************************************************************
+    board.h
+
+  Copyright (c) 2013 Jeffrey Carpenter
+
+******************************************************************************/
+
 #include <SDL.h>
 
-int init_board (struct Board *board_ptr);
+#define BOARD_WIDTH 3
+#define BOARD_HEIGHT 3
 
-struct Board {
+class Board
+{
 
-    unsigned int grid[3][3];
+public:
+    Board();
+
+private:
+    unsigned int grid[BOARD_WIDTH][BOARD_HEIGHT];
 };

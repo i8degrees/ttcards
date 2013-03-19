@@ -1,84 +1,77 @@
 #include "card.h"
 
-int randomize(void)
+int randomize ( int rval )
 {
-  int rvalue = NULL;
-
-  rvalue = (rand() % MAX_DECKSET);
-
-  return rvalue;
+    return 0;
+    //return (std::rand() % MAX_CARDSET+1);
 }
 
-int init_card ( struct Card *card_ptr, struct Deck *deck_ptr )
-//int init_card(struct Deck *deck_ptr, struct Card *card_ptr)
+Card::Card ( int cid, int level, int ctype, int element, int p0, int p1, int p2, int p3, string name)
 {
-  int rval = NULL;
+  Card::id = cid;
+  Card::level = level;
+  Card::type = ctype;
+  Card::element = element;
+  Card::power[0] = p0;
+  Card::power[1] = p1;
+  Card::power[2] = p2;
+  Card::power[3] = p3;
+  Card::name = name;
+}
 
-  for ( int i = 0; i < MAX_CARDSET; i++ )
+void Card::Show ( void )
+{
+  cout << Card::id << " " << Card::name << "\n";
+}
+
+Deck::Deck ( void )
+{
+}
+
+bool Deck::Load ( string filename )
+{
+    unsigned int id, level, type, element, power[4];
+    string name;
+
+    ifstream in ( filename );
+
+    if ( ! in )
+    {
+        cerr << "ERR: Input file " << filename << endl;
+        return false;
+    }
+
+
+    for ( int i = 0; i < MAX_DECKSET; i++ )
+    {
+        in >> id;
+        in >> level;
+        in >> type;
+        in >> element;
+        in >> power[0];
+        in >> power[1];
+        in >> power[2];
+        in >> power[3];
+        in >> name;
+
+        cards.push_back ( Card (id, level, type, element, power[0], power[1], power[2], power[3], name) );
+        //cout << id << " " << level << " " << type << " " << element << " " << power[0] << " " << power[1] << " " << power[2] << " " << power[3] << " " << name << endl;
+    }
+
+    in.close();
+
+    return true;
+}
+
+void Deck::Draw ( void )
+{
+  for ( int i = 0; i < MAX_DECKSET; i++ )
   {
-    rval = randomize();
-    card_ptr[i].id = deck_ptr->cards[rval].id;
-    card_ptr[i].level = deck_ptr->cards[rval].level;
-    card_ptr[i].type = deck_ptr->cards[rval].type;
-    card_ptr[i].element = deck_ptr->cards[rval].element;
-    card_ptr[i].power[0] = deck_ptr->cards[rval].power[0];
-    card_ptr[i].power[1] = deck_ptr->cards[rval].power[1];
-    card_ptr[i].power[2] = deck_ptr->cards[rval].power[2];
-    card_ptr[i].power[3] = deck_ptr->cards[rval].power[3];
-    //card_ptr[i].name = deck_ptr->cards[rval].name;
-    //card_ptr[i].name = deck_ptr->cards[rval].name;
-    //printf("%d %s\n", deck_ptr->cards[rval].id, deck_ptr->cards[rval].name);
+    std::cout << cards[i].id << " " << cards[i].name << endl;
   }
-
-
-/*
-  printf("%d %d %d %d %d %d %d %d %s\n", card_ptr->id, card_ptr->level, card_ptr->type,
-          card_ptr->element, card_ptr->power[0], card_ptr->power[1], card_ptr->power[2],
-          card_ptr->power[3], card_ptr->name);
-*/
-  return rval;
 }
 
-int load_deck ( struct Deck *deck_ptr, char deck_datafile[255] )
+void Deck::Shuffle ( void )
 {
-  FILE *fp = NULL;
-
-  fp = fopen ( deck_datafile, "r" );
-
-  if ( fp == NULL)
-  {
-    printf("Error opening file: %s\n", deck_datafile);
-    return -1;
-  }
-
-  for ( int y = 0; y < MAX_DECKSET; y++ )
-  //for ( int y = 0; ! feof(fp); y++ )
-  {
-    // 0 1 1 0 1 4 5 1 Geezard
-    fscanf ( fp, "%i %i %i %i %i %i %i %i %[A-Za-z0-9- ]",
-                  &deck_ptr->cards[y].id, &deck_ptr->cards[y].level, &deck_ptr->cards[y].type, &deck_ptr->cards[y].element,
-                  &deck_ptr->cards[y].power[0], &deck_ptr->cards[y].power[1], &deck_ptr->cards[y].power[2], &deck_ptr->cards[y].power[3],
-                  deck_ptr->cards[y].name);
-
-    //fscanf ( fp, "\n");
-/*
-    printf("%i %i %i %i %i %i %i %i %s\n",
-            card.id, card.level, card.type, card.element,
-            card.power[0], card.power[1], card.power[2], card.power[3],
-            card.name);
-*/
-
-  }
-
-  fclose(fp);
-
-  return 0;
+    //random_shuffle ( cards.begin(), cards.end(), randomize );
 }
-
-/*
-void show_deck(void)
-{
-
-  return 0;
-}
-*/

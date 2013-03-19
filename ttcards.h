@@ -1,35 +1,40 @@
-#include <SDL.h>
+/******************************************************************************
+    ttcards.h
+
+  Copyright (c) 2013 Jeffrey Carpenter
+
+******************************************************************************/
+
+#include <SDL/SDL.h>
+#include <cstdlib> // std::srand, std::rand
+
+#include "board.h"
+#include "card.h"
+//#include "input.h"
+#include "sprite.h"
+
+using namespace std;
 
 // defaults
 #define SCREEN_WIDTH 384
 #define SCREEN_HEIGHT 224
 #define SCREEN_COLORBIT 24
 
-// DEBUG
-#define VERBOSE
-//#define DEBUG
+class TTcards
+{
+public:
+    TTcards();
+    bool Run ( void );
+    bool IsRunning ( void );
+    void SetGameState ( bool state );
 
-/*
-#ifdef DEBUG
-  #define DEBUG_QUEUE 8
-#endif
-*/
+    bool Init ( void );
+    void Input ( void );
+    bool CleanUp ( void );
 
-int input_poll (void);
-int init_game (void);
-int load_image (void);
-int init_image (void);
-int draw_image (void);
+private:
+    bool game_state; // global app state
 
-SDL_Surface *screen = NULL;
-SDL_Surface *background = NULL;
-
-int screen_width = SCREEN_WIDTH;
-int screen_height = SCREEN_HEIGHT;
-
-int screen_lock = 0;
-int screen_unlock = 0;
-//int resize_window = 0;
-//int video_resize = 0;
-//int fs_toggled = 0;
-static int game_running = 1; // global app state
+    SDL_Surface *screen = NULL; // primary video buffer
+    SDL_Surface *background = NULL;
+};
