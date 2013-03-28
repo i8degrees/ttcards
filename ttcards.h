@@ -5,20 +5,24 @@
 
 ******************************************************************************/
 
-#include <SDL/SDL.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
+#include <ctime>
 #include <cstdlib> // std::srand, std::rand
 
+//#include "audio.h"
 #include "board.h"
 #include "card.h"
 //#include "input.h"
 #include "sprite.h"
+//#include "gfx.h"
 
 using namespace std;
 
 // defaults
 #define SCREEN_WIDTH 384
 #define SCREEN_HEIGHT 224
-#define SCREEN_COLORBIT 24
+#define SCREEN_COLORBIT 32
 
 class TTcards
 {
@@ -37,4 +41,15 @@ private:
 
     SDL_Surface *screen = NULL; // primary video buffer
     SDL_Surface *background = NULL;
+    SDL_Surface *p1_txtNorth = { 0 };
+    SDL_Surface *p1_txtEast = { 0 };
+    SDL_Surface *p1_txtSouth = { 0 };
+    SDL_Surface *p1_txtWest = { 0 };
+
+    SDL_Surface *p2_txtNorth = { 0 };
+    SDL_Surface *p2_txtEast = { 0 };
+    SDL_Surface *p2_txtSouth = { 0 };
+    SDL_Surface *p2_txtWest = { 0 };
+
+    TTF_Font *font = NULL;
 };

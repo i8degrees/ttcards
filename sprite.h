@@ -15,29 +15,33 @@
 #include <SDL.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
 class Sprite
 {
 public:
-  unsigned int id; // crude sprite sheet functionality
+
   unsigned int x; // sprite x-axis blitting location
   unsigned int y; // sprite y-axis blitting location
   unsigned int z;
-  unsigned int x_offset; // sprite input x-axis location
-  unsigned int y_offset; // sprite input y-axis location
-  unsigned int width; // sprite width
-  unsigned int height; // sprite height
+  unsigned int id; // crude sprite sheet functionality
   unsigned int state;
 
-  Sprite ( int x, int y, int z, int w, int h, int id = 0);
+  Sprite ( int width, int height );
 
-  bool Load ( string filename );
-  //bool Load ( char filename, int id = NULL, int x_offset = 0, int y_offset = 0 );
+  bool LoadImage ( string filename );
   bool Draw ( SDL_Surface *video_buffer );
   bool Destroy ( void );
 
 private:
+  unsigned int width; // sprite width
+  unsigned int height; // sprite height
+  unsigned int x_offset; // sprite input x-axis location
+  unsigned int y_offset; // sprite input y-axis location
+
+  SDL_Rect src, dest;
   SDL_Surface *sprite_buffer = NULL; // memory buffer allocation
+
 };

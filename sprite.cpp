@@ -9,28 +9,37 @@
 
 #include "sprite.h"
 
-Sprite::Sprite ( int x, int y, int z, int w, int h, int id )
+Sprite::Sprite ( int width, int height )
 {
-  //sprite_buffer = NULL;
+  Sprite::width = width;
+  Sprite::height = height;
 
-  Sprite::id = id;
-  Sprite::x = x;
-  Sprite::y = y;
-  Sprite::z = z;
-  Sprite::width = w;
-  Sprite::height = h;
+  Sprite::id = 0;
+
+  src.x = 0;
+  src.y = 0;
+  src.w = Sprite::width;
+  src.h = Sprite::height;
 }
 
-bool Sprite::Load ( string filename )
+bool Sprite::LoadImage ( string filename )
 {
 
-  if ( ( sprite_buffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
+  SDL_Surface *tmpBuffer = NULL;
+  SDL_Color alpha = { 0, 0, 0 };
+
+  if ( ( tmpBuffer = SDL_LoadBMP ( filename.c_str() ) )  == NULL )
   {
-#ifdef DEBUG
-    std::cout << "ERROR: Could not load " << filename << " " << SDL_GetError() );
-#endif
+    std::cout << "ERR -255: " << SDL_GetError() << endl;
     return false;
   }
+
+  SDL_SetColorKey ( tmpBuffer, SDL_SRCCOLORKEY,
+                   SDL_MapRGB ( tmpBuffer->format, alpha.r, alpha.g, alpha.b ) );
+
+  sprite_buffer = SDL_DisplayFormatAlpha ( tmpBuffer );
+
+  SDL_FreeSurface ( tmpBuffer );
 
   //printf("%d %d %d %d %d %s\n", sprite_ptr->id, sprite_ptr->x, sprite_ptr->y, sprite_ptr->width, sprite_ptr->height, filename);
 
@@ -39,11 +48,17 @@ bool Sprite::Load ( string filename )
 
 bool Sprite::Draw ( SDL_Surface *video_buffer )
 {
-  SDL_Rect dest;
-  SDL_Rect src;
+  if ( Sprite::id != 0 )
+  {
+    src.x = (Sprite::id * Sprite::width);
+    src.y = 0;
+  }
+  else
+  {
+    src.x = 0;
+    src.y = 0;
+  }
 
-  src.x = Sprite::id * Sprite::width; // crude sprite sheet
-  src.y = 0;
   src.w = Sprite::width;
   src.h = Sprite::height;
 
