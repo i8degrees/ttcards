@@ -4,11 +4,9 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-
-#include <iostream>
-#include <SDL/SDL.h>
-
 #include "ttcards.h"
+
+using namespace std;
 
 TTcards::TTcards ( void )
 {
@@ -35,7 +33,7 @@ bool TTcards::Init ( void )
 
   atexit ( SDL_Quit );
 
-  screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_COLORBIT, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE);
+  screen = SDL_SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_COLORBIT, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE );
 
   if(screen == NULL)
   {
@@ -196,7 +194,7 @@ bool TTcards::Run ( void )
 
   //cards.Draw();
 
-  for ( int i = 0; i < MAX_CARDSET; i++ )
+  for ( int i = 0; i < 5; i++ ) // for ( int i = 0; i < MAX_CARDSET; i++ )
   {
     std::cout << player1.cards[i].id << " " << player1.cards[i].name << endl;
   }

@@ -6,8 +6,9 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-
 #include "sprite.h"
+
+using namespace std;
 
 Sprite::Sprite ( int width, int height )
 {
@@ -22,7 +23,7 @@ Sprite::Sprite ( int width, int height )
   src.h = Sprite::height;
 }
 
-bool Sprite::LoadImage ( string filename )
+bool Sprite::LoadImage ( std::string filename )
 {
 
   SDL_Surface *tmpBuffer = NULL;

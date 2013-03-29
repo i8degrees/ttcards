@@ -4,9 +4,9 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-
-#include <iostream>
 #include "ttcards.h"
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {

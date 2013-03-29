@@ -4,6 +4,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
+#ifndef BOARD_HEADERS
+#define BOARD_HEADERS
 
 #include <SDL.h>
 #include <iostream>
@@ -28,3 +30,5 @@ private:
     unsigned int grid[BOARD_WIDTH][BOARD_HEIGHT];
     //SDL_Surface *background = NULL;
 };
+
+#endif // BOARD_HEADERS

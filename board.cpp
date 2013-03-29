@@ -6,6 +6,8 @@
 ******************************************************************************/
 #include "board.h"
 
+using namespace std;
+
 Board::Board ( void )
 {
     for ( int y = 0; y < BOARD_HEIGHT; y++ )

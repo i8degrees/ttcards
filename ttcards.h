@@ -4,25 +4,21 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
+#ifndef TTCARDS_HEADERS
+#define TTCARDS_HEADERS
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include <ctime>
-#include <cstdlib> // std::srand, std::rand
+#include <iostream>
 
+#include "SDL.h"
+#include "SDL_ttf.h"
+
+#include "cfg.h"
 //#include "audio.h"
 #include "board.h"
 #include "card.h"
 //#include "input.h"
 #include "sprite.h"
 //#include "gfx.h"
-
-using namespace std;
-
-// defaults
-#define SCREEN_WIDTH 384
-#define SCREEN_HEIGHT 224
-#define SCREEN_COLORBIT 32
 
 class TTcards
 {
@@ -53,3 +49,5 @@ private:
 
     TTF_Font *font = NULL;
 };
+
+#endif // TTCARDS_HEADERS

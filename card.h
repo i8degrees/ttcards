@@ -4,33 +4,31 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
+#ifndef CARD_HEADERS
+#define CARD_HEADERS
 
-#include <SDL.h>
 #include <iostream>
-#include <fstream>
+#include <fstream> // file streams
 #include <vector>
 #include <string>
 
-using namespace std;
+#include "SDL.h"
 
-#define CARD_WIDTH 64
-#define CARD_HEIGHT 64
-#define MAX_DECKSET 110 // +1
-#define MAX_CARDSET 5
+#include "cfg.h"
 
 int randomize ( int rval );
 
 class Card
 {
 public:
-  Card ( int id, int level, int ctype, int element, int p1, int p2, int p3, int p4, string name);
+  Card ( int id, int level, int ctype, int element, int p1, int p2, int p3, int p4, std::string name);
   void Draw ( void );
   unsigned int id;
   unsigned int level; // 1..10
   unsigned int type;
   unsigned int element;
   unsigned int power[4]; // clockwise; top, right, down, left
-  string name;
+  std::string name;
 private:
 
 };
@@ -38,7 +36,7 @@ private:
 class Deck
 {
 public:
-  Deck( string filename );
+  Deck( std::string filename );
   //bool Load ( string filename );
   void Shuffle ( void );
   void Draw ( void );
@@ -88,3 +86,4 @@ typedef enum category_type {
   // TODO: cType cType = { LEVEL_4 }; std::cout << cType << "\n";
 } cType, cat_type;
 
+#endif // CARD_HEADERS

@@ -11,13 +11,14 @@
   3. z-axis ordering (think: layering)
   4. state management? (think: alive, dying, dead, etc.)
 ******************************************************************************/
+#ifndef SPRITE_HEADERS
+#define SPRITE_HEADERS
 
-#include <SDL.h>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
-using namespace std;
+#include "SDL.h"
 
 class Sprite
 {
@@ -31,7 +32,7 @@ public:
 
   Sprite ( int width, int height );
 
-  bool LoadImage ( string filename );
+  bool LoadImage ( std::string filename );
   bool Draw ( SDL_Surface *video_buffer );
   bool Destroy ( void );
 
@@ -45,3 +46,5 @@ private:
   SDL_Surface *sprite_buffer = NULL; // memory buffer allocation
 
 };
+
+#endif // SPRITE_HEADERS
