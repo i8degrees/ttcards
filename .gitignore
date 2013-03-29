@@ -1,7 +1,9 @@
 # Project Files
 *.sublime-workspace
+*.sublime-project
 *.bck
 *.xcf
+*.mp3
 project/
 ttcards
 
