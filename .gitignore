@@ -1,4 +1,5 @@
 # Project Files
+*.sublime-workspace
 *.bck
 *.xcf
 project/
