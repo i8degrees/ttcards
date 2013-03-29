@@ -12,6 +12,10 @@ Player::Player ( void )
   Player::score = 5;
 }
 
+Player::~Player ( void )
+{
+}
+
 unsigned int Player::GetScore ( void )
 {
   return Player::score;

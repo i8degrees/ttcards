@@ -32,4 +32,4 @@ private:
     //SDL_Surface *background = NULL;
 };
 
-#endif // BOARD_HEADERS
+#endif // BOARD_HEADERS defined

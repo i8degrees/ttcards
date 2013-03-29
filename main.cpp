@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
   }
   else
   {
-    app.~TTcards();
     exit(0);
   }
 

@@ -22,6 +22,8 @@ class Card
 {
 public:
   Card ( int id, int level, int ctype, int element, int p1, int p2, int p3, int p4, std::string name);
+  ~Card ( void );
+
   void Draw ( void );
   unsigned int id;
   unsigned int level; // 1..10
@@ -37,6 +39,8 @@ class Deck
 {
 public:
   Deck( std::string filename );
+  ~Deck ( void );
+
   //bool Load ( string filename );
   void Shuffle ( void );
   void Draw ( void );
@@ -50,6 +54,8 @@ class Pile
 {
 public:
   Pile ( Deck *deck );
+  ~Pile ( void );
+
   void Add ( void );
   void List ( void );
   std::vector<Card> cards;
@@ -86,4 +92,4 @@ typedef enum category_type {
   // TODO: cType cType = { LEVEL_4 }; std::cout << cType << "\n";
 } cType, cat_type;
 
-#endif // CARD_HEADERS
+#endif // CARD_HEADERS defined

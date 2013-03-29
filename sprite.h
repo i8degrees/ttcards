@@ -1,15 +1,10 @@
 /******************************************************************************
     sprite.h
 
-  Basic Sprite Engine written for SDL in C++
+  Basic Sprite Engine API using SDL in C++
 
   Copyright (c) 2013 Jeffrey Carpenter
 
-      TODO
-  1. id, x_offset, y_offset in Load
-  2. animation
-  3. z-axis ordering (think: layering)
-  4. state management? (think: alive, dying, dead, etc.)
 ******************************************************************************/
 #ifndef SPRITE_HEADERS
 #define SPRITE_HEADERS
@@ -47,4 +42,4 @@ private:
 
 };
 
-#endif // SPRITE_HEADERS
+#endif // SPRITE_HEADERS defined

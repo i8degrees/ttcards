@@ -1,5 +1,5 @@
 /******************************************************************************
-    cfg.h
+    audio.cpp
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -16,13 +16,11 @@ Audio::Audio ( void )
   Audio::audio_buffers = 4096;
 
   Audio::mTrack = NULL;
-  //Mix_??? *aTrack = NULL;
 }
 
 Audio::~Audio ( void )
 {
   Mix_HaltMusic ();
-  //Mix_FreeChunk ( aTrack );
   Mix_FreeMusic ( mTrack );
   Mix_CloseAudio ();
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
     sprite.cpp
 
-  Basic Sprite Engine written for SDL in C++
+  Basic Sprite Engine API using SDL in C++
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -1,5 +1,5 @@
 /******************************************************************************
-    cfg.h
+    audio.h
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -28,12 +28,12 @@ public:
   bool toggleMusic ( void );
 
 private:
-  //Mix_??? *aTrack;
-  Mix_Music *mTrack;
+  Mix_Music *mTrack = NULL;
+
   int audio_rate;
   Uint16 audio_format;
   int audio_channels;
   int audio_buffers;
 };
 
-#endif // AUDIO_HEADERS
+#endif // AUDIO_HEADERS defined

@@ -45,8 +45,6 @@ bool Font::LoadTTF ( std::string filename, unsigned int size )
   return true;
 }
 
-//~Font ()
-
 bool Font::DrawText ( SDL_Surface *video_buffer, std::string text, int x, int y, SDL_Color color )
 {
 

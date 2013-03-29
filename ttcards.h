@@ -46,4 +46,4 @@ private:
     Font score;
 };
 
-#endif // TTCARDS_HEADERS
+#endif // TTCARDS_HEADERS defined

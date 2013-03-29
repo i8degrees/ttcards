@@ -31,4 +31,4 @@ private:
   SDL_Surface *text_buffer = NULL;
 };
 
-#endif // FONT_HEADERS
+#endif // FONT_HEADERS defined

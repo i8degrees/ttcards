@@ -26,6 +26,10 @@ Card::Card ( int cid, int level, int ctype, int element, int p0, int p1, int p2,
   Card::name = name;
 }
 
+Card::~Card ( void )
+{
+}
+
 void Card::Draw ( void )
 {
   cout << Card::id << " " << Card::name << "\n";
@@ -63,8 +67,10 @@ Deck::Deck ( string filename )
   }
 
   load.close();
+}
 
-  //return true;
+Deck::~Deck ( void )
+{
 }
 
 void Deck::Draw ( void )
@@ -104,4 +110,8 @@ Pile::Pile ( Deck *deck )
     //std::cout << deck->cards[i].id << " " << deck->cards[i].name << endl;
   }
 
+}
+
+Pile::~Pile ( void )
+{
 }

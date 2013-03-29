@@ -53,4 +53,4 @@ const char PLAYER2_CARDFACE[255] = "./data/images/player2.bmp";
 
 const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";
 
-#endif // CFG_HEADERS
+#endif // CFG_HEADERS defined

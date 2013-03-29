@@ -131,9 +131,13 @@ bool TTcards::Run ( void )
   Sprite card0 ( 64, 64 );
   Sprite card0g ( 64, 64 );
   Sprite card0e ( 16, 16 );
+
+  // Player 2
+/*
   Sprite card1 ( 64, 64 );
   Sprite card1g ( 64, 64 );
   Sprite card1e ( 16, 16 );
+*/
 
   card0.LoadImage ( "./data/images/faces/89.bmp" );
 
@@ -153,6 +157,9 @@ bool TTcards::Run ( void )
   card0e.y = card0.y + 4;
   card0e.z = 0;
 
+  // Player 2
+
+/*
   card1.LoadImage ( "./data/images/faces/1.bmp" );
 
   card1.x = 96;
@@ -170,6 +177,7 @@ bool TTcards::Run ( void )
   card1e.x = card1.x + 46;
   card1e.y = card1.y + 4;
   card1e.z = 0;
+*/
 
   Pile player1 (&cards);
   //Pile player2 (&cards);
@@ -196,20 +204,23 @@ bool TTcards::Run ( void )
 
   while( TTcards::IsRunning() ) // main loop
   {
+    TTcards::Input();
+
     SDL_BlitSurface ( background, NULL, screen, NULL );
 
     // Player 1
     score.DrawText ( screen, "5", 32, 176, WHITE );
 
-    TTcards::Input();
-
     card0g.Draw ( card_buffer );
     card0.Draw ( card_buffer );
     card0e.Draw ( card_buffer );
 
+    // Player 2
+/*
     //card1g.Draw ( card_buffer );
     //card1.Draw ( card_buffer );
     //card1e.Draw ( card_buffer );
+*/
 
     // Player 1
 

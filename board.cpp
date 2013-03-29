@@ -43,6 +43,4 @@ SDL_Surface *Board::LoadBackground ( std::string filename )
   SDL_FreeSurface ( tmpBuffer );
 
   return vBuffer;
-
-  //return true;
 }
