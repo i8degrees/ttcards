@@ -238,19 +238,3 @@ bool TTcards::Run ( void )
 
   return true;
 }
-
-int main(int argc, char* argv[])
-{
-  TTcards app;
-
-  if ( app.Init() == true )
-  {
-    app.Run();
-  }
-  else
-  {
-    app.CleanUp();
-  }
-
-  return true;
-}
