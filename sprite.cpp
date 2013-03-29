@@ -35,7 +35,7 @@ bool Sprite::LoadImage ( std::string filename )
     return false;
   }
 
-  SDL_SetColorKey ( tmpBuffer, SDL_SRCCOLORKEY,
+  SDL_SetColorKey ( tmpBuffer, SDL_RLEACCEL | SDL_SRCCOLORKEY,
                    SDL_MapRGB ( tmpBuffer->format, alpha.r, alpha.g, alpha.b ) );
 
   sprite_buffer = SDL_DisplayFormatAlpha ( tmpBuffer );

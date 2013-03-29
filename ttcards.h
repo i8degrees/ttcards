@@ -10,12 +10,13 @@
 #include <iostream>
 
 #include "SDL.h"
-#include "SDL_ttf.h"
 
 #include "cfg.h"
-//#include "audio.h"
+#include "audio.h"
+#include "player.h"
 #include "board.h"
 #include "card.h"
+#include "font.h"
 //#include "input.h"
 #include "sprite.h"
 //#include "gfx.h"
@@ -37,17 +38,11 @@ private:
 
     SDL_Surface *screen = NULL; // primary video buffer
     SDL_Surface *background = NULL;
-    SDL_Surface *p1_txtNorth = { 0 };
-    SDL_Surface *p1_txtEast = { 0 };
-    SDL_Surface *p1_txtSouth = { 0 };
-    SDL_Surface *p1_txtWest = { 0 };
+    SDL_Surface *card_buffer = NULL;
 
-    SDL_Surface *p2_txtNorth = { 0 };
-    SDL_Surface *p2_txtEast = { 0 };
-    SDL_Surface *p2_txtSouth = { 0 };
-    SDL_Surface *p2_txtWest = { 0 };
-
-    TTF_Font *font = NULL;
+    Audio mixer;
+    Font txt;
+    Font score;
 };
 
 #endif // TTCARDS_HEADERS

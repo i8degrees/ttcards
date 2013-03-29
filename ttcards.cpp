@@ -15,9 +15,10 @@ TTcards::TTcards ( void )
 
 bool TTcards::CleanUp ( void )
 {
-  TTF_CloseFont ( font );
+  mixer.Audio::~Audio(); // Free Audio???
+  txt.Font::~Font(); // ???
 
-
+  SDL_FreeSurface ( background );
   SDL_FreeSurface ( screen );
 
   return true;
@@ -25,10 +26,10 @@ bool TTcards::CleanUp ( void )
 
 bool TTcards::Init ( void )
 {
-  if ( SDL_Init ( SDL_INIT_VIDEO ) == -1 )
+  if ( SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == -1 )
   {
     std::cout << "ERR: Could not initialize SDL: " << SDL_GetError() << "\n";
-    return false;
+    exit(-1);
   }
 
   atexit ( SDL_Quit );
@@ -38,16 +39,14 @@ bool TTcards::Init ( void )
   if(screen == NULL)
   {
     std::cout << "ERR: Could not set video mode: " << SDL_GetError() << "\n";
-    return false;
+    exit(-1);
   }
 
+  mixer.Init ();
+
+  txt.Init ();
+
   SDL_WM_SetCaption( "TTcards", NULL );
-
-
-
-  TTF_Init();
-
-  atexit ( TTF_Quit );
 
   return true;
 }
@@ -104,6 +103,13 @@ void TTcards::Input ( void )
           case SDLK_q:
             TTcards::SetGameState ( false );
             break;
+          case SDLK_PLUS:
+            break;
+          case SDLK_MINUS:
+            break;
+          case SDLK_p:
+            mixer.toggleMusic ();
+            break;
           default:
             // TODO
             break;
@@ -116,31 +122,15 @@ void TTcards::Input ( void )
 bool TTcards::Run ( void )
 {
   Board board;
-  SDL_Color white = { 255, 255, 255, 0 };
-  SDL_Rect p1_north = { 26, 0, 0, 0 };
-  SDL_Rect p1_east = { 30, 8, 0, 0 };
-  SDL_Rect p1_south = { 26, 16, 0, 0 };
-  SDL_Rect p1_west = { 22, 8, 0, 0 };
-
-  SDL_Rect p2_north = { 104, 18, 0, 0 };
-  SDL_Rect p2_east = { 112, 24, 0, 0 };
-  SDL_Rect p2_south = { 104, 26, 0, 0 };
-  SDL_Rect p2_west = { 100, 24, 0, 0 };
 
   background = board.LoadBackground ( BOARD_BACKGROUND );
 
   Deck cards ( CARDS_DB );
 
-  TTF_Font *font = TTF_OpenFont ( CARD_FONTFACE, 12 );
-  SDL_Surface *p1_txtNorth = TTF_RenderText_Solid ( font, "9", white );
-  SDL_Surface *p1_txtEast = TTF_RenderText_Solid ( font, "6", white );
-  SDL_Surface *p1_txtSouth = TTF_RenderText_Solid ( font, "A", white );
-  SDL_Surface *p1_txtWest = TTF_RenderText_Solid ( font, "2", white );
+  mixer.LoadMusicTrack ( MUSIC_TRACK );
 
-  SDL_Surface *p2_txtNorth = TTF_RenderText_Solid ( font, "9", white );
-  SDL_Surface *p2_txtEast = TTF_RenderText_Solid ( font, "6", white );
-  SDL_Surface *p2_txtSouth = TTF_RenderText_Solid ( font, "A", white );
-  SDL_Surface *p2_txtWest = TTF_RenderText_Solid ( font, "2", white );
+  txt.LoadTTF ( CARD_FONTFACE, 12 );
+  score.LoadTTF ( SCORE_FONTFACE, 32 );
 
   Sprite card0 ( 64, 64 );
   Sprite card0g ( 64, 64 );
@@ -149,13 +139,11 @@ bool TTcards::Run ( void )
   Sprite card1g ( 64, 64 );
   Sprite card1e ( 16, 16 );
 
-  // p1.cards [16, 18] n+32
-
   card0.LoadImage ( "./data/images/faces/89.bmp" );
 
-  card0.x = 18;
-  card0.y = 0;
-  card0.z = 0;
+  card0.x = 0; //card0.x = PLAYER1_ORIGIN_X;
+  card0.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
+  card0.z = 0; //card0.z = 0;
 
   card0g.LoadImage ( PLAYER1_CARDFACE );
 
@@ -199,40 +187,68 @@ bool TTcards::Run ( void )
     std::cout << player1.cards[i].id << " " << player1.cards[i].name << endl;
   }
 
+  mixer.PlayMusicTrack ();
+
+  card_buffer = SDL_CreateRGBSurface ( 0, 64, 64,
+                                      screen->format->BitsPerPixel,
+                                      screen->format->Rmask,
+                                      screen->format->Gmask,
+                                      screen->format->Bmask,
+                                      screen->format->Amask);
+
+  SDL_Rect offsets = { 96, 18, 64, 64 };
+
   while( TTcards::IsRunning() ) // main loop
   {
+    SDL_BlitSurface ( background, NULL, screen, NULL );
 
-    SDL_BlitSurface(background, NULL, screen, NULL);
-
-    card0g.Draw ( screen );
-    card0.Draw ( screen );
-    card0e.Draw ( screen );
-
-    card1g.Draw ( screen );
-    card1.Draw ( screen );
-    card1e.Draw ( screen );
-
-    SDL_BlitSurface ( p1_txtNorth, NULL, screen, &p1_north );
-    SDL_BlitSurface ( p1_txtEast, NULL, screen, &p1_east );
-    SDL_BlitSurface ( p1_txtSouth, NULL, screen, &p1_south );
-    SDL_BlitSurface ( p1_txtWest, NULL, screen, &p1_west );
-
-    SDL_BlitSurface ( p2_txtNorth, NULL, screen, &p2_north );
-    SDL_BlitSurface ( p2_txtEast, NULL, screen, &p2_east );
-    SDL_BlitSurface ( p2_txtSouth, NULL, screen, &p2_south );
-    SDL_BlitSurface ( p2_txtWest, NULL, screen, &p2_west );
+    // Player 1
+    score.DrawText ( screen, "5", 32, 176, WHITE );
 
     TTcards::Input();
+
+    card0g.Draw ( card_buffer );
+    card0.Draw ( card_buffer );
+    card0e.Draw ( card_buffer );
+
+    //card1g.Draw ( card_buffer );
+    //card1.Draw ( card_buffer );
+    //card1e.Draw ( card_buffer );
+
+    // Player 1
+
+    txt.DrawText ( card_buffer, "9", 8, 0, WHITE ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
+    txt.DrawText ( card_buffer, "6", 12, 8, WHITE ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
+    txt.DrawText ( card_buffer, "A", 8, 16, WHITE ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
+    txt.DrawText ( card_buffer, "2", 4, 8, WHITE ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
+
+    // Player 2
+/*
+    txt.DrawText ( screen, "9", 104, 18, WHITE );
+    txt.DrawText ( screen, "6", 112, 24, WHITE );
+    txt.DrawText ( screen, "A", 104, 26, WHITE );
+    txt.DrawText ( screen, "2", 100, 24, WHITE );
+*/
+
+    SDL_BlitSurface ( card_buffer, NULL, screen, &offsets );
 
     if (SDL_Flip(screen) !=0)
     {
       printf("ERROR: Failed to swap video buffers.\n");
       return false;
     }
-  }
 
+  } // while TTcards::IsRunning()
+
+  card0e.Destroy ();
+  card0g.Destroy ();
   card0.Destroy ();
+
+  card1e.Destroy ();
+  card1g.Destroy ();
   card1.Destroy ();
+
+  SDL_FreeSurface ( card_buffer );
 
   return true;
 }
