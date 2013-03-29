@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
   }
   else
   {
-    app.CleanUp();
+    app.~TTcards();
+    exit(0);
   }
 
   return true;

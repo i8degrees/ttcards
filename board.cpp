@@ -19,6 +19,10 @@ Board::Board ( void )
     }
 }
 
+Board::~Board ( void )
+{
+}
+
 SDL_Surface *Board::LoadBackground ( std::string filename )
 {
   SDL_Surface *tmpBuffer = NULL;
@@ -41,12 +45,4 @@ SDL_Surface *Board::LoadBackground ( std::string filename )
   return vBuffer;
 
   //return true;
-}
-
-bool Board::CleanUp ( void )
-{
-  // SDL_FreeSurface ( tmpBuffer );
-  // SDL_FreeSurface ( background );
-
-  return true;
 }

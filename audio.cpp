@@ -19,6 +19,14 @@ Audio::Audio ( void )
   //Mix_??? *aTrack = NULL;
 }
 
+Audio::~Audio ( void )
+{
+  Mix_HaltMusic ();
+  //Mix_FreeChunk ( aTrack );
+  Mix_FreeMusic ( mTrack );
+  Mix_CloseAudio ();
+}
+
 bool Audio::Init ( void )
 {
   if ( Mix_OpenAudio ( audio_rate, audio_format, audio_channels, audio_buffers ) == -1 )

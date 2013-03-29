@@ -13,15 +13,11 @@ TTcards::TTcards ( void )
   TTcards::game_state = true;
 }
 
-bool TTcards::CleanUp ( void )
+TTcards::~TTcards ( void )
 {
-  mixer.Audio::~Audio(); // Free Audio???
-  txt.Font::~Font(); // ???
-
+  SDL_FreeSurface ( card_buffer );
   SDL_FreeSurface ( background );
   SDL_FreeSurface ( screen );
-
-  return true;
 }
 
 bool TTcards::Init ( void )
@@ -239,16 +235,6 @@ bool TTcards::Run ( void )
     }
 
   } // while TTcards::IsRunning()
-
-  card0e.Destroy ();
-  card0g.Destroy ();
-  card0.Destroy ();
-
-  card1e.Destroy ();
-  card1g.Destroy ();
-  card1.Destroy ();
-
-  SDL_FreeSurface ( card_buffer );
 
   return true;
 }

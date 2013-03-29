@@ -23,6 +23,11 @@ Sprite::Sprite ( int width, int height )
   src.h = Sprite::height;
 }
 
+Sprite::~Sprite ( void )
+{
+  SDL_FreeSurface(sprite_buffer);
+}
+
 bool Sprite::LoadImage ( std::string filename )
 {
 
@@ -69,13 +74,6 @@ bool Sprite::Draw ( SDL_Surface *video_buffer )
   dest.h = Sprite::height;
 
   SDL_BlitSurface(sprite_buffer, &src, video_buffer, &dest);
-
-  return true;
-}
-
-bool Sprite::Destroy ( void )
-{
-  SDL_FreeSurface(sprite_buffer);
 
   return true;
 }

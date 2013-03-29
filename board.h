@@ -19,7 +19,8 @@ class Board
 
 public:
     Board();
-    bool CleanUp ( void );
+    ~Board ( void );
+
     SDL_Surface *LoadBackground ( std::string filename );
     //bool LoadBackground ( std::string filename );
 

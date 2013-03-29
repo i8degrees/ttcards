@@ -15,10 +15,7 @@
 class Font {
 public:
   Font ( void );
-  ~Font ( void )
-  {
-    TTF_CloseFont ( font );
-  }
+  ~Font ( void );
 
   bool Init ( void );
   bool LoadTTF ( std::string filename, unsigned int size );

@@ -25,13 +25,14 @@ class TTcards
 {
 public:
     TTcards();
+    ~TTcards ( void );
+
     bool Run ( void );
     bool IsRunning ( void );
     void SetGameState ( bool state );
 
     bool Init ( void );
     void Input ( void );
-    bool CleanUp ( void );
 
 private:
     bool game_state; // global app state

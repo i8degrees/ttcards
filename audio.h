@@ -15,13 +15,7 @@
 class Audio {
 public:
   Audio ( void );
-  ~Audio ()
-  {
-    Mix_HaltMusic ();
-    //Mix_FreeChunk ( aTrack );
-    Mix_FreeMusic ( mTrack );
-    Mix_CloseAudio ();
-  }
+  ~Audio ( void );
 
   bool Init ( void );
 

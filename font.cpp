@@ -12,6 +12,11 @@ Font::Font ( void )
 {
 }
 
+Font::~Font ( void )
+{
+  TTF_CloseFont ( font );
+}
+
 bool Font::Init ( void )
 {
   if ( TTF_Init () == -1 )
@@ -53,6 +58,8 @@ bool Font::DrawText ( SDL_Surface *video_buffer, std::string text, int x, int y,
   SDL_Surface *txt_buffer = TTF_RenderText_Solid ( font, text.c_str(), color );
 
   SDL_BlitSurface ( txt_buffer, NULL, video_buffer, &offsets );
+
+  SDL_FreeSurface ( txt_buffer );
 
   return true;
 }

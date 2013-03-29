@@ -31,10 +31,10 @@ public:
   unsigned int state;
 
   Sprite ( int width, int height );
+  ~Sprite ( void );
 
   bool LoadImage ( std::string filename );
   bool Draw ( SDL_Surface *video_buffer );
-  bool Destroy ( void );
 
 private:
   unsigned int width; // sprite width
