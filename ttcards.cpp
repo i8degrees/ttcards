@@ -127,11 +127,11 @@ bool TTcards::Run ( void )
   SDL_Rect p2_south = { 104, 26, 0, 0 };
   SDL_Rect p2_west = { 100, 24, 0, 0 };
 
-  background = board.LoadBackground ( "./images/board.bmp" );
+  background = board.LoadBackground ( BOARD_BACKGROUND );
 
-  Deck cards ( "cards.txt" );
+  Deck cards ( CARDS_DB );
 
-  TTF_Font *font = TTF_OpenFont ( "./fonts/EnvyCodeRb.ttf", 12 );
+  TTF_Font *font = TTF_OpenFont ( CARD_FONTFACE, 12 );
   SDL_Surface *p1_txtNorth = TTF_RenderText_Solid ( font, "9", white );
   SDL_Surface *p1_txtEast = TTF_RenderText_Solid ( font, "6", white );
   SDL_Surface *p1_txtSouth = TTF_RenderText_Solid ( font, "A", white );
@@ -151,37 +151,37 @@ bool TTcards::Run ( void )
 
   // p1.cards [16, 18] n+32
 
-  card0.LoadImage ( "./images/faces/89.bmp" );
+  card0.LoadImage ( "./data/images/faces/89.bmp" );
 
   card0.x = 18;
   card0.y = 0;
   card0.z = 0;
 
-  card0g.LoadImage ( "./images/player1.bmp" );
+  card0g.LoadImage ( PLAYER1_CARDFACE );
 
   card0g.x = card0.x;
   card0g.y = card0.y;
   card0g.z = card0.z;
 
-  card0e.LoadImage ( "./images/elements/water_16.bmp" );
+  card0e.LoadImage ( ELEMENT_WATER );
 
   card0e.x = card0.x + 46;
   card0e.y = card0.y + 4;
   card0e.z = 0;
 
-  card1.LoadImage ( "./images/faces/1.bmp" );
+  card1.LoadImage ( "./data/images/faces/1.bmp" );
 
   card1.x = 96;
   card1.y = 18;
   card1.z = 0;
 
-  card1g.LoadImage ( "images/player2.bmp" );
+  card1g.LoadImage ( PLAYER2_CARDFACE );
 
   card1g.x = card1.x;
   card1g.y = card1.y;
   card1g.z = 0;
 
-  card1e.LoadImage ( "images/elements/thunder_16.bmp" );
+  card1e.LoadImage ( ELEMENT_THUNDER );
 
   card1e.x = card1.x + 46;
   card1e.y = card1.y + 4;
