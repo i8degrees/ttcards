@@ -1,10 +1,11 @@
 TTcards
 =======
 
-Final Fantasy VIII Triple Triad Clone
+Remake (clone) of SquareSoft's Final Fantasy VIII Triple Triad card game.
 
 License
 =======
 
-Copyright (c) 2013 Jeffrey Carpenter
+1. See LICENSE.md
 
+Copyright (c) 2013 Jeffrey Carpenter
