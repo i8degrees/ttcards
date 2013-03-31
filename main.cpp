@@ -16,10 +16,6 @@ int main(int argc, char *argv[])
   {
     app.Run();
   }
-  else
-  {
-    exit(0);
-  }
 
   return true;
 }

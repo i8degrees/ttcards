@@ -12,7 +12,7 @@ Player::Player ( void )
   Player::score = 5;
 
   card_buffer = SDL_CreateRGBSurface ( 0, CARD_WIDTH, CARD_HEIGHT,
-                                      SCREEN_COLORBIT, 0, 0, 0, 0);
+                                      SCREEN_BPP, 0, 0, 0, 0);
                                       //screen->format->BitsPerPixel,
                                       //screen->format->Rmask,
                                       //screen->format->Gmask,
@@ -85,8 +85,6 @@ bool Player::Draw ( SDL_Surface *video_buffer, int x, int y ) // card id
   offsets.y = y;
 
   SDL_BlitSurface ( card_buffer, NULL, video_buffer, &offsets );
-
-  //SDL_FreeSurface ( tmpBuffer );
 
   return true;
 }

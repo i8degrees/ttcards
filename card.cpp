@@ -46,8 +46,7 @@ Deck::Deck ( string filename )
   {
     std::cout << "ERR: Input file " << filename << endl;
     //cerr << "ERR: Input file " << filename << endl;
-    exit(-1);
-    //return false;
+    exit ( EXIT_FAILURE );
   }
 
   for ( int i = 0; i < MAX_DECKSET; i++ )

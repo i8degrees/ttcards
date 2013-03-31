@@ -10,6 +10,7 @@ using namespace std;
 
 Font::Font ( void )
 {
+  TTF_Font *font = NULL;
 }
 
 Font::~Font ( void )
@@ -22,7 +23,7 @@ bool Font::Init ( void )
   if ( TTF_Init () == -1 )
   {
     std::cout << "ERR: " << SDL_GetError() << endl;
-    exit(-1);
+    exit ( EXIT_FAILURE );
   }
 
   atexit ( TTF_Quit );
@@ -39,7 +40,7 @@ bool Font::LoadTTF ( std::string filename, unsigned int size )
   if ( font == NULL )
   {
     std::cout << "ERR -255: " << SDL_GetError() << endl;
-    exit(-1);
+    exit ( EXIT_FAILURE );
   }
 
   return true;

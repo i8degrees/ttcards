@@ -26,7 +26,7 @@ private:
   unsigned int x;
   unsigned int y;
 
-  TTF_Font *font = NULL;
+  TTF_Font *font;
 
   SDL_Surface *text_buffer = NULL;
 };
