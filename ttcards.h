@@ -43,7 +43,7 @@ private:
 
     Audio mixer;
     Font txt;
-    Font score;
+
 };
 
 #endif // TTCARDS_HEADERS defined

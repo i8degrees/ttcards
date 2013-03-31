@@ -19,6 +19,9 @@ const struct SDL_Color WHITE = { 255, 255, 255, 0 };
 
 const int CARD_WIDTH = 64;
 const int CARD_HEIGHT = 64;
+const int ELEMENT_WIDTH = 16;
+const int ELEMENT_HEIGHT = 16;
+
 const int MAX_DECKSET = 110; // +1
 const int MAX_CARDSET = 5;
 
@@ -31,6 +34,9 @@ const int PLAYER2_ORIGIN_Y = 18;
 // top-left of 3x3 grid
 const int BOARD_ORIGIN_X = 96;
 const int BOARD_ORIGIN_Y = 18;
+
+const int BOARD_GRID_WIDTH = 3;
+const int BOARD_GRID_HEIGHT = 3;
 
 const char BOARD_BACKGROUND[255] = "./data/images/board.bmp";
 const char CARD_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";

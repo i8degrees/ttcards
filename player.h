@@ -11,6 +11,10 @@
 
 #include "SDL.h"
 
+#include "cfg.h"
+#include "font.h"
+#include "sprite.h"
+
 class Player
 {
 public:
@@ -20,14 +24,18 @@ public:
   unsigned int GetScore ( void );
   bool SetScore ( unsigned int value );
 
-/*
-  unsigned int GetState ( void );
-  bool SetState ( unsigned int value);
-*/
+  bool Draw ( SDL_Surface *video_buffer, int x, int y );
+  bool DrawScore ( SDL_Surface *video_buffer, int x, int y );
 
 private:
-  //unsigned int state;
+  unsigned int state;
   unsigned int score;
+  Font txtCard;
+  Font txtScore;
+  SDL_Surface *card_buffer = NULL;
+
+  bool BuildCard ( void );
+
 };
 
 #endif // PLAYERS_HEADERS defined

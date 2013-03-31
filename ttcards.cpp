@@ -117,48 +117,16 @@ void TTcards::Input ( void )
 
 bool TTcards::Run ( void )
 {
+  Player player1, player2;
   Board board;
 
-  background = board.LoadBackground ( BOARD_BACKGROUND );
+  board.Init ();
 
   Deck cards ( CARDS_DB );
 
   mixer.LoadMusicTrack ( MUSIC_TRACK );
 
-  txt.LoadTTF ( CARD_FONTFACE, 12 );
-  score.LoadTTF ( SCORE_FONTFACE, 32 );
-
-  Sprite card0 ( 64, 64 );
-  Sprite card0g ( 64, 64 );
-  Sprite card0e ( 16, 16 );
-
   // Player 2
-/*
-  Sprite card1 ( 64, 64 );
-  Sprite card1g ( 64, 64 );
-  Sprite card1e ( 16, 16 );
-*/
-
-  card0.LoadImage ( "./data/images/faces/89.bmp" );
-
-  card0.x = 0; //card0.x = PLAYER1_ORIGIN_X;
-  card0.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
-  card0.z = 0; //card0.z = 0;
-
-  card0g.LoadImage ( PLAYER1_CARDFACE );
-
-  card0g.x = card0.x;
-  card0g.y = card0.y;
-  card0g.z = card0.z;
-
-  card0e.LoadImage ( ELEMENT_WATER );
-
-  card0e.x = card0.x + 46;
-  card0e.y = card0.y + 4;
-  card0e.z = 0;
-
-  // Player 2
-
 /*
   card1.LoadImage ( "./data/images/faces/1.bmp" );
 
@@ -179,41 +147,36 @@ bool TTcards::Run ( void )
   card1e.z = 0;
 */
 
-  Pile player1 (&cards);
+  //Pile player1 (&cards);
   //Pile player2 (&cards);
 
   //cards.Shuffle();
 
-  //cards.Draw();
-
+/*
   for ( int i = 0; i < 5; i++ ) // for ( int i = 0; i < MAX_CARDSET; i++ )
   {
     std::cout << player1.cards[i].id << " " << player1.cards[i].name << endl;
   }
+*/
 
   mixer.PlayMusicTrack ();
 
-  card_buffer = SDL_CreateRGBSurface ( 0, 64, 64,
-                                      screen->format->BitsPerPixel,
-                                      screen->format->Rmask,
-                                      screen->format->Gmask,
-                                      screen->format->Bmask,
-                                      screen->format->Amask);
+  SDL_Rect offsets;
+  offsets.x = 96;
+  offsets.y = 18;
 
-  SDL_Rect offsets = { 96, 18, 64, 64 };
+  SDL_Event event;
 
   while( TTcards::IsRunning() ) // main loop
   {
-    TTcards::Input();
+    //TTcards::Input();
 
-    SDL_BlitSurface ( background, NULL, screen, NULL );
+    board.DrawBackground ( screen );
+    //SDL_BlitSurface ( background, NULL, screen, NULL );
 
-    // Player 1
-    score.DrawText ( screen, "5", 32, 176, WHITE );
+    player1.DrawScore ( screen, 32, 176 );
 
-    card0g.Draw ( card_buffer );
-    card0.Draw ( card_buffer );
-    card0e.Draw ( card_buffer );
+    //player2.DrawScore ( screen );
 
     // Player 2
 /*
@@ -223,11 +186,15 @@ bool TTcards::Run ( void )
 */
 
     // Player 1
+    player1.Draw ( screen, offsets.x, offsets.y );
+    //player2.Draw ( screen );
 
+/*
     txt.DrawText ( card_buffer, "9", 8, 0, WHITE ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
     txt.DrawText ( card_buffer, "6", 12, 8, WHITE ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
     txt.DrawText ( card_buffer, "A", 8, 16, WHITE ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
     txt.DrawText ( card_buffer, "2", 4, 8, WHITE ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
+*/
 
     // Player 2
 /*
@@ -237,7 +204,7 @@ bool TTcards::Run ( void )
     txt.DrawText ( screen, "2", 100, 24, WHITE );
 */
 
-    SDL_BlitSurface ( card_buffer, NULL, screen, &offsets );
+    //SDL_BlitSurface ( card_buffer, NULL, screen, &offsets );
 
     if (SDL_Flip(screen) !=0)
     {
