@@ -15,7 +15,6 @@ const int SCREEN_COLORBIT = 32;
 
 const struct SDL_Color BLACK = { 0, 0, 0 };
 const struct SDL_Color WHITE = { 255, 255, 255, 0 };
-//const struct SDL_Color ALPHA = { 0, 0, 0 };
 
 const int CARD_WIDTH = 64;
 const int CARD_HEIGHT = 64;
