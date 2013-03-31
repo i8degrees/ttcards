@@ -37,11 +37,11 @@ const int BOARD_ORIGIN_Y = 18;
 
 const int BOARD_GRID_WIDTH = 3;
 const int BOARD_GRID_HEIGHT = 3;
-
 const char BOARD_BACKGROUND[255] = "./data/images/board.bmp";
+
+const char CARDS_DB[255] = "./data/cards.txt";
 const char CARD_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
 const char SCORE_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
-const char CARDS_DB[255] = "./data/cards.txt";
 
 const char ELEMENT_EARTH[255] = "./data/images/elements/earth_16.bmp";
 const char ELEMENT_FIRE[255] = "./data/images/elements/fire_16.bmp";
@@ -57,6 +57,7 @@ const char NO_CARDFACE[255] = "./data/images/faces/noface.bmp";
 const char PLAYER1_CARDFACE[255] = "./data/images/player1.bmp";
 const char PLAYER2_CARDFACE[255] = "./data/images/player2.bmp";
 
+const char CURSOR_MOVE[255] = "./data/audio/cursor_move.wav";
 const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";
 
 #endif // CFG_HEADERS defined

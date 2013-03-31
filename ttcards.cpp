@@ -15,8 +15,8 @@ TTcards::TTcards ( void )
 
 TTcards::~TTcards ( void )
 {
-  SDL_FreeSurface ( card_buffer );
-  SDL_FreeSurface ( background );
+  //SDL_FreeSurface ( card_buffer );
+  //SDL_FreeSurface ( background );
   SDL_FreeSurface ( screen );
 }
 
@@ -85,16 +85,13 @@ void TTcards::Input ( void )
             TTcards::SetGameState ( false );
             break;
           case SDLK_LEFT:
-            //card[0].x-=CARD_WIDTH;
             break;
           case SDLK_RIGHT:
-            //card.x+=CARD_WIDTH;
             break;
           case SDLK_UP:
-            //card.y-=CARD_HEIGHT;
+            mixer.PlaySoundTrack ();
             break;
           case SDLK_DOWN:
-            //card.y+=CARD_HEIGHT;
             break;
           case SDLK_q:
             TTcards::SetGameState ( false );
@@ -125,6 +122,7 @@ bool TTcards::Run ( void )
   Deck cards ( CARDS_DB );
 
   mixer.LoadMusicTrack ( MUSIC_TRACK );
+  mixer.LoadSoundTrack ( CURSOR_MOVE );
 
   // Player 2
 /*
@@ -165,11 +163,9 @@ bool TTcards::Run ( void )
   offsets.x = 96;
   offsets.y = 18;
 
-  SDL_Event event;
-
   while( TTcards::IsRunning() ) // main loop
   {
-    //TTcards::Input();
+    TTcards::Input();
 
     board.DrawBackground ( screen );
     //SDL_BlitSurface ( background, NULL, screen, NULL );
