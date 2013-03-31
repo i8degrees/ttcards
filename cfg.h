@@ -9,9 +9,12 @@
 
 #include "SDL.h"
 
+const char APP_NAME[255] = "TTcards";
+const char APP_ICON[255] = "./data/images/ttcards.bmp";
+
 const int SCREEN_WIDTH = 384;
 const int SCREEN_HEIGHT = 224;
-const int SCREEN_COLORBIT = 32;
+const int SCREEN_BPP = 32;
 
 const struct SDL_Color BLACK = { 0, 0, 0 };
 const struct SDL_Color WHITE = { 255, 255, 255, 0 };

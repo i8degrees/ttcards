@@ -10,6 +10,7 @@ using namespace std;
 
 TTcards::TTcards ( void )
 {
+  SDL_Surface *screen = NULL;
   TTcards::game_state = true;
 }
 
@@ -20,34 +21,33 @@ TTcards::~TTcards ( void )
 
 bool TTcards::Init ( void )
 {
-  if ( SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == -1 )
+
+  if ( gfx.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
   {
-    std::cout << "ERR: Could not initialize SDL: " << SDL_GetError() << "\n";
-    exit(-1);
+    exit ( EXIT_FAILURE );
   }
 
-  atexit ( SDL_Quit );
+  screen = gfx.SetMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP,
+                  SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE);
 
-  screen = SDL_SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_COLORBIT, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE );
-
-  if(screen == NULL)
+  if ( screen == 0 )
   {
-    std::cout << "ERR: Could not set video mode: " << SDL_GetError() << "\n";
-    exit(-1);
+    exit ( EXIT_FAILURE );
   }
+
+  gfx.SetWindowTitle ( APP_NAME );
+  gfx.SetWindowIcon ( APP_ICON );
 
   mixer.Init ();
 
   txt.Init ();
-
-  SDL_WM_SetCaption( "TTcards", NULL );
 
   return true;
 }
 
 bool TTcards::IsRunning ( void )
 {
-  if (TTcards::game_state == false)
+  if ( TTcards::game_state == false )
     return false;
   else
     return true;
@@ -70,10 +70,8 @@ void TTcards::Input ( void )
         TTcards::SetGameState ( false );
         break;
       case SDL_VIDEORESIZE:
-        // TODO
         break;
       default:
-        // TODO
         break;
 
       case SDL_KEYDOWN:
@@ -102,7 +100,6 @@ void TTcards::Input ( void )
             mixer.toggleMusic ();
             break;
           default:
-            // TODO
             break;
         }
         break;
@@ -122,27 +119,6 @@ bool TTcards::Run ( void )
 
   mixer.LoadMusicTrack ( MUSIC_TRACK );
   mixer.LoadSoundTrack ( CURSOR_MOVE );
-
-  // Player 2
-/*
-  card1.LoadImage ( "./data/images/faces/1.bmp" );
-
-  card1.x = 96;
-  card1.y = 18;
-  card1.z = 0;
-
-  card1g.LoadImage ( PLAYER2_CARDFACE );
-
-  card1g.x = card1.x;
-  card1g.y = card1.y;
-  card1g.z = 0;
-
-  card1e.LoadImage ( ELEMENT_THUNDER );
-
-  card1e.x = card1.x + 46;
-  card1e.y = card1.y + 4;
-  card1e.z = 0;
-*/
 
   //Pile player1 (&cards);
   //Pile player2 (&cards);
@@ -167,43 +143,15 @@ bool TTcards::Run ( void )
     TTcards::Input();
 
     board.DrawBackground ( screen );
-    //SDL_BlitSurface ( background, NULL, screen, NULL );
 
     player1.DrawScore ( screen, 32, 176 );
 
-    //player2.DrawScore ( screen );
-
-    // Player 2
-/*
-    //card1g.Draw ( card_buffer );
-    //card1.Draw ( card_buffer );
-    //card1e.Draw ( card_buffer );
-*/
-
     // Player 1
     player1.Draw ( screen, offsets.x, offsets.y );
-    //player2.Draw ( screen );
-
-/*
-    txt.DrawText ( card_buffer, "9", 8, 0, WHITE ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
-    txt.DrawText ( card_buffer, "6", 12, 8, WHITE ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
-    txt.DrawText ( card_buffer, "A", 8, 16, WHITE ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
-    txt.DrawText ( card_buffer, "2", 4, 8, WHITE ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
-*/
-
-    // Player 2
-/*
-    txt.DrawText ( screen, "9", 104, 18, WHITE );
-    txt.DrawText ( screen, "6", 112, 24, WHITE );
-    txt.DrawText ( screen, "A", 104, 26, WHITE );
-    txt.DrawText ( screen, "2", 100, 24, WHITE );
-*/
-
-    //SDL_BlitSurface ( card_buffer, NULL, screen, &offsets );
 
     if (SDL_Flip(screen) !=0)
     {
-      printf("ERROR: Failed to swap video buffers.\n");
+      printf("ERR: Failed to swap video buffers.\n");
       return false;
     }
 

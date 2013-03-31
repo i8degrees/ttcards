@@ -12,14 +12,13 @@
 #include "SDL.h"
 
 #include "cfg.h"
+#include "gfx.h"
+#include "sprite.h"
 #include "audio.h"
-#include "player.h"
 #include "board.h"
+#include "player.h"
 #include "card.h"
 #include "font.h"
-//#include "input.h"
-#include "sprite.h"
-//#include "gfx.h"
 
 class TTcards
 {
@@ -35,13 +34,12 @@ public:
     void Input ( void );
 
 private:
+    SDL_Surface *screen; // primary video buffer
     bool game_state; // global app state
 
-    SDL_Surface *screen = NULL; // primary video buffer
-
+    Gfx gfx;
     Audio mixer;
     Font txt;
-
 };
 
 #endif // TTCARDS_HEADERS defined

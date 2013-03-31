@@ -8,6 +8,7 @@
 #define GFX_HEADERS
 
 #include <iostream>
+#include <string>
 
 #include "SDL.h"
 
@@ -16,11 +17,19 @@ public:
   Gfx ( void );
   ~Gfx ( void );
 
-  bool Init ( void );
+  bool Init ( int flags=SDL_INIT_EVERYTHING );
+
+  SDL_Surface *SetMode (  unsigned int screen_width=320,
+                          unsigned int screen_height=240,
+                          unsigned int screen_bpp=8, int flags=0 );
+
+  bool SetWindowTitle ( const char app_name[255] );
+  bool SetWindowIcon ( const char app_icon[255] );
 
   SDL_Surface *LoadBackground ( std::string filename );
+
 private:
-  SDL_Surface *video_buffer;
+  //
 };
 
 #endif // GFX_HEADERS defined
