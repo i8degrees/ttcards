@@ -12,22 +12,27 @@ Audio::Audio ( void )
 {
   Audio::audio_rate = 22050;
   Audio::audio_format = AUDIO_S16;
-  Audio::audio_channels = 2; // ??
-  Audio::audio_buffers = 4096;
 
+  // is this: a) mixing channels || b) mono VS stereo, etc.?
+  Audio::audio_channels = 2;
+
+  Audio::audio_buffers = 4096;
   Audio::aTrack_loops = 0;
   Audio::mTrack_loops = 0;
-  Audio::milliseconds = 2500; // time in ms for fade in/out
-
   Audio::aTrack = NULL;
   Audio::mTrack = NULL;
+
+  // TODO
+/*
+  Audio::milliseconds = 2500;
+*/
 }
 
 Audio::~Audio ( void )
 {
   Mix_FreeChunk ( aTrack );
 
-  Mix_HaltMusic (); // ???
+  Mix_HaltMusic (); // is this necessary?
   Mix_FreeMusic ( mTrack );
   Mix_CloseAudio ();
 }
@@ -50,7 +55,7 @@ bool Audio::LoadSoundTrack ( std::string filename )
   return true;
 }
 
-bool Audio::PlaySoundTrack ( void ) // 0 = no looping (1 = one loops) .. -1 for infinity
+bool Audio::PlaySoundTrack ( void )
 {
   Mix_PlayChannel ( -1, aTrack, Audio::aTrack_loops );
 
@@ -69,7 +74,7 @@ bool Audio::LoadMusicTrack ( std::string filename )
   return true;
 }
 
-bool Audio::PlayMusicTrack ( void ) // 0 = never .. -1 for infinity
+bool Audio::PlayMusicTrack ( void )
 {
   Mix_PlayMusic ( mTrack, Audio::mTrack_loops );
 

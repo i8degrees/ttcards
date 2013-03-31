@@ -21,11 +21,11 @@ public:
 
   bool LoadSoundTrack (std::string filename );
   bool PlaySoundTrack ( void );
-  void SetSoundLooping ( signed int loops ); // -1 for infinity
+  void SetSoundLooping ( signed int loops );
 
   bool LoadMusicTrack (std::string filename );
   bool PlayMusicTrack ( void );
-  void SetMusicLooping ( signed int loops ); // -1 for infinity
+  void SetMusicLooping ( signed int loops );
 
   bool toggleMusic ( void );
 
@@ -35,12 +35,16 @@ private:
   unsigned int audio_channels;
   unsigned int audio_buffers;
 
+  // -1 for infinity
   signed int aTrack_loops;
   signed int mTrack_loops;
-  int milliseconds;
 
   Mix_Chunk *aTrack;
   Mix_Music *mTrack;
+
+/*
+  unsigned int milliseconds;
+*/
 };
 
 #endif // AUDIO_HEADERS defined
