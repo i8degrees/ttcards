@@ -12,6 +12,7 @@
 #include <string>
 
 #include "cfg.h"
+#include "gfx.h"
 
 class Board
 {
@@ -22,12 +23,10 @@ public:
 
     bool Init ( void );
 
-    SDL_Surface *LoadBackground ( std::string filename );
-
-    bool DrawBackground ( void );
+    bool LoadBackground ( void );
     bool DrawBackground ( SDL_Surface *video_buffer );
-    //bool LoadBackground ( std::string filename );
 
+    Gfx gfx;
 
 private:
     //unsigned int player1_score;

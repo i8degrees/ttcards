@@ -38,8 +38,6 @@ private:
     bool game_state; // global app state
 
     SDL_Surface *screen = NULL; // primary video buffer
-    SDL_Surface *background = NULL;
-    SDL_Surface *card_buffer = NULL;
 
     Audio mixer;
     Font txt;

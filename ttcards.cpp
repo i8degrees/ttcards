@@ -15,8 +15,6 @@ TTcards::TTcards ( void )
 
 TTcards::~TTcards ( void )
 {
-  //SDL_FreeSurface ( card_buffer );
-  //SDL_FreeSurface ( background );
   SDL_FreeSurface ( screen );
 }
 
@@ -118,6 +116,7 @@ bool TTcards::Run ( void )
   Board board;
 
   board.Init ();
+  board.LoadBackground ();
 
   Deck cards ( CARDS_DB );
 

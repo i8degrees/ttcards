@@ -31,33 +31,15 @@ Board::~Board ( void )
   SDL_FreeSurface ( background );
 }
 
-SDL_Surface *Board::LoadBackground ( std::string filename )
+bool Board::LoadBackground ( void )
 {
-  SDL_Surface *tmpBuffer = NULL;
-  SDL_Surface *vBuffer = NULL;
+  background = gfx.LoadBackground ( BOARD_BACKGROUND );
 
-  if ( ( tmpBuffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
-  {
-    std::cout << "ERR -255: " << SDL_GetError() << std::endl;
-    return NULL;
-  }
-
-/*
-  SDL_SetColorKey ( tmpBuffer, SDL_SRCCOLORKEY,
-                   SDL_MapRGB ( tmpBuffer->format, alpha.r, alpha.g, alpha.b ) );
-*/
-
-  vBuffer = SDL_DisplayFormatAlpha ( tmpBuffer );
-
-  SDL_FreeSurface ( tmpBuffer );
-
-  return vBuffer;
+  return true;
 }
 
 bool Board::DrawBackground ( SDL_Surface *video_buffer )
 {
-  background = Board::LoadBackground ( BOARD_BACKGROUND );
-
   SDL_BlitSurface ( background, NULL, video_buffer, NULL );
 
   return true;
