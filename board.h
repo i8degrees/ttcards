@@ -7,12 +7,11 @@
 #ifndef BOARD_HEADERS
 #define BOARD_HEADERS
 
-#include <SDL.h>
+#include "SDL.h"
 #include <iostream>
 #include <string>
 
-#define BOARD_WIDTH 3
-#define BOARD_HEIGHT 3
+#include "cfg.h"
 
 class Board
 {
@@ -21,15 +20,20 @@ public:
     Board();
     ~Board ( void );
 
+    bool Init ( void );
+
     SDL_Surface *LoadBackground ( std::string filename );
+
+    bool DrawBackground ( void );
+    bool DrawBackground ( SDL_Surface *video_buffer );
     //bool LoadBackground ( std::string filename );
 
 
 private:
     //unsigned int player1_score;
     //unsigned int player2_score;
-    unsigned int grid[BOARD_WIDTH][BOARD_HEIGHT];
-    //SDL_Surface *background = NULL;
+    unsigned int grid[BOARD_GRID_WIDTH][BOARD_GRID_HEIGHT];
+    SDL_Surface *background;
 };
 
 #endif // BOARD_HEADERS defined
