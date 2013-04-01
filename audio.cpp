@@ -98,11 +98,11 @@ void Audio::SetMusicLooping ( signed int loops )
   this->music_loops = loops;
 }
 
-bool Audio::toggleMusic ( void )
+bool Audio::isSongPlaying ( void )
 {
   if ( Mix_PausedMusic () == 1 )
   {
-    // Mix_FadeInMusic ( mTrack, -1, 4000 );
+    // Mix_FadeInMusic ( this->music, -1, 2000 );
     Mix_ResumeMusic ();
   }
   else
@@ -113,4 +113,26 @@ bool Audio::toggleMusic ( void )
   }
 
   return true;
+}
+
+// Fielding's Deriving Audio Methods
+
+void Audio::setMusicVolume ( int volAsPercent )
+{
+  Mix_VolumeMusic ( ceil (MIX_MAX_VOLUME * ( volAsPercent / 100.f )) );  // set the music volume based on the percent passed to the method
+}
+
+int Audio::getMusicVolume ( void )
+{
+  return floor ( ( Mix_VolumeMusic (-1) / 128.f ) * 100 );    // return the current music volume as a percent
+}
+
+void Audio::setChannelVolume ( signed int channel, int volAsPercent )
+{
+  Mix_Volume(channel, ceil( MIX_MAX_VOLUME * ( volAsPercent / 100.f )) );  // set the music volume based on the percent passed to the method
+}
+
+int Audio::getChannelVolume ( signed int channel )
+{
+  return floor ( ( Mix_Volume (channel, -1) / 128.f ) * 100 );    // return the current music volume as a percent
 }

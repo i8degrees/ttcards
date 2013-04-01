@@ -8,6 +8,7 @@
 #define AUDIO_HEADERS
 
 #include <iostream>
+#include <cmath> // ceil, floor, etc.
 
 #include "SDL.h"
 #include "SDL_mixer.h"
@@ -23,11 +24,16 @@ public:
   bool PlaySoundTrack ( void );
   void SetSoundLooping ( signed int loops );
 
+  void setMusicVolume ( int volAsPercent );  // set the music volume by percent
+  signed int getMusicVolume ( void ); // return the current music volume as a percent
+
+  void setChannelVolume ( signed int channel, int volAsPercent );  // set the sound volume by percent
+  int getChannelVolume ( signed int channel ); // return the current sound volume as a percent
+
   bool LoadMusicTrack (std::string filename );
   bool PlayMusicTrack ( void );
   void SetMusicLooping ( signed int loops );
-
-  bool toggleMusic ( void );
+  bool isSongPlaying ( void );
 
 private:
   // Defaults for audio hardware setup
