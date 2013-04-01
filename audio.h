@@ -30,17 +30,19 @@ public:
   bool toggleMusic ( void );
 
 private:
+  // Defaults for audio hardware setup
   unsigned int audio_rate;
   Uint16 audio_format;
   unsigned int audio_channels;
   unsigned int audio_buffers;
 
-  // -1 for infinity
-  signed int aTrack_loops;
-  signed int mTrack_loops;
+  // -1 loops for infinity and beyond..!
+  signed int sound_loops;
+  signed int music_loops;
 
-  Mix_Chunk *aTrack;
-  Mix_Music *mTrack;
+  // Memory allocations for holding audio samples
+  Mix_Chunk *sound;
+  Mix_Music *music;
 
 /*
   unsigned int milliseconds;
