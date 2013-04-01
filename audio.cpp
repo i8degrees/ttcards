@@ -10,36 +10,37 @@ using namespace std;
 
 Audio::Audio ( void )
 {
-  Audio::audio_rate = 22050;
-  Audio::audio_format = AUDIO_S16;
+  // Memory allocations for audio samples to be held
+  this->sound = NULL;
+  this->music = NULL;
 
-  // is this: a) mixing channels || b) mono VS stereo, etc.?
-  Audio::audio_channels = 2;
+  this->audio_rate = 22050;
+  this->audio_format = AUDIO_S16;
+  this->audio_channels = -1; // Use all available mixing audio channels
+  this->audio_buffers = 4096;
 
-  Audio::audio_buffers = 4096;
-  Audio::aTrack_loops = 0;
-  Audio::mTrack_loops = 0;
-  Audio::aTrack = NULL;
-  Audio::mTrack = NULL;
+  // -1 loops infinity
+  this->sound_loops = 0;
+  this->music_loops = 0;
 
-  // TODO
-/*
-  Audio::milliseconds = 2500;
+/*  TODO
+  this->milliseconds = 2500;
 */
 }
 
 Audio::~Audio ( void )
 {
-  Mix_FreeChunk ( aTrack );
+  Mix_FreeChunk ( this->sound );
 
-  Mix_HaltMusic (); // is this necessary?
-  Mix_FreeMusic ( mTrack );
+  Mix_HaltMusic ();
+  Mix_FreeMusic ( this->music );
+
   Mix_CloseAudio ();
 }
 
 bool Audio::Init ( void )
 {
-  if ( Mix_OpenAudio ( audio_rate, audio_format, audio_channels, audio_buffers ) == -1 )
+  if ( Mix_OpenAudio ( this->audio_rate, this->audio_format, this->audio_channels, this->audio_buffers ) == -1 )
   {
     std::cout << "ERR: " << Mix_GetError() << std::endl;
     return false;
@@ -50,9 +51,9 @@ bool Audio::Init ( void )
 
 bool Audio::LoadSoundTrack ( std::string filename )
 {
-  aTrack = Mix_LoadWAV ( filename.c_str() );
+  this->sound = Mix_LoadWAV ( filename.c_str() );
 
-  if ( ! aTrack )
+  if ( ! this->sound )
   {
     std::cout << "ERR: " << Mix_GetError() << std::endl;
     return false;
@@ -63,21 +64,21 @@ bool Audio::LoadSoundTrack ( std::string filename )
 
 bool Audio::PlaySoundTrack ( void )
 {
-  Mix_PlayChannel ( -1, aTrack, Audio::aTrack_loops );
+  Mix_PlayChannel ( -1, this->sound, this->sound_loops );
 
   return true;
 }
 
 void Audio::SetSoundLooping ( signed int loops )
 {
-  Audio::aTrack_loops = loops;
+  this->sound_loops = loops;
 }
 
 bool Audio::LoadMusicTrack ( std::string filename )
 {
-  mTrack = Mix_LoadMUS ( filename.c_str() );
+  this->music = Mix_LoadMUS ( filename.c_str() );
 
-  if ( ! mTrack )
+  if ( ! this->music )
   {
     std::cout << "ERR: " << Mix_GetError() << std::endl;
   }
@@ -87,14 +88,14 @@ bool Audio::LoadMusicTrack ( std::string filename )
 
 bool Audio::PlayMusicTrack ( void )
 {
-  Mix_PlayMusic ( mTrack, Audio::mTrack_loops );
+  Mix_PlayMusic ( this->music, this->music_loops );
 
   return true;
 }
 
 void Audio::SetMusicLooping ( signed int loops )
 {
-  Audio::mTrack_loops = loops;
+  this->music_loops = loops;
 }
 
 bool Audio::toggleMusic ( void )
@@ -106,8 +107,8 @@ bool Audio::toggleMusic ( void )
   }
   else
   {
-    //Mix_FadeOutMusic ( milliseconds );
-    //Mix_FadeOutMusic ( mTrack, Audio::mTrack_loops, milliseconds );
+    //Mix_FadeOutMusic ( this->milliseconds );
+    //Mix_FadeOutMusic ( this->music, this->music_loops, this->milliseconds );
     Mix_PauseMusic ();
   }
 
