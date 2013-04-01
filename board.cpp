@@ -17,6 +17,7 @@ Board::Board ( void )
         grid[y][x] = 0;
     }
   }
+
 }
 
 bool Board::Init ( void )

@@ -12,6 +12,7 @@
 #include "SDL.h"
 
 #include "cfg.h"
+#include "card.h"
 #include "font.h"
 #include "sprite.h"
 
@@ -28,11 +29,18 @@ public:
   bool DrawScore ( SDL_Surface *video_buffer, int x, int y );
 
 private:
-  unsigned int state;
-  unsigned int score;
+  SDL_Surface *card_buffer = NULL;
+
+  //Card *card;
+
+  //Pile *deck;
+  //Hand card;
+
   Font txtCard;
   Font txtScore;
-  SDL_Surface *card_buffer = NULL;
+
+  unsigned int state;
+  unsigned int score;
 
   bool BuildCard ( void );
 

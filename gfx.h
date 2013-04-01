@@ -13,23 +13,24 @@
 #include "SDL.h"
 
 class Gfx {
-public:
-  Gfx ( void );
-  ~Gfx ( void );
 
-  bool Init ( int flags=SDL_INIT_EVERYTHING );
+  public:
+    Gfx ( void );
+    ~Gfx ( void );
 
-  SDL_Surface *SetMode (  unsigned int screen_width=320,
-                          unsigned int screen_height=240,
-                          unsigned int screen_bpp=8, int flags=0 );
+    bool Init ( int flags=SDL_INIT_EVERYTHING );
 
-  bool SetWindowTitle ( const char app_name[255] );
-  bool SetWindowIcon ( const char app_icon[255] );
+    SDL_Surface *SetMode (  unsigned int screen_width=320,
+                            unsigned int screen_height=240,
+                            unsigned int screen_bpp=8, int flags=0 );
 
-  SDL_Surface *LoadBackground ( std::string filename );
+    bool SetWindowTitle ( const char app_name[255] );
+    bool SetWindowIcon ( const char app_icon[255] );
 
-private:
-  //
+    SDL_Surface *LoadBackground ( std::string filename );
+
+  private:
+    //
 };
 
 #endif // GFX_HEADERS defined

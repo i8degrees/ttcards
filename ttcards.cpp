@@ -81,11 +81,12 @@ void TTcards::Input ( void )
             TTcards::SetGameState ( false );
             break;
           case SDLK_LEFT:
+            mixer.PlaySoundTrack ();
             break;
           case SDLK_RIGHT:
+            mixer.PlaySoundTrack ();
             break;
           case SDLK_UP:
-            mixer.PlaySoundTrack ();
             break;
           case SDLK_DOWN:
             break;
@@ -115,28 +116,16 @@ bool TTcards::Run ( void )
   board.Init ();
   board.LoadBackground ();
 
-  Deck cards ( CARDS_DB );
-
   mixer.LoadMusicTrack ( MUSIC_TRACK );
   mixer.LoadSoundTrack ( CURSOR_MOVE );
-
-  //Pile player1 (&cards);
-  //Pile player2 (&cards);
-
-  //cards.Shuffle();
-
-/*
-  for ( int i = 0; i < 5; i++ ) // for ( int i = 0; i < MAX_CARDSET; i++ )
-  {
-    std::cout << player1.cards[i].id << " " << player1.cards[i].name << endl;
-  }
-*/
 
   mixer.PlayMusicTrack ();
 
   SDL_Rect offsets;
   offsets.x = 96;
   offsets.y = 18;
+
+
 
   while( TTcards::IsRunning() ) // main loop
   {

@@ -7,59 +7,61 @@
 #ifndef CFG_HEADERS
 #define CFG_HEADERS
 
+#include <iostream>
+#include <array>
+
 #include "SDL.h"
 
-const char APP_NAME[255] = "TTcards";
-const char APP_ICON[255] = "./data/images/ttcards.bmp";
+extern const char APP_NAME[255];
+extern const char APP_ICON[255];
 
-const int SCREEN_WIDTH = 384;
-const int SCREEN_HEIGHT = 224;
-const int SCREEN_BPP = 32;
+extern const int SCREEN_WIDTH;
+extern const int SCREEN_HEIGHT;
+extern const int SCREEN_BPP;
 
-const struct SDL_Color BLACK = { 0, 0, 0 };
-const struct SDL_Color WHITE = { 255, 255, 255, 0 };
+extern const struct SDL_Color BLACK;
+extern const struct SDL_Color WHITE;
 
-const int CARD_WIDTH = 64;
-const int CARD_HEIGHT = 64;
-const int ELEMENT_WIDTH = 16;
-const int ELEMENT_HEIGHT = 16;
+extern const int CARD_WIDTH;
+extern const int CARD_HEIGHT;
+extern const int ELEMENT_WIDTH;
+extern const int ELEMENT_HEIGHT;
 
-const int MAX_DECKSET = 110; // +1
-const int MAX_CARDSET = 5;
+extern const int MAX_DECKSET;
+extern const int MAX_CARDSET;
 
-const int PLAYER1_ORIGIN_X = 8; // p1.cards [16, 18] n+32
-const int PLAYER1_ORIGIN_Y = 18;
+extern const int PLAYER1_ORIGIN_X;
+extern const int PLAYER1_ORIGIN_Y;
 
-const int PLAYER2_ORIGIN_X = 376;
-const int PLAYER2_ORIGIN_Y = 18;
+extern const int PLAYER2_ORIGIN_X;
+extern const int PLAYER2_ORIGIN_Y;
 
-// top-left of 3x3 grid
-const int BOARD_ORIGIN_X = 96;
-const int BOARD_ORIGIN_Y = 18;
+extern const int BOARD_ORIGIN_X;
+extern const int BOARD_ORIGIN_Y;
 
-const int BOARD_GRID_WIDTH = 3;
-const int BOARD_GRID_HEIGHT = 3;
-const char BOARD_BACKGROUND[255] = "./data/images/board.bmp";
+extern const int BOARD_GRID_WIDTH;
+extern const int BOARD_GRID_HEIGHT;
+extern const char BOARD_BACKGROUND[255];
 
-const char CARDS_DB[255] = "./data/cards.txt";
-const char CARD_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
-const char SCORE_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
+extern const char CARDS_DB[255];
+extern const char CARD_FONTFACE[255];
+extern const char SCORE_FONTFACE[255];
 
-const char ELEMENT_EARTH[255] = "./data/images/elements/earth_16.bmp";
-const char ELEMENT_FIRE[255] = "./data/images/elements/fire_16.bmp";
-const char ELEMENT_HOLY[255] = "./data/images/elements/holy_16.bmp";
-const char ELEMENT_ICE[255] = "./data/images/elements/ice_16.bmp";
-const char ELEMENT_POISON[255] = "./data/images/elements/poison_16.bmp";
-const char ELEMENT_THUNDER[255] = "./data/images/elements/thunder_16.bmp";
-const char ELEMENT_WATER[255] = "./data/images/elements/water_16.bmp";
-const char ELEMENT_WIND[255] = "./data/images/elements/wind_16.bmp";
+extern const char ELEMENT_EARTH[255];
+extern const char ELEMENT_FIRE[255];
+extern const char ELEMENT_HOLY[255];
+extern const char ELEMENT_ICE[255];
+extern const char ELEMENT_POISON[255];
+extern const char ELEMENT_THUNDER[255];
+extern const char ELEMENT_WATER[255];
+extern const char ELEMENT_WIND[255];
 
-const char CARDFACE[255] = "./data/images/faces/face.bmp";
-const char NO_CARDFACE[255] = "./data/images/faces/noface.bmp";
-const char PLAYER1_CARDFACE[255] = "./data/images/player1.bmp";
-const char PLAYER2_CARDFACE[255] = "./data/images/player2.bmp";
+extern const char CARDFACE[255];
+extern const char NO_CARDFACE[255];
+extern const char PLAYER1_CARDFACE[255];
+extern const char PLAYER2_CARDFACE[255];
 
-const char CURSOR_MOVE[255] = "./data/audio/cursor_move.wav";
-const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";
+extern const char CURSOR_MOVE[255];
+extern const char MUSIC_TRACK[255];
 
 #endif // CFG_HEADERS defined

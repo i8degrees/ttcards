@@ -8,8 +8,12 @@
 
 Player::Player ( void )
 {
-  //state = 0;
+
+  //card = new Card ( card_type (  ) ); //deck = new Pile();
+
   Player::score = 5;
+
+
 
   card_buffer = SDL_CreateRGBSurface ( 0, CARD_WIDTH, CARD_HEIGHT,
                                       SCREEN_BPP, 0, 0, 0, 0);

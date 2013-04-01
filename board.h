@@ -16,8 +16,7 @@
 
 class Board
 {
-
-public:
+  public:
     Board();
     ~Board ( void );
 
@@ -28,11 +27,13 @@ public:
 
     Gfx gfx;
 
-private:
+  private:
     //unsigned int player1_score;
     //unsigned int player2_score;
-    unsigned int grid[BOARD_GRID_WIDTH][BOARD_GRID_HEIGHT];
     SDL_Surface *background;
+    int grid[3][3] = {  0, 0, 0,
+                        0, 0, 0,
+                        0, 0, 0 };
 };
 
 #endif // BOARD_HEADERS defined
