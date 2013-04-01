@@ -41,7 +41,7 @@ bool Audio::Init ( void )
 {
   if ( Mix_OpenAudio ( audio_rate, audio_format, audio_channels, audio_buffers ) == -1 )
   {
-    std::cout << "ERR: " << SDL_GetError() << endl;
+    std::cout << "ERR: " << Mix_GetError() << std::endl;
     return false;
   }
 
@@ -51,6 +51,12 @@ bool Audio::Init ( void )
 bool Audio::LoadSoundTrack ( std::string filename )
 {
   aTrack = Mix_LoadWAV ( filename.c_str() );
+
+  if ( ! aTrack )
+  {
+    std::cout << "ERR: " << Mix_GetError() << std::endl;
+    return false;
+  }
 
   return true;
 }
@@ -70,6 +76,11 @@ void Audio::SetSoundLooping ( signed int loops )
 bool Audio::LoadMusicTrack ( std::string filename )
 {
   mTrack = Mix_LoadMUS ( filename.c_str() );
+
+  if ( ! mTrack )
+  {
+    std::cout << "ERR: " << Mix_GetError() << std::endl;
+  }
 
   return true;
 }
