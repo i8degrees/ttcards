@@ -16,6 +16,17 @@
 
 #include "cfg.h"
 
+/*
+const typedef struct card_typ {
+  unsigned int id;
+  unsigned int level;
+  unsigned int type;
+  unsigned int element;
+  std::array<int, 4> power;
+  std::string name;
+} card_type;
+*/
+
 int randomize ( int rval );
 
 class Card

@@ -8,17 +8,6 @@
 
 using namespace std;
 
-/*
-const typedef struct card_typ {
-  unsigned int id;
-  unsigned int level;
-  unsigned int type;
-  unsigned int element;
-  std::array<int, 4> power;
-  std::string name;
-} card_type;
-*/
-
 const char APP_NAME[255] = "TTcards";
 const char APP_ICON[255] = "./data/images/ttcards.bmp";
 
