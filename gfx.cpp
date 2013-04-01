@@ -78,17 +78,17 @@ bool Gfx::SetWindowTitle ( const char app_name[255] )
 
 bool Gfx::SetWindowIcon ( const char app_icon[255] )
 {
-  SDL_Surface *app_icon = NULL;
+  SDL_Surface *icon_buffer = NULL;
 
-  app_icon = SDL_LoadBMP ( app_icon );
+  icon_buffer = SDL_LoadBMP ( app_icon );
 
   //colorkey = SDL_MapRGB(image->format, 0, 0, 0);
 
   //SDL_SetColorKey(image, SDL_SRCCOLORKEY, colorkey);
 
-  SDL_WM_SetIcon ( app_icon, NULL );
+  SDL_WM_SetIcon ( icon_buffer, NULL );
 
-  SDL_FreeSurface ( app_icon );
+  SDL_FreeSurface ( icon_buffer );
 
   return true;
 }
