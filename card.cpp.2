@@ -1,0 +1,154 @@
+#include "card.h"
+
+using namespace std;
+
+/*
+Card::Card (  int id, int level, int ctype, int element,
+              int p1, int p2, int p3, int p4, std::string name)
+*/
+Card::Card () //Card::Card ( struct card_type *card_ptr ) )
+//Card::Card ( struct card_type *card_ptr )
+{
+  /*
+  card.id = card_ptr->id;
+  card.level = card_ptr->level;
+  card.type = card_ptr->type;
+  card.element = card_ptr->element;
+  card.power[0] = card_ptr->power[0];
+  card.power[1] = card_ptr->power[1];
+  card.power[2] = card_ptr->power[2];
+  card.power[3] = card_ptr->power[3];
+  card.name = card_ptr->name;
+*/
+
+  pileshit.contents.push_back( card_type( 5, 1, 1, 1, {0,0,0,0}, "test" ) );
+  std::cout << pileshit.contents.back().id << " " << pileshit.contents.back().name << std::endl;
+
+}
+
+unsigned int id; unsigned int level; unsigned int type; unsigned int element;
+      std::string name;
+
+Card::~Card ( void )
+{
+  // ...
+}
+
+Pile::Pile ( void )
+{
+  // ...
+}
+
+Pile::~Pile ( void )
+{
+}
+
+bool Pile::Init ( void )
+{
+  return true;
+}
+/*
+bool Pile::Load_Cards ( std::string filename )
+{
+
+  struct card_type *card;
+
+  ifstream load ( filename );
+
+  if ( ! load )
+  {
+    std::cout << "ERR: Input file " << filename << std::endl;
+    //cerr << "ERR: Input file " << filename << endl;
+    exit ( EXIT_FAILURE );
+  }
+
+  for ( int i = 0; i < MAX_DECKSET; i++ )
+  {
+    load >> card->id;
+    load >> card->level;
+    load >> card->type;
+    load >> card->element;
+    load >> card->power[0];
+    load >> card->power[1];
+    load >> card->power[2];
+    load >> card->power[3];
+    load >> card->name;
+
+    contents.push_back ( Card ( card ) );
+  }
+
+  load.close();
+
+  return true;
+}
+*/
+void Pile::List ( void )
+{
+  for ( int i = 0; i < MAX_DECKSET; i++ )
+  {
+    //std::cout << pile[i].id << " " << pile[i].level << " " << pile[i].type << " " << pile[i].element << " " << pile[i].power[0] << " " << pile[i].power[1] << " " << pile[i].power[2] << " " << pile[i].power[3] << " " << pile[i].name << std::endl;
+  }
+}
+
+Hand::Hand ( void )
+{
+}
+/*
+bool Hand::Init ( Pile *deck )
+{
+
+  for ( int i = 0; i < MAX_CARDSET; i++ )
+  {
+    card.push_back ( Card ( deck->contents[i].id, deck->contents[i].level,
+                            deck->contents[i].type, deck->contents[i].element,
+                            deck->contents[i].power[0], deck->contents[i].power[1],
+                            deck->contents[i].power[2], deck->contents[i].power[3],
+                            deck->contents[i].name ) );
+  }
+
+  return true;
+  //create ();
+  //shuffle ();
+}
+*/
+Hand::~Hand ( void )
+{
+  card.clear ();
+}
+
+void Hand::create ( void )
+{
+
+  for ( int i = 0; i < MAX_CARDSET; i++ )
+  {
+    //hand.push_back ( i );
+  }
+}
+
+    void Hand::shuffle ( void )
+    {
+    for ( int i = MAX_CARDSET; i > 0; i-- )
+    {
+        //int swap_index = rand () % MAX_CARDSET;
+        //int buffer = hand[i-1].id;
+        //hand[i-1].id = hand[swap_index];
+        //hand[swap_index] = buffer;
+    }
+    }
+
+    void Hand::refill ( void )
+{
+  create ();
+  shuffle ();
+}
+
+void Hand::list ( void )
+{
+  for ( int i = 0; i < MAX_CARDSET; i++ )
+  {
+    //std::cout << hand[i];
+    //std::cout << card[i].id << " " << card[i].name << std::endl;
+  }
+}
+
+
