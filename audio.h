@@ -37,9 +37,21 @@ public:
 
 private:
   // Defaults for audio hardware setup
+
+  /*
+  Audio rate in Kilo-herts (kHz) 22050, 44100, 48000 are common
+  */
   unsigned int audio_rate;
   Uint16 audio_format;
+
+  /* Hardware Channels (1 = Mono, 2 = Stereo, ...) */
   unsigned int audio_channels;
+
+  /*
+  Number of Audio Bits (in bytes) your audio hardware prefers dealing
+  ( think: buffering) with at a time; 256, 512, 4096, etc. are
+  common-place, depending on your application usage.
+  */
   unsigned int audio_buffers;
 
   // -1 loops for infinity and beyond..!

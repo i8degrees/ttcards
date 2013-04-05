@@ -16,7 +16,8 @@ Audio::Audio ( void )
 
   this->audio_rate = 22050;
   this->audio_format = AUDIO_S16;
-  this->audio_channels = -1; // Use all available mixing audio channels
+  // Hardware Channels
+  this->audio_channels = 2; /* Hardware Channels (1 = Mono, 2 = Stereo, ...) */
   this->audio_buffers = 4096;
 
   // -1 loops infinity
