@@ -9,8 +9,6 @@
 Player::Player ( void )
 {
 
-  //card = new Card ( card_type (  ) ); //deck = new Pile();
-
   Player::score = 5;
 
 
