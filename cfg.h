@@ -8,7 +8,6 @@
 #define CFG_HEADERS
 
 #include <iostream>
-#include <array>
 
 #include "SDL.h"
 
