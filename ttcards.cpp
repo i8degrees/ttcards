@@ -98,7 +98,7 @@ void TTcards::Input ( void )
           case SDLK_MINUS:
             break;
           case SDLK_p:
-            mixer.toggleMusic ();
+            mixer.isSongPlaying ();
             break;
           default:
             break;
@@ -124,8 +124,6 @@ bool TTcards::Run ( void )
   SDL_Rect offsets;
   offsets.x = 96;
   offsets.y = 18;
-
-
 
   while( TTcards::IsRunning() ) // main loop
   {
