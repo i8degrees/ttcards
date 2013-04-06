@@ -11,7 +11,7 @@ using namespace std;
 TTcards::TTcards ( void )
 {
   SDL_Surface *screen = NULL;
-  TTcards::game_state = true;
+  game_state = true;
 }
 
 TTcards::~TTcards ( void )
@@ -47,7 +47,7 @@ bool TTcards::Init ( void )
 
 bool TTcards::IsRunning ( void )
 {
-  if ( TTcards::game_state == false )
+  if ( this->game_state == false )
     return false;
   else
     return true;
@@ -55,7 +55,7 @@ bool TTcards::IsRunning ( void )
 
 void TTcards::SetGameState ( bool state )
 {
-  TTcards::game_state = state;
+  this->game_state = state;
 }
 
 void TTcards::Input ( void )
@@ -67,7 +67,7 @@ void TTcards::Input ( void )
     switch ( event.type )
     {
       case SDL_QUIT:
-        TTcards::SetGameState ( false );
+        this->SetGameState ( false );
         break;
       case SDL_VIDEORESIZE:
         break;
@@ -78,7 +78,7 @@ void TTcards::Input ( void )
         switch ( event.key.keysym.sym )
         {
           case SDLK_ESCAPE:
-            TTcards::SetGameState ( false );
+            this->SetGameState ( false );
             break;
           case SDLK_LEFT:
             mixer.PlaySoundTrack ();
@@ -91,7 +91,7 @@ void TTcards::Input ( void )
           case SDLK_DOWN:
             break;
           case SDLK_q:
-            TTcards::SetGameState ( false );
+            this->SetGameState ( false );
             break;
           case SDLK_PLUS:
             break;
@@ -125,9 +125,9 @@ bool TTcards::Run ( void )
   offsets.x = 96;
   offsets.y = 18;
 
-  while( TTcards::IsRunning() ) // main loop
+  while( this->IsRunning() ) // main loop
   {
-    TTcards::Input();
+    this->Input();
 
     board.DrawBackground ( screen );
 
@@ -142,7 +142,7 @@ bool TTcards::Run ( void )
       return false;
     }
 
-  } // while TTcards::IsRunning()
+  } // while this->IsRunning()
 
   return true;
 }
