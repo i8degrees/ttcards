@@ -20,7 +20,7 @@ bool Gfx::Init ( int flags )
 {
   if ( SDL_Init ( flags ) == -1 )
   {
-    cout << "ERR: " << SDL_GetError() << "\n" << endl;
+    std::cout << "ERR: " << SDL_GetError() << "\n" << endl;
     exit ( EXIT_FAILURE );
   }
 
@@ -39,21 +39,21 @@ SDL_Surface *Gfx::SetMode ( unsigned int screen_width,
 
   if ( screen == 0 )
   {
-    cout << "ERR: " << SDL_GetError() << "\n" << endl;
+    std::cout << "ERR: " << SDL_GetError() << "\n" << endl;
     exit ( EXIT_FAILURE );
   }
 
   return screen;
 }
 
-SDL_Surface *Gfx::LoadBackground ( string filename )
+SDL_Surface *Gfx::LoadBackground ( std::string filename )
 {
   SDL_Surface *tmpBuffer = NULL;
   SDL_Surface *video_buffer = NULL;
 
   if ( ( tmpBuffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
   {
-    cout << "ERR -255: " << SDL_GetError() << endl;
+    std::cout << "ERR -255: " << SDL_GetError() << std::endl;
     return NULL;
   }
 
