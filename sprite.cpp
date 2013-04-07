@@ -31,7 +31,7 @@ Sprite::~Sprite ( void )
   this->sprite_buffer = NULL;
 }
 
-bool Sprite::LoadImage ( std::string filename )
+bool Sprite::LoadImage ( string filename )
 {
 
   SDL_Surface *tmpBuffer = NULL;
@@ -39,7 +39,7 @@ bool Sprite::LoadImage ( std::string filename )
 
   if ( ( tmpBuffer = SDL_LoadBMP ( filename.c_str() ) )  == NULL )
   {
-    std::cout << "ERR -255: " << SDL_GetError() << endl;
+    cout << "ERR -255: " << SDL_GetError() << endl;
     return false;
   }
 

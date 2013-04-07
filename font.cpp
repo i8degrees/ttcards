@@ -23,7 +23,7 @@ bool Font::Init ( void )
 {
   if ( TTF_Init () == -1 )
   {
-    std::cout << "ERR: " << SDL_GetError() << endl;
+    cout << "ERR: " << SDL_GetError() << endl;
     exit ( EXIT_FAILURE );
   }
 
@@ -32,7 +32,7 @@ bool Font::Init ( void )
   return true;
 }
 
-bool Font::LoadTTF ( std::string filename, unsigned int size )
+bool Font::LoadTTF ( string filename, unsigned int size )
 {
   this->font_size = size;
 
@@ -40,14 +40,14 @@ bool Font::LoadTTF ( std::string filename, unsigned int size )
 
   if ( this->font == NULL )
   {
-    std::cout << "ERR -255: " << SDL_GetError() << endl;
+    cout << "ERR -255: " << SDL_GetError() << endl;
     exit ( EXIT_FAILURE );
   }
 
   return true;
 }
 
-bool Font::DrawText ( SDL_Surface *video_buffer, std::string text, int x, int y, SDL_Color color )
+bool Font::DrawText ( SDL_Surface *video_buffer, string text, int x, int y, SDL_Color color )
 {
   SDL_Surface *txt_buffer = NULL;
   SDL_Rect offsets;

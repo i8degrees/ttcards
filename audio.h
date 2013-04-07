@@ -20,7 +20,7 @@ public:
 
   bool Init ( void );
 
-  bool LoadSoundTrack (std::string filename );
+  bool LoadSoundTrack ( std::string filename );
   bool PlaySoundTrack ( void );
   void SetSoundLooping ( signed int loops );
 
@@ -30,7 +30,7 @@ public:
   void setChannelVolume ( signed int channel, int volAsPercent );  // set the sound volume by percent
   int getChannelVolume ( signed int channel ); // return the current sound volume as a percent
 
-  bool LoadMusicTrack (std::string filename );
+  bool LoadMusicTrack ( std::string filename );
   bool PlayMusicTrack ( void );
   void SetMusicLooping ( signed int loops );
   bool PauseMusic ( void );
