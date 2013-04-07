@@ -10,37 +10,37 @@ using namespace std;
 
 TTcards::TTcards ( void )
 {
-  SDL_Surface *screen = NULL;
-  game_state = true;
+  this->screen = NULL;
+  this->game_state = true;
 }
 
 TTcards::~TTcards ( void )
 {
-  SDL_FreeSurface ( screen );
+  SDL_FreeSurface ( this->screen );
+  this->screen = NULL;
 }
 
 bool TTcards::Init ( void )
 {
-
-  if ( gfx.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
+  if ( this->gfx.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
   {
     exit ( EXIT_FAILURE );
   }
 
-  screen = gfx.SetMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP,
+  this->screen = this->gfx.SetMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP,
                   SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE);
 
-  if ( screen == 0 )
+  if ( this->screen == 0 )
   {
     exit ( EXIT_FAILURE );
   }
 
-  gfx.SetWindowTitle ( APP_NAME );
-  gfx.SetWindowIcon ( APP_ICON );
+  this->gfx.SetWindowTitle ( APP_NAME );
+  this->gfx.SetWindowIcon ( APP_ICON );
 
-  mixer.Init ();
+  this->mixer1.Init ();
 
-  txt.Init ();
+  this->txt.Init ();
 
   return true;
 }
@@ -129,14 +129,14 @@ bool TTcards::Run ( void )
   {
     this->Input();
 
-    board.DrawBackground ( screen );
+    board.DrawBackground ( this->screen );
 
-    player1.DrawScore ( screen, 32, 176 );
+    player1.DrawScore ( this->screen, 32, 176 );
 
     // Player 1
-    player1.Draw ( screen, offsets.x, offsets.y );
+    player1.Draw ( this->screen, offsets.x, offsets.y );
 
-    if (SDL_Flip(screen) !=0)
+    if (SDL_Flip ( this->screen ) !=0)
     {
       printf("ERR: Failed to swap video buffers.\n");
       return false;

@@ -12,20 +12,23 @@ using namespace std;
 
 Sprite::Sprite ( int width, int height )
 {
-  Sprite::width = width;
-  Sprite::height = height;
+  this->sprite_buffer = NULL;
 
-  Sprite::id = 0;
+  this->width = width;
+  this->height = height;
 
-  src.x = 0;
-  src.y = 0;
-  src.w = Sprite::width;
-  src.h = Sprite::height;
+  this->id = 0;
+
+  this->src.x = 0;
+  this->src.y = 0;
+  this->src.w = this->width;
+  this->src.h = this->height;
 }
 
 Sprite::~Sprite ( void )
 {
-  SDL_FreeSurface(sprite_buffer);
+  SDL_FreeSurface ( this->sprite_buffer );
+  this->sprite_buffer = NULL;
 }
 
 bool Sprite::LoadImage ( std::string filename )
@@ -43,7 +46,7 @@ bool Sprite::LoadImage ( std::string filename )
   SDL_SetColorKey ( tmpBuffer, SDL_RLEACCEL | SDL_SRCCOLORKEY,
                    SDL_MapRGB ( tmpBuffer->format, alpha.r, alpha.g, alpha.b ) );
 
-  sprite_buffer = SDL_DisplayFormatAlpha ( tmpBuffer );
+  this->sprite_buffer = SDL_DisplayFormatAlpha ( tmpBuffer );
 
   SDL_FreeSurface ( tmpBuffer );
 
@@ -54,26 +57,26 @@ bool Sprite::LoadImage ( std::string filename )
 
 bool Sprite::Draw ( SDL_Surface *video_buffer )
 {
-  if ( Sprite::id != 0 )
+  if ( this->id != 0 )
   {
-    src.x = (Sprite::id * Sprite::width);
-    src.y = 0;
+    this->src.x = ( this->id * this->width );
+    this->src.y = 0;
   }
   else
   {
-    src.x = 0;
-    src.y = 0;
+    this->src.x = 0;
+    this->src.y = 0;
   }
 
-  src.w = Sprite::width;
-  src.h = Sprite::height;
+  this->src.w = this->width;
+  this->src.h = this->height;
 
-  dest.x = Sprite::x;
-  dest.y = Sprite::y;
-  dest.w = Sprite::width;
-  dest.h = Sprite::height;
+  this->dest.x = this->x;
+  this->dest.y = this->y;
+  this->dest.w = this->width;
+  this->dest.h = this->height;
 
-  SDL_BlitSurface(sprite_buffer, &src, video_buffer, &dest);
+  SDL_BlitSurface(this->sprite_buffer, &src, video_buffer, &dest);
 
   return true;
 }

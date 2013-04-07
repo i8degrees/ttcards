@@ -38,7 +38,7 @@ class Sprite {
     unsigned int y_offset; // sprite input y-axis location
 
     SDL_Rect src, dest;
-    SDL_Surface *sprite_buffer = NULL; // memory buffer allocation
+    SDL_Surface *sprite_buffer; // memory buffer allocation
 };
 
 #endif // SPRITE_HEADERS defined

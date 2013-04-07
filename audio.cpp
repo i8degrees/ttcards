@@ -32,9 +32,11 @@ Audio::Audio ( void )
 Audio::~Audio ( void )
 {
   Mix_FreeChunk ( this->sound );
+  this->sound = NULL;
 
   Mix_HaltMusic ();
   Mix_FreeMusic ( this->music );
+  this->music = NULL;
 
   Mix_CloseAudio ();
 }

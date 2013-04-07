@@ -30,6 +30,11 @@ public:
   bool DrawScore ( SDL_Surface *video_buffer, int x, int y );
 
 private:
+/*
+  Must be kept initialized to NULL within private scope for the time being. Once
+  the Player constructor is cleaned up -- some really shitty code exists as is --
+  we can remove the initialization call here and do elsewhere (ex. our constructor).
+*/
   SDL_Surface *card_buffer = NULL;
 
   //Card *card;
