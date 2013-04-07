@@ -71,6 +71,9 @@ SDL_Surface *Gfx::LoadBackground ( std::string filename )
 
 bool Gfx::SetWindowTitle ( const char app_name[255] )
 {
+  /*
+    TODO: Double-check parameters of this func
+  */
   SDL_WM_SetCaption ( app_name, app_name );
 
   return true;
@@ -83,7 +86,6 @@ bool Gfx::SetWindowIcon ( const char app_icon[255] )
   icon_buffer = SDL_LoadBMP ( app_icon );
 
   //colorkey = SDL_MapRGB(image->format, 0, 0, 0);
-
   //SDL_SetColorKey(image, SDL_SRCCOLORKEY, colorkey);
 
   SDL_WM_SetIcon ( icon_buffer, NULL );

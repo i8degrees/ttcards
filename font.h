@@ -25,10 +25,7 @@ private:
   unsigned int font_size;
   unsigned int x;
   unsigned int y;
-
   TTF_Font *font;
-
-  SDL_Surface *text_buffer = NULL;
 };
 
 #endif // FONT_HEADERS defined

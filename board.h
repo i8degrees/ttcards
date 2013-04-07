@@ -20,8 +20,6 @@ class Board
     Board();
     ~Board ( void );
 
-    bool Init ( void );
-
     bool LoadBackground ( void );
     bool DrawBackground ( SDL_Surface *video_buffer );
 

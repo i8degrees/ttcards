@@ -28,7 +28,6 @@ class Sprite {
     ~Sprite ( void );
 
     bool LoadImage ( std::string filename );
-    SDL_Surface *Layer ( SDL_Surface *sprite_buffer ) ;
     bool Draw ( SDL_Surface *video_buffer );
 
   private:

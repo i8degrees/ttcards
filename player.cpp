@@ -6,6 +6,8 @@
 ******************************************************************************/
 #include "player.h"
 
+using namespace std;
+
 Player::Player ( void )
 {
   //card = new Card ( card_type (  ) ); //deck = new Pile();

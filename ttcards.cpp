@@ -81,10 +81,10 @@ void TTcards::Input ( void )
             this->SetGameState ( false );
             break;
           case SDLK_LEFT:
-            mixer.PlaySoundTrack ();
+            this->mixer1.PlaySoundTrack ();
             break;
           case SDLK_RIGHT:
-            mixer.PlaySoundTrack ();
+            this->mixer2.PlaySoundTrack ();
             break;
           case SDLK_UP:
             break;
@@ -98,7 +98,7 @@ void TTcards::Input ( void )
           case SDLK_MINUS:
             break;
           case SDLK_p:
-            mixer.isSongPlaying ();
+            this->mixer0.isSongPlaying ();
             break;
           default:
             break;
@@ -113,13 +113,14 @@ bool TTcards::Run ( void )
   Player player1, player2;
   Board board;
 
-  board.Init ();
   board.LoadBackground ();
 
-  mixer.LoadMusicTrack ( MUSIC_TRACK );
-  mixer.LoadSoundTrack ( CURSOR_MOVE );
+  this->mixer0.LoadMusicTrack ( MUSIC_TRACK );
+  this->mixer1.LoadSoundTrack ( CURSOR_MOVE );
+  this->mixer2.LoadSoundTrack ( CURSOR_CANCEL );
 
-  mixer.PlayMusicTrack ();
+  this->mixer0.PlayMusicTrack();
+  this->mixer0.PauseMusic();
 
   SDL_Rect offsets;
   offsets.x = 96;
