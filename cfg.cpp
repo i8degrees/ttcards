@@ -59,4 +59,5 @@ const char PLAYER1_CARDFACE[255] = "./data/images/player1.bmp";
 const char PLAYER2_CARDFACE[255] = "./data/images/player2.bmp";
 
 const char CURSOR_MOVE[255] = "./data/audio/cursor_move.wav";
+const char CURSOR_CANCEL[255] = "./data/audio/cursor_cancel.wav";
 const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";

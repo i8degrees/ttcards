@@ -61,6 +61,7 @@ extern const char PLAYER1_CARDFACE[255];
 extern const char PLAYER2_CARDFACE[255];
 
 extern const char CURSOR_MOVE[255];
+extern const char CURSOR_CANCEL[255];
 extern const char MUSIC_TRACK[255];
 
 #endif // CFG_HEADERS defined
