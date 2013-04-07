@@ -43,5 +43,8 @@ ttcards.o: ttcards.cpp
 clean:
 	/bin/rm -rf *.o ttcards
 
+analyze:
+	scan-build -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c $(CFLAGS) $(SDL_CFLAGS) audio.cpp board.cpp card.cpp cfg.cpp font.cpp gfx.cpp main.cpp player.cpp sprite.cpp ttcards.cpp
+
 app:
 	./ttcards
