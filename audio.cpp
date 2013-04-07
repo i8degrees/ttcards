@@ -45,20 +45,20 @@ bool Audio::Init ( void )
 {
   if ( Mix_OpenAudio ( this->audio_rate, this->audio_format, this->audio_channels, this->audio_buffers ) == -1 )
   {
-    std::cout << "ERR: " << Mix_GetError() << std::endl;
+    cout << "ERR: " << Mix_GetError() << endl;
     return false;
   }
 
   return true;
 }
 
-bool Audio::LoadSoundTrack ( std::string filename )
+bool Audio::LoadSoundTrack ( string filename )
 {
   this->sound = Mix_LoadWAV ( filename.c_str() );
 
   if ( ! this->sound )
   {
-    std::cout << "ERR: " << Mix_GetError() << std::endl;
+    cout << "ERR: " << Mix_GetError() << endl;
     return false;
   }
 
@@ -77,13 +77,13 @@ void Audio::SetSoundLooping ( signed int loops )
   this->sound_loops = loops;
 }
 
-bool Audio::LoadMusicTrack ( std::string filename )
+bool Audio::LoadMusicTrack ( string filename )
 {
   this->music = Mix_LoadMUS ( filename.c_str() );
 
   if ( ! this->music )
   {
-    std::cout << "ERR: " << Mix_GetError() << std::endl;
+    cout << "ERR: " << Mix_GetError() << endl;
   }
 
   return true;

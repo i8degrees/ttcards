@@ -10,7 +10,7 @@ using namespace std;
 
 int randomize ( int rval )
 {
-    return std::rand() % (MAX_CARDSET - 1);
+    return rand() % (MAX_CARDSET - 1);
 }
 
 Card::Card ( int cid, int level, int ctype, int element, int p0, int p1, int p2, int p3, string name)
@@ -44,7 +44,7 @@ Deck::Deck ( string filename )
 
   if ( ! load )
   {
-    std::cout << "ERR: Input file " << filename << endl;
+    cout << "ERR: Input file " << filename << endl;
     //cerr << "ERR: Input file " << filename << endl;
     exit ( EXIT_FAILURE );
   }
@@ -77,17 +77,17 @@ void Deck::Draw ( void )
   for ( int i = 0; i < MAX_DECKSET; i++ )
   {
 
-    std::cout << cards[i].id << " " << cards[i].level << " " << cards[i].type << " " << cards[i].element << " " << cards[i].power[0] << " " << cards[i].power[1] << " " << cards[i].power[2] << " " << cards[i].power[3] << " " << cards[i].name << std::endl;
+    cout << cards[i].id << " " << cards[i].level << " " << cards[i].type << " " << cards[i].element << " " << cards[i].power[0] << " " << cards[i].power[1] << " " << cards[i].power[2] << " " << cards[i].power[3] << " " << cards[i].name << endl;
   }
 }
 
 void Deck::Shuffle ( void )
 {
-  std::srand ( unsigned ( std::time(0) ) );
+  srand ( unsigned ( time(0) ) );
 
   random_shuffle ( cards.begin(), cards.end() );
   //random_shuffle ( cards.begin(), cards.end(), randomize(MAX_CARDSET) );
-  //return (std::rand() % MAX_CARDSET+1);
+  //return (rand() % MAX_CARDSET+1);
 }
 
 /*
@@ -105,8 +105,8 @@ Pile::Pile ( Deck *deck )
   {
     Pile::cards.push_back ( Card (deck->cards[i].id, deck->cards[i].level, deck->cards[i].type, deck->cards[i].element, deck->cards[i].power[0], deck->cards[i].power[1], deck->cards[i].power[2], deck->cards[i].power[3], deck->cards[i].name));
     //Pile::cards[i].id = deck->cards[i].id;
-    //std::cout << Pile::cards[i].name << endl;
-    //std::cout << deck->cards[i].id << " " << deck->cards[i].name << endl;
+    //cout << Pile::cards[i].name << endl;
+    //cout << deck->cards[i].id << " " << deck->cards[i].name << endl;
   }
 
 }
