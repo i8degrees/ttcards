@@ -1,4 +1,4 @@
-CC=$(shell which clang++) -std=c++11 -stdlib=libc++
+CC=$(shell which clang++) -std=c++11 -stdlib=libc++ -g -O0
 CFLAGS=main.cpp cfg.cpp ttcards.cpp gfx.cpp sprite.cpp font.cpp audio.cpp card.cpp board.cpp player.cpp
 LDFLAGS=ttcards
 SDL_CFLAGS := $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer)
