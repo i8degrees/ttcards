@@ -23,7 +23,7 @@ class Board
     bool LoadBackground ( void );
     bool DrawBackground ( SDL_Surface *video_buffer );
 
-    Gfx gfx;
+
 
   private:
     //unsigned int player1_score;
@@ -32,6 +32,7 @@ class Board
     int grid[3][3] = {  0, 0, 0,
                         0, 0, 0,
                         0, 0, 0 };
+    Gfx gfx;
 };
 
 #endif // BOARD_HEADERS defined
