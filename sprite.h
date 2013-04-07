@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 class Sprite {
   public:
