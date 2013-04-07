@@ -7,7 +7,7 @@
 #ifndef BOARD_HEADERS
 #define BOARD_HEADERS
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 #include <iostream>
 #include <string>
 
@@ -20,12 +20,10 @@ class Board
     Board();
     ~Board ( void );
 
-    bool Init ( void );
-
     bool LoadBackground ( void );
     bool DrawBackground ( SDL_Surface *video_buffer );
 
-    Gfx gfx;
+
 
   private:
     //unsigned int player1_score;
@@ -34,6 +32,7 @@ class Board
     int grid[3][3] = {  0, 0, 0,
                         0, 0, 0,
                         0, 0, 0 };
+    Gfx gfx;
 };
 
 #endif // BOARD_HEADERS defined

@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 class Sprite {
   public:
@@ -28,7 +28,6 @@ class Sprite {
     ~Sprite ( void );
 
     bool LoadImage ( std::string filename );
-    SDL_Surface *Layer ( SDL_Surface *sprite_buffer ) ;
     bool Draw ( SDL_Surface *video_buffer );
 
   private:
@@ -38,7 +37,7 @@ class Sprite {
     unsigned int y_offset; // sprite input y-axis location
 
     SDL_Rect src, dest;
-    SDL_Surface *sprite_buffer = NULL; // memory buffer allocation
+    SDL_Surface *sprite_buffer; // memory buffer allocation
 };
 
 #endif // SPRITE_HEADERS defined

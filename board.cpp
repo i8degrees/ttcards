@@ -10,38 +10,33 @@ using namespace std;
 
 Board::Board ( void )
 {
+  this->background = NULL;
+
   for ( int y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
     for ( int x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-        grid[y][x] = 0;
+        this->grid[y][x] = 0;
     }
   }
-
-}
-
-bool Board::Init ( void )
-{
-  SDL_Surface *background = NULL;
-
-  return true;
 }
 
 Board::~Board ( void )
 {
-  SDL_FreeSurface ( background );
+  SDL_FreeSurface ( this->background );
+  this->background = NULL;
 }
 
 bool Board::LoadBackground ( void )
 {
-  background = gfx.LoadBackground ( BOARD_BACKGROUND );
+  this->background = this->gfx.LoadBackground ( BOARD_BACKGROUND );
 
   return true;
 }
 
 bool Board::DrawBackground ( SDL_Surface *video_buffer )
 {
-  SDL_BlitSurface ( background, NULL, video_buffer, NULL );
+  SDL_BlitSurface ( this->background, NULL, video_buffer, NULL );
 
   return true;
 }

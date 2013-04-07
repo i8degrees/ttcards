@@ -10,44 +10,44 @@ using namespace std;
 
 TTcards::TTcards ( void )
 {
-  SDL_Surface *screen = NULL;
-  TTcards::game_state = true;
+  this->screen = NULL;
+  this->game_state = true;
 }
 
 TTcards::~TTcards ( void )
 {
-  SDL_FreeSurface ( screen );
+  SDL_FreeSurface ( this->screen );
+  this->screen = NULL;
 }
 
 bool TTcards::Init ( void )
 {
-
-  if ( gfx.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
+  if ( this->gfx.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
   {
     exit ( EXIT_FAILURE );
   }
 
-  screen = gfx.SetMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP,
+  this->screen = this->gfx.SetMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP,
                   SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE);
 
-  if ( screen == 0 )
+  if ( this->screen == 0 )
   {
     exit ( EXIT_FAILURE );
   }
 
-  gfx.SetWindowTitle ( APP_NAME );
-  gfx.SetWindowIcon ( APP_ICON );
+  this->gfx.SetWindowTitle ( APP_NAME );
+  this->gfx.SetWindowIcon ( APP_ICON );
 
-  mixer.Init ();
+  this->mixer1.Init ();
 
-  txt.Init ();
+  this->txt.Init ();
 
   return true;
 }
 
 bool TTcards::IsRunning ( void )
 {
-  if ( TTcards::game_state == false )
+  if ( this->game_state == false )
     return false;
   else
     return true;
@@ -55,7 +55,7 @@ bool TTcards::IsRunning ( void )
 
 void TTcards::SetGameState ( bool state )
 {
-  TTcards::game_state = state;
+  this->game_state = state;
 }
 
 void TTcards::Input ( void )
@@ -67,7 +67,7 @@ void TTcards::Input ( void )
     switch ( event.type )
     {
       case SDL_QUIT:
-        TTcards::SetGameState ( false );
+        this->SetGameState ( false );
         break;
       case SDL_VIDEORESIZE:
         break;
@@ -78,27 +78,27 @@ void TTcards::Input ( void )
         switch ( event.key.keysym.sym )
         {
           case SDLK_ESCAPE:
-            TTcards::SetGameState ( false );
+            this->SetGameState ( false );
             break;
           case SDLK_LEFT:
-            mixer.PlaySoundTrack ();
+            this->mixer1.PlaySoundTrack ();
             break;
           case SDLK_RIGHT:
-            mixer.PlaySoundTrack ();
+            this->mixer2.PlaySoundTrack ();
             break;
           case SDLK_UP:
             break;
           case SDLK_DOWN:
             break;
           case SDLK_q:
-            TTcards::SetGameState ( false );
+            this->SetGameState ( false );
             break;
           case SDLK_PLUS:
             break;
           case SDLK_MINUS:
             break;
           case SDLK_p:
-            mixer.toggleMusic ();
+            this->mixer0.isSongPlaying ();
             break;
           default:
             break;
@@ -113,38 +113,37 @@ bool TTcards::Run ( void )
   Player player1, player2;
   Board board;
 
-  board.Init ();
   board.LoadBackground ();
 
-  mixer.LoadMusicTrack ( MUSIC_TRACK );
-  mixer.LoadSoundTrack ( CURSOR_MOVE );
+  this->mixer0.LoadMusicTrack ( MUSIC_TRACK );
+  this->mixer1.LoadSoundTrack ( CURSOR_MOVE );
+  this->mixer2.LoadSoundTrack ( CURSOR_CANCEL );
 
-  mixer.PlayMusicTrack ();
+  this->mixer0.PlayMusicTrack();
+  this->mixer0.PauseMusic();
 
   SDL_Rect offsets;
   offsets.x = 96;
   offsets.y = 18;
 
-
-
-  while( TTcards::IsRunning() ) // main loop
+  while( this->IsRunning() ) // main loop
   {
-    TTcards::Input();
+    this->Input();
 
-    board.DrawBackground ( screen );
+    board.DrawBackground ( this->screen );
 
-    player1.DrawScore ( screen, 32, 176 );
+    player1.DrawScore ( this->screen, 32, 176 );
 
     // Player 1
-    player1.Draw ( screen, offsets.x, offsets.y );
+    player1.Draw ( this->screen, offsets.x, offsets.y );
 
-    if (SDL_Flip(screen) !=0)
+    if (SDL_Flip ( this->screen ) !=0)
     {
       printf("ERR: Failed to swap video buffers.\n");
       return false;
     }
 
-  } // while TTcards::IsRunning()
+  } // while this->IsRunning()
 
   return true;
 }

@@ -8,17 +8,6 @@
 
 using namespace std;
 
-/*
-const typedef struct card_typ {
-  unsigned int id;
-  unsigned int level;
-  unsigned int type;
-  unsigned int element;
-  std::array<int, 4> power;
-  std::string name;
-} card_type;
-*/
-
 const char APP_NAME[255] = "TTcards";
 const char APP_ICON[255] = "./data/images/ttcards.bmp";
 
@@ -70,4 +59,5 @@ const char PLAYER1_CARDFACE[255] = "./data/images/player1.bmp";
 const char PLAYER2_CARDFACE[255] = "./data/images/player2.bmp";
 
 const char CURSOR_MOVE[255] = "./data/audio/cursor_move.wav";
+const char CURSOR_CANCEL[255] = "./data/audio/cursor_cancel.wav";
 const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";

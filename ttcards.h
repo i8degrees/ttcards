@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 #include "cfg.h"
 #include "gfx.h"
@@ -38,7 +38,8 @@ private:
     bool game_state; // global app state
 
     Gfx gfx;
-    Audio mixer;
+    Audio mixer0; // Music
+    Audio mixer1, mixer2; // SFX
     Font txt;
 };
 

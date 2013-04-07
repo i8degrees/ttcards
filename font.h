@@ -9,8 +9,8 @@
 
 #include <iostream>
 
-#include "SDL.h"
-#include "SDL_ttf.h"
+#include "SDL/SDL.h"
+#include "SDL/SDL_ttf.h"
 
 class Font {
 public:
@@ -25,10 +25,7 @@ private:
   unsigned int font_size;
   unsigned int x;
   unsigned int y;
-
   TTF_Font *font;
-
-  SDL_Surface *text_buffer = NULL;
 };
 
 #endif // FONT_HEADERS defined

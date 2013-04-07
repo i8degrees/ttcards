@@ -8,9 +8,8 @@
 #define CFG_HEADERS
 
 #include <iostream>
-#include <array>
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 extern const char APP_NAME[255];
 extern const char APP_ICON[255];
@@ -62,6 +61,7 @@ extern const char PLAYER1_CARDFACE[255];
 extern const char PLAYER2_CARDFACE[255];
 
 extern const char CURSOR_MOVE[255];
+extern const char CURSOR_CANCEL[255];
 extern const char MUSIC_TRACK[255];
 
 #endif // CFG_HEADERS defined

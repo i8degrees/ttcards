@@ -17,5 +17,5 @@ int main(int argc, char *argv[])
     app.Run();
   }
 
-  return true;
+  return EXIT_SUCCESS;
 }
