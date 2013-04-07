@@ -7,7 +7,7 @@
 #ifndef BOARD_HEADERS
 #define BOARD_HEADERS
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 #include <iostream>
 #include <string>
 

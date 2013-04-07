@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 extern const char APP_NAME[255];
 extern const char APP_ICON[255];

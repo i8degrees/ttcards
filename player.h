@@ -8,8 +8,9 @@
 #define PLAYER_HEADERS
 
 #include <iostream>
+#include <string>
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 #include "cfg.h"
 #include "card.h"

@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 
 #include "cfg.h"
 #include "gfx.h"
