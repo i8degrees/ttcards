@@ -33,6 +33,7 @@ public:
   bool LoadMusicTrack ( std::string filename );
   bool PlayMusicTrack ( void );
   void SetMusicLooping ( signed int loops );
+  bool PauseMusic ( void );
   bool isSongPlaying ( void );
 
 private:

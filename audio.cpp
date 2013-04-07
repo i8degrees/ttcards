@@ -101,6 +101,13 @@ void Audio::SetMusicLooping ( signed int loops )
   this->music_loops = loops;
 }
 
+bool Audio::PauseMusic ( void )
+{
+  Mix_PauseMusic ();
+
+  return true;
+}
+
 bool Audio::isSongPlaying ( void )
 {
   if ( Mix_PausedMusic () == 1 )
