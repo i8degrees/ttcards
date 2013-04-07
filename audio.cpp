@@ -6,32 +6,25 @@
 ******************************************************************************/
 #include "audio.h"
 
-using namespace std;
-
-Audio::Audio ( void )
+Audio::Audio ( unsigned int rate, Uint16 format, unsigned int channels, unsigned int buffers )
 {
-  // Memory allocations for audio samples to be held
+  // Memory allocation buffers for audio
   this->sound = NULL;
   this->music = NULL;
 
-  this->audio_rate = 22050;
-  this->audio_format = AUDIO_S16;
-  // Hardware Channels
-  this->audio_channels = 2; /* Hardware Channels (1 = Mono, 2 = Stereo, ...) */
-  this->audio_buffers = 4096;
-
-  // -1 loops infinity
-  this->sound_loops = 0;
-  this->music_loops = 0;
-
-/*  TODO
-  this->milliseconds = 2500;
-*/
+  if ( Mix_OpenAudio ( rate, format, channels, buffers ) == -1 )
+  {
+    std::cout << "ERR: " << Mix_GetError() << std::endl;
+  }
 }
 
 Audio::~Audio ( void )
 {
-  Mix_FreeChunk ( this->sound );
+  //if ( this->sound != NULL )
+  //{
+    //Mix_FreeChunk ( this->sound );
+  //}
+
   this->sound = NULL;
 
   Mix_HaltMusic ();
@@ -41,64 +34,58 @@ Audio::~Audio ( void )
   Mix_CloseAudio ();
 }
 
-bool Audio::Init ( void )
-{
-  if ( Mix_OpenAudio ( this->audio_rate, this->audio_format, this->audio_channels, this->audio_buffers ) == -1 )
-  {
-    cout << "ERR: " << Mix_GetError() << endl;
-    return false;
-  }
-
-  return true;
-}
-
-bool Audio::LoadSoundTrack ( string filename )
+/*
+bool Audio::LoadSoundTrack ( std::string filename )
 {
   this->sound = Mix_LoadWAV ( filename.c_str() );
 
   if ( ! this->sound )
   {
-    cout << "ERR: " << Mix_GetError() << endl;
+    std::cout << "ERR: " << Mix_GetError() << std::endl;
     return false;
   }
 
   return true;
 }
+*/
 
-bool Audio::PlaySoundTrack ( void )
+/*
+  FIXME: -1 is *NOT* a good choice of a mix_channel for this method at the moment.
+*/
+bool Audio::PlaySoundTrack ( std::string filename, signed int mix_channel, signed int loops )
 {
-  Mix_PlayChannel ( -1, this->sound, this->sound_loops );
+  this->sound = Mix_LoadWAV ( filename.c_str() );
+
+  if ( ! this->sound )
+  {
+    std::cout << "ERR: " << Mix_GetError() << std::endl;
+    return false;
+  }
+
+  Mix_PlayChannel ( mix_channel, this->sound, loops );
+
+  Mix_ChannelFinished ( soundFinished );
 
   return true;
 }
 
-void Audio::SetSoundLooping ( signed int loops )
-{
-  this->sound_loops = loops;
-}
-
-bool Audio::LoadMusicTrack ( string filename )
+bool Audio::LoadMusicTrack ( std::string filename )
 {
   this->music = Mix_LoadMUS ( filename.c_str() );
 
   if ( ! this->music )
   {
-    cout << "ERR: " << Mix_GetError() << endl;
+    std::cout << "ERR: " << Mix_GetError() << std::endl;
   }
 
   return true;
 }
 
-bool Audio::PlayMusicTrack ( void )
+bool Audio::PlayMusicTrack ( signed int loops )
 {
-  Mix_PlayMusic ( this->music, this->music_loops );
+  Mix_PlayMusic ( this->music, loops );
 
   return true;
-}
-
-void Audio::SetMusicLooping ( signed int loops )
-{
-  this->music_loops = loops;
 }
 
 bool Audio::PauseMusic ( void )
@@ -108,7 +95,7 @@ bool Audio::PauseMusic ( void )
   return true;
 }
 
-bool Audio::isSongPlaying ( void )
+bool Audio::togglePlayingMusic ( void )
 {
   if ( Mix_PausedMusic () == 1 )
   {
@@ -137,12 +124,17 @@ int Audio::getMusicVolume ( void )
   return floor ( ( Mix_VolumeMusic (-1) / 128.f ) * 100 );    // return the current music volume as a percent
 }
 
-void Audio::setChannelVolume ( signed int channel, int volAsPercent )
+void Audio::setChannelVolume ( signed int mix_channel, int volAsPercent )
 {
-  Mix_Volume(channel, ceil( MIX_MAX_VOLUME * ( volAsPercent / 100.f )) );  // set the music volume based on the percent passed to the method
+  Mix_Volume(mix_channel, ceil( MIX_MAX_VOLUME * ( volAsPercent / 100.f )) );  // set the music volume based on the percent passed to the method
 }
 
-int Audio::getChannelVolume ( signed int channel )
+int Audio::getChannelVolume ( signed int mix_channel )
 {
-  return floor ( ( Mix_Volume (channel, -1) / 128.f ) * 100 );    // return the current music volume as a percent
+  return floor ( ( Mix_Volume (mix_channel, -1) / 128.f ) * 100 );    // return the current music volume as a percent
+}
+
+void Audio::soundFinished ( signed int mix_channel )
+{
+  Mix_FreeChunk ( Mix_GetChunk ( mix_channel ) );
 }

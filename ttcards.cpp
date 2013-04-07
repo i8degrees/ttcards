@@ -6,8 +6,6 @@
 ******************************************************************************/
 #include "ttcards.h"
 
-using namespace std;
-
 TTcards::TTcards ( void )
 {
   this->screen = NULL;
@@ -37,8 +35,6 @@ bool TTcards::Init ( void )
 
   this->gfx.SetWindowTitle ( APP_NAME );
   this->gfx.SetWindowIcon ( APP_ICON );
-
-  this->mixer1.Init ();
 
   this->txt.Init ();
 
@@ -81,10 +77,10 @@ void TTcards::Input ( void )
             this->SetGameState ( false );
             break;
           case SDLK_LEFT:
-            this->mixer1.PlaySoundTrack ();
+            this->mixer1.PlaySoundTrack ( CURSOR_MOVE, 1, 0);
             break;
           case SDLK_RIGHT:
-            this->mixer2.PlaySoundTrack ();
+            this->mixer2.PlaySoundTrack ( CURSOR_CANCEL, 2, 0 );
             break;
           case SDLK_UP:
             break;
@@ -98,7 +94,7 @@ void TTcards::Input ( void )
           case SDLK_MINUS:
             break;
           case SDLK_p:
-            this->mixer0.isSongPlaying ();
+            this->mixer0.togglePlayingMusic ( );
             break;
           default:
             break;
@@ -116,10 +112,10 @@ bool TTcards::Run ( void )
   board.LoadBackground ();
 
   this->mixer0.LoadMusicTrack ( MUSIC_TRACK );
-  this->mixer1.LoadSoundTrack ( CURSOR_MOVE );
-  this->mixer2.LoadSoundTrack ( CURSOR_CANCEL );
+  //this->mixer1.LoadSoundTrack ( CURSOR_MOVE );
+  //this->mixer2.LoadSoundTrack ( CURSOR_CANCEL );
 
-  this->mixer0.PlayMusicTrack();
+  this->mixer0.PlayMusicTrack( 0 );
   this->mixer0.PauseMusic();
 
   SDL_Rect offsets;
