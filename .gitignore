@@ -4,6 +4,7 @@
 *.bck
 *.xcf
 *.mp3
+*.o
 project/
 ttcards
 
