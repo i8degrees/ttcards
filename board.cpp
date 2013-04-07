@@ -19,14 +19,6 @@ Board::Board ( void )
         this->grid[y][x] = 0;
     }
   }
-
-}
-
-bool Board::Init ( void )
-{
-  SDL_Surface *background = NULL;
-
-  return true;
 }
 
 Board::~Board ( void )
