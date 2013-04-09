@@ -94,7 +94,7 @@ void TTcards::Input ( void )
           case SDLK_MINUS:
             break;
           case SDLK_p:
-            this->mixer0.togglePlayingMusic ( );
+            this->music.togglePlayingMusic ( );
             break;
           default:
             break;
@@ -115,12 +115,10 @@ bool TTcards::Run ( void )
 
   board.LoadBackground ();
 
-  this->mixer0.LoadMusicTrack ( MUSIC_TRACK );
-  //this->mixer1.LoadSoundTrack ( CURSOR_MOVE );
-  //this->mixer2.LoadSoundTrack ( CURSOR_CANCEL );
+  this->music.LoadMusicTrack ( MUSIC_TRACK );
 
-  this->mixer0.PlayMusicTrack( 0 );
-  this->mixer0.PauseMusic();
+  this->music.PlayMusicTrack( -1 );
+  this->music.PauseMusic();
 
   while( this->IsRunning() ) // main loop
   {

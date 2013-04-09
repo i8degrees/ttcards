@@ -38,9 +38,10 @@ private:
     bool game_state; // global app state
 
     Gfx gfx;
-    Audio mixer0;
-    Audio mixer1, mixer2; // SFX
     Font txt;
+
+    Audio music;
+    Audio mixer1, mixer2; // Two (2) audio mixing channels for playing sound effects
 };
 
 #endif // TTCARDS_HEADERS defined
