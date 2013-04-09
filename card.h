@@ -17,8 +17,9 @@
 
 #include "cfg.h"
 
-//#define DEBUG_CARDS
-//#define DEBUG_CARD_DEBUG
+//#include "card_debug.h"
+
+//#define DEBUG_CARD
 
 class Card
 {
@@ -70,19 +71,6 @@ class Card
     // isFaceUp();
     // Flip();
     // Color();
-
-  private:
-    // ...
-};
-
-class CardDebug: public Card
-{
-  public:
-    CardDebug();
-    ~CardDebug();
-
-    void ListCard ( Card card );
-    void ListCards ( std::vector<Card> &cards );
 
   private:
     // ...
