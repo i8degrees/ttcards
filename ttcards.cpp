@@ -126,10 +126,10 @@ bool TTcards::Run ( void )
 
     board.DrawBackground ( this->screen );
 
-    player1.DrawScore ( this->screen, 32, 176 );
+    player1.DrawScore ( this->screen, 32, 176 ); // SCREEN_HEIGHT - 48
+    player2.DrawScore ( this->screen, 320, 176 ); // 64 * 5
 
-    // Player 1
-    player1.Draw ( this->screen, offsets.x, offsets.y );
+    //player1.Draw ( this->screen, offsets.x, offsets.y );
 
     if (SDL_Flip ( this->screen ) !=0)
     {

@@ -24,7 +24,7 @@
 #include "font.h"
 #include "sprite.h"
 
-//#define DEBUG_PLAYER
+#define DEBUG_PLAYER
 
 class Player
 {
@@ -46,7 +46,8 @@ private:
   the Player constructor is cleaned up -- some really shitty code exists as is --
   we can remove the initialization call here and do elsewhere (ex. our constructor).
 */
-  SDL_Surface *card_buffer = NULL;
+  //SDL_Surface *card_buffer = NULL;
+  SDL_Surface *card_buffer; // intentionally broken at the moment
 
   Deck db;
   Dealer dealer;
