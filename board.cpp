@@ -6,8 +6,6 @@
 ******************************************************************************/
 #include "board.h"
 
-using namespace std;
-
 Board::Board ( void )
 {
   this->background = NULL;
