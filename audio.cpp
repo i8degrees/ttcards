@@ -20,11 +20,6 @@ Audio::Audio ( unsigned int rate, Uint16 format, unsigned int channels, unsigned
 
 Audio::~Audio ( void )
 {
-  //if ( this->sound != NULL )
-  //{
-    //Mix_FreeChunk ( this->sound );
-  //}
-
   this->sound = NULL;
 
   Mix_HaltMusic ();
