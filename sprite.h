@@ -33,8 +33,8 @@ class Sprite {
   private:
     unsigned int width; // sprite width
     unsigned int height; // sprite height
-    unsigned int x_offset; // sprite input x-axis location
-    unsigned int y_offset; // sprite input y-axis location
+    //unsigned int x_offset; // sprite input x-axis location
+    //unsigned int y_offset; // sprite input y-axis location
 
     SDL_Rect src, dest;
     SDL_Surface *sprite_buffer; // memory buffer allocation

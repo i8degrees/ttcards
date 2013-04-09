@@ -45,20 +45,16 @@ private:
 */
   SDL_Surface *card_buffer = NULL;
 
-  //Deck db;
-  //Dealer dealer;
-  std::vector <Card> hand;
-  //CardHand phand;
-  //CardFace card;
-  //Card *card;
+  Deck db;
+  Dealer dealer;
+  CardHand hand;
 
-  //Pile *deck;
-  //Hand card;
+  CardDebug cdebug;
 
   Font txtCard;
   Font txtScore;
 
-  unsigned int state;
+  //unsigned int state;
   unsigned int score;
 
   bool BuildCard ( void );
