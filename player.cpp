@@ -9,7 +9,6 @@
 Player::Player ( void )
 {
   this->db.Load();
-  //this->db.List ();
   this->dealer.Init ( this->db.cards );
 
   this->hand.Add ( this->dealer.selectCard ( 89 ) ); // Diablos
@@ -24,7 +23,7 @@ Player::Player ( void )
   }
 
 
-  this->cdebug.ListCards ( this->hand.deck );
+  this->debug.ListCards ( this->hand.cards );
   //this->cdebug.ListCard ( this->hand.deck[0] );
 
   this->score = 5;
@@ -56,7 +55,7 @@ bool Player::BuildCard ( void )
   Sprite cardBackground ( CARD_WIDTH, CARD_HEIGHT );
   Sprite cardElement ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
 
-  cardFace.LoadImage ( FACES_DIR + this->hand.deck[0].face );
+  cardFace.LoadImage ( FACES_DIR + this->hand.cards[0].face );
 
   cardFace.x = 0; //card0.x = PLAYER1_ORIGIN_X;
   cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;

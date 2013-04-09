@@ -13,15 +13,18 @@
 #include "SDL/SDL.h"
 
 #include "cfg.h"
+
 #include "card.h"
-#include "card_face.h"
-#include "card_collection.h"
+#include "card_debug.h"
+#include "card_deck.h"
+#include "card_dealer.h"
 #include "card_hand.h"
+#include "card_view.h"
 
 #include "font.h"
 #include "sprite.h"
 
-#define DEBUG_PLAYER
+//#define DEBUG_PLAYER
 
 class Player
 {
@@ -48,8 +51,8 @@ private:
   Deck db;
   Dealer dealer;
   CardHand hand;
-
-  CardDebug cdebug;
+  CardView card_gfx;
+  CardDebug debug;
 
   Font txtCard;
   Font txtScore;
