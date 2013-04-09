@@ -12,5 +12,8 @@ project/
 *.o
 *.ttf
 *.plist
+
+# Debugging
+*.debug
 ttcards
 ttcards.dSYM/
