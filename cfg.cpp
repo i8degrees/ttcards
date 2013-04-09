@@ -6,7 +6,7 @@
 ******************************************************************************/
 #include "cfg.h"
 
-using namespace std;
+#include <string>
 
 const char APP_NAME[255] = "TTcards";
 const char APP_ICON[255] = "./data/images/ttcards.bmp";
@@ -23,8 +23,8 @@ const int CARD_HEIGHT = 64;
 const int ELEMENT_WIDTH = 16;
 const int ELEMENT_HEIGHT = 16;
 
-const int MAX_DECKSET = 110; // +1
-const int MAX_CARDSET = 5;
+const int MAX_DECKSET = 110;
+const int MAX_HAND = 5;
 
 const int PLAYER1_ORIGIN_X = 8; // p1.cards [16, 18] n+32
 const int PLAYER1_ORIGIN_Y = 18;
@@ -53,6 +53,7 @@ const char ELEMENT_THUNDER[255] = "./data/images/elements/thunder_16.bmp";
 const char ELEMENT_WATER[255] = "./data/images/elements/water_16.bmp";
 const char ELEMENT_WIND[255] = "./data/images/elements/wind_16.bmp";
 
+const char FACES_DIR[255] = "./data/images/faces/";
 const char CARDFACE[255] = "./data/images/faces/face.bmp";
 const char NO_CARDFACE[255] = "./data/images/faces/noface.bmp";
 const char PLAYER1_CARDFACE[255] = "./data/images/player1.bmp";
