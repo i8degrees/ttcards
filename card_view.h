@@ -1,11 +1,13 @@
 /******************************************************************************
-    card_face.h
+    card_view.h
+
+    Card graphics / drawing
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef CARD_FACE_HEADERS
-#define CARD_FACE_HEADERS
+#ifndef CARD_VIEW_HEADERS
+#define CARD_VIEW_HEADERS
 
 #include <iostream>
 
@@ -13,16 +15,16 @@
 
 #include "cfg.h"
 #include "card.h"
-#include "card_hand.h"
+
 #include "sprite.h"
 
-//#define DEBUG_CARDFACE
+//#define DEBUG_CARD_VIEW
 
-class CardFace
+class CardView
 {
   public:
-    CardFace ( void );
-    ~CardFace ( void );
+    CardView ( void );
+    ~CardView ( void );
     bool Init ( std::vector<Card> &card );
     bool Load ( void );
     //bool Draw ( SDL_Surface *video_buffer, int x, int y );
@@ -35,4 +37,4 @@ class CardFace
     //Sprite card;
 };
 
-#endif // CARD_FACE_HEADERS defined
+#endif // CARD_VIEW_HEADERS defined
