@@ -8,29 +8,24 @@
 
 Player::Player ( void )
 {
-  //this->db.Load();
+  this->db.Load();
   //this->db.List ();
-  //this->dealer.Init ( this->db.cards );
+  this->dealer.Init ( this->db.cards );
 
-/*
-  this->phand.Add ( this->dealer.selectCard ( 5 ) );
-  this->phand.Add ( this->dealer.selectCard ( 99 ) );
-  this->phand.Add ( this->dealer.selectCard ( 109 ) );
-  this->phand.Add ( this->dealer.selectCard ( 109 ) );
-  this->phand.Add ( this->dealer.selectCard ( 89 ) );
-*/
-  //this->hand.push_back ( this->dealer.selectCard ( 89 ) );
-  //this->hand.push_back ( this->dealer.selectCard ( 99 ) );
+  this->hand.Add ( this->dealer.selectCard ( 89 ) ); // Diablos
+  this->hand.Add ( this->dealer.selectCard ( 99 ) ); // Ward
+  this->hand.Add ( this->dealer.selectCard ( 0 ) ); // Geezard
+  this->hand.Add ( this->dealer.selectCard ( 109 ) ); // Squall
+  this->hand.Add ( this->dealer.selectCard ( 50 ) ); // Malboro
 
-  //this->hand = this->dealer.Deal();
+  for ( int i = 0; i < MAX_HAND; i++ )
+  {
+    //this->hand.Add ( this->dealer.Random() );
+  }
 
-  //std::cout << this->hand[0].id << " " << this->hand[0].name << "\n" << std::endl;
 
-  //this->hand.Add ( this->db.cards );
-
-  //this->hand.List ();
-
-  //this->card.Init ( this->hand.deck );
+  this->cdebug.ListCards ( this->hand.deck );
+  //this->cdebug.ListCard ( this->hand.deck[0] );
 
   this->score = 5;
 
@@ -61,7 +56,7 @@ bool Player::BuildCard ( void )
   Sprite cardBackground ( CARD_WIDTH, CARD_HEIGHT );
   Sprite cardElement ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
 
-  cardFace.LoadImage ( "./data/images/faces/89.bmp" );
+  cardFace.LoadImage ( FACES_DIR + this->hand.deck[0].face );
 
   cardFace.x = 0; //card0.x = PLAYER1_ORIGIN_X;
   cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
@@ -114,8 +109,8 @@ bool Player::Draw ( SDL_Surface *video_buffer, int x, int y ) // card id
 
 bool Player::DrawScore ( SDL_Surface *video_buffer, int x, int y )
 {
-  this->txtScore.DrawText ( video_buffer, "5", x, y, WHITE );
-  //this->txtScore.DrawText ( video_buffer, to_string(this->score), x, y, WHITE );
+  //this->txtScore.DrawText ( video_buffer, "5", x, y, WHITE );
+  this->txtScore.DrawText ( video_buffer, std::to_string(this->score), x, y, WHITE );
 
   return true;
 }
