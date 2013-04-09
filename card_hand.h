@@ -13,9 +13,8 @@
 #include "SDL.h"
 
 #include "card.h"
-#include "card_collection.h"
 
-#define DEBUG_CARDHAND
+#define DEBUG_CARD_HAND
 
 class CardHand
 {
@@ -25,7 +24,7 @@ class CardHand
 
     bool Add ( Card card );
 
-    std::vector<Card> deck;
+    std::vector<Card> cards;
   private:
     // ...
 };

@@ -8,26 +8,25 @@
 
 CardHand::CardHand ( void )
 {
-  #ifdef DEBUG_CARDHAND
+  #ifdef DEBUG_CARD_HAND
     std::cout << "Hello, world! <From CardHand::CardHand>" << "\n" << std::endl;
   #endif
 
-  deck.clear();
+  this->cards.clear();
 }
 
 CardHand::~CardHand ( void )
 {
-  #ifdef DEBUG_CARDHAND
+  #ifdef DEBUG_CARD_HAND
     std::cout << "Goodbye cruel world! <From CardHand::~CardHand>" << "\n" << std::endl;
   #endif
 
-  deck.clear();
+  this->cards.clear();
 }
 
 bool CardHand::Add ( Card card )
 {
-
-  deck.push_back ( card );
+  this->cards.push_back ( card );
 
   return true;
 
