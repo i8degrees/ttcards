@@ -8,6 +8,12 @@
 
 Player::Player ( void )
 {
+  this->card_buffer = NULL;
+
+  #ifdef DEBUG_PLAYER
+    std::cout << "Hello, world! <From Player::Player>" << "\n" << std::endl;
+  #endif
+
   this->db.Load();
   this->dealer.Init ( this->db.cards );
 
@@ -28,15 +34,15 @@ Player::Player ( void )
 
   this->score = 5;
 
-  this->card_buffer = SDL_CreateRGBSurface ( 0, CARD_WIDTH, CARD_HEIGHT,
-                                      SCREEN_BPP, 0, 0, 0, 0);
+  //this->card_buffer = SDL_CreateRGBSurface ( 0, CARD_WIDTH, CARD_HEIGHT,
+                                      //SCREEN_BPP, 0, 0, 0, 0);
                                       //screen->format->BitsPerPixel,
                                       //screen->format->Rmask,
                                       //screen->format->Gmask,
                                       //screen->format->Bmask,
                                       //screen->format->Amask);
 
-  this->BuildCard();
+  //this->BuildCard();
 
   this->txtScore.LoadTTF ( SCORE_FONTFACE, 32 );
   this->txtCard.LoadTTF ( CARD_FONTFACE, 12 );
@@ -44,6 +50,9 @@ Player::Player ( void )
 
 Player::~Player ( void )
 {
+  #ifdef DEBUG_PLAYER
+    std::cout << "Goodbye cruel world! <From Player::Player>" << "\n" << std::endl;
+  #endif
   SDL_FreeSurface ( this->card_buffer );
   this->card_buffer = NULL;
 }

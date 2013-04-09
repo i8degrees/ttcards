@@ -38,8 +38,6 @@ bool TTcards::Init ( void )
   this->gfx.SetWindowTitle ( APP_NAME );
   this->gfx.SetWindowIcon ( APP_ICON );
 
-  this->txt.Init ();
-
   return true;
 }
 
@@ -96,7 +94,7 @@ void TTcards::Input ( void )
           case SDLK_MINUS:
             break;
           case SDLK_p:
-            this->mixer0.togglePlayingMusic ( );
+            this->music.togglePlayingMusic ( );
             break;
           default:
             break;
@@ -117,12 +115,10 @@ bool TTcards::Run ( void )
 
   board.LoadBackground ();
 
-  this->mixer0.LoadMusicTrack ( MUSIC_TRACK );
-  //this->mixer1.LoadSoundTrack ( CURSOR_MOVE );
-  //this->mixer2.LoadSoundTrack ( CURSOR_CANCEL );
+  this->music.LoadMusicTrack ( MUSIC_TRACK );
 
-  this->mixer0.PlayMusicTrack( 0 );
-  this->mixer0.PauseMusic();
+  this->music.PlayMusicTrack( -1 );
+  this->music.PauseMusic();
 
   while( this->IsRunning() ) // main loop
   {
@@ -130,10 +126,10 @@ bool TTcards::Run ( void )
 
     board.DrawBackground ( this->screen );
 
-    player1.DrawScore ( this->screen, 32, 176 );
+    player1.DrawScore ( this->screen, 32, 176 ); // SCREEN_HEIGHT - 48
+    player2.DrawScore ( this->screen, 320, 176 ); // 64 * 5
 
-    // Player 1
-    player1.Draw ( this->screen, offsets.x, offsets.y );
+    //player1.Draw ( this->screen, offsets.x, offsets.y );
 
     if (SDL_Flip ( this->screen ) !=0)
     {

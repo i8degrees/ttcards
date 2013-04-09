@@ -18,7 +18,7 @@
 
 #include "sprite.h"
 
-//#define DEBUG_CARD_VIEW
+#define DEBUG_CARD_VIEW
 
 class CardView
 {

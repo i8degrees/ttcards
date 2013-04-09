@@ -6,11 +6,17 @@
 ******************************************************************************/
 #include "font.h"
 
-using namespace std;
-
 Font::Font ( void )
 {
   this->font = NULL;
+
+  if ( TTF_Init () == -1 )
+  {
+    std::cout << "ERR: " << SDL_GetError() << std::endl;
+    exit ( EXIT_FAILURE );
+  }
+
+  atexit ( TTF_Quit );
 }
 
 Font::~Font ( void )
@@ -19,35 +25,20 @@ Font::~Font ( void )
   this->font = NULL;
 }
 
-bool Font::Init ( void )
+bool Font::LoadTTF ( std::string filename, unsigned int font_size )
 {
-  if ( TTF_Init () == -1 )
-  {
-    cout << "ERR: " << SDL_GetError() << endl;
-    exit ( EXIT_FAILURE );
-  }
-
-  atexit ( TTF_Quit );
-
-  return true;
-}
-
-bool Font::LoadTTF ( string filename, unsigned int size )
-{
-  this->font_size = size;
-
-  this->font = TTF_OpenFont ( filename.c_str(), size );
+  this->font = TTF_OpenFont ( filename.c_str(), font_size );
 
   if ( this->font == NULL )
   {
-    cout << "ERR -255: " << SDL_GetError() << endl;
+    std::cout << "ERR: " << SDL_GetError() << std::endl;
     exit ( EXIT_FAILURE );
   }
 
   return true;
 }
 
-bool Font::DrawText ( SDL_Surface *video_buffer, string text, int x, int y, SDL_Color color )
+bool Font::DrawText ( SDL_Surface *video_buffer, std::string text, int x, int y, SDL_Color color )
 {
   SDL_Surface *txt_buffer = NULL;
   SDL_Rect offsets;

@@ -21,7 +21,7 @@
 
 #include "card.h"
 
-#define DEBUG_CARD_DECK
+//#define DEBUG_CARD_DECK
 
 class Deck
 {
