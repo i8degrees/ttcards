@@ -38,8 +38,6 @@ bool TTcards::Init ( void )
   this->gfx.SetWindowTitle ( APP_NAME );
   this->gfx.SetWindowIcon ( APP_ICON );
 
-  this->txt.Init ();
-
   return true;
 }
 
