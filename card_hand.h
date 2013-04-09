@@ -12,9 +12,23 @@
 
 #include "SDL.h"
 
-class Hand
+#include "card.h"
+#include "card_collection.h"
+
+//#define DEBUG_HAND
+
+class CardHand
 {
-  // ...
+  public:
+    CardHand ( void );
+    bool Add ( std::vector<Card> &card );
+    ~CardHand ( void );
+
+    bool List ( void );
+
+    std::vector<Card> deck;
+  private:
+    // ...
 };
 
 #endif // CARD_HAND_HEADERS defined

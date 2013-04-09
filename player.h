@@ -14,14 +14,22 @@
 
 #include "cfg.h"
 #include "card.h"
+#include "card_face.h"
+#include "card_collection.h"
+#include "card_hand.h"
+
 #include "font.h"
 #include "sprite.h"
+
+#define DEBUG_PLAYER
 
 class Player
 {
 public:
   Player ( void );
   ~Player ( void );
+
+
 
   unsigned int GetScore ( void );
   bool SetScore ( unsigned int value );
@@ -37,6 +45,11 @@ private:
 */
   SDL_Surface *card_buffer = NULL;
 
+  //Deck db;
+  //Dealer dealer;
+  std::vector <Card> hand;
+  //CardHand phand;
+  //CardFace card;
   //Card *card;
 
   //Pile *deck;

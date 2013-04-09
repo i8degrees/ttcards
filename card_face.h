@@ -12,21 +12,26 @@
 #include "SDL.h"
 
 #include "cfg.h"
+#include "card.h"
+#include "card_hand.h"
+#include "sprite.h"
+
+//#define DEBUG_CARDFACE
 
 class CardFace
 {
   public:
     CardFace ( void );
     ~CardFace ( void );
-  // CardFace ( Card *card );
-  // draw ( int x, int y, SDL_Surface *video_buffer );
-  // bool flipCard ();
+    bool Init ( std::vector<Card> &card );
+    bool Load ( void );
+    //bool Draw ( SDL_Surface *video_buffer, int x, int y );
+    // bool flipCard ();
   private:
     int x;
     int y;
     int w = CARD_WIDTH;
     int h = CARD_HEIGHT;
-    //Card *card;
     //Sprite card;
 };
 

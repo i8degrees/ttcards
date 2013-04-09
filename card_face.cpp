@@ -6,14 +6,23 @@
 ******************************************************************************/
 #include "card_face.h"
 
-using namespace std;
-
 CardFace::CardFace ( void )
 {
-  // ...
+}
+
+bool CardFace::Init ( std::vector<Card> &card )
+{
+  return true;
 }
 
 CardFace::~CardFace ( void )
 {
   // ...
 }
+
+/*
+bool CardFace::Draw ( void )
+{
+  // ...
+}
+*/

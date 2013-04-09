@@ -110,8 +110,9 @@ void TTcards::Input ( void )
 
 bool TTcards::Run ( void )
 {
-  Player player1, player2;
-  Board board;
+  SDL_Rect offsets;
+  offsets.x = 96;
+  offsets.y = 18;
 
   board.LoadBackground ();
 
@@ -121,10 +122,6 @@ bool TTcards::Run ( void )
 
   this->mixer0.PlayMusicTrack();
   this->mixer0.PauseMusic();
-
-  SDL_Rect offsets;
-  offsets.x = 96;
-  offsets.y = 18;
 
   while( this->IsRunning() ) // main loop
   {

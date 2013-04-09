@@ -8,20 +8,23 @@
 #define CARD_HEADERS
 
 #include <iostream>
-#include <fstream> // file streams
+#include <fstream>
 #include <vector>
 #include <string>
+#include <array>
 
 #include "SDL/SDL.h"
 
 #include "cfg.h"
 
+//#define DEBUG_CARDS
+
 class Card
 {
   public:
-    Card (  unsigned int cid, unsigned int level, unsigned int ctype,
-            unsigned int element, int p0, int p1, int p2, int p3,
-            std::string name);
+    Card ( void );
+    Card (  unsigned int id, unsigned int level, unsigned int type,
+            unsigned int element, int p0, int p1, int p2, int p3, std::string name);
 
     ~Card ( void );
 
@@ -29,7 +32,7 @@ class Card
     unsigned int level;
     unsigned int type;
     unsigned int element;
-    unsigned int power[4];
+    std::array<int, 4> power;
     std::string name;
 
     // Player's Card Elemental type
@@ -63,35 +66,8 @@ class Card
     // isFaceUp();
     // Flip();
     // Color();
-    std::vector<Card>cards;
+
   private:
 };
-
-class Deck
-{
-public:
-  Deck( std::string filename );
-  ~Deck ( void );
-
-  //bool Load ( string filename );
-  void Shuffle ( void );
-  void Draw ( void );
-  //void Deal ( Pile *card );
-  std::vector<Card> cards;
-private:
-  //std::vector<Card> hand;
-};
-
-class Pile
-{
-public:
-  Pile ( Deck *deck );
-  ~Pile ( void );
-
-  void Add ( void );
-  void List ( void );
-  std::vector<Card> cards;
-};
-
 
 #endif // CARD_HEADERS defined

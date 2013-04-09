@@ -6,11 +6,31 @@
 ******************************************************************************/
 #include "player.h"
 
-using namespace std;
-
 Player::Player ( void )
 {
-  //card = new Card ( card_type (  ) ); //deck = new Pile();
+  //this->db.Load();
+  //this->db.List ();
+  //this->dealer.Init ( this->db.cards );
+
+/*
+  this->phand.Add ( this->dealer.selectCard ( 5 ) );
+  this->phand.Add ( this->dealer.selectCard ( 99 ) );
+  this->phand.Add ( this->dealer.selectCard ( 109 ) );
+  this->phand.Add ( this->dealer.selectCard ( 109 ) );
+  this->phand.Add ( this->dealer.selectCard ( 89 ) );
+*/
+  //this->hand.push_back ( this->dealer.selectCard ( 89 ) );
+  //this->hand.push_back ( this->dealer.selectCard ( 99 ) );
+
+  //this->hand = this->dealer.Deal();
+
+  //std::cout << this->hand[0].id << " " << this->hand[0].name << "\n" << std::endl;
+
+  //this->hand.Add ( this->db.cards );
+
+  //this->hand.List ();
+
+  //this->card.Init ( this->hand.deck );
 
   this->score = 5;
 
@@ -26,7 +46,6 @@ Player::Player ( void )
 
   this->txtScore.LoadTTF ( SCORE_FONTFACE, 32 );
   this->txtCard.LoadTTF ( CARD_FONTFACE, 12 );
-
 }
 
 Player::~Player ( void )
