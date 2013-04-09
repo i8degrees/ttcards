@@ -15,16 +15,15 @@
 #include "card.h"
 #include "card_collection.h"
 
-//#define DEBUG_HAND
+#define DEBUG_CARDHAND
 
 class CardHand
 {
   public:
     CardHand ( void );
-    bool Add ( std::vector<Card> &card );
     ~CardHand ( void );
 
-    bool List ( void );
+    bool Add ( Card card );
 
     std::vector<Card> deck;
   private:

@@ -12,16 +12,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <random>
-#include <chrono>
+#include <ctime>
+#include <cstdlib>
 
 #include "SDL/SDL.h"
 
 #include "cfg.h"
 #include "card.h"
 
-#define DEBUG_DECK
-#define DEBUG_DEALER
+//#define DEBUG_DECK
+//#define DEBUG_DEALER
 
 class Deck
 {
@@ -45,16 +45,15 @@ class Dealer
     ~Dealer ( void );
 
     bool Init ( std::vector<Card> &card );
-    bool List ( void ); // debug
-    bool Shuffle ( void );
-    //std::vector<Card> Deal ( void );
+
+    Card Random ( void );
+    Card Deal ( void );
     Card selectCard ( int id );
 
     std::vector<Card> cards;
-    //std::vector<Card> pick;
+
   private:
-    unsigned seed; // Random method
-    bool Random ( void );
+    // ...
 };
 
 #endif // CARD_COLLECTION_HEADERS defined
