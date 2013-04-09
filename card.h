@@ -18,13 +18,14 @@
 #include "cfg.h"
 
 //#define DEBUG_CARDS
+//#define DEBUG_CARD_DEBUG
 
 class Card
 {
   public:
-    Card ( void );
-    Card (  unsigned int id, unsigned int level, unsigned int type,
-            unsigned int element, int p0, int p1, int p2, int p3, std::string name);
+    Card (  unsigned int id = 0, unsigned int level = 0, unsigned int type = 0,
+            unsigned int element = 0, std::array<int, 4> rank = { { 0, 0, 0, 0 } },
+            std::string name = "\0", std::string face = "\0" );
 
     ~Card ( void );
 
@@ -32,8 +33,11 @@ class Card
     unsigned int level;
     unsigned int type;
     unsigned int element;
-    std::array<int, 4> power;
+    std::array<int, 4> rank;
     std::string name;
+
+    // TODO: a temporary value until sprite sheet is ready
+    std::string face;
 
     // Player's Card Elemental type
     enum CardElement {
@@ -49,7 +53,7 @@ class Card
     };
 
     // Player's  Level Category Bracket
-    enum CardLType {
+    enum CardType {
       MONSTER=1,
       BOSS=2,
       GF=3,
@@ -68,6 +72,20 @@ class Card
     // Color();
 
   private:
+    // ...
+};
+
+class CardDebug: public Card
+{
+  public:
+    CardDebug();
+    ~CardDebug();
+
+    void ListCard ( Card card );
+    void ListCards ( std::vector<Card> &cards );
+
+  private:
+    // ...
 };
 
 #endif // CARD_HEADERS defined
