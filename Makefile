@@ -7,8 +7,8 @@ BIN = ttcards
 
 all: bin
 
-bin: audio.o board.o card.o cfg.o font.o gfx.o main.o player.o sprite.o ttcards.o
-	$(CC) $(CFLAGS) $(SDL_CFLAGS) $(SDL_LDFLAGS) audio.o board.o card.o cfg.o font.o gfx.o main.o player.o sprite.o ttcards.o -o ttcards
+bin: audio.o board.o card.o card_collection.o card_face.o card_hand.o cfg.o font.o gfx.o main.o player.o sprite.o ttcards.o
+	$(CC) $(CFLAGS) $(SDL_CFLAGS) $(SDL_LDFLAGS) audio.o board.o card.o card_collection.o card_face.o card_hand.o cfg.o font.o gfx.o main.o player.o sprite.o ttcards.o -o ttcards
 
 audio.o: audio.cpp
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) audio.cpp
@@ -18,6 +18,15 @@ board.o: board.cpp
 
 card.o: card.cpp
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card.cpp
+
+card_collection.o: card_collection.cpp
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_collection.cpp
+
+card_face.o: card_face.cpp
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_face.cpp
+
+card_hand.o: card_hand.cpp
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_hand.cpp
 
 cfg.o: cfg.cpp
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) cfg.cpp
