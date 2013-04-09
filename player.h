@@ -13,15 +13,26 @@
 #include "SDL/SDL.h"
 
 #include "cfg.h"
+
 #include "card.h"
+#include "card_debug.h"
+#include "card_deck.h"
+#include "card_dealer.h"
+#include "card_hand.h"
+#include "card_view.h"
+
 #include "font.h"
 #include "sprite.h"
+
+//#define DEBUG_PLAYER
 
 class Player
 {
 public:
   Player ( void );
   ~Player ( void );
+
+
 
   unsigned int GetScore ( void );
   bool SetScore ( unsigned int value );
@@ -37,15 +48,16 @@ private:
 */
   SDL_Surface *card_buffer = NULL;
 
-  //Card *card;
-
-  //Pile *deck;
-  //Hand card;
+  Deck db;
+  Dealer dealer;
+  CardHand hand;
+  CardView card_gfx;
+  CardDebug debug;
 
   Font txtCard;
   Font txtScore;
 
-  unsigned int state;
+  //unsigned int state;
   unsigned int score;
 
   bool BuildCard ( void );

@@ -1,10 +1,16 @@
+# Project Folders
+project/
+
 # Project Files
 *.sublime-workspace
 *.sublime-project
 *.bck
 *.xcf
 *.mp3
+*.ogg
+*.wav
 *.o
-project/
+*.ttf
+*.plist
 ttcards
-
+ttcards.dSYM/

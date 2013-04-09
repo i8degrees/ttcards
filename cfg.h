@@ -7,9 +7,11 @@
 #ifndef CFG_HEADERS
 #define CFG_HEADERS
 
-#include <iostream>
-
 #include "SDL/SDL.h"
+
+#include <string>
+
+#define DEBUG
 
 extern const char APP_NAME[255];
 extern const char APP_ICON[255];
@@ -27,7 +29,7 @@ extern const int ELEMENT_WIDTH;
 extern const int ELEMENT_HEIGHT;
 
 extern const int MAX_DECKSET;
-extern const int MAX_CARDSET;
+extern const int MAX_HAND;
 
 extern const int PLAYER1_ORIGIN_X;
 extern const int PLAYER1_ORIGIN_Y;
@@ -55,6 +57,7 @@ extern const char ELEMENT_THUNDER[255];
 extern const char ELEMENT_WATER[255];
 extern const char ELEMENT_WIND[255];
 
+extern const char FACES_DIR[255];
 extern const char CARDFACE[255];
 extern const char NO_CARDFACE[255];
 extern const char PLAYER1_CARDFACE[255];

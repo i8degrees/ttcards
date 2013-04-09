@@ -23,8 +23,6 @@ public:
 
 private:
   unsigned int font_size;
-  unsigned int x;
-  unsigned int y;
   TTF_Font *font;
 };
 

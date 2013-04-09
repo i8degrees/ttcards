@@ -38,7 +38,7 @@ private:
     bool game_state; // global app state
 
     Gfx gfx;
-    Audio mixer0; // Music
+    Audio mixer0;
     Audio mixer1, mixer2; // SFX
     Font txt;
 };

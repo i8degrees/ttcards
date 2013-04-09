@@ -20,6 +20,8 @@ TTcards::~TTcards ( void )
 
 bool TTcards::Init ( void )
 {
+  std::srand ( ( unsigned ) time ( 0 ) );
+
   if ( this->gfx.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
   {
     exit ( EXIT_FAILURE );
@@ -106,8 +108,12 @@ void TTcards::Input ( void )
 
 bool TTcards::Run ( void )
 {
-  Player player1, player2;
+  Player player1; // player2
   Board board;
+
+  SDL_Rect offsets;
+  offsets.x = 96;
+  offsets.y = 18;
 
   board.LoadBackground ();
 
@@ -117,10 +123,6 @@ bool TTcards::Run ( void )
 
   this->mixer0.PlayMusicTrack( 0 );
   this->mixer0.PauseMusic();
-
-  SDL_Rect offsets;
-  offsets.x = 96;
-  offsets.y = 18;
 
   while( this->IsRunning() ) // main loop
   {

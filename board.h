@@ -23,15 +23,12 @@ class Board
     bool LoadBackground ( void );
     bool DrawBackground ( SDL_Surface *video_buffer );
 
-
-
   private:
     //unsigned int player1_score;
     //unsigned int player2_score;
     SDL_Surface *background;
-    int grid[3][3] = {  0, 0, 0,
-                        0, 0, 0,
-                        0, 0, 0 };
+    int grid[3][3];
+
     Gfx gfx;
 };
 

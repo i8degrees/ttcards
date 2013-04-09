@@ -6,11 +6,25 @@
 ******************************************************************************/
 #include "player.h"
 
-using namespace std;
-
 Player::Player ( void )
 {
-  //card = new Card ( card_type (  ) ); //deck = new Pile();
+  this->db.Load();
+  this->dealer.Init ( this->db.cards );
+
+  this->hand.Add ( this->dealer.selectCard ( 89 ) ); // Diablos
+  this->hand.Add ( this->dealer.selectCard ( 99 ) ); // Ward
+  this->hand.Add ( this->dealer.selectCard ( 0 ) ); // Geezard
+  this->hand.Add ( this->dealer.selectCard ( 109 ) ); // Squall
+  this->hand.Add ( this->dealer.selectCard ( 50 ) ); // Malboro
+
+  for ( int i = 0; i < MAX_HAND; i++ )
+  {
+    //this->hand.Add ( this->dealer.Random() );
+  }
+
+
+  this->debug.ListCards ( this->hand.cards );
+  //this->cdebug.ListCard ( this->hand.deck[0] );
 
   this->score = 5;
 
@@ -26,7 +40,6 @@ Player::Player ( void )
 
   this->txtScore.LoadTTF ( SCORE_FONTFACE, 32 );
   this->txtCard.LoadTTF ( CARD_FONTFACE, 12 );
-
 }
 
 Player::~Player ( void )
@@ -42,7 +55,7 @@ bool Player::BuildCard ( void )
   Sprite cardBackground ( CARD_WIDTH, CARD_HEIGHT );
   Sprite cardElement ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
 
-  cardFace.LoadImage ( "./data/images/faces/89.bmp" );
+  cardFace.LoadImage ( FACES_DIR + this->hand.cards[0].face );
 
   cardFace.x = 0; //card0.x = PLAYER1_ORIGIN_X;
   cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
@@ -95,8 +108,8 @@ bool Player::Draw ( SDL_Surface *video_buffer, int x, int y ) // card id
 
 bool Player::DrawScore ( SDL_Surface *video_buffer, int x, int y )
 {
-  this->txtScore.DrawText ( video_buffer, "5", x, y, WHITE );
-  //this->txtScore.DrawText ( video_buffer, to_string(this->score), x, y, WHITE );
+  //this->txtScore.DrawText ( video_buffer, "5", x, y, WHITE );
+  this->txtScore.DrawText ( video_buffer, std::to_string(this->score), x, y, WHITE );
 
   return true;
 }
