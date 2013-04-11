@@ -15,6 +15,8 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_ttf.h"
 
+#include "gfx.h"
+
 class Font {
 public:
   Font ( void );
