@@ -22,11 +22,11 @@ class Gfx {
     Gfx ( void );
     ~Gfx ( void );
 
-    bool Init ( int flags = SDL_INIT_EVERYTHING );
+    bool Init ( unsigned int flags = SDL_INIT_EVERYTHING );
 
-    bool *SetVideoMode (  unsigned int screen_width = 320,
-                          unsigned int screen_height = 240,
-                          unsigned int screen_bpp = 8, int flags = 0 );
+    bool SetVideoMode ( unsigned int screen_width,
+                        unsigned int screen_height,
+                        unsigned int screen_bpp, unsigned int flags = 0 );
 
     bool SetSurfaceTransparency ( SDL_Surface *video_buffer,
                                   unsigned int r, unsigned int g, unsigned int b,

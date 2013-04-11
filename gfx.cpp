@@ -37,7 +37,7 @@ bool Gfx::Init ( unsigned int flags )
   return true;
 }
 
-bool *Gfx::SetVideoMode ( unsigned int screen_width,
+bool Gfx::SetVideoMode (  unsigned int screen_width,
                           unsigned int screen_height,
                           unsigned int screen_bpp, unsigned int flags )
 {
@@ -86,7 +86,7 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
   if ( this->SetSurfaceTransparency ( temp_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
   {
     std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
-    return false;
+    return NULL;
   }
 
   video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
@@ -133,7 +133,7 @@ bool Gfx::UpdateScreen ( void )
 bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height, unsigned int r, unsigned int g, unsigned int b )
 {
-  SDL_Rect rectangle;
+  SDL_Rect rectangle = { 0, 0, 0, 0 };
   unsigned int rectangle_color = 0;
 
   rectangle.x = x;
@@ -143,7 +143,7 @@ bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned in
 
   rectangle_color = SDL_MapRGB ( video_buffer->format, r, g, b );
 
-  if ( SDL_FillRect ( video_buffer, rectangle, rectangle_color ) != 0 )
+  if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
   {
     std::cout << "ERR in Gfx::DrawRectangle (): " << SDL_GetError() << std::endl;
     return false;
@@ -152,9 +152,9 @@ bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned in
   return true;
 }
 
-void Gfx::SetWindowTitle ( std::string app_name );
+void Gfx::SetWindowTitle ( std::string app_name )
 {
-  SDL_WM_SetCaption ( app_name, NULL );
+  SDL_WM_SetCaption ( app_name.c_str(), NULL );
 }
 
 // We cannot use Gfx::LoadImage() for loading an application icon due to surface
@@ -164,7 +164,7 @@ bool Gfx::SetWindowIcon ( std::string app_icon, SDL_Color colorkey, unsigned int
 {
   SDL_Surface *icon_buffer = NULL;
 
-  icon_buffer = SDL_LoadBMP ( app_icon );
+  icon_buffer = SDL_LoadBMP ( app_icon.c_str() );
 
   if ( icon_buffer == NULL )
   {
