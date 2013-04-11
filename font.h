@@ -1,6 +1,8 @@
 /******************************************************************************
     font.h
 
+    SDL-based Font Rendering API
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
@@ -18,11 +20,16 @@ public:
   Font ( void );
   ~Font ( void );
 
+  SDL_Color GetTextColor ( void );
+  void SetTextColor ( unsigned r, unsigned g, unsigned b );
+
   bool LoadTTF ( std::string filename, unsigned int size );
-  bool DrawText ( SDL_Surface *video_buffer, std::string text, int x, int y, SDL_Color color );
+  bool DrawText ( Gfx &engine, std::string text, unsigned int x, unsigned int y );
 
 private:
   TTF_Font *font;
+  SDL_Color text_color = { 0, 0, 0 };
+  SDL_Rect coords = { 0, 0, 0, 0 };
 };
 
 #endif // FONT_HEADERS defined
