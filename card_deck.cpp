@@ -42,7 +42,7 @@ bool Deck::Load ( std::string filename )
     std::cout << filename << " " << "<From Deck::Load>" << "\n" << std::endl;
   #endif
 
-  for ( int i = 0; i < ( MAX_DECKSET + 1); i++ )
+  for ( int i = 0; i < ( MAX_DECKSET ); i++ )
   {
     load >> id;
     load >> level;
