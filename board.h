@@ -17,19 +17,15 @@
 class Board
 {
   public:
-    Board();
+    Board ( void );
     ~Board ( void );
 
-    bool LoadBackground ( void );
-    bool DrawBackground ( SDL_Surface *video_buffer );
+    bool LoadBackground ( Gfx &engine, std::string filename );
+    bool DrawBackground ( Gfx &engine );
 
   private:
-    //unsigned int player1_score;
-    //unsigned int player2_score;
     SDL_Surface *background;
-    int grid[3][3];
-
-    Gfx gfx;
+    unsigned int grid[3][3];
 };
 
 #endif // BOARD_HEADERS defined

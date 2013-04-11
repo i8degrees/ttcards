@@ -25,16 +25,16 @@ Board::~Board ( void )
   this->background = NULL;
 }
 
-bool Board::LoadBackground ( void )
+bool Board::LoadBackground ( Gfx &engine, std::string filename )
 {
-  this->background = this->gfx.LoadBackground ( BOARD_BACKGROUND );
+  this->background = engine.LoadImage ( filename );
 
   return true;
 }
 
-bool Board::DrawBackground ( SDL_Surface *video_buffer )
+bool Board::DrawBackground ( Gfx &engine )
 {
-  SDL_BlitSurface ( this->background, NULL, video_buffer, NULL );
+  engine.DrawSurface ( this->background, 0, 0 );
 
   return true;
 }
