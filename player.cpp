@@ -8,30 +8,34 @@
 
 Player::Player ( void )
 {
-  this->card_buffer = NULL;
+  //this->card_buffer = NULL;
 
   #ifdef DEBUG_PLAYER
     std::cout << "Hello, world! <From Player::Player>" << "\n" << std::endl;
   #endif
 
-  this->db.Load();
-  this->dealer.Init ( this->db.cards );
+  //this->db.Load();
+  //this->dealer.Init ( this->db.cards );
 
-  this->hand.Add ( this->dealer.selectCard ( 89 ) ); // Diablos
-  this->hand.Add ( this->dealer.selectCard ( 99 ) ); // Ward
-  this->hand.Add ( this->dealer.selectCard ( 0 ) ); // Geezard
-  this->hand.Add ( this->dealer.selectCard ( 109 ) ); // Squall
-  this->hand.Add ( this->dealer.selectCard ( 50 ) ); // Malboro
+  //this->hand.Add ( this->dealer.selectCard ( 89 ) ); // Diablos
+  //this->hand.Add ( this->dealer.selectCard ( 99 ) ); // Ward
+  //this->hand.Add ( this->dealer.selectCard ( 0 ) ); // Geezard
+  //this->hand.Add ( this->dealer.selectCard ( 109 ) ); // Squall
+  //this->hand.Add ( this->dealer.selectCard ( 50 ) ); // Malboro
 
-  for ( int i = 0; i < MAX_HAND; i++ )
-  {
+  //for ( int i = 0; i < MAX_HAND; i++ )
+  //{
     //this->hand.Add ( this->dealer.Random() );
-  }
+  //}
 
 
-  this->debug.ListCards ( this->hand.cards );
+  //this->debug.ListCards ( this->hand.cards );
   //this->cdebug.ListCard ( this->hand.deck[0] );
 
+  this->x = 0;
+  this->y = 0;
+  this->state = 0;
+  this->turn = 0;
   this->score = 5;
 
   //this->card_buffer = SDL_CreateRGBSurface ( 0, CARD_WIDTH, CARD_HEIGHT,
@@ -44,19 +48,21 @@ Player::Player ( void )
 
   //this->BuildCard();
 
-  this->txtScore.LoadTTF ( SCORE_FONTFACE, 32 );
-  this->txtCard.LoadTTF ( CARD_FONTFACE, 12 );
+  this->text_score.SetTextColor ( 255, 255, 255 );
+  this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
 }
 
 Player::~Player ( void )
 {
   #ifdef DEBUG_PLAYER
-    std::cout << "Goodbye cruel world! <From Player::Player>" << "\n" << std::endl;
+    std::cout << "Goodbye cruel world! <From Player::~Player>" << "\n" << std::endl;
   #endif
-  SDL_FreeSurface ( this->card_buffer );
-  this->card_buffer = NULL;
+
+  //SDL_FreeSurface ( this->card_buffer );
+  //this->card_buffer = NULL;
 }
 
+/*
 bool Player::BuildCard ( void )
 {
 
@@ -86,39 +92,65 @@ bool Player::BuildCard ( void )
   return true;
 
 }
+*/
+
+SDL_Rect Player::GetXY ( void )
+{
+  SDL_Rect coords;
+
+  this->x = coords.x;
+  this->y = coords.y;
+
+  return coords;
+}
+
+void Player::SetXY ( unsigned int x, unsigned int y )
+{
+  this->x = x;
+  this->y = y;
+}
+
+unsigned int Player::GetState ( void )
+{
+  return this->state;
+}
+
+void Player::SetState ( unsigned int state )
+{
+  this->state = state;
+}
 
 unsigned int Player::GetScore ( void )
 {
   return this->score;
 }
 
-bool Player::SetScore ( unsigned int value )
+void Player::SetScore ( unsigned int score )
 {
-  this->score = value;
+  this->score = score;
+}
+
+bool Player::Draw ( Gfx &engine, unsigned int x, unsigned int y ) // card id
+{
+
+  //this->txtCard.DrawText ( this->card_buffer, "9", 8, 0, WHITE ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
+  //this->txtCard.DrawText ( this->card_buffer, "6", 12, 8, WHITE ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
+  //this->txtCard.DrawText ( this->card_buffer, "A", 8, 16, WHITE ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
+  //this->txtCard.DrawText ( this->card_buffer, "2", 4, 8, WHITE ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
+
+  //SDL_Rect offsets;
+  //offsets.x = x;
+  //offsets.y = y;
+
+  //SDL_BlitSurface ( this->card_buffer, NULL, video_buffer, &offsets );
+
   return true;
 }
 
-bool Player::Draw ( SDL_Surface *video_buffer, int x, int y ) // card id
-{
-
-  this->txtCard.DrawText ( this->card_buffer, "9", 8, 0, WHITE ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
-  this->txtCard.DrawText ( this->card_buffer, "6", 12, 8, WHITE ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
-  this->txtCard.DrawText ( this->card_buffer, "A", 8, 16, WHITE ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
-  this->txtCard.DrawText ( this->card_buffer, "2", 4, 8, WHITE ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
-
-  SDL_Rect offsets;
-  offsets.x = x;
-  offsets.y = y;
-
-  SDL_BlitSurface ( this->card_buffer, NULL, video_buffer, &offsets );
-
-  return true;
-}
-
-bool Player::DrawScore ( SDL_Surface *video_buffer, int x, int y )
+bool Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
 {
   //this->txtScore.DrawText ( video_buffer, "5", x, y, WHITE );
-  this->txtScore.DrawText ( video_buffer, std::to_string(this->score), x, y, WHITE );
+  this->text_score.DrawText ( engine, std::to_string(this->score), x, y );
 
   return true;
 }

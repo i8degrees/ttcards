@@ -32,13 +32,18 @@ public:
   Player ( void );
   ~Player ( void );
 
+  SDL_Rect GetXY ( void );
+  void SetXY ( unsigned int x, unsigned int y );
 
+  unsigned int GetState ( void );
+  void SetState ( unsigned int state );
 
+  // TODO: Branch off into Score class
   unsigned int GetScore ( void );
-  bool SetScore ( unsigned int value );
+  void SetScore ( unsigned int score );
 
-  bool Draw ( SDL_Surface *video_buffer, int x, int y );
-  bool DrawScore ( SDL_Surface *video_buffer, int x, int y );
+  bool Draw ( Gfx &engine, unsigned int x, unsigned int y );
+  bool DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
 /*
@@ -47,22 +52,24 @@ private:
   we can remove the initialization call here and do elsewhere (ex. our constructor).
 */
   //SDL_Surface *card_buffer = NULL;
-  SDL_Surface *card_buffer; // intentionally broken at the moment
+  //SDL_Surface *card_buffer; // intentionally broken at the moment
 
-  Deck db;
-  Dealer dealer;
+  //Deck db;
+  //Dealer dealer;
   CardHand hand;
-  CardView card_gfx;
+  //CardView card_gfx;
   CardDebug debug;
 
-  Font txtCard;
-  Font txtScore;
+  Font text_score;
 
-  //unsigned int state;
+  unsigned int x;
+  unsigned int y;
+  unsigned int state; // HUMAN, CPU, DEBUG
+
+  unsigned int turn;
   unsigned int score;
 
-  bool BuildCard ( void );
-
+  //bool BuildCard ( void );
 };
 
 #endif // PLAYERS_HEADERS defined
