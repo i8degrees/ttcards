@@ -1,96 +1,187 @@
 /******************************************************************************
     gfx.cpp
 
+    Graphics Blitting API
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
 #include "gfx.h"
 
-using namespace std;
-
 Gfx::Gfx ( void )
 {
+  #ifdef DEBUG_GFX
+    std::cout << "Hello, world! <From Gfx::Gfx>" << "\n" << std::endl;
+  #endif
 }
 
 Gfx::~Gfx ( void )
 {
+  this->screen = NULL;
+
+  #ifdef DEBUG_GFX
+    std::cout << "Goodbye cruel world! <From Gfx::~Gfx>" << "\n" << std::endl;
+  #endif
+
+  SDL_Quit ();
 }
 
-bool Gfx::Init ( int flags )
+bool Gfx::Init ( unsigned int flags )
 {
-  if ( SDL_Init ( flags ) == -1 )
+  if ( SDL_Init ( flags ) != 0 )
   {
-    cout << "ERR: " << SDL_GetError() << "\n" << endl;
-    exit ( EXIT_FAILURE );
+    std::cout << "ERR in Gfx::Init (): " << SDL_GetError() << std::endl;
+    return false;
   }
-
-  atexit ( SDL_Quit );
 
   return true;
 }
 
-SDL_Surface *Gfx::SetMode ( unsigned int screen_width,
-                            unsigned int screen_height,
-                            unsigned int screen_bpp, int flags )
+bool *Gfx::SetVideoMode ( unsigned int screen_width,
+                          unsigned int screen_height,
+                          unsigned int screen_bpp, unsigned int flags )
 {
-  SDL_Surface *screen = NULL;
+  this->screen = NULL;
 
-  screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, flags );
+  this->screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, flags );
 
-  if ( screen == 0 )
+  if ( this->screen == 0 )
   {
-    cout << "ERR: " << SDL_GetError() << "\n" << endl;
-    exit ( EXIT_FAILURE );
+    std::cout << "ERR in Gfx::SetVideoMode (): " << SDL_GetError() << std::endl;
+    return false;
   }
 
-  return screen;
+  return true;
 }
 
-SDL_Surface *Gfx::LoadBackground ( string filename )
+bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
+                                    unsigned int r, unsigned int g, unsigned int b,
+                                    unsigned int flags )
 {
-  SDL_Surface *tmpBuffer = NULL;
+  unsigned int transparent_color = 0;
+
+  transparent_color = SDL_MapRGB ( video_buffer->format, r, g, b );
+
+  if ( SDL_SetColorKey ( video_buffer, flags, transparent_color ) != 0 )
+  {
+    std::cout << "ERR in Gfx::SetSurfaceTransparency (): " << SDL_GetError() << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
+                              unsigned int flags )
+{
+  SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
 
-  if ( ( tmpBuffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
+  if ( ( temp_buffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
   {
-    cout << "ERR -255: " << SDL_GetError() << endl;
+    std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
     return NULL;
   }
 
-/*
-  SDL_SetColorKey ( tmpBuffer, SDL_SRCCOLORKEY,
-                   SDL_MapRGB ( tmpBuffer->format, alpha.r, alpha.g, alpha.b ) );
-*/
+  if ( this->SetSurfaceTransparency ( temp_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
+  {
+    std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    return false;
+  }
 
-  video_buffer = SDL_DisplayFormatAlpha ( tmpBuffer );
+  video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
 
-  SDL_FreeSurface ( tmpBuffer );
+  if ( video_buffer == NULL )
+  {
+    std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    return NULL;
+  }
+
+  SDL_FreeSurface ( temp_buffer );
+  temp_buffer = NULL;
 
   return video_buffer;
 }
 
-bool Gfx::SetWindowTitle ( const char app_name[255] )
+bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, SDL_Rect *offsets )
 {
-  /*
-    TODO: Double-check parameters of this func
-  */
-  SDL_WM_SetCaption ( app_name, app_name );
+  SDL_Rect coords;
+
+  coords.x = x;
+  coords.y = y;
+
+  if ( SDL_BlitSurface ( video_buffer, offsets, this->screen, &coords ) != 0 )
+  {
+    std::cout << "ERR in Gfx::DrawSurface (): " << SDL_GetError() << std::endl;
+    return false;
+  }
 
   return true;
 }
 
-bool Gfx::SetWindowIcon ( const char app_icon[255] )
+bool Gfx::UpdateScreen ( void )
+{
+  if ( SDL_Flip ( this->screen ) != 0 )
+  {
+    std::cout << "ERR in Gfx::UpdateScreen (): " << SDL_GetError() << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+                          unsigned int width, unsigned int height, unsigned int r, unsigned int g, unsigned int b )
+{
+  SDL_Rect rectangle;
+  unsigned int rectangle_color = 0;
+
+  rectangle.x = x;
+  rectangle.y = y;
+  rectangle.w = width;
+  rectangle.h = height;
+
+  rectangle_color = SDL_MapRGB ( video_buffer->format, r, g, b );
+
+  if ( SDL_FillRect ( video_buffer, rectangle, rectangle_color ) != 0 )
+  {
+    std::cout << "ERR in Gfx::DrawRectangle (): " << SDL_GetError() << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+void Gfx::SetWindowTitle ( std::string app_name );
+{
+  SDL_WM_SetCaption ( app_name, NULL );
+}
+
+// We cannot use Gfx::LoadImage() for loading an application icon due to surface
+// conversion -- SDL_DisplayFormatAlpha()
+bool Gfx::SetWindowIcon ( std::string app_icon, SDL_Color colorkey, unsigned int flags )
+
 {
   SDL_Surface *icon_buffer = NULL;
 
   icon_buffer = SDL_LoadBMP ( app_icon );
 
-  //colorkey = SDL_MapRGB(image->format, 0, 0, 0);
-  //SDL_SetColorKey(image, SDL_SRCCOLORKEY, colorkey);
+  if ( icon_buffer == NULL )
+  {
+    std::cout << "ERR in Gfx::SetWindowIcon (): " << SDL_GetError() << std::endl;
+    return false;
+  }
+
+  if ( this->SetSurfaceTransparency ( icon_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
+  {
+    std::cout << "ERR in Gfx::SetWindowIcon (): " << SDL_GetError() << std::endl;
+    return false;
+  }
 
   SDL_WM_SetIcon ( icon_buffer, NULL );
 
   SDL_FreeSurface ( icon_buffer );
+  icon_buffer = NULL;
 
   return true;
 }
