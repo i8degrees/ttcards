@@ -3,7 +3,7 @@ CFLAGS = -gfull -O0 -std=c++11 -stdlib=libc++ -Wall
 SDL_CFLAGS := $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer)
 SDL_LDFLAGS := $(shell pkg-config --libs sdl SDL_ttf SDL_mixer)
 
-OBJ = audio.o board.o card.o card_debug.o card_deck.o card_dealer.o card_view.o card_hand.o cfg.o font.o gfx.o main.o player.o sprite.o ttcards.o
+OBJ = audio.o board.o card.o card_debug.o card_deck.o card_view.o card_hand.o cfg.o font.o gfx.o main.o player.o sprite.o ttcards.o
 BIN = ttcards
 
 all: bin
@@ -28,9 +28,6 @@ card_view.o: card_view.cpp card_view.h
 
 card_deck.o: card_deck.cpp card_deck.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_deck.cpp
-
-card_dealer.o: card_dealer.cpp card_dealer.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_dealer.cpp
 
 card_hand.o: card_hand.cpp card_hand.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_hand.cpp
