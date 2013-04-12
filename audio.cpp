@@ -8,6 +8,9 @@
 
 Audio::Audio ( unsigned int rate, Uint16 format, unsigned int channels, unsigned int buffers )
 {
+  #ifdef DEBUG_AUDIO
+    std::cout << "Hello, world! <From Audio::Audio>" << "\n" << std::endl;
+  #endif
   // Memory allocation buffers for audio
   this->sound = NULL;
   this->music = NULL;
@@ -20,7 +23,10 @@ Audio::Audio ( unsigned int rate, Uint16 format, unsigned int channels, unsigned
 
 Audio::~Audio ( void )
 {
-  this->sound = NULL;
+  #ifdef DEBUG_AUDIO
+    std::cout << "Goodbye cruel world! <From Audio::~Audio>" << "\n" << std::endl;
+  #endif
+  //this->sound = NULL;
 
   Mix_HaltMusic ();
   Mix_FreeMusic ( this->music );

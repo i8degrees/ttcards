@@ -1,11 +1,11 @@
 /******************************************************************************
-    card_deck.h
+    card_collection.h
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef CARD_DECK_HEADERS
-#define CARD_DECK_HEADERS
+#ifndef CARD_COLLECTION_HEADERS
+#define CARD_COLLECTION_HEADERS
 
 #include <array>
 #include <fstream>
@@ -18,18 +18,17 @@
 #include "SDL/SDL.h"
 
 #include "cfg.h"
-
 #include "card.h"
 
-//#define DEBUG_CARD_DECK
+//#define DEBUG_CARD_COLLECTION
 
-class Deck
+class Collection
 {
   public:
-    Deck ( void );
-    ~Deck ( void );
+    Collection ( void );
+    ~Collection ( void );
 
-    bool Load ( std::string filename = CARDS_DB );
+    bool Load ( std::string filename );
 
     std::vector<Card> cards;
 
@@ -37,4 +36,4 @@ class Deck
     // ...
 };
 
-#endif // CARD_DECK_HEADERS defined
+#endif // CARD_COLLECTION_HEADERS defined

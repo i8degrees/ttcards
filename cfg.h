@@ -48,6 +48,7 @@ extern const char CARDS_DB[255];
 extern const char CARD_FONTFACE[255];
 extern const char SCORE_FONTFACE[255];
 
+extern const char ELEMENT_NONE[255];
 extern const char ELEMENT_EARTH[255];
 extern const char ELEMENT_FIRE[255];
 extern const char ELEMENT_HOLY[255];
