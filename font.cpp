@@ -35,8 +35,8 @@ SDL_Color Font::GetTextColor ( void )
 void Font::SetTextColor ( unsigned r, unsigned g, unsigned b )
 {
   this->text_color.r = r;
-  this->text_color.r = g;
-  this->text_color.r = b;
+  this->text_color.g = g;
+  this->text_color.b = b;
 }
 
 bool Font::LoadTTF ( std::string filename, unsigned int font_size )
