@@ -45,6 +45,8 @@ CardView::~CardView ( void )
 
 bool CardView::EraseCard ( Gfx &engine, unsigned int x, unsigned int y )
 {
+  engine.DrawRectangle ( x, y, 64, 64, 0, 0, 0 );
+
   return true;
 }
 
