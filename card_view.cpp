@@ -48,9 +48,21 @@ bool CardView::EraseCard ( Gfx &engine, unsigned int x, unsigned int y )
   return true;
 }
 
-bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int y, unsigned int player_state )
+bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int y, unsigned int player )
 {
-  card_background->LoadImage ( PLAYER1_CARDFACE );
+  switch ( player )
+  {
+    case 0:
+      card_background->LoadImage ( PLAYER1_CARDFACE );
+      break;
+    case 1:
+      card_background->LoadImage ( PLAYER2_CARDFACE );
+      break;
+    default:
+      card_background->LoadImage ( PLAYER1_CARDFACE );
+      break;
+  }
+
   card_background->SetX ( x + 0 );
   card_background->SetY ( y + 0 );
   card_background->Draw ( engine );
@@ -62,10 +74,42 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
 
   card_face->SetX ( x ); //card0.x = PLAYER1_ORIGIN_X;
   card_face->SetY ( y ); //cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
-
   card_face->Draw ( engine );
 
-  card_element->LoadImage ( ELEMENT_WATER );
+  switch ( card.element )
+  {
+    case 0: // N/A
+      card_element->LoadImage ( ELEMENT_NONE );
+      break;
+    case 1: // EARTH
+      card_element->LoadImage ( ELEMENT_EARTH );
+      break;
+    case 2: // FIRE
+      card_element->LoadImage ( ELEMENT_FIRE );
+      break;
+    case 3: // HOLY
+      card_element->LoadImage ( ELEMENT_HOLY );
+      break;
+    case 4: // ICE
+      card_element->LoadImage ( ELEMENT_ICE );
+      break;
+    case 5: // POISON
+      card_element->LoadImage ( ELEMENT_POISON );
+      break;
+    case 6: // THUNDER
+      card_element->LoadImage ( ELEMENT_THUNDER );
+      break;
+    case 7: // WATER
+      card_element->LoadImage ( ELEMENT_WATER );
+      break;
+    case 8: // WIND
+      card_element->LoadImage ( ELEMENT_WIND );
+      break;
+    default:
+      card_element->LoadImage ( ELEMENT_NONE );
+      break;
+  }
+
   card_element->SetX ( x + 46 ); //cardElement.x = cardFace.x + 46;
   card_element->SetY ( y + 4 ); //cardElement.y = cardFace.y + 4;
   card_element->Draw ( engine );
