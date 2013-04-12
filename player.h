@@ -60,6 +60,7 @@ private:
   //CardView card_gfx;
   CardDebug debug;
 
+  Font text_card;
   Font text_score;
 
   unsigned int x;

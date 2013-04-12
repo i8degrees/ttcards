@@ -48,8 +48,11 @@ Player::Player ( void )
 
   //this->BuildCard();
 
-  this->text_score.SetTextColor ( 255, 255, 255 );
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
+  this->text_card.LoadTTF ( CARD_FONTFACE, 12 );
+
+  this->text_score.SetTextColor ( 255, 255, 255 );
+  this->text_card.SetTextColor ( 255, 255, 255 );
 }
 
 Player::~Player ( void )
@@ -133,10 +136,10 @@ void Player::SetScore ( unsigned int score )
 bool Player::Draw ( Gfx &engine, unsigned int x, unsigned int y ) // card id
 {
 
-  //this->txtCard.DrawText ( this->card_buffer, "9", 8, 0, WHITE ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
-  //this->txtCard.DrawText ( this->card_buffer, "6", 12, 8, WHITE ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
-  //this->txtCard.DrawText ( this->card_buffer, "A", 8, 16, WHITE ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
-  //this->txtCard.DrawText ( this->card_buffer, "2", 4, 8, WHITE ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
+  this->text_card.DrawText ( engine, "9", x+8, y+0 ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
+  this->text_card.DrawText ( engine, "6", x+12, y+8 ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
+  this->text_card.DrawText ( engine, "A", x+8, y+16 ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
+  this->text_card.DrawText ( engine, "2", x+4, y+8 ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
 
   //SDL_Rect offsets;
   //offsets.x = x;
@@ -150,7 +153,7 @@ bool Player::Draw ( Gfx &engine, unsigned int x, unsigned int y ) // card id
 bool Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
 {
   //this->txtScore.DrawText ( video_buffer, "5", x, y, WHITE );
-  this->text_score.DrawText ( engine, std::to_string(this->score), x, y );
+  this->text_score.DrawText ( engine, std::to_string ( this->score ), x, y );
 
   return true;
 }
