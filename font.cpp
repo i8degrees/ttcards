@@ -14,7 +14,7 @@ Font::Font ( void )
 
   if ( TTF_Init () == -1 )
   {
-    std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl; // check err
+    std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl;
     exit ( EXIT_FAILURE );
   }
 
@@ -48,8 +48,8 @@ bool Font::LoadTTF ( std::string filename, unsigned int font_size )
 
   if ( this->font == NULL )
   {
-    std::cout << "ERR: " << SDL_GetError() << std::endl;
-    exit ( EXIT_FAILURE );
+    std::cout << "ERR: " << TTF_GetError() << std::endl;
+    return false;
   }
 
   return true;
