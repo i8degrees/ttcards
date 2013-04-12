@@ -12,24 +12,6 @@ Player::Player ( void )
     std::cout << "Hello, world! <From Player::Player>" << "\n" << std::endl;
   #endif
 
-  //this->db.Load();
-  //this->dealer.Init ( this->db.cards );
-
-  //this->hand.Add ( this->dealer.selectCard ( 89 ) ); // Diablos
-  //this->hand.Add ( this->dealer.selectCard ( 99 ) ); // Ward
-  //this->hand.Add ( this->dealer.selectCard ( 0 ) ); // Geezard
-  //this->hand.Add ( this->dealer.selectCard ( 109 ) ); // Squall
-  //this->hand.Add ( this->dealer.selectCard ( 50 ) ); // Malboro
-
-  //for ( int i = 0; i < MAX_HAND; i++ )
-  //{
-    //this->hand.Add ( this->dealer.Random() );
-  //}
-
-
-  //this->debug.ListCards ( this->hand.cards );
-  //this->cdebug.ListCard ( this->hand.deck[0] );
-
   this->x = 0;
   this->y = 0;
   this->type = 0;
