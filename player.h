@@ -13,6 +13,7 @@
 #include "SDL/SDL.h"
 
 #include "cfg.h"
+#include "audio.h"
 #include "card.h"
 #include "card_debug.h"
 #include "card_hand.h"
@@ -43,7 +44,7 @@ public:
   void SetScore ( unsigned int score );
   bool DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
-  //Input();
+  void Input ( SDL_Event &input );
   bool Draw ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
@@ -56,6 +57,8 @@ private:
   unsigned int state; // ...is it my turn turn yet?
 
   unsigned int score;
+
+  Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
 };
 
 #endif // PLAYERS_HEADERS defined

@@ -75,6 +75,60 @@ void Player::SetScore ( unsigned int score )
   this->score = score;
 }
 
+void Player::Input ( SDL_Event &input )
+{
+  if ( input.type == SDL_KEYDOWN )
+  {
+    switch ( input.key.keysym.sym )
+    {
+      case SDLK_ESCAPE:
+        // skip turn
+        break;
+      case SDLK_LEFT:
+        this->mixer1.PlaySoundTrack ( CURSOR_MOVE, 1, 0);
+        break;
+      case SDLK_RIGHT:
+        this->mixer2.PlaySoundTrack ( CURSOR_CANCEL, 2, 0 );
+        break;
+      case SDLK_UP:
+        // cursor select
+        break;
+      case SDLK_DOWN:
+        // cursor select
+        break;
+      case SDLK_1:
+        // move selected card to grid[0][0] if possible
+        break;
+      case SDLK_2:
+        // move selected card to grid[1][0] if possible
+        break;
+      case SDLK_3:
+        // move selected card to grid[2][0] if possible
+        break;
+      case SDLK_4:
+        // move selected card to grid[0][0] if possible
+        break;
+      case SDLK_5:
+        // move selected card to grid[1][1] if possible
+        break;
+      case SDLK_6:
+        // move selected card to grid[1][2] if possible
+        break;
+      case SDLK_7:
+        // move selected card to grid[2][0] if possible
+        break;
+      case SDLK_8:
+        // move selected card to grid[2][1] if possible
+        break;
+      case SDLK_9:
+        // move selected card to grid[3][2] if possible
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 bool Player::Draw ( Gfx &engine, unsigned int x, unsigned int y ) // card id
 {
   return true;
