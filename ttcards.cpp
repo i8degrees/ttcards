@@ -13,6 +13,8 @@ TTcards::TTcards ( void )
 
 TTcards::~TTcards ( void )
 {
+  delete this->cards;
+  this->cards = NULL;
 }
 
 bool TTcards::Init ( void )
@@ -104,10 +106,6 @@ void TTcards::Input ( void )
 
 bool TTcards::Run ( void )
 {
-  SDL_Rect offsets;
-  offsets.x = 96;
-  offsets.y = 18;
-
   this->board.LoadBackground ( BOARD_BACKGROUND );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
@@ -115,25 +113,24 @@ bool TTcards::Run ( void )
   this->music.PlayMusicTrack ( -1 );
   this->music.PauseMusic ();
 
-  Sprite cardFace ( CARD_WIDTH, CARD_HEIGHT );
-  Sprite cardBackground ( CARD_WIDTH, CARD_HEIGHT );
-  Sprite cardElement ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+  this->collection.Load ( CARDS_DB );
+  //this->debug.ListCards ( this->collection.cards );
 
-  std::string face0 = "./data/images/faces/89.bmp";
-  cardFace.LoadImage ( face0 );
+  this->player1.AddCard ( this->collection.cards[89] ); // Diablos
+  this->player1.AddCard ( this->collection.cards[109] ); // Squall
+  this->player1.AddCard ( this->collection.cards[0] ); // Geezard
+  this->player1.AddCard ( this->collection.cards[99] ); // Ward
+  this->player1.AddCard ( this->collection.cards[50] ); // Malboro
+  this->debug.ListCards ( this->player1.cards );
 
-  cardFace.SetX ( 96 ); //card0.x = PLAYER1_ORIGIN_X;
-  cardFace.SetY ( 16 ); //cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
+  this->player2.AddCard ( this->collection.cards[20] ); // Jelleye
+  this->player2.AddCard ( this->collection.cards[16] ); // Thrustaevis
+  this->player2.AddCard ( this->collection.cards[24] ); // TriFace
+  this->player2.AddCard ( this->collection.cards[66] ); // Propagator
+  this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->debug.ListCards ( this->player2.cards );
 
-  cardBackground.LoadImage ( PLAYER1_CARDFACE );
-
-  cardBackground.SetX ( 96 );
-  cardBackground.SetY ( 16 );
-
-  cardElement.LoadImage ( ELEMENT_WATER );
-
-  cardElement.SetX ( 142 ); //cardElement.x = cardFace.x + 46;
-  cardElement.SetY ( 20 ); //cardElement.y = cardFace.y + 4;
+  this->cards = new CardView ();
 
   while( this->IsRunning() ) // main loop
   {
@@ -141,15 +138,22 @@ bool TTcards::Run ( void )
 
     board.DrawBackground ( this->engine );
 
-    cardBackground.Draw ( this->engine );
-    cardFace.Draw ( this->engine );
-    cardElement.Draw ( this->engine );
+    this->cards->DrawCard ( this->engine, this->player1.cards[0], 16, 16, 0 );
+    this->cards->DrawCard ( this->engine, this->player1.cards[1], 16, 40, 0 );
+    this->cards->DrawCard ( this->engine, this->player1.cards[2], 16, 64, 0 );
+    this->cards->DrawCard ( this->engine, this->player1.cards[3], 16, 88, 0 );
+    this->cards->DrawCard ( this->engine, this->player1.cards[4], 16, 112, 0 );
 
-    //player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
-    //player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
+    this->cards->DrawCard ( this->engine, this->player2.cards[0], 304, 16, 0 );
+    this->cards->DrawCard ( this->engine, this->player2.cards[1], 304, 40, 0 );
+    this->cards->DrawCard ( this->engine, this->player2.cards[2], 304, 64, 0 );
+    this->cards->DrawCard ( this->engine, this->player2.cards[3], 304, 88, 0 );
+    this->cards->DrawCard ( this->engine, this->player2.cards[4], 304, 112, 0 );
 
-    this->player1.Draw ( this->engine, 96, 16 );
-    //player1.Draw ( this->screen, offsets.x, offsets.y );
+    player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
+    player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
+
+    //this->player1.Draw ( this->engine, 96, 16 );
 
     this->engine.UpdateScreen ();
 

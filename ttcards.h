@@ -18,6 +18,7 @@
 #include "board.h"
 #include "player.h"
 #include "card.h"
+#include "card_collection.h"
 #include "font.h"
 
 class TTcards
@@ -42,6 +43,9 @@ private:
     Audio mixer1, mixer2; // Two (2) audio mixing channels for playing sound effects
     Player player1, player2;
     Board board;
+    Collection collection;
+    CardDebug debug;
+    CardView *cards;
 };
 
 #endif // TTCARDS_HEADERS defined

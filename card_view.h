@@ -16,6 +16,7 @@
 #include "cfg.h"
 #include "card.h"
 
+#include "font.h"
 #include "sprite.h"
 
 #define DEBUG_CARD_VIEW
@@ -25,16 +26,19 @@ class CardView
   public:
     CardView ( void );
     ~CardView ( void );
-    bool Init ( std::vector<Card> &card );
-    bool Load ( void );
-    //bool Draw ( SDL_Surface *video_buffer, int x, int y );
+
+    bool EraseCard ( Gfx &engine, unsigned int x, unsigned int y );
+    bool DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int y, unsigned int player_state );
     // bool flipCard ();
   private:
-    int x;
-    int y;
-    int w = CARD_WIDTH;
-    int h = CARD_HEIGHT;
-    //Sprite card;
+    Sprite *card_face;
+    Sprite *card_background;
+    Sprite *card_element;
+    Font text_card;
+    //unsigned int x;
+    //unsigned int y;
+    //unsigned int width = CARD_WIDTH;
+    //unsigned int height = CARD_HEIGHT;
 };
 
 #endif // CARD_VIEW_HEADERS defined
