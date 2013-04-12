@@ -1,30 +1,30 @@
 /******************************************************************************
-    card_deck.cpp
+    card_collection.cpp
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "card_deck.h"
+#include "card_collection.h"
 
-Deck::Deck ( void )
+Collection::Collection ( void )
 {
-  #ifdef DEBUG_CARD_DECK
-    std::cout << "Hello, world! <From Deck::Deck>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_COLLECTION
+    std::cout << "Hello, world! <From Collection::Collection>" << "\n" << std::endl;
   #endif
 
   this->cards.clear();
 }
 
-Deck::~Deck ( void )
+Collection::~Collection ( void )
 {
-  #ifdef DEBUG_CARD_DECK
-    std::cout << "Goodbye cruel world! <From Deck::~Deck>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_COLLECTION
+    std::cout << "Goodbye cruel world! <From Collection::~Collection>" << "\n" << std::endl;
   #endif
 
   this->cards.clear();
 }
 
-bool Deck::Load ( std::string filename )
+bool Collection::Load ( std::string filename )
 {
   unsigned int id, level, type, element = 0;
   std::array<int, 4> rank = { { 0 } };
@@ -34,15 +34,15 @@ bool Deck::Load ( std::string filename )
 
   if ( ! load )
   {
-    std::cout << "ERR: Input file " << filename << std::endl;
-    exit ( EXIT_FAILURE );
+    std::cout << "ERR in Collection::Load () at: " << filename << std::endl;
+    return false;
   }
 
-  #ifdef DEBUG_CARD_DECK
-    std::cout << filename << " " << "<From Deck::Load>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_COLLECTION
+    std::cout << filename << " " << "<From Collection::Load>" << "\n" << std::endl;
   #endif
 
-  for ( int i = 0; i < ( MAX_DECKSET ); i++ )
+  for ( int i = 0; i < ( MAX_DECKSET ); i++ ) // 110
   {
     load >> id;
     load >> level;
@@ -55,7 +55,7 @@ bool Deck::Load ( std::string filename )
     load >> name;
     load >> face;
 
-    #ifdef DEBUG_CARD_DECK
+    #ifdef DEBUG_CARD_COLLECTION
       std::cout << id;
       std::cout << " ";
       std::cout << level;
@@ -74,13 +74,13 @@ bool Deck::Load ( std::string filename )
       std::cout << face;
 
       std::cout << std::endl;
-    #endif // defined DEBUG_CARD_DECK
+    #endif // defined DEBUG_CARD_COLLECTION
 
-    this->cards.push_back ( Card (id, level, type, element, { { rank[0], rank[1], rank[2], rank[3] } }, name, face ) );
+    this->cards.push_back ( Card ( id, level, type, element, { { rank[0], rank[1], rank[2], rank[3] } }, name, face ) );
   }
 
-  #ifdef DEBUG_CARD_DECK
-    std::cout << "EOF: " << filename << " " << "<From Deck::Load>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_COLLECTION
+    std::cout << "EOF: " << filename << " " << "<From Collection::Load>" << "\n" << std::endl;
   #endif
 
   load.close();
