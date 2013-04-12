@@ -20,11 +20,12 @@ class Board
     Board ( void );
     ~Board ( void );
 
-    bool LoadBackground ( Gfx &engine, std::string filename );
+    bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx &engine );
 
   private:
     SDL_Surface *background;
+    Gfx *engine;
     unsigned int grid[3][3];
 };
 

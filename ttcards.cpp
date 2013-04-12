@@ -108,7 +108,7 @@ bool TTcards::Run ( void )
   offsets.x = 96;
   offsets.y = 18;
 
-  this->board.LoadBackground ( this->engine, BOARD_BACKGROUND );
+  this->board.LoadBackground ( BOARD_BACKGROUND );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 

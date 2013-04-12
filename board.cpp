@@ -9,6 +9,7 @@
 Board::Board ( void )
 {
   this->background = NULL;
+  this->engine = NULL;
 
   for ( int y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
@@ -23,11 +24,13 @@ Board::~Board ( void )
 {
   SDL_FreeSurface ( this->background );
   this->background = NULL;
+
+  this->engine = NULL;
 }
 
-bool Board::LoadBackground ( Gfx &engine, std::string filename )
+bool Board::LoadBackground ( std::string filename )
 {
-  this->background = engine.LoadImage ( filename );
+  this->background = this->engine->LoadImage ( filename );
 
   return true;
 }
