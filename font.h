@@ -17,6 +17,8 @@
 
 #include "gfx.h"
 
+//#define DEBUG_FONT
+
 class Font {
 public:
   Font ( void );
@@ -30,8 +32,8 @@ public:
 
 private:
   TTF_Font *font;
-  SDL_Color text_color = { 0, 0, 0 };
-  SDL_Rect coords = { 0, 0, 0, 0 };
+  SDL_Color text_color;
+  SDL_Rect coords;
 };
 
 #endif // FONT_HEADERS defined

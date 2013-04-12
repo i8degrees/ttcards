@@ -17,6 +17,9 @@ Font::Font ( void )
     std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl; // check err
     exit ( EXIT_FAILURE );
   }
+
+  this->text_color = { 0, 0, 0 };
+  this->coords = { 0, 0, 0, 0 };
 }
 
 Font::~Font ( void )
@@ -55,14 +58,12 @@ bool Font::LoadTTF ( std::string filename, unsigned int font_size )
 bool Font::DrawText ( Gfx &engine, std::string text, unsigned int x, unsigned int y )
 {
   SDL_Surface *text_buffer = NULL;
-
   coords.x = x;
   coords.y = y;
 
   text_buffer = TTF_RenderText_Solid ( this->font, text.c_str(), this->text_color );
 
   engine.DrawSurface ( text_buffer, x, y );
-  //SDL_BlitSurface ( text_buffer, NULL, video_buffer, &offsets ); // err check
 
   SDL_FreeSurface ( text_buffer );
 
