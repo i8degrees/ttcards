@@ -32,6 +32,9 @@ public:
   SDL_Rect GetXY ( void );
   void SetXY ( unsigned int x, unsigned int y );
 
+  unsigned int GetType ( void );
+  void SetType ( unsigned int player_type );
+
   unsigned int GetState ( void );
   void SetState ( unsigned int state );
 
@@ -40,17 +43,18 @@ public:
   void SetScore ( unsigned int score );
   bool DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
+  //Input();
   bool Draw ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
-  Font text_card;
+  //CardView card;
   Font text_score;
 
   unsigned int x;
   unsigned int y;
-  unsigned int state; // HUMAN, CPU, DEBUG
+  unsigned int type; // HUMAN, CPU, DEBUG
+  unsigned int state; // ...is it my turn turn yet?
 
-  unsigned int turn;
   unsigned int score;
 };
 

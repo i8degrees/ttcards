@@ -32,8 +32,8 @@ Player::Player ( void )
 
   this->x = 0;
   this->y = 0;
+  this->type = 0;
   this->state = 0;
-  this->turn = 0;
   this->score = 5;
 
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
@@ -64,6 +64,15 @@ void Player::SetXY ( unsigned int x, unsigned int y )
   this->y = y;
 }
 
+unsigned int Player::GetType ( void )
+{
+  return this->type;
+}
+
+void Player::SetType ( unsigned int player_type )
+{
+  this->type = player_type;
+}
 unsigned int Player::GetState ( void )
 {
   return this->state;
