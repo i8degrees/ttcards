@@ -22,11 +22,14 @@ class CardHand
     CardHand ( void );
     ~CardHand ( void );
 
-    bool Add ( Card card );
+    bool AddCard ( Card &card );
+    //bool RemoveCard ( Card &card );
+    bool SelectedCard ( Card &card );
 
     std::vector<Card> cards;
   private:
     // ...
+    Card *selectedCard;
 };
 
 #endif // CARD_HAND_HEADERS defined

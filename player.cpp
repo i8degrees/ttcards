@@ -8,83 +8,61 @@
 
 Player::Player ( void )
 {
-  this->card_buffer = NULL;
-
   #ifdef DEBUG_PLAYER
     std::cout << "Hello, world! <From Player::Player>" << "\n" << std::endl;
   #endif
 
-  this->db.Load();
-  this->dealer.Init ( this->db.cards );
-
-  this->hand.Add ( this->dealer.selectCard ( 89 ) ); // Diablos
-  this->hand.Add ( this->dealer.selectCard ( 99 ) ); // Ward
-  this->hand.Add ( this->dealer.selectCard ( 0 ) ); // Geezard
-  this->hand.Add ( this->dealer.selectCard ( 109 ) ); // Squall
-  this->hand.Add ( this->dealer.selectCard ( 50 ) ); // Malboro
-
-  for ( int i = 0; i < MAX_HAND; i++ )
-  {
-    //this->hand.Add ( this->dealer.Random() );
-  }
-
-
-  this->debug.ListCards ( this->hand.cards );
-  //this->cdebug.ListCard ( this->hand.deck[0] );
-
+  this->x = 0;
+  this->y = 0;
+  this->type = 0;
+  this->state = 0;
   this->score = 5;
 
-  //this->card_buffer = SDL_CreateRGBSurface ( 0, CARD_WIDTH, CARD_HEIGHT,
-                                      //SCREEN_BPP, 0, 0, 0, 0);
-                                      //screen->format->BitsPerPixel,
-                                      //screen->format->Rmask,
-                                      //screen->format->Gmask,
-                                      //screen->format->Bmask,
-                                      //screen->format->Amask);
+  this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
+  this->text_score.SetTextColor ( 255, 255, 255 );
 
-  //this->BuildCard();
-
-  this->txtScore.LoadTTF ( SCORE_FONTFACE, 32 );
-  this->txtCard.LoadTTF ( CARD_FONTFACE, 12 );
 }
 
 Player::~Player ( void )
 {
   #ifdef DEBUG_PLAYER
-    std::cout << "Goodbye cruel world! <From Player::Player>" << "\n" << std::endl;
+    std::cout << "Goodbye cruel world! <From Player::~Player>" << "\n" << std::endl;
   #endif
-  SDL_FreeSurface ( this->card_buffer );
-  this->card_buffer = NULL;
 }
 
-bool Player::BuildCard ( void )
+SDL_Rect Player::GetXY ( void )
 {
+  SDL_Rect coords;
 
-  Sprite cardFace ( CARD_WIDTH, CARD_HEIGHT );
-  Sprite cardBackground ( CARD_WIDTH, CARD_HEIGHT );
-  Sprite cardElement ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+  this->x = coords.x;
+  this->y = coords.y;
 
-  cardFace.LoadImage ( FACES_DIR + this->hand.cards[0].face );
+  return coords;
+}
 
-  cardFace.x = 0; //card0.x = PLAYER1_ORIGIN_X;
-  cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
+void Player::SetXY ( unsigned int x, unsigned int y )
+{
+  this->x = x;
+  this->y = y;
+}
 
-  cardBackground.LoadImage ( PLAYER1_CARDFACE );
+unsigned int Player::GetType ( void )
+{
+  return this->type;
+}
 
-  cardBackground.x = 0;
-  cardBackground.y = 0;
+void Player::SetType ( unsigned int player_type )
+{
+  this->type = player_type;
+}
+unsigned int Player::GetState ( void )
+{
+  return this->state;
+}
 
-  cardElement.LoadImage ( ELEMENT_WATER );
-
-  cardElement.x = cardFace.x + 46;
-  cardElement.y = cardFace.y + 4;
-
-  cardBackground.Draw ( this->card_buffer );
-  cardFace.Draw ( this->card_buffer );
-  cardElement.Draw ( this->card_buffer );
-
-  return true;
-
+void Player::SetState ( unsigned int state )
+{
+  this->state = state;
 }
 
 unsigned int Player::GetScore ( void )
@@ -92,33 +70,73 @@ unsigned int Player::GetScore ( void )
   return this->score;
 }
 
-bool Player::SetScore ( unsigned int value )
+void Player::SetScore ( unsigned int score )
 {
-  this->score = value;
+  this->score = score;
+}
+
+void Player::Input ( SDL_Event &input )
+{
+  if ( input.type == SDL_KEYDOWN )
+  {
+    switch ( input.key.keysym.sym )
+    {
+      case SDLK_ESCAPE:
+        // skip turn
+        break;
+      case SDLK_LEFT:
+        this->mixer1.PlaySoundTrack ( CURSOR_MOVE, 1, 0);
+        break;
+      case SDLK_RIGHT:
+        this->mixer2.PlaySoundTrack ( CURSOR_CANCEL, 2, 0 );
+        break;
+      case SDLK_UP:
+        // cursor select
+        break;
+      case SDLK_DOWN:
+        // cursor select
+        break;
+      case SDLK_1:
+        // move selected card to grid[0][0] if possible
+        break;
+      case SDLK_2:
+        // move selected card to grid[1][0] if possible
+        break;
+      case SDLK_3:
+        // move selected card to grid[2][0] if possible
+        break;
+      case SDLK_4:
+        // move selected card to grid[0][0] if possible
+        break;
+      case SDLK_5:
+        // move selected card to grid[1][1] if possible
+        break;
+      case SDLK_6:
+        // move selected card to grid[1][2] if possible
+        break;
+      case SDLK_7:
+        // move selected card to grid[2][0] if possible
+        break;
+      case SDLK_8:
+        // move selected card to grid[2][1] if possible
+        break;
+      case SDLK_9:
+        // move selected card to grid[3][2] if possible
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+bool Player::Draw ( Gfx &engine, unsigned int x, unsigned int y ) // card id
+{
   return true;
 }
 
-bool Player::Draw ( SDL_Surface *video_buffer, int x, int y ) // card id
+bool Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
 {
-
-  this->txtCard.DrawText ( this->card_buffer, "9", 8, 0, WHITE ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
-  this->txtCard.DrawText ( this->card_buffer, "6", 12, 8, WHITE ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
-  this->txtCard.DrawText ( this->card_buffer, "A", 8, 16, WHITE ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
-  this->txtCard.DrawText ( this->card_buffer, "2", 4, 8, WHITE ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
-
-  SDL_Rect offsets;
-  offsets.x = x;
-  offsets.y = y;
-
-  SDL_BlitSurface ( this->card_buffer, NULL, video_buffer, &offsets );
-
-  return true;
-}
-
-bool Player::DrawScore ( SDL_Surface *video_buffer, int x, int y )
-{
-  //this->txtScore.DrawText ( video_buffer, "5", x, y, WHITE );
-  this->txtScore.DrawText ( video_buffer, std::to_string(this->score), x, y, WHITE );
+  this->text_score.DrawText ( engine, std::to_string ( this->score ), x, y );
 
   return true;
 }

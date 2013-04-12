@@ -44,6 +44,7 @@ const char CARDS_DB[255] = "./data/cards.txt";
 const char CARD_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
 const char SCORE_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
 
+const char ELEMENT_NONE[255] = "./data/images/elements/none_16.bmp";
 const char ELEMENT_EARTH[255] = "./data/images/elements/earth_16.bmp";
 const char ELEMENT_FIRE[255] = "./data/images/elements/fire_16.bmp";
 const char ELEMENT_HOLY[255] = "./data/images/elements/holy_16.bmp";

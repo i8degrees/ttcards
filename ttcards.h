@@ -18,31 +18,36 @@
 #include "board.h"
 #include "player.h"
 #include "card.h"
+#include "card_collection.h"
 #include "font.h"
 
 class TTcards
 {
-public:
-    TTcards();
+  public:
+    TTcards ( void );
     ~TTcards ( void );
+
+    bool Init ( void );
 
     bool Run ( void );
     bool IsRunning ( void );
     void SetGameState ( bool state );
 
-    bool Init ( void );
+    void InterfaceInput ( SDL_Event &event );
     void Input ( void );
 
-private:
-    SDL_Surface *screen; // primary video buffer
-    bool game_state; // global app state
-
-    Gfx gfx;
-    Font txt;
+  private:
+    SDL_Event input;
 
     Audio music;
-    Audio mixer1, mixer2; // Two (2) audio mixing channels for playing sound effects
+    Board board;
+    CardDebug debug;
+    CardView *cards;
+    Collection collection;
+    Gfx engine;
     Player player1, player2;
+
+    bool game_state; // global app state
 };
 
 #endif // TTCARDS_HEADERS defined

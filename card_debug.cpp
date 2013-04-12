@@ -22,7 +22,7 @@ CardDebug::~CardDebug ( void )
   #endif
 }
 
-void CardDebug::ListCard ( Card card )
+void CardDebug::ListCard ( Card &card )
 {
   std::cout << card.id;
   std::cout << " ";

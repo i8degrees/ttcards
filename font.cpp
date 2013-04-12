@@ -1,6 +1,8 @@
 /******************************************************************************
     font.cpp
 
+    SDL-based Font Rendering API
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
@@ -12,17 +14,32 @@ Font::Font ( void )
 
   if ( TTF_Init () == -1 )
   {
-    std::cout << "ERR: " << SDL_GetError() << std::endl;
+    std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl;
     exit ( EXIT_FAILURE );
   }
 
-  atexit ( TTF_Quit );
+  this->text_color = { 0, 0, 0 };
+  this->coords = { 0, 0, 0, 0 };
 }
 
 Font::~Font ( void )
 {
   TTF_CloseFont ( this->font );
   this->font = NULL;
+
+  TTF_Quit ();
+}
+
+SDL_Color Font::GetTextColor ( void )
+{
+  return this->text_color;
+}
+
+void Font::SetTextColor ( unsigned r, unsigned g, unsigned b )
+{
+  this->text_color.r = r;
+  this->text_color.g = g;
+  this->text_color.b = b;
 }
 
 bool Font::LoadTTF ( std::string filename, unsigned int font_size )
@@ -31,26 +48,24 @@ bool Font::LoadTTF ( std::string filename, unsigned int font_size )
 
   if ( this->font == NULL )
   {
-    std::cout << "ERR: " << SDL_GetError() << std::endl;
-    exit ( EXIT_FAILURE );
+    std::cout << "ERR: " << TTF_GetError() << std::endl;
+    return false;
   }
 
   return true;
 }
 
-bool Font::DrawText ( SDL_Surface *video_buffer, std::string text, int x, int y, SDL_Color color )
+bool Font::DrawText ( Gfx &engine, std::string text, unsigned int x, unsigned int y )
 {
-  SDL_Surface *txt_buffer = NULL;
-  SDL_Rect offsets;
+  SDL_Surface *text_buffer = NULL;
+  coords.x = x;
+  coords.y = y;
 
-  offsets.x = x;
-  offsets.y = y;
+  text_buffer = TTF_RenderText_Solid ( this->font, text.c_str(), this->text_color );
 
-  txt_buffer = TTF_RenderText_Solid ( this->font, text.c_str(), color );
+  engine.DrawSurface ( text_buffer, x, y );
 
-  SDL_BlitSurface ( txt_buffer, NULL, video_buffer, &offsets );
-
-  SDL_FreeSurface ( txt_buffer );
+  SDL_FreeSurface ( text_buffer );
 
   return true;
 }

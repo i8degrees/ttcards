@@ -24,10 +24,14 @@ CardHand::~CardHand ( void )
   this->cards.clear();
 }
 
-bool CardHand::Add ( Card card )
+bool CardHand::AddCard ( Card &card )
 {
   this->cards.push_back ( card );
 
   return true;
+}
 
+bool SelectedCard ( Card &card )
+{
+  //return card;
 }

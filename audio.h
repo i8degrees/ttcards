@@ -13,9 +13,11 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_mixer.h"
 
+//#define DEBUG_AUDIO
+
 class Audio {
 public:
-  Audio ( unsigned int rate = MIX_DEFAULT_FREQUENCY, Uint16 format = MIX_DEFAULT_FORMAT,
+  Audio ( unsigned int rate = 44100, Uint16 format = MIX_DEFAULT_FORMAT,
           unsigned int channels = MIX_DEFAULT_CHANNELS, unsigned int buffers = 4096 );
 
   ~Audio ( void );

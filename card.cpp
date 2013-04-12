@@ -11,7 +11,6 @@
 Card::Card (  unsigned int id, unsigned int level, unsigned int type,
               unsigned int element, std::array<int, 4> rank,
               std::string name, std::string face )
-
 {
   #ifdef DEBUG_CARD
     std::cout << "Hello, world! <From Card::Card>\n" << std::endl;
