@@ -130,8 +130,9 @@ bool Gfx::UpdateScreen ( void )
   return true;
 }
 
-bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned int y,
-                          unsigned int width, unsigned int height, unsigned int r, unsigned int g, unsigned int b )
+bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
+                          unsigned int width, unsigned int height,
+                          unsigned int r, unsigned int g, unsigned int b )
 {
   SDL_Rect rectangle = { 0, 0, 0, 0 };
   unsigned int rectangle_color = 0;
@@ -141,9 +142,9 @@ bool Gfx::DrawRectangle ( SDL_Surface *video_buffer, unsigned int x, unsigned in
   rectangle.w = width;
   rectangle.h = height;
 
-  rectangle_color = SDL_MapRGB ( video_buffer->format, r, g, b );
+  rectangle_color = SDL_MapRGB ( this->screen->format, r, g, b );
 
-  if ( SDL_FillRect ( video_buffer, &rectangle, rectangle_color ) != 0 )
+  if ( SDL_FillRect ( this->screen, &rectangle, rectangle_color ) != 0 )
   {
     std::cout << "ERR in Gfx::DrawRectangle (): " << SDL_GetError() << std::endl;
     return false;

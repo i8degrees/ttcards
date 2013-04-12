@@ -40,11 +40,12 @@ class Gfx {
 
     bool UpdateScreen ( void );
 
-    bool DrawRectangle (  SDL_Surface *video_buffer, unsigned int x, unsigned int y,
+    bool DrawRectangle (  unsigned int x, unsigned int y,
                           unsigned int width, unsigned int height,
                           unsigned int r, unsigned int g, unsigned int b );
 
     void SetWindowTitle ( std::string app_name );
+
     bool SetWindowIcon (  std::string app_icon,
                           SDL_Color colorkey = { 0, 0, 0 },
                           unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
