@@ -23,7 +23,7 @@
 class TTcards
 {
 public:
-    TTcards();
+    TTcards ( void );
     ~TTcards ( void );
 
     bool Run ( void );
@@ -34,15 +34,14 @@ public:
     void Input ( void );
 
 private:
-    SDL_Surface *screen; // primary video buffer
     bool game_state; // global app state
 
-    Gfx gfx;
-    Font txt;
+    Gfx engine;
 
     Audio music;
     Audio mixer1, mixer2; // Two (2) audio mixing channels for playing sound effects
     Player player1, player2;
+    Board board;
 };
 
 #endif // TTCARDS_HEADERS defined

@@ -8,35 +8,33 @@
 
 TTcards::TTcards ( void )
 {
-  this->screen = NULL;
   this->game_state = true;
 }
 
 TTcards::~TTcards ( void )
 {
-  SDL_FreeSurface ( this->screen );
-  this->screen = NULL;
 }
 
 bool TTcards::Init ( void )
 {
+  unsigned int flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE;
+
   std::srand ( ( unsigned ) time ( 0 ) );
 
-  if ( this->gfx.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
+  if ( this->engine.Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) == false )
   {
-    exit ( EXIT_FAILURE );
+    std::cout << "ERR in TTcards::Init (): " << SDL_GetError() << std::endl;
+    return false;
   }
 
-  this->screen = this->gfx.SetMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP,
-                  SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE);
-
-  if ( this->screen == 0 )
+  if ( this->engine.SetVideoMode (  SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, flags ) == false )
   {
-    exit ( EXIT_FAILURE );
+    std::cout << "ERR in TTcards::Init (): " << SDL_GetError() << std::endl;
+    return false;
   }
 
-  this->gfx.SetWindowTitle ( APP_NAME );
-  this->gfx.SetWindowIcon ( APP_ICON );
+  this->engine.SetWindowTitle ( APP_NAME );
+  this->engine.SetWindowIcon ( APP_ICON );
 
   return true;
 }
@@ -106,36 +104,54 @@ void TTcards::Input ( void )
 
 bool TTcards::Run ( void )
 {
-  Player player1; // player2
-  Board board;
-
   SDL_Rect offsets;
   offsets.x = 96;
   offsets.y = 18;
 
-  board.LoadBackground ();
+  this->board.LoadBackground ( this->engine, BOARD_BACKGROUND );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
-  this->music.PlayMusicTrack( -1 );
-  this->music.PauseMusic();
+  this->music.PlayMusicTrack ( -1 );
+  this->music.PauseMusic ();
+
+  Sprite cardFace ( CARD_WIDTH, CARD_HEIGHT );
+  Sprite cardBackground ( CARD_WIDTH, CARD_HEIGHT );
+  Sprite cardElement ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+
+  std::string face0 = "./data/images/faces/89.bmp";
+  cardFace.LoadImage ( face0 );
+
+  cardFace.SetX ( 96 ); //card0.x = PLAYER1_ORIGIN_X;
+  cardFace.SetY ( 16 ); //cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
+
+  cardBackground.LoadImage ( PLAYER1_CARDFACE );
+
+  cardBackground.SetX ( 96 );
+  cardBackground.SetY ( 16 );
+
+  cardElement.LoadImage ( ELEMENT_WATER );
+
+  cardElement.SetX ( 142 ); //cardElement.x = cardFace.x + 46;
+  cardElement.SetY ( 20 ); //cardElement.y = cardFace.y + 4;
 
   while( this->IsRunning() ) // main loop
   {
     this->Input();
 
-    board.DrawBackground ( this->screen );
+    board.DrawBackground ( this->engine );
 
-    player1.DrawScore ( this->screen, 32, 176 ); // SCREEN_HEIGHT - 48
-    player2.DrawScore ( this->screen, 320, 176 ); // 64 * 5
+    cardBackground.Draw ( this->engine );
+    cardFace.Draw ( this->engine );
+    cardElement.Draw ( this->engine );
 
+    //player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
+    //player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
+
+    this->player1.Draw ( this->engine, 96, 16 );
     //player1.Draw ( this->screen, offsets.x, offsets.y );
 
-    if (SDL_Flip ( this->screen ) !=0)
-    {
-      printf("ERR: Failed to swap video buffers.\n");
-      return false;
-    }
+    this->engine.UpdateScreen ();
 
   } // while this->IsRunning()
 
