@@ -23,29 +23,31 @@
 
 class TTcards
 {
-public:
+  public:
     TTcards ( void );
     ~TTcards ( void );
+
+    bool Init ( void );
 
     bool Run ( void );
     bool IsRunning ( void );
     void SetGameState ( bool state );
 
-    bool Init ( void );
+    void InterfaceInput ( SDL_Event &event );
     void Input ( void );
 
-private:
-    bool game_state; // global app state
-
-    Gfx engine;
+  private:
+    SDL_Event input;
 
     Audio music;
-    Audio mixer1, mixer2; // Two (2) audio mixing channels for playing sound effects
-    Player player1, player2;
     Board board;
-    Collection collection;
     CardDebug debug;
     CardView *cards;
+    Collection collection;
+    Gfx engine;
+    Player player1, player2;
+
+    bool game_state; // global app state
 };
 
 #endif // TTCARDS_HEADERS defined
