@@ -1,28 +1,39 @@
 /******************************************************************************
     sprite.cpp
 
-  Basic Sprite Engine API using SDL in C++
+    SDL-based Sprite Blitting API
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
 #include "sprite.h"
 
-using namespace std;
+/*
+void Sprite::Sprite ( void )
+{
+  // Stub constructor
+}
+*/
 
-Sprite::Sprite ( int width, int height )
+Sprite::Sprite ( unsigned int width, unsigned int height )
 {
   this->sprite_buffer = NULL;
 
-  this->width = width;
-  this->height = height;
+  this->coords.x = 0;
+  this->coords.y = 0;
+  this->coords.w = width;
+  this->coords.h = height;
+  this->offsets.x = 0;
+  this->offsets.y = 0;
+  this->offsets.w = width;
+  this->offsets.h = height;
 
-  this->id = 0;
+  this->sheet_id = 000000;
 
-  this->src.x = 0;
-  this->src.y = 0;
-  this->src.w = this->width;
-  this->src.h = this->height;
+  this->offsets.x = 0;
+  this->offsets.y = 0;
+  this->offsets.w = width;
+  this->offsets.h = height;
 }
 
 Sprite::~Sprite ( void )
@@ -31,52 +42,130 @@ Sprite::~Sprite ( void )
   this->sprite_buffer = NULL;
 }
 
-bool Sprite::LoadImage ( string filename )
+unsigned int Sprite::GetX ( void )
 {
+  return this->coords.x;
+}
 
-  SDL_Surface *tmpBuffer = NULL;
-  SDL_Color alpha = { 0, 0, 0 };
+unsigned int Sprite::GetY ( void )
+{
+  return this->coords.y;
+}
 
-  if ( ( tmpBuffer = SDL_LoadBMP ( filename.c_str() ) )  == NULL )
+unsigned int Sprite::GetWidth ( void )
+{
+  return this->coords.w;
+}
+
+unsigned int Sprite::GetHeight ( void )
+{
+  return this->coords.h;
+}
+
+
+unsigned int Sprite::GetXOffset ( void )
+{
+  return this->offsets.x;
+}
+
+unsigned int Sprite::GetYOffset ( void )
+{
+  return this->offsets.y;
+}
+
+unsigned int Sprite::GetWidthOffset ( void )
+{
+  return this->offsets.w;
+}
+
+unsigned int Sprite::GetHeightOffset ( void )
+{
+  return this->offsets.h;
+}
+
+void Sprite::SetX ( unsigned int x )
+{
+  this->coords.x = x;
+}
+
+void Sprite::SetY ( unsigned int y )
+{
+  this->coords.y = y;
+}
+
+void Sprite::SetWidth ( unsigned int width )
+{
+  this->coords.w = width;
+}
+
+void Sprite::SetHeight ( unsigned int height )
+{
+  this->coords.h = height;
+}
+
+
+void Sprite::SetXOffset ( unsigned int x_offset )
+{
+  this->offsets.x = x_offset;
+}
+
+void Sprite::SetYOffset ( unsigned int y_offset )
+{
+  this->offsets.y = y_offset;
+}
+
+void Sprite::SetWidthOffset ( unsigned int width_offset )
+{
+  this->offsets.w = width_offset;
+}
+
+void Sprite::SetHeightOffset ( unsigned int height_offset )
+{
+  this->offsets.h = height_offset;
+}
+
+unsigned int Sprite::GetSheetID ( void )
+{
+  return this->sheet_id;
+}
+unsigned int Sprite::GetState ( void )
+{
+  return this->state;
+}
+void Sprite::SetSheetID ( unsigned int id )
+{
+  this->sheet_id = id;
+}
+
+void Sprite::SetState ( unsigned int state )
+{
+  this->state = state;
+}
+
+bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
+{
+  this->sprite_buffer = this->engine->LoadImage ( filename, colorkey, flags );
+
+  if ( this->sprite_buffer == NULL )
   {
-    cout << "ERR -255: " << SDL_GetError() << endl;
+    std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
     return false;
   }
-
-  SDL_SetColorKey ( tmpBuffer, SDL_RLEACCEL | SDL_SRCCOLORKEY,
-                   SDL_MapRGB ( tmpBuffer->format, alpha.r, alpha.g, alpha.b ) );
-
-  this->sprite_buffer = SDL_DisplayFormatAlpha ( tmpBuffer );
-
-  SDL_FreeSurface ( tmpBuffer );
 
   //printf("%d %d %d %d %d %s\n", sprite_ptr->id, sprite_ptr->x, sprite_ptr->y, sprite_ptr->width, sprite_ptr->height, filename);
 
   return true;
 }
 
-bool Sprite::Draw ( SDL_Surface *video_buffer )
+bool Sprite::Draw ( Gfx &engine )
 {
-  if ( this->id != 0 )
+  if ( this->sheet_id != 000000 )
   {
-    this->src.x = ( this->id * this->width );
-    this->src.y = 0;
-  }
-  else
-  {
-    this->src.x = 0;
-    this->src.y = 0;
+    this->offsets.x = ( this->sheet_id * this->offsets.w );
+    this->offsets.y = 0;
   }
 
-  this->src.w = this->width;
-  this->src.h = this->height;
-
-  this->dest.x = this->x;
-  this->dest.y = this->y;
-  this->dest.w = this->width;
-  this->dest.h = this->height;
-
-  SDL_BlitSurface(this->sprite_buffer, &src, video_buffer, &dest);
+  engine.DrawSurface ( this->sprite_buffer, coords.x, coords.y, &offsets );
 
   return true;
 }
