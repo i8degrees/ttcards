@@ -1,7 +1,7 @@
 /******************************************************************************
     card_view.cpp
 
-    Card graphics / drawing
+    Card Graphics / Rendering
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -10,8 +10,8 @@
 
 CardView::CardView ( void )
 {
-  #ifdef DEBUG_CARD_VIEW
-    std::cout << "Hello, world! <From CardView::CardView>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_VIEW_OBJ
+    std::cout << "CardView::CardView (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->card_face = NULL;
@@ -29,8 +29,8 @@ CardView::CardView ( void )
 
 CardView::~CardView ( void )
 {
-  #ifdef DEBUG_CARD_VIEW
-    std::cout << "Goodbye cruel world! <From CardView::~CardView>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_VIEW_OBJ
+    std::cout << "CardView::~CardView (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   delete this->card_element;
@@ -71,7 +71,9 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
 
   if ( card_face->LoadImage ( FACES_DIR + card.face ) == false )
   {
-    std::cout << "ERR: " << card.face << "\n" << std::endl;
+    #ifdef DEBUG_CARD_VIEW
+      std::cout << "ERR: " << card.face << "\n" << std::endl;
+    #endif
   }
 
   card_face->SetX ( x ); //card0.x = PLAYER1_ORIGIN_X;
@@ -116,10 +118,10 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   card_element->SetY ( y + 4 ); //cardElement.y = cardFace.y + 4;
   card_element->Draw ( engine );
 
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[0] ), x+8, y+0 ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[1] ), x+12, y+8 ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[2] ), x+8, y+16 ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[3] ), x+4, y+8 ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[0] ), x+8, y+0 );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[1] ), x+12, y+8 );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[2] ), x+8, y+16 );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[3] ), x+4, y+8 );
 
   return true;
 }

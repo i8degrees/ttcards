@@ -15,11 +15,11 @@
 
 #include "cfg.h"
 #include "card.h"
-
 #include "font.h"
 #include "sprite.h"
 
 #define DEBUG_CARD_VIEW
+#define DEBUG_CARD_VIEW_OBJ
 
 class CardView
 {
