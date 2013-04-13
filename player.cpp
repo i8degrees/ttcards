@@ -136,7 +136,8 @@ bool Player::Draw ( Gfx &engine, unsigned int x, unsigned int y ) // card id
 
 bool Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
 {
-  this->text_score.DrawText ( engine, std::to_string ( this->score ), x, y );
+  this->text_score.SetTextBuffer ( std::to_string ( this->score ) );
+  this->text_score.DrawText ( engine, x, y );
 
   return true;
 }

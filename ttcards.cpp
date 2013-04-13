@@ -156,11 +156,15 @@ bool TTcards::Run ( void )
 
     if ( this->show_fps == true )
     {
-      this->timer_text.DrawText ( this->engine, std::to_string ( this->fps.GetFPS() ), 384/2, 4 );
+      this->timer_text.SetTextBuffer ( std::to_string ( this->fps.GetFPS() ) );
+      signed int w = this->timer_text.GetTextWidth ();
+      this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
     }
-    else if ( this->show_fps == false )
+    else // false
     {
-      this->timer_text.DrawText ( this->engine, " ", 384/2, 4 );
+      this->timer_text.SetTextBuffer ( " " );
+      signed int w = this->timer_text.GetTextWidth ();
+      this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
     }
 
     for ( int idx = 0; idx < this->player1.cards.size(); idx++ )

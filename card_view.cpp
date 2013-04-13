@@ -24,7 +24,6 @@ CardView::CardView ( void )
   this->card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_element = new Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
-
 }
 
 CardView::~CardView ( void )
@@ -122,10 +121,17 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   if ( card_element->Draw ( engine ) == false )
     return false;
 
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[0] ), x+8, y+0 );
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[1] ), x+12, y+8 );
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[2] ), x+8, y+16 );
-  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[3] ), x+4, y+8 );
+  this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[0] ) );
+  this->text_buffer.DrawText ( engine, x+8, y+0 );
+
+  this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[1] ) );
+  this->text_buffer.DrawText ( engine, x+12, y+8 );
+
+  this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[2] ) );
+  this->text_buffer.DrawText ( engine, x+8, y+16 );
+
+  this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[3] ) );
+  this->text_buffer.DrawText ( engine, x+4, y+8 );
 
   return true;
 }

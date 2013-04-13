@@ -21,7 +21,7 @@ Font::Font ( void )
     #ifdef DEBUG_FONT
       std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl;
     #endif
-    exit ( EXIT_FAILURE );
+    exit ( EXIT_FAILURE ); // TODO: Reconsider
   }
 
   this->text_color = { 0, 0, 0 };
@@ -38,6 +38,41 @@ Font::~Font ( void )
   this->font = NULL;
 
   TTF_Quit ();
+}
+
+unsigned int Font::GetTextWidth ( void )
+{
+  return this->coords.w;
+}
+
+unsigned int Font::GetTextHeight ( void )
+{
+  return this->coords.h;
+}
+
+std::string Font::GetTextBuffer ( void )
+{
+  return this->text_buffer;
+}
+
+void Font::SetTextBuffer ( std::string text )
+{
+  signed int width, height = 0;
+
+  // TODO: Finish ERR checks
+  //if ( text.length() > 0 )
+  //{
+    TTF_SizeText ( this->font, text.c_str(), &width, &height );
+    if ( TTF_SizeText ( this->font, text.c_str(), &width, &height ) != -1 )
+    {
+      this->coords.w = width;
+      this->coords.h = height;
+      //std::cout << width << "\n" << std::endl;
+      //std::cout << height << "\n" << std::endl;
+      this->text_buffer = text;
+    }
+
+  //}
 }
 
 SDL_Color Font::GetTextColor ( void )
@@ -67,17 +102,24 @@ bool Font::LoadTTF ( std::string filename, unsigned int font_size )
   return true;
 }
 
-bool Font::DrawText ( Gfx &engine, std::string text, unsigned int x, unsigned int y )
+bool Font::DrawText ( Gfx &engine, unsigned int x, unsigned int y )
 {
-  SDL_Surface *text_buffer = NULL;
-  coords.x = x;
-  coords.y = y;
+  SDL_Surface *video_buffer = NULL;
+  this->coords.x = x;
+  this->coords.y = y;
 
-  text_buffer = TTF_RenderText_Solid ( this->font, text.c_str(), this->text_color );
+  video_buffer = TTF_RenderText_Solid ( this->font, this->GetTextBuffer().c_str(), this->text_color );
 
-  engine.DrawSurface ( text_buffer, x, y );
+  // TODO: ERR checking
 
-  SDL_FreeSurface ( text_buffer );
+  if ( engine.DrawSurface ( video_buffer, x, y ) == false )
+  {
+    std::cout << "ERR in Font::DrawText(): " << SDL_GetError() << std::endl;
+    return false;
+  }
+
+  SDL_FreeSurface ( video_buffer );
+  video_buffer = NULL;
 
   return true;
 }
