@@ -8,6 +8,10 @@
 
 Board::Board ( void )
 {
+  #ifdef DEBUG_BOARD_OBJ
+    std::cout << "Board::Board (): " << "Hello, world!" << "\n" << std::endl;
+  #endif
+
   this->background = NULL;
   this->engine = NULL;
 
@@ -22,6 +26,10 @@ Board::Board ( void )
 
 Board::~Board ( void )
 {
+  #ifdef DEBUG_BOARD_OBJ
+    std::cout << "Board::~Board (): " << "Goodbye cruel world!" << "\n" << std::endl;
+  #endif
+
   SDL_FreeSurface ( this->background );
   this->background = NULL;
 

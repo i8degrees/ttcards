@@ -14,6 +14,9 @@
 #include "cfg.h"
 #include "gfx.h"
 
+#define DEBUG_BOARD
+//#define DEBUG_BOARD_OBJ
+
 class Board
 {
   public:
