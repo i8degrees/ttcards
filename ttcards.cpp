@@ -133,40 +133,35 @@ bool TTcards::Run ( void )
   //this->debug.ListCards ( this->collection.cards );
 
   this->player1.AddCard ( this->collection.cards[89] ); // Diablos
-
-    //this->player1.AddCard ( this->collection.cards[109] ); // Squall
-/*
-  this->player1.AddCard ( this->collection.cards[0] ); // Geezard
+  this->player1.AddCard ( this->collection.cards[109] ); // Squall
   this->player1.AddCard ( this->collection.cards[99] ); // Ward
-*/
-    //this->player1.AddCard ( this->collection.cards[50] ); // Malboro
 
-  this->player1.AddCard ( this->collection.cards[20] ); // Jelleye
+  this->player1.AddCard ( this->collection.cards[20] ); // Jelleye [pos 3]
   this->player1.AddCard ( this->collection.cards[16] ); // Thrustaevis
 
   // These two cards should be discarded
   this->player1.AddCard ( this->collection.cards[88] ); // Carbuncle
   this->player1.AddCard ( this->collection.cards[24] ); // TriFace
 
-  this->debug.ListCards ( this->player1.cards );
-
   // This card should be removed
   this->player1.RemoveCard ( this->player1.cards[3] ); // Jelleye
-  this->debug.ListCards ( this->player1.cards );
 
   this->player2.AddCard ( this->collection.cards[20] ); // Jelleye
-  this->player2.AddCard ( this->collection.cards[16] ); // Thrustaevis
+  this->player2.AddCard ( this->collection.cards[50] ); // Malboro
   this->player2.AddCard ( this->collection.cards[24] ); // TriFace
   this->player2.AddCard ( this->collection.cards[66] ); // Propagator
   this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
 
-  this->debug.ListCards ( this->player2.cards );
+  // This card should be discarded
+  this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
 
   this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
   this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
 
   this->fps.Start();
+
+  this->player1.SetType ( 0 );
+  this->player2.SetType ( 1 );
 
   while( this->IsRunning() ) // main loop
   {
@@ -187,63 +182,8 @@ bool TTcards::Run ( void )
       this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
     }
 
-    for ( int idx = 0; idx < this->player1.cards.size(); idx++ )
-    {
-      if ( this->player1.isValid( this->player1.cards[idx] ) == true)
-      {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 16, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 12
-      }
-      idx+=1;
-      if ( this->player1.isValid( this->player1.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 48, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 4
-      }
-      idx+=1;
-      if ( this->player1.isValid( this->player1.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 80, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 2.40
-      }
-      idx+=1;
-      if ( this->player1.isValid( this->player1.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 112, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.71
-      }
-      idx+=1;
-      if ( this->player1.isValid( this->player1.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 144, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.325
-      }
-      idx+=1;
-    }
-
-    for ( int idx = 0; idx < this->player2.cards.size(); idx++ )
-    {
-      if ( this->player2.isValid( this->player2.cards[idx] ) )
-      {
-        this->cards.DrawCard ( engine, this->player2.cards[idx], 304, 16, 1 );
-      }
-      idx+=1;
-      if ( this->player2.isValid( this->player2.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player2.cards[idx], 304, 40, 1 );
-      }
-      idx+=1;
-      if ( this->player2.isValid( this->player2.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player2.cards[idx], 304, 64, 1 );
-      }
-      idx+=1;
-      if ( this->player2.isValid( this->player2.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player2.cards[idx], 304, 88, 1 );
-      }
-      idx+=1;
-      if ( this->player2.isValid( this->player2.cards[idx] ) == true )
-      {
-        this->cards.DrawCard ( engine, this->player2.cards[idx], 304, 112, 1 );
-      }
-      idx+=1;
-    }
+    player1.Draw ( this->engine );
+    player2.Draw ( this->engine );
 
     player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
     player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5

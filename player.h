@@ -33,6 +33,8 @@ public:
   Player ( void );
   ~Player ( void );
 
+  void Init ( void );
+
   SDL_Rect GetXY ( void );
   void SetXY ( unsigned int x, unsigned int y );
 
@@ -48,12 +50,15 @@ public:
   bool DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
   void Input ( SDL_Event &input );
-  bool Draw ( Gfx &engine, unsigned int x, unsigned int y );
+  void Draw ( Gfx &engine );
+  //bool Draw ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
-  //CardView card;
+  Sprite *cursor;
+  Board board;
+  CardDebug debug;
+  CardView card;
   Font text_score;
-
   unsigned int x;
   unsigned int y;
   unsigned int type; // HUMAN, CPU, DEBUG
@@ -62,6 +67,8 @@ private:
   unsigned int score;
 
   Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
+
+  //Timer turn;
 };
 
 #endif // PLAYERS_HEADERS defined

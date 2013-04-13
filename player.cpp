@@ -21,13 +21,25 @@ Player::Player ( void )
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
   this->text_score.SetTextColor ( 255, 255, 255 );
 
+  this->cursor = NULL;
+  this->cursor = new Sprite ( 26, 16 );
+  this->cursor->SetX ( 80 );
+  this->cursor->SetY ( 16 );
+  this->cursor->LoadImage ( LEFT_CURSOR );
 }
 
 Player::~Player ( void )
 {
   #ifdef DEBUG_PLAYER_OBJ
-    std::cout << "Player::Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
+    std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
+
+  delete cursor;
+}
+
+void Player::Init ( void )
+{
+  // ...
 }
 
 SDL_Rect Player::GetXY ( void )
@@ -84,22 +96,60 @@ void Player::Input ( SDL_Event &input )
       default:
         break;
       case SDLK_ESCAPE:
+      case SDLK_u:
         // skip turn
+        this->SetType ( 1 );
+        break;
+      case SDLK_i:
+        if ( this->GetType() == 0 )
+        {
+          this->SetType ( 1 );
+        }
         break;
       case SDLK_LEFT:
-        this->mixer1.PlaySoundTrack ( CURSOR_MOVE, 1, 0);
+        if ( this->GetType() == 0 )
+        {
+          this->mixer1.PlaySoundTrack ( CURSOR_MOVE, 1, 0);
+          std::cout << this->type << "\n";
+        }
         break;
       case SDLK_RIGHT:
-        this->mixer2.PlaySoundTrack ( CURSOR_CANCEL, 2, 0 );
+        if ( this->GetType() == 0 )
+        {
+          this->mixer2.PlaySoundTrack ( CURSOR_CANCEL, 2, 0 );
+          std::cout << this->type << "\n";
+        }
         break;
       case SDLK_UP:
-        // cursor select
+        if ( this->GetType() == 0 )
+        {
+          if ( this->cursor->GetY() > 16 && this->cursor->GetY() )
+          {
+            this->cursor->SetY ( this->cursor->GetY() - 32 );
+            std::cout << this->type << "\n";
+          }
+        }
         break;
       case SDLK_DOWN:
-        // cursor select
+        if ( this->GetType() == 0 )
+        {
+          if ( this->cursor->GetY() >= 16 && this->cursor->GetY() <= 128 )
+          {
+            this->cursor->SetY ( this->cursor->GetY() + 32 );
+            std::cout << this->type << "\n";
+          }
+        }
         break;
       case SDLK_1:
         // move selected card to grid[0][0] if possible
+        if ( this->GetType() == 0 )
+        {
+          this->debug.ListCards ( this->cards );
+        }
+        else
+        {
+          this->debug.ListCards ( this->cards );
+        }
         break;
       case SDLK_2:
         // move selected card to grid[1][0] if possible
@@ -124,14 +174,79 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_9:
         // move selected card to grid[3][2] if possible
+        if ( this->GetType() == 0 )
+        {
+          this->RemoveCard ( this->cards[3] ); // Jelleye
+        }
         break;
     }
   }
 }
 
-bool Player::Draw ( Gfx &engine, unsigned int x, unsigned int y ) // card id
+void Player::Draw ( Gfx &engine )
 {
-  return true;
+  if ( this->GetType() == 0 )
+  {
+    for ( int idx = 0; idx < this->cards.size(); idx++ )
+    {
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 16, 16, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 12
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 16, 48, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 4
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 16, 80, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 2.40
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 16, 112, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.71
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 16, 144, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.325
+      }
+    }
+    this->cursor->Draw ( engine );
+  }
+  else if ( this->GetType() == 1 )
+  {
+    for ( int idx = 0; idx < this->cards.size(); idx++ )
+    {
+      if ( this->isValid( this->cards[idx] ) )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 304, 16, 1 );
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 304, 48, 1 );
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 304, 80, 1 );
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 304, 112, 1 );
+      }
+      idx+=1;
+      if ( this->isValid( this->cards[idx] ) == true )
+      {
+        this->card.DrawCard ( engine, this->cards[idx], 304, 144, 1 );
+      }
+      idx+=1;
+    }
+  }
 }
 
 bool Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
