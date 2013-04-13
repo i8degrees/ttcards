@@ -10,8 +10,8 @@
 
 Gfx::Gfx ( void )
 {
-  #ifdef DEBUG_GFX
-    std::cout << "Hello, world! <From Gfx::Gfx>" << "\n" << std::endl;
+  #ifdef DEBUG_GFX_OBJ
+    std::cout << "Gfx::Gfx (): Hello, world!" << "\n" << std::endl;
   #endif
 }
 
@@ -19,8 +19,8 @@ Gfx::~Gfx ( void )
 {
   this->screen = NULL;
 
-  #ifdef DEBUG_GFX
-    std::cout << "Goodbye cruel world! <From Gfx::~Gfx>" << "\n" << std::endl;
+  #ifdef DEBUG_GFX_OBJ
+    std::cout << "Gfx::~Gfx (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   SDL_Quit ();
@@ -30,7 +30,9 @@ bool Gfx::Init ( unsigned int flags )
 {
   if ( SDL_Init ( flags ) != 0 )
   {
-    std::cout << "ERR in Gfx::Init (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::Init (): " << SDL_GetError() << std::endl;
+    #endif
     return false;
   }
 
@@ -47,7 +49,10 @@ bool Gfx::SetVideoMode (  unsigned int screen_width,
 
   if ( this->screen == 0 )
   {
-    std::cout << "ERR in Gfx::SetVideoMode (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::SetVideoMode (): " << SDL_GetError() << std::endl;
+    #endif
+
     return false;
   }
 
@@ -64,7 +69,9 @@ bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
 
   if ( SDL_SetColorKey ( video_buffer, flags, transparent_color ) != 0 )
   {
-    std::cout << "ERR in Gfx::SetSurfaceTransparency (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::SetSurfaceTransparency (): " << SDL_GetError() << std::endl;
+    #endif
     return false;
   }
 
@@ -79,7 +86,9 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
 
   if ( ( temp_buffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
   {
-    std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    #endif
 
     SDL_FreeSurface ( temp_buffer );
     temp_buffer = NULL;
@@ -92,7 +101,9 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
 
   if ( this->SetSurfaceTransparency ( temp_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
   {
-    std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    #endif
 
     SDL_FreeSurface ( temp_buffer );
     temp_buffer = NULL;
@@ -107,7 +118,9 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
 
   if ( video_buffer == NULL )
   {
-    std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+    #endif
 
     SDL_FreeSurface ( temp_buffer );
     temp_buffer = NULL;
@@ -133,7 +146,9 @@ bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int 
 
   if ( SDL_BlitSurface ( video_buffer, offsets, this->screen, &coords ) != 0 )
   {
-    std::cout << "ERR in Gfx::DrawSurface (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawSurface (): " << SDL_GetError() << std::endl;
+    #endif
     return false;
   }
 
@@ -144,7 +159,9 @@ bool Gfx::UpdateScreen ( void )
 {
   if ( SDL_Flip ( this->screen ) != 0 )
   {
-    std::cout << "ERR in Gfx::UpdateScreen (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::UpdateScreen (): " << SDL_GetError() << std::endl;
+    #endif
     return false;
   }
 
@@ -167,7 +184,9 @@ bool Gfx::DrawRectangle ( unsigned int x, unsigned int y,
 
   if ( SDL_FillRect ( this->screen, &rectangle, rectangle_color ) != 0 )
   {
-    std::cout << "ERR in Gfx::DrawRectangle (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::DrawRectangle (): " << SDL_GetError() << std::endl;
+    #endif
     return false;
   }
 
@@ -190,13 +209,17 @@ bool Gfx::SetWindowIcon ( std::string app_icon, SDL_Color colorkey, unsigned int
 
   if ( icon_buffer == NULL )
   {
-    std::cout << "ERR in Gfx::SetWindowIcon (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::SetWindowIcon (): " << SDL_GetError() << std::endl;
+    #endif
     return false;
   }
 
   if ( this->SetSurfaceTransparency ( icon_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
   {
-    std::cout << "ERR in Gfx::SetWindowIcon (): " << SDL_GetError() << std::endl;
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::SetWindowIcon (): " << SDL_GetError() << std::endl;
+    #endif
     return false;
   }
 
