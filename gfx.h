@@ -18,8 +18,8 @@
 #define DEBUG_GFX
 //#define DEBUG_GFX_OBJ
 
-class Gfx {
-
+class Gfx
+{
   public:
     Gfx ( void );
     ~Gfx ( void );
