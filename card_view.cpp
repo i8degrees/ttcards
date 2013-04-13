@@ -21,9 +21,9 @@ CardView::CardView ( void )
   this->text_buffer.LoadTTF ( CARD_FONTFACE, 12 ); // font: shitty temp
   this->text_buffer.SetTextColor ( 255, 255, 255 ); // color: white
 
-  card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  card_element = new Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+  this->card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
+  this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
+  this->card_element = new Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
 
 }
 
