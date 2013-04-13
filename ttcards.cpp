@@ -13,7 +13,8 @@ TTcards::TTcards ( void )
 
 TTcards::~TTcards ( void )
 {
-  // ...
+  SDL_FreeSurface ( this->background );
+  this->background = NULL;
 }
 
 bool TTcards::Init ( void )
@@ -100,9 +101,23 @@ void TTcards::Input ( void )
   }
 }
 
+bool TTcards::LoadBackground ( std::string filename )
+{
+  this->background = this->engine.LoadImage ( filename );
+
+  return true;
+}
+
+bool TTcards::DrawBackground ( void )
+{
+  this->engine.DrawSurface ( this->background, 0, 0 );
+
+  return true;
+}
+
 bool TTcards::Run ( void )
 {
-  this->board.LoadBackground ( BOARD_BACKGROUND );
+  this->LoadBackground ( BOARD_BACKGROUND );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
@@ -151,8 +166,8 @@ bool TTcards::Run ( void )
   while( this->IsRunning() ) // main loop
   {
     this->Input ();
+    this->DrawBackground ();
 
-    board.DrawBackground ( this->engine );
 
     if ( this->show_fps == true )
     {

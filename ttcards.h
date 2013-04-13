@@ -38,13 +38,18 @@ class TTcards
     void InterfaceInput ( SDL_Event &event );
     void Input ( void );
 
+    bool LoadBackground ( std::string filename );
+    bool DrawBackground ( void );
+
   private:
+    SDL_Surface *background;
     SDL_Event input;
 
     Audio music;
-    Board board;
+    //Board board;
     CardDebug debug;
     CardView cards;
+
     Collection collection;
     Gfx engine;
     Player player1, player2;
