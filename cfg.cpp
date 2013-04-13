@@ -59,7 +59,13 @@ const char CARDFACE[255] = "./data/images/faces/face.bmp";
 const char NO_CARDFACE[255] = "./data/images/faces/noface.bmp";
 const char PLAYER1_CARDFACE[255] = "./data/images/player1.bmp";
 const char PLAYER2_CARDFACE[255] = "./data/images/player2.bmp";
+const char NOPLAYER_CARD[255] = "./data/images/noplayer.png";
+
+const char LEFT_CURSOR[255] = "./data/images/left_cursor.png";
+const char RIGHT_CURSOR[255] = "./data/images/right_cursor.png";
 
 const char CURSOR_MOVE[255] = "./data/audio/cursor_move.wav";
 const char CURSOR_CANCEL[255] = "./data/audio/cursor_cancel.wav";
+const char CURSOR_WRONG[255] = "./data/audio/cursor_wrong.wav";
 const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";
+const char MUSIC_ALT_TRACK[255] = "./data/audio/06_ShuffleOrBoogie.ogg";

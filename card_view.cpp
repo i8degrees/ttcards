@@ -55,13 +55,13 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   switch ( player )
   {
     case 0:
-      card_background->LoadImage ( PLAYER1_CARDFACE );
+      card_background->LoadImage ( PLAYER1_CARD );
       break;
     case 1:
-      card_background->LoadImage ( PLAYER2_CARDFACE );
+      card_background->LoadImage ( PLAYER2_CARD );
       break;
     default:
-      card_background->LoadImage ( PLAYER1_CARDFACE );
+      card_background->LoadImage ( NOPLAYER_CARD );
       break;
   }
 
@@ -70,7 +70,7 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   if ( card_background->Draw ( engine ) == false )
     return false;
 
-  if ( card_face->LoadImage ( FACES_DIR + card.face ) == false )
+  if ( card_face->LoadImage ( CARD_FACES + card.face ) == false )
   {
     #ifdef DEBUG_CARD_VIEW
       std::cout << "ERR: " << card.face << "\n" << std::endl;

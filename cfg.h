@@ -58,14 +58,19 @@ extern const char ELEMENT_THUNDER[255];
 extern const char ELEMENT_WATER[255];
 extern const char ELEMENT_WIND[255];
 
-extern const char FACES_DIR[255];
-extern const char CARDFACE[255];
-extern const char NO_CARDFACE[255];
-extern const char PLAYER1_CARDFACE[255];
-extern const char PLAYER2_CARDFACE[255];
+extern const char CARD_FACES[255];
+extern const char HIDDEN_CARD[255];
+extern const char PLAYER1_CARD[255];
+extern const char PLAYER2_CARD[255];
+extern const char NOPLAYER_CARD[255];
+
+extern const char LEFT_CURSOR[255];
+extern const char RIGHT_CURSOR[255];
 
 extern const char CURSOR_MOVE[255];
 extern const char CURSOR_CANCEL[255];
+extern const char CURSOR_WRONG[255];
 extern const char MUSIC_TRACK[255];
+extern const char MUSIC_ALT_TRACK[255];
 
 #endif // CFG_HEADERS defined
