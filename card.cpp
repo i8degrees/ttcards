@@ -12,8 +12,8 @@ Card::Card (  unsigned int id, unsigned int level, unsigned int type,
               unsigned int element, std::array<int, 4> rank,
               std::string name, std::string face )
 {
-  #ifdef DEBUG_CARD
-    std::cout << "Hello, world! <From Card::Card>\n" << std::endl;
+  #ifdef DEBUG_CARD_OBJ
+    std::cout << "Card::Card (): Hello, world!" << "\n" << std::endl;
   #endif
 
   this->id = id;
@@ -27,8 +27,8 @@ Card::Card (  unsigned int id, unsigned int level, unsigned int type,
 
 Card::~Card ( void )
 {
-  #ifdef DEBUG_CARD
-    std::cout << "Good cruel world! <From Card::~Card>\n" << std::endl;
+  #ifdef DEBUG_CARD_OBJ
+    std::cout << "Card::~Card(): Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   this->id = 0;
