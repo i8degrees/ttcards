@@ -17,7 +17,7 @@
 
 #include "gfx.h"
 
-//#define DEBUG_SPRITE
+#define DEBUG_SPRITE
 
 class Sprite {
   public:

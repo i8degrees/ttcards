@@ -152,15 +152,23 @@ void Sprite::SetState ( unsigned int state )
 
 bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
 {
+  // Ensure that we have a clean surface available
+  if ( this->sprite_buffer != NULL )
+  {
+    SDL_FreeSurface ( this->sprite_buffer );
+  }
+
   this->sprite_buffer = this->engine.LoadImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer == NULL )
   {
     std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
+
+    SDL_FreeSurface ( this->sprite_buffer );
+    this->sprite_buffer = NULL;
+
     return false;
   }
-
-  //printf("%d %d %d %d %d %s\n", sprite_ptr->id, sprite_ptr->x, sprite_ptr->y, sprite_ptr->width, sprite_ptr->height, filename);
 
   return true;
 }
