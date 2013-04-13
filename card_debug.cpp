@@ -24,6 +24,14 @@ CardDebug::~CardDebug ( void )
 
 void CardDebug::ListCard ( Card &card )
 {
+  // TODO: ERR check
+  if ( card.name == "\0" || card.face == "\0" )
+  {
+    #ifdef DEBUG_CARD_DEBUG
+      std::cout << "CardDebug::ListCard(): " << "Card is empty." << "\n" << std::endl;
+    #endif
+  }
+
   std::cout << card.id;
   std::cout << " ";
   std::cout << card.level;
