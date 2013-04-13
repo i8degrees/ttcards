@@ -117,7 +117,7 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
 
     return NULL;
   }
-
+/*
   if ( this->SetSurfaceTransparency ( temp_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
   {
     #ifdef DEBUG_GFX
@@ -132,7 +132,7 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
 
     return NULL;
   }
-
+*/
   video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
 
   if ( video_buffer == NULL )
