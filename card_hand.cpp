@@ -50,7 +50,7 @@ bool CardHand::RemoveCard ( Card &card )
   if ( position == -1 )
   {
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::RemoveCard (): at " << position << ' ' << "Out of Range" << ' ' << std::endl;
+      std::cout << "CardHand::RemoveCard (): " << "Not removing card at pos: " << position << std::endl;
     #endif
     return false;
   }
@@ -61,7 +61,7 @@ bool CardHand::RemoveCard ( Card &card )
     previous_name = cards[position].name;
     cards.erase ( cards.begin() + position );
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::RemoveCard (): " << "Removed card " << previous_id << ' ' << previous_name << std::endl;
+      std::cout << "CardHand::RemoveCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
     #endif
     return true;
   }
@@ -116,7 +116,7 @@ signed int CardHand::CardPosition ( Card &card )
       {
         pos = idx;
         #ifdef DEBUG_CARD_HAND
-          std::cout << "CardHand::CardPosition (): at " << pos << ' ' << "of card" << ' ' << cards[idx].id << ' ' << cards[idx].name << std::endl;
+          std::cout << "CardHand::CardPosition (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << cards[idx].id << ' ' << cards[idx].name << std::endl;
         #endif
       }
     }
