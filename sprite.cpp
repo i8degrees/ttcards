@@ -156,6 +156,7 @@ bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int 
   if ( this->sprite_buffer != NULL )
   {
     SDL_FreeSurface ( this->sprite_buffer );
+    this->sprite_buffer = NULL;
   }
 
   this->sprite_buffer = this->engine.LoadImage ( filename, colorkey, flags );
@@ -163,7 +164,7 @@ bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int 
   if ( this->sprite_buffer == NULL )
   {
     #ifdef DEBUG_SPRITE
-      std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
+      //std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
     #endif
     SDL_FreeSurface ( this->sprite_buffer );
     this->sprite_buffer = NULL;
@@ -180,6 +181,14 @@ bool Sprite::Draw ( Gfx &engine )
   {
     this->offsets.x = ( this->sheet_id * this->offsets.w );
     this->offsets.y = 0;
+  }
+
+  if ( this->sprite_buffer == NULL )
+  {
+    #ifdef DEBUG_SPRITE
+      //std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
+    #endif
+    return false;
   }
 
   if ( engine.DrawSurface ( this->sprite_buffer, coords.x, coords.y, &offsets ) == false )
