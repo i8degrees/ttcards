@@ -62,7 +62,7 @@ void Font::SetTextBuffer ( std::string text )
   // TODO: Finish ERR checks
   //if ( text.length() > 0 )
   //{
-    TTF_SizeText ( this->font, text.c_str(), &width, &height );
+    //TTF_SizeText ( this->font, text.c_str(), &width, &height );
     if ( TTF_SizeText ( this->font, text.c_str(), &width, &height ) != -1 )
     {
       this->coords.w = width;
