@@ -56,15 +56,20 @@ void TTcards::SetGameState ( bool state )
 
 void TTcards::InterfaceInput ( SDL_Event &event )
 {
+
+  unsigned char key = event.key.keysym.sym;
+
   switch ( event.type )
   {
+    default:
+      break;
     case SDL_QUIT:
       this->SetGameState ( false );
       break;
     case SDL_VIDEORESIZE:
       break;
     case SDL_KEYDOWN:
-      switch ( event.key.keysym.sym )
+      switch ( key )
       {
         case SDLK_ESCAPE:
           this->SetGameState ( false );
@@ -79,8 +84,6 @@ void TTcards::InterfaceInput ( SDL_Event &event )
           break;
       }
       break;
-      default:
-        break;
   }
 }
 
