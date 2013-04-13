@@ -8,7 +8,7 @@
 
 Collection::Collection ( void )
 {
-  #ifdef DEBUG_CARD_COLLECTION
+  #ifdef DEBUG_CARD_COLLECTION_OBJ
     std::cout << "Hello, world! <From Collection::Collection>" << "\n" << std::endl;
   #endif
 
@@ -17,7 +17,7 @@ Collection::Collection ( void )
 
 Collection::~Collection ( void )
 {
-  #ifdef DEBUG_CARD_COLLECTION
+  #ifdef DEBUG_CARD_COLLECTION_OBJ
     std::cout << "Goodbye cruel world! <From Collection::~Collection>" << "\n" << std::endl;
   #endif
 
