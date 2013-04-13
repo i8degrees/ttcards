@@ -8,12 +8,31 @@
 ******************************************************************************/
 #include "sprite.h"
 
-/*
-void Sprite::Sprite ( void )
+Sprite::Sprite ( void )
 {
+  #ifdef DEBUG_SPRITE_OBJ
+    std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
+  #endif
+
   // Stub constructor
+  this->sprite_buffer = NULL;
+
+  this->coords.x = 0;
+  this->coords.y = 0;
+  this->coords.w = 0;
+  this->coords.h = 0;
+  this->offsets.x = 0;
+  this->offsets.y = 0;
+  this->offsets.w = 0;
+  this->offsets.h = 0;
+
+  this->sheet_id = 000000;
+
+  this->offsets.x = 0;
+  this->offsets.y = 0;
+  this->offsets.w = 0;
+  this->offsets.h = 0;
 }
-*/
 
 Sprite::Sprite ( unsigned int width, unsigned int height )
 {
@@ -100,6 +119,18 @@ void Sprite::SetY ( unsigned int y )
   this->coords.y = y;
 }
 
+void Sprite::SetXY ( unsigned int x, unsigned int y )
+{
+  this->coords.x = x;
+  this->coords.y = y;
+}
+
+void Sprite::UpdateXY ( unsigned int x, unsigned int y )
+{
+  this->coords.x += x;
+  this->coords.y += y;
+}
+
 void Sprite::SetWidth ( unsigned int width )
 {
   this->coords.w = width;
@@ -150,6 +181,7 @@ void Sprite::SetState ( unsigned int state )
   this->state = state;
 }
 
+/*
 bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
 {
   // Ensure that we have a clean surface available
@@ -191,7 +223,7 @@ bool Sprite::Draw ( Gfx &engine )
     return false;
   }
 
-  if ( engine.DrawSurface ( this->sprite_buffer, coords.x, coords.y, &offsets ) == false )
+  if ( engine.DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), &offsets ) == false )
   {
     return false;
   }

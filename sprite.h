@@ -38,14 +38,14 @@ class Sprite {
 
     void SetX ( unsigned int x );
     void SetY ( unsigned int y );
+    void SetXY ( unsigned int x, unsigned int y );
+    void UpdateXY ( unsigned int x, unsigned int y );
     void SetWidth ( unsigned int width );
     void SetHeight ( unsigned int height );
-
     void SetXOffset ( unsigned int x_offset );
     void SetYOffset ( unsigned int y_offset );
     void SetWidthOffset ( unsigned int width_offset );
     void SetHeightOffset ( unsigned int height_offset );
-
     unsigned int GetSheetID ( void );
     unsigned int GetState ( void );
     void SetSheetID ( unsigned int id );
