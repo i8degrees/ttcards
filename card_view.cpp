@@ -67,18 +67,21 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
 
   card_background->SetX ( x + 0 );
   card_background->SetY ( y + 0 );
-  card_background->Draw ( engine );
+  if ( card_background->Draw ( engine ) == false )
+    return false;
 
   if ( card_face->LoadImage ( FACES_DIR + card.face ) == false )
   {
     #ifdef DEBUG_CARD_VIEW
       std::cout << "ERR: " << card.face << "\n" << std::endl;
     #endif
+    return false;
   }
 
-  card_face->SetX ( x ); //card0.x = PLAYER1_ORIGIN_X;
-  card_face->SetY ( y ); //cardFace.y = 0; //card0.y = PLAYER1_ORIGIN_Y;
-  card_face->Draw ( engine );
+  card_face->SetX ( x ); // PLAYER1_ORIGIN_X;
+  card_face->SetY ( y ); // PLAYER1_ORIGIN_Y;
+  if ( card_face->Draw ( engine ) == false )
+    return false;
 
   switch ( card.element )
   {
@@ -114,9 +117,10 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
       break;
   }
 
-  card_element->SetX ( x + 46 ); //cardElement.x = cardFace.x + 46;
-  card_element->SetY ( y + 4 ); //cardElement.y = cardFace.y + 4;
-  card_element->Draw ( engine );
+  card_element->SetX ( x + 46 );
+  card_element->SetY ( y + 4 );
+  if ( card_element->Draw ( engine ) == false )
+    return false;
 
   this->text_buffer.DrawText ( engine, std::to_string ( card.rank[0] ), x+8, y+0 );
   this->text_buffer.DrawText ( engine, std::to_string ( card.rank[1] ), x+12, y+8 );
