@@ -10,11 +10,17 @@
 
 Font::Font ( void )
 {
+  #ifdef DEBUG_FONT_OBJ
+    std::cout << "Font::Font (): " << "Hello, world!" << "\n" << std::endl;
+  #endif
+
   this->font = NULL;
 
   if ( TTF_Init () == -1 )
   {
-    std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl;
+    #ifdef DEBUG_FONT
+      std::cout << "ERR in Font::Font (): " << TTF_GetError() << std::endl;
+    #endif
     exit ( EXIT_FAILURE );
   }
 
@@ -24,6 +30,10 @@ Font::Font ( void )
 
 Font::~Font ( void )
 {
+  #ifdef DEBUG_FONT_OBJ
+    std::cout << "Font::~Font (): " << "Goodbye cruel world!" << "\n" << std::endl;
+  #endif
+
   TTF_CloseFont ( this->font );
   this->font = NULL;
 
@@ -48,7 +58,9 @@ bool Font::LoadTTF ( std::string filename, unsigned int font_size )
 
   if ( this->font == NULL )
   {
-    std::cout << "ERR: " << TTF_GetError() << std::endl;
+    #ifdef DEBUG_FONT
+      std::cout << "ERR: " << TTF_GetError() << std::endl;
+    #endif
     return false;
   }
 
