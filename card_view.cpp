@@ -18,8 +18,8 @@ CardView::CardView ( void )
   this->card_background = NULL;
   this->card_element = NULL;
 
-  this->text_card.LoadTTF ( CARD_FONTFACE, 12 ); // font: shitty temp
-  this->text_card.SetTextColor ( 255, 255, 255 ); // color: white
+  this->text_buffer.LoadTTF ( CARD_FONTFACE, 12 ); // font: shitty temp
+  this->text_buffer.SetTextColor ( 255, 255, 255 ); // color: white
 
   card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -116,10 +116,10 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   card_element->SetY ( y + 4 ); //cardElement.y = cardFace.y + 4;
   card_element->Draw ( engine );
 
-  this->text_card.DrawText ( engine, std::to_string ( card.rank[0] ), x+8, y+0 ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
-  this->text_card.DrawText ( engine, std::to_string ( card.rank[1] ), x+12, y+8 ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
-  this->text_card.DrawText ( engine, std::to_string ( card.rank[2] ), x+8, y+16 ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
-  this->text_card.DrawText ( engine, std::to_string ( card.rank[3] ), x+4, y+8 ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[0] ), x+8, y+0 ); //txt.DrawText ( card_buffer, "9", 26, 0, WHITE );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[1] ), x+12, y+8 ); //txt.DrawText ( card_buffer, "6", 30, 8, WHITE );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[2] ), x+8, y+16 ); //txt.DrawText ( card_buffer, "A", 26, 16, WHITE );
+  this->text_buffer.DrawText ( engine, std::to_string ( card.rank[3] ), x+4, y+8 ); //txt.DrawText ( card_buffer, "2", 22, 8, WHITE );
 
   return true;
 }

@@ -34,7 +34,7 @@ class CardView
     Sprite *card_face;
     Sprite *card_background;
     Sprite *card_element;
-    Font text_card;
+    Font text_buffer;
     //unsigned int x;
     //unsigned int y;
     //unsigned int width = CARD_WIDTH;
