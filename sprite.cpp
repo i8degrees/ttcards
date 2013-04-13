@@ -191,7 +191,7 @@ bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int 
     this->sprite_buffer = NULL;
   }
 
-  this->sprite_buffer = this->engine.LoadImage ( filename, colorkey, flags );
+  this->sprite_buffer = this->engine->LoadImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer == NULL )
   {
@@ -204,6 +204,31 @@ bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int 
     return false;
   }
 
+  return true;
+}
+*/
+
+bool Sprite::LoadImage ( std::string filename )
+{
+  // Ensure that we have a clean surface available
+  if ( this->sprite_buffer != NULL )
+  {
+    SDL_FreeSurface ( this->sprite_buffer );
+    this->sprite_buffer = NULL;
+  }
+
+  this->sprite_buffer = IMG_Load ( filename.c_str() );
+
+  if ( this->sprite_buffer == NULL )
+  {
+    #ifdef DEBUG_SPRITE
+      //std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
+    #endif
+    SDL_FreeSurface ( this->sprite_buffer );
+    this->sprite_buffer = NULL;
+
+    return false;
+  }
   return true;
 }
 

@@ -51,7 +51,8 @@ class Sprite {
     void SetSheetID ( unsigned int id );
     void SetState ( unsigned int state );
 
-    bool LoadImage ( std::string filename, SDL_Color colorkey = { 0, 0, 0 }, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
+    bool LoadImage ( std::string filename );
+    //bool LoadImage ( std::string filename, SDL_Color colorkey = { 0, 0, 0 }, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
     bool Draw ( Gfx &engine );
 
   private:
@@ -63,7 +64,7 @@ class Sprite {
     unsigned int sheet_id; // sprite sheets
     unsigned int state; // alive, dying, dead, ...
 
-    Gfx engine;
+    //Gfx *engine;
 };
 
 #endif // SPRITE_HEADERS defined
