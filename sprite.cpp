@@ -182,7 +182,10 @@ bool Sprite::Draw ( Gfx &engine )
     this->offsets.y = 0;
   }
 
-  engine.DrawSurface ( this->sprite_buffer, coords.x, coords.y, &offsets );
+  if ( engine.DrawSurface ( this->sprite_buffer, coords.x, coords.y, &offsets ) == false )
+  {
+    return false;
+  }
 
   return true;
 }
