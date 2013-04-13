@@ -80,6 +80,12 @@ void TTcards::InterfaceInput ( SDL_Event &event )
         case SDLK_p:
           this->music.togglePlayingMusic ();
           break;
+        case SDLK_EQUALS:
+          if ( this->show_fps == true )
+            this->show_fps = false;
+          else
+            this->show_fps = true;
+          break;
       }
       break;
   }
@@ -137,11 +143,25 @@ bool TTcards::Run ( void )
 
   this->debug.ListCards ( this->player2.cards );
 
+  this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
+  this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
+
+  this->fps.Start();
+
   while( this->IsRunning() ) // main loop
   {
     this->Input ();
 
     board.DrawBackground ( this->engine );
+
+    if ( this->show_fps == true )
+    {
+      this->timer_text.DrawText ( this->engine, std::to_string ( this->fps.GetFPS() ), 384/2, 4 );
+    }
+    else if ( this->show_fps == false )
+    {
+      this->timer_text.DrawText ( this->engine, " ", 384/2, 4 );
+    }
 
     for ( int idx = 0; idx < this->player1.cards.size(); idx++ )
     {
@@ -205,6 +225,8 @@ bool TTcards::Run ( void )
     player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
 
     this->engine.UpdateScreen ();
+
+    this->fps.Update();
 
   } // while this->IsRunning()
 

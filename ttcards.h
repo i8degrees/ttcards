@@ -20,6 +20,7 @@
 #include "card.h"
 #include "card_collection.h"
 #include "font.h"
+#include "timer.h"
 
 class TTcards
 {
@@ -33,6 +34,7 @@ class TTcards
     bool IsRunning ( void );
     void SetGameState ( bool state );
 
+    void ShowFPS ( void );
     void InterfaceInput ( SDL_Event &event );
     void Input ( void );
 
@@ -47,6 +49,9 @@ class TTcards
     Gfx engine;
     Player player1, player2;
 
+    FPS fps;
+    Font timer_text;
+    bool show_fps; // fps counter
     bool game_state; // global app state
 };
 
