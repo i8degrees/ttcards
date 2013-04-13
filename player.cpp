@@ -81,6 +81,8 @@ void Player::Input ( SDL_Event &input )
   {
     switch ( input.key.keysym.sym )
     {
+      default:
+        break;
       case SDLK_ESCAPE:
         // skip turn
         break;
@@ -122,8 +124,6 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_9:
         // move selected card to grid[3][2] if possible
-        break;
-      default:
         break;
     }
   }
