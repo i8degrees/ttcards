@@ -18,7 +18,7 @@ TTcards::~TTcards ( void )
 
 bool TTcards::Init ( void )
 {
-  unsigned int flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_RLEACCEL | SDL_RESIZABLE;
+  unsigned int flags = SDL_HWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
   std::srand ( ( unsigned ) time ( 0 ) );
 
@@ -55,7 +55,6 @@ void TTcards::SetGameState ( bool state )
 
 void TTcards::InterfaceInput ( SDL_Event &event )
 {
-
   unsigned char key = event.key.keysym.sym;
 
   switch ( event.type )
@@ -204,8 +203,6 @@ bool TTcards::Run ( void )
 
     player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
     player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
-
-    this->player1.Draw ( this->engine, 0, 0 );
 
     this->engine.UpdateScreen ();
 
