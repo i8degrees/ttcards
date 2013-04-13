@@ -8,8 +8,8 @@
 
 Player::Player ( void )
 {
-  #ifdef DEBUG_PLAYER
-    std::cout << "Hello, world! <From Player::Player>" << "\n" << std::endl;
+  #ifdef DEBUG_PLAYER_OBJ
+    std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->x = 0;
@@ -25,8 +25,8 @@ Player::Player ( void )
 
 Player::~Player ( void )
 {
-  #ifdef DEBUG_PLAYER
-    std::cout << "Goodbye cruel world! <From Player::~Player>" << "\n" << std::endl;
+  #ifdef DEBUG_PLAYER_OBJ
+    std::cout << "Player::Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 }
 
