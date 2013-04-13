@@ -17,6 +17,10 @@ void Sprite::Sprite ( void )
 
 Sprite::Sprite ( unsigned int width, unsigned int height )
 {
+  #ifdef DEBUG_SPRITE
+    std::cout << "Hello, world! <From Sprite::Sprite>" << "\n" << std::endl;
+  #endif
+
   this->sprite_buffer = NULL;
 
   this->coords.x = 0;
@@ -38,6 +42,10 @@ Sprite::Sprite ( unsigned int width, unsigned int height )
 
 Sprite::~Sprite ( void )
 {
+  #ifdef DEBUG_SPRITE
+    std::cout << "Goodbye cruel world! <From Sprite::~Sprite>" << "\n" << std::endl;
+  #endif
+
   SDL_FreeSurface ( this->sprite_buffer );
   this->sprite_buffer = NULL;
 }
