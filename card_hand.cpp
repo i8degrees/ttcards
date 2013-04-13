@@ -79,7 +79,7 @@ bool CardHand::isValid ( Card &card )
 
   for ( idx = 0; idx < this->CardCount(); idx++ )
   {
-    if ( cards[idx].id == card.id && cards[idx].name == card.name && cards[idx].face == card.face )
+    if ( ( cards[idx].id == card.id ) && ( cards[idx].name == card.name ) )
       return true;
   }
 
