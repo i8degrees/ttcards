@@ -23,17 +23,26 @@ Gfx::~Gfx ( void )
     std::cout << "Gfx::~Gfx (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
+  IMG_Quit ();
+
   SDL_Quit ();
 }
 
-bool Gfx::Init ( unsigned int flags )
+bool Gfx::Init ( unsigned int sdl_flags, unsigned int img_flags )
 {
-  if ( SDL_Init ( flags ) != 0 )
+  if ( SDL_Init ( sdl_flags ) != 0 )
   {
     #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::Init (): " << SDL_GetError() << std::endl;
+      std::cout << "ERR in Gfx::Init() at SDL_Init(): " << SDL_GetError() << std::endl;
     #endif
     return false;
+  }
+
+  if ( IMG_Init ( img_flags ) != img_flags )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::Init() at IMG_Init(): " << IMG_GetError() << std::endl;
+    #endif
   }
 
   return true;
@@ -84,10 +93,12 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
 
-  if ( ( temp_buffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
+  temp_buffer = IMG_Load ( filename.c_str() );
+
+  if ( temp_buffer == NULL )
   {
     #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+      //std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
     #endif
 
     SDL_FreeSurface ( temp_buffer );

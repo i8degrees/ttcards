@@ -1,7 +1,7 @@
 CC := $(shell which clang++)
 CFLAGS = -gfull -O0 -std=c++11 -stdlib=libc++ -Wall
-SDL_CFLAGS := $(shell pkg-config --cflags sdl SDL_ttf SDL_mixer)
-SDL_LDFLAGS := $(shell pkg-config --libs sdl SDL_ttf SDL_mixer)
+SDL_CFLAGS := $(shell pkg-config --cflags sdl SDL_image SDL_ttf SDL_mixer)
+SDL_LDFLAGS := $(shell pkg-config --libs sdl SDL_image SDL_ttf SDL_mixer)
 
 OBJ = audio.o board.o card.o card_debug.o card_collection.o card_view.o card_hand.o cfg.o font.o gfx.o main.o player.o sprite.o ttcards.o
 BIN = ttcards

@@ -13,6 +13,7 @@
 #include <string>
 
 #include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
 
 #define DEBUG_GFX
 //#define DEBUG_GFX_OBJ
@@ -23,7 +24,8 @@ class Gfx {
     Gfx ( void );
     ~Gfx ( void );
 
-    bool Init ( unsigned int flags = SDL_INIT_EVERYTHING );
+    bool Init ( unsigned int sdl_flags = SDL_INIT_EVERYTHING,
+                unsigned int img_flags = IMG_INIT_PNG );
 
     bool SetVideoMode ( unsigned int screen_width,
                         unsigned int screen_height,
