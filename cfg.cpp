@@ -54,11 +54,10 @@ const char ELEMENT_THUNDER[255] = "./data/images/elements/thunder_16.bmp";
 const char ELEMENT_WATER[255] = "./data/images/elements/water_16.bmp";
 const char ELEMENT_WIND[255] = "./data/images/elements/wind_16.bmp";
 
-const char FACES_DIR[255] = "./data/images/faces/";
-const char CARDFACE[255] = "./data/images/faces/face.bmp";
-const char NO_CARDFACE[255] = "./data/images/faces/noface.bmp";
-const char PLAYER1_CARDFACE[255] = "./data/images/player1.bmp";
-const char PLAYER2_CARDFACE[255] = "./data/images/player2.bmp";
+const char CARD_FACES[255] = "./data/images/faces/";
+const char HIDDEN_CARD[255] = "./data/images/faces/noface.bmp";
+const char PLAYER1_CARD[255] = "./data/images/player1.bmp";
+const char PLAYER2_CARD[255] = "./data/images/player2.bmp";
 const char NOPLAYER_CARD[255] = "./data/images/noplayer.png";
 
 const char LEFT_CURSOR[255] = "./data/images/left_cursor.png";
