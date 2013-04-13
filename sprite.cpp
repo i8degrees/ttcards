@@ -152,7 +152,7 @@ void Sprite::SetState ( unsigned int state )
 
 bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
 {
-  this->sprite_buffer = this->engine->LoadImage ( filename, colorkey, flags );
+  this->sprite_buffer = this->engine.LoadImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer == NULL )
   {

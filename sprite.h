@@ -62,7 +62,7 @@ class Sprite {
     unsigned int sheet_id; // sprite sheets
     unsigned int state; // alive, dying, dead, ...
 
-    Gfx *engine;
+    Gfx engine;
 };
 
 #endif // SPRITE_HEADERS defined
