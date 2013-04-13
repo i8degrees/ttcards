@@ -42,7 +42,7 @@ class TTcards
     Audio music;
     Board board;
     CardDebug debug;
-    CardView *cards;
+    CardView cards;
     Collection collection;
     Gfx engine;
     Player player1, player2;

@@ -13,8 +13,8 @@ TTcards::TTcards ( void )
 
 TTcards::~TTcards ( void )
 {
-  delete this->cards;
-  this->cards = NULL;
+  //delete this->cards;
+  //this->cards = NULL;
 }
 
 bool TTcards::Init ( void )
@@ -119,25 +119,23 @@ bool TTcards::Run ( void )
   this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
   this->debug.ListCards ( this->player2.cards );
 
-  cards = new CardView ();
-
   while( this->IsRunning() ) // main loop
   {
     this->Input ();
 
     board.DrawBackground ( this->engine );
 
-    this->cards->DrawCard ( engine, this->player1.cards[0], 16, 16, 0 );
-    this->cards->DrawCard ( engine, this->player1.cards[1], 16, 40, 0 );
-    this->cards->DrawCard ( engine, this->player1.cards[2], 16, 64, 0 );
-    this->cards->DrawCard ( engine, this->player1.cards[3], 16, 88, 0 );
-    this->cards->DrawCard ( engine, this->player1.cards[4], 16, 112, 0 );
+    this->cards.DrawCard ( engine, this->player1.cards[0], 16, 16, 0 );
+    this->cards.DrawCard ( engine, this->player1.cards[1], 16, 40, 0 );
+    this->cards.DrawCard ( engine, this->player1.cards[2], 16, 64, 0 );
+    this->cards.DrawCard ( engine, this->player1.cards[3], 16, 88, 0 );
+    this->cards.DrawCard ( engine, this->player1.cards[4], 16, 112, 0 );
 
-    this->cards->DrawCard ( this->engine, this->player2.cards[0], 304, 16, 1 );
-    this->cards->DrawCard ( this->engine, this->player2.cards[1], 304, 40, 1 );
-    this->cards->DrawCard ( this->engine, this->player2.cards[2], 304, 64, 1 );
-    this->cards->DrawCard ( this->engine, this->player2.cards[3], 304, 88, 1 );
-    this->cards->DrawCard ( this->engine, this->player2.cards[4], 304, 112, 1 );
+    this->cards.DrawCard ( this->engine, this->player2.cards[0], 304, 16, 1 );
+    this->cards.DrawCard ( this->engine, this->player2.cards[1], 304, 40, 1 );
+    this->cards.DrawCard ( this->engine, this->player2.cards[2], 304, 64, 1 );
+    this->cards.DrawCard ( this->engine, this->player2.cards[3], 304, 88, 1 );
+    this->cards.DrawCard ( this->engine, this->player2.cards[4], 304, 112, 1 );
 
     player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
     player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
