@@ -114,12 +114,12 @@ bool TTcards::Run ( void )
 
   this->player1.AddCard ( this->collection.cards[89] ); // Diablos
 
-  this->player1.AddCard ( this->collection.cards[109] ); // Squall
+    //this->player1.AddCard ( this->collection.cards[109] ); // Squall
 /*
   this->player1.AddCard ( this->collection.cards[0] ); // Geezard
   this->player1.AddCard ( this->collection.cards[99] ); // Ward
 */
-  this->player1.AddCard ( this->collection.cards[50] ); // Malboro
+    //this->player1.AddCard ( this->collection.cards[50] ); // Malboro
 
   this->player1.AddCard ( this->collection.cards[20] ); // Jelleye
   this->player1.AddCard ( this->collection.cards[16] ); // Thrustaevis
@@ -169,29 +169,29 @@ bool TTcards::Run ( void )
 
     for ( int idx = 0; idx < this->player1.cards.size(); idx++ )
     {
-      if ( this->player1.isValid( this->player1.cards[idx] ) )
+      if ( this->player1.isValid( this->player1.cards[idx] ) == true)
       {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 16, 0 );
+        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 16, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 12
       }
       idx+=1;
       if ( this->player1.isValid( this->player1.cards[idx] ) == true )
       {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 40, 0 );
+        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 48, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 4
       }
       idx+=1;
       if ( this->player1.isValid( this->player1.cards[idx] ) == true )
       {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 64, 0 );
+        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 80, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 2.40
       }
       idx+=1;
       if ( this->player1.isValid( this->player1.cards[idx] ) == true )
       {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 88, 0 );
+        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 112, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.71
       }
       idx+=1;
       if ( this->player1.isValid( this->player1.cards[idx] ) == true )
       {
-        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 112, 0 );
+        this->cards.DrawCard ( engine, this->player1.cards[idx], 16, 144, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.325
       }
       idx+=1;
     }
