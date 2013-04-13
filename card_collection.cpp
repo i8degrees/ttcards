@@ -34,7 +34,9 @@ bool Collection::Load ( std::string filename )
 
   if ( ! load )
   {
-    std::cout << "ERR in Collection::Load () at: " << filename << std::endl;
+    #ifdef DEBUG_CARD_COLLECTION
+      std::cout << "ERR in Collection::Load () at: " << filename << std::endl;
+    #endif
     return false;
   }
 
