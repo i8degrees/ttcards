@@ -80,12 +80,26 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
   if ( ( temp_buffer = SDL_LoadBMP ( filename.c_str() ) ) == NULL )
   {
     std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+
+    SDL_FreeSurface ( temp_buffer );
+    temp_buffer = NULL;
+
+    SDL_FreeSurface ( video_buffer );
+    video_buffer = NULL;
+
     return NULL;
   }
 
   if ( this->SetSurfaceTransparency ( temp_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
   {
     std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+
+    SDL_FreeSurface ( temp_buffer );
+    temp_buffer = NULL;
+
+    SDL_FreeSurface ( video_buffer );
+    video_buffer = NULL;
+
     return NULL;
   }
 
@@ -94,6 +108,13 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
   if ( video_buffer == NULL )
   {
     std::cout << "ERR in Gfx::LoadImage (): " << SDL_GetError() << std::endl;
+
+    SDL_FreeSurface ( temp_buffer );
+    temp_buffer = NULL;
+
+    SDL_FreeSurface ( video_buffer );
+    video_buffer = NULL;
+
     return NULL;
   }
 

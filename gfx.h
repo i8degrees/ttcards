@@ -14,7 +14,7 @@
 
 #include "SDL/SDL.h"
 
-#define DEBUG_GFX
+//#define DEBUG_GFX
 
 class Gfx {
 
