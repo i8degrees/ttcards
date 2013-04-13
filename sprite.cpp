@@ -17,8 +17,8 @@ void Sprite::Sprite ( void )
 
 Sprite::Sprite ( unsigned int width, unsigned int height )
 {
-  #ifdef DEBUG_SPRITE
-    std::cout << "Hello, world! <From Sprite::Sprite>" << "\n" << std::endl;
+  #ifdef DEBUG_SPRITE_OBJ
+    std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->sprite_buffer = NULL;
@@ -42,8 +42,8 @@ Sprite::Sprite ( unsigned int width, unsigned int height )
 
 Sprite::~Sprite ( void )
 {
-  #ifdef DEBUG_SPRITE
-    std::cout << "Goodbye cruel world! <From Sprite::~Sprite>" << "\n" << std::endl;
+  #ifdef DEBUG_SPRITE_OBJ
+    std::cout << "Sprite::~Sprite (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   SDL_FreeSurface ( this->sprite_buffer );
@@ -162,8 +162,9 @@ bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int 
 
   if ( this->sprite_buffer == NULL )
   {
-    std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
-
+    #ifdef DEBUG_SPRITE
+      std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
+    #endif
     SDL_FreeSurface ( this->sprite_buffer );
     this->sprite_buffer = NULL;
 
