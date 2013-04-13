@@ -20,7 +20,7 @@
 #include "card.h"
 #include "card_collection.h"
 #include "font.h"
-#include "timer.h"
+#include "fps.h"
 
 class TTcards
 {

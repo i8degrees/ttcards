@@ -14,6 +14,7 @@
 
 #include "cfg.h"
 #include "audio.h"
+#include "board.h"
 #include "card.h"
 #include "card_debug.h"
 #include "card_hand.h"
@@ -21,6 +22,7 @@
 
 #include "font.h"
 #include "sprite.h"
+#include "timer.h"
 
 #define DEBUG_PLAYER
 #define DEBUG_PLAYER_OBJ
