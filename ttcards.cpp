@@ -13,8 +13,7 @@ TTcards::TTcards ( void )
 
 TTcards::~TTcards ( void )
 {
-  //delete this->cards;
-  //this->cards = NULL;
+  // ...
 }
 
 bool TTcards::Init ( void )
@@ -71,6 +70,8 @@ void TTcards::InterfaceInput ( SDL_Event &event )
     case SDL_KEYDOWN:
       switch ( key )
       {
+        default:
+          break;
         case SDLK_ESCAPE:
           this->SetGameState ( false );
           break;
@@ -79,8 +80,6 @@ void TTcards::InterfaceInput ( SDL_Event &event )
           break;
         case SDLK_p:
           this->music.togglePlayingMusic ();
-          break;
-        default:
           break;
       }
       break;
