@@ -16,7 +16,7 @@ const int SCREEN_HEIGHT = 224;
 const int SCREEN_BPP = 32;
 
 const struct SDL_Color BLACK = { 0, 0, 0 };
-const struct SDL_Color WHITE = { 255, 255, 255, 0 };
+const struct SDL_Color WHITE = { 255, 255, 255 };
 
 const int CARD_WIDTH = 64;
 const int CARD_HEIGHT = 64;
@@ -26,11 +26,11 @@ const int ELEMENT_HEIGHT = 16;
 const int MAX_DECKSET = 110;
 const int MAX_HAND = 5;
 
-const int PLAYER1_ORIGIN_X = 8; // p1.cards [16, 18] n+32
-const int PLAYER1_ORIGIN_Y = 18;
+const int PLAYER1_ORIGIN_X = 16;
+const int PLAYER1_ORIGIN_Y = 16;
 
-const int PLAYER2_ORIGIN_X = 376;
-const int PLAYER2_ORIGIN_Y = 18;
+const int PLAYER2_ORIGIN_X = 304;
+const int PLAYER2_ORIGIN_Y = 16;
 
 // top-left of 3x3 grid
 const int BOARD_ORIGIN_X = 96;
