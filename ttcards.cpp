@@ -38,6 +38,8 @@ bool TTcards::Init ( void )
   this->engine.SetWindowTitle ( APP_NAME );
   this->engine.SetWindowIcon ( APP_ICON );
 
+  //SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY / 12, SDL_DEFAULT_REPEAT_INTERVAL / 12 );
+
   return true;
 }
 
@@ -56,8 +58,6 @@ void TTcards::SetGameState ( bool state )
 
 void TTcards::InterfaceInput ( SDL_Event &event )
 {
-  unsigned char key = event.key.keysym.sym;
-
   switch ( event.type )
   {
     default:
@@ -68,7 +68,7 @@ void TTcards::InterfaceInput ( SDL_Event &event )
     case SDL_VIDEORESIZE:
       break;
     case SDL_KEYDOWN:
-      switch ( key )
+      switch ( event.key.keysym.sym )
       {
         default:
           break;
@@ -83,11 +83,15 @@ void TTcards::InterfaceInput ( SDL_Event &event )
           break;
         case SDLK_EQUALS:
           if ( this->show_fps == true )
+          {
             this->show_fps = false;
+          }
           else
+          {
             this->show_fps = true;
+          }
           break;
-      }
+        }
       break;
   }
 }
@@ -98,6 +102,7 @@ void TTcards::Input ( void )
   {
     this->InterfaceInput ( this->input );
     this->player1.Input ( this->input );
+    this->player2.Input ( this->input );
   }
 }
 
@@ -165,9 +170,9 @@ bool TTcards::Run ( void )
 
   while( this->IsRunning() ) // main loop
   {
-    this->Input ();
     this->DrawBackground ();
 
+    this->Input ();
 
     if ( this->show_fps == true )
     {
