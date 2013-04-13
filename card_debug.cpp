@@ -10,15 +10,15 @@
 
 CardDebug::CardDebug ( void )
 {
-  #ifdef DEBUG_CARD_DEBUG
-    std::cout << "Hello, world! <From CardDebug::CardDebug>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_DEBUG_OBJ
+    std::cout << "CardDebug::CardDebug(): " << "Hello, world!" << "\n" << std::endl;
   #endif
 }
 
 CardDebug::~CardDebug ( void )
 {
-  #ifdef DEBUG_CARD_DEBUG
-    std::cout << "Goodbye cruel world! <From CardDebug::~CardDebug>" << "\n" << std::endl;
+  #ifdef DEBUG_CARD_DEBUG_OBJ
+    std::cout << "CardDebug::~CardDebug(): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 }
 
@@ -48,10 +48,12 @@ void CardDebug::ListCard ( Card &card )
 
 void CardDebug::ListCards ( std::vector<Card> &cards )
 {
-  if ( cards.empty() == true )
-  {
-    std::cout << "Card vector is empty. <From CardDebug::ListCards>" << "\n" << std::endl;
-  }
+  #ifdef DEBUG_CARD_DEBUG
+    if ( cards.empty() == true )
+    {
+      std::cout << "CardDebug::ListCards(): " << "Cards are empty." << "\n" << std::endl;
+    }
+  #endif
 
   for ( int i = 0; i < cards.size(); i++ )
   {
