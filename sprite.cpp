@@ -70,7 +70,6 @@ unsigned int Sprite::GetHeight ( void )
   return this->coords.h;
 }
 
-
 unsigned int Sprite::GetXOffset ( void )
 {
   return this->offsets.x;
@@ -111,7 +110,6 @@ void Sprite::SetHeight ( unsigned int height )
   this->coords.h = height;
 }
 
-
 void Sprite::SetXOffset ( unsigned int x_offset )
 {
   this->offsets.x = x_offset;
@@ -136,10 +134,12 @@ unsigned int Sprite::GetSheetID ( void )
 {
   return this->sheet_id;
 }
+
 unsigned int Sprite::GetState ( void )
 {
   return this->state;
 }
+
 void Sprite::SetSheetID ( unsigned int id )
 {
   this->sheet_id = id;
