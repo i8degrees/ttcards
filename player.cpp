@@ -135,19 +135,34 @@ void Player::Input ( SDL_Event &input )
           }
         }
         break;
+      case SDLK_0:
+        this->debug.ListCards ( this->cards );
+        break;
+      case SDLK_RIGHTBRACKET:
+        if ( this->GetType() == 0 )
+        {
+          this->board.Draw ();
+        }
+        break;
       case SDLK_1:
         // move selected card to grid[0][0] if possible
         if ( this->GetType() == 0 )
         {
-          this->debug.ListCards ( this->cards );
-        }
-        else
-        {
-          this->debug.ListCards ( this->cards );
+          this->board.UpdateBoard ( 0, 0, this->cards[0].id );
+          //this->RemoveCard ( this->cards[3] ); // Jelleye
+          //std::cout << this->board.GetStatus ( 1, 1 ) << std::endl;
+          this->board.Draw();
         }
         break;
       case SDLK_2:
         // move selected card to grid[1][0] if possible
+        if ( this->GetType() == 0 )
+        {
+          if ( this->board.GetStatus ( 1, 0 ) )
+            this->board.UpdateBoard ( 1, 0, 0 );
+          else
+            this->board.UpdateBoard ( 1, 0, this->cards[1].id );
+        }
         break;
       case SDLK_3:
         // move selected card to grid[2][0] if possible
@@ -169,10 +184,6 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_9:
         // move selected card to grid[3][2] if possible
-        if ( this->GetType() == 0 )
-        {
-          this->RemoveCard ( this->cards[3] ); // Jelleye
-        }
         break;
     }
   }
@@ -186,12 +197,18 @@ void Player::Draw ( Gfx &engine )
     {
       if ( this->isValid( this->cards[idx] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 16, 16, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 12
+        if ( this->board.GetStatus ( 0, 0 ) == this->cards[idx].id )
+          this->card.DrawCard ( engine, this->cards[idx], 96, 18, 0 );
+        else
+          this->card.DrawCard ( engine, this->cards[idx], 16, 16, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 12
       }
       idx+=1;
       if ( this->isValid( this->cards[idx] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 16, 48, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 4
+        if ( this->board.GetStatus ( 1, 0 ) == this->cards[idx].id )
+          this->card.DrawCard ( engine, this->cards[idx], 96, 82, 0 );
+        else
+          this->card.DrawCard ( engine, this->cards[idx], 16, 48, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 4
       }
       idx+=1;
       if ( this->isValid( this->cards[idx] ) == true )
