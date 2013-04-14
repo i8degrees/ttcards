@@ -15,8 +15,8 @@
 
 #include "timer.h" // base class
 
-#define DEBUG_TIMER_FPS
-#define DEBUG_TIMER_FPS_OBJ
+//#define DEBUG_TIMER_FPS
+//#define DEBUG_TIMER_FPS_OBJ
 
 class FPS: public Timer
 {
