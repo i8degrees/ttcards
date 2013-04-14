@@ -21,11 +21,10 @@ Player::Player ( void )
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
   this->text_score.SetTextColor ( 255, 255, 255 );
 
-  this->cursor = NULL;
-  this->cursor = new Sprite ( 26, 16 );
-  this->cursor->SetX ( 80 );
-  this->cursor->SetY ( 16 );
-  this->cursor->LoadImage ( LEFT_CURSOR );
+  this->cursor = Sprite ( 26, 16 );
+  this->cursor.SetX ( 80 );
+  this->cursor.SetY ( 16 );
+  this->cursor.LoadImage ( LEFT_CURSOR );
 }
 
 Player::~Player ( void )
@@ -33,8 +32,6 @@ Player::~Player ( void )
   #ifdef DEBUG_PLAYER_OBJ
     std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
-
-  delete cursor;
 }
 
 void Player::Init ( void )
@@ -123,20 +120,18 @@ void Player::Input ( SDL_Event &input )
       case SDLK_UP:
         if ( this->GetType() == 0 )
         {
-          if ( this->cursor->GetY() > 16 && this->cursor->GetY() )
+          if ( this->cursor.GetY() > 16 && this->cursor.GetY() )
           {
-            this->cursor->SetY ( this->cursor->GetY() - 32 );
-            std::cout << this->type << "\n";
+            this->cursor.SetY ( this->cursor.GetY() - 32 );
           }
         }
         break;
       case SDLK_DOWN:
         if ( this->GetType() == 0 )
         {
-          if ( this->cursor->GetY() >= 16 && this->cursor->GetY() <= 128 )
+          if ( this->cursor.GetY() >= 16 && this->cursor.GetY() <= 128 )
           {
-            this->cursor->SetY ( this->cursor->GetY() + 32 );
-            std::cout << this->type << "\n";
+            this->cursor.SetY ( this->cursor.GetY() + 32 );
           }
         }
         break;
@@ -214,7 +209,7 @@ void Player::Draw ( Gfx &engine )
         this->card.DrawCard ( engine, this->cards[idx], 16, 144, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.325
       }
     }
-    this->cursor->Draw ( engine );
+    this->cursor.Draw ( engine );
   }
   else if ( this->GetType() == 1 )
   {

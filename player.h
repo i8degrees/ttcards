@@ -54,7 +54,7 @@ public:
   //bool Draw ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
-  Sprite *cursor;
+  Sprite cursor;
   Board board;
   CardDebug debug;
   CardView card;
