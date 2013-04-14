@@ -45,10 +45,8 @@ class TTcards
     SDL_Surface *background;
     SDL_Event input;
 
-    Audio music;
-    //Board board;
     CardDebug debug;
-    CardView cards;
+    Audio music;
 
     Collection collection;
     Gfx engine;
@@ -56,6 +54,7 @@ class TTcards
 
     FPS fps;
     Font timer_text;
+
     bool show_fps; // fps counter
     bool game_state; // global app state
 };
