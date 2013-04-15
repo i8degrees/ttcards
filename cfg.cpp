@@ -29,6 +29,12 @@ const int PLAYER1_ORIGIN_Y = 16;
 const int PLAYER2_ORIGIN_X = PLAYER1_ORIGIN_X + 288;
 const int PLAYER2_ORIGIN_Y = PLAYER1_ORIGIN_Y;
 
+const int PLAYER1_CURSOR_ORIGIN_X = 80;
+const int PLAYER1_CURSOR_ORIGIN_Y = 16;
+
+const int PLAYER2_CURSOR_ORIGIN_X = 272;
+const int PLAYER2_CURSOR_ORIGIN_Y = 16;
+
 // top-left of board grid
 const int BOARD_ORIGIN_X = 96;
 const int BOARD_ORIGIN_Y = 16;

@@ -22,13 +22,13 @@ Player::Player ( void )
   this->text_score.SetTextColor ( 255, 255, 255 );
 
   this->left_cursor = Sprite ( 26, 16 );
-  this->left_cursor.SetX ( 80 );
-  this->left_cursor.SetY ( 16 );
+  this->left_cursor.SetX ( PLAYER1_CURSOR_ORIGIN_X );
+  this->left_cursor.SetY ( PLAYER1_CURSOR_ORIGIN_Y );
   this->left_cursor.LoadImage ( LEFT_CURSOR );
 
   this->right_cursor = Sprite ( 26, 16 );
-  this->right_cursor.SetX ( 272 );
-  this->right_cursor.SetY ( 16 );
+  this->right_cursor.SetX ( PLAYER2_CURSOR_ORIGIN_X );
+  this->right_cursor.SetY ( PLAYER2_CURSOR_ORIGIN_Y );
   this->right_cursor.LoadImage ( RIGHT_CURSOR );
 }
 
@@ -134,7 +134,7 @@ void Player::Input ( SDL_Event &input, Board &board)
       case SDLK_UP:
         if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
         {
-          if ( this->left_cursor.GetY() > 16 && this->left_cursor.GetX() == 80 )
+          if ( this->left_cursor.GetY() > 16 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
           {
             this->left_cursor.SetY ( this->left_cursor.GetY() - 32 );
           }
@@ -147,7 +147,7 @@ void Player::Input ( SDL_Event &input, Board &board)
       case SDLK_DOWN:
         if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
         {
-          if ( this->left_cursor.GetY() < 128 && this->left_cursor.GetX() == 80 )
+          if ( this->left_cursor.GetY() < 128 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
           {
             this->left_cursor.SetY ( this->left_cursor.GetY() + 32 );
           }
