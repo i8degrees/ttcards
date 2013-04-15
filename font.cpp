@@ -59,20 +59,17 @@ void Font::SetTextBuffer ( std::string text )
 {
   signed int width, height = 0;
 
-  // TODO: Finish ERR checks
-  //if ( text.length() > 0 )
-  //{
-    //TTF_SizeText ( this->font, text.c_str(), &width, &height );
+/*
+TODO: Finish ERR checks:
+
+  if ( text.length() > 0 )
+*/
     if ( TTF_SizeText ( this->font, text.c_str(), &width, &height ) != -1 )
     {
       this->coords.w = width;
       this->coords.h = height;
-      //std::cout << width << "\n" << std::endl;
-      //std::cout << height << "\n" << std::endl;
       this->text_buffer = text;
     }
-
-  //}
 }
 
 SDL_Color Font::GetTextColor ( void )
