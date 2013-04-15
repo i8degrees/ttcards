@@ -161,23 +161,57 @@ void Player::Input ( SDL_Event &input )
         // move selected card to grid[0][1] if possible
         if ( this->GetType() == 0 ) // player1
         {
-          if ( this->board.GetStatus ( 1, 0 ) )
-            this->board.UpdateBoard ( 1, 0, 0 );
-          else
-            this->board.UpdateBoard ( 1, 0, this->cards[1].id );
+          if ( this->board.GetStatus ( 0, 1 ) == false )
+          {
+            this->board.UpdateBoard ( 0, 1, this->cards[1].id );
+          }
+          this->board.Draw();
         }
         break;
       case SDLK_3:
         // move selected card to grid[0][2] if possible
+        if ( this->GetType() == 0 ) // player1
+        {
+          if ( this->board.GetStatus ( 0, 2 ) == false )
+          {
+            this->board.UpdateBoard ( 0, 2, this->cards[2].id );
+          }
+          this->board.Draw();
+        }
         break;
       case SDLK_4:
         // move selected card to grid[1][0] if possible
+        if ( this->GetType() == 0 ) // player1
+        {
+          if ( this->board.GetStatus ( 1, 0 ) == false )
+          {
+            this->board.UpdateBoard ( 1, 0, this->cards[3].id );
+          }
+          this->board.Draw();
+        }
         break;
       case SDLK_5:
         // move selected card to grid[1][1] if possible
+        if ( this->GetType() == 0 ) // player1
+        {
+          if ( this->board.GetStatus ( 1, 1 ) == false )
+          {
+            this->board.UpdateBoard ( 1, 1, this->cards[4].id );
+          }
+          this->board.Draw();
+        }
         break;
       case SDLK_6:
         // move selected card to grid[1][2] if possible
+        if ( this->GetType() == 0 ) // player1
+        {
+          if ( this->board.GetStatus ( 1, 2 ) == false )
+          {
+            /* Sanity check */
+            this->board.UpdateBoard ( 1, 2, this->cards[5].id );
+          }
+          this->board.Draw();
+        }
         break;
       case SDLK_7:
         // move selected card to grid[2][0] if possible
