@@ -238,6 +238,15 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         }
 
       }
+      else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 0, 0 ) == false )
+        {
+          board.UpdateBoard ( 0, 0, this->cards[0].id );
+          //this->RemoveCard ( this->cards[0] ); // Jelleye
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_2 ) // move selected card to grid[0][1] if possible
@@ -248,8 +257,15 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           board.UpdateBoard ( 0, 1, this->cards[1].id );
         }
-        board.Draw();
       }
+      else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 0, 1 ) == false )
+        {
+          board.UpdateBoard ( 0, 1, this->cards[1].id );
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_3 ) // move selected card to grid[0][2] if possible
@@ -260,8 +276,15 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           board.UpdateBoard ( 0, 2, this->cards[2].id );
         }
-        board.Draw();
       }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 0, 2 ) == false )
+        {
+          board.UpdateBoard ( 0, 2, this->cards[2].id );
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_4 ) // move selected card to grid[1][0] if possible
@@ -272,8 +295,15 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           board.UpdateBoard ( 1, 0, this->cards[3].id );
         }
-        board.Draw();
       }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 1, 0 ) == false )
+        {
+          board.UpdateBoard ( 1, 0, this->cards[3].id );
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
@@ -284,8 +314,15 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           board.UpdateBoard ( 1, 1, this->cards[4].id );
         }
-        board.Draw();
       }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 1, 1 ) == false )
+        {
+          board.UpdateBoard ( 1, 1, this->cards[4].id );
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_6 ) // move selected card to grid[1][2] if possible
@@ -297,8 +334,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
           /* Sanity check */
           board.UpdateBoard ( 1, 2, this->cards[5].id );
         }
-        board.Draw();
       }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 1, 2 ) == false )
+        {
+          /* Sanity check */
+          board.UpdateBoard ( 1, 2, this->cards[5].id );
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_7 ) // move selected card to grid[2][0] if possible
@@ -373,27 +418,42 @@ void Player::Draw ( Gfx &engine, Board &board )
     {
       if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[hand_index], 304, 16, 1 );
+        if ( board.GetStatus ( 0, 0 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * hand_index ), 0 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y, 1 );
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[hand_index], 304, 48, 1 );
+        if ( board.GetStatus ( 0, 1 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 1 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[hand_index], 304, 80, 1 );
+        if ( board.GetStatus ( 0, 2 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 1 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[hand_index], 304, 112, 1 );
+        if ( board.GetStatus ( 1, 0 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X, BOARD_ORIGIN_Y + ( CARD_HEIGHT ), 1 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[hand_index], 304, 144, 1 );
+        if ( board.GetStatus ( 1, 1 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH ), BOARD_ORIGIN_Y + ( CARD_HEIGHT), 1 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
     }
   }
