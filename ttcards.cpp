@@ -37,6 +37,7 @@ bool TTcards::Init ( void )
 
   this->engine.SetWindowTitle ( APP_NAME );
   this->engine.SetWindowIcon ( APP_ICON );
+  this->show_fps = true;
 
   //SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY / 12, SDL_DEFAULT_REPEAT_INTERVAL / 12 );
 
