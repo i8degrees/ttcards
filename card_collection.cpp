@@ -26,6 +26,7 @@ Collection::~Collection ( void )
 
 bool Collection::Load ( std::string filename )
 {
+  int index = 0;
   unsigned int id, level, type, element = 0;
   std::array<int, 4> rank = { { 0 } };
   std::string name, face = "\0";
@@ -66,9 +67,9 @@ bool Collection::Load ( std::string filename )
       std::cout << " ";
       std::cout << element;
       std::cout << " ";
-      for ( int rdx = 0; rdx < 4; rdx++ )
+      for ( int rank_index = 0; rank_index < 4; rank_index++ )
       {
-        std::cout << rank[rdx];
+        std::cout << rank[rank_index];
         std::cout << " ";
       }
       std::cout << name;

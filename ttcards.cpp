@@ -135,11 +135,10 @@ bool TTcards::Run ( void )
   this->player1.AddCard ( this->collection.cards[89] ); // Diablos
   this->player1.AddCard ( this->collection.cards[109] ); // Squall
   this->player1.AddCard ( this->collection.cards[99] ); // Ward
-
   this->player1.AddCard ( this->collection.cards[20] ); // Jelleye [pos 3]
   this->player1.AddCard ( this->collection.cards[16] ); // Thrustaevis
 
-  // These two cards should be discarded
+  // These two cards should be discarded ( MAX_HAND = 5 )
   this->player1.AddCard ( this->collection.cards[88] ); // Carbuncle
   this->player1.AddCard ( this->collection.cards[24] ); // TriFace
 
@@ -152,7 +151,7 @@ bool TTcards::Run ( void )
   this->player2.AddCard ( this->collection.cards[66] ); // Propagator
   this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
 
-  // This card should be discarded
+  // This card should be discarded ( MAX_HAND = 5 )
   this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
 
   this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );

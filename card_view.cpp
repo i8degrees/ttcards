@@ -51,7 +51,7 @@ bool CardView::EraseCard ( Gfx &engine, unsigned int x, unsigned int y )
 
 bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int y, unsigned int player )
 {
-  switch ( player )
+  switch ( player ) // player1, player2
   {
     case 0:
       card_background->LoadImage ( PLAYER1_CARD );
@@ -77,8 +77,8 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
     return false;
   }
 
-  card_face->SetX ( x ); // PLAYER1_ORIGIN_X;
-  card_face->SetY ( y ); // PLAYER1_ORIGIN_Y;
+  card_face->SetX ( x );
+  card_face->SetY ( y );
   if ( card_face->Draw ( engine ) == false )
     return false;
 
