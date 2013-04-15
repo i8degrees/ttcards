@@ -185,9 +185,10 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( this->left_cursor.GetY() > 16 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
+        if ( this->left_cursor.GetY() > PLAYER1_CURSOR_ORIGIN_Y && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
-          this->left_cursor.SetY ( this->left_cursor.GetY() - 32 );
+          this->left_cursor.SetY ( this->left_cursor.GetY() - ( CARD_HEIGHT / 2 ) );
+
           if ( index > 0 && index <= this->cards.size() )
           {
             index = index - 1;
@@ -199,11 +200,12 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
           this->left_cursor.SetY ( this->left_cursor.GetY() - 64 );
         }
       }
-      else if ( this->GetState() == 1 ) // player2
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( this->right_cursor.GetY() > 16 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
+        if ( this->right_cursor.GetY() > PLAYER2_CURSOR_ORIGIN_Y && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
         {
-          this->right_cursor.SetY ( this->right_cursor.GetY() - 32 );
+          this->right_cursor.SetY ( this->right_cursor.GetY() - ( CARD_HEIGHT / 2 ) );
+
           if ( index > 0 && index <= this->cards.size() )
           {
             index = index - 1;
@@ -221,22 +223,34 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( this->left_cursor.GetY() < 128 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
+        if ( this->left_cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->cards.size() - 1 ) && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
-          this->left_cursor.SetY ( this->left_cursor.GetY() + 32 );
+          this->left_cursor.SetY ( this->left_cursor.GetY() + ( CARD_HEIGHT / 2 ) );
+
+          if ( index >= 0 && index < this->cards.size() )
+          {
+            index = index + 1;
+            //this->SelectCard ( this->cards[index] );
+          }
         }
-        else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() < 128 )
+        else if ( this->left_cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X && this->left_cursor.GetY() < 128 )
         {
           this->left_cursor.SetY ( this->left_cursor.GetY() + 64 );
         }
       }
-      else if ( this->GetState() == 1 ) // player2
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( this->right_cursor.GetY() < 128 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
+        if ( this->right_cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->cards.size() - 1 ) && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
         {
-          this->right_cursor.SetY ( this->right_cursor.GetY() + 32 );
+          this->right_cursor.SetY ( this->right_cursor.GetY() + ( CARD_HEIGHT / 2 ) );
+
+          if ( index >= 0 && index < this->cards.size() )
+          {
+            index = index + 1;
+            //this->SelectCard ( this->cards[index] );
+          }
         }
-        else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() < 128 )
+        else if ( this->right_cursor.GetX() > PLAYER2_CURSOR_ORIGIN_X && this->right_cursor.GetY() < 128 )
         {
           this->right_cursor.SetY ( this->right_cursor.GetY() + 64 );
         }
@@ -400,7 +414,7 @@ void Player::Draw ( Gfx &engine, Board &board )
         if ( board.GetStatus ( 0, 0 ) == this->cards[hand_index].id )
           this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * hand_index ), 0 );
         else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X + ( CARD_WIDTH / 2 ) * hand_index, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
@@ -408,7 +422,7 @@ void Player::Draw ( Gfx &engine, Board &board )
         if ( board.GetStatus ( 0, 1 ) == this->cards[hand_index].id )
           this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 0 );
         else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index , 0 );
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X , PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index , 0 );
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
