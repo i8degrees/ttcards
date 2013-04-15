@@ -20,8 +20,8 @@ const int CARD_HEIGHT = 64;
 const int ELEMENT_WIDTH = 16;
 const int ELEMENT_HEIGHT = 16;
 
-const int MAX_DECKSET = 110;
-const int MAX_HAND = 5;
+const int MAX_COLLECTION = 110; // number of cards in CARDS_DB
+const int MAX_PLAYER_HAND = 5;
 
 const int PLAYER1_ORIGIN_X = 16;
 const int PLAYER1_ORIGIN_Y = 16;

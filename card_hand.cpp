@@ -26,7 +26,7 @@ CardHand::~CardHand ( void )
 
 bool CardHand::AddCard ( Card &card )
 {
-  if ( this->CardCount() > MAX_HAND - 1) // Remember, we are counting from zero
+  if ( this->CardCount() > MAX_PLAYER_HAND - 1) // Remember, we are counting from zero
   {
     #ifdef DEBUG_CARD_HAND
       std::cout << "CardHand::AddCard (): " << "Discarding card " << card.id << ' ' << card.name << std::endl;

@@ -25,8 +25,8 @@ extern const int CARD_HEIGHT;
 extern const int ELEMENT_WIDTH;
 extern const int ELEMENT_HEIGHT;
 
-extern const int MAX_DECKSET;
-extern const int MAX_HAND;
+extern const int MAX_COLLECTION;
+extern const int MAX_PLAYER_HAND;
 
 extern const int PLAYER1_ORIGIN_X;
 extern const int PLAYER1_ORIGIN_Y;

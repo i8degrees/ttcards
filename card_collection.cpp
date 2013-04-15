@@ -44,7 +44,7 @@ bool Collection::Load ( std::string filename )
     std::cout << filename << " " << "<From Collection::Load>" << "\n" << std::endl;
   #endif
 
-  for ( int i = 0; i < ( MAX_DECKSET ); i++ ) // 110
+  for ( index = 0; index < ( MAX_COLLECTION ); index++ )
   {
     load >> id;
     load >> level;
