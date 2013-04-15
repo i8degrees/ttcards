@@ -105,7 +105,7 @@ void Player::Input ( SDL_Event &input, Board &board)
       case SDLK_ESCAPE:
       case SDLK_u:
         // skip turn
-        this->SetID ( 1 ); // player2
+        this->SetState ( 1 ); // player2
         break;
       case SDLK_i:
         if ( this->GetID() == 0 ) // player1
@@ -157,6 +157,12 @@ void Player::Input ( SDL_Event &input, Board &board)
           }
         }
         break;
+      case SDLK_0: // DEBUG
+        if ( this->GetID() == 0 ) // player1
+        {
+          std::cout << this->GetID() << "\n" << std::endl;
+        }
+        break;
       case SDLK_LEFTBRACKET: // DEBUG
         if ( this->GetID() == 0 ) // player1
         {
@@ -165,16 +171,12 @@ void Player::Input ( SDL_Event &input, Board &board)
         }
         break;
       case SDLK_RIGHTBRACKET: // DEBUG
-        if ( this->GetID() == 0 )
-        {
-          std::cout << this->GetID() << "\n" << std::endl;
-        }
         this->debug.ListCards ( this->cards );
         board.Draw();
         break;
       case SDLK_1:
         // move selected card to grid[0][0] if possible
-        if ( this->GetID() == 0 ) // player1
+        if ( this->GetState() == 0 && this->GetID() == 0 ) // player1
         {
           if ( board.GetStatus ( 0, 0 ) == false )
           {
@@ -332,7 +334,7 @@ void Player::Draw ( Gfx &engine, Board &board )
         this->card.DrawCard ( engine, this->cards[hand_index], 304, 144, 1 );
       }
     }
-    if ( this->state == 1 )
+    if ( this->GetState() == 1 )
     {
       this->right_cursor.Draw ( engine );
     }
