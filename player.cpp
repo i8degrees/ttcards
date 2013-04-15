@@ -135,16 +135,15 @@ void Player::Input ( SDL_Event &input )
           }
         }
         break;
-      case SDLK_0:
-        this->debug.ListCards ( this->cards );
-        break;
-      case SDLK_RIGHTBRACKET:
-        if ( this->GetType() == 0 )
       case SDLK_LEFTBRACKET: // DEBUG
         if ( this->GetType() == 0 ) // player1
         {
-          this->board.Draw ();
+          this->debug.ListCards ( this->cards );
+          this->board.Draw();
         }
+        break;
+      case SDLK_RIGHTBRACKET: // DEBUG
+        // Stub
         break;
       case SDLK_1:
         // move selected card to grid[0][0] if possible

@@ -145,11 +145,13 @@ bool TTcards::Run ( void )
   // This card should be removed
   this->player1.RemoveCard ( this->player1.cards[3] ); // Jelleye
 
+  this->player1.AddCard ( this->collection.cards[88] ); // Carbuncle
+
   this->player2.AddCard ( this->collection.cards[20] ); // Jelleye
-  this->player2.AddCard ( this->collection.cards[50] ); // Malboro
+  this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
   this->player2.AddCard ( this->collection.cards[24] ); // TriFace
   this->player2.AddCard ( this->collection.cards[66] ); // Propagator
-  this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->player2.AddCard ( this->collection.cards[50] ); // Malboro
 
   // This card should be discarded ( MAX_HAND = 5 )
   this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
