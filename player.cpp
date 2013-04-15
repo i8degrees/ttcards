@@ -99,12 +99,50 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       // Stub
     }
 
+    else if ( key == SDLK_0 ) // DEBUG
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        std::cout << this->GetID() << "\n" << std::endl;
+      }
+    }
+
     else if ( key == SDLK_u ) // DEBUG
     {
       if ( this->GetState() == 0 ) // player1
         this->SetState ( 1 ); // player2
       else
         this->SetState ( 0 ); // player1
+    }
+
+    else if ( key == SDLK_LEFTBRACKET ) // DEBUG
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        this->debug.ListCards ( this->cards );
+        board.Draw();
+      }
+    }
+
+    else if ( key == SDLK_RIGHTBRACKET ) // DEBUG
+    {
+      this->debug.ListCards ( this->cards );
+      board.Draw();
+    }
+
+    else if ( key == SDLK_1 && mod == KMOD_LMETA ) // DEBUG
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 )
+      {
+        std::cout << index << "\n";
+        this->RemoveCard ( this->cards[index] );
+      }
+
+      if ( this->GetID() == 1 && this->GetState() == 1 )
+      {
+        std::cout << index << "\n";
+        this->RemoveCard ( this->cards[index] );
+      }
     }
 
     else if ( key == SDLK_LEFT )
@@ -205,33 +243,8 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       }
     }
 
-    else if ( key == SDLK_0 ) // DEBUG
-    {
-      if ( this->GetID() == 0 ) // player1
-      {
-        std::cout << this->GetID() << "\n" << std::endl;
-      }
-    }
-
-    else if ( key == SDLK_LEFTBRACKET ) // DEBUG
-    {
-      if ( this->GetID() == 0 ) // player1
-      {
-        this->debug.ListCards ( this->cards );
-        board.Draw();
-      }
-    }
-
-    else if ( key == SDLK_RIGHTBRACKET ) // DEBUG
     else if ( key == SDLK_SPACE )
     {
-      this->debug.ListCards ( this->cards );
-      board.Draw();
-    }
-
-    else if ( key == SDLK_1 && mod == KMOD_LMETA )
-    {
-      // ...
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
         this->SelectCard ( this->cards[index] );
       else if ( this->GetID() == 1 && this->GetState() == 1 )
