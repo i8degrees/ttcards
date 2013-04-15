@@ -38,8 +38,8 @@ public:
   SDL_Rect GetXY ( void );
   void SetXY ( unsigned int x, unsigned int y );
 
-  unsigned int GetType ( void );
-  void SetType ( unsigned int player_type );
+  unsigned int GetID ( void );
+  void SetID ( unsigned int id );
 
   unsigned int GetState ( void );
   void SetState ( unsigned int state );
@@ -61,7 +61,7 @@ private:
   Font text_score;
   unsigned int x;
   unsigned int y;
-  unsigned int type; // HUMAN, CPU, DEBUG
+  unsigned int id; // unique identifier
   unsigned int state; // ...is it my turn turn yet?
 
   unsigned int score;

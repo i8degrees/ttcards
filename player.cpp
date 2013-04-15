@@ -14,7 +14,7 @@ Player::Player ( void )
 
   this->x = 0;
   this->y = 0;
-  this->type = 0;
+  this->id = 0;
   this->state = 0;
   this->score = 5;
 
@@ -55,14 +55,14 @@ void Player::SetXY ( unsigned int x, unsigned int y )
   this->y = y;
 }
 
-unsigned int Player::GetType ( void )
+unsigned int Player::GetID ( void )
 {
-  return this->type;
+  return this->id;
 }
 
-void Player::SetType ( unsigned int player_type )
+void Player::SetID ( unsigned int id )
 {
-  this->type = player_type;
+  this->id = id;
 }
 unsigned int Player::GetState ( void )
 {
@@ -95,30 +95,28 @@ void Player::Input ( SDL_Event &input )
       case SDLK_ESCAPE:
       case SDLK_u:
         // skip turn
-        this->SetType ( 1 ); // player2
+        this->SetID ( 1 ); // player2
         break;
       case SDLK_i:
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
-          this->SetType ( 1 ); // player2
+          this->SetID ( 1 ); // player2
         }
         break;
       case SDLK_LEFT:
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           this->mixer1.PlaySoundTrack ( CURSOR_MOVE, 1, 0);
-          std::cout << this->type << "\n";
         }
         break;
       case SDLK_RIGHT:
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           this->mixer2.PlaySoundTrack ( CURSOR_CANCEL, 2, 0 );
-          std::cout << this->type << "\n";
         }
         break;
       case SDLK_UP:
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->cursor.GetY() > 16 && this->cursor.GetY() )
           {
@@ -127,7 +125,7 @@ void Player::Input ( SDL_Event &input )
         }
         break;
       case SDLK_DOWN:
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->cursor.GetY() >= 16 && this->cursor.GetY() <= 128 )
           {
@@ -136,18 +134,21 @@ void Player::Input ( SDL_Event &input )
         }
         break;
       case SDLK_LEFTBRACKET: // DEBUG
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           this->debug.ListCards ( this->cards );
           this->board.Draw();
         }
         break;
       case SDLK_RIGHTBRACKET: // DEBUG
-        // Stub
+        if ( this->GetID() == 0 )
+        {
+          std::cout << this->GetID() << "\n" << std::endl;
+        }
         break;
       case SDLK_1:
         // move selected card to grid[0][0] if possible
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->board.GetStatus ( 0, 0 ) == false )
           {
@@ -159,7 +160,7 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_2:
         // move selected card to grid[0][1] if possible
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->board.GetStatus ( 0, 1 ) == false )
           {
@@ -170,7 +171,7 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_3:
         // move selected card to grid[0][2] if possible
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->board.GetStatus ( 0, 2 ) == false )
           {
@@ -181,7 +182,7 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_4:
         // move selected card to grid[1][0] if possible
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->board.GetStatus ( 1, 0 ) == false )
           {
@@ -192,7 +193,7 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_5:
         // move selected card to grid[1][1] if possible
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->board.GetStatus ( 1, 1 ) == false )
           {
@@ -203,7 +204,7 @@ void Player::Input ( SDL_Event &input )
         break;
       case SDLK_6:
         // move selected card to grid[1][2] if possible
-        if ( this->GetType() == 0 ) // player1
+        if ( this->GetID() == 0 ) // player1
         {
           if ( this->board.GetStatus ( 1, 2 ) == false )
           {
@@ -230,7 +231,7 @@ void Player::Draw ( Gfx &engine )
 {
   unsigned int hand_index = 0;
 
-  if ( this->GetType() == 0 ) // player1
+  if ( this->GetID() == 0 ) // player1
   {
     for ( hand_index = 0; hand_index < this->cards.size(); hand_index++ )
     {
@@ -251,15 +252,15 @@ void Player::Draw ( Gfx &engine )
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
-              if ( this->board.GetStatus ( 0, 2 ) == this->cards[hand_index].id )
+      {
+        if ( this->board.GetStatus ( 0, 2 ) == this->cards[hand_index].id )
           this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 0 );
         else
           this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
       hand_index+=1;
       if ( this->isValid ( this->cards[hand_index] ) == true )
-      {{
-
+      {
         if ( this->board.GetStatus ( 1, 0 ) == this->cards[hand_index].id )
           this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X, BOARD_ORIGIN_Y + ( CARD_HEIGHT ), 0 );
         else
@@ -276,7 +277,7 @@ void Player::Draw ( Gfx &engine )
     }
     this->cursor.Draw ( engine );
   }
-  else if ( this->GetType() == 1 ) // player2
+  else if ( this->GetID() == 1 ) // player2
   {
     for ( hand_index = 0; hand_index < this->cards.size(); hand_index++ )
     {

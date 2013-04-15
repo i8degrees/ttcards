@@ -162,8 +162,8 @@ bool TTcards::Run ( void )
 
   this->fps.Start();
 
-  this->player1.SetType ( 0 );
-  this->player2.SetType ( 1 );
+  this->player1.SetID ( 0 );
+  this->player2.SetID ( 1 );
 
   while( this->IsRunning() ) // main loop
   {
