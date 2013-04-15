@@ -26,12 +26,12 @@ const int MAX_PLAYER_HAND = 5;
 const int PLAYER1_ORIGIN_X = 16;
 const int PLAYER1_ORIGIN_Y = 16;
 
-const int PLAYER2_ORIGIN_X = 304;
-const int PLAYER2_ORIGIN_Y = 16;
+const int PLAYER2_ORIGIN_X = PLAYER1_ORIGIN_X + 288;
+const int PLAYER2_ORIGIN_Y = PLAYER1_ORIGIN_Y;
 
-// top-left of 3x3 grid
+// top-left of board grid
 const int BOARD_ORIGIN_X = 96;
-const int BOARD_ORIGIN_Y = 18;
+const int BOARD_ORIGIN_Y = 16;
 
 const int BOARD_GRID_WIDTH = 3;
 const int BOARD_GRID_HEIGHT = 3;

@@ -228,73 +228,83 @@ void Player::Input ( SDL_Event &input )
 
 void Player::Draw ( Gfx &engine )
 {
+  unsigned int hand_index = 0;
 
   if ( this->GetType() == 0 ) // player1
   {
-    for ( int idx = 0; idx < this->cards.size(); idx++ )
+    for ( hand_index = 0; hand_index < this->cards.size(); hand_index++ )
     {
-      if ( this->isValid( this->cards[idx] ) == true )
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        if ( this->board.GetStatus ( 0, 0 ) == this->cards[idx].id )
-          this->card.DrawCard ( engine, this->cards[idx], 96, 18, 0 );
+        if ( this->board.GetStatus ( 0, 0 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * hand_index ), 0 );
         else
-          this->card.DrawCard ( engine, this->cards[idx], 16, 16, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 12
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X + ( CARD_WIDTH / 2 ) * hand_index, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        if ( this->board.GetStatus ( 1, 0 ) == this->cards[idx].id )
-          this->card.DrawCard ( engine, this->cards[idx], 96, 82, 0 );
+        if ( this->board.GetStatus ( 0, 1 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 0 );
         else
-          this->card.DrawCard ( engine, this->cards[idx], 16, 48, 0 ); // x = ( SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 4
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index , 0 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
-      {
-        this->card.DrawCard ( engine, this->cards[idx], 16, 80, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 2.40
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
+              if ( this->board.GetStatus ( 0, 2 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 0 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
-      {
-        this->card.DrawCard ( engine, this->cards[idx], 16, 112, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.71
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
+      {{
+
+        if ( this->board.GetStatus ( 1, 0 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X, BOARD_ORIGIN_Y + ( CARD_HEIGHT ), 0 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 16, 144, 0 ); // x = (SCREEN_WIDTH - 64 ) / 20; y = ( SCREEN_HEIGHT - 32 ) / 1.325
+        if ( this->board.GetStatus ( 1, 1 ) == this->cards[hand_index].id )
+          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH ), BOARD_ORIGIN_Y + ( CARD_HEIGHT), 0 );
+        else
+          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
     }
     this->cursor.Draw ( engine );
   }
   else if ( this->GetType() == 1 ) // player2
   {
-    for ( int idx = 0; idx < this->cards.size(); idx++ )
+    for ( hand_index = 0; hand_index < this->cards.size(); hand_index++ )
     {
-      if ( this->isValid( this->cards[idx] ) )
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 304, 16, 1 );
+        this->card.DrawCard ( engine, this->cards[hand_index], 304, 16, 1 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 304, 48, 1 );
+        this->card.DrawCard ( engine, this->cards[hand_index], 304, 48, 1 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 304, 80, 1 );
+        this->card.DrawCard ( engine, this->cards[hand_index], 304, 80, 1 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 304, 112, 1 );
+        this->card.DrawCard ( engine, this->cards[hand_index], 304, 112, 1 );
       }
-      idx+=1;
-      if ( this->isValid( this->cards[idx] ) == true )
+      hand_index+=1;
+      if ( this->isValid ( this->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->cards[idx], 304, 144, 1 );
+        this->card.DrawCard ( engine, this->cards[hand_index], 304, 144, 1 );
       }
-      idx+=1;
+      hand_index+=1;
     }
   }
 }
