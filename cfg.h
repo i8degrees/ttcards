@@ -20,9 +20,6 @@ extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 extern const int SCREEN_BPP;
 
-extern const struct SDL_Color BLACK;
-extern const struct SDL_Color WHITE;
-
 extern const int CARD_WIDTH;
 extern const int CARD_HEIGHT;
 extern const int ELEMENT_WIDTH;
