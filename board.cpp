@@ -28,6 +28,24 @@ Board::~Board ( void )
   #ifdef DEBUG_BOARD_OBJ
     std::cout << "Board::~Board (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
+
+  SDL_FreeSurface ( this->background );
+  this->background = NULL;
+}
+
+// TODO: Reconsider using an instance of Gfx solely for this method
+bool Board::LoadBackground ( std::string filename )
+{
+  this->background = this->engine.LoadImage ( filename );
+
+  return true;
+}
+
+bool Board::DrawBackground ( Gfx &engine )
+{
+  engine.DrawSurface ( this->background, 0, 0 );
+
+  return true;
 }
 
 unsigned int Board::GetStatus ( unsigned int x, unsigned int y )

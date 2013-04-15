@@ -49,13 +49,13 @@ public:
   void SetScore ( unsigned int score );
   bool DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
-  void Input ( SDL_Event &input );
-  void Draw ( Gfx &engine );
-  //bool Draw ( Gfx &engine, unsigned int x, unsigned int y );
+  bool CheckCollisions ( Board &board );
+
+  void Input ( SDL_Event &input, Board &board );
+  void Draw ( Gfx &engine, Board &board );
 
 private:
   Sprite cursor;
-  Board board;
   CardDebug debug;
   CardView card;
   Font text_score;
@@ -63,7 +63,6 @@ private:
   unsigned int y;
   unsigned int id; // unique identifier
   unsigned int state; // ...is it my turn turn yet?
-
   unsigned int score;
 
   Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects

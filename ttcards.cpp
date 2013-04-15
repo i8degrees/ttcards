@@ -13,8 +13,7 @@ TTcards::TTcards ( void )
 
 TTcards::~TTcards ( void )
 {
-  SDL_FreeSurface ( this->background );
-  this->background = NULL;
+  // Stub
 }
 
 bool TTcards::Init ( void )
@@ -102,28 +101,20 @@ void TTcards::Input ( void )
   while ( SDL_PollEvent ( &input ) )
   {
     this->InterfaceInput ( this->input );
-    this->player1.Input ( this->input );
-    this->player2.Input ( this->input );
+    this->player1.Input ( this->input, this->board );
+    this->player2.Input ( this->input, this->board );
   }
 }
 
-bool TTcards::LoadBackground ( std::string filename )
 {
-  this->background = this->engine.LoadImage ( filename );
 
-  return true;
-}
 
-bool TTcards::DrawBackground ( void )
-{
-  this->engine.DrawSurface ( this->background, 0, 0 );
 
   return true;
 }
 
 bool TTcards::Run ( void )
 {
-  this->LoadBackground ( BOARD_BACKGROUND );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
@@ -167,8 +158,6 @@ bool TTcards::Run ( void )
 
   while( this->IsRunning() ) // main loop
   {
-    this->DrawBackground ();
-
     this->Input ();
 
     if ( this->show_fps == true )
@@ -189,6 +178,7 @@ bool TTcards::Run ( void )
 
     player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
     player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
+    this->board.DrawBackground ( this->engine );
 
     this->engine.UpdateScreen ();
 

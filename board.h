@@ -23,12 +23,17 @@ class Board
     Board ( void );
     ~Board ( void );
 
+    bool LoadBackground ( std::string filename );
+    bool DrawBackground ( Gfx &engine );
+
     unsigned int GetStatus ( unsigned int x, unsigned int y );
 
     void UpdateBoard ( unsigned int x, unsigned int y, unsigned int state );
     void Draw ( void ); //void Draw ( Gfx &engine );
 
   private:
+    SDL_Surface *background;
+    Gfx engine;
     unsigned int grid[3][3];
 };
 

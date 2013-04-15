@@ -38,11 +38,7 @@ class TTcards
     void InterfaceInput ( SDL_Event &event );
     void Input ( void );
 
-    bool LoadBackground ( std::string filename );
-    bool DrawBackground ( void );
-
   private:
-    SDL_Surface *background;
     SDL_Event input;
 
     CardDebug debug;
@@ -54,6 +50,7 @@ class TTcards
 
     FPS fps;
     Font timer_text;
+    Board board;
 
     bool show_fps; // fps counter
     bool game_state; // global app state
