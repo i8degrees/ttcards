@@ -121,6 +121,13 @@ void Player::Input ( SDL_Event &input, Board &board)
             this->left_cursor.SetX ( this->left_cursor.GetX () - 96 );
           }
         }
+        else if ( this->GetState() == 1 ) // player2
+        {
+          if ( this->right_cursor.GetX() > 96 )
+          {
+            this->right_cursor.SetX ( this->right_cursor.GetX () - 96 );
+          }
+        }
         break;
       case SDLK_RIGHT:
         if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
@@ -128,6 +135,13 @@ void Player::Input ( SDL_Event &input, Board &board)
           if ( this->left_cursor.GetX() < 224 )
           {
             this->left_cursor.SetX ( this->left_cursor.GetX () + 96 );
+          }
+        }
+        else if ( this->GetState() == 1 ) // player2
+        {
+          if ( this->right_cursor.GetX() < 224 )
+          {
+            this->right_cursor.SetX ( this->right_cursor.GetX () + 96 );
           }
         }
         break;
@@ -143,6 +157,17 @@ void Player::Input ( SDL_Event &input, Board &board)
             this->left_cursor.SetY ( this->left_cursor.GetY() - 64 );
           }
         }
+        else if ( this->GetState() == 1 ) // player2
+        {
+          if ( this->right_cursor.GetY() > 16 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
+          {
+            this->right_cursor.SetY ( this->right_cursor.GetY() - 32 );
+          }
+          else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() > 16 )
+          {
+            this->right_cursor.SetY ( this->right_cursor.GetY() - 64 );
+          }
+        }
         break;
       case SDLK_DOWN:
         if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
@@ -154,6 +179,17 @@ void Player::Input ( SDL_Event &input, Board &board)
           else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() < 128 )
           {
             this->left_cursor.SetY ( this->left_cursor.GetY() + 64 );
+          }
+        }
+        else if ( this->GetState() == 1 ) // player2
+        {
+          if ( this->right_cursor.GetY() < 128 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
+          {
+            this->right_cursor.SetY ( this->right_cursor.GetY() + 32 );
+          }
+          else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() < 128 )
+          {
+            this->right_cursor.SetY ( this->right_cursor.GetY() + 64 );
           }
         }
         break;
@@ -303,7 +339,6 @@ void Player::Draw ( Gfx &engine, Board &board )
           this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
     }
-    this->left_cursor.Draw ( engine );
   }
   else if ( this->GetID() == 1 ) // player2
   {
@@ -334,10 +369,14 @@ void Player::Draw ( Gfx &engine, Board &board )
         this->card.DrawCard ( engine, this->cards[hand_index], 304, 144, 1 );
       }
     }
-    if ( this->GetState() == 1 )
-    {
-      this->right_cursor.Draw ( engine );
-    }
+  }
+  if ( this->GetState() == 0 && this->GetID() == 0 )
+  {
+    this->left_cursor.Draw ( engine );
+  }
+  else if ( this->GetState() == 1 && this->GetID() == 1 )
+  {
+    this->right_cursor.Draw ( engine );
   }
 }
 
