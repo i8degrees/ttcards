@@ -25,7 +25,6 @@ class CardHand
 
     bool AddCard ( Card &card );
     bool RemoveCard ( Card &card );
-    //bool isRemoved ( Card &card );
     bool isValid ( Card &card );
     bool isEmpty ( void );
     bool IsSelected ( Card &card );

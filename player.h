@@ -48,8 +48,6 @@ public:
   unsigned int GetScore ( void );
   void SetScore ( unsigned int score );
 
-  bool CheckCollisions ( Board &board );
-
   void Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board );
   void Draw ( Gfx &engine, Board &board );
   void DrawScore ( Gfx &engine, unsigned int x, unsigned int y );

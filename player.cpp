@@ -90,11 +90,6 @@ void Player::SetScore ( unsigned int score )
   this->score = score;
 }
 
-bool Player::CheckCollisions ( Board &board )
-{
-  return true;
-}
-
 void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
 {
   if ( type == SDL_KEYDOWN )

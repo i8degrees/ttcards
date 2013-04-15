@@ -183,9 +183,6 @@ bool TTcards::Run ( void )
 
     this->board.DrawBackground ( this->engine );
 
-    this->player1.CheckCollisions ( this->board );
-    this->player2.CheckCollisions ( this->board );
-
     this->player1.SetID ( 0 );
     this->player2.SetID ( 1 );
 
