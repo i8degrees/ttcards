@@ -74,45 +74,47 @@ void TTcards::ShowFPS ( void )
   }
 }
 
-void TTcards::InterfaceInput ( SDL_Event &event )
+void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
 {
-  switch ( event.type )
+  if ( type == SDL_QUIT )
   {
-    default:
-      break;
-    case SDL_QUIT:
+    this->SetGameState ( false );
+  }
+
+  else if ( type == SDL_VIDEORESIZE )
+  {
+    // Stub
+  }
+
+  else if ( type == SDL_KEYDOWN )
+  {
+    if ( key == SDLK_ESCAPE || key == SDLK_q )
+    {
       this->SetGameState ( false );
-      break;
-    case SDL_VIDEORESIZE:
-      break;
-    case SDL_KEYDOWN:
-      switch ( event.key.keysym.sym )
+      this->SetGameState ( false );
+    }
+
+    else if ( key == SDLK_p )
+    {
+      this->music.togglePlayingMusic ();
+    }
+
+    else if ( key == SDLK_EQUALS )
+    {
+      if ( this->show_fps == true )
       {
-        default:
-          break;
-        case SDLK_ESCAPE:
-        case SDLK_q:
-          this->SetGameState ( false );
-          this->SetGameState ( false );
-          break;
-        case SDLK_p:
-          this->music.togglePlayingMusic ();
-          break;
-        case SDLK_EQUALS:
-          if ( this->show_fps == true )
-          {
-            this->show_fps = false;
-          }
-          else // false
-          {
-            this->show_fps = true;
-          }
-          break;
-          case SDLK_MINUS: // DEBUG
-            this->debug.ListCards ( this->collection.cards );
-          break;
-        }
-      break;
+        this->show_fps = false;
+      }
+      else // false
+      {
+        this->show_fps = true;
+      }
+    }
+
+    else if ( key == SDLK_MINUS && mod == KMOD_LSHIFT ) // DEBUG
+    {
+      this->debug.ListCards ( this->collection.cards );
+    }
   }
 }
 
@@ -120,9 +122,9 @@ void TTcards::Input ( void )
 {
   while ( SDL_PollEvent ( &input ) )
   {
-    this->InterfaceInput ( this->input );
-    this->player1.Input ( this->input, this->board );
-    this->player2.Input ( this->input, this->board );
+    this->InterfaceInput ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
+    this->player1.Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod, this->board );
+    this->player2.Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod, this->board );
   }
 }
 

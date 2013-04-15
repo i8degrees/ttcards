@@ -35,7 +35,7 @@ class TTcards
 
     void ShowFPS ( void );
     void Input ( void );
-    void InterfaceInput ( SDL_Event &event );
+    void InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod );
     bool LoadGameData ( void );
     bool Run ( void );
 

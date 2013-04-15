@@ -94,195 +94,226 @@ bool Player::CheckCollisions ( Board &board )
   return true;
 }
 
-void Player::Input ( SDL_Event &input, Board &board)
+void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
 {
-  if ( input.type == SDL_KEYDOWN )
+  if ( type == SDL_KEYDOWN )
   {
-    switch ( input.key.keysym.sym )
+    if ( key == SDLK_ESCAPE ) // skip turn
     {
-      default:
-        break;
-      case SDLK_ESCAPE: // skip turn
-      case SDLK_u: // DEBUG
-        if ( this->GetState() == 0 ) // player1
-          this->SetState ( 1 ); // player2
-        else
-          this->SetState ( 0 ); // player1
-        break;
-      case SDLK_LEFT:
-        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      // Stub
+    }
+
+    else if ( key == SDLK_u ) // DEBUG
+    {
+      if ( this->GetState() == 0 ) // player1
+        this->SetState ( 1 ); // player2
+      else
+        this->SetState ( 0 ); // player1
+    }
+
+    else if ( key == SDLK_LEFT )
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( this->left_cursor.GetX() > 96 )
         {
-          if ( this->left_cursor.GetX() > 96 )
-          {
-            this->left_cursor.SetX ( this->left_cursor.GetX () - 96 );
-          }
+          this->left_cursor.SetX ( this->left_cursor.GetX () - 96 );
         }
-        else if ( this->GetState() == 1 ) // player2
+      }
+      else if ( this->GetState() == 1 ) // player2
+      {
+        if ( this->right_cursor.GetX() > 96 )
         {
-          if ( this->right_cursor.GetX() > 96 )
-          {
-            this->right_cursor.SetX ( this->right_cursor.GetX () - 96 );
-          }
+          this->right_cursor.SetX ( this->right_cursor.GetX () - 96 );
         }
-        break;
-      case SDLK_RIGHT:
-        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      }
+    }
+
+    else if ( key == SDLK_RIGHT )
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( this->left_cursor.GetX() < 224 )
         {
-          if ( this->left_cursor.GetX() < 224 )
-          {
-            this->left_cursor.SetX ( this->left_cursor.GetX () + 96 );
-          }
+          this->left_cursor.SetX ( this->left_cursor.GetX () + 96 );
         }
-        else if ( this->GetState() == 1 ) // player2
+      }
+      else if ( this->GetState() == 1 ) // player2
+      {
+        if ( this->right_cursor.GetX() < 224 )
         {
-          if ( this->right_cursor.GetX() < 224 )
-          {
-            this->right_cursor.SetX ( this->right_cursor.GetX () + 96 );
-          }
+          this->right_cursor.SetX ( this->right_cursor.GetX () + 96 );
         }
-        break;
-      case SDLK_UP:
-        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      }
+    }
+
+    else if ( key == SDLK_UP )
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( this->left_cursor.GetY() > 16 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
-          if ( this->left_cursor.GetY() > 16 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
-          {
-            this->left_cursor.SetY ( this->left_cursor.GetY() - 32 );
-          }
-          else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() > 16 )
-          {
-            this->left_cursor.SetY ( this->left_cursor.GetY() - 64 );
-          }
+          this->left_cursor.SetY ( this->left_cursor.GetY() - 32 );
         }
-        else if ( this->GetState() == 1 ) // player2
+        else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() > 16 )
         {
-          if ( this->right_cursor.GetY() > 16 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
-          {
-            this->right_cursor.SetY ( this->right_cursor.GetY() - 32 );
-          }
-          else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() > 16 )
-          {
-            this->right_cursor.SetY ( this->right_cursor.GetY() - 64 );
-          }
+          this->left_cursor.SetY ( this->left_cursor.GetY() - 64 );
         }
-        break;
-      case SDLK_DOWN:
-        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      }
+      else if ( this->GetState() == 1 ) // player2
+      {
+        if ( this->right_cursor.GetY() > 16 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
         {
-          if ( this->left_cursor.GetY() < 128 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
-          {
-            this->left_cursor.SetY ( this->left_cursor.GetY() + 32 );
-          }
-          else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() < 128 )
-          {
-            this->left_cursor.SetY ( this->left_cursor.GetY() + 64 );
-          }
+          this->right_cursor.SetY ( this->right_cursor.GetY() - 32 );
         }
-        else if ( this->GetState() == 1 ) // player2
+        else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() > 16 )
         {
-          if ( this->right_cursor.GetY() < 128 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
-          {
-            this->right_cursor.SetY ( this->right_cursor.GetY() + 32 );
-          }
-          else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() < 128 )
-          {
-            this->right_cursor.SetY ( this->right_cursor.GetY() + 64 );
-          }
+          this->right_cursor.SetY ( this->right_cursor.GetY() - 64 );
         }
-        break;
-      case SDLK_0: // DEBUG
-        if ( this->GetID() == 0 ) // player1
+      }
+    }
+
+    else if ( key == SDLK_DOWN )
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( this->left_cursor.GetY() < 128 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
-          std::cout << this->GetID() << "\n" << std::endl;
+          this->left_cursor.SetY ( this->left_cursor.GetY() + 32 );
         }
-        break;
-      case SDLK_LEFTBRACKET: // DEBUG
-        if ( this->GetID() == 0 ) // player1
+        else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() < 128 )
         {
-          this->debug.ListCards ( this->cards );
-          board.Draw();
+          this->left_cursor.SetY ( this->left_cursor.GetY() + 64 );
         }
-        break;
-      case SDLK_RIGHTBRACKET: // DEBUG
+      }
+      else if ( this->GetState() == 1 ) // player2
+      {
+        if ( this->right_cursor.GetY() < 128 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
+        {
+          this->right_cursor.SetY ( this->right_cursor.GetY() + 32 );
+        }
+        else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() < 128 )
+        {
+          this->right_cursor.SetY ( this->right_cursor.GetY() + 64 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_0 ) // DEBUG
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        std::cout << this->GetID() << "\n" << std::endl;
+      }
+    }
+
+    else if ( key == SDLK_LEFTBRACKET ) // DEBUG
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
         this->debug.ListCards ( this->cards );
         board.Draw();
-        break;
-      case SDLK_1:
-        // move selected card to grid[0][0] if possible
-        if ( this->GetState() == 0 && this->GetID() == 0 ) // player1
+      }
+    }
+
+    else if ( key == SDLK_RIGHTBRACKET ) // DEBUG
+    {
+      this->debug.ListCards ( this->cards );
+      board.Draw();
+    }
+
+    else if ( key == SDLK_1 && mod == KMOD_LMETA )
+    {
+      // ...
+    }
+
+    else if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible
+    {
+      if ( this->GetState() == 0 && this->GetID() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 0, 0 ) == false )
         {
-          if ( board.GetStatus ( 0, 0 ) == false )
-          {
-            board.UpdateBoard ( 0, 0, this->cards[0].id );
-            //this->RemoveCard ( this->cards[0] ); // Jelleye
-          }
-          board.Draw();
+          board.UpdateBoard ( 0, 0, this->cards[0].id );
+          //this->RemoveCard ( this->cards[0] ); // Jelleye
         }
-        break;
-      case SDLK_2:
-        // move selected card to grid[0][1] if possible
-        if ( this->GetID() == 0 ) // player1
+        board.Draw();
+      }
+    }
+
+    else if ( key == SDLK_2 ) // move selected card to grid[0][1] if possible
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 0, 1 ) == false )
         {
-          if ( board.GetStatus ( 0, 1 ) == false )
-          {
-            board.UpdateBoard ( 0, 1, this->cards[1].id );
-          }
-          board.Draw();
+          board.UpdateBoard ( 0, 1, this->cards[1].id );
         }
-        break;
-      case SDLK_3:
-        // move selected card to grid[0][2] if possible
-        if ( this->GetID() == 0 ) // player1
+        board.Draw();
+      }
+    }
+
+    else if ( key == SDLK_3 ) // move selected card to grid[0][2] if possible
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 0, 2 ) == false )
         {
-          if ( board.GetStatus ( 0, 2 ) == false )
-          {
-            board.UpdateBoard ( 0, 2, this->cards[2].id );
-          }
-          board.Draw();
+          board.UpdateBoard ( 0, 2, this->cards[2].id );
         }
-        break;
-      case SDLK_4:
-        // move selected card to grid[1][0] if possible
-        if ( this->GetID() == 0 ) // player1
+        board.Draw();
+      }
+    }
+
+    else if ( key == SDLK_4 ) // move selected card to grid[1][0] if possible
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 1, 0 ) == false )
         {
-          if ( board.GetStatus ( 1, 0 ) == false )
-          {
-            board.UpdateBoard ( 1, 0, this->cards[3].id );
-          }
-          board.Draw();
+          board.UpdateBoard ( 1, 0, this->cards[3].id );
         }
-        break;
-      case SDLK_5:
-        // move selected card to grid[1][1] if possible
-        if ( this->GetID() == 0 ) // player1
+        board.Draw();
+      }
+    }
+
+    else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 1, 1 ) == false )
         {
-          if ( board.GetStatus ( 1, 1 ) == false )
-          {
-            board.UpdateBoard ( 1, 1, this->cards[4].id );
-          }
-          board.Draw();
+          board.UpdateBoard ( 1, 1, this->cards[4].id );
         }
-        break;
-      case SDLK_6:
-        // move selected card to grid[1][2] if possible
-        if ( this->GetID() == 0 ) // player1
+        board.Draw();
+      }
+    }
+
+    else if ( key == SDLK_6 ) // move selected card to grid[1][2] if possible
+    {
+      if ( this->GetID() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 1, 2 ) == false )
         {
-          if ( board.GetStatus ( 1, 2 ) == false )
-          {
-            /* Sanity check */
-            board.UpdateBoard ( 1, 2, this->cards[5].id );
-          }
-          board.Draw();
+          /* Sanity check */
+          board.UpdateBoard ( 1, 2, this->cards[5].id );
         }
-        break;
-      case SDLK_7:
-        // move selected card to grid[2][0] if possible
-        break;
-      case SDLK_8:
-        // move selected card to grid[2][1] if possible
-        break;
-      case SDLK_9:
-        // move selected card to grid[2][2] if possible
-        break;
+        board.Draw();
+      }
+    }
+
+    else if ( key == SDLK_7 ) // move selected card to grid[2][0] if possible
+    {
+      // Stub
+    }
+
+    else if ( key == SDLK_8 ) // move selected card to grid[2][1] if possible
+    {
+      // Stub
+    }
+
+    else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
+    {
+      // Stub
     }
   }
 }
