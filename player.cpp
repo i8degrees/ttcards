@@ -106,30 +106,44 @@ void Player::Input ( SDL_Event &input )
       case SDLK_LEFT:
         if ( this->GetID() == 0 ) // player1
         {
-          this->mixer1.PlaySoundTrack ( CURSOR_MOVE, 1, 0);
+          if ( this->cursor.GetX() > 96 )
+          {
+            this->cursor.SetX ( this->cursor.GetX () - 96 );
+          }
         }
         break;
       case SDLK_RIGHT:
         if ( this->GetID() == 0 ) // player1
         {
-          this->mixer2.PlaySoundTrack ( CURSOR_CANCEL, 2, 0 );
+          if ( this->cursor.GetX() < 224 )
+          {
+            this->cursor.SetX ( this->cursor.GetX () + 96 );
+          }
         }
         break;
       case SDLK_UP:
         if ( this->GetID() == 0 ) // player1
         {
-          if ( this->cursor.GetY() > 16 && this->cursor.GetY() )
+          if ( this->cursor.GetY() > 16 && this->cursor.GetX() == 80 )
           {
             this->cursor.SetY ( this->cursor.GetY() - 32 );
+          }
+          else if ( this->cursor.GetX() > 96 && this->cursor.GetY() > 16 )
+          {
+            this->cursor.SetY ( this->cursor.GetY() - 64 );
           }
         }
         break;
       case SDLK_DOWN:
         if ( this->GetID() == 0 ) // player1
         {
-          if ( this->cursor.GetY() >= 16 && this->cursor.GetY() <= 128 )
+          if ( this->cursor.GetY() < 128 && this->cursor.GetX() == 80 )
           {
             this->cursor.SetY ( this->cursor.GetY() + 32 );
+          }
+          else if ( this->cursor.GetX() > 96 && this->cursor.GetY() < 128 )
+          {
+            this->cursor.SetY ( this->cursor.GetY() + 64 );
           }
         }
         break;
