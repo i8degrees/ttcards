@@ -6,6 +6,12 @@
 ******************************************************************************/
 #include "board.h"
 
+/*
+TODO: Add configurable board init, such as:
+
+  Board ( unsigned int board_width, unsigned int board_height );
+
+*/
 Board::Board ( void )
 {
   int x, y = 0;
@@ -58,7 +64,7 @@ void Board::UpdateBoard ( unsigned int x, unsigned int y, unsigned int state )
   this->grid[x][y] = state;
 }
 
-void Board::Draw ( void ) //void Board::Draw ( Gfx &engine )
+void Board::Draw ( void ) // void Board::Draw ( Gfx &engine )
 {
   int x, y = 0;
 

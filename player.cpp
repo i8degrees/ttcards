@@ -41,7 +41,7 @@ Player::~Player ( void )
 
 void Player::Init ( void )
 {
-  // ...
+  // Stub
 }
 
 SDL_Rect Player::GetXY ( void )

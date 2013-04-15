@@ -44,7 +44,7 @@ public:
   unsigned int GetState ( void );
   void SetState ( unsigned int state );
 
-  // TODO: Branch off into Score class
+  // TODO: Consider branching this into Score class
   unsigned int GetScore ( void );
   void SetScore ( unsigned int score );
   bool DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
