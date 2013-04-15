@@ -1,6 +1,8 @@
 /******************************************************************************
     ttcards.cpp
 
+  Final Fantasy VIII Triple Triad Remake
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
@@ -89,9 +91,8 @@ void TTcards::InterfaceInput ( SDL_Event &event )
         default:
           break;
         case SDLK_ESCAPE:
-          this->SetGameState ( false );
-          break;
         case SDLK_q:
+          this->SetGameState ( false );
           this->SetGameState ( false );
           break;
         case SDLK_p:
@@ -102,10 +103,13 @@ void TTcards::InterfaceInput ( SDL_Event &event )
           {
             this->show_fps = false;
           }
-          else
+          else // false
           {
             this->show_fps = true;
           }
+          break;
+          case SDLK_MINUS: // DEBUG
+            this->debug.ListCards ( this->collection.cards );
           break;
         }
       break;
@@ -164,32 +168,38 @@ bool TTcards::Run ( void )
   // This card should be discarded ( MAX_HAND = 5 )
   this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
 
-  this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
-  this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
+  this->music.PlayMusicTrack ( -1 );
+  this->music.PauseMusic ();
+
+  this->player1.SetState ( 0 );
 
   this->fps.Start();
-
-  this->player1.SetID ( 0 );
-  this->player2.SetID ( 1 );
 
   while( this->IsRunning() ) // main loop
   {
     this->Input ();
 
-
-    player1.Draw ( this->engine );
-    player2.Draw ( this->engine );
-
-    player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
-    player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
     this->board.DrawBackground ( this->engine );
+
+    this->player1.CheckCollisions ( this->board );
+    this->player2.CheckCollisions ( this->board );
+
+    this->player1.SetID ( 0 );
+    this->player2.SetID ( 1 );
+
+    this->player1.Draw ( this->engine, this->board );
+    this->player2.Draw ( this->engine, this->board );
+
+    this->player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
+    this->player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
+
     this->ShowFPS();
 
     this->engine.UpdateScreen ();
 
     this->fps.Update();
 
-  } // while this->IsRunning()
+  } // while this->game_state == true
 
   return true;
 }
