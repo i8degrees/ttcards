@@ -17,6 +17,7 @@ Player::Player ( void )
   this->id = 0;
   this->state = 0;
   this->score = 5;
+  this->index = 0;
 
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
   this->text_score.SetTextColor ( 255, 255, 255 );
@@ -154,6 +155,11 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         if ( this->left_cursor.GetY() > 16 && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
           this->left_cursor.SetY ( this->left_cursor.GetY() - 32 );
+          if ( index > 0 && index <= this->cards.size() )
+          {
+            index = index - 1;
+            //this->SelectCard ( this->cards[index] );
+          }
         }
         else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() > 16 )
         {
@@ -165,6 +171,11 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         if ( this->right_cursor.GetY() > 16 && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
         {
           this->right_cursor.SetY ( this->right_cursor.GetY() - 32 );
+          if ( index > 0 && index <= this->cards.size() )
+          {
+            index = index - 1;
+            //this->SelectCard ( this->cards[index] );
+          }
         }
         else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() > 16 )
         {
@@ -217,6 +228,7 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     }
 
     else if ( key == SDLK_RIGHTBRACKET ) // DEBUG
+    else if ( key == SDLK_SPACE )
     {
       this->debug.ListCards ( this->cards );
       board.Draw();
@@ -225,6 +237,10 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     else if ( key == SDLK_1 && mod == KMOD_LMETA )
     {
       // ...
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+        this->SelectCard ( this->cards[index] );
+      else if ( this->GetID() == 1 && this->GetState() == 1 )
+        this->SelectCard ( this->cards[index] );
     }
 
     else if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible

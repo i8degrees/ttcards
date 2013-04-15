@@ -13,6 +13,8 @@ CardHand::CardHand ( void )
   #endif
 
   this->cards.clear();
+
+  this->selectedCard = -1;
 }
 
 CardHand::~CardHand ( void )
@@ -68,9 +70,26 @@ bool CardHand::RemoveCard ( Card &card )
   return false;
 }
 
-bool CardHand::isSelected ( Card &card )
+bool CardHand::IsSelected ( Card &card )
 {
-  return true;
+  signed int pos = this->CardPosition ( this->selectedCard );
+
+  if ( pos == -1 )
+    return false;
+  else
+    return true;
+}
+
+void CardHand::SelectCard ( Card &card )
+{
+  if ( this->isValid ( card ) )
+  {
+    this->selectedCard = card;
+  }
+
+  #ifdef DEBUG_CARD_HAND
+    std::cout << "CardHand::SelectCard (): " << this->selectedCard.id << std::endl;
+  #endif
 }
 
 bool CardHand::isValid ( Card &card )

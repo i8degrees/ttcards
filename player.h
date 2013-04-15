@@ -65,6 +65,7 @@ private:
   unsigned int id; // unique identifier
   unsigned int state; // ...is it my turn turn yet?
   unsigned int score;
+  signed int index;
 
   Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
 

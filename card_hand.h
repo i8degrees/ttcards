@@ -28,14 +28,14 @@ class CardHand
     //bool isRemoved ( Card &card );
     bool isValid ( Card &card );
     bool isEmpty ( void );
+    bool IsSelected ( Card &card );
     unsigned int CardCount ( void );
     signed int CardPosition ( Card &card );
-    //bool SelectCard ( Card &card );
-    bool isSelected ( Card &card );
+    void SelectCard ( Card &card );
 
     std::vector<Card> cards;
   private:
-    //Card selectedCard;
+    Card selectedCard;
 };
 
 #endif // CARD_HAND_HEADERS defined
