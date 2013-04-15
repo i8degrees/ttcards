@@ -102,16 +102,12 @@ void Player::Input ( SDL_Event &input, Board &board)
     {
       default:
         break;
-      case SDLK_ESCAPE:
-      case SDLK_u:
-        // skip turn
-        this->SetState ( 1 ); // player2
-        break;
-      case SDLK_i:
-        if ( this->GetID() == 0 ) // player1
-        {
-          this->SetID ( 1 ); // player2
-        }
+      case SDLK_ESCAPE: // skip turn
+      case SDLK_u: // DEBUG
+        if ( this->GetState() == 0 ) // player1
+          this->SetState ( 1 ); // player2
+        else
+          this->SetState ( 0 ); // player1
         break;
       case SDLK_LEFT:
         if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
