@@ -341,10 +341,8 @@ void Player::Draw ( Gfx &engine, Board &board )
   }
 }
 
-bool Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
+void Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
 {
   this->text_score.SetTextBuffer ( std::to_string ( this->score ) );
   this->text_score.DrawText ( engine, x, y );
-
-  return true;
 }

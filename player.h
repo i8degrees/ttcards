@@ -47,12 +47,12 @@ public:
   // TODO: Consider branching this into Score class
   unsigned int GetScore ( void );
   void SetScore ( unsigned int score );
-  bool DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
   bool CheckCollisions ( Board &board );
 
   void Input ( SDL_Event &input, Board &board );
   void Draw ( Gfx &engine, Board &board );
+  void DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
   Sprite left_cursor;
