@@ -55,7 +55,8 @@ public:
   void Draw ( Gfx &engine, Board &board );
 
 private:
-  Sprite cursor;
+  Sprite left_cursor;
+  Sprite right_cursor;
   CardDebug debug;
   CardView card;
   Font text_score;

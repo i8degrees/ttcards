@@ -21,10 +21,15 @@ Player::Player ( void )
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
   this->text_score.SetTextColor ( 255, 255, 255 );
 
-  this->cursor = Sprite ( 26, 16 );
-  this->cursor.SetX ( 80 );
-  this->cursor.SetY ( 16 );
-  this->cursor.LoadImage ( LEFT_CURSOR );
+  this->left_cursor = Sprite ( 26, 16 );
+  this->left_cursor.SetX ( 80 );
+  this->left_cursor.SetY ( 16 );
+  this->left_cursor.LoadImage ( LEFT_CURSOR );
+
+  this->right_cursor = Sprite ( 26, 16 );
+  this->right_cursor.SetX ( 272 );
+  this->right_cursor.SetY ( 16 );
+  this->right_cursor.LoadImage ( RIGHT_CURSOR );
 }
 
 Player::~Player ( void )
@@ -109,46 +114,46 @@ void Player::Input ( SDL_Event &input, Board &board)
         }
         break;
       case SDLK_LEFT:
-        if ( this->GetID() == 0 ) // player1
+        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
         {
-          if ( this->cursor.GetX() > 96 )
+          if ( this->left_cursor.GetX() > 96 )
           {
-            this->cursor.SetX ( this->cursor.GetX () - 96 );
+            this->left_cursor.SetX ( this->left_cursor.GetX () - 96 );
           }
         }
         break;
       case SDLK_RIGHT:
-        if ( this->GetID() == 0 ) // player1
+        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
         {
-          if ( this->cursor.GetX() < 224 )
+          if ( this->left_cursor.GetX() < 224 )
           {
-            this->cursor.SetX ( this->cursor.GetX () + 96 );
+            this->left_cursor.SetX ( this->left_cursor.GetX () + 96 );
           }
         }
         break;
       case SDLK_UP:
-        if ( this->GetID() == 0 ) // player1
+        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
         {
-          if ( this->cursor.GetY() > 16 && this->cursor.GetX() == 80 )
+          if ( this->left_cursor.GetY() > 16 && this->left_cursor.GetX() == 80 )
           {
-            this->cursor.SetY ( this->cursor.GetY() - 32 );
+            this->left_cursor.SetY ( this->left_cursor.GetY() - 32 );
           }
-          else if ( this->cursor.GetX() > 96 && this->cursor.GetY() > 16 )
+          else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() > 16 )
           {
-            this->cursor.SetY ( this->cursor.GetY() - 64 );
+            this->left_cursor.SetY ( this->left_cursor.GetY() - 64 );
           }
         }
         break;
       case SDLK_DOWN:
-        if ( this->GetID() == 0 ) // player1
+        if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
         {
-          if ( this->cursor.GetY() < 128 && this->cursor.GetX() == 80 )
+          if ( this->left_cursor.GetY() < 128 && this->left_cursor.GetX() == 80 )
           {
-            this->cursor.SetY ( this->cursor.GetY() + 32 );
+            this->left_cursor.SetY ( this->left_cursor.GetY() + 32 );
           }
-          else if ( this->cursor.GetX() > 96 && this->cursor.GetY() < 128 )
+          else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() < 128 )
           {
-            this->cursor.SetY ( this->cursor.GetY() + 64 );
+            this->left_cursor.SetY ( this->left_cursor.GetY() + 64 );
           }
         }
         break;
@@ -296,7 +301,7 @@ void Player::Draw ( Gfx &engine, Board &board )
           this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
     }
-    this->cursor.Draw ( engine );
+    this->left_cursor.Draw ( engine );
   }
   else if ( this->GetID() == 1 ) // player2
   {
@@ -326,7 +331,10 @@ void Player::Draw ( Gfx &engine, Board &board )
       {
         this->card.DrawCard ( engine, this->cards[hand_index], 304, 144, 1 );
       }
-      hand_index+=1;
+    }
+    if ( this->state == 1 )
+    {
+      this->right_cursor.Draw ( engine );
     }
   }
 }
