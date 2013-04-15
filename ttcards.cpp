@@ -56,6 +56,22 @@ void TTcards::SetGameState ( bool state )
   this->game_state = state;
 }
 
+void TTcards::ShowFPS ( void )
+{
+  if ( this->show_fps == true )
+  {
+    this->timer_text.SetTextBuffer ( std::to_string ( this->fps.GetFPS() ) );
+    signed int w = this->timer_text.GetTextWidth ();
+    this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
+  }
+  else // false
+  {
+    this->timer_text.SetTextBuffer ( " " );
+    signed int w = this->timer_text.GetTextWidth ();
+    this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
+  }
+}
+
 void TTcards::InterfaceInput ( SDL_Event &event )
 {
   switch ( event.type )
@@ -160,18 +176,6 @@ bool TTcards::Run ( void )
   {
     this->Input ();
 
-    if ( this->show_fps == true )
-    {
-      this->timer_text.SetTextBuffer ( std::to_string ( this->fps.GetFPS() ) );
-      signed int w = this->timer_text.GetTextWidth ();
-      this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
-    }
-    else // false
-    {
-      this->timer_text.SetTextBuffer ( " " );
-      signed int w = this->timer_text.GetTextWidth ();
-      this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
-    }
 
     player1.Draw ( this->engine );
     player2.Draw ( this->engine );
@@ -179,6 +183,7 @@ bool TTcards::Run ( void )
     player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
     player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5
     this->board.DrawBackground ( this->engine );
+    this->ShowFPS();
 
     this->engine.UpdateScreen ();
 
