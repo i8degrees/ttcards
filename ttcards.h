@@ -37,6 +37,7 @@ class TTcards
     void ShowFPS ( void );
     void InterfaceInput ( SDL_Event &event );
     void Input ( void );
+    bool LoadGameData ( void );
 
   private:
     SDL_Event input;

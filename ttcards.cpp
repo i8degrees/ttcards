@@ -122,23 +122,23 @@ void TTcards::Input ( void )
   }
 }
 
+bool TTcards::LoadGameData ( void )
 {
+  this->board.LoadBackground ( BOARD_BACKGROUND );
 
+  this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
+  this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
 
+  this->collection.Load ( CARDS_DB );
+
+  this->music.LoadMusicTrack ( MUSIC_TRACK );
 
   return true;
 }
 
 bool TTcards::Run ( void )
 {
-
-  this->music.LoadMusicTrack ( MUSIC_TRACK );
-
-  this->music.PlayMusicTrack ( -1 );
-  this->music.PauseMusic ();
-
-  this->collection.Load ( CARDS_DB );
-  //this->debug.ListCards ( this->collection.cards );
+  this->LoadGameData();
 
   this->player1.AddCard ( this->collection.cards[89] ); // Diablos
   this->player1.AddCard ( this->collection.cards[109] ); // Squall
