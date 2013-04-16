@@ -528,11 +528,11 @@ void Player::Draw ( Gfx &engine, Board &board )
       }
     }
   }
-  if ( this->GetState() == 0 && this->GetID() == 0 )
+  if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
   {
     this->left_cursor.Draw ( engine );
   }
-  else if ( this->GetState() == 1 && this->GetID() == 1 )
+  else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
   {
     this->right_cursor.Draw ( engine );
   }
