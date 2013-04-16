@@ -17,7 +17,7 @@ Player::Player ( void )
   this->id = 0;
   this->state = 0;
   this->score = 5;
-  this->index = 0;
+  this->card_pos = 0;
 
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
   this->text_score.SetTextColor ( 255, 255, 255 );
@@ -134,14 +134,14 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     {
       if ( this->GetID() == 0 && this->GetState() == 0 )
       {
-        std::cout << index << "\n";
-        this->RemoveCard ( this->cards[index] );
+        std::cout << this->card_pos << "\n";
+        this->RemoveCard ( this->cards[this->card_pos] );
       }
 
       if ( this->GetID() == 1 && this->GetState() == 1 )
       {
-        std::cout << index << "\n";
-        this->RemoveCard ( this->cards[index] );
+        std::cout << this->card_pos << "\n";
+        this->RemoveCard ( this->cards[this->card_pos] );
       }
     }
 
@@ -189,10 +189,9 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           this->left_cursor.SetY ( this->left_cursor.GetY() - ( CARD_HEIGHT / 2 ) );
 
-          if ( index > 0 && index <= this->cards.size() )
+          if ( this->card_pos > 0 && this->card_pos <= this->cards.size() )
           {
-            index = index - 1;
-            //this->SelectCard ( this->cards[index] );
+            this->card_pos = this->card_pos - 1;
           }
         }
         else if ( this->left_cursor.GetX() > 96 && this->left_cursor.GetY() > 16 )
@@ -206,10 +205,9 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           this->right_cursor.SetY ( this->right_cursor.GetY() - ( CARD_HEIGHT / 2 ) );
 
-          if ( index > 0 && index <= this->cards.size() )
+          if ( this->card_pos > 0 && this->card_pos <= this->cards.size() )
           {
-            index = index - 1;
-            //this->SelectCard ( this->cards[index] );
+            this->card_pos = this->card_pos - 1;
           }
         }
         else if ( this->right_cursor.GetX() > 96 && this->right_cursor.GetY() > 16 )
@@ -227,10 +225,9 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           this->left_cursor.SetY ( this->left_cursor.GetY() + ( CARD_HEIGHT / 2 ) );
 
-          if ( index >= 0 && index < this->cards.size() )
+          if ( this->card_pos >= 0 && this->card_pos < this->cards.size() )
           {
-            index = index + 1;
-            //this->SelectCard ( this->cards[index] );
+            this->card_pos = this->card_pos + 1;
           }
         }
         else if ( this->left_cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X && this->left_cursor.GetY() < 128 )
@@ -244,10 +241,9 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           this->right_cursor.SetY ( this->right_cursor.GetY() + ( CARD_HEIGHT / 2 ) );
 
-          if ( index >= 0 && index < this->cards.size() )
+          if ( this->card_pos >= 0 && this->card_pos < this->cards.size() )
           {
-            index = index + 1;
-            //this->SelectCard ( this->cards[index] );
+            this->card_pos = this->card_pos + 1;
           }
         }
         else if ( this->right_cursor.GetX() > PLAYER2_CURSOR_ORIGIN_X && this->right_cursor.GetY() < 128 )
@@ -260,9 +256,9 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     else if ( key == SDLK_SPACE )
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
-        this->SelectCard ( this->cards[index] );
+        this->SelectCard ( this->cards[this->card_pos] );
       else if ( this->GetID() == 1 && this->GetState() == 1 )
-        this->SelectCard ( this->cards[index] );
+        this->SelectCard ( this->cards[this->card_pos] );
     }
 
     else if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible

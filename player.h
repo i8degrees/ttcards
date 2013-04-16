@@ -63,7 +63,7 @@ private:
   unsigned int id; // unique identifier
   unsigned int state; // ...is it my turn yet?
   unsigned int score;
-  signed int index;
+  signed int card_pos;
 
   Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
 };
