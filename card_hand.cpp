@@ -14,7 +14,7 @@ CardHand::CardHand ( void )
 
   this->cards.clear();
 
-  this->selectedCard = -1;
+  this->selectedCard = 0;
 }
 
 CardHand::~CardHand ( void )
@@ -70,14 +70,9 @@ bool CardHand::RemoveCard ( Card &card )
   return false;
 }
 
-bool CardHand::IsSelected ( Card &card )
+Card & CardHand::GetSelectedCard ( void )
 {
-  signed int pos = this->CardPosition ( this->selectedCard );
-
-  if ( pos == -1 )
-    return false;
-  else
-    return true;
+  return this->selectedCard;
 }
 
 void CardHand::SelectCard ( Card &card )

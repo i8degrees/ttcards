@@ -27,7 +27,7 @@ class CardHand
     bool RemoveCard ( Card &card );
     bool isValid ( Card &card );
     bool isEmpty ( void );
-    bool IsSelected ( Card &card );
+    Card & GetSelectedCard ( void );
     unsigned int CardCount ( void );
     signed int CardPosition ( Card &card );
     void SelectCard ( Card &card );
