@@ -66,8 +66,6 @@ private:
   signed int index;
 
   Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
-
-  //Timer turn;
 };
 
 #endif // PLAYERS_HEADERS defined
