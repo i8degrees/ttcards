@@ -267,17 +267,14 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       {
         if ( board.GetStatus ( 0, 0 ) == false )
         {
-          board.UpdateBoard ( 0, 0, this->cards[0].id );
-          //this->RemoveCard ( this->cards[0] ); // Jelleye
+          board.UpdateBoard ( 0, 0, this->GetSelectedCard().id );
         }
-
       }
       else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
       {
         if ( board.GetStatus ( 0, 0 ) == false )
         {
-          board.UpdateBoard ( 0, 0, this->cards[0].id );
-          //this->RemoveCard ( this->cards[0] ); // Jelleye
+          board.UpdateBoard ( 0, 0, this->GetSelectedCard().id );
         }
       }
       board.Draw();
@@ -289,14 +286,14 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       {
         if ( board.GetStatus ( 0, 1 ) == false )
         {
-          board.UpdateBoard ( 0, 1, this->cards[1].id );
+          board.UpdateBoard ( 0, 1, this->GetSelectedCard().id );
         }
       }
       else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
       {
         if ( board.GetStatus ( 0, 1 ) == false )
         {
-          board.UpdateBoard ( 0, 1, this->cards[1].id );
+          board.UpdateBoard ( 0, 1, this->GetSelectedCard().id );
         }
       }
       board.Draw();
@@ -308,14 +305,14 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       {
         if ( board.GetStatus ( 0, 2 ) == false )
         {
-          board.UpdateBoard ( 0, 2, this->cards[2].id );
+          board.UpdateBoard ( 0, 2, this->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board.GetStatus ( 0, 2 ) == false )
         {
-          board.UpdateBoard ( 0, 2, this->cards[2].id );
+          board.UpdateBoard ( 0, 2, this->GetSelectedCard().id );
         }
       }
       board.Draw();
@@ -327,14 +324,14 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       {
         if ( board.GetStatus ( 1, 0 ) == false )
         {
-          board.UpdateBoard ( 1, 0, this->cards[3].id );
+          board.UpdateBoard ( 1, 0, this->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board.GetStatus ( 1, 0 ) == false )
         {
-          board.UpdateBoard ( 1, 0, this->cards[3].id );
+          board.UpdateBoard ( 1, 0, this->GetSelectedCard().id );
         }
       }
       board.Draw();
@@ -346,14 +343,14 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       {
         if ( board.GetStatus ( 1, 1 ) == false )
         {
-          board.UpdateBoard ( 1, 1, this->cards[4].id );
+          board.UpdateBoard ( 1, 1, this->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board.GetStatus ( 1, 1 ) == false )
         {
-          board.UpdateBoard ( 1, 1, this->cards[4].id );
+          board.UpdateBoard ( 1, 1, this->GetSelectedCard().id );
         }
       }
       board.Draw();
@@ -365,16 +362,14 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       {
         if ( board.GetStatus ( 1, 2 ) == false )
         {
-          /* Sanity check */
-          board.UpdateBoard ( 1, 2, this->cards[5].id );
+          board.UpdateBoard ( 1, 2, this->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board.GetStatus ( 1, 2 ) == false )
         {
-          /* Sanity check */
-          board.UpdateBoard ( 1, 2, this->cards[5].id );
+          board.UpdateBoard ( 1, 2, this->GetSelectedCard().id );
         }
       }
       board.Draw();
@@ -382,17 +377,59 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
 
     else if ( key == SDLK_7 ) // move selected card to grid[2][0] if possible
     {
-      // Stub
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 2, 0 ) == false )
+        {
+          board.UpdateBoard ( 2, 0, this->GetSelectedCard().id );
+        }
+      }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 2, 0 ) == false )
+        {
+          board.UpdateBoard ( 2, 0, this->GetSelectedCard().id );
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_8 ) // move selected card to grid[2][1] if possible
     {
-      // Stub
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 2, 1 ) == false )
+        {
+          board.UpdateBoard ( 2, 1, this->GetSelectedCard().id );
+        }
+      }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 2, 1 ) == false )
+        {
+          board.UpdateBoard ( 2, 1, this->GetSelectedCard().id );
+        }
+      }
+      board.Draw();
     }
 
     else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
     {
-      // Stub
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( board.GetStatus ( 2, 2 ) == false )
+        {
+          board.UpdateBoard ( 2, 2, this->GetSelectedCard().id );
+        }
+      }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board.GetStatus ( 2, 2 ) == false )
+        {
+          board.UpdateBoard ( 2, 2, this->GetSelectedCard().id );
+        }
+      }
+      board.Draw();
     }
   }
 }
