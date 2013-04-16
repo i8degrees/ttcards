@@ -61,7 +61,7 @@ private:
   unsigned int x;
   unsigned int y;
   unsigned int id; // unique identifier
-  unsigned int state; // ...is it my turn turn yet?
+  unsigned int state; // ...is it my turn yet?
   unsigned int score;
   signed int index;
 
