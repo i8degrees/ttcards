@@ -222,13 +222,14 @@ bool Sprite::LoadImage ( std::string filename )
   if ( this->sprite_buffer == NULL )
   {
     #ifdef DEBUG_SPRITE
-      //std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
+      std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
     #endif
     SDL_FreeSurface ( this->sprite_buffer );
     this->sprite_buffer = NULL;
 
     return false;
   }
+
   return true;
 }
 
@@ -243,7 +244,7 @@ bool Sprite::Draw ( Gfx &engine )
   if ( this->sprite_buffer == NULL )
   {
     #ifdef DEBUG_SPRITE
-      //std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
+      std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
     #endif
     return false;
   }

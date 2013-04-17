@@ -106,7 +106,7 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
   if ( temp_buffer == NULL )
   {
     #ifdef DEBUG_GFX
-      //std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
+      std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
     #endif
 
     SDL_FreeSurface ( temp_buffer );
