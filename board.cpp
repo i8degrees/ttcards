@@ -39,6 +39,12 @@ Board::~Board ( void )
   this->background = NULL;
 }
 
+void Board::Init ( CardHand &player1_cards, CardHand &player2_cards )
+{
+  this->player1_hand = &player1_cards;
+  this->player2_hand = &player2_cards;
+}
+
 // TODO: Reconsider using an instance of Gfx solely for this method
 bool Board::LoadBackground ( std::string filename )
 {
@@ -64,7 +70,7 @@ void Board::UpdateBoard ( unsigned int x, unsigned int y, unsigned int state )
   this->grid[x][y] = state;
 }
 
-void Board::Draw ( void ) // void Board::Draw ( Gfx &engine )
+void Board::Draw ( void )
 {
   int x, y = 0;
 
@@ -75,5 +81,45 @@ void Board::Draw ( void ) // void Board::Draw ( Gfx &engine )
       std::cout << this->grid[x][y] << " ";
     }
     std::cout << "\n" << std::endl;
+  }
+}
+
+void Board::DrawBoard ( Gfx &engine )
+{
+  unsigned int hand_index = 0;
+  unsigned int x, y = 0;
+
+  for ( hand_index = 0; hand_index < this->player1_hand->cards.size(); hand_index++ )
+  {
+    if ( this->player1_hand->isValid ( this->player1_hand->cards[hand_index] ) == true )
+    {
+      for ( x = 0; x < 3; x++ )
+      {
+        for ( y = 0; y < 3; y++ )
+        {
+          if ( this->GetStatus ( x, y ) == this->player1_hand->cards[hand_index].id )
+            this->card.DrawCard ( engine, this->player1_hand->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ), 0 );
+          else
+            this->card.DrawCard ( engine, this->player1_hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ), 0 );
+        }
+      }
+    }
+  }
+
+  for ( hand_index = 0; hand_index < this->player2_hand->cards.size(); hand_index++ )
+  {
+    if ( this->player2_hand->isValid ( this->player2_hand->cards[hand_index] ) == true )
+    {
+      for ( x = 0; x < 3; x++ )
+      {
+        for ( y = 0; y < 3; y++ )
+        {
+          if ( this->GetStatus ( x, y ) == this->player2_hand->cards[hand_index].id )
+            this->card.DrawCard ( engine, this->player2_hand->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ), 1 );
+          else
+            this->card.DrawCard ( engine, this->player2_hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ), 1 );
+        }
+      }
+    }
   }
 }
