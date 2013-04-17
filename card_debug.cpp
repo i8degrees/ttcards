@@ -25,7 +25,7 @@ CardDebug::~CardDebug ( void )
 void CardDebug::ListCard ( Card &card )
 {
   // TODO: ERR check
-  if ( card.name == "\0" || card.face == "\0" )
+  if ( card.name == "\0" )
   {
     #ifdef DEBUG_CARD_DEBUG
       std::cout << "CardDebug::ListCard(): " << "Card is empty." << "\n" << std::endl;
@@ -49,7 +49,7 @@ void CardDebug::ListCard ( Card &card )
 
   std::cout << card.name;
   std::cout << " ";
-  std::cout << card.face;
+  std::cout << card.player_id;
 
   std::cout << std::endl;
 }
@@ -82,7 +82,7 @@ void CardDebug::ListCards ( std::vector<Card> &cards )
 
     std::cout << cards[i].name;
     std::cout << " ";
-    std::cout << cards[i].face;
+    std::cout << cards[i].player_id;
 
     std::cout << std::endl;
   }

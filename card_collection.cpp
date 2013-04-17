@@ -29,7 +29,7 @@ bool Collection::Load ( std::string filename )
   int index = 0;
   unsigned int id, level, type, element = 0;
   std::array<int, 4> rank = { { 0 } };
-  std::string name, face = "\0";
+  std::string name = "\0";
 
   std::ifstream load ( filename );
 
@@ -56,7 +56,6 @@ bool Collection::Load ( std::string filename )
     load >> rank[2];
     load >> rank[3];
     load >> name;
-    load >> face;
 
     #ifdef DEBUG_CARD_COLLECTION
       std::cout << id;
@@ -73,13 +72,11 @@ bool Collection::Load ( std::string filename )
         std::cout << " ";
       }
       std::cout << name;
-      std::cout << " ";
-      std::cout << face;
 
       std::cout << std::endl;
     #endif // defined DEBUG_CARD_COLLECTION
 
-    this->cards.push_back ( Card ( id, level, type, element, { { rank[0], rank[1], rank[2], rank[3] } }, name, face ) );
+    this->cards.push_back ( Card ( id, level, type, element, { { rank[0], rank[1], rank[2], rank[3] } }, name, 0 ) );
   }
 
   #ifdef DEBUG_CARD_COLLECTION

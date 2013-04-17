@@ -10,7 +10,7 @@
 
 Card::Card (  unsigned int id, unsigned int level, unsigned int type,
               unsigned int element, std::array<int, 4> rank,
-              std::string name, std::string face )
+              std::string name, unsigned int player_id )
 {
   #ifdef DEBUG_CARD_OBJ
     std::cout << "Card::Card (): Hello, world!" << "\n" << std::endl;
@@ -22,7 +22,7 @@ Card::Card (  unsigned int id, unsigned int level, unsigned int type,
   this->element = element;
   this->rank = rank;
   this->name = name;
-  this->face = face;
+  this->player_id = player_id;
 }
 
 Card::~Card ( void )
@@ -37,5 +37,5 @@ Card::~Card ( void )
   this->element = 0;
   this->rank = { { 0, 0, 0, 0 } };
   this->name = "\0";
-  this->face = "\0";
+  this->player_id = 0;
 }

@@ -448,57 +448,58 @@ void Player::Draw ( Gfx &engine )
     {
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X , PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index , 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X , PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }
+
   else if ( this->GetID() == 1 ) // player2
   {
     for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
     {
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       hand_index+=1;
       if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }

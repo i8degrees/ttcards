@@ -27,7 +27,7 @@ class Card
   public:
     Card (  unsigned int id = 0, unsigned int level = 0, unsigned int type = 0,
             unsigned int element = 0, std::array<int, 4> rank = { { 0, 0, 0, 0 } },
-            std::string name = "\0", std::string face = "\0" );
+            std::string name = "\0", unsigned int player_id = 0 );
 
     ~Card ( void );
 
@@ -38,8 +38,8 @@ class Card
     std::array<int, 4> rank;
     std::string name;
 
-    // TODO: a temporary value until sprite sheet is ready
-    std::string face;
+    // FIXME
+    unsigned int player_id;
 
     // Player's Card Elemental type
     enum CardElement {
