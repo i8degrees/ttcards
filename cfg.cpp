@@ -47,15 +47,16 @@ const char CARDS_DB[255] = "./data/cards.txt";
 const char CARD_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
 const char SCORE_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
 
-const char ELEMENT_NONE[255] = "./data/images/elements/none_16.png";
-const char ELEMENT_EARTH[255] = "./data/images/elements/earth_16.png";
-const char ELEMENT_FIRE[255] = "./data/images/elements/fire_16.png";
-const char ELEMENT_HOLY[255] = "./data/images/elements/holy_16.png";
-const char ELEMENT_ICE[255] = "./data/images/elements/ice_16.png";
-const char ELEMENT_POISON[255] = "./data/images/elements/poison_16.png";
-const char ELEMENT_THUNDER[255] = "./data/images/elements/thunder_16.png";
-const char ELEMENT_WATER[255] = "./data/images/elements/water_16.png";
-const char ELEMENT_WIND[255] = "./data/images/elements/wind_16.png";
+const char CARD_ELEMENTS[255] = "./data/images/elements.png";
+const int ELEMENT_NONE = 0;
+const int ELEMENT_EARTH = 1;
+const int ELEMENT_FIRE = 2;
+const int ELEMENT_HOLY = 3;
+const int ELEMENT_ICE = 4;
+const int ELEMENT_POISON = 5;
+const int ELEMENT_THUNDER = 6;
+const int ELEMENT_WATER = 7;
+const int ELEMENT_WIND = 8;
 
 const char CARD_FACES[255] = "./data/images/faces/";
 const char HIDDEN_CARD[255] = "./data/images/faces/noface.png";

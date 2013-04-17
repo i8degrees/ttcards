@@ -51,15 +51,16 @@ extern const char CARDS_DB[255];
 extern const char CARD_FONTFACE[255];
 extern const char SCORE_FONTFACE[255];
 
-extern const char ELEMENT_NONE[255];
-extern const char ELEMENT_EARTH[255];
-extern const char ELEMENT_FIRE[255];
-extern const char ELEMENT_HOLY[255];
-extern const char ELEMENT_ICE[255];
-extern const char ELEMENT_POISON[255];
-extern const char ELEMENT_THUNDER[255];
-extern const char ELEMENT_WATER[255];
-extern const char ELEMENT_WIND[255];
+extern const char CARD_ELEMENTS[255];
+extern const int ELEMENT_NONE;
+extern const int ELEMENT_EARTH;
+extern const int ELEMENT_FIRE;
+extern const int ELEMENT_HOLY;
+extern const int ELEMENT_ICE;
+extern const int ELEMENT_POISON;
+extern const int ELEMENT_THUNDER;
+extern const int ELEMENT_WATER;
+extern const int ELEMENT_WIND;
 
 extern const char CARD_FACES[255];
 extern const char HIDDEN_CARD[255];
