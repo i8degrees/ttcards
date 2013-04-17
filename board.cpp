@@ -70,7 +70,7 @@ void Board::UpdateBoard ( unsigned int x, unsigned int y, unsigned int state )
   this->grid[x][y] = state;
 }
 
-void Board::Draw ( void )
+void Board::ListContents ( void )
 {
   int x, y = 0;
 

@@ -34,7 +34,7 @@ class Board
     unsigned int GetStatus ( unsigned int x, unsigned int y );
 
     void UpdateBoard ( unsigned int x, unsigned int y, unsigned int state );
-    void Draw ( void );
+    void ListContents ( void );
     void DrawBoard ( Gfx &engine );
 
   private:
