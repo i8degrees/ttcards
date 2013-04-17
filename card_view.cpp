@@ -77,9 +77,6 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   card_background->SetY ( y + 0 );
   if ( card_background->Draw ( engine ) == false )
     return false;
-/*
-  if ( card_face->LoadImage ( CARD_FACES + card.face ) == false )
-*/
 
   card_face->SetSheetID ( card.id );
   card_face->SetX ( x );
