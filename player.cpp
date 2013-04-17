@@ -73,6 +73,12 @@ unsigned int Player::GetID ( void )
 void Player::SetID ( unsigned int id )
 {
   this->id = id;
+
+  for ( int pid = 0; pid < this->hand->cards.size(); pid++ )
+  {
+    this->hand->cards[pid].player_id = id;
+  }
+
 }
 unsigned int Player::GetState ( void )
 {
