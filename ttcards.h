@@ -46,6 +46,7 @@ class TTcards
     Font timer_text;
     Board board;
     Collection collection;
+    CardHand player1_hand, player2_hand;
     Player player1, player2;
     Audio music;
     CardDebug debug;

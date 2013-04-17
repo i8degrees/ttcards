@@ -146,29 +146,33 @@ bool TTcards::Run ( void )
 {
   this->LoadGameData();
 
-  this->player1.AddCard ( this->collection.cards[89] ); // Diablos
-  this->player1.AddCard ( this->collection.cards[109] ); // Squall
-  this->player1.AddCard ( this->collection.cards[99] ); // Ward
-  this->player1.AddCard ( this->collection.cards[20] ); // Jelleye [pos 3]
-  this->player1.AddCard ( this->collection.cards[16] ); // Thrustaevis
+  this->player1.Init ( this->board, this->player1_hand );
+  this->player2.Init ( this->board, this->player2_hand );
+  this->board.Init ( this->player1_hand, this->player2_hand );
+
+  this->player1_hand.AddCard ( this->collection.cards[89] ); // Diablos
+  this->player1_hand.AddCard ( this->collection.cards[109] ); // Squall
+  this->player1_hand.AddCard ( this->collection.cards[99] ); // Ward
+  this->player1_hand.AddCard ( this->collection.cards[20] ); // Jelleye [pos 3]
+  this->player1_hand.AddCard ( this->collection.cards[16] ); // Thrustaevis
 
   // These two cards should be discarded ( MAX_HAND = 5 )
-  this->player1.AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->player1.AddCard ( this->collection.cards[24] ); // TriFace
+  this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->player1_hand.AddCard ( this->collection.cards[24] ); // TriFace
 
   // This card should be removed
-  this->player1.RemoveCard ( this->player1.cards[3] ); // Jelleye
+  this->player1_hand.RemoveCard ( this->player1_hand.cards[3] ); // Jelleye
 
-  this->player1.AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
 
-  this->player2.AddCard ( this->collection.cards[20] ); // Jelleye
-  this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->player2.AddCard ( this->collection.cards[24] ); // TriFace
-  this->player2.AddCard ( this->collection.cards[66] ); // Propagator
-  this->player2.AddCard ( this->collection.cards[50] ); // Malboro
+  this->player2_hand.AddCard ( this->collection.cards[20] ); // Jelleye
+  this->player2_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->player2_hand.AddCard ( this->collection.cards[24] ); // TriFace
+  this->player2_hand.AddCard ( this->collection.cards[66] ); // Propagator
+  this->player2_hand.AddCard ( this->collection.cards[50] ); // Malboro
 
   // This card should be discarded ( MAX_HAND = 5 )
-  this->player2.AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->player2_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
 
   this->music.PlayMusicTrack ( -1 );
   this->music.PauseMusic ();
