@@ -277,14 +277,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 0, 0 ) == false )
         {
-          board->UpdateBoard ( 0, 0, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
       {
         if ( board->GetStatus ( 0, 0 ) == false )
         {
-          board->UpdateBoard ( 0, 0, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents( );
@@ -296,14 +298,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 0, 1 ) == false )
         {
-          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
       {
         if ( board->GetStatus ( 0, 1 ) == false )
         {
-          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();
@@ -315,14 +319,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 0, 2 ) == false )
         {
-          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board->GetStatus ( 0, 2 ) == false )
         {
-          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();
@@ -334,14 +340,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 1, 0 ) == false )
         {
-          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board->GetStatus ( 1, 0 ) == false )
         {
-          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();
@@ -353,14 +361,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 1, 1 ) == false )
         {
-          board->UpdateBoard ( 1, 1, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 1, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board->GetStatus ( 1, 1 ) == false )
         {
-          board->UpdateBoard ( 1, 1, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 1, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();
@@ -372,14 +382,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 1, 2 ) == false )
         {
-          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board->GetStatus ( 1, 2 ) == false )
         {
-          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();
@@ -391,14 +403,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 2, 0 ) == false )
         {
-          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board->GetStatus ( 2, 0 ) == false )
         {
-          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();
@@ -410,14 +424,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 2, 1 ) == false )
         {
-          board->UpdateBoard ( 2, 1, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 1, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board->GetStatus ( 2, 1 ) == false )
         {
-          board->UpdateBoard ( 2, 1, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 1, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();
@@ -429,14 +445,16 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( board->GetStatus ( 2, 2 ) == false )
         {
-          board->UpdateBoard ( 2, 2, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
         if ( board->GetStatus ( 2, 2 ) == false )
         {
-          board->UpdateBoard ( 2, 2, this->hand->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       board->ListContents();

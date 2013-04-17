@@ -65,9 +65,10 @@ unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
   return this->grid[x][y];
 }
 
-void Board::UpdateBoard ( unsigned int x, unsigned int y, unsigned int state )
+void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
 {
-  this->grid[x][y] = state;
+  this->grid[x][y] = card.id;
+  this->board.cards.push_back ( card );
 }
 
 void Board::ListContents ( void )
@@ -86,38 +87,19 @@ void Board::ListContents ( void )
 
 void Board::DrawBoard ( Gfx &engine )
 {
-  unsigned int hand_index = 0;
+  unsigned int board_index = 0;
   unsigned int x, y = 0;
 
-  for ( hand_index = 0; hand_index < this->player1_hand->cards.size(); hand_index++ )
+  for ( board_index = 0; board_index < this->board.cards.size(); board_index++ )
   {
-    if ( this->player1_hand->isValid ( this->player1_hand->cards[hand_index] ) == true )
+    if ( this->board.isValid ( this->board.cards[board_index] ) == true )
     {
       for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
       {
         for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
         {
-          if ( this->GetStatus ( x, y ) == this->player1_hand->cards[hand_index].id )
-            this->card.DrawCard ( engine, this->player1_hand->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ), 0 );
-          else
-            this->card.DrawCard ( engine, this->player1_hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ), 0 );
-        }
-      }
-    }
-  }
-
-  for ( hand_index = 0; hand_index < this->player2_hand->cards.size(); hand_index++ )
-  {
-    if ( this->player2_hand->isValid ( this->player2_hand->cards[hand_index] ) == true )
-    {
-      for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
-      {
-        for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
-        {
-          if ( this->GetStatus ( x, y ) == this->player2_hand->cards[hand_index].id )
-            this->card.DrawCard ( engine, this->player2_hand->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ), 1 );
-          else
-            this->card.DrawCard ( engine, this->player2_hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ), 1 );
+          if ( this->GetStatus ( x, y ) == this->board.cards[board_index].id )
+            this->card.DrawCard ( engine, this->board.cards[board_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ) );
         }
       }
     }
