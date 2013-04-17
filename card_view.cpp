@@ -24,6 +24,14 @@ CardView::CardView ( void )
   this->card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_element = new Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+
+  this->card_face->SetSheetDimensions ( 2082, 262, 1, 1 );
+  this->card_background->SetSheetDimensions ( 261, 66, 1, 1 );
+  this->card_element->SetSheetDimensions ( 86, 35, 1, 1 );
+
+  this->card_face->LoadImage ( CARD_FACES );
+  this->card_background->LoadImage ( CARD_BACKGROUNDS );
+  this->card_element->LoadImage ( CARD_ELEMENTS );
 }
 
 CardView::~CardView ( void )
@@ -51,16 +59,17 @@ bool CardView::EraseCard ( Gfx &engine, unsigned int x, unsigned int y )
 
 bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int y, unsigned int player )
 {
+
   switch ( player ) // player1, player2
   {
     case 0:
-      card_background->LoadImage ( PLAYER1_CARD );
+      card_background->SetSheetID ( PLAYER1_BACKGROUND_ID );
       break;
     case 1:
-      card_background->LoadImage ( PLAYER2_CARD );
+      card_background->SetSheetID ( PLAYER2_BACKGROUND_ID );
       break;
     default:
-      card_background->LoadImage ( NOPLAYER_CARD );
+      card_background->SetSheetID ( NOPLAYER_BACKGROUND_ID );
       break;
   }
 
@@ -68,51 +77,48 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   card_background->SetY ( y + 0 );
   if ( card_background->Draw ( engine ) == false )
     return false;
-
+/*
   if ( card_face->LoadImage ( CARD_FACES + card.face ) == false )
-  {
-    #ifdef DEBUG_CARD_VIEW
-      std::cout << "ERR: " << card.face << "\n" << std::endl;
-    #endif
-    return false;
-  }
+*/
 
+  card_face->SetSheetID ( card.id );
   card_face->SetX ( x );
   card_face->SetY ( y );
+
   if ( card_face->Draw ( engine ) == false )
     return false;
 
   switch ( card.element )
   {
     case 0: // N/A
-      card_element->LoadImage ( ELEMENT_NONE );
+      card_element->SetSheetID ( ELEMENT_NONE );
       break;
     case 1: // EARTH
-      card_element->LoadImage ( ELEMENT_EARTH );
+      card_element->SetSheetID ( ELEMENT_EARTH );
       break;
     case 2: // FIRE
-      card_element->LoadImage ( ELEMENT_FIRE );
+      card_element->SetSheetID ( ELEMENT_FIRE );
       break;
     case 3: // HOLY
-      card_element->LoadImage ( ELEMENT_HOLY );
+      card_element->SetSheetID ( ELEMENT_HOLY );
       break;
     case 4: // ICE
-      card_element->LoadImage ( ELEMENT_ICE );
+      card_element->SetSheetID ( ELEMENT_ICE );
       break;
     case 5: // POISON
-      card_element->LoadImage ( ELEMENT_POISON );
+      card_element->SetSheetID ( ELEMENT_POISON );
       break;
     case 6: // THUNDER
-      card_element->LoadImage ( ELEMENT_THUNDER );
+      card_element->SetSheetID ( ELEMENT_THUNDER );
       break;
     case 7: // WATER
-      card_element->LoadImage ( ELEMENT_WATER );
+      card_element->SetSheetID ( ELEMENT_WATER );
       break;
     case 8: // WIND
-      card_element->LoadImage ( ELEMENT_WIND );
+      card_element->SetSheetID ( ELEMENT_WIND );
       break;
     default:
-      card_element->LoadImage ( ELEMENT_NONE );
+      card_element->SetSheetID ( ELEMENT_NONE );
       break;
   }
 
