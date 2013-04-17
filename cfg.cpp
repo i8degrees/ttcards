@@ -62,6 +62,7 @@ const char HIDDEN_CARD[255] = "./data/images/faces/noface.png";
 const char PLAYER1_CARD[255] = "./data/images/player1.png";
 const char PLAYER2_CARD[255] = "./data/images/player2.png";
 const char NOPLAYER_CARD[255] = "./data/images/noplayer.png";
+const char CARD_FACES[255] = "./data/images/faces.png";
 
 const char LEFT_CURSOR[255] = "./data/images/left_cursor.png";
 const char RIGHT_CURSOR[255] = "./data/images/right_cursor.png";
