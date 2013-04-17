@@ -93,9 +93,9 @@ void Board::DrawBoard ( Gfx &engine )
   {
     if ( this->player1_hand->isValid ( this->player1_hand->cards[hand_index] ) == true )
     {
-      for ( x = 0; x < 3; x++ )
+      for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
       {
-        for ( y = 0; y < 3; y++ )
+        for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
         {
           if ( this->GetStatus ( x, y ) == this->player1_hand->cards[hand_index].id )
             this->card.DrawCard ( engine, this->player1_hand->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ), 0 );
@@ -110,9 +110,9 @@ void Board::DrawBoard ( Gfx &engine )
   {
     if ( this->player2_hand->isValid ( this->player2_hand->cards[hand_index] ) == true )
     {
-      for ( x = 0; x < 3; x++ )
+      for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
       {
-        for ( y = 0; y < 3; y++ )
+        for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
         {
           if ( this->GetStatus ( x, y ) == this->player2_hand->cards[hand_index].id )
             this->card.DrawCard ( engine, this->player2_hand->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ), 1 );
