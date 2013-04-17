@@ -12,6 +12,9 @@ Player::Player ( void )
     std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
+  this->board = NULL;
+  this->hand = NULL;
+
   this->x = 0;
   this->y = 0;
   this->id = 0;
@@ -40,9 +43,10 @@ Player::~Player ( void )
   #endif
 }
 
-void Player::Init ( void )
+void Player::Init ( Board &board, CardHand &player_cards )
 {
-  // Stub
+  this->board = &board;
+  this->hand = &player_cards;
 }
 
 SDL_Rect Player::GetXY ( void )
@@ -90,7 +94,7 @@ void Player::SetScore ( unsigned int score )
   this->score = score;
 }
 
-void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
+void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
 {
   if ( type == SDL_KEYDOWN )
   {
@@ -119,15 +123,15 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     {
       if ( this->GetID() == 0 ) // player1
       {
-        this->debug.ListCards ( this->cards );
-        board.Draw();
+        this->debug.ListCards ( this->hand->cards );
+        board->Draw();
       }
     }
 
     else if ( key == SDLK_RIGHTBRACKET ) // DEBUG
     {
-      this->debug.ListCards ( this->cards );
-      board.Draw();
+      this->debug.ListCards ( this->hand->cards );
+      board->Draw();
     }
 
     else if ( key == SDLK_1 && mod == KMOD_LMETA ) // DEBUG
@@ -135,13 +139,13 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       if ( this->GetID() == 0 && this->GetState() == 0 )
       {
         std::cout << this->card_pos << "\n";
-        this->RemoveCard ( this->cards[this->card_pos] );
+        this->hand->RemoveCard ( this->hand->cards[this->card_pos] );
       }
 
       if ( this->GetID() == 1 && this->GetState() == 1 )
       {
         std::cout << this->card_pos << "\n";
-        this->RemoveCard ( this->cards[this->card_pos] );
+        this->hand->RemoveCard ( this->hand->cards[this->card_pos] );
       }
     }
 
@@ -189,7 +193,7 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           this->left_cursor.SetY ( this->left_cursor.GetY() - ( CARD_HEIGHT / 2 ) );
 
-          if ( this->card_pos > 0 && this->card_pos <= this->cards.size() )
+          if ( this->card_pos > 0 && this->card_pos <= this->hand->cards.size() )
           {
             this->card_pos = this->card_pos - 1;
           }
@@ -205,7 +209,7 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
         {
           this->right_cursor.SetY ( this->right_cursor.GetY() - ( CARD_HEIGHT / 2 ) );
 
-          if ( this->card_pos > 0 && this->card_pos <= this->cards.size() )
+          if ( this->card_pos > 0 && this->card_pos <= this->hand->cards.size() )
           {
             this->card_pos = this->card_pos - 1;
           }
@@ -221,11 +225,11 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( this->left_cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->cards.size() - 1 ) && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
+        if ( this->left_cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand->cards.size() - 1 ) && this->left_cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
           this->left_cursor.SetY ( this->left_cursor.GetY() + ( CARD_HEIGHT / 2 ) );
 
-          if ( this->card_pos >= 0 && this->card_pos < this->cards.size() )
+          if ( this->card_pos >= 0 && this->card_pos < this->hand->cards.size() )
           {
             this->card_pos = this->card_pos + 1;
           }
@@ -237,11 +241,11 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( this->right_cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->cards.size() - 1 ) && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
+        if ( this->right_cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand->cards.size() - 1 ) && this->right_cursor.GetX() == PLAYER2_CURSOR_ORIGIN_X )
         {
           this->right_cursor.SetY ( this->right_cursor.GetY() + ( CARD_HEIGHT / 2 ) );
 
-          if ( this->card_pos >= 0 && this->card_pos < this->cards.size() )
+          if ( this->card_pos >= 0 && this->card_pos < this->hand->cards.size() )
           {
             this->card_pos = this->card_pos + 1;
           }
@@ -256,275 +260,245 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board )
     else if ( key == SDLK_SPACE )
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
-        this->SelectCard ( this->cards[this->card_pos] );
+        this->hand->SelectCard ( this->hand->cards[this->card_pos] );
       else if ( this->GetID() == 1 && this->GetState() == 1 )
-        this->SelectCard ( this->cards[this->card_pos] );
+        this->hand->SelectCard ( this->hand->cards[this->card_pos] );
     }
 
     else if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible
     {
       if ( this->GetState() == 0 && this->GetID() == 0 ) // player1
       {
-        if ( board.GetStatus ( 0, 0 ) == false )
+        if ( board->GetStatus ( 0, 0 ) == false )
         {
-          board.UpdateBoard ( 0, 0, this->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 0, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
       {
-        if ( board.GetStatus ( 0, 0 ) == false )
+        if ( board->GetStatus ( 0, 0 ) == false )
         {
-          board.UpdateBoard ( 0, 0, this->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 0, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_2 ) // move selected card to grid[0][1] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 0, 1 ) == false )
+        if ( board->GetStatus ( 0, 1 ) == false )
         {
-          board.UpdateBoard ( 0, 1, this->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
       {
-        if ( board.GetStatus ( 0, 1 ) == false )
+        if ( board->GetStatus ( 0, 1 ) == false )
         {
-          board.UpdateBoard ( 0, 1, this->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_3 ) // move selected card to grid[0][2] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 0, 2 ) == false )
+        if ( board->GetStatus ( 0, 2 ) == false )
         {
-          board.UpdateBoard ( 0, 2, this->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board.GetStatus ( 0, 2 ) == false )
+        if ( board->GetStatus ( 0, 2 ) == false )
         {
-          board.UpdateBoard ( 0, 2, this->GetSelectedCard().id );
+          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_4 ) // move selected card to grid[1][0] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 1, 0 ) == false )
+        if ( board->GetStatus ( 1, 0 ) == false )
         {
-          board.UpdateBoard ( 1, 0, this->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board.GetStatus ( 1, 0 ) == false )
+        if ( board->GetStatus ( 1, 0 ) == false )
         {
-          board.UpdateBoard ( 1, 0, this->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 1, 1 ) == false )
+        if ( board->GetStatus ( 1, 1 ) == false )
         {
-          board.UpdateBoard ( 1, 1, this->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 1, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board.GetStatus ( 1, 1 ) == false )
+        if ( board->GetStatus ( 1, 1 ) == false )
         {
-          board.UpdateBoard ( 1, 1, this->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 1, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_6 ) // move selected card to grid[1][2] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 1, 2 ) == false )
+        if ( board->GetStatus ( 1, 2 ) == false )
         {
-          board.UpdateBoard ( 1, 2, this->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board.GetStatus ( 1, 2 ) == false )
+        if ( board->GetStatus ( 1, 2 ) == false )
         {
-          board.UpdateBoard ( 1, 2, this->GetSelectedCard().id );
+          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_7 ) // move selected card to grid[2][0] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 2, 0 ) == false )
+        if ( board->GetStatus ( 2, 0 ) == false )
         {
-          board.UpdateBoard ( 2, 0, this->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board.GetStatus ( 2, 0 ) == false )
+        if ( board->GetStatus ( 2, 0 ) == false )
         {
-          board.UpdateBoard ( 2, 0, this->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_8 ) // move selected card to grid[2][1] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 2, 1 ) == false )
+        if ( board->GetStatus ( 2, 1 ) == false )
         {
-          board.UpdateBoard ( 2, 1, this->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 1, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board.GetStatus ( 2, 1 ) == false )
+        if ( board->GetStatus ( 2, 1 ) == false )
         {
-          board.UpdateBoard ( 2, 1, this->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 1, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
 
     else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board.GetStatus ( 2, 2 ) == false )
+        if ( board->GetStatus ( 2, 2 ) == false )
         {
-          board.UpdateBoard ( 2, 2, this->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 2, this->hand->GetSelectedCard().id );
         }
       }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board.GetStatus ( 2, 2 ) == false )
+        if ( board->GetStatus ( 2, 2 ) == false )
         {
-          board.UpdateBoard ( 2, 2, this->GetSelectedCard().id );
+          board->UpdateBoard ( 2, 2, this->hand->GetSelectedCard().id );
         }
       }
-      board.Draw();
+      board->Draw();
     }
   }
 }
 
-void Player::Draw ( Gfx &engine, Board &board )
+void Player::Draw ( Gfx &engine )
 {
   unsigned int hand_index = 0;
 
   if ( this->GetID() == 0 ) // player1
   {
-    for ( hand_index = 0; hand_index < this->cards.size(); hand_index++ )
+    for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
     {
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 0, 0 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * hand_index ), 0 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 0, 1 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 0 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X , PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index , 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X , PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index , 0 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 0, 2 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 0 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 1, 0 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X, BOARD_ORIGIN_Y + ( CARD_HEIGHT ), 0 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 1, 1 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH ), BOARD_ORIGIN_Y + ( CARD_HEIGHT), 0 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 0 );
       }
     }
   }
   else if ( this->GetID() == 1 ) // player2
   {
-    for ( hand_index = 0; hand_index < this->cards.size(); hand_index++ )
+    for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
     {
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 0, 0 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * hand_index ), 0 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y, 1 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 0, 1 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 1 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 0, 2 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH * hand_index ), BOARD_ORIGIN_Y, 1 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 1, 0 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X, BOARD_ORIGIN_Y + ( CARD_HEIGHT ), 1 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
       hand_index+=1;
-      if ( this->isValid ( this->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
       {
-        if ( board.GetStatus ( 1, 1 ) == this->cards[hand_index].id )
-          this->card.DrawCard ( engine, this->cards[hand_index], BOARD_ORIGIN_X + ( CARD_WIDTH ), BOARD_ORIGIN_Y + ( CARD_HEIGHT), 1 );
-        else
-          this->card.DrawCard ( engine, this->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
+        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index, 1 );
       }
     }
   }

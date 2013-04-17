@@ -123,8 +123,8 @@ void TTcards::Input ( void )
   while ( SDL_PollEvent ( &input ) )
   {
     this->InterfaceInput ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
-    this->player1.Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod, this->board );
-    this->player2.Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod, this->board );
+    this->player1.Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
+    this->player2.Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
   }
 }
 
@@ -190,8 +190,8 @@ bool TTcards::Run ( void )
     this->player1.SetID ( 0 );
     this->player2.SetID ( 1 );
 
-    this->player1.Draw ( this->engine, this->board );
-    this->player2.Draw ( this->engine, this->board );
+    this->player1.Draw ( this->engine );
+    this->player2.Draw ( this->engine );
 
     this->player1.DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
     this->player2.DrawScore ( this->engine, 320, 176 ); // 64 * 5

@@ -27,13 +27,13 @@
 #define DEBUG_PLAYER
 #define DEBUG_PLAYER_OBJ
 
-class Player: public CardHand
+class Player
 {
 public:
   Player ( void );
   ~Player ( void );
 
-  void Init ( void );
+  void Init ( Board &board, CardHand &player_cards );
 
   SDL_Rect GetXY ( void );
   void SetXY ( unsigned int x, unsigned int y );
@@ -48,8 +48,8 @@ public:
   unsigned int GetScore ( void );
   void SetScore ( unsigned int score );
 
-  void Input ( unsigned int type, SDLKey key, SDLMod mod, Board &board );
-  void Draw ( Gfx &engine, Board &board );
+  void Input ( unsigned int type, SDLKey key, SDLMod mod );
+  void Draw ( Gfx &engine );
   void DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
@@ -58,6 +58,8 @@ private:
   CardDebug debug;
   CardView card;
   Font text_score;
+  Board *board;
+  CardHand *hand;
   unsigned int x;
   unsigned int y;
   unsigned int id; // unique identifier
