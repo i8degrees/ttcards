@@ -16,6 +16,7 @@
 #include "SDL/SDL.h"
 
 #include "gfx.h"
+#include <cmath>
 
 #define DEBUG_SPRITE
 //#define DEBUG_SPRITE_OBJ
@@ -46,10 +47,13 @@ class Sprite {
     void SetYOffset ( unsigned int y_offset );
     void SetWidthOffset ( unsigned int width_offset );
     void SetHeightOffset ( unsigned int height_offset );
-    unsigned int GetSheetID ( void );
     unsigned int GetState ( void );
-    void SetSheetID ( unsigned int id );
     void SetState ( unsigned int state );
+
+    signed int GetSheetID ( void );
+    void SetSheetID ( signed int id );
+    //struct sheet GetSheetDimensions ( void );
+    void SetSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
 
     bool LoadImage ( std::string filename );
     //bool LoadImage ( std::string filename, SDL_Color colorkey = { 0, 0, 0 }, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
@@ -58,13 +62,33 @@ class Sprite {
   private:
     SDL_Surface *sprite_buffer; // memory buffer allocation
 
-    SDL_Rect coords; // blitting coords struct
-    SDL_Rect offsets; // source coords AKA clipping struct
+    struct {
+      unsigned int x; // sprite x-axis coord for blitting onto video surface
+      unsigned int y; // sprite y-axis coord for blitting onto video surface
+      unsigned int width; // sprite width
+      unsigned int height; // sprite height
+    } coords;
 
-    unsigned int sheet_id; // sprite sheets
+    /* These are not used at the moment and are reserved for future implementation */
+    struct {
+      unsigned int x; // clipping offset X coord
+      unsigned int y; // clipping offset Y coord
+      unsigned int width; // clipping offset width
+      unsigned int height; // clipping offset height
+    } offsets;
+
     unsigned int state; // alive, dying, dead, ...
 
-    //Gfx *engine;
+    struct {
+      signed int id; // maps a specific sprite within sheet
+      unsigned int sprite_width; // width of sprite in sheet
+      unsigned int sprite_height; // height of sprite in sheet
+      unsigned int width; // width of sprite sheet
+      unsigned int height; // height of sprite sheet
+      unsigned int spacing; // applied between each sheet tile
+      unsigned int padding; // applied on all four sides of sheet tile
+    } sheet;
+
 };
 
 #endif // SPRITE_HEADERS defined

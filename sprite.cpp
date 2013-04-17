@@ -14,24 +14,25 @@ Sprite::Sprite ( void )
     std::cout << "Sprite::Sprite (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  // Stub constructor
   this->sprite_buffer = NULL;
 
   this->coords.x = 0;
   this->coords.y = 0;
-  this->coords.w = 0;
-  this->coords.h = 0;
+  this->coords.width = 0;
+  this->coords.height = 0;
   this->offsets.x = 0;
   this->offsets.y = 0;
-  this->offsets.w = 0;
-  this->offsets.h = 0;
+  this->offsets.width = 0;
+  this->offsets.height = 0;
+  this->state = 0;
 
-  this->sheet_id = 000000;
-
-  this->offsets.x = 0;
-  this->offsets.y = 0;
-  this->offsets.w = 0;
-  this->offsets.h = 0;
+  this->sheet.sprite_width = 0;
+  this->sheet.sprite_height = 0;
+  this->sheet.width = 0;
+  this->sheet.height = 0;
+  this->sheet.id = -1;
+  this->sheet.spacing = 0;
+  this->sheet.padding = 0;
 }
 
 Sprite::Sprite ( unsigned int width, unsigned int height )
@@ -44,19 +45,21 @@ Sprite::Sprite ( unsigned int width, unsigned int height )
 
   this->coords.x = 0;
   this->coords.y = 0;
-  this->coords.w = width;
-  this->coords.h = height;
+  this->coords.width = width;
+  this->coords.height = height;
   this->offsets.x = 0;
   this->offsets.y = 0;
-  this->offsets.w = width;
-  this->offsets.h = height;
+  this->offsets.width = width;
+  this->offsets.height = height;
+  this->state = 0;
 
-  this->sheet_id = 000000;
-
-  this->offsets.x = 0;
-  this->offsets.y = 0;
-  this->offsets.w = width;
-  this->offsets.h = height;
+  this->sheet.id = -1;
+  this->sheet.sprite_width = width;
+  this->sheet.sprite_height = height;
+  this->sheet.width = width;
+  this->sheet.height = height;
+  this->sheet.spacing = 0;
+  this->sheet.padding = 0;
 }
 
 Sprite::~Sprite ( void )
@@ -81,12 +84,12 @@ unsigned int Sprite::GetY ( void )
 
 unsigned int Sprite::GetWidth ( void )
 {
-  return this->coords.w;
+  return this->coords.width;
 }
 
 unsigned int Sprite::GetHeight ( void )
 {
-  return this->coords.h;
+  return this->coords.height;
 }
 
 unsigned int Sprite::GetXOffset ( void )
@@ -101,12 +104,12 @@ unsigned int Sprite::GetYOffset ( void )
 
 unsigned int Sprite::GetWidthOffset ( void )
 {
-  return this->offsets.w;
+  return this->offsets.width;
 }
 
 unsigned int Sprite::GetHeightOffset ( void )
 {
-  return this->offsets.h;
+  return this->offsets.height;
 }
 
 void Sprite::SetX ( unsigned int x )
@@ -133,12 +136,12 @@ void Sprite::UpdateXY ( unsigned int x, unsigned int y )
 
 void Sprite::SetWidth ( unsigned int width )
 {
-  this->coords.w = width;
+  this->coords.width = width;
 }
 
 void Sprite::SetHeight ( unsigned int height )
 {
-  this->coords.h = height;
+  this->coords.height = height;
 }
 
 void Sprite::SetXOffset ( unsigned int x_offset )
@@ -153,17 +156,12 @@ void Sprite::SetYOffset ( unsigned int y_offset )
 
 void Sprite::SetWidthOffset ( unsigned int width_offset )
 {
-  this->offsets.w = width_offset;
+  this->offsets.width = width_offset;
 }
 
 void Sprite::SetHeightOffset ( unsigned int height_offset )
 {
-  this->offsets.h = height_offset;
-}
-
-unsigned int Sprite::GetSheetID ( void )
-{
-  return this->sheet_id;
+  this->offsets.height = height_offset;
 }
 
 unsigned int Sprite::GetState ( void )
@@ -171,14 +169,36 @@ unsigned int Sprite::GetState ( void )
   return this->state;
 }
 
-void Sprite::SetSheetID ( unsigned int id )
-{
-  this->sheet_id = id;
-}
-
 void Sprite::SetState ( unsigned int state )
 {
   this->state = state;
+}
+
+signed int Sprite::GetSheetID ( void )
+{
+  return this->sheet.id;
+}
+
+void Sprite::SetSheetID ( signed int id )
+{
+  this->sheet.id = id;
+}
+
+/*
+struct sheet Sprite::GetSheetDimensions ( void )
+{
+  return this->sheet;
+}
+*/
+
+void Sprite::SetSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding )
+{
+  this->sheet.sprite_width = this->GetWidth();
+  this->sheet.sprite_height = this->GetHeight();
+  this->sheet.width = sheet_width;
+  this->sheet.height = sheet_height;
+  this->sheet.spacing = spacing;
+  this->sheet.padding = padding;
 }
 
 /*
@@ -235,11 +255,7 @@ bool Sprite::LoadImage ( std::string filename )
 
 bool Sprite::Draw ( Gfx &engine )
 {
-  if ( this->sheet_id != 000000 )
-  {
-    this->offsets.x = ( this->sheet_id * this->offsets.w );
-    this->offsets.y = 0;
-  }
+  SDL_Rect offsets; // temporary struct to hold our clipping coords (x, y, width, height)
 
   if ( this->sprite_buffer == NULL )
   {
@@ -247,6 +263,31 @@ bool Sprite::Draw ( Gfx &engine )
       std::cout << "ERR in Sprite::Draw(): " << SDL_GetError() << std::endl;
     #endif
     return false;
+  }
+
+  // WxH = 2082x262
+  // [32 rows, 4 cols]
+  // sWxsH = 64x64
+  // spacing = 1
+  // padding = 1
+
+  if ( this->sheet.id != -1 )
+  {
+    //float rows = floor ( this->sheet.width / this->sheet.sprite_width );
+    float cols = floor ( this->sheet.height / this->sheet.sprite_height );
+
+    offsets.x = ( this->sheet.id * this->sheet.sprite_width ) + ( this->sheet.spacing * this->sheet.id + 1 );
+    offsets.y = this->sheet.padding;
+
+    offsets.w = this->sheet.sprite_width;
+    offsets.h = this->sheet.sprite_height;
+  }
+  else
+  {
+    offsets.x = this->GetXOffset();
+    offsets.y = this->GetYOffset();
+    offsets.w = this->GetWidth();
+    offsets.h = this->GetHeight();
   }
 
   if ( engine.DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), &offsets ) == false )
