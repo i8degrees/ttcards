@@ -58,7 +58,6 @@ const int ELEMENT_THUNDER = 6;
 const int ELEMENT_WATER = 7;
 const int ELEMENT_WIND = 8;
 
-const char CARD_FACES[255] = "./data/images/faces/";
 const char CARD_FACES[255] = "./data/images/faces.png";
 
 const char CARD_BACKGROUNDS[255] = "./data/images/backgrounds.png";
