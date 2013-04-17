@@ -63,10 +63,12 @@ extern const int ELEMENT_WATER;
 extern const int ELEMENT_WIND;
 
 extern const char CARD_FACES[255];
-extern const char HIDDEN_CARD[255];
-extern const char PLAYER1_CARD[255];
-extern const char PLAYER2_CARD[255];
-extern const char NOPLAYER_CARD[255];
+
+extern const char CARD_BACKGROUNDS[255];
+extern const int NOFACE_ID;
+extern const int NOPLAYER_BACKGROUND_ID;
+extern const int PLAYER1_BACKGROUND_ID;
+extern const int PLAYER2_BACKGROUND_ID;
 
 extern const char LEFT_CURSOR[255];
 extern const char RIGHT_CURSOR[255];

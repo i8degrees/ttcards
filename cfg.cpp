@@ -59,11 +59,13 @@ const int ELEMENT_WATER = 7;
 const int ELEMENT_WIND = 8;
 
 const char CARD_FACES[255] = "./data/images/faces/";
-const char HIDDEN_CARD[255] = "./data/images/faces/noface.png";
-const char PLAYER1_CARD[255] = "./data/images/player1.png";
-const char PLAYER2_CARD[255] = "./data/images/player2.png";
-const char NOPLAYER_CARD[255] = "./data/images/noplayer.png";
 const char CARD_FACES[255] = "./data/images/faces.png";
+
+const char CARD_BACKGROUNDS[255] = "./data/images/backgrounds.png";
+const int NOFACE_ID = 0;
+const int NOPLAYER_BACKGROUND_ID = 1;
+const int PLAYER1_BACKGROUND_ID = 2;
+const int PLAYER2_BACKGROUND_ID = 3;
 
 const char LEFT_CURSOR[255] = "./data/images/left_cursor.png";
 const char RIGHT_CURSOR[255] = "./data/images/right_cursor.png";
