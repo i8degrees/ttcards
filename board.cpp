@@ -20,6 +20,13 @@ Board::Board ( void )
     std::cout << "Board::Board (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
+  this->grid.resize ( BOARD_GRID_HEIGHT );
+
+  for ( int i = 0; i < BOARD_GRID_WIDTH; i++ )
+  {
+    this->grid[i].resize ( BOARD_GRID_WIDTH );
+  }
+
   for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
   {
     for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
@@ -62,12 +69,13 @@ bool Board::DrawBackground ( Gfx &engine )
 
 unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
 {
-  return this->grid[x][y];
+  unsigned int card_id = this->grid[x][y].id;
+  return card_id;
 }
 
 void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
 {
-  this->grid[x][y] = card.id;
+  this->grid[x][y] = card;
   this->board.cards.push_back ( card );
 }
 
@@ -79,7 +87,7 @@ void Board::ListContents ( void )
   {
     for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
     {
-      std::cout << this->grid[x][y] << " ";
+      std::cout << this->grid[x][y].id << " ";
     }
     std::cout << "\n" << std::endl;
   }

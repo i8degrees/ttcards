@@ -45,7 +45,8 @@ class Board
     CardHand board;
     CardHand *player1_hand;
     CardHand *player2_hand;
-    unsigned int grid[3][3];
+    //unsigned int grid[3][3];
+    std::vector<std::vector<Card>> grid;
 };
 
 #endif // BOARD_HEADERS defined
