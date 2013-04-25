@@ -124,6 +124,11 @@ bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int 
   if ( card_element->Draw ( engine ) == false )
     return false;
 
+  #ifdef DEBUG_CARD_VIEW
+    this->text_buffer.SetTextBuffer ( std::to_string ( card.id ) );
+    this->text_buffer.DrawText ( engine, x+40, y+0 );
+  #endif
+
   this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[0] ) );
   this->text_buffer.DrawText ( engine, x+8, y+0 );
 
