@@ -8,16 +8,52 @@
 ******************************************************************************/
 #include "gfx.h"
 
-Gfx::Gfx ( void )
+Gfx::Gfx (  unsigned int screen_width, unsigned int screen_height, unsigned int screen_bpp,
+            unsigned int video_flags, unsigned int sdl_flags, unsigned int img_flags )
 {
   #ifdef DEBUG_GFX_OBJ
     std::cout << "Gfx::Gfx(): Hello, world!" << "\n" << std::endl;
   #endif
+
+  this->screen = NULL;
+
+  if ( SDL_Init ( sdl_flags ) != 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::Gfx() at SDL_Init(): " << SDL_GetError() << std::endl;
+    #endif
+
+    exit ( EXIT_FAILURE );
+  }
+
+  if ( IMG_Init ( img_flags ) != img_flags )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::Gfx() at IMG_Init(): " << IMG_GetError() << std::endl;
+    #endif
+
+    exit ( EXIT_FAILURE );
+  }
+
+  this->screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, video_flags );
+
+  if ( this->screen == 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::Gfx(): " << SDL_GetError() << std::endl;
+    #endif
+
+    exit ( EXIT_FAILURE );
+  }
 }
 
 Gfx::~Gfx ( void )
 {
-  this->screen = NULL;
+  if ( this->screen != NULL )
+  {
+    SDL_FreeSurface ( this->screen );
+    this->screen = NULL;
+  }
 
   #ifdef DEBUG_GFX_OBJ
     std::cout << "Gfx::~Gfx(): " << "Goodbye cruel world!" << "\n" << std::endl;
@@ -26,46 +62,6 @@ Gfx::~Gfx ( void )
   IMG_Quit ();
 
   SDL_Quit ();
-}
-
-bool Gfx::Init ( unsigned int sdl_flags, unsigned int img_flags )
-{
-  if ( SDL_Init ( sdl_flags ) != 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::Init() at SDL_Init(): " << SDL_GetError() << std::endl;
-    #endif
-    return false;
-  }
-
-  if ( IMG_Init ( img_flags ) != img_flags )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::Init() at IMG_Init(): " << IMG_GetError() << std::endl;
-    #endif
-  }
-
-  return true;
-}
-
-bool Gfx::SetVideoMode (  unsigned int screen_width,
-                          unsigned int screen_height,
-                          unsigned int screen_bpp, unsigned int flags )
-{
-  this->screen = NULL;
-
-  this->screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, flags );
-
-  if ( this->screen == 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::SetVideoMode(): " << SDL_GetError() << std::endl;
-    #endif
-
-    return false;
-  }
-
-  return true;
 }
 
 bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
@@ -95,13 +91,13 @@ bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
   return true;
 }
 
-SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
-                              unsigned int flags )
+SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
 {
   SDL_Surface *temp_buffer = NULL;
   SDL_Surface *video_buffer = NULL;
 
   temp_buffer = IMG_Load ( filename.c_str() );
+
 
   if ( temp_buffer == NULL )
   {
@@ -109,15 +105,12 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
       std::cout << "ERR in Gfx::LoadImage() at IMG_Load(): " << IMG_GetError() << std::endl;
     #endif
 
-    SDL_FreeSurface ( temp_buffer );
-    temp_buffer = NULL;
-
-    SDL_FreeSurface ( video_buffer );
-    video_buffer = NULL;
-
     return NULL;
   }
+
 /*
+  TODO: Testing
+
   if ( this->SetSurfaceTransparency ( temp_buffer, colorkey.r, colorkey.g, colorkey.b, flags ) == false )
   {
     #ifdef DEBUG_GFX
@@ -127,33 +120,21 @@ SDL_Surface *Gfx::LoadImage ( std::string filename, SDL_Color colorkey,
     SDL_FreeSurface ( temp_buffer );
     temp_buffer = NULL;
 
-    SDL_FreeSurface ( video_buffer );
-    video_buffer = NULL;
-
     return NULL;
   }
 */
-  video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
 
-  if ( video_buffer == NULL )
+  if ( temp_buffer != NULL )
   {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::LoadImage() at SDL_DisplayFormatAlpha(): " << SDL_GetError() << std::endl;
-    #endif
+    video_buffer = SDL_DisplayFormatAlpha ( temp_buffer );
 
     SDL_FreeSurface ( temp_buffer );
     temp_buffer = NULL;
 
-    SDL_FreeSurface ( video_buffer );
-    video_buffer = NULL;
-
-    return NULL;
+    return video_buffer;
   }
 
-  SDL_FreeSurface ( temp_buffer );
-  temp_buffer = NULL;
-
-  return video_buffer;
+  return NULL; // ERR if we reach this line
 }
 
 bool Gfx::DrawSurface ( SDL_Surface *video_buffer, unsigned int x, unsigned int y, SDL_Rect *offsets )
@@ -225,7 +206,7 @@ void Gfx::SetWindowTitle ( std::string app_name )
   SDL_WM_SetCaption ( app_name.c_str(), NULL );
 }
 
-// We cannot use Gfx::LoadImage() for loading an application icon due to surface
+// FIXME: We cannot use Gfx::LoadImage() for loading an application icon due to surface
 // conversion -- SDL_DisplayFormatAlpha()
 bool Gfx::SetWindowIcon ( std::string app_icon, SDL_Color colorkey, unsigned int flags )
 
