@@ -41,6 +41,11 @@ Player::~Player ( void )
   #ifdef DEBUG_PLAYER_OBJ
     std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
+
+  if ( this->board != NULL )
+  {
+    this->board = NULL;
+  }
 }
 
 void Player::Init ( Board &board, CardHand &player_cards )
@@ -453,7 +458,7 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
   }
 }
 
-void Player::Draw ( Gfx &engine )
+void Player::Draw ( Gfx *engine )
 {
   unsigned int hand_index = 0;
 
@@ -528,7 +533,7 @@ void Player::Draw ( Gfx &engine )
   }
 }
 
-void Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
+void Player::DrawScore ( Gfx *engine, unsigned int x, unsigned int y )
 {
   this->text_score.SetTextBuffer ( std::to_string ( this->score ) );
   this->text_score.DrawText ( engine, x, y );

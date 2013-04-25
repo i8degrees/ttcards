@@ -31,7 +31,7 @@ Board::Board ( void )
   {
     for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
     {
-      this->grid[x][y] = 0;
+      this->grid[x][y].id = 0; // -1
     }
   }
 }
@@ -42,8 +42,11 @@ Board::~Board ( void )
     std::cout << "Board::~Board (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  SDL_FreeSurface ( this->background );
-  this->background = NULL;
+  if ( this->background != NULL )
+  {
+    SDL_FreeSurface ( this->background );
+    this->background = NULL;
+  }
 }
 
 void Board::Init ( CardHand &player1_cards, CardHand &player2_cards )
@@ -55,14 +58,14 @@ void Board::Init ( CardHand &player1_cards, CardHand &player2_cards )
 // TODO: Reconsider using an instance of Gfx solely for this method
 bool Board::LoadBackground ( std::string filename )
 {
-  this->background = this->engine.LoadImage ( filename );
+  this->background = Gfx::LoadImage ( filename );
 
   return true;
 }
 
-bool Board::DrawBackground ( Gfx &engine )
+bool Board::DrawBackground ( Gfx *engine )
 {
-  engine.DrawSurface ( this->background, 0, 0 );
+  engine->DrawSurface ( this->background, 0, 0 );
 
   return true;
 }
@@ -138,7 +141,7 @@ void Board::ListContents ( void )
   }
 }
 
-void Board::DrawBoard ( Gfx &engine )
+void Board::DrawBoard ( Gfx *engine )
 {
   unsigned int board_index = 0;
   unsigned int x, y = 0;

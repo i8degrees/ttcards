@@ -55,9 +55,8 @@ class Sprite {
     //struct sheet GetSheetDimensions ( void );
     void SetSheetDimensions ( unsigned int sheet_width, unsigned int sheet_height, unsigned int spacing, unsigned int padding );
 
-    bool LoadImage ( std::string filename );
-    //bool LoadImage ( std::string filename, SDL_Color colorkey = { 0, 0, 0 }, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
-    bool Draw ( Gfx &engine );
+    bool LoadImage ( std::string filename, SDL_Color colorkey = { 0, 0, 0 }, unsigned int flags = SDL_SRCCOLORKEY | SDL_RLEACCEL );
+    bool Draw ( Gfx *engine );
 
   private:
     SDL_Surface *sprite_buffer; // memory buffer allocation

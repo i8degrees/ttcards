@@ -27,8 +27,8 @@ class CardView
     CardView ( void );
     ~CardView ( void );
 
-    bool EraseCard ( Gfx &engine, unsigned int x, unsigned int y );
-    bool DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int y );
+    bool EraseCard ( Gfx *engine, unsigned int x, unsigned int y );
+    bool DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y );
     // bool flipCard ();
   private:
     Sprite *card_face;

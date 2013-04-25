@@ -40,24 +40,33 @@ CardView::~CardView ( void )
     std::cout << "CardView::~CardView (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  delete this->card_element;
-  this->card_element = NULL;
+  if ( this->card_element != NULL )
+  {
+    delete this->card_element;
+    this->card_element = NULL;
+  }
 
-  delete this->card_background;
-  this->card_background = NULL;
+  if ( this->card_background != NULL )
+  {
+    delete this->card_background;
+    this->card_background = NULL;
+  }
 
-  delete this->card_face;
-  this->card_face = NULL;
+  if ( this->card_face != NULL )
+  {
+    delete this->card_face;
+    this->card_face = NULL;
+  }
 }
 
-bool CardView::EraseCard ( Gfx &engine, unsigned int x, unsigned int y )
+bool CardView::EraseCard ( Gfx *engine, unsigned int x, unsigned int y )
 {
-  engine.DrawRectangle ( x, y, 64, 64, 0, 0, 0 );
+  engine->DrawRectangle ( x, y, 64, 64, 0, 0, 0 );
 
   return true;
 }
 
-bool CardView::DrawCard ( Gfx &engine, Card &card, unsigned int x, unsigned int y )
+bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y )
 {
 
   switch ( card.player_id ) // player1, player2

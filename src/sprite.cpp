@@ -68,8 +68,11 @@ Sprite::~Sprite ( void )
     std::cout << "Sprite::~Sprite (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  SDL_FreeSurface ( this->sprite_buffer );
-  this->sprite_buffer = NULL;
+  if ( this->sprite_buffer != NULL )
+  {
+    SDL_FreeSurface ( this->sprite_buffer );
+    this->sprite_buffer = NULL;
+  }
 }
 
 unsigned int Sprite::GetX ( void )
@@ -238,6 +241,7 @@ bool Sprite::LoadImage ( std::string filename )
   }
 
   this->sprite_buffer = IMG_Load ( filename.c_str() );
+  this->sprite_buffer = Gfx::LoadImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer == NULL )
   {
@@ -266,6 +270,7 @@ bool Sprite::LoadImage ( std::string filename )
 //offsets.y = this->sheet.padding;
 
 bool Sprite::Draw ( Gfx &engine )
+bool Sprite::Draw ( Gfx *engine )
 {
   SDL_Rect offsets; // temporary struct to hold our clipping coords (x, y, width, height)
 
@@ -293,7 +298,7 @@ bool Sprite::Draw ( Gfx &engine )
     offsets.h = this->GetHeight();
   }
 
-  if ( engine.DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), &offsets ) == false )
+  if ( engine->DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), &offsets ) == false )
   {
     return false;
   }

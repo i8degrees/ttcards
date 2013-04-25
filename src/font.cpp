@@ -34,8 +34,11 @@ Font::~Font ( void )
     std::cout << "Font::~Font (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  TTF_CloseFont ( this->font );
-  this->font = NULL;
+  if ( this->font != NULL )
+  {
+    TTF_CloseFont ( this->font );
+    this->font = NULL;
+  }
 
   TTF_Quit ();
 }
@@ -99,7 +102,7 @@ bool Font::LoadTTF ( std::string filename, unsigned int font_size )
   return true;
 }
 
-bool Font::DrawText ( Gfx &engine, unsigned int x, unsigned int y )
+bool Font::DrawText ( Gfx *engine, unsigned int x, unsigned int y )
 {
   SDL_Surface *video_buffer = NULL;
   this->coords.x = x;
@@ -109,7 +112,7 @@ bool Font::DrawText ( Gfx &engine, unsigned int x, unsigned int y )
 
   // TODO: ERR checking
 
-  if ( engine.DrawSurface ( video_buffer, x, y ) == false )
+  if ( engine->DrawSurface ( video_buffer, x, y ) == false )
   {
     std::cout << "ERR in Font::DrawText(): " << SDL_GetError() << std::endl;
     return false;

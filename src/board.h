@@ -29,7 +29,7 @@ class Board
     void Init ( CardHand &player1_cards, CardHand &player2_cards );
 
     bool LoadBackground ( std::string filename );
-    bool DrawBackground ( Gfx &engine );
+    bool DrawBackground ( Gfx *engine );
 
     signed int CompareCards ( unsigned int x, unsigned int y, Card &card );
 
@@ -37,11 +37,10 @@ class Board
 
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );
     void ListContents ( void );
-    void DrawBoard ( Gfx &engine );
+    void DrawBoard ( Gfx *engine );
 
   private:
     SDL_Surface *background;
-    Gfx engine;
     CardDebug debug;
     CardView card;
     CardHand board;
