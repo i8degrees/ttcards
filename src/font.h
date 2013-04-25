@@ -18,7 +18,7 @@
 #include "gfx.h"
 
 #define DEBUG_FONT
-//#define DEBUG_FONT_OBJ
+#define DEBUG_FONT_OBJ
 
 class Font {
 public:

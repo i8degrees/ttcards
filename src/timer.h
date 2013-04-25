@@ -14,7 +14,7 @@
 #include "SDL/SDL.h"
 
 //#define DEBUG_TIMER
-//#define DEBUG_TIMER_OBJ
+#define DEBUG_TIMER_OBJ
 
 class Timer
 {
