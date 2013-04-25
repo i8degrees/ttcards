@@ -253,6 +253,18 @@ bool Sprite::LoadImage ( std::string filename )
   return true;
 }
 
+// TODO
+// WxH = 2082x262
+// [32 rows, 4 cols]
+// sWxsH = 64x64
+// spacing = 1
+// padding = 1
+// ---
+//float rows = floor ( this->sheet.width / this->sheet.sprite_width );
+//float cols = floor ( this->sheet.height / this->sheet.sprite_height );
+//offsets.x = ( this->sheet.id * this->sheet.sprite_width ) + ( this->sheet.spacing * this->sheet.id + 1 );
+//offsets.y = this->sheet.padding;
+
 bool Sprite::Draw ( Gfx &engine )
 {
   SDL_Rect offsets; // temporary struct to hold our clipping coords (x, y, width, height)
@@ -265,17 +277,8 @@ bool Sprite::Draw ( Gfx &engine )
     return false;
   }
 
-  // WxH = 2082x262
-  // [32 rows, 4 cols]
-  // sWxsH = 64x64
-  // spacing = 1
-  // padding = 1
-
   if ( this->sheet.id != -1 )
   {
-    //float rows = floor ( this->sheet.width / this->sheet.sprite_width );
-    float cols = floor ( this->sheet.height / this->sheet.sprite_height );
-
     offsets.x = ( this->sheet.id * this->sheet.sprite_width );
     offsets.y = 0;
 
