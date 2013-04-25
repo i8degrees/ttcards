@@ -49,8 +49,8 @@ public:
   void SetScore ( unsigned int score );
 
   void Input ( unsigned int type, SDLKey key, SDLMod mod );
-  void Draw ( Gfx &engine );
-  void DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
+  void Draw ( Gfx *engine );
+  void DrawScore ( Gfx *engine, unsigned int x, unsigned int y );
 
 private:
   Sprite left_cursor; // player1 cursor
