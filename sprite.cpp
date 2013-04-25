@@ -276,8 +276,8 @@ bool Sprite::Draw ( Gfx &engine )
     //float rows = floor ( this->sheet.width / this->sheet.sprite_width );
     float cols = floor ( this->sheet.height / this->sheet.sprite_height );
 
-    offsets.x = ( this->sheet.id * this->sheet.sprite_width ) + ( this->sheet.spacing * this->sheet.id + 1 );
-    offsets.y = this->sheet.padding;
+    offsets.x = ( this->sheet.id * this->sheet.sprite_width );
+    offsets.y = 0;
 
     offsets.w = this->sheet.sprite_width;
     offsets.h = this->sheet.sprite_height;

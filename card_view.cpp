@@ -25,9 +25,9 @@ CardView::CardView ( void )
   this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_element = new Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
 
-  this->card_face->SetSheetDimensions ( 2082, 262, 1, 1 );
-  this->card_background->SetSheetDimensions ( 261, 66, 1, 1 );
-  this->card_element->SetSheetDimensions ( 86, 35, 1, 1 );
+  this->card_face->SetSheetDimensions ( 2082, 262, 0, 0 );
+  this->card_background->SetSheetDimensions ( 261, 66, 0, 0 );
+  this->card_element->SetSheetDimensions ( 86, 35, 0, 0 );
 
   this->card_face->LoadImage ( CARD_FACES );
   this->card_background->LoadImage ( CARD_BACKGROUNDS );
