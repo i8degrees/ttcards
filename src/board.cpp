@@ -72,11 +72,6 @@ bool Board::DrawBackground ( Gfx *engine )
 
 signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
 {
-  //unsigned int opponent_id = this->GetStatus ( x, y );
-
-  //if ( opponent_id == 0 ) // FIXME ( ID of zero is valid )
-    //return false;
-
   #ifdef DEBUG_BOARD_CMP
     std::cout << "\n" << std::endl;
     std::cout << "Comparing:" << std::endl;
@@ -440,19 +435,6 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
     std::cout << "\n";
   }
 
-/*
-  for ( int rows = x; rows <= 2; rows++ )
-  {
-    for ( int cols = y; cols <= 2; cols++ )
-    {
-      if ( this->grid[x][y].id != 0 && x == 0 && y == 0 )
-        std::cout << this->grid[rows][cols].id << ' ';
-      else if ( this->grid[x][y].id != 0 && x == 1 && y == 1 )
-        std::cout << this->grid[rows][cols].id << ' ';
-    }
-    std::cout << "\n" << std::endl;
-  }
-*/
   #ifdef DEBUG_BOARD_CMP
     std::cout << "\nEnd of comparison." << std::endl;
   #endif
