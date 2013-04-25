@@ -67,6 +67,49 @@ bool Board::DrawBackground ( Gfx &engine )
   return true;
 }
 
+signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
+{
+  //unsigned int opponent_id = this->GetStatus ( x, y );
+
+  //if ( opponent_id == 0 ) // FIXME ( ID of zero is valid )
+    //return false;
+
+  for ( int rdx = 0; rdx < this->grid[x][y].rank.size(); rdx++)
+  {
+    #ifdef DEBUG_BOARD
+      //std::cout << this->grid[x][y].rank[rdx] << ' ';
+    #endif
+  }
+
+  if ( card.rank[0] > this->grid[x][y].rank[0] )
+  {
+    #ifdef DEBUG_BOARD
+      //std::cout << card.id << " > " << this->grid[x][y].id << "\n";
+    #endif
+
+    //return true;
+  }
+
+  std::cout << "\n" << std::endl;
+  std::cout << "compare:" << std::endl;
+
+  for ( int rows = x; rows <= 2; rows++ )
+  {
+    for ( int cols = y; cols <= 2; cols++ )
+    {
+      if ( this->grid[x][y].id != 0 && x == 0 && y == 0 )
+        std::cout << this->grid[rows][cols].id << ' ';
+      else if ( this->grid[x][y].id != 0 && x == 1 && y == 1 )
+        std::cout << this->grid[rows][cols].id << ' ';
+    }
+    std::cout << "\n" << std::endl;
+  }
+
+  std::cout << "\n" << std::endl;
+
+  return -1;
+}
+
 unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
 {
   unsigned int card_id = this->grid[x][y].id;
@@ -77,6 +120,8 @@ void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
 {
   this->grid[x][y] = card;
   this->board.cards.push_back ( card );
+
+  this->CompareCards ( x, y, card );
 }
 
 void Board::ListContents ( void )

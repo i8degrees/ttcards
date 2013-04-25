@@ -31,6 +31,8 @@ class Board
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx &engine );
 
+    signed int CompareCards ( unsigned int x, unsigned int y, Card &card );
+
     unsigned int GetStatus ( unsigned int x, unsigned int y );
 
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );

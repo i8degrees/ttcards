@@ -11,53 +11,53 @@ all: bin
 bin: $(OBJ)
 	$(CC) $(CFLAGS) $(SDL_CFLAGS) $(SDL_LDFLAGS) $(OBJ) -o ttcards
 
-audio.o: audio.cpp audio.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) audio.cpp
+audio.o: src/audio.cpp src/audio.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/audio.cpp
 
-board.o: board.cpp board.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) board.cpp
+board.o: src/board.cpp src/board.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/board.cpp
 
-card.o: card.cpp card.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card.cpp
+card.o: src/card.cpp src/card.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/card.cpp
 
-card_debug.o: card_debug.cpp card_debug.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_debug.cpp
+card_debug.o: src/card_debug.cpp src/card_debug.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/card_debug.cpp
 
-card_view.o: card_view.cpp card_view.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_view.cpp
+card_view.o: src/card_view.cpp src/card_view.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/card_view.cpp
 
-card_collection.o: card_collection.cpp card_collection.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_collection.cpp
+card_collection.o: src/card_collection.cpp src/card_collection.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/card_collection.cpp
 
-card_hand.o: card_hand.cpp card_hand.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) card_hand.cpp
+card_hand.o: src/card_hand.cpp src/card_hand.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/card_hand.cpp
 
-cfg.o: cfg.cpp cfg.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) cfg.cpp
+cfg.o: src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/cfg.cpp
 
-font.o: font.cpp font.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) font.cpp
+font.o: src/font.cpp src/font.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/font.cpp
 
-gfx.o: gfx.cpp gfx.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) gfx.cpp
+gfx.o: src/gfx.cpp src/gfx.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/gfx.cpp
 
-main.o: main.cpp
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) main.cpp
+main.o: src/main.cpp
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/main.cpp
 
-player.o: player.cpp player.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) player.cpp
+player.o: src/player.cpp src/player.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/player.cpp
 
-sprite.o: sprite.cpp sprite.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) sprite.cpp
+sprite.o: src/sprite.cpp src/sprite.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/sprite.cpp
 
-timer.o: timer.cpp timer.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) timer.cpp
+timer.o: src/timer.cpp src/timer.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/timer.cpp
 
-fps.o: timer.cpp timer.h fps.cpp fps.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) fps.cpp
+fps.o: src/timer.cpp src/timer.h src/fps.cpp src/fps.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/fps.cpp
 
-ttcards.o: ttcards.cpp ttcards.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) ttcards.cpp
+ttcards.o: src/ttcards.cpp src/ttcards.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/ttcards.cpp
 
 clean:
 	/bin/rm -rf *.o ttcards
