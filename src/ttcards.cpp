@@ -157,13 +157,13 @@ bool TTcards::Run ( void )
   this->player1_hand.AddCard ( this->collection.cards[16] ); // Thrustaevis
 
   // These two cards should be discarded ( MAX_HAND = 5 )
-  this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->player1_hand.AddCard ( this->collection.cards[24] ); // TriFace
+  //this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
+  //this->player1_hand.AddCard ( this->collection.cards[24] ); // TriFace
 
   // This card should be removed
-  this->player1_hand.RemoveCard ( this->player1_hand.cards[3] ); // Jelleye
+  //this->player1_hand.RemoveCard ( this->player1_hand.cards[3] ); // Jelleye
 
-  this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
+  //this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
 
   this->player2_hand.AddCard ( this->collection.cards[20] ); // Jelleye
   this->player2_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
@@ -172,7 +172,7 @@ bool TTcards::Run ( void )
   this->player2_hand.AddCard ( this->collection.cards[50] ); // Malboro
 
   // This card should be discarded ( MAX_HAND = 5 )
-  this->player2_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
+  //this->player2_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
 
   this->music.PlayMusicTrack ( -1 );
   this->music.PauseMusic ();

@@ -289,7 +289,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents( );
     }
 
     else if ( key == SDLK_2 ) // move selected card to grid[0][1] if possible
@@ -310,7 +309,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_3 ) // move selected card to grid[0][2] if possible
@@ -331,7 +329,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_4 ) // move selected card to grid[1][0] if possible
@@ -352,7 +349,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
@@ -373,7 +369,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_6 ) // move selected card to grid[1][2] if possible
@@ -394,7 +389,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_7 ) // move selected card to grid[2][0] if possible
@@ -415,7 +409,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_8 ) // move selected card to grid[2][1] if possible
@@ -436,7 +429,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
@@ -457,7 +449,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
   }
 }

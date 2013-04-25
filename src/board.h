@@ -18,7 +18,7 @@
 #include "card_view.h"
 
 #define DEBUG_BOARD
-#define DEBUG_BOARD_OBJ
+//#define DEBUG_BOARD_OBJ
 
 class Board
 {
