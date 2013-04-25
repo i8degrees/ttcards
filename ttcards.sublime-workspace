@@ -1,0 +1,1272 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"BOA",
+				"BOARD_GRID_WIDTH"
+			],
+			[
+				"BOAR",
+				"BOARD_GRID_WIDTH"
+			],
+			[
+				"BOARD_GR",
+				"BOARD_GRID_WIDTH"
+			],
+			[
+				"BOARD",
+				"BOARD_GRID_HEIGHT"
+			],
+			[
+				"PLAY",
+				"PLAYER1_BACKGROUND_ID"
+			],
+			[
+				"SetSheet",
+				"Sprite::SetSheetDimensions"
+			],
+			[
+				"BOARD_ORI",
+				"BOARD_ORIGIN_Y"
+			],
+			[
+				"BOARD_GRI",
+				"BOARD_GRID_WIDTH"
+			],
+			[
+				"PLAYER2_CUR",
+				"PLAYER2_CURSOR_ORIGIN_Y"
+			],
+			[
+				"PLAYER1",
+				"PLAYER1_CURSOR_ORIGIN_X"
+			],
+			[
+				"PLAYER1_CUR",
+				"PLAYER1_CURSOR_ORIGIN_Y"
+			],
+			[
+				"DEBUG_CARD",
+				"DEBUG_CARD_HAND_OBJ"
+			],
+			[
+				"PLAYER2_ORI",
+				"PLAYER2_ORIGIN_X"
+			],
+			[
+				"PLAYER2",
+				"PLAYER2_CURSOR_ORIGIN_X"
+			],
+			[
+				"CARD",
+				"CARD_HEIGHT"
+			],
+			[
+				"PLAYER",
+				"PLAYER1_ORIGIN_Y"
+			],
+			[
+				"PLA",
+				"PLAYER1_ORIGIN_Y"
+			],
+			[
+				"BOARD_",
+				"BOARD_GRID_HEIGHT"
+			],
+			[
+				"Is",
+				"Is_Paused"
+			],
+			[
+				"DEBUG_CARD_COLL",
+				"DEBUG_CARD_COLLECTION"
+			],
+			[
+				"DEBUG",
+				"DEBUG_CARD_VIEW_OBJ"
+			],
+			[
+				"Set",
+				"SetSurfaceTransparency"
+			],
+			[
+				"CAR",
+				"CARD_HEIGHT"
+			],
+			[
+				"Draw",
+				"DrawSurface"
+			],
+			[
+				"SetWin",
+				"SetWindowIcon"
+			],
+			[
+				"EXIT_",
+				"EXIT_SUCCESS"
+			],
+			[
+				"DEBUG_C",
+				"DEBUG_CARD_VIEW"
+			],
+			[
+				"EXIT",
+				"EXIT_SUCCESS"
+			],
+			[
+				"screencap",
+				"screencap_bin"
+			],
+			[
+				"cla",
+				"class	class_methods"
+			],
+			[
+				"clas",
+				"class	class_methods"
+			],
+			[
+				"CUR",
+				"CURSOR_CANCEL"
+			],
+			[
+				"CURS",
+				"CURSOR_MOVE"
+			],
+			[
+				"MAX_",
+				"MAX_DECKSET"
+			],
+			[
+				"Mix_Fade",
+				"Mix_FadeInMusic"
+			],
+			[
+				"mTrack",
+				"mTrack_loops"
+			],
+			[
+				"aTrack",
+				"aTrack_loops"
+			],
+			[
+				"CARD_",
+				"CARD_WIDTH"
+			],
+			[
+				"ELE",
+				"ELEMENT_WIDTH"
+			],
+			[
+				"ran",
+				"randomize"
+			],
+			[
+				"sprite",
+				"sprite_buffer"
+			],
+			[
+				"MAX",
+				"MAX_CARDS"
+			],
+			[
+				"elemen",
+				"element"
+			],
+			[
+				"Long",
+				"LongestWord"
+			],
+			[
+				"Select",
+				"SelectWords"
+			],
+			[
+				"response",
+				"response_codes"
+			],
+			[
+				"JSONLINT_EX",
+				"JSONLINT_EXTRA_PARAMS"
+			],
+			[
+				"WORKING",
+				"WORKING_DOCS"
+			],
+			[
+				"FF",
+				"FFFFFF"
+			],
+			[
+				"CGI",
+				"Cgi"
+			],
+			[
+				"kex",
+				"kext"
+			],
+			[
+				"gr",
+				"growlnotify"
+			],
+			[
+				"client",
+				"client175"
+			],
+			[
+				"files",
+				"filesize"
+			],
+			[
+				"EXEC",
+				"EXEC_BIT"
+			],
+			[
+				"BQ_SERVER",
+				"BQ_SERVER_LOGFILE"
+			],
+			[
+				"BQ_",
+				"BQ_LOGFILE"
+			],
+			[
+				"BQ",
+				"BQ_LOGDIR"
+			],
+			[
+				"NO",
+				"NOHUP_EXEC"
+			],
+			[
+				"memcach",
+				"memcached_host"
+			],
+			[
+				"sin",
+				"scintilla"
+			],
+			[
+				"PHP_F",
+				"PHP_FCGI_MAX_REQUESTS"
+			],
+			[
+				"disable-",
+				"disable-dependency-tracking"
+			],
+			[
+				"SYNERGY",
+				"SYNERGY_LOG_LEVEL"
+			],
+			[
+				"selec",
+				"selection"
+			],
+			[
+				"MPD",
+				"MPDSCRIBBLE_PID"
+			],
+			[
+				"address_",
+				"address_book_id"
+			],
+			[
+				"TERM",
+				"TERMINAL"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "Packages/User/Makefile (OSX).sublime-build",
+	"command_palette":
+	{
+		"height": 375.0,
+		"selected_items":
+		[
+			[
+				"dele",
+				"File: Delete"
+			],
+			[
+				"syntax c++",
+				"Set Syntax: C++"
+			],
+			[
+				"trim",
+				"Trimmer: Remove trailing whitespace from each line."
+			],
+			[
+				"diff",
+				"FileDiffs: Menu"
+			],
+			[
+				"filediff",
+				"FileDiffs: Menu"
+			],
+			[
+				"come",
+				"Toggle Comment"
+			],
+			[
+				"rename",
+				"File: Rename"
+			],
+			[
+				"syntax java",
+				"Set Syntax: Java"
+			],
+			[
+				"syntax bas",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Enumeration"
+			],
+			[
+				"file copy",
+				"File: Copy Path"
+			],
+			[
+				"copy",
+				"File: Copy Path"
+			],
+			[
+				"git status",
+				"Git: Status"
+			],
+			[
+				"syntax mark",
+				"Set Syntax: Markdown"
+			],
+			[
+				"syntax markdown",
+				"Set Syntax: MultiMarkdown"
+			],
+			[
+				"delete",
+				"File: Delete"
+			],
+			[
+				"togg",
+				"Toggle Block Comment"
+			],
+			[
+				"toggl",
+				"Toggle Comment"
+			],
+			[
+				"tab",
+				"View: Toggle Tabs"
+			],
+			[
+				"git co",
+				"Git: Quick Commit"
+			],
+			[
+				"git commit",
+				"Git: Commit"
+			],
+			[
+				"git com",
+				"Git: Quick Commit"
+			],
+			[
+				"git",
+				"Git: Commit"
+			],
+			[
+				"git ",
+				"Git: Commit"
+			],
+			[
+				"git di",
+				"Git: Diff All"
+			],
+			[
+				"status",
+				"Git: Status"
+			],
+			[
+				"git comm",
+				"Git: Commit"
+			],
+			[
+				"syntax",
+				"Set Syntax: INI"
+			],
+			[
+				"ini synta",
+				"Preferences: Alignment File Settings – Syntax Specific – User"
+			],
+			[
+				"sort",
+				"Sort Lines (Case Sensitive)"
+			],
+			[
+				"file diff",
+				"FileDiffs: Menu"
+			],
+			[
+				"indent",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"space",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"install pack",
+				"Package Control: Install Package"
+			],
+			[
+				"convert to",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"convert tab",
+				"Indentation: Convert to Tabs"
+			],
+			[
+				"file rename",
+				"File: Rename"
+			],
+			[
+				"convert spa",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"convert to spac",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"comment",
+				"Toggle Comment"
+			],
+			[
+				"xml",
+				"Set Syntax: XML"
+			],
+			[
+				"run",
+				"Nodejs::Run::Current File"
+			],
+			[
+				"build",
+				"Build: Build"
+			],
+			[
+				"json",
+				"Pretty JSON: Reformat (Pretty Print) JSON"
+			],
+			[
+				"syntax json",
+				"Set Syntax: JSON"
+			],
+			[
+				"syntax lua",
+				"Set Syntax: Lua"
+			],
+			[
+				"syntax xml",
+				"Set Syntax: XML"
+			],
+			[
+				"syntax applescript",
+				"Set Syntax: AppleScript"
+			],
+			[
+				"js",
+				"V8: Run JSHint"
+			],
+			[
+				"case",
+				"Convert Case: Title Case"
+			],
+			[
+				"syntax app",
+				"Set Syntax: AppleScript"
+			],
+			[
+				"syntax bash",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"syntax apple",
+				"Set Syntax: AppleScript"
+			],
+			[
+				"move",
+				"File: Move"
+			],
+			[
+				"lua ",
+				"Set Syntax: Lua"
+			],
+			[
+				"xml s",
+				"Set Syntax: HTML (ASP)"
+			],
+			[
+				"bash ",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"applescr",
+				"Set Syntax: AppleScript"
+			],
+			[
+				"convert space",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"lowercase",
+				"Convert Case: Lower Case"
+			],
+			[
+				"caps",
+				"Convert Case: Swap Case"
+			],
+			[
+				"package ",
+				"Package Control: List Packages"
+			],
+			[
+				"ini",
+				"Set Syntax: INI"
+			],
+			[
+				"convert to sp",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"convert to spa",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"packag",
+				"Package Control: Install Package"
+			],
+			[
+				"install packa",
+				"Package Control: Install Package"
+			],
+			[
+				"package inst",
+				"Package Control: Install Package"
+			],
+			[
+				"toggle com",
+				"Toggle Block Comment"
+			],
+			[
+				"toggle comment",
+				"Toggle Comment"
+			],
+			[
+				"save as",
+				"Project: Save As"
+			],
+			[
+				"apache",
+				"Set Syntax: Apache Conf"
+			],
+			[
+				"bash",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"syntax ruby",
+				"Set Syntax: Ruby"
+			],
+			[
+				"swap case",
+				"Convert Case: Swap Case"
+			],
+			[
+				"folder",
+				"Project: Add Folder"
+			],
+			[
+				"del",
+				"File: Delete"
+			],
+			[
+				"upperc",
+				"Convert Case: Upper Case"
+			],
+			[
+				"syntax ini",
+				"Set Syntax: INI"
+			],
+			[
+				"syntax ",
+				"Set Syntax: INI"
+			],
+			[
+				"syntax shell",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"uppercase",
+				"Convert Case: Upper Case"
+			],
+			[
+				"list pack",
+				"Package Control: List Packages"
+			],
+			[
+				"reind",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"git diff",
+				"Git: Diff Staged"
+			],
+			[
+				"refresh",
+				"File: Refresh"
+			],
+			[
+				"markdo",
+				"Set Syntax: Markdown"
+			],
+			[
+				"url",
+				"StringEncode: URL Encode"
+			],
+			[
+				"urlen",
+				"Web encoder: Url encode selection"
+			],
+			[
+				"github",
+				"GitHub: Private Gist from Selection"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"gist",
+				"Gist: Create Private Gist"
+			],
+			[
+				"syntax ru",
+				"Set Syntax: Ruby"
+			],
+			[
+				"synta ru",
+				"Set Syntax: Ruby"
+			],
+			[
+				"conv",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"refre",
+				"File: Refresh"
+			],
+			[
+				"inde",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"pack",
+				"Package Control: List Packages"
+			],
+			[
+				"convert",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"inden",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"reindent",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"ind",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"syntax javascript",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"open bro",
+				"File: Open In Browser - Production Server"
+			],
+			[
+				"syntax html",
+				"Set Syntax: HTML"
+			],
+			[
+				"ruby ",
+				"Set Syntax: Ruby"
+			],
+			[
+				"space ",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"indent sp",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"indent space",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"syntax C++",
+				"Set Syntax: C++"
+			],
+			[
+				"file refresh",
+				"File: Refresh"
+			],
+			[
+				"package",
+				"Package Control: List Packages"
+			],
+			[
+				"rename ",
+				"File: Rename"
+			],
+			[
+				"reinden",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"reident",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"ident",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"tidy",
+				"Tidy PHP"
+			],
+			[
+				"ruby",
+				"Set Syntax: Ruby"
+			],
+			[
+				"package install",
+				"Package Control: Install Package"
+			],
+			[
+				"git add",
+				"Gist: Add File to Gist"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"base64",
+				"Web encoder: Base 64 decode selection"
+			],
+			[
+				"syntax php",
+				"Set Syntax: PHP"
+			],
+			[
+				"ren",
+				"File: Rename"
+			],
+			[
+				"channel",
+				"Package Control: Add Channel"
+			],
+			[
+				"repo",
+				"Package Control: Add Repository"
+			],
+			[
+				"disc",
+				"Package Control: Discover Packages"
+			]
+		],
+		"width": 579.0
+	},
+	"console":
+	{
+		"height": 253.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/jeff/Projects/hax/ttcards.git/Makefile",
+		"/Users/jeff/Projects/hax/snippets/fielding.codejam/rope.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.codejam/faf.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.codejam/ayb.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.codejam/faf.source",
+		"/Users/jeff/Projects/hax/snippets/fielding.codejam/ayb.source",
+		"/Users/jeff/Projects/hax/ttcards.git/src/fps.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/timer.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/font.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/gfx.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/sprite.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_debug.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_collection.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_view.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/board.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_hand.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/player.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/player.h",
+		"/Users/jeff/Projects/hax/ttcards.git/board.h",
+		"/Users/jeff/Projects/hax/ttcards.git/ttcards.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_view.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_collection.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_debug.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card.h",
+		"/Users/jeff/Projects/hax/ttcards.git/sprite.h",
+		"/Users/jeff/Projects/hax/ttcards.git/gfx.h",
+		"/Users/jeff/Projects/hax/ttcards.git/font.h",
+		"/Users/jeff/Projects/hax/ttcards.git/timer.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_hand.h",
+		"/Users/jeff/Projects/hax/ttcards.git/fps.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_hand.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/ttcards.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/player.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/board.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/card_view.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/card_collection.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/card_debug.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/card.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/sprite.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/gfx.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/font.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/timer.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/fps.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/Makefile.debug",
+		"/Users/jeff/Projects/hax/ttcards.git/ttcards.sublime-project",
+		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.sublime-workspace",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.h",
+		"/Users/jeff/Projects/hax/Fielding.GameOfLife/GameOfLife/main.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/data/cards.txt",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Board.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/score.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.GameOfLife/GameOfLife/main.cpp",
+		"/Users/jeff/.bashlib",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Board.h",
+		"/Users/jeff/Projects/hax/snippets/GameOfLife/GameOfLife/main.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/cfg.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/cfg.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Timer.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Timer.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/project/docs/notes.md",
+		"/Users/jeff/Projects/hax/ttcards.git/audio.cpp",
+		"/Users/jeff/local/src/SDL-1.2.15/src/video/SDL_surface.c",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameState.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.cpp",
+		"/Users/jeff/local/src/SDL-1.2.15/src/video/SDL_bmp.c",
+		"/Users/jeff/local/src/SDL-1.2.15/src/video/quartz/SDL_QuartzWM.m",
+		"/Users/jeff/local/src/SDL-1.2.15/src/video/quartz/SDL_QuartzVideo.m",
+		"/Users/jeff/local/src/SDL-1.2.15/src/video/SDL_video.c",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/gfx.h",
+		"/Users/jeff/Projects/hax/ttcards.git/main.cpp",
+		"/Users/jeff/Library/Sublime Text 2/Packages/User/Makefile (OSX).sublime-build",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/MenuState.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Bag.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Bag.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/docs/types.md",
+		"/Users/jeff/Projects/hax/ttcards.git/docs/types.md.md",
+		"/Users/jeff/Projects/hax/ttcards.git/card_deck.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/card_deck.h",
+		"/usr/local/include/SDL/SDL_mixer.h",
+		"/usr/local/include/SDL/SDL.h",
+		"/usr/local/include/SDL/begin_code.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_dealer.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/audio.h",
+		"/Users/jeff/tmp/ttcards.md",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/main.cpp",
+		"/Users/jeff/tmp/tmp.mdown",
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CApp_OnInit.cpp",
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CSurface.h",
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CEntity.cpp",
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CEntity.h",
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CApp.h",
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CApp.cpp",
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CSurface.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/cardview.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/cardview.h",
+		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/card.h",
+		"/usr/local/Cellar/yajl/2.0.4/cfg.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/.gitignore",
+		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/Default (OSX).sublime-keymap",
+		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/jeff/Projects/hax/ttcards.git/card_face.cpp",
+		"/Users/jeff/Projects/hax/timelapse.sh",
+		"/Users/jeff/Projects/hax/snippets/fielding.dotfiles/.bashrc",
+		"/Users/jeff/.bash_aliases",
+		"/Users/jeff/local/bin/wwwfile",
+		"/Users/jeff/local/bin/wwwdoc",
+		"/private/tmp/cards.txt",
+		"/private/tmp/cards.prn",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/cfg.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/ttcards.cpp",
+		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/class_methods.sublime-snippet",
+		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/pile.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/pile.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_gfx.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_sprite.h",
+		"/Users/jeff/Projects/hax/ttcards.git/card_face.h",
+		"/Users/jeff/Projects/hax/ttcards.git/project/notes.md",
+		"/Users/jeff/Projects/hax/ttcards.git/project/work/tmp/card.h"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			".cpp",
+			"cpp",
+			"ttcards.sublime-project",
+			"project",
+			"setsheetdimensions",
+			"//board->Draw();",
+			"at",
+			"board->Draw",
+			"engine",
+			"update",
+			"cards.size",
+			"cards",
+			"this->hand",
+			"size",
+			"init",
+			"board.",
+			"debug.ListCards",
+			"debug",
+			"this->cards",
+			"this->sheet",
+			"Sheet",
+			"sheet_id",
+			"index",
+			"card_select",
+			"card_sele",
+			"select",
+			"index",
+			"removecard",
+			"selectCard",
+			"UP",
+			"selected",
+			"setstate",
+			"setid",
+			"this->board",
+			"board",
+			"board->",
+			"board.",
+			"board",
+			"right_cu",
+			"right_curo",
+			"cursor",
+			"score",
+			"ID",
+			"GetID",
+			"SetType",
+			"GetType",
+			"type",
+			"SetType",
+			"player",
+			"Type",
+			"GetType",
+			"removecard",
+			"Board",
+			"cursor",
+			"pixel",
+			"sheetid",
+			"board",
+			"Sprite",
+			"Gfx",
+			"sprite",
+			"player1",
+			"left_cursor",
+			"engine",
+			"player2",
+			"state",
+			"bmp",
+			"png",
+			"89",
+			"ticks",
+			"Is_Started",
+			"running",
+			"start",
+			"offset",
+			"at",
+			"video_buffer",
+			"blitsurface",
+			"flags",
+			"Load",
+			"IMG_Load",
+			"PLAYER",
+			"text_buffer",
+			"cout",
+			"player1",
+			");\n",
+			"text_buffer",
+			"engine",
+			"freesurface",
+			"std::move",
+			"sdl_freesurface",
+			"SDL_Free",
+			"sdl_free",
+			"sdl_freesurface",
+			"sprite",
+			"text_card",
+			"input",
+			"this->cards",
+			"input",
+			"HandleEvents",
+			"HandEvents",
+			"Events",
+			"Input",
+			"draw",
+			"updateBloc",
+			"next",
+			"front",
+			"Input",
+			"card_deck",
+			"DECK",
+			"gfx",
+			"FillRect",
+			"dealer",
+			"err ch",
+			"err",
+			"Blit",
+			"!=",
+			"SetColorKey",
+			"ColorKey",
+			"SetColorKey",
+			"colorkey",
+			"apply",
+			"board",
+			"cardElement",
+			"SheetID",
+			"offsets",
+			"text",
+			"text_buffer",
+			"txtCard",
+			"offsets"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			".h",
+			"board->ListContents();",
+			"this->cards",
+			"board->",
+			"board",
+			"board.",
+			"board->",
+			"GetID",
+			"png",
+			"ticks",
+			"player2",
+			"text_buffer",
+			"rank_text",
+			"text_buffer",
+			"std::cout",
+			"CardView",
+			"rate",
+			"sound",
+			"card.",
+			"->",
+			"contents",
+			"cards",
+			"load",
+			"",
+			"10",
+			" ",
+			"(\\u\\u)",
+			"{\\u\\u}",
+			"\\u\\u",
+			"\\u",
+			"[\\u\\u]",
+			"\\u\\u",
+			"[:space:]",
+			"",
+			"2",
+			"3",
+			"4",
+			"1",
+			"0",
+			"10",
+			"",
+			"/Users/jeff/Library",
+			"5.1",
+			"/Users/jeff",
+			"status",
+			"\\n",
+			"",
+			"true",
+			"false",
+			"\\t",
+			"(\\t)",
+			"(\\t\\t)",
+			"class=\"javascript\"",
+			"",
+			"```",
+			"```gp",
+			"[:whitespace]",
+			"",
+			"/home/www/kn353k/",
+			"CREATE DATABASE IF NOT EXISTS",
+			"DROP DATABASE IF EXISTS",
+			"\"",
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 35.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 209.0
+	},
+	"output.git":
+	{
+		"height": 150.0
+	},
+	"output.jsconsole_view":
+	{
+		"height": 0.0
+	},
+	"output.jshint_view":
+	{
+		"height": 144.0
+	},
+	"output.sftp":
+	{
+		"height": 112.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"83",
+				"data/images/faces/83.bmp"
+			],
+			[
+				"62",
+				"data/images/faces/62.bmp"
+			],
+			[
+				"",
+				"/Users/jeff/Desktop/tmp.notes"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/Users/jeff/Projects/clients/211_Thor/.knesek.sublime.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 179.0,
+	"status_bar_visible": true
+}
