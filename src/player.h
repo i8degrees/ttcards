@@ -53,8 +53,8 @@ public:
   void DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
 
 private:
-  Sprite left_cursor;
-  Sprite right_cursor;
+  Sprite left_cursor; // player1 cursor
+  Sprite right_cursor; // player2 cursor
   CardDebug debug;
   CardView card;
   Font text_score;

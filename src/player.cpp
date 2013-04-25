@@ -23,7 +23,7 @@ Player::Player ( void )
   this->card_pos = 0;
 
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
-  this->text_score.SetTextColor ( 255, 255, 255 );
+  this->text_score.SetTextColor ( 255, 255, 255 ); // white
 
   this->left_cursor = Sprite ( 26, 16 );
   this->left_cursor.SetX ( PLAYER1_CURSOR_ORIGIN_X );
