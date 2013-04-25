@@ -3,6 +3,7 @@ CFLAGS = -gfull -O0 -std=c++11 -stdlib=libc++ -Wall
 SDL_CFLAGS := $(shell pkg-config --cflags sdl SDL_image SDL_ttf SDL_mixer)
 SDL_LDFLAGS := $(shell pkg-config --libs sdl SDL_image SDL_ttf SDL_mixer)
 
+SRC = src/audio.cpp src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp src/card_collection.cpp src/card_hand.cpp src/cfg.cpp src/font.cpp src/gfx.cpp src/main.cpp src/player.cpp src/sprite.cpp src/timer.cpp src/fps.cpp src/ttcards.cpp
 OBJ = audio.o board.o card.o card_debug.o card_collection.o card_view.o card_hand.o cfg.o font.o gfx.o main.o player.o sprite.o timer.o fps.o ttcards.o
 BIN = ttcards
 
@@ -63,7 +64,7 @@ clean:
 	/bin/rm -rf *.o ttcards
 
 analyze:
-	scan-build -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c $(CFLAGS) $(SDL_CFLAGS) audio.cpp board.cpp card.cpp cfg.cpp font.cpp gfx.cpp main.cpp player.cpp sprite.cpp ttcards.cpp
+	scan-build -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c $(CFLAGS) $(SDL_CFLAGS) $(SRC)
 
 app:
 	./ttcards
