@@ -487,6 +487,8 @@ unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
 
 void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
 {
+  Card opponent = 0; // -1
+  signed int pos = -1;
   this->grid[x][y] = card;
   this->board_hand.cards.push_back ( card );
 
