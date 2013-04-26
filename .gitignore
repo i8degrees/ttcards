@@ -2,8 +2,8 @@
 project/
 
 # Project Files
-#*.sublime-workspace
-#*.sublime-project
+*.sublime-workspace
+*.sublime-project
 *.bck
 *.xcf
 *.mp3
