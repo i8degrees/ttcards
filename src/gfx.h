@@ -22,15 +22,17 @@
 class Gfx
 {
   public:
-    Gfx ( unsigned int screen_width = 320,
-          unsigned int screen_height = 240,
-          unsigned int screen_bpp = 8,
-          unsigned int video_flags = 0,
-          unsigned int sdl_flags = SDL_INIT_EVERYTHING,
+    Gfx ( unsigned int sdl_flags = SDL_INIT_EVERYTHING,
           unsigned int img_flags = IMG_INIT_PNG
-          );
+        );
 
     ~Gfx ( void );
+
+    bool SetVideoMode ( unsigned int screen_width = 320,
+                        unsigned int screen_height = 240,
+                        unsigned int screen_bpp = 8,
+                        unsigned int video_flags = 0
+                      );
 
     bool SetSurfaceTransparency ( SDL_Surface *video_buffer,
                                   unsigned int r, unsigned int g, unsigned int b,

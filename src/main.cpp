@@ -17,7 +17,8 @@ int main(int argc, char *argv[])
 
   std::srand ( ( unsigned ) time ( 0 ) ); // needs to exec before CardHand, Player, Board, etc.
 
-  Gfx engine ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags, sdl_flags ); // rendering interface instance
+  Gfx engine = ( sdl_flags ); // rendering interface instance
+  engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
   TTcards app;
 

@@ -8,8 +8,7 @@
 ******************************************************************************/
 #include "gfx.h"
 
-Gfx::Gfx (  unsigned int screen_width, unsigned int screen_height, unsigned int screen_bpp,
-            unsigned int video_flags, unsigned int sdl_flags, unsigned int img_flags )
+Gfx::Gfx ( unsigned int sdl_flags, unsigned int img_flags )
 {
   #ifdef DEBUG_GFX_OBJ
     std::cout << "Gfx::Gfx(): Hello, world!" << "\n" << std::endl;
@@ -34,17 +33,6 @@ Gfx::Gfx (  unsigned int screen_width, unsigned int screen_height, unsigned int 
 
     exit ( EXIT_FAILURE );
   }
-
-  this->screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, video_flags );
-
-  if ( this->screen == 0 )
-  {
-    #ifdef DEBUG_GFX
-      std::cout << "ERR in Gfx::Gfx(): " << SDL_GetError() << std::endl;
-    #endif
-
-    exit ( EXIT_FAILURE );
-  }
 }
 
 Gfx::~Gfx ( void )
@@ -62,6 +50,26 @@ Gfx::~Gfx ( void )
   IMG_Quit ();
 
   SDL_Quit ();
+}
+
+bool Gfx::SetVideoMode (  unsigned int screen_width,
+                          unsigned int screen_height,
+                          unsigned int screen_bpp,
+                          unsigned int video_flags
+                        )
+{
+  this->screen = SDL_SetVideoMode ( screen_width, screen_height, screen_bpp, video_flags );
+
+  if ( this->screen == 0 )
+  {
+    #ifdef DEBUG_GFX
+      std::cout << "ERR in Gfx::SetVideoMode(): " << SDL_GetError() << std::endl;
+    #endif
+
+    return false;
+  }
+
+  return true;
 }
 
 bool Gfx::SetSurfaceTransparency (  SDL_Surface *video_buffer,
