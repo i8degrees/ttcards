@@ -32,7 +32,7 @@ class Board
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
-    signed int CompareCards ( unsigned int x, unsigned int y, Card &card );
+    Card & CompareCards ( unsigned int x, unsigned int y, Card &card );
 
     unsigned int GetCount ( unsigned int player_id );
     unsigned int GetStatus ( unsigned int x, unsigned int y );

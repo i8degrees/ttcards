@@ -70,7 +70,7 @@ bool Board::DrawBackground ( Gfx *engine )
   return true;
 }
 
-signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
+Card & Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
 {
   #ifdef DEBUG_BOARD_CMP
     std::cout << "\n" << std::endl;
@@ -90,6 +90,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
       #ifdef DEBUG_BOARD_CMP
         std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][1].id << std::endl;
       #endif
+      return this->grid[0][1];
       }
     }
 
@@ -106,6 +107,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][0].id << std::endl;
         #endif
+        return this->grid[1][0];
       }
     }
 
@@ -125,6 +127,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][2].id << std::endl;
         #endif
+        return this->grid[0][2];
       }
     }
     std::cout << "\n";
@@ -140,6 +143,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
         #endif
+        return this->grid[1][1];
       }
     }
     std::cout << "\n";
@@ -155,6 +159,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][0].id << std::endl;
         #endif
+        return this->grid[0][0];
       }
     }
     std::cout << "\n";
@@ -173,6 +178,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
       #ifdef DEBUG_BOARD_CMP
         std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][2].id << std::endl;
       #endif
+      return this->grid[1][2];
       }
     }
     std::cout << "\n";
@@ -187,6 +193,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][1].id << std::endl;
         #endif
+        return this->grid[0][1];
       }
     }
     std::cout << "\n";
@@ -201,7 +208,10 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
       #endif
       if ( card.rank[0] > this->grid[0][0].rank[2] )
       {
-        std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][0].id << std::endl;
+        #ifdef DEBUG_BOARD_CMP
+          std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][0].id << std::endl;
+        #endif
+        return this->grid[0][0];
       }
     }
     std::cout << "\n";
@@ -215,6 +225,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
         #endif
+        return this->grid[1][1];
       }
     }
     std::cout << "\n";
@@ -228,6 +239,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][0].id << std::endl;
         #endif
+        return this->grid[2][0];
       }
     }
     std::cout << "\n";
@@ -235,6 +247,20 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
 
   if ( x == 1 && y == 1 ) // 1, 1
   {
+    if ( this->grid[0][1].id != 0 )
+    {
+      #ifdef DEBUG_BOARD_CMP
+        std::cout << "adj " << this->grid[0][1].id << ' ';
+      #endif
+      if ( card.rank[0] > this->grid[0][1].rank[2] )
+      {
+        #ifdef DEBUG_BOARD_CMP
+          std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][1].id << std::endl;
+        #endif
+        return this->grid[0][1];
+      }
+    }
+    std::cout << "\n";
     if ( this->grid[1][2].id != 0 )
     {
       #ifdef DEBUG_BOARD_CMP
@@ -245,6 +271,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][2].id << std::endl;
         #endif
+        return this->grid[1][2];
       }
     }
     std::cout << "\n";
@@ -255,7 +282,10 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
       #endif
       if ( card.rank[2] > this->grid[2][1].rank[0] )
       {
-        std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][1].id << std::endl;
+        #ifdef DEBUG_BOARD_CMP
+          std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][1].id << std::endl;
+        #endif
+        return this->grid[2][1];
       }
     }
     std::cout << "\n";
@@ -269,20 +299,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][0].id << std::endl;
         #endif
-      }
-    }
-    std::cout << "\n";
-
-    if ( this->grid[0][1].id != 0 )
-    {
-      #ifdef DEBUG_BOARD_CMP
-        std::cout << "adj " << this->grid[0][1].id << ' ';
-      #endif
-      if ( card.rank[0] > this->grid[0][1].rank[2] )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][1].id << std::endl;
-        #endif
+        return this->grid[1][0];
       }
     }
     std::cout << "\n";
@@ -300,6 +317,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][2].id << std::endl;
         #endif
+        return this->grid[2][2];
       }
     }
     std::cout << "\n";
@@ -313,6 +331,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
         #endif
+        return this->grid[1][1];
       }
     }
     std::cout << "\n";
@@ -326,6 +345,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[0][2].id << std::endl;
         #endif
+        return this->grid[0][2];
       }
     }
     std::cout << "\n";
@@ -343,6 +363,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][0].id << std::endl;
         #endif
+        return this->grid[1][0];
       }
     }
     std::cout << "\n";
@@ -356,6 +377,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][1].id << std::endl;
         #endif
+        return this->grid[2][1];
       }
     }
     std::cout << "\n";
@@ -363,7 +385,6 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
 
   if ( x == 2 && y == 1 ) // 2, 1
   {
-
     if ( this->grid[1][1].id != 0 )
     {
       #ifdef DEBUG_BOARD_CMP
@@ -374,6 +395,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
         #endif
+        return this->grid[1][1];
       }
     }
     std::cout << "\n";
@@ -387,6 +409,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][2].id << std::endl;
         #endif
+        return this->grid[2][2];
       }
     }
     std::cout << "\n";
@@ -400,6 +423,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][0].id << std::endl;
         #endif
+        return this->grid[2][0];
       }
     }
     std::cout << "\n";
@@ -417,6 +441,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[1][2].id << std::endl;
         #endif
+        return this->grid[1][2];
       }
     }
     std::cout << "\n";
@@ -430,6 +455,7 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
         #ifdef DEBUG_BOARD_CMP
           std::cout << "\n" << card.id << ' ' << "wins against" << ' ' << this->grid[2][1].id << std::endl;
         #endif
+        return this->grid[2][1];
       }
     }
     std::cout << "\n";
@@ -439,7 +465,8 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
     std::cout << "\nEnd of comparison." << std::endl;
   #endif
 
-  return -1;
+  return card;
+}
 
 unsigned int Board::GetCount ( unsigned int pid )
 {
@@ -464,7 +491,21 @@ void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
   this->grid[x][y] = card;
   this->board.cards.push_back ( card );
 
-  this->CompareCards ( x, y, card );
+  opponent = this->CompareCards ( x, y, card );
+
+  if ( opponent.player_id != card.player_id )
+  {
+    pos = this->board_hand.CardPosition ( opponent );
+
+    if ( opponent.player_id == 0 )
+    {
+      this->board_hand.cards[pos].player_id = 1;
+    }
+    else if ( opponent.player_id == 1 )
+    {
+      this->board_hand.cards[pos].player_id = 0;
+    }
+  }
 }
 
 void Board::ListContents ( void )
