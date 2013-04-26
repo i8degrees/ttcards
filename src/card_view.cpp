@@ -69,7 +69,7 @@ bool CardView::EraseCard ( Gfx *engine, unsigned int x, unsigned int y )
 bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y )
 {
 
-  switch ( card.player_id ) // player1, player2
+  switch ( card.player_id ) // player1 (0), player2 (1)
   {
     case 0:
       card_background->SetSheetID ( PLAYER1_BACKGROUND_ID );
