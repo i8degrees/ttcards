@@ -19,7 +19,7 @@ Player::Player ( void )
   this->y = 0;
   this->id = 0;
   this->state = 0;
-  this->score = 5;
+  this->SetScore ( 5 );
   this->card_pos = 0;
 
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
@@ -535,6 +535,16 @@ void Player::Draw ( Gfx *engine )
 
 void Player::DrawScore ( Gfx *engine, unsigned int x, unsigned int y )
 {
-  this->text_score.SetTextBuffer ( std::to_string ( this->score ) );
+  unsigned int hand_count = this->hand->cards.size();
+  unsigned int board_count = 0;
+
+  if ( this->GetID() == 0 )
+    board_count = this->board->GetCount ( 0 );
+  else if ( this->GetID() == 1 )
+    board_count = this->board->GetCount ( 1 );
+
+  this->SetScore ( hand_count + board_count );
+
+  this->text_score.SetTextBuffer ( std::to_string ( this->GetScore() ) );
   this->text_score.DrawText ( engine, x, y );
 }

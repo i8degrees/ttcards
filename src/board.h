@@ -34,6 +34,7 @@ class Board
 
     signed int CompareCards ( unsigned int x, unsigned int y, Card &card );
 
+    unsigned int GetCount ( unsigned int player_id );
     unsigned int GetStatus ( unsigned int x, unsigned int y );
 
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );

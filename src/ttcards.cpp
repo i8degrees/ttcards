@@ -222,11 +222,11 @@ void TTcards::Run ( void )
     this->board.DrawBackground ( this->engine );
     this->board.DrawBoard ( this->engine );
 
-    this->player1->DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
-    this->player2->DrawScore ( this->engine, 320, 176 ); // 64 * 5
-
     this->player1->Draw ( this->engine );
     this->player2->Draw ( this->engine );
+
+    this->player1->DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
+    this->player2->DrawScore ( this->engine, 320, 176 ); // 64 * 5
 
     this->ShowFPS();
 

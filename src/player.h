@@ -53,13 +53,13 @@ public:
   void DrawScore ( Gfx *engine, unsigned int x, unsigned int y );
 
 private:
+  Font text_score;
   Sprite left_cursor; // player1 cursor
   Sprite right_cursor; // player2 cursor
   CardDebug debug;
   CardView card;
-  Font text_score;
-  Board *board;
   CardHand *hand;
+  Board *board;
   unsigned int x;
   unsigned int y;
   unsigned int id; // unique identifier

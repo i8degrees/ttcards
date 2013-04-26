@@ -440,6 +440,17 @@ signed int Board::CompareCards ( unsigned int x, unsigned int y, Card &card )
   #endif
 
   return -1;
+
+unsigned int Board::GetCount ( unsigned int pid )
+{
+  unsigned int pid_count = 0;
+
+  for ( int idx = 0; idx < this->board_hand.cards.size(); idx++ )
+  {
+    if ( this->board_hand.cards[idx].player_id == pid )
+      pid_count += 1;
+  }
+  return pid_count;
 }
 
 unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
