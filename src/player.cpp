@@ -19,11 +19,11 @@ Player::Player ( void )
   this->y = 0;
   this->id = 0;
   this->state = 0;
-  this->score = 5;
+  this->SetScore ( 5 );
   this->card_pos = 0;
 
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
-  this->text_score.SetTextColor ( 255, 255, 255 );
+  this->text_score.SetTextColor ( 255, 255, 255 ); // white
 
   this->left_cursor = Sprite ( 26, 16 );
   this->left_cursor.SetX ( PLAYER1_CURSOR_ORIGIN_X );
@@ -41,6 +41,11 @@ Player::~Player ( void )
   #ifdef DEBUG_PLAYER_OBJ
     std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
+
+  if ( this->board != NULL )
+  {
+    this->board = NULL;
+  }
 }
 
 void Player::Init ( Board &board, CardHand &player_cards )
@@ -289,7 +294,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents( );
     }
 
     else if ( key == SDLK_2 ) // move selected card to grid[0][1] if possible
@@ -310,7 +314,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_3 ) // move selected card to grid[0][2] if possible
@@ -331,7 +334,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_4 ) // move selected card to grid[1][0] if possible
@@ -352,7 +354,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
@@ -373,7 +374,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_6 ) // move selected card to grid[1][2] if possible
@@ -394,7 +394,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_7 ) // move selected card to grid[2][0] if possible
@@ -415,7 +414,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_8 ) // move selected card to grid[2][1] if possible
@@ -436,7 +434,6 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
 
     else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
@@ -457,12 +454,11 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-      board->ListContents();
     }
   }
 }
 
-void Player::Draw ( Gfx &engine )
+void Player::Draw ( Gfx *engine )
 {
   unsigned int hand_index = 0;
 
@@ -537,8 +533,18 @@ void Player::Draw ( Gfx &engine )
   }
 }
 
-void Player::DrawScore ( Gfx &engine, unsigned int x, unsigned int y )
+void Player::DrawScore ( Gfx *engine, unsigned int x, unsigned int y )
 {
-  this->text_score.SetTextBuffer ( std::to_string ( this->score ) );
+  unsigned int hand_count = this->hand->cards.size();
+  unsigned int board_count = 0;
+
+  if ( this->GetID() == 0 )
+    board_count = this->board->GetCount ( 0 );
+  else if ( this->GetID() == 1 )
+    board_count = this->board->GetCount ( 1 );
+
+  this->SetScore ( hand_count + board_count );
+
+  this->text_score.SetTextBuffer ( std::to_string ( this->GetScore() ) );
   this->text_score.DrawText ( engine, x, y );
 }

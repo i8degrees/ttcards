@@ -73,6 +73,16 @@
   - All
     > Winner takes all.
 
+## Scoring
+
+  - Each player starts out with a score of five (5) points -- this is determined
+  from the number of cards in their hand.
+  - Each card acquired on the game board adds one (1) point to your score.
+  - At the end of game, the player with the highest point score wins the round.
+  - Score is calculated at the end of each player turn as
+
+    score = ( cards in hand ) + ( cards on board in possession )
+
 ### References
 
 1. http://finalfantasy.wikia.com/wiki/Triple_Triad

@@ -18,7 +18,7 @@
 #include "gfx.h"
 
 #define DEBUG_FONT
-//#define DEBUG_FONT_OBJ
+#define DEBUG_FONT_OBJ
 
 class Font {
 public:
@@ -34,7 +34,7 @@ public:
   void SetTextBuffer ( std::string text );
 
   bool LoadTTF ( std::string filename, unsigned int size );
-  bool DrawText ( Gfx &engine, unsigned int x, unsigned int y );
+  bool DrawText ( Gfx *engine, unsigned int x, unsigned int y );
 
 private:
   TTF_Font *font;

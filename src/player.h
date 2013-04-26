@@ -49,17 +49,17 @@ public:
   void SetScore ( unsigned int score );
 
   void Input ( unsigned int type, SDLKey key, SDLMod mod );
-  void Draw ( Gfx &engine );
-  void DrawScore ( Gfx &engine, unsigned int x, unsigned int y );
+  void Draw ( Gfx *engine );
+  void DrawScore ( Gfx *engine, unsigned int x, unsigned int y );
 
 private:
-  Sprite left_cursor;
-  Sprite right_cursor;
+  Font text_score;
+  Sprite left_cursor; // player1 cursor
+  Sprite right_cursor; // player2 cursor
   CardDebug debug;
   CardView card;
-  Font text_score;
-  Board *board;
   CardHand *hand;
+  Board *board;
   unsigned int x;
   unsigned int y;
   unsigned int id; // unique identifier

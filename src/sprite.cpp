@@ -68,8 +68,11 @@ Sprite::~Sprite ( void )
     std::cout << "Sprite::~Sprite (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  SDL_FreeSurface ( this->sprite_buffer );
-  this->sprite_buffer = NULL;
+  if ( this->sprite_buffer != NULL )
+  {
+    SDL_FreeSurface ( this->sprite_buffer );
+    this->sprite_buffer = NULL;
+  }
 }
 
 unsigned int Sprite::GetX ( void )
@@ -201,43 +204,9 @@ void Sprite::SetSheetDimensions ( unsigned int sheet_width, unsigned int sheet_h
   this->sheet.padding = padding;
 }
 
-/*
 bool Sprite::LoadImage ( std::string filename, SDL_Color colorkey, unsigned int flags )
 {
-  // Ensure that we have a clean surface available
-  if ( this->sprite_buffer != NULL )
-  {
-    SDL_FreeSurface ( this->sprite_buffer );
-    this->sprite_buffer = NULL;
-  }
-
-  this->sprite_buffer = this->engine->LoadImage ( filename, colorkey, flags );
-
-  if ( this->sprite_buffer == NULL )
-  {
-    #ifdef DEBUG_SPRITE
-      //std::cout << "ERR in Sprite::LoadImage (): " << SDL_GetError() << std::endl;
-    #endif
-    SDL_FreeSurface ( this->sprite_buffer );
-    this->sprite_buffer = NULL;
-
-    return false;
-  }
-
-  return true;
-}
-*/
-
-bool Sprite::LoadImage ( std::string filename )
-{
-  // Ensure that we have a clean surface available
-  if ( this->sprite_buffer != NULL )
-  {
-    SDL_FreeSurface ( this->sprite_buffer );
-    this->sprite_buffer = NULL;
-  }
-
-  this->sprite_buffer = IMG_Load ( filename.c_str() );
+  this->sprite_buffer = Gfx::LoadImage ( filename, colorkey, flags );
 
   if ( this->sprite_buffer == NULL )
   {
@@ -253,19 +222,7 @@ bool Sprite::LoadImage ( std::string filename )
   return true;
 }
 
-// TODO
-// WxH = 2082x262
-// [32 rows, 4 cols]
-// sWxsH = 64x64
-// spacing = 1
-// padding = 1
-// ---
-//float rows = floor ( this->sheet.width / this->sheet.sprite_width );
-//float cols = floor ( this->sheet.height / this->sheet.sprite_height );
-//offsets.x = ( this->sheet.id * this->sheet.sprite_width ) + ( this->sheet.spacing * this->sheet.id + 1 );
-//offsets.y = this->sheet.padding;
-
-bool Sprite::Draw ( Gfx &engine )
+bool Sprite::Draw ( Gfx *engine )
 {
   SDL_Rect offsets; // temporary struct to hold our clipping coords (x, y, width, height)
 
@@ -279,6 +236,7 @@ bool Sprite::Draw ( Gfx &engine )
 
   if ( this->sheet.id != -1 )
   {
+    // FIXME: Presently, we assume every sprite on our sheet is on the same row
     offsets.x = ( this->sheet.id * this->sheet.sprite_width );
     offsets.y = 0;
 
@@ -293,7 +251,7 @@ bool Sprite::Draw ( Gfx &engine )
     offsets.h = this->GetHeight();
   }
 
-  if ( engine.DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), &offsets ) == false )
+  if ( engine->DrawSurface ( this->sprite_buffer, this->GetX(), this->GetY(), &offsets ) == false )
   {
     return false;
   }

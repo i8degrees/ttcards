@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"Com",
+				"CompareCards"
+			],
+			[
+				"DEBUG_BO",
+				"DEBUG_BOARD_CMP"
+			],
+			[
+				"SCREEN",
+				"SCREEN_BPP"
+			],
+			[
+				"EXIT_",
+				"EXIT_FAILURE"
+			],
+			[
+				"SetSh",
+				"SetSheetID"
+			],
+			[
 				"BOA",
 				"BOARD_GRID_WIDTH"
 			],
@@ -102,10 +122,6 @@
 			[
 				"SetWin",
 				"SetWindowIcon"
-			],
-			[
-				"EXIT_",
-				"EXIT_SUCCESS"
 			],
 			[
 				"DEBUG_C",
@@ -279,13 +295,149 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "src/player.cpp",
+			"settings":
+			{
+				"buffer_size": 16812,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/card_hand.cpp",
+			"settings":
+			{
+				"buffer_size": 3135,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/board.cpp",
+			"settings":
+			{
+				"buffer_size": 13783,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/card_view.cpp",
+			"settings":
+			{
+				"buffer_size": 4175,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/card_collection.cpp",
+			"settings":
+			{
+				"buffer_size": 2156,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/card_debug.cpp",
+			"settings":
+			{
+				"buffer_size": 1988,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/card.cpp",
+			"settings":
+			{
+				"buffer_size": 1004,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/gfx.cpp",
+			"settings":
+			{
+				"buffer_size": 5645,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/sprite.cpp",
+			"settings":
+			{
+				"buffer_size": 5316,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/font.cpp",
+			"settings":
+			{
+				"buffer_size": 2512,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/timer.cpp",
+			"settings":
+			{
+				"buffer_size": 1655,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/fps.cpp",
+			"settings":
+			{
+				"buffer_size": 1174,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/cfg.cpp",
+			"settings":
+			{
+				"buffer_size": 2416,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/ttcards.cpp",
+			"settings":
+			{
+				"buffer_size": 5618,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/main.cpp",
+			"settings":
+			{
+				"buffer_size": 958,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "Packages/User/Makefile (OSX).sublime-build",
 	"command_palette":
 	{
-		"height": 375.0,
+		"height": 71.0,
 		"selected_items":
 		[
+			[
+				"syntax sh",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"syntax bash",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"syntax ba",
+				"Set Syntax: Batch File"
+			],
+			[
+				"shell s",
+				"Set Syntax: Shell Script (Bash)"
+			],
 			[
 				"dele",
 				"File: Delete"
@@ -489,10 +641,6 @@
 			[
 				"syntax app",
 				"Set Syntax: AppleScript"
-			],
-			[
-				"syntax bash",
-				"Set Syntax: Shell Script (Bash)"
 			],
 			[
 				"syntax apple",
@@ -785,21 +933,9 @@
 			[
 				"ren",
 				"File: Rename"
-			],
-			[
-				"channel",
-				"Package Control: Add Channel"
-			],
-			[
-				"repo",
-				"Package Control: Add Repository"
-			],
-			[
-				"disc",
-				"Package Control: Discover Packages"
 			]
 		],
-		"width": 579.0
+		"width": 564.0
 	},
 	"console":
 	{
@@ -816,7 +952,49 @@
 	},
 	"file_history":
 	[
+		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/Default (OSX).sublime-keymap",
+		"/Users/jeff/Projects/hax/ttcards.git/main.o",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/main.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/main.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameState.h",
+		"/etc/inputrc",
+		"/Users/jeff/Library/Preferences/com.googlecode.iterm2.plist",
+		"/etc/profile",
+		"/etc/bashrc",
+		"/Users/jeff/.bashrc",
+		"/Users/jeff/Projects/hax/ttcards.git/main.cpp",
+		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/Makefile (OSX).sublime-build",
 		"/Users/jeff/Projects/hax/ttcards.git/Makefile",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/data/images/faces.png",
+		"/Users/jeff/Projects/hax/ttcards.git/data/images/backgrounds.png",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Locator.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/IAudio.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/NullAudio.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Locator.b",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Locator.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/Makefile.bck",
+		"/Users/jeff/Projects/hax/ttcards.git/src/gfx.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/sprite.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_debug.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_collection.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_view.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/board.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_hand.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/player.h",
+		"/Users/jeff/Projects/hax/ttcards.git/font.h",
+		"/Users/jeff/Projects/hax/ttcards.git/timer.h",
+		"/Users/jeff/Projects/hax/ttcards.git/fps.h",
 		"/Users/jeff/Projects/hax/snippets/fielding.codejam/rope.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.codejam/faf.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.codejam/ayb.cpp",
@@ -844,10 +1022,7 @@
 		"/Users/jeff/Projects/hax/ttcards.git/card.h",
 		"/Users/jeff/Projects/hax/ttcards.git/sprite.h",
 		"/Users/jeff/Projects/hax/ttcards.git/gfx.h",
-		"/Users/jeff/Projects/hax/ttcards.git/font.h",
-		"/Users/jeff/Projects/hax/ttcards.git/timer.h",
 		"/Users/jeff/Projects/hax/ttcards.git/card_hand.h",
-		"/Users/jeff/Projects/hax/ttcards.git/fps.h",
 		"/Users/jeff/Projects/hax/ttcards.git/card_hand.cpp",
 		"/Users/jeff/Projects/hax/ttcards.git/ttcards.cpp",
 		"/Users/jeff/Projects/hax/ttcards.git/player.cpp",
@@ -864,14 +1039,10 @@
 		"/Users/jeff/Projects/hax/ttcards.git/Makefile.debug",
 		"/Users/jeff/Projects/hax/ttcards.git/ttcards.sublime-project",
 		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.sublime-workspace",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.cpp",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.h",
 		"/Users/jeff/Projects/hax/Fielding.GameOfLife/GameOfLife/main.cpp",
 		"/Users/jeff/Projects/hax/ttcards.git/data/cards.txt",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Board.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.cpp",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.cpp",
 		"/Users/jeff/Projects/hax/ttcards.git/score.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.GameOfLife/GameOfLife/main.cpp",
 		"/Users/jeff/.bashlib",
@@ -881,20 +1052,14 @@
 		"/Users/jeff/Projects/hax/ttcards.git/cfg.h",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Timer.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Timer.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.cpp",
 		"/Users/jeff/Projects/hax/ttcards.git/project/docs/notes.md",
 		"/Users/jeff/Projects/hax/ttcards.git/audio.cpp",
 		"/Users/jeff/local/src/SDL-1.2.15/src/video/SDL_surface.c",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameState.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.cpp",
 		"/Users/jeff/local/src/SDL-1.2.15/src/video/SDL_bmp.c",
 		"/Users/jeff/local/src/SDL-1.2.15/src/video/quartz/SDL_QuartzWM.m",
 		"/Users/jeff/local/src/SDL-1.2.15/src/video/quartz/SDL_QuartzVideo.m",
 		"/Users/jeff/local/src/SDL-1.2.15/src/video/SDL_video.c",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.h",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/gfx.h",
-		"/Users/jeff/Projects/hax/ttcards.git/main.cpp",
 		"/Users/jeff/Library/Sublime Text 2/Packages/User/Makefile (OSX).sublime-build",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/MenuState.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.h",
@@ -910,40 +1075,11 @@
 		"/Users/jeff/Projects/hax/ttcards.git/card_dealer.cpp",
 		"/Users/jeff/Projects/hax/ttcards.git/audio.h",
 		"/Users/jeff/tmp/ttcards.md",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/main.cpp",
 		"/Users/jeff/tmp/tmp.mdown",
 		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CApp_OnInit.cpp",
 		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CSurface.h",
 		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CEntity.cpp",
-		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CEntity.h",
-		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CApp.h",
-		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CApp.cpp",
-		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CSurface.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/cardview.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/cardview.h",
-		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/card.h",
-		"/usr/local/Cellar/yajl/2.0.4/cfg.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/.gitignore",
-		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/Default (OSX).sublime-keymap",
-		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap",
-		"/Users/jeff/Projects/hax/ttcards.git/card_face.cpp",
-		"/Users/jeff/Projects/hax/timelapse.sh",
-		"/Users/jeff/Projects/hax/snippets/fielding.dotfiles/.bashrc",
-		"/Users/jeff/.bash_aliases",
-		"/Users/jeff/local/bin/wwwfile",
-		"/Users/jeff/local/bin/wwwdoc",
-		"/private/tmp/cards.txt",
-		"/private/tmp/cards.prn",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/cfg.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/ttcards.cpp",
-		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/class_methods.sublime-snippet",
-		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/pile.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/project/docs/oopintro/pile.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_gfx.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_sprite.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_face.h",
-		"/Users/jeff/Projects/hax/ttcards.git/project/notes.md",
-		"/Users/jeff/Projects/hax/ttcards.git/project/work/tmp/card.h"
+		"/Users/jeff/Downloads/lessons/sdltuts_tile-maps/CEntity.h"
 	],
 	"find":
 	{
@@ -962,6 +1098,94 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"player1_hand",
+			"main()",
+			"ttcards::ttcards",
+			"ttcards::~ttcards",
+			"Board::Board",
+			"Board::~Board",
+			"Gfx::~Gfx",
+			"FPS::FPS",
+			"FPS::~FPS",
+			"CardView::CardView",
+			"CardView::~CardView",
+			"Font::Font",
+			"Font::~Font",
+			"~Sprite",
+			"Sprite::Sprite",
+			"player",
+			"drawback",
+			"board",
+			"player",
+			"main",
+			"ttcards",
+			"return true;",
+			"run",
+			"ttcards",
+			"debug",
+			"fold",
+			"super+alt",
+			"super+ctrl",
+			"console",
+			"click",
+			"mou",
+			"mouse",
+			"mid",
+			"middle",
+			"b3",
+			"b1",
+			"fold",
+			"expand",
+			"collapse",
+			"gfx",
+			"calculate",
+			"pivot",
+			"drawBlock",
+			"Pivot",
+			"pivot",
+			"update",
+			"display",
+			"player1",
+			"loadimage",
+			"display",
+			"this->engine",
+			"loadimage",
+			"draw",
+			"loadimage",
+			"display",
+			"LoadImage",
+			"Draw",
+			"loadimage",
+			"engine",
+			"sdl_init",
+			"engine",
+			"SDL_FreeSurface",
+			"engine",
+			"draw",
+			"drawtext",
+			"engine",
+			"face",
+			"card_face",
+			"LoadImage",
+			"engine",
+			"LoadImage",
+			"loadimage",
+			"Gfx",
+			"LoadImage",
+			"::",
+			"Locator",
+			"Title",
+			"while",
+			"input",
+			"rotate",
+			"this->right_cursor",
+			"right_cursor",
+			"this->left_cursor",
+			"left_cursor",
+			"right_cursor",
+			"left_cursor",
+			"RIGHT_CURSOR",
+			"LEFT_CURSOR",
 			".cpp",
 			"cpp",
 			"ttcards.sublime-project",
@@ -1001,95 +1225,7 @@
 			"board.",
 			"board",
 			"right_cu",
-			"right_curo",
-			"cursor",
-			"score",
-			"ID",
-			"GetID",
-			"SetType",
-			"GetType",
-			"type",
-			"SetType",
-			"player",
-			"Type",
-			"GetType",
-			"removecard",
-			"Board",
-			"cursor",
-			"pixel",
-			"sheetid",
-			"board",
-			"Sprite",
-			"Gfx",
-			"sprite",
-			"player1",
-			"left_cursor",
-			"engine",
-			"player2",
-			"state",
-			"bmp",
-			"png",
-			"89",
-			"ticks",
-			"Is_Started",
-			"running",
-			"start",
-			"offset",
-			"at",
-			"video_buffer",
-			"blitsurface",
-			"flags",
-			"Load",
-			"IMG_Load",
-			"PLAYER",
-			"text_buffer",
-			"cout",
-			"player1",
-			");\n",
-			"text_buffer",
-			"engine",
-			"freesurface",
-			"std::move",
-			"sdl_freesurface",
-			"SDL_Free",
-			"sdl_free",
-			"sdl_freesurface",
-			"sprite",
-			"text_card",
-			"input",
-			"this->cards",
-			"input",
-			"HandleEvents",
-			"HandEvents",
-			"Events",
-			"Input",
-			"draw",
-			"updateBloc",
-			"next",
-			"front",
-			"Input",
-			"card_deck",
-			"DECK",
-			"gfx",
-			"FillRect",
-			"dealer",
-			"err ch",
-			"err",
-			"Blit",
-			"!=",
-			"SetColorKey",
-			"ColorKey",
-			"SetColorKey",
-			"colorkey",
-			"apply",
-			"board",
-			"cardElement",
-			"SheetID",
-			"offsets",
-			"text",
-			"text_buffer",
-			"txtCard",
-			"offsets"
+			"right_curo"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1097,6 +1233,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"this->cursor",
 			".h",
 			"board->ListContents();",
 			"this->cards",
@@ -1161,7 +1298,7 @@
 			"\"",
 			""
 		],
-		"reverse": false,
+		"reverse": true,
 		"show_context": true,
 		"use_buffer2": true,
 		"whole_word": false,
@@ -1170,8 +1307,1176 @@
 	"groups":
 	[
 		{
+			"selected": 2,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "src/player.cpp",
+					"settings":
+					{
+						"buffer_size": 16812,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								16614,
+								16614
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 9223.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/card_hand.cpp",
+					"settings":
+					{
+						"buffer_size": 3135,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2850,
+								2850
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2008.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/board.cpp",
+					"settings":
+					{
+						"buffer_size": 13783,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12788,
+								12788
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 8313.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/card_view.cpp",
+					"settings":
+					{
+						"buffer_size": 4175,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1423,
+								1423
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 572.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/card_collection.cpp",
+					"settings":
+					{
+						"buffer_size": 2156,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1367,
+								1367
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 822.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/card_debug.cpp",
+					"settings":
+					{
+						"buffer_size": 1988,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1111.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/card.cpp",
+					"settings":
+					{
+						"buffer_size": 1004,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								957,
+								957
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 270.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/gfx.cpp",
+					"settings":
+					{
+						"buffer_size": 5645,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1835,
+								1835
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1026.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/sprite.cpp",
+					"settings":
+					{
+						"buffer_size": 5316,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								514,
+								514
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/font.cpp",
+					"settings":
+					{
+						"buffer_size": 2512,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								611,
+								611
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 180.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "src/timer.cpp",
+					"settings":
+					{
+						"buffer_size": 1655,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 439.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "src/fps.cpp",
+					"settings":
+					{
+						"buffer_size": 1174,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								377,
+								377
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 622.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "src/cfg.cpp",
+					"settings":
+					{
+						"buffer_size": 2416,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								432,
+								432
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 52.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "src/ttcards.cpp",
+					"settings":
+					{
+						"buffer_size": 5618,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5262,
+								5262
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3420.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "src/main.cpp",
+					"settings":
+					{
+						"buffer_size": 958,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								889,
+								889
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -1263,10 +2568,10 @@
 		],
 		"width": 380.0
 	},
-	"show_minimap": true,
+	"show_minimap": false,
 	"show_open_files": true,
 	"show_tabs": true,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 179.0,
 	"status_bar_visible": true
 }

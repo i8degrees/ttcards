@@ -70,8 +70,8 @@ app:
 	./ttcards
 
 sublime-cpp:
-	subl src/player.cpp src/card_hand.cpp src/board.cpp src/ttcards.cpp src/card_view.cpp src/card_collection.cpp src/card_debug.cpp src/card.cpp src/sprite.cpp src/gfx.cpp src/font.cpp src/timer.cpp src/fps.cpp
+	subl src/player.cpp src/card_hand.cpp src/board.cpp src/ttcards.cpp src/card_view.cpp src/card_collection.cpp src/card_debug.cpp src/card.cpp src/sprite.cpp src/gfx.cpp src/font.cpp src/timer.cpp src/fps.cpp src/cfg.cpp
 sublime-h:
-	subl src/player.h src/card_hand.h src/board.h src/ttcards.h src/card_view.h src/card_collection.h src/card_debug.h src/card.h src/sprite.h src/gfx.h font.h timer.h fps.h
+	subl src/player.h src/card_hand.h src/board.h src/ttcards.h src/card_view.h src/card_collection.h src/card_debug.h src/card.h src/sprite.h src/gfx.h src/font.h src/timer.h src/fps.h src/cfg.h
 
 # DO NOT DELETE
