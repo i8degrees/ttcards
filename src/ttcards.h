@@ -35,8 +35,9 @@ class TTcards
 
     bool IsRunning ( void );
     void SetGameState ( bool state );
-
     void ShowFPS ( void );
+    bool IsFullScreen ( void );
+
     void Input ( void );
     void InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod );
     bool LoadGameData ( void );
@@ -54,8 +55,9 @@ class TTcards
     Audio music;
     CardDebug debug;
 
-    bool show_fps; // fps counter
     bool game_state; // global app state
+    bool show_fps; // fps counter
+    bool fullscreen; // toggle window & fullscreen states
 };
 
 #endif // GAMEAPP_TTCARDS_HEADERS defined

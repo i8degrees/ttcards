@@ -15,6 +15,7 @@ TTcards::TTcards ( void )
   #endif
 
   this->game_state = true;
+  this->fullscreen = false;
 
   this->player1 = new Player();
   this->player2 = new Player();
@@ -55,6 +56,16 @@ bool TTcards::Init ( Gfx &engine )
   //SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY / 12, SDL_DEFAULT_REPEAT_INTERVAL / 12 );
 
   return true;
+}
+
+bool TTcards::IsFullScreen ( void )
+{
+  if ( this->fullscreen == false )
+    this->fullscreen = true;
+  else
+    this->fullscreen = false;
+
+  return this->fullscreen;
 }
 
 bool TTcards::IsRunning ( void )
@@ -104,6 +115,14 @@ void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
     {
       this->SetGameState ( false );
       this->SetGameState ( false );
+    }
+
+    else if ( key == SDLK_f )
+    {
+      if ( this->IsFullScreen() == true )
+        this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+      else
+        this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, 0 );
     }
 
     else if ( key == SDLK_p )
