@@ -208,6 +208,9 @@ void TTcards::Run ( void )
   this->music.PlayMusicTrack ( -1 );
   this->music.PauseMusic ();
 
+  this->player1->SetID ( 0 );
+  this->player2->SetID ( 1 );
+
   this->player1->SetState ( 0 );
 
   this->fps.Start();
@@ -215,9 +218,6 @@ void TTcards::Run ( void )
   while( this->IsRunning() ) // main loop
   {
     this->Input ();
-
-    this->player1->SetID ( 0 );
-    this->player2->SetID ( 1 );
 
     this->board.DrawBackground ( this->engine );
     this->board.DrawBoard ( this->engine );
