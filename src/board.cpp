@@ -475,16 +475,16 @@ void Board::DrawBoard ( Gfx *engine )
   unsigned int board_index = 0;
   unsigned int x, y = 0;
 
-  for ( board_index = 0; board_index < this->board.cards.size(); board_index++ )
+  for ( board_index = 0; board_index < this->board_hand.cards.size(); board_index++ )
   {
-    if ( this->board.isValid ( this->board.cards[board_index] ) == true )
+    if ( this->board_hand.isValid ( this->board_hand.cards[board_index] ) == true )
     {
       for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
       {
         for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
         {
-          if ( this->GetStatus ( x, y ) == this->board.cards[board_index].id )
-            this->card.DrawCard ( engine, this->board.cards[board_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ) );
+          if ( this->GetStatus ( x, y ) == this->board_hand.cards[board_index].id )
+            this->card.DrawCard ( engine, this->board_hand.cards[board_index], BOARD_ORIGIN_X + ( CARD_WIDTH * y ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * x ) );
         }
       }
     }

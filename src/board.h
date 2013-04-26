@@ -44,7 +44,7 @@ class Board
     SDL_Surface *background;
     CardDebug debug;
     CardView card;
-    CardHand board;
+    CardHand board_hand;
     CardHand *player1_hand;
     CardHand *player2_hand;
     //unsigned int grid[3][3];
