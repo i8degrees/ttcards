@@ -24,8 +24,7 @@ CardDebug::~CardDebug ( void )
 
 void CardDebug::ListCard ( Card &card )
 {
-  // TODO: ERR check
-  if ( card.name == "\0" )
+  if ( card.id == 0 )
   {
     #ifdef DEBUG_CARD_DEBUG
       std::cout << "CardDebug::ListCard(): " << "Card is empty." << "\n" << std::endl;
@@ -41,7 +40,7 @@ void CardDebug::ListCard ( Card &card )
   std::cout << card.element;
   std::cout << " ";
 
-  for ( int rdx = 0; rdx < 4; rdx++ )
+  for ( int rdx = 0; rdx < card.rank.size(); rdx++ )
   {
     std::cout << card.rank[rdx];
     std::cout << " ";
@@ -74,7 +73,7 @@ void CardDebug::ListCards ( std::vector<Card> &cards )
     std::cout << cards[i].element;
     std::cout << " ";
 
-    for ( int rdx = 0; rdx < 4; rdx++ )
+    for ( int rdx = 0; rdx < cards[i].rank.size(); rdx++ )
     {
       std::cout << cards[i].rank[rdx];
       std::cout << " ";

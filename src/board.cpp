@@ -31,7 +31,7 @@ Board::Board ( void )
   {
     for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
     {
-      this->grid[x][y].id = 0; // -1
+      this->grid[x][y].id = 0;
     }
   }
 }
@@ -487,7 +487,7 @@ unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
 
 void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
 {
-  Card opponent = 0; // -1
+  Card opponent;
   signed int pos = -1;
   this->grid[x][y] = card;
   this->board_hand.cards.push_back ( card );
