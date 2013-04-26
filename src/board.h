@@ -48,7 +48,6 @@ class Board
     CardHand board_hand;
     CardHand *player1_hand;
     CardHand *player2_hand;
-    //unsigned int grid[3][3];
     std::vector<std::vector<Card>> grid;
 };
 

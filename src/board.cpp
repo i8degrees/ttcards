@@ -482,14 +482,13 @@ unsigned int Board::GetCount ( unsigned int pid )
 
 unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
 {
-  unsigned int card_id = this->grid[x][y].id;
-  return card_id;
+  return this->grid[x][y].id;
 }
 
 void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
 {
   this->grid[x][y] = card;
-  this->board.cards.push_back ( card );
+  this->board_hand.cards.push_back ( card );
 
   opponent = this->CompareCards ( x, y, card );
 
