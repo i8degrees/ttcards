@@ -79,6 +79,10 @@ void Player::SetID ( unsigned int id )
 {
   this->id = id;
 
+  // Maps the player's (card) hand with their respective ID; this keeps track of
+  // who's card is which and is used in CardView -- the rendering the card
+  // background -- and most importantly, in the Board class where we compare cards
+  // placed to determine whom's card to flip over to the respective player.
   for ( int pid = 0; pid < this->hand->cards.size(); pid++ )
   {
     this->hand->cards[pid].player_id = id;

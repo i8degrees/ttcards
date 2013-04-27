@@ -53,7 +53,7 @@ private:
   Board *board;
   unsigned int x;
   unsigned int y;
-  unsigned int id; // unique identifier
+  unsigned int id; // unique identifier for tracking each player in game
   unsigned int state; // ...is it my turn yet?
   unsigned int score;
   signed int card_pos;
