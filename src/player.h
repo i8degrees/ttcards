@@ -4,8 +4,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef PLAYER_HEADERS
-#define PLAYER_HEADERS
+#ifndef GAMEAPP_PLAYER_HEADERS
+#define GAMEAPP_PLAYER_HEADERS
 
 #include <iostream>
 #include <string>

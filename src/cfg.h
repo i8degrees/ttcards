@@ -4,8 +4,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef CFG_HEADERS
-#define CFG_HEADERS
+#ifndef GAMEAPP_CFG_HEADERS
+#define GAMEAPP_CFG_HEADERS
 
 #include "SDL/SDL.h"
 

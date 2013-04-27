@@ -6,8 +6,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef CARD_DEBUG_HEADERS
-#define CARD_DEBUG_HEADERS
+#ifndef GAMEAPP_CARD_DEBUG_HEADERS
+#define GAMEAPP_CARD_DEBUG_HEADERS
 
 #include <iostream>
 #include <string>

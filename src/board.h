@@ -4,8 +4,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef BOARD_HEADERS
-#define BOARD_HEADERS
+#ifndef GAMEAPP_BOARD_HEADERS
+#define GAMEAPP_BOARD_HEADERS
 
 #include "SDL/SDL.h"
 #include <iostream>

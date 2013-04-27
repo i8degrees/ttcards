@@ -6,8 +6,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef CARD_VIEW_HEADERS
-#define CARD_VIEW_HEADERS
+#ifndef GAMEAPP_CARD_VIEW_HEADERS
+#define GAMEAPP_CARD_VIEW_HEADERS
 
 #include <iostream>
 
