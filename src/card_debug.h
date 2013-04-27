@@ -14,7 +14,7 @@
 
 #include "card.h"
 
-class CardDebug: public Card
+class CardDebug
 {
   public:
     CardDebug();
