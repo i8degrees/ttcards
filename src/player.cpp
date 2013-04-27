@@ -296,61 +296,61 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       }
     }
 
-    else if ( key == SDLK_2 ) // move selected card to grid[0][1] if possible
+    else if ( key == SDLK_2 ) // move selected card to grid[1][0] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
-        if ( board->GetStatus ( 0, 1 ) == false )
+        if ( board->GetStatus ( 1, 0 ) == false )
         {
-          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard() );
+          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard() );
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
       else if ( this->GetState() == 1 && this->GetID() == 1 ) // player2
       {
+        if ( board->GetStatus ( 1, 0 ) == false )
+        {
+          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
+        }
+      }
+    }
+
+    else if ( key == SDLK_3 ) // move selected card to grid[2][0] if possible
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( board->GetStatus ( 2, 0 ) == false )
+        {
+          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
+        }
+      }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board->GetStatus ( 2, 0 ) == false )
+        {
+          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
+        }
+      }
+    }
+
+    else if ( key == SDLK_4 ) // move selected card to grid[0][1] if possible
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
         if ( board->GetStatus ( 0, 1 ) == false )
         {
           board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard() );
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
-    }
-
-    else if ( key == SDLK_3 ) // move selected card to grid[0][2] if possible
-    {
-      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
-      {
-        if ( board->GetStatus ( 0, 2 ) == false )
-        {
-          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard() );
-          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
-        }
-      }
       else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
       {
-        if ( board->GetStatus ( 0, 2 ) == false )
+        if ( board->GetStatus ( 0, 1 ) == false )
         {
-          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard() );
-          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
-        }
-      }
-    }
-
-    else if ( key == SDLK_4 ) // move selected card to grid[1][0] if possible
-    {
-      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
-      {
-        if ( board->GetStatus ( 1, 0 ) == false )
-        {
-          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard() );
-          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
-        }
-      }
-      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
-      {
-        if ( board->GetStatus ( 1, 0 ) == false )
-        {
-          board->UpdateBoard ( 1, 0, this->hand->GetSelectedCard() );
+          board->UpdateBoard ( 0, 1, this->hand->GetSelectedCard() );
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
@@ -376,47 +376,7 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
       }
     }
 
-    else if ( key == SDLK_6 ) // move selected card to grid[1][2] if possible
-    {
-      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
-      {
-        if ( board->GetStatus ( 1, 2 ) == false )
-        {
-          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard() );
-          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
-        }
-      }
-      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
-      {
-        if ( board->GetStatus ( 1, 2 ) == false )
-        {
-          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard() );
-          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
-        }
-      }
-    }
-
-    else if ( key == SDLK_7 ) // move selected card to grid[2][0] if possible
-    {
-      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
-      {
-        if ( board->GetStatus ( 2, 0 ) == false )
-        {
-          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard() );
-          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
-        }
-      }
-      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
-      {
-        if ( board->GetStatus ( 2, 0 ) == false )
-        {
-          board->UpdateBoard ( 2, 0, this->hand->GetSelectedCard() );
-          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
-        }
-      }
-    }
-
-    else if ( key == SDLK_8 ) // move selected card to grid[2][1] if possible
+    else if ( key == SDLK_6 ) // move selected card to grid[2][1] if possible
     {
       if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
       {
@@ -431,6 +391,46 @@ void Player::Input ( unsigned int type, SDLKey key, SDLMod mod )
         if ( board->GetStatus ( 2, 1 ) == false )
         {
           board->UpdateBoard ( 2, 1, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
+        }
+      }
+    }
+
+    else if ( key == SDLK_7 ) // move selected card to grid[0][2] if possible
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( board->GetStatus ( 0, 2 ) == false )
+        {
+          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
+        }
+      }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board->GetStatus ( 0, 2 ) == false )
+        {
+          board->UpdateBoard ( 0, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
+        }
+      }
+    }
+
+    else if ( key == SDLK_8 ) // move selected card to grid[1][2] if possible
+    {
+      if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
+      {
+        if ( board->GetStatus ( 1, 2 ) == false )
+        {
+          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard() );
+          this->hand->RemoveCard ( this->hand->GetSelectedCard() );
+        }
+      }
+      else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
+      {
+        if ( board->GetStatus ( 1, 2 ) == false )
+        {
+          board->UpdateBoard ( 1, 2, this->hand->GetSelectedCard() );
           this->hand->RemoveCard ( this->hand->GetSelectedCard() );
         }
       }
