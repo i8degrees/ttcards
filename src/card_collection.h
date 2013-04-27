@@ -12,8 +12,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <ctime>
-#include <cstdlib>
 
 #include "SDL/SDL.h"
 

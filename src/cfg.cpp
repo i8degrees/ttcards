@@ -6,8 +6,6 @@
 ******************************************************************************/
 #include "cfg.h"
 
-#include <string>
-
 const char APP_NAME[255] = "TTcards";
 const char APP_ICON[255] = "./data/images/ttcards.bmp";
 

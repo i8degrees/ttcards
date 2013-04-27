@@ -17,7 +17,6 @@
 
 #include "cfg.h"
 
-//#include "card_debug.h"
 class Card
 {
   public:

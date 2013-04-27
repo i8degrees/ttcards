@@ -7,16 +7,13 @@
 #ifndef GAMEAPP_CFG_HEADERS
 #define GAMEAPP_CFG_HEADERS
 
-#include "SDL/SDL.h"
 #define DEBUG_TTCARDS // unused
 #define DEBUG_TTCARDS_OBJ
 
-#include <string>
 #define DEBUG_BOARD
 #define DEBUG_BOARD_CMP
 #define DEBUG_BOARD_OBJ
 
-#define DEBUG
 #define DEBUG_PLAYER
 #define DEBUG_PLAYER_OBJ
 
