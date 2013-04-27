@@ -17,6 +17,9 @@
 #define DEBUG_PLAYER
 #define DEBUG_PLAYER_OBJ
 
+#define DEBUG_CARD_HAND
+#define DEBUG_CARD_HAND_OBJ
+
 #define DEBUG_CARD_DEBUG
 //#define DEBUG_CARD_DEBUG_OBJ
 
