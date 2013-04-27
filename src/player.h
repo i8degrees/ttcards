@@ -10,19 +10,13 @@
 #include <iostream>
 #include <string>
 
-#include "SDL/SDL.h"
+#include "gamelib/gamelib.h"
 
 #include "cfg.h"
-#include "audio.h"
 #include "board.h"
-#include "card.h"
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
-
-#include "font.h"
-#include "sprite.h"
-#include "timer.h"
 
 class Player
 {

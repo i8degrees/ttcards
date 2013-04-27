@@ -13,8 +13,6 @@
 #include <string>
 #include <vector>
 
-#include "SDL/SDL.h"
-
 #include "cfg.h"
 #include "card.h"
 

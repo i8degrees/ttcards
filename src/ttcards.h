@@ -9,19 +9,13 @@
 #ifndef GAMEAPP_TTCARDS_HEADERS
 #define GAMEAPP_TTCARDS_HEADERS
 
-#include "SDL/SDL.h"
+#include "gamelib/gamelib.h"
 
 #include "cfg.h"
-#include "gfx.h"
-#include "sprite.h"
-#include "audio.h"
 #include "board.h"
 #include "player.h"
 #include "card.h"
 #include "card_collection.h"
-#include "font.h"
-#include "fps.h"
-
 
 class TTcards
 {

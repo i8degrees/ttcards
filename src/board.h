@@ -7,12 +7,12 @@
 #ifndef GAMEAPP_BOARD_HEADERS
 #define GAMEAPP_BOARD_HEADERS
 
-#include "SDL/SDL.h"
 #include <iostream>
 #include <string>
 
+#include "gamelib/gamelib.h"
+
 #include "cfg.h"
-#include "gfx.h"
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"

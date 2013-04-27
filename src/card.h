@@ -13,8 +13,6 @@
 #include <string>
 #include <array>
 
-#include "SDL/SDL.h"
-
 #include "cfg.h"
 
 class Card
