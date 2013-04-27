@@ -20,9 +20,6 @@
 #include "cfg.h"
 #include "card.h"
 
-//#define DEBUG_CARD_COLLECTION
-//#define DEBUG_CARD_COLLECTION_OBJ
-
 class Collection
 {
   public:

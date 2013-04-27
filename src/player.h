@@ -24,9 +24,6 @@
 #include "sprite.h"
 #include "timer.h"
 
-#define DEBUG_PLAYER
-#define DEBUG_PLAYER_OBJ
-
 class Player
 {
 public:

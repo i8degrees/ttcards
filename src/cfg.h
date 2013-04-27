@@ -8,10 +8,29 @@
 #define GAMEAPP_CFG_HEADERS
 
 #include "SDL/SDL.h"
+#define DEBUG_TTCARDS // unused
+#define DEBUG_TTCARDS_OBJ
 
 #include <string>
+#define DEBUG_BOARD
+#define DEBUG_BOARD_CMP
+#define DEBUG_BOARD_OBJ
 
 #define DEBUG
+#define DEBUG_PLAYER
+#define DEBUG_PLAYER_OBJ
+
+#define DEBUG_CARD_DEBUG
+//#define DEBUG_CARD_DEBUG_OBJ
+
+#define DEBUG_CARD_VIEW
+#define DEBUG_CARD_VIEW_OBJ
+
+//#define DEBUG_CARD
+//#define DEBUG_CARD_OBJ
+
+//#define DEBUG_CARD_COLLECTION
+//#define DEBUG_CARD_COLLECTION_OBJ
 
 extern const char APP_NAME[255];
 extern const char APP_ICON[255];

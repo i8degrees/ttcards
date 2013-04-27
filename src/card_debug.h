@@ -14,9 +14,6 @@
 
 #include "card.h"
 
-#define DEBUG_CARD_DEBUG
-//#define DEBUG_CARD_DEBUG_OBJ
-
 class CardDebug: public Card
 {
   public:

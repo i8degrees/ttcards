@@ -18,10 +18,6 @@
 #include "cfg.h"
 
 //#include "card_debug.h"
-
-//#define DEBUG_CARD
-//#define DEBUG_CARD_OBJ
-
 class Card
 {
   public:

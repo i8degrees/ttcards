@@ -14,9 +14,6 @@
 
 #include "card.h"
 
-#define DEBUG_CARD_HAND
-#define DEBUG_CARD_HAND_OBJ
-
 class CardHand
 {
   public:

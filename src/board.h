@@ -17,10 +17,6 @@
 #include "card_hand.h"
 #include "card_view.h"
 
-#define DEBUG_BOARD
-#define DEBUG_BOARD_CMP
-#define DEBUG_BOARD_OBJ
-
 class Board
 {
   public:

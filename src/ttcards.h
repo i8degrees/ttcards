@@ -22,8 +22,6 @@
 #include "font.h"
 #include "fps.h"
 
-#define DEBUG_TTCARDS // unused
-#define DEBUG_TTCARDS_OBJ
 
 class TTcards
 {
