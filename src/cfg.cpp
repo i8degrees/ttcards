@@ -64,8 +64,10 @@ const int NOPLAYER_BACKGROUND_ID = 1;
 const int PLAYER1_BACKGROUND_ID = 2;
 const int PLAYER2_BACKGROUND_ID = 3;
 
-const char LEFT_CURSOR[255] = "./data/images/left_cursor.png";
-const char RIGHT_CURSOR[255] = "./data/images/right_cursor.png";
+const char INTERFACE_CURSOR[255] = "./data/images/cursors.png";
+const int INTERFACE_CURSOR_NONE = 0;
+const int INTERFACE_CURSOR_LEFT = 1;
+const int INTERFACE_CURSOR_RIGHT = 2;
 
 const char CURSOR_MOVE[255] = "./data/audio/cursor_move.wav";
 const char CURSOR_CANCEL[255] = "./data/audio/cursor_cancel.wav";

@@ -89,8 +89,10 @@ extern const int NOPLAYER_BACKGROUND_ID;
 extern const int PLAYER1_BACKGROUND_ID;
 extern const int PLAYER2_BACKGROUND_ID;
 
-extern const char LEFT_CURSOR[255];
-extern const char RIGHT_CURSOR[255];
+extern const char INTERFACE_CURSOR[255];
+extern const int INTERFACE_CURSOR_NONE;
+extern const int INTERFACE_CURSOR_LEFT;
+extern const int INTERFACE_CURSOR_RIGHT;
 
 extern const char CURSOR_MOVE[255];
 extern const char CURSOR_CANCEL[255];
