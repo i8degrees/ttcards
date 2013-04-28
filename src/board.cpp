@@ -36,11 +36,21 @@ Board::Board ( void )
   }
 }
 
+void Board::Init ( CardView *card_gfx )
+{
+  this->card = card_gfx;
+}
+
 Board::~Board ( void )
 {
   #ifdef DEBUG_BOARD_OBJ
     std::cout << "Board::~Board (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
+
+  if ( this->card != NULL )
+  {
+    this->card = NULL;
+  }
 
   if ( this->background != NULL )
   {
@@ -464,7 +474,7 @@ void Board::DrawBoard ( Gfx *engine )
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
       if ( this->GetStatus ( x, y ) == this->grid[x][y].id )
-        this->card.DrawCard ( engine, this->grid[x][y], BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+        this->card->DrawCard ( engine, this->grid[x][y], BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
   }
 }

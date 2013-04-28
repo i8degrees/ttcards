@@ -24,7 +24,7 @@ public:
   Player ( void );
   ~Player ( void );
 
-  void Init ( CardHand *player_cards );
+  void Init ( CardHand *player_cards, CardView *card_gfx );
 
   SDL_Rect GetXY ( void );
   void SetXY ( unsigned int x, unsigned int y );
@@ -47,7 +47,7 @@ public:
 private:
   Font text_score;
   CardDebug debug;
-  CardView card;
+  CardView *card;
   CardHand *hand;
 
   unsigned int x;

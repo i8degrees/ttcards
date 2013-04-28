@@ -58,6 +58,7 @@ class TTcards
     Collection collection;
     CardHand hand[2]; //CardHand player1_hand, player2_hand;
     Player player[2]; //Player player1, player2;
+    CardView card; // card rendering
     Sprite cursor; // interface cursor
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks

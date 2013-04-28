@@ -30,15 +30,21 @@ Player::~Player ( void )
     std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
+  if ( this->card != NULL )
+  {
+    this->card = NULL;
+  }
+
   if ( this->hand != NULL )
   {
     this->hand = NULL;
   }
 }
 
-void Player::Init ( CardHand *player_cards )
+void Player::Init ( CardHand *player_cards, CardView *card_gfx )
 {
   this->hand = player_cards;
+  this->card = card_gfx;
 }
 
 SDL_Rect Player::GetXY ( void )
@@ -105,9 +111,16 @@ void Player::Draw ( Gfx *engine )
     if ( this->hand->isValid ( this->hand->cards.at ( hand_index) ) == true )
     {
       if ( this->GetID() == 0 )
-        this->card.DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+      {
+        if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->card_pos == hand_index )
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+        else
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+      }
       else if ( this->GetID() == 1 )
-        this->card.DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+      {
+        this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+      }
     }
   }
 }

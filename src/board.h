@@ -23,6 +23,8 @@ class Board
     Board ( void );
     ~Board ( void );
 
+    void Init ( CardView *card_gfx );
+
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
@@ -39,7 +41,7 @@ class Board
   private:
     SDL_Surface *background;
     CardDebug debug;
-    CardView card;
+    CardView *card;
     std::vector<std::vector<Card>> grid;
 };
 
