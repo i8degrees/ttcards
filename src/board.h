@@ -28,7 +28,7 @@ class Board
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
-    Card & CompareCards ( unsigned int x, unsigned int y, Card &card );
+    void checkBoard ( unsigned int x, unsigned int y, Card &card );
 
     unsigned int GetCount ( unsigned int player_id );
     unsigned int GetStatus ( unsigned int x, unsigned int y );
@@ -41,7 +41,6 @@ class Board
     SDL_Surface *background;
     CardDebug debug;
     CardView card;
-    CardHand board_hand;
     CardHand *player1_hand;
     CardHand *player2_hand;
     std::vector<std::vector<Card>> grid;
