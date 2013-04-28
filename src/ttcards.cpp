@@ -399,6 +399,23 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
   }
 }
 
+void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
+{
+  unsigned int x = button.x;
+  unsigned int y = button.y;
+
+  if ( type == SDL_MOUSEMOTION )
+  {
+  }
+
+  if ( type == SDL_MOUSEBUTTONDOWN )
+  {
+    if ( button.button == SDL_BUTTON_LEFT )
+    {
+    }
+  }
+}
+
 void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
 {
   if ( type == SDL_QUIT )
@@ -454,6 +471,7 @@ void TTcards::Input ( void )
     this->debug_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
     this->board_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
     this->cursor_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
+    this->mouse_input ( this->input.type, this->input.button );
   }
 }
 

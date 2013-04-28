@@ -39,6 +39,7 @@ class TTcards
     void debug_input ( unsigned int type, SDLKey key, SDLMod mod );
     void board_input ( unsigned int type, SDLKey key, SDLMod mod );
     void cursor_input ( unsigned int type, SDLKey key, SDLMod mod );
+    void mouse_input ( unsigned int type, SDL_MouseButtonEvent button );
 
     void check_cursor_movement ( void );
     void draw_cursor ( void );
