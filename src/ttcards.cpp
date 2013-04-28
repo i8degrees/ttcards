@@ -15,7 +15,6 @@ TTcards::TTcards ( void )
   #endif
 
   this->turn = 0;
-  this->card_pos = 0;
   this->game_state = true;
   this->fullscreen = false;
 }
@@ -128,8 +127,8 @@ void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
 
     else if ( key == SDLK_1 && mod == KMOD_LMETA )
     {
-      std::cout << this->card_pos << "\n";
-      this->hand[0].RemoveCard ( this->hand[0].cards[this->card_pos] );
+      std::cout << this->hand[0].card_pos << "\n";
+      this->hand[0].RemoveCard ( this->hand[0].cards[this->hand[0].card_pos] );
     }
   }
 }
@@ -319,12 +318,15 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
     {
       if ( this->get_turn() == 0 ) // player1
       {
-        this->hand[0].SelectCard ( this->hand[0].cards[this->card_pos] );
+        signed int pos = this->hand[0].card_pos;
+        this->hand[0].SelectCard ( this->hand[0].cards[pos] );
+        //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
         //this->player_turn ( 1 );
       }
       else if ( this->get_turn() == 1 ) // player2
       {
-        this->hand[1].SelectCard ( this->hand[1].cards[this->card_pos] );
+        signed int pos = this->hand[1].card_pos;
+        this->hand[1].SelectCard ( this->hand[1].cards[pos] );
         //this->player_turn ( 0 );
       }
     }
@@ -335,8 +337,7 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
       {
         if ( this->cursor.GetX() > 96 )
         {
-          this->cursor.UpdateXY ( -96, 0 );
-          //this->cursor.SetX ( this->cursor.GetX () - 96 );
+          this->cursor.UpdateXY ( -32, 0 );
         }
       }
     }
@@ -345,10 +346,9 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
     {
       if ( this->get_turn() == 0 ) // player1
       {
-        if ( this->cursor.GetX() < 224 )
+        if ( this->cursor.GetX() < 288 )
         {
-          this->cursor.UpdateXY ( 96, 0 );
-          //this->cursor.SetX ( this->cursor.GetX () + 96 );
+          this->cursor.UpdateXY ( 32, 0 );
         }
       }
     }
@@ -360,17 +360,15 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
         if ( this->cursor.GetY() > PLAYER1_CURSOR_ORIGIN_Y && this->cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
           this->cursor.UpdateXY ( 0, -32 );
-          //this->cursor.SetY ( this->cursor.GetY() - ( CARD_HEIGHT / 2 ) );
 
-          if ( this->card_pos > 0 && this->card_pos <= this->hand[0].cards.size() )
+          if ( this->hand[0].card_pos > 0 && this->hand[0].card_pos <= this->hand[0].cards.size() )
           {
-            this->card_pos = this->card_pos - 1;
+            this->hand[0].card_pos = this->hand[0].card_pos - 1;
           }
         }
         else if ( this->cursor.GetX() > 96 && this->cursor.GetY() > 16 )
         {
-          this->cursor.UpdateXY ( 0, -( 64 ) );
-          //this->cursor.SetY ( this->cursor.GetY() - 64 );
+          this->cursor.SetXY ( 96, this->cursor.GetY() ); // FIXME
         }
       }
     }
@@ -379,20 +377,18 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
     {
       if ( this->get_turn() == 0 ) // player1
       {
-        if ( this->cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand[0].cards.size() - 1 ) && this->cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
+        if ( this->cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand[0].cards.size() ) && this->cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
         {
           this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
-          //this->cursor.SetY ( this->cursor.GetY() + ( CARD_HEIGHT / 2 ) );
 
-          if ( this->card_pos >= 0 && this->card_pos < this->hand->cards.size() )
+          if ( this->hand[0].card_pos <= this->hand->cards.size() )
           {
-            this->card_pos = this->card_pos + 1;
+            this->hand[0].card_pos = this->hand[0].card_pos + 1;
           }
         }
         else if ( this->cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X && this->cursor.GetY() < 128 )
         {
-          this->cursor.UpdateXY ( 0, 64 );
-          //this->cursor.SetY ( this->cursor.GetY() + 64 );
+          this->cursor.UpdateXY ( 0, 32 );
         }
       }
     }

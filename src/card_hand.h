@@ -28,6 +28,8 @@ class CardHand
     signed int CardPosition ( Card &card );
 
     std::vector<Card> cards;
+
+    unsigned int card_pos; // keeps track of card index cursor is at
   private:
     Card selectedCard;
 };

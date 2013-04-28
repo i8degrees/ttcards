@@ -64,7 +64,6 @@ class TTcards
     Audio music; // holds our musical tracks
 
     unsigned int turn; // player1 = 0, player2 = 1
-    signed int card_pos; // keeps track of card index cursor is at
     bool game_state; // global app state
     bool show_fps; // fps counter
     bool fullscreen; // toggle window & fullscreen states
