@@ -18,6 +18,7 @@ const int CARD_HEIGHT = 64;
 const int ELEMENT_WIDTH = 16;
 const int ELEMENT_HEIGHT = 16;
 
+const int TOTAL_PLAYERS = 2; // +1 padding
 const int MAX_COLLECTION = 110; // number of cards in CARDS_DB
 const int MAX_PLAYER_HAND = 5;
 

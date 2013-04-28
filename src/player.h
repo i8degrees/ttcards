@@ -24,7 +24,7 @@ public:
   Player ( void );
   ~Player ( void );
 
-  void Init ( Board &board, CardHand &player_cards );
+  void Init ( CardHand *player_cards );
 
   SDL_Rect GetXY ( void );
   void SetXY ( unsigned int x, unsigned int y );
@@ -39,26 +39,22 @@ public:
   unsigned int GetScore ( void );
   void SetScore ( unsigned int score );
 
-  void Input ( unsigned int type, SDLKey key, SDLMod mod );
   void Draw ( Gfx *engine );
+  void Update ( Gfx *engine );
+
   void DrawScore ( Gfx *engine, unsigned int x, unsigned int y );
 
 private:
   Font text_score;
-  Sprite left_cursor; // player1 cursor
-  Sprite right_cursor; // player2 cursor
   CardDebug debug;
   CardView card;
   CardHand *hand;
-  Board *board;
+
   unsigned int x;
   unsigned int y;
   unsigned int id; // unique identifier for tracking each player in game
-  unsigned int state; // ...is it my turn yet?
+  unsigned int state;
   unsigned int score;
-  signed int card_pos;
-
-  Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
 };
 
 #endif // PLAYERS_HEADERS defined

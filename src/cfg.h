@@ -44,6 +44,7 @@ extern const int CARD_HEIGHT;
 extern const int ELEMENT_WIDTH;
 extern const int ELEMENT_HEIGHT;
 
+extern const int TOTAL_PLAYERS;
 extern const int MAX_COLLECTION;
 extern const int MAX_PLAYER_HAND;
 

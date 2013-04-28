@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 
   TTcards app;
 
-  if ( app.Init ( engine ) == true )
+  if ( app.Init ( &engine ) == true )
   {
     app.Run();
   }

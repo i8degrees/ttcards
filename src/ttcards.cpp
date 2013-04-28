@@ -14,11 +14,10 @@ TTcards::TTcards ( void )
     std::cout << "TTcards::TTcards (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
+  this->turn = 0;
+  this->card_pos = 0;
   this->game_state = true;
   this->fullscreen = false;
-
-  this->player1 = new Player();
-  this->player2 = new Player();
 }
 
 TTcards::~TTcards ( void )
@@ -31,23 +30,11 @@ TTcards::~TTcards ( void )
   {
     this->engine = NULL;
   }
-
-  if ( this->player1 != NULL )
-  {
-    delete this->player1;
-    this->player1 = NULL;
-  }
-
-  if ( this->player2 != NULL )
-  {
-    delete this->player2;
-    this->player2 = NULL;
-  }
 }
 
-bool TTcards::Init ( Gfx &engine )
+bool TTcards::Init ( Gfx *engine )
 {
-  this->engine = &engine; // initialize rendering interface
+  this->engine = engine; // initialize rendering interface
   this->show_fps = true;
 
   this->engine->SetWindowTitle ( APP_NAME );
@@ -97,6 +84,321 @@ void TTcards::ShowFPS ( void )
   }
 }
 
+unsigned int TTcards::get_turn ( void )
+{
+  return this->turn;
+}
+
+void TTcards::player_turn ( unsigned int player )
+{
+  this->turn = player;
+}
+
+void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
+{
+  if ( type == SDL_KEYDOWN )
+  {
+    if ( key == SDLK_u )
+    {
+      if ( this->get_turn() == 0 )
+        this->player_turn ( 1 );
+      else
+        this->player_turn ( 0 );
+    }
+
+    else if ( key == SDLK_LEFTBRACKET )
+    {
+      this->debug.ListCards ( this->hand[0].cards );
+    }
+
+    else if ( key == SDLK_LEFTBRACKET && mod == KMOD_LMETA )
+    {
+      this->debug.ListCards ( this->hand[1].cards );
+    }
+
+    else if ( key == SDLK_RIGHTBRACKET )
+    {
+      board.ListContents();
+    }
+
+    else if ( key == SDLK_RIGHTBRACKET && mod == KMOD_LMETA )
+    {
+      this->debug.ListCards ( this->collection.cards );
+    }
+
+    else if ( key == SDLK_1 && mod == KMOD_LMETA )
+    {
+      std::cout << this->card_pos << "\n";
+      this->hand[0].RemoveCard ( this->hand[0].cards[this->card_pos] );
+    }
+  }
+}
+
+void TTcards::board_input ( unsigned int type, SDLKey key, SDLMod mod )
+{
+  if ( type == SDL_KEYDOWN )
+  {
+    if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible
+    {
+      if ( this->board.GetStatus ( 0, 0 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 0, 0, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 0, 0, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_2 ) // move selected card to grid[1][0] if possible
+    {
+      if ( this->board.GetStatus ( 1, 0 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 1, 0, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 1, 0, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_3 ) // move selected card to grid[2][0] if possible
+    {
+      if ( this->board.GetStatus ( 2, 0 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 2, 0, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 2, 0, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_4 ) // move selected card to grid[0][1] if possible
+    {
+      if ( this->board.GetStatus ( 0, 1 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 0, 1, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 0, 1, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
+    {
+      if ( this->board.GetStatus ( 1, 1 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 1, 1, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 1, 1, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_6 ) // move selected card to grid[2][1] if possible
+    {
+      if ( this->board.GetStatus ( 2, 1 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 2, 1, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 2, 1, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_7 ) // move selected card to grid[0][2] if possible
+    {
+      if ( this->board.GetStatus ( 0, 2 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 0, 2, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 0, 2, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_8 ) // move selected card to grid[1][2] if possible
+    {
+      if ( this->board.GetStatus ( 1, 2 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 1, 2, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 1, 2, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
+    {
+      if ( this->board.GetStatus ( 2, 2 ) == false )
+      {
+        if ( this->get_turn() == 0 ) // player1
+        {
+          this->board.UpdateBoard ( 2, 2, this->hand[0].GetSelectedCard() );
+          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+          this->player_turn ( 1 );
+        }
+        else if ( this->get_turn() == 1 ) // player2
+        {
+          this->board.UpdateBoard ( 2, 2, this->hand[1].GetSelectedCard() );
+          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+          this->player_turn ( 0 );
+        }
+      }
+    }
+  }
+}
+
+void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
+{
+  if ( type == SDL_KEYDOWN )
+  {
+    if ( key == SDLK_SPACE )
+    {
+      if ( this->get_turn() == 0 ) // player1
+      {
+        this->hand[0].SelectCard ( this->hand[0].cards[this->card_pos] );
+        //this->player_turn ( 1 );
+      }
+      else if ( this->get_turn() == 1 ) // player2
+      {
+        this->hand[1].SelectCard ( this->hand[1].cards[this->card_pos] );
+        //this->player_turn ( 0 );
+      }
+    }
+
+    else if ( key == SDLK_LEFT )
+    {
+      if ( this->get_turn() == 0 ) // player1
+      {
+        if ( this->cursor.GetX() > 96 )
+        {
+          this->cursor.UpdateXY ( -96, 0 );
+          //this->cursor.SetX ( this->cursor.GetX () - 96 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_RIGHT )
+    {
+      if ( this->get_turn() == 0 ) // player1
+      {
+        if ( this->cursor.GetX() < 224 )
+        {
+          this->cursor.UpdateXY ( 96, 0 );
+          //this->cursor.SetX ( this->cursor.GetX () + 96 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_UP )
+    {
+      if ( this->get_turn() == 0 ) // player1
+      {
+        if ( this->cursor.GetY() > PLAYER1_CURSOR_ORIGIN_Y && this->cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
+        {
+          this->cursor.UpdateXY ( 0, -32 );
+          //this->cursor.SetY ( this->cursor.GetY() - ( CARD_HEIGHT / 2 ) );
+
+          if ( this->card_pos > 0 && this->card_pos <= this->hand[0].cards.size() )
+          {
+            this->card_pos = this->card_pos - 1;
+          }
+        }
+        else if ( this->cursor.GetX() > 96 && this->cursor.GetY() > 16 )
+        {
+          this->cursor.UpdateXY ( 0, -( 64 ) );
+          //this->cursor.SetY ( this->cursor.GetY() - 64 );
+        }
+      }
+    }
+
+    else if ( key == SDLK_DOWN )
+    {
+      if ( this->get_turn() == 0 ) // player1
+      {
+        if ( this->cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand[0].cards.size() - 1 ) && this->cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
+        {
+          this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
+          //this->cursor.SetY ( this->cursor.GetY() + ( CARD_HEIGHT / 2 ) );
+
+          if ( this->card_pos >= 0 && this->card_pos < this->hand->cards.size() )
+          {
+            this->card_pos = this->card_pos + 1;
+          }
+        }
+        else if ( this->cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X && this->cursor.GetY() < 128 )
+        {
+          this->cursor.UpdateXY ( 0, 64 );
+          //this->cursor.SetY ( this->cursor.GetY() + 64 );
+        }
+      }
+    }
+  }
+}
+
 void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
 {
   if ( type == SDL_QUIT )
@@ -122,7 +424,7 @@ void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
       if ( this->IsFullScreen() == true )
         this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
       else
-        this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, 0 );
+        this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
     }
 
     else if ( key == SDLK_p )
@@ -141,11 +443,6 @@ void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
         this->show_fps = true;
       }
     }
-
-    else if ( key == SDLK_MINUS && mod == KMOD_LSHIFT ) // DEBUG
-    {
-      this->debug.ListCards ( this->collection.cards );
-    }
   }
 }
 
@@ -154,19 +451,59 @@ void TTcards::Input ( void )
   while ( SDL_PollEvent ( &input ) )
   {
     this->InterfaceInput ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
-    this->player1->Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
-    this->player2->Input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
+    this->debug_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
+    this->board_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
+    this->cursor_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
+  }
+}
+
+void TTcards::check_cursor_movement ( void )
+{
+
+}
+
+void TTcards::draw_cursor ( void )
+{
+  if ( this->get_turn() == 0 ) // player1
+  {
+    //this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+    this->cursor.SetSheetID ( INTERFACE_CURSOR_LEFT );
+  }
+  else // player2
+  {
+    this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+    this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
+  }
+
+  this->cursor.Draw ( this->engine );
+}
+
+void TTcards::update_cursor ( void )
+{
+  if ( this->get_turn() == 0 ) // player1
+  {
+    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * card_pos );
+  }
+  else if ( this->get_turn() == 1 ) // player2
+  {
+    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER2_ORIGIN_X - 16, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * card_pos );
   }
 }
 
 bool TTcards::LoadGameData ( void )
 {
+  this->collection.Load ( CARDS_DB );
+
   this->board.LoadBackground ( BOARD_BACKGROUND );
 
   this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
   this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
 
-  this->collection.Load ( CARDS_DB );
+  this->cursor = Sprite ( 26, 16 );
+  this->cursor.LoadImage ( INTERFACE_CURSOR );
+  this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
+  this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
+  this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
@@ -177,56 +514,56 @@ void TTcards::Run ( void )
 {
   this->LoadGameData();
 
-  this->player1->Init ( this->board, this->player1_hand );
-  this->player2->Init ( this->board, this->player2_hand );
-  this->board.Init ( this->player1_hand, this->player2_hand );
+  this->player[0].Init ( &this->hand[0] );
+  this->player[1].Init ( &this->hand[1] );
 
-  this->player1_hand.AddCard ( this->collection.cards[89] ); // Diablos
-  this->player1_hand.AddCard ( this->collection.cards[109] ); // Squall
-  this->player1_hand.AddCard ( this->collection.cards[99] ); // Ward
-  this->player1_hand.AddCard ( this->collection.cards[20] ); // Jelleye [pos 3]
-  this->player1_hand.AddCard ( this->collection.cards[16] ); // Thrustaevis
+  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
+  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
+  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
+  this->hand[0].AddCard ( this->collection.cards[20] ); // Jelleye [pos 3]
+  this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
 
   // These two cards should be discarded ( MAX_HAND = 5 )
-  //this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
-  //this->player1_hand.AddCard ( this->collection.cards[24] ); // TriFace
+  //this->hand[0].AddCard ( this->collection.cards[88] ); // Carbuncle
+  //this->hand[0].AddCard ( this->collection.cards[24] ); // TriFace
 
   // This card should be removed
-  //this->player1_hand.RemoveCard ( this->player1_hand.cards[3] ); // Jelleye
+  //this->hand[0].RemoveCard ( this->hand[0].cards[3] ); // Jelleye
 
-  //this->player1_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
-
-  this->player2_hand.AddCard ( this->collection.cards[20] ); // Jelleye
-  this->player2_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->player2_hand.AddCard ( this->collection.cards[24] ); // TriFace
-  this->player2_hand.AddCard ( this->collection.cards[66] ); // Propagator
-  this->player2_hand.AddCard ( this->collection.cards[50] ); // Malboro
+  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
+  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[1].AddCard ( this->collection.cards[24] ); // TriFace
+  this->hand[1].AddCard ( this->collection.cards[66] ); // Propagator
+  this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
 
   // This card should be discarded ( MAX_HAND = 5 )
-  //this->player2_hand.AddCard ( this->collection.cards[88] ); // Carbuncle
+  //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
 
   this->music.PlayMusicTrack ( -1 );
   this->music.PauseMusic ();
 
-  this->player1->SetID ( 0 );
-  this->player2->SetID ( 1 );
-
-  this->player1->SetState ( 0 );
+  this->player[0].SetID ( 0 );
+  this->player[1].SetID ( 1 );
 
   this->fps.Start();
 
   while( this->IsRunning() ) // main loop
   {
+    this->check_cursor_movement();
+
     this->Input ();
 
     this->board.DrawBackground ( this->engine );
     this->board.DrawBoard ( this->engine );
 
-    this->player1->Draw ( this->engine );
-    this->player2->Draw ( this->engine );
+    this->player[0].Draw ( this->engine ); //this->player[0].Update ( this->engine );
+    this->player[1].Draw ( this->engine ); //this->player[1].Update ( this->engine );
 
-    this->player1->DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
-    this->player2->DrawScore ( this->engine, 320, 176 ); // 64 * 5
+    this->draw_cursor();
+    this->update_cursor();
+
+    this->player[0].DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
+    this->player[1].DrawScore ( this->engine, 320, 176 ); // 64 * 5
 
     this->ShowFPS();
 
