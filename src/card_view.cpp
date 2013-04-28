@@ -76,14 +76,14 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
         break;
     }
 
-    card_background->SetX ( x + 0 );
-    card_background->SetY ( y + 0 );
+    card_background->SetX ( BACKGROUND_ORIGIN_X + x );
+    card_background->SetY ( BACKGROUND_ORIGIN_Y + y );
     if ( card_background->Draw ( engine ) == false )
       return false;
 
     card_face->SetSheetID ( card.id );
-    card_face->SetX ( x );
-    card_face->SetY ( y );
+    card_face->SetX ( CARD_FACE_ORIGIN_X + x );
+    card_face->SetY ( CARD_FACE_ORIGIN_Y + y );
 
     if ( card_face->Draw ( engine ) == false )
       return false;
@@ -119,27 +119,27 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
         break;
     }
 
-    card_element->SetX ( x + 46 );
-    card_element->SetY ( y + 4 );
+    card_element->SetX ( ELEMENT_ORIGIN_X + x );
+    card_element->SetY ( ELEMENT_ORIGIN_Y + y );
     if ( card_element->Draw ( engine ) == false )
       return false;
 
     #ifdef DEBUG_CARD_VIEW
       this->text_buffer.SetTextBuffer ( std::to_string ( card.id ) );
-      this->text_buffer.DrawText ( engine, x+40, y+0 );
+      this->text_buffer.DrawText ( engine, CARD_ID_ORIGIN_X + x, CARD_ID_ORIGIN_Y + y );
     #endif
 
     this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[0] ) );
-    this->text_buffer.DrawText ( engine, x+8, y+0 );
+    this->text_buffer.DrawText ( engine, RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
 
     this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[1] ) );
-    this->text_buffer.DrawText ( engine, x+12, y+8 );
+    this->text_buffer.DrawText ( engine, RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
 
     this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[2] ) );
-    this->text_buffer.DrawText ( engine, x+8, y+16 );
+    this->text_buffer.DrawText ( engine, RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
 
     this->text_buffer.SetTextBuffer ( std::to_string ( card.rank[3] ) );
-    this->text_buffer.DrawText ( engine, x+4, y+8 );
+    this->text_buffer.DrawText ( engine, RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
 
     return true;
   } // if card.id != 0

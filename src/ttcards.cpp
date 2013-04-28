@@ -499,7 +499,7 @@ bool TTcards::LoadGameData ( void )
   this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
   this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
 
-  this->cursor = Sprite ( 26, 16 );
+  this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.LoadImage ( INTERFACE_CURSOR );
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );

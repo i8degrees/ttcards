@@ -13,30 +13,61 @@ const int SCREEN_WIDTH = 384;
 const int SCREEN_HEIGHT = 224;
 const int SCREEN_BPP = 32;
 
+// top-left of board grid
+const int BOARD_ORIGIN_X = 96;
+const int BOARD_ORIGIN_Y = 16;
+
 const int CARD_WIDTH = 64;
 const int CARD_HEIGHT = 64;
+const int BACKGROUND_WIDTH = CARD_WIDTH;
+const int BACKGROUND_HEIGHT = CARD_HEIGHT;
 const int ELEMENT_WIDTH = 16;
 const int ELEMENT_HEIGHT = 16;
+const int CURSOR_WIDTH = 26;
+const int CURSOR_HEIGHT = 16;
 
 const int TOTAL_PLAYERS = 2; // +1 padding
 const int MAX_COLLECTION = 110; // number of cards in CARDS_DB
 const int MAX_PLAYER_HAND = 5;
 
-const int PLAYER1_ORIGIN_X = 16;
-const int PLAYER1_ORIGIN_Y = 16;
+const int PLAYER1_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 );
+const int PLAYER1_ORIGIN_Y = BOARD_ORIGIN_Y;
 
-const int PLAYER2_ORIGIN_X = PLAYER1_ORIGIN_X + 288;
-const int PLAYER2_ORIGIN_Y = PLAYER1_ORIGIN_Y;
+const int PLAYER2_ORIGIN_X = PLAYER1_ORIGIN_X + BOARD_ORIGIN_X + ( CARD_WIDTH * 3 );
+const int PLAYER2_ORIGIN_Y = BOARD_ORIGIN_Y;
 
-const int PLAYER1_CURSOR_ORIGIN_X = 80;
-const int PLAYER1_CURSOR_ORIGIN_Y = 16;
+const int PLAYER1_CURSOR_ORIGIN_X = BOARD_ORIGIN_X;
+const int PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y;
 
-const int PLAYER2_CURSOR_ORIGIN_X = 272;
-const int PLAYER2_CURSOR_ORIGIN_Y = 16;
+const int PLAYER2_CURSOR_ORIGIN_X = BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) - ( CURSOR_WIDTH / 2 ) ;
+const int PLAYER2_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y;
 
-// top-left of board grid
-const int BOARD_ORIGIN_X = 96;
-const int BOARD_ORIGIN_Y = 16;
+const int CARD_ORIGIN_X = 0;
+const int CARD_ORIGIN_Y = 0;
+
+const int CARD_FACE_ORIGIN_X = CARD_ORIGIN_X;
+const int CARD_FACE_ORIGIN_Y = CARD_ORIGIN_Y;
+
+const int BACKGROUND_ORIGIN_X = CARD_ORIGIN_X;
+const int BACKGROUND_ORIGIN_Y = CARD_ORIGIN_Y;
+
+const int ELEMENT_ORIGIN_X = CARD_ORIGIN_X + 46;
+const int ELEMENT_ORIGIN_Y = CARD_ORIGIN_Y + 4;
+
+const int RANK_NORTH_ORIGIN_X = 8;
+const int RANK_NORTH_ORIGIN_Y = 0;
+
+const int RANK_EAST_ORIGIN_X = 12;
+const int RANK_EAST_ORIGIN_Y = 8;
+
+const int RANK_SOUTH_ORIGIN_X = 8;
+const int RANK_SOUTH_ORIGIN_Y = 16;
+
+const int RANK_WEST_ORIGIN_X = 4;
+const int RANK_WEST_ORIGIN_Y = 8;
+
+const int CARD_ID_ORIGIN_X = 40;
+const int CARD_ID_ORIGIN_Y = 0;
 
 const int BOARD_GRID_WIDTH = 3;
 const int BOARD_GRID_HEIGHT = 3;

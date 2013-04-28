@@ -39,10 +39,17 @@ extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 extern const int SCREEN_BPP;
 
+extern const int BOARD_ORIGIN_X;
+extern const int BOARD_ORIGIN_Y;
+
 extern const int CARD_WIDTH;
 extern const int CARD_HEIGHT;
+extern const int BACKGROUND_WIDTH;
+extern const int BACKGROUND_HEIGHT;
 extern const int ELEMENT_WIDTH;
 extern const int ELEMENT_HEIGHT;
+extern const int CURSOR_WIDTH;
+extern const int CURSOR_HEIGHT;
 
 extern const int TOTAL_PLAYERS;
 extern const int MAX_COLLECTION;
@@ -60,8 +67,35 @@ extern const int PLAYER1_CURSOR_ORIGIN_Y;
 extern const int PLAYER2_CURSOR_ORIGIN_X;
 extern const int PLAYER2_CURSOR_ORIGIN_Y;
 
-extern const int BOARD_ORIGIN_X;
-extern const int BOARD_ORIGIN_Y;
+extern const int CURSOR_ORIGIN_X;
+extern const int CURSOR_ORIGIN_Y;
+
+extern const int CARD_ORIGIN_X;
+extern const int CARD_ORIGIN_Y;
+
+extern const int CARD_FACE_ORIGIN_X;
+extern const int CARD_FACE_ORIGIN_Y;
+
+extern const int BACKGROUND_ORIGIN_X;
+extern const int BACKGROUND_ORIGIN_Y;
+
+extern const int ELEMENT_ORIGIN_X;
+extern const int ELEMENT_ORIGIN_Y;
+
+extern const int RANK_NORTH_ORIGIN_X;
+extern const int RANK_NORTH_ORIGIN_Y;
+
+extern const int RANK_EAST_ORIGIN_X;
+extern const int RANK_EAST_ORIGIN_Y;
+
+extern const int RANK_SOUTH_ORIGIN_X;
+extern const int RANK_SOUTH_ORIGIN_Y;
+
+extern const int RANK_WEST_ORIGIN_X;
+extern const int RANK_WEST_ORIGIN_Y;
+
+extern const int CARD_ID_ORIGIN_X;
+extern const int CARD_ID_ORIGIN_Y;
 
 extern const int BOARD_GRID_WIDTH;
 extern const int BOARD_GRID_HEIGHT;
