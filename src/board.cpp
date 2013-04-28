@@ -49,12 +49,6 @@ Board::~Board ( void )
   }
 }
 
-void Board::Init ( CardHand &player1_cards, CardHand &player2_cards )
-{
-  this->player1_hand = &player1_cards;
-  this->player2_hand = &player2_cards;
-}
-
 bool Board::LoadBackground ( std::string filename )
 {
   this->background = Gfx::LoadImage ( filename );

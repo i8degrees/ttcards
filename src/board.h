@@ -23,16 +23,15 @@ class Board
     Board ( void );
     ~Board ( void );
 
-    void Init ( CardHand &player1_cards, CardHand &player2_cards );
-
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
     void checkBoard ( unsigned int x, unsigned int y, Card &card );
 
+    // TODO: Consider branching this into Score class
     unsigned int GetCount ( unsigned int player_id );
-    unsigned int GetStatus ( unsigned int x, unsigned int y );
 
+    unsigned int GetStatus ( unsigned int x, unsigned int y );
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );
     void ListContents ( void );
     void DrawBoard ( Gfx *engine );
@@ -41,8 +40,6 @@ class Board
     SDL_Surface *background;
     CardDebug debug;
     CardView card;
-    CardHand *player1_hand;
-    CardHand *player2_hand;
     std::vector<std::vector<Card>> grid;
 };
 
