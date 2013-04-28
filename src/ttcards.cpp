@@ -97,7 +97,7 @@ void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
 {
   if ( type == SDL_KEYDOWN )
   {
-    if ( key == SDLK_u )
+    if ( key == SDLK_u || ( key == SDLK_e && mod == KMOD_LMETA ) )
     {
       if ( this->get_turn() == 0 )
         this->player_turn ( 1 );
@@ -408,6 +408,12 @@ void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
   {
     if ( button.button == SDL_BUTTON_LEFT )
     {
+      std::cout << x << " " << y << "\n\n";
+
+      if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + CARD_HEIGHT ) && y >= ( PLAYER1_ORIGIN_Y ) )
+      {
+        std::cout << "DOWN" << "\n";
+      }
     }
   }
 }
@@ -496,7 +502,7 @@ void TTcards::update_cursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
   {
-    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * card_pos );
+    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * this->card_pos );
   }
   else if ( this->get_turn() == 1 ) // player2
   {
@@ -518,7 +524,7 @@ bool TTcards::LoadGameData ( void )
   this->cursor.LoadImage ( INTERFACE_CURSOR );
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
-  this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+  this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 

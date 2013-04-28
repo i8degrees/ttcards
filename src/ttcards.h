@@ -49,16 +49,16 @@ class TTcards
     void Run ( void );
 
   private:
-    SDL_Event input;
-    FPS fps;
+    SDL_Event input; // input events; keyboard, mouse
+    FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
-    Font timer_text;
-    Board board;
-    CardDebug debug;
-    Collection collection;
-    CardHand hand[2]; //CardHand player1_hand, player2_hand;
-    Player player[2]; //Player player1, player2;
+    Font timer_text; // fps timer font
+    Board board; // game board
+    CardDebug debug; // debug support for card attributes
+    Collection collection; // cards database
     CardView card; // card rendering
+    CardHand hand[2]; // player hand
+    Player player[2]; // player on board
     Sprite cursor; // interface cursor
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks
