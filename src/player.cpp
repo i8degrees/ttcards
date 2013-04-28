@@ -470,70 +470,32 @@ void Player::Draw ( Gfx *engine )
   {
     for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
     {
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards.at ( hand_index) ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X , PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+        this->card.DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }
-
   else if ( this->GetID() == 1 ) // player2
   {
     for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
     {
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
+      if ( this->hand->isValid ( this->hand->cards.at ( hand_index ) ) == true )
       {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      hand_index+=1;
-      if ( this->hand->isValid ( this->hand->cards[hand_index] ) == true )
-      {
-        this->card.DrawCard ( engine, this->hand->cards[hand_index], PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+        this->card.DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }
+
   if ( this->GetID() == 0 && this->GetState() == 0 ) // player1
   {
     this->left_cursor.Draw ( engine );
+    this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * card_pos );
   }
   else if ( this->GetID() == 1 && this->GetState() == 1 ) // player2
   {
     this->right_cursor.Draw ( engine );
+    this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER2_ORIGIN_X - 16, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * card_pos );
   }
 }
 
@@ -542,11 +504,12 @@ void Player::DrawScore ( Gfx *engine, unsigned int x, unsigned int y )
   unsigned int hand_count = this->hand->cards.size();
   unsigned int board_count = 0;
 
-  if ( this->GetID() == 0 )
+/*
+  if ( this->GetID() == 0 ) // player1
     board_count = this->board->GetCount ( 0 );
-  else if ( this->GetID() == 1 )
+  else if ( this->GetID() == 1 ) // player2
     board_count = this->board->GetCount ( 1 );
-
+*/
   this->SetScore ( hand_count + board_count );
 
   this->text_score.SetTextBuffer ( std::to_string ( this->GetScore() ) );
