@@ -22,7 +22,6 @@ class CardView
     CardView ( void );
     ~CardView ( void );
 
-    bool EraseCard ( Gfx *engine, unsigned int x, unsigned int y );
     bool DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y );
     // bool flipCard ();
   private:
@@ -30,10 +29,6 @@ class CardView
     Sprite *card_background;
     Sprite *card_element;
     Font text_buffer;
-    //unsigned int x;
-    //unsigned int y;
-    //unsigned int width = CARD_WIDTH;
-    //unsigned int height = CARD_HEIGHT;
 };
 
 #endif // CARD_VIEW_HEADERS defined
