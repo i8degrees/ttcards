@@ -23,9 +23,9 @@ class CardHand
     bool isValid ( Card &card );
     bool isEmpty ( void );
     Card & GetSelectedCard ( void );
+    bool SelectCard ( Card &card );
     unsigned int CardCount ( void );
     signed int CardPosition ( Card &card );
-    void SelectCard ( Card &card );
 
     std::vector<Card> cards;
   private:

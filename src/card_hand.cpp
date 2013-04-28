@@ -75,12 +75,15 @@ Card & CardHand::GetSelectedCard ( void )
   return this->selectedCard;
 }
 
-void CardHand::SelectCard ( Card &card )
+bool CardHand::SelectCard ( Card &card )
 {
   if ( this->isValid ( card ) )
   {
     this->selectedCard = card;
+    return true;
   }
+
+  return false;
 
   #ifdef DEBUG_CARD_HAND
     std::cout << "CardHand::SelectCard (): " << this->selectedCard.id << std::endl;
