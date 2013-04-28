@@ -2,7 +2,7 @@
 project/
 
 # Project Files
-*.sublime-workspace
+*.ttcards.sublime-workspace
 *.sublime-project
 *.bck
 *.xcf
