@@ -91,6 +91,15 @@ unsigned int TTcards::get_turn ( void )
 void TTcards::player_turn ( unsigned int player )
 {
   this->turn = player;
+
+  if ( this->get_turn() == 0 )
+  {
+    this->hand[0].ClearSelected();
+  }
+  else if ( this->get_turn() == 1 )
+  {
+    this->hand[1].ClearSelected();
+  }
 }
 
 void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )

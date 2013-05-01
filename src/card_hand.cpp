@@ -71,6 +71,11 @@ bool CardHand::RemoveCard ( Card &card )
   return false;
 }
 
+void CardHand::ClearSelected ( void )
+{
+  this->selectedCard = 0;
+}
+
 Card & CardHand::GetSelectedCard ( void )
 {
   return this->selectedCard;
