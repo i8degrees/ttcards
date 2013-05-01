@@ -914,6 +914,15 @@ void TTcards::Run ( void )
     this->player[0].DrawScore ( this->engine, &this->board, 32, 176 ); // SCREEN_HEIGHT - 48
     this->player[1].DrawScore ( this->engine, &this->board, 320, 176 ); // 64 * 5
 
+    if ( this->get_turn() == 0 )
+    {
+      this->card.DrawName ( this->engine, this->hand[0].GetSelectedCard(), 200 );
+    }
+    else if ( this->get_turn() == 1 )
+    {
+      this->card.DrawName ( this->engine, this->hand[1].GetSelectedCard(), 200 );
+    }
+
     this->ShowFPS();
 
     this->engine->UpdateScreen ();

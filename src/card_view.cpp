@@ -59,6 +59,16 @@ CardView::~CardView ( void )
   }
 }
 
+void CardView::DrawName ( Gfx *engine, Card &card, unsigned int y )
+{
+  if ( card.id != 0 )
+  {
+    this->text_buffer.SetTextBuffer ( card.name );
+    unsigned int text_width = this->text_buffer.GetTextWidth ();
+    this->text_buffer.DrawText ( engine, ( SCREEN_WIDTH - text_width ) / 2, y );
+  }
+}
+
 bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y )
 {
   if ( card.id != 0 )
