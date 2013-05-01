@@ -318,14 +318,14 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
     {
       if ( this->get_turn() == 0 ) // player1
       {
-        signed int pos = this->hand[0].card_pos;
+        unsigned int pos = this->hand[0].card_pos;
         this->hand[0].SelectCard ( this->hand[0].cards[pos] );
         //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
         //this->player_turn ( 1 );
       }
       else if ( this->get_turn() == 1 ) // player2
       {
-        signed int pos = this->hand[1].card_pos;
+        unsigned int pos = this->hand[1].card_pos;
         this->hand[1].SelectCard ( this->hand[1].cards[pos] );
         //this->player_turn ( 0 );
       }
