@@ -381,7 +381,7 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
         {
           this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
 
-          if ( this->hand[0].card_pos <= this->hand->cards.size() )
+          if ( this->hand[0].card_pos < this->hand[0].cards.size() )
           {
             this->hand[0].card_pos = this->hand[0].card_pos + 1;
           }
