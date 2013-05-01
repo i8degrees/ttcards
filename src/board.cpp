@@ -31,7 +31,7 @@ Board::Board ( void )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->grid[x][y].id = 0;
+      this->grid[x][y] = 0;
     }
   }
 }
