@@ -172,189 +172,60 @@ void TTcards::board_input ( unsigned int type, SDLKey key, SDLMod mod )
   {
     if ( key == SDLK_1 && mod == KMOD_LMETA )
     {
-      if ( this->get_turn() == 0 )
+      for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
       {
-        std::cout << this->hand[0].card_pos << "\n";
-        this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() ); //this->hand[0].RemoveCard ( this->hand[0].cards[this->hand[0].card_pos] );
-        this->hand[0].SelectCard ( this->hand[0].cards.front() );
-      }
-      else if ( this->get_turn() == 1 )
-      {
-        std::cout << this->hand[1].card_pos << "\n";
-        this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() ); //this->hand[1].RemoveCard ( this->hand[1].cards[this->hand[1].card_pos] );
-        this->hand[1].SelectCard ( this->hand[1].cards.front() );
+        if ( this->get_turn() == turn )
+        {
+          this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() ); //this->hand[0].RemoveCard ( this->hand[0].cards[this->hand[0].card_pos] );
+          this->hand[turn].ClearSelected();
+          this->hand[turn].SelectCard ( this->hand[turn].cards.front() );
+        }
       }
     }
 
     else if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible
     {
-      if ( this->board.GetStatus ( 0, 0 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 0, 0, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 0, 0, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 0, 0 );
     }
 
     else if ( key == SDLK_2 ) // move selected card to grid[1][0] if possible
     {
-      if ( this->board.GetStatus ( 1, 0 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 1, 0, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 1, 0, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 1, 0 );
     }
 
     else if ( key == SDLK_3 ) // move selected card to grid[2][0] if possible
     {
-      if ( this->board.GetStatus ( 2, 0 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 2, 0, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 2, 0, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 2, 0 );
     }
 
     else if ( key == SDLK_4 ) // move selected card to grid[0][1] if possible
     {
-      if ( this->board.GetStatus ( 0, 1 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 0, 1, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 0, 1, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 0, 1 );
     }
 
     else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
     {
-      if ( this->board.GetStatus ( 1, 1 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 1, 1, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 1, 1, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 1, 1 );
     }
 
     else if ( key == SDLK_6 ) // move selected card to grid[2][1] if possible
     {
-      if ( this->board.GetStatus ( 2, 1 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 2, 1, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 2, 1, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 2, 1 );
     }
 
     else if ( key == SDLK_7 ) // move selected card to grid[0][2] if possible
     {
-      if ( this->board.GetStatus ( 0, 2 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 0, 2, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 0, 2, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 0, 2 );
     }
 
     else if ( key == SDLK_8 ) // move selected card to grid[1][2] if possible
     {
-      if ( this->board.GetStatus ( 1, 2 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 1, 2, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 1, 2, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 1, 2 );
     }
 
     else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
     {
-      if ( this->board.GetStatus ( 2, 2 ) == false )
-      {
-        if ( this->get_turn() == 0 ) // player1
-        {
-          this->board.UpdateBoard ( 2, 2, this->hand[0].GetSelectedCard() );
-          this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
-          this->player_turn ( 1 );
-        }
-        else if ( this->get_turn() == 1 ) // player2
-        {
-          this->board.UpdateBoard ( 2, 2, this->hand[1].GetSelectedCard() );
-          this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
-          this->player_turn ( 0 );
-        }
-      }
+      this->moveTo ( 2, 2 );
     }
   }
 }
