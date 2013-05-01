@@ -397,26 +397,354 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
 
 void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
 {
+  Card selected;
   unsigned int x = button.x;
   unsigned int y = button.y;
-
-  if ( type == SDL_MOUSEMOTION )
-  {
-  }
 
   if ( type == SDL_MOUSEBUTTONDOWN )
   {
     if ( button.button == SDL_BUTTON_LEFT )
     {
-      std::cout << x << " " << y << "\n\n";
+      //std::cout << x << " " << y << "\n\n";
 
-      if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + CARD_HEIGHT ) && y >= ( PLAYER1_ORIGIN_Y ) )
+      if ( this->get_turn() == 0 ) // player1
       {
-        std::cout << "DOWN" << "\n";
-      }
-    }
-  }
-}
+        // player hand checks
+
+        if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( PLAYER1_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[0].cards[0].name << "\n";
+          this->hand[0].SelectCard ( this->hand[0].cards[0] );
+        }
+
+        else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( PLAYER1_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[0].cards[1].name << "\n";
+          this->hand[0].SelectCard ( this->hand[0].cards[1] );
+        }
+
+        else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( PLAYER1_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[0].cards[2].name << "\n";
+          this->hand[0].SelectCard ( this->hand[0].cards[2] );
+        }
+
+        else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( PLAYER1_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[0].cards[3].name << "\n";
+          this->hand[0].SelectCard ( this->hand[0].cards[3] );
+        }
+
+        else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( PLAYER1_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[0].cards[4].name << "\n";
+          this->hand[0].SelectCard ( this->hand[0].cards[4] );
+        }
+
+        // board grid checks
+
+        else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 0, 0 ) == false )
+            {
+              this->board.UpdateBoard ( 0, 0, this->hand[0].GetSelectedCard() );
+              this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+              this->player_turn ( 1 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 1, 0 ) == false )
+            {
+              this->board.UpdateBoard ( 1, 0, this->hand[0].GetSelectedCard() );
+              this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+              this->player_turn ( 1 );
+            }
+          }
+        }
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+            if ( selected.id != 0 )
+            {
+              if ( this->board.GetStatus ( 2, 0 ) == false )
+              {
+                this->board.UpdateBoard ( 2, 0, this->hand[0].GetSelectedCard() );
+                this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+                this->player_turn ( 1 );
+              }
+            }
+        }
+        else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + CARD_HEIGHT ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+            if ( selected.id != 0 )
+            {
+              if ( this->board.GetStatus ( 0, 1 ) == false )
+              {
+                this->board.UpdateBoard ( 0, 1, this->hand[0].GetSelectedCard() );
+                this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+                this->player_turn ( 1 );
+              }
+            }
+        }
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + CARD_HEIGHT ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 1, 1 ) == false )
+            {
+              this->board.UpdateBoard ( 1, 1, this->hand[0].GetSelectedCard() );
+              this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+              this->player_turn ( 1 );
+            }
+          }
+        }
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + CARD_HEIGHT ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 2, 1 ) == false )
+            {
+              this->board.UpdateBoard ( 2, 1, this->hand[0].GetSelectedCard() );
+              this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+              this->player_turn ( 1 );
+            }
+          }
+        }
+        else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 0, 2 ) == false )
+            {
+              this->board.UpdateBoard ( 0, 2, this->hand[0].GetSelectedCard() );
+              this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+              this->player_turn ( 1 );
+            }
+          }
+        }
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 1, 2 ) == false )
+            {
+              this->board.UpdateBoard ( 1, 2, this->hand[0].GetSelectedCard() );
+              this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+              this->player_turn ( 1 );
+            }
+          }
+        }
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+        {
+          selected = this->hand[0].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 2, 2 ) == false )
+            {
+              this->board.UpdateBoard ( 2, 2, this->hand[0].GetSelectedCard() );
+              this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() );
+              this->player_turn ( 1 );
+            }
+          }
+        }
+      } // player1 turn
+      else if ( this->get_turn() == 1 )
+      {
+        // player hand checks
+
+        if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( PLAYER2_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[1].cards[0].name << "\n";
+          this->hand[1].SelectCard ( this->hand[1].cards[0] );
+        }
+
+        else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( PLAYER2_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[1].cards[1].name << "\n";
+          this->hand[1].SelectCard ( this->hand[1].cards[1] );
+        }
+
+        else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( PLAYER2_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[1].cards[2].name << "\n";
+          this->hand[1].SelectCard ( this->hand[1].cards[2] );
+        }
+
+        else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( PLAYER2_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[1].cards[3].name << "\n";
+          this->hand[1].SelectCard ( this->hand[1].cards[3] );
+        }
+
+        else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( PLAYER2_ORIGIN_Y ) )
+        {
+          std::cout << this->hand[1].cards[4].name << "\n";
+          this->hand[1].SelectCard ( this->hand[1].cards[4] );
+        }
+
+        // board grid checks
+
+        else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 0, 0 ) == false )
+            {
+              this->board.UpdateBoard ( 0, 0, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 1, 0 ) == false )
+            {
+              this->board.UpdateBoard ( 1, 0, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 2, 0 ) == false )
+            {
+              this->board.UpdateBoard ( 2, 0, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + CARD_HEIGHT ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 0, 1 ) == false )
+            {
+              this->board.UpdateBoard ( 0, 1, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + CARD_HEIGHT ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 1, 1 ) == false )
+            {
+              this->board.UpdateBoard ( 1, 1, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + CARD_HEIGHT ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 2, 1 ) == false )
+            {
+              this->board.UpdateBoard ( 2, 1, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 0, 2 ) == false )
+            {
+              this->board.UpdateBoard ( 0, 2, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 1, 2 ) == false )
+            {
+              this->board.UpdateBoard ( 1, 2, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+
+        else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+        {
+          selected = this->hand[1].GetSelectedCard();
+
+          if ( selected.id != 0 )
+          {
+            if ( this->board.GetStatus ( 2, 2 ) == false )
+            {
+              this->board.UpdateBoard ( 2, 2, this->hand[1].GetSelectedCard() );
+              this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() );
+              this->player_turn ( 0 );
+            }
+          }
+        }
+      } // player2 turn
+    } // if ( button.button == SDL_BUTTON_LEFT )
+  } // if ( type == SDL_MOUSEBUTTONDOWN )
+} // TTcards::mouse_input ()
 
 void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
 {
