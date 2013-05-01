@@ -133,12 +133,6 @@ void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
     {
       this->debug.ListCards ( this->collection.cards );
     }
-
-    else if ( key == SDLK_1 && mod == KMOD_LMETA )
-    {
-      std::cout << this->hand[0].card_pos << "\n";
-      this->hand[0].RemoveCard ( this->hand[0].cards[this->hand[0].card_pos] );
-    }
   }
 }
 
@@ -146,7 +140,23 @@ void TTcards::board_input ( unsigned int type, SDLKey key, SDLMod mod )
 {
   if ( type == SDL_KEYDOWN )
   {
-    if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible
+    if ( key == SDLK_1 && mod == KMOD_LMETA )
+    {
+      if ( this->get_turn() == 0 )
+      {
+        std::cout << this->hand[0].card_pos << "\n";
+        this->hand[0].RemoveCard ( this->hand[0].GetSelectedCard() ); //this->hand[0].RemoveCard ( this->hand[0].cards[this->hand[0].card_pos] );
+        this->hand[0].SelectCard ( this->hand[0].cards.front() );
+      }
+      else if ( this->get_turn() == 1 )
+      {
+        std::cout << this->hand[1].card_pos << "\n";
+        this->hand[1].RemoveCard ( this->hand[1].GetSelectedCard() ); //this->hand[1].RemoveCard ( this->hand[1].cards[this->hand[1].card_pos] );
+        this->hand[1].SelectCard ( this->hand[1].cards.front() );
+      }
+    }
+
+    else if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible
     {
       if ( this->board.GetStatus ( 0, 0 ) == false )
       {
