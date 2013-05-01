@@ -94,11 +94,12 @@ void TTcards::player_turn ( unsigned int player )
 
   if ( this->get_turn() == 0 )
   {
-    this->hand[0].ClearSelected();
+    this->hand[0].SelectCard ( this->hand[0].cards.front() );
+
   }
   else if ( this->get_turn() == 1 )
   {
-    this->hand[1].ClearSelected();
+    this->hand[1].SelectCard ( this->hand[1].cards.front() );
   }
 }
 
@@ -912,6 +913,8 @@ void TTcards::Run ( void )
 
   this->player[0].SetID ( 1 );
   this->player[1].SetID ( 2 );
+
+  this->player_turn ( 0 );
 
   this->fps.Start();
 
