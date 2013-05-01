@@ -81,6 +81,7 @@ bool CardHand::SelectCard ( Card &card )
   if ( this->isValid ( card ) )
   {
     this->selectedCard = card;
+    this->card_pos = this->CardPosition ( card );
     return true;
   }
 
