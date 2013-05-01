@@ -409,7 +409,7 @@ void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
 
       if ( this->get_turn() == 0 ) // player1
       {
-        // player hand checks
+        // player1 hand checks
 
         if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( PLAYER1_ORIGIN_Y ) )
         {
@@ -441,7 +441,7 @@ void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
           this->hand[0].SelectCard ( this->hand[0].cards[4] );
         }
 
-        // board grid checks
+        // board grid checks of player1
 
         else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
         {
@@ -569,11 +569,11 @@ void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
               this->player_turn ( 1 );
             }
           }
-        }
-      } // player1 turn
-      else if ( this->get_turn() == 1 )
+        } // end player1 hand & board checks
+      } // end player1 turn
+      else if ( this->get_turn() == 1 ) // player2
       {
-        // player hand checks
+        // player2 hand checks
 
         if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( PLAYER2_ORIGIN_Y ) )
         {
@@ -605,7 +605,7 @@ void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
           this->hand[1].SelectCard ( this->hand[1].cards[4] );
         }
 
-        // board grid checks
+        // board grid checks of player2
 
         else if ( x <= ( BOARD_ORIGIN_X + CARD_WIDTH ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT ) ) && y >= ( BOARD_ORIGIN_Y ) )
         {
@@ -740,8 +740,8 @@ void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
               this->player_turn ( 0 );
             }
           }
-        }
-      } // player2 turn
+        } // end player2 hand & board checks
+      } // end player2 turn
     } // if ( button.button == SDL_BUTTON_LEFT )
   } // if ( type == SDL_MOUSEBUTTONDOWN )
 } // TTcards::mouse_input ()
