@@ -14,8 +14,8 @@ CardHand::CardHand ( void )
 
   this->cards.clear();
 
-  this->selectedCard = 0;
   this->card_pos = 0;
+  this->selectedCard = 0;
 }
 
 CardHand::~CardHand ( void )
