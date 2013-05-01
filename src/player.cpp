@@ -119,7 +119,10 @@ void Player::Draw ( Gfx *engine )
       }
       else if ( this->GetID() == 1 )
       {
-        this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+        if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->card_pos == hand_index )
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X - 16, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+        else
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }
