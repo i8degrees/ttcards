@@ -31,7 +31,7 @@ class Board
     void checkBoard ( unsigned int x, unsigned int y, Card &card );
 
     // TODO: Consider branching this into Score class
-    unsigned int GetCount ( unsigned int player_id );
+    unsigned int GetPlayerCardCount ( unsigned int player_id );
 
     unsigned int GetStatus ( unsigned int x, unsigned int y );
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );

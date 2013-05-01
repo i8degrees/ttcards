@@ -42,7 +42,7 @@ public:
   void Draw ( Gfx *engine );
   void Update ( Gfx *engine );
 
-  void DrawScore ( Gfx *engine, unsigned int x, unsigned int y );
+  void DrawScore ( Gfx *engine, Board *board, unsigned int x, unsigned int y );
 
 private:
   Font text_score;

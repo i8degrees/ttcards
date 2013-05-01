@@ -420,7 +420,7 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
   #endif
 }
 
-unsigned int Board::GetCount ( unsigned int pid )
+unsigned int Board::GetPlayerCardCount ( unsigned int pid )
 {
   unsigned int pid_count = 0;
   unsigned int x, y = 0;
@@ -429,9 +429,9 @@ unsigned int Board::GetCount ( unsigned int pid )
   {
     for ( x = 0; x < this->grid.size(); x++ )
     {
-      if ( this->grid[x][y].player_id == pid )
+      if ( this->grid[x][y].player_id != 0 && this->grid[x][y].player_id == pid )
       {
-        //pid_count += 1;
+        pid_count += 1;
       }
     }
   }

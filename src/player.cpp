@@ -110,14 +110,14 @@ void Player::Draw ( Gfx *engine )
   {
     if ( this->hand->isValid ( this->hand->cards.at ( hand_index) ) == true )
     {
-      if ( this->GetID() == 0 )
+      if ( this->GetID() == 1 )
       {
         if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->card_pos == hand_index )
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
         else
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
       }
-      else if ( this->GetID() == 1 )
+      else if ( this->GetID() == 2 )
       {
         if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->card_pos == hand_index )
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X - 16, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
@@ -132,17 +132,16 @@ void Player::Update ( Gfx *engine )
 {
 }
 
-void Player::DrawScore ( Gfx *engine, unsigned int x, unsigned int y )
+void Player::DrawScore ( Gfx *engine, Board *board, unsigned int x, unsigned int y )
 {
   unsigned int hand_count = this->hand->cards.size();
   unsigned int board_count = 0;
 
-/*
-  if ( this->GetID() == 0 ) // player1
-    board_count = this->board->GetCount ( 0 );
-  else if ( this->GetID() == 1 ) // player2
-    board_count = this->board->GetCount ( 1 );
-*/
+  if ( this->GetID() == 1 ) // player1
+    board_count = board->GetPlayerCardCount ( 1 );
+  else if ( this->GetID() == 2 ) // player2
+    board_count = board->GetPlayerCardCount ( 2 );
+
   this->SetScore ( hand_count + board_count );
 
   this->text_score.SetTextBuffer ( std::to_string ( this->GetScore() ) );

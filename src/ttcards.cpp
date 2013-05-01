@@ -891,8 +891,8 @@ void TTcards::Run ( void )
   this->music.PlayMusicTrack ( -1 );
   this->music.PauseMusic ();
 
-  this->player[0].SetID ( 0 );
-  this->player[1].SetID ( 1 );
+  this->player[0].SetID ( 1 );
+  this->player[1].SetID ( 2 );
 
   this->fps.Start();
 
@@ -911,8 +911,8 @@ void TTcards::Run ( void )
     this->draw_cursor();
     this->update_cursor();
 
-    this->player[0].DrawScore ( this->engine, 32, 176 ); // SCREEN_HEIGHT - 48
-    this->player[1].DrawScore ( this->engine, 320, 176 ); // 64 * 5
+    this->player[0].DrawScore ( this->engine, &this->board, 32, 176 ); // SCREEN_HEIGHT - 48
+    this->player[1].DrawScore ( this->engine, &this->board, 320, 176 ); // 64 * 5
 
     this->ShowFPS();
 
