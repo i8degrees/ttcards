@@ -92,15 +92,14 @@ void TTcards::player_turn ( unsigned int player )
 {
   this->turn = player;
 
-  if ( this->get_turn() == 0 )
+  for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
   {
-    this->hand[0].SelectCard ( this->hand[0].cards.front() );
+    if ( this->get_turn() == turn )
+    {
+      this->hand[turn].SelectCard ( this->hand[turn].cards.front() );
+    }
+  }
 
-  }
-  else if ( this->get_turn() == 1 )
-  {
-    this->hand[1].SelectCard ( this->hand[1].cards.front() );
-  }
 }
 
 void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
