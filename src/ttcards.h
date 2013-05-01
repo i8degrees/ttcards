@@ -33,6 +33,8 @@ class TTcards
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
 
+    void moveTo ( unsigned int x, unsigned int y );
+
     void Input ( void );
     void InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod );
 

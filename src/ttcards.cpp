@@ -99,7 +99,37 @@ void TTcards::player_turn ( unsigned int player )
       this->hand[turn].SelectCard ( this->hand[turn].cards.front() );
     }
   }
+}
 
+void TTcards::moveTo ( unsigned int x, unsigned int y )
+{
+  Card selected;
+
+  for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  {
+    selected = this->hand[turn].GetSelectedCard();
+
+    if ( selected.id != 0 )
+    {
+      if ( this->board.GetStatus ( x, y ) == false )
+      {
+        if ( this->get_turn() == turn )
+        {
+          this->board.UpdateBoard ( x, y, this->hand[turn].GetSelectedCard() );
+          this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() );
+
+          if ( this->get_turn() == 0 )
+          {
+            this->player_turn ( 1 );
+          }
+          else if ( this->get_turn() == 1 )
+          {
+            this->player_turn ( 0 );
+          }
+        }
+      }
+    }
+  }
 }
 
 void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
