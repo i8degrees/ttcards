@@ -61,7 +61,7 @@ CardView::~CardView ( void )
 
 void CardView::DrawName ( Gfx *engine, Card &card, unsigned int y )
 {
-  if ( card.id != 0 )
+  if ( card.name != "\0" )
   {
     this->text_buffer.SetTextBuffer ( card.name );
     unsigned int text_width = this->text_buffer.GetTextWidth ();
