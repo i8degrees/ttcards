@@ -78,11 +78,11 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
   unsigned int cols, rows = 0;
   bool rules_combo = false; // same, wall, plus, elemental, ...
 
-  for ( cols = y; y < 3; y++ )
+  for ( cols = y; y < BOARD_GRID_HEIGHT; y++ )
   {
-    for ( rows = x; x < 3; x++ )
+    for ( rows = x; x < BOARD_GRID_WIDTH; x++ )
     {
-      if ( y != 2 )
+      if ( cols != 2 )
       {
         if ( card.rank[2] > this->grid[rows][cols+1].rank[0] && card.player_id != this->grid[rows][cols+1].player_id && this->grid[rows][cols+1].id !=0 )
         {
@@ -97,22 +97,22 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
         }
       }
 
-      if ( x != 0 )
+      if ( rows != 2 )
       {
-        if ( card.rank[3] > this->grid[rows-1][cols].rank[1] && card.player_id != this->grid[rows-1][cols].player_id && this->grid[rows-1][cols].id !=0 )
+        if ( card.rank[1] > this->grid[rows+1][cols].rank[3] && card.player_id != this->grid[rows+1][cols].player_id && this->grid[rows+1][cols].id !=0 )
         {
           #ifdef DEBUG_BOARD_CMP
-            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows-1][cols].id << std::endl;
+            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows+1][cols].id << std::endl;
             std::cout << std::endl;
           #endif
 
-          this->grid[rows-1][cols].player_id = card.player_id;
+          this->grid[rows+1][cols].player_id = card.player_id;
           if ( rules_combo == false )
             return;
         }
       }
 
-      if ( y != 0 )
+      if ( cols != 0 )
       {
         if ( card.rank[0] > this->grid[rows][cols-1].rank[2] && card.player_id != this->grid[rows][cols-1].player_id && this->grid[rows][cols-1].id !=0 )
         {
@@ -127,27 +127,27 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
         }
       }
 
-      if ( x != 2 )
+      if ( rows != 0 )
       {
-        if ( card.rank[1] > this->grid[rows+1][cols].rank[3] && card.player_id != this->grid[rows+1][cols].player_id && this->grid[rows+1][cols].id !=0 )
+        if ( card.rank[3] > this->grid[rows-1][cols].rank[1] && card.player_id != this->grid[rows-1][cols].player_id && this->grid[rows-1][cols].id !=0 )
         {
           #ifdef DEBUG_BOARD_CMP
-            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows+1][cols].id << std::endl;
+            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows-1][cols].id << std::endl;
             std::cout << std::endl;
           #endif
 
-          this->grid[rows+1][cols].player_id = card.player_id;
+          this->grid[rows-1][cols].player_id = card.player_id;
           if ( rules_combo == false )
             return;
         }
       }
-    }
-  }
+    } // rows for loop
+  } // cols for loop
 
   #ifdef DEBUG_BOARD_CMP
     std::cout << "\nEnd of comparison." << std::endl;
   #endif
-}
+} // end Board::checkBoard()
 
 unsigned int Board::GetPlayerCardCount ( unsigned int pid )
 {
