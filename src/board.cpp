@@ -75,342 +75,71 @@ bool Board::DrawBackground ( Gfx *engine )
 
 void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
 {
-  if ( x == 0 && y == 0 ) // 0, 0
+  unsigned int cols, rows = 0;
+  bool rules_combo = false; // same, wall, plus, elemental, ...
+
+  for ( cols = y; y < 3; y++ )
   {
-    if ( this->grid[1][0].id != 0 )
+    for ( rows = x; x < 3; x++ )
     {
-      if ( card.rank[1] > this->grid[1][0].rank[3] && card.player_id != this->grid[1][0].player_id )
+      if ( y != 2 )
       {
-      #ifdef DEBUG_BOARD_CMP
-        std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][0].id << std::endl;
-        std::cout << std::endl;
-      #endif
+        if ( card.rank[2] > this->grid[rows][cols+1].rank[0] && card.player_id != this->grid[rows][cols+1].player_id && this->grid[rows][cols+1].id !=0 )
+        {
+          #ifdef DEBUG_BOARD_CMP
+            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows][cols+1].id << std::endl;
+            std::cout << std::endl;
+          #endif
 
-      this->grid[1][0].player_id = card.player_id;
+          this->grid[rows][cols+1].player_id = card.player_id;
+          if ( rules_combo == false )
+            return;
+        }
       }
-    }
 
-    if ( this->grid[0][1].id != 0 )
-    {
-      if ( card.rank[2] > this->grid[0][1].rank[0] && card.player_id != this->grid[0][1].player_id )
+      if ( x != 0 )
       {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[0][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
+        if ( card.rank[3] > this->grid[rows-1][cols].rank[1] && card.player_id != this->grid[rows-1][cols].player_id && this->grid[rows-1][cols].id !=0 )
+        {
+          #ifdef DEBUG_BOARD_CMP
+            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows-1][cols].id << std::endl;
+            std::cout << std::endl;
+          #endif
 
-        this->grid[0][1].player_id = card.player_id;
+          this->grid[rows-1][cols].player_id = card.player_id;
+          if ( rules_combo == false )
+            return;
+        }
       }
-    }
-  }
 
-  if ( x == 1 && y == 0 ) // 1, 0
-  {
-    if ( this->grid[2][0].id != 0 )
-    {
-      if ( card.rank[1] > this->grid[2][0].rank[3] && card.player_id != this->grid[2][0].player_id )
+      if ( y != 0 )
       {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[2][0].id << std::endl;
-          std::cout << std::endl;
-        #endif
+        if ( card.rank[0] > this->grid[rows][cols-1].rank[2] && card.player_id != this->grid[rows][cols-1].player_id && this->grid[rows][cols-1].id !=0 )
+        {
+          #ifdef DEBUG_BOARD_CMP
+            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows][cols-1].id << std::endl;
+            std::cout << std::endl;
+          #endif
 
-        this->grid[2][0].player_id = card.player_id;
+          this->grid[rows][cols-1].player_id = card.player_id;
+          if ( rules_combo == false )
+            return;
+        }
       }
-    }
 
-    if ( this->grid[1][1].id != 0 )
-    {
-      if ( card.rank[2] > this->grid[1][1].rank[0] && card.player_id != this->grid[1][1].player_id )
+      if ( x != 2 )
       {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
+        if ( card.rank[1] > this->grid[rows+1][cols].rank[3] && card.player_id != this->grid[rows+1][cols].player_id && this->grid[rows+1][cols].id !=0 )
+        {
+          #ifdef DEBUG_BOARD_CMP
+            std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[rows+1][cols].id << std::endl;
+            std::cout << std::endl;
+          #endif
 
-        this->grid[1][1].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[0][0].id != 0 )
-    {
-      if ( card.rank[3] > this->grid[0][0].rank[1] && card.player_id != this->grid[0][0].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[0][0].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[0][0].player_id = card.player_id;
-      }
-    }
-  }
-
-  if ( x == 2 && y == 0 ) // 2, 0
-  {
-    if ( this->grid[2][1].id != 0 )
-    {
-      if ( card.rank[2] > this->grid[2][1].rank[0] && card.player_id != this->grid[2][1].player_id )
-      {
-      #ifdef DEBUG_BOARD_CMP
-        std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[2][1].id << std::endl;
-        std::cout << std::endl;
-      #endif
-
-      this->grid[2][1].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[1][0].id != 0 )
-    {
-      if ( card.rank[3] > this->grid[1][0].rank[1] && card.player_id != this->grid[1][0].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][0].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][0].player_id = card.player_id;
-      }
-    }
-  }
-
-  if ( x == 0 && y == 1 ) // 0, 1
-  {
-    if ( this->grid[0][0].id != 0 )
-    {
-      if ( card.rank[0] > this->grid[0][0].rank[2] && card.player_id != this->grid[0][0].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[0][0].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[0][0].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[1][1].id != 0 )
-    {
-      if ( card.rank[1] > this->grid[1][1].rank[3] && card.player_id != this->grid[1][1].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][1].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[0][2].id != 0 )
-    {
-      if ( card.rank[2] > this->grid[0][2].rank[0] && card.player_id != this->grid[0][2].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[0][2].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[0][2].player_id = card.player_id;
-      }
-    }
-  }
-
-  if ( x == 1 && y == 1 ) // 1, 1
-  {
-    if ( this->grid[1][0].id != 0 )
-    {
-      if ( card.rank[0] > this->grid[1][0].rank[2] && card.player_id != this->grid[1][0].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][0].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][0].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[2][1].id != 0 )
-    {
-      if ( card.rank[1] > this->grid[2][1].rank[3] && card.player_id != this->grid[2][1].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[2][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[2][1].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[1][2].id != 0 )
-    {
-      if ( card.rank[2] > this->grid[1][2].rank[0] && card.player_id != this->grid[1][2].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][2].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][2].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[0][1].id != 0 )
-    {
-      if ( card.rank[3] > this->grid[0][1].rank[1] && card.player_id != this->grid[0][1].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[0][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[0][1].player_id = card.player_id;
-      }
-    }
-  }
-
-  if ( x == 2 && y == 1 ) // 2, 1
-  {
-    if ( this->grid[2][0].id != 0 )
-    {
-      if ( card.rank[0] > this->grid[2][0].rank[2] && card.player_id != this->grid[2][0].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[2][0].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[2][0].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[2][2].id != 0 )
-    {
-      if ( card.rank[2] > this->grid[2][2].rank[0] && card.player_id != this->grid[2][2].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[2][2].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[2][2].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[1][1].id != 0 )
-    {
-      if ( card.rank[3] > this->grid[1][1].rank[1] && card.player_id != this->grid[1][1].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][1].player_id = card.player_id;
-      }
-    }
-  }
-
-  if ( x == 0 && y == 2 ) // 0, 2
-  {
-    if ( this->grid[0][1].id != 0 )
-    {
-      if ( card.rank[0] > this->grid[0][1].rank[2] && card.player_id != this->grid[0][1].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[0][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[0][1].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[1][2].id != 0  )
-    {
-      if ( card.rank[1] > this->grid[1][2].rank[3] && card.player_id != this->grid[1][2].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][2].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][2].player_id = card.player_id;
-      }
-    }
-  }
-
-  if ( x == 1 && y == 2 ) // 1, 2
-  {
-    if ( this->grid[1][1].id != 0 )
-    {
-      if ( card.rank[0] > this->grid[1][1].rank[2] && card.player_id != this->grid[1][1].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][1].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[2][2].id != 0 )
-    {
-      if ( card.rank[1] > this->grid[2][2].rank[3] && card.player_id != this->grid[2][2].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[2][2].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[2][2].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[0][2].id != 0 )
-    {
-      if ( card.rank[3] > this->grid[0][2].rank[1] && card.player_id != this->grid[0][2].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[0][2].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[0][2].player_id = card.player_id;
-      }
-    }
-
-  }
-
-  if ( x == 2 && y == 2 ) // 2, 2
-  {
-    if ( this->grid[2][1].id != 0 )
-    {
-      if ( card.rank[0] > this->grid[2][1].rank[2] && card.player_id != this->grid[2][1].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[2][1].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[2][1].player_id = card.player_id;
-      }
-    }
-
-    if ( this->grid[1][2].id != 0 )
-    {
-      if ( card.rank[3] > this->grid[1][2].rank[1] && card.player_id != this->grid[1][2].player_id )
-      {
-        #ifdef DEBUG_BOARD_CMP
-          std::cout << std::endl << card.id << ' ' << "wins against" << ' ' << this->grid[1][2].id << std::endl;
-          std::cout << std::endl;
-        #endif
-
-        this->grid[1][2].player_id = card.player_id;
+          this->grid[rows+1][cols].player_id = card.player_id;
+          if ( rules_combo == false )
+            return;
+        }
       }
     }
   }
