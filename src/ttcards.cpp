@@ -110,6 +110,7 @@ void TTcards::player_turn ( unsigned int player )
   }
 }
 
+// Helper method for updating board with player's selected card
 void TTcards::moveTo ( unsigned int x, unsigned int y )
 {
   Card selected;
@@ -544,12 +545,10 @@ void TTcards::draw_cursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
   {
-    //this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
     this->cursor.SetSheetID ( INTERFACE_CURSOR_LEFT );
   }
   else // player2
   {
-    this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
     this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
   }
 
