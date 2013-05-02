@@ -147,6 +147,8 @@ void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
   {
     if ( key == SDLK_u || ( key == SDLK_e && mod == KMOD_LMETA ) )
     {
+      this->hand[turn].ClearSelected();
+
       if ( this->get_turn() == 0 )
         this->player_turn ( 1 );
       else
@@ -188,6 +190,13 @@ void TTcards::board_input ( unsigned int type, SDLKey key, SDLMod mod )
           this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() ); //this->hand[0].RemoveCard ( this->hand[0].cards[this->hand[0].card_pos] );
           this->hand[turn].ClearSelected();
           this->hand[turn].SelectCard ( this->hand[turn].cards.front() );
+
+          if ( this->get_turn() == 0 ) // player1
+          {
+            this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+          }
+          else if ( this->get_turn() == 1 ) // player2
+            this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
         }
       }
     }
