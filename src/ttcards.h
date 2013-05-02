@@ -16,6 +16,7 @@
 #include "player.h"
 #include "card.h"
 #include "card_collection.h"
+#include "card_rules.h"
 
 class TTcards
 {

@@ -1,12 +1,12 @@
 /******************************************************************************
-    rules.cpp
+    card_rules.cpp
 
     Card Logic Rules
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "rules.h"
+#include "card_rules.h"
 
 CardRules::CardRules ( void )
 {
@@ -45,34 +45,47 @@ bool CardRules::CompareCards ( unsigned int r1, unsigned int r2 )
       return true;
     }
   }
-  else if ( this->GetRules() == 1 ) // SAME
+  else if ( this->GetRules() == 1 ) // COMBO
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 2 ) // WALL
+  else if ( this->GetRules() == 2 ) // SAME
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 3 ) // PLUS
+  else if ( this->GetRules() == 3 ) // WALL
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 4 ) // ELEMENTAL
+  else if ( this->GetRules() == 4 ) // PLUS
   {
+    if ( r1 > r2 )
+    {
+      return true;
+    }
   }
-  else if ( this->GetRules() == 5 ) // LOSER_WINNER
+  else if ( this->GetRules() == 5 ) // ELEMENTAL
+  {
+    if ( r1 > r2 )
+    {
+      return true;
+    }
+  }
+  else if ( this->GetRules() == 6 ) // LOSER_WINNER
   {
     if ( r1 < r2 )
+    {
       return true;
+    }
   }
 
   return false;

@@ -16,7 +16,7 @@
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
-#include "rules.h"
+#include "card_rules.h"
 
 class Board
 {

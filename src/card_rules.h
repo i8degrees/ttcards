@@ -1,5 +1,5 @@
 /******************************************************************************
-    rules.h
+    card_rules.h
 
     Card Logic Rules
 
@@ -31,11 +31,12 @@ class CardRules
 /*
     enum Rules {
       NONE = 0x00,
-      SAME = 0x01,
-      WALL = 0x02,
-      PLUS = 0x04,
-      ELEMENTAL = 0x08,
-      LOSER_WINNER = 0x10
+      COMBO = 0x01,
+      SAME = 0x02,
+      WALL = 0x04,
+      PLUS = 0x08,
+      ELEMENTAL = 0x10,
+      LOSER_WINNER = 0x12
     };
 */
 
