@@ -1,4 +1,4 @@
-CC := $(shell which clang++)
+CC := /usr/bin/clang++
 CFLAGS = -gfull -O0 -std=c++11 -stdlib=libc++ -Wall -I/usr/local/include/gamelib
 LDFLAGS = -L/usr/local/lib -lgamelib
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
