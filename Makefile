@@ -4,8 +4,8 @@ LDFLAGS = -L/usr/local/lib -lgamelib
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
 SDL_LDFLAGS := $(shell pkg-config --libs sdl)
 
-SRC = src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp src/card_collection.cpp src/card_hand.cpp src/cfg.cpp src/main.cpp src/player.cpp src/ttcards.cpp
-OBJ = board.o card.o card_debug.o card_collection.o card_view.o card_hand.o cfg.o main.o player.o ttcards.o
+SRC = src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp src/card_collection.cpp src/card_hand.cpp src/rules.cpp src/cfg.cpp src/main.cpp src/player.cpp src/ttcards.cpp
+OBJ = board.o card.o card_debug.o card_collection.o card_view.o card_hand.o rules.o cfg.o main.o player.o ttcards.o
 TARGET = ttcards
 
 all: bin
@@ -30,6 +30,9 @@ card_collection.o: src/card_collection.cpp src/card_collection.h
 
 card_hand.o: src/card_hand.cpp src/card_hand.h
 	$(CC) -c $(CFLAGS) src/card_hand.cpp
+
+rules.o: src/rules.cpp src/rules.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) src/rules.cpp
 
 cfg.o: src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/cfg.cpp

@@ -16,6 +16,7 @@
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
+#include "rules.h"
 
 class Board
 {
@@ -43,6 +44,7 @@ class Board
     SDL_Surface *background;
     CardDebug debug;
     CardView *card;
+    CardRules rules;
     std::vector<std::vector<Card>> grid;
 
     unsigned int GetPlayerID ( unsigned int x, unsigned int y );

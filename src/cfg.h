@@ -32,6 +32,9 @@
 //#define DEBUG_CARD_COLLECTION
 //#define DEBUG_CARD_COLLECTION_OBJ
 
+#define DEBUG_CARD_RULES
+#define DEBUG_CARD_RULES_OBJ
+
 extern const char APP_NAME[255];
 extern const char APP_ICON[255];
 
