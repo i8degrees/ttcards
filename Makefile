@@ -13,22 +13,22 @@ all: bin
 bin: $(OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(SDL_CFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET)
 
-board.o: src/board.cpp src/board.h
+board.o: src/board.cpp src/board.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/board.cpp
 
 card.o: src/card.cpp src/card.h
 	$(CC) -c $(CFLAGS) src/card.cpp
 
-card_debug.o: src/card_debug.cpp src/card_debug.h
+card_debug.o: src/card_debug.cpp src/card_debug.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/card_debug.cpp
 
-card_view.o: src/card_view.cpp src/card_view.h
+card_view.o: src/card_view.cpp src/card_view.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/card_view.cpp
 
-card_collection.o: src/card_collection.cpp src/card_collection.h
+card_collection.o: src/card_collection.cpp src/card_collection.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/card_collection.cpp
 
-card_hand.o: src/card_hand.cpp src/card_hand.h
+card_hand.o: src/card_hand.cpp src/card_hand.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/card_hand.cpp
 
 rules.o: src/rules.cpp src/rules.h src/cfg.cpp src/cfg.h
@@ -40,10 +40,10 @@ cfg.o: src/cfg.cpp src/cfg.h
 main.o: src/main.cpp
 	$(CC) -c $(CFLAGS) src/main.cpp
 
-player.o: src/player.cpp src/player.h
+player.o: src/player.cpp src/player.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/player.cpp
 
-ttcards.o: src/ttcards.cpp src/ttcards.h
+ttcards.o: src/ttcards.cpp src/ttcards.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/ttcards.cpp
 
 clean:
@@ -56,8 +56,8 @@ app:
 	./ttcards
 
 sublime-cpp:
-	subl src/player.cpp src/card_hand.cpp src/board.cpp src/ttcards.cpp src/card_view.cpp src/card_collection.cpp src/card_debug.cpp src/card.cpp src/cfg.cpp
+	subl src/player.cpp src/card_hand.cpp src/board.cpp src/ttcards.cpp src/card_view.cpp src/card_collection.cpp src/card_debug.cpp src/card.cpp src/rules.cpp src/cfg.cpp
 sublime-h:
-	subl src/player.h src/card_hand.h src/board.h src/ttcards.h src/card_view.h src/card_collection.h src/card_debug.h src/card.h src/cfg.h
+	subl src/player.h src/card_hand.h src/board.h src/ttcards.h src/card_view.h src/card_collection.h src/card_debug.h src/card.h src/rules.h src/cfg.h
 
 # DO NOT DELETE
