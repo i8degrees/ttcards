@@ -86,7 +86,7 @@ bool CardHand::SelectCard ( Card &card )
   if ( this->isValid ( card ) )
   {
     this->selectedCard = card;
-    this->card_pos = this->CardPosition ( card );
+    this->setCardIndex ( this->CardPosition ( card ) );
     return true;
   }
 
@@ -95,6 +95,34 @@ bool CardHand::SelectCard ( Card &card )
   #ifdef DEBUG_CARD_HAND
     std::cout << "CardHand::SelectCard (): " << this->selectedCard.id << std::endl;
   #endif
+}
+
+signed int CardHand::getPrevCardIndex ( void )
+{
+  if ( this->card_pos != -1 )
+  {
+    this->card_pos = this->card_pos - 1;
+  }
+  return this->card_pos;
+}
+
+signed int CardHand::getNextCardIndex ( void )
+{
+  if ( this->card_pos != -1 )
+  {
+    this->card_pos = this->card_pos + 1;
+  }
+  return this->card_pos;
+}
+
+unsigned int CardHand::getCardIndex ( void )
+{
+  return this->card_pos;
+}
+
+void CardHand::setCardIndex ( signed int pos )
+{
+  this->card_pos = pos;
 }
 
 bool CardHand::isValid ( Card &card )

@@ -238,16 +238,13 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
     {
       if ( this->get_turn() == 0 ) // player1
       {
-        unsigned int pos = this->hand[0].card_pos;
+        signed int pos = this->hand[0].getCardIndex();
         this->hand[0].SelectCard ( this->hand[0].cards[pos] );
-        //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
-        //this->player_turn ( 1 );
       }
       else if ( this->get_turn() == 1 ) // player2
       {
-        unsigned int pos = this->hand[1].card_pos;
+        signed int pos = this->hand[1].getCardIndex();
         this->hand[1].SelectCard ( this->hand[1].cards[pos] );
-        //this->player_turn ( 0 );
       }
     }
 
@@ -281,9 +278,10 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
         {
           this->cursor.UpdateXY ( 0, -32 );
 
-          if ( this->hand[0].card_pos > 0 && this->hand[0].card_pos <= this->hand[0].cards.size() )
+          if ( this->hand[0].getCardIndex() > 0 && this->hand[0].getCardIndex() < this->hand[0].cards.size() )
           {
-            this->hand[0].card_pos = this->hand[0].card_pos - 1;
+            signed int pos = this->hand[0].getPrevCardIndex();
+            this->hand[0].SelectCard ( this->hand[0].cards[pos] );
           }
         }
         else if ( this->cursor.GetX() > 96 && this->cursor.GetY() > 16 )
@@ -301,9 +299,10 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
         {
           this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
 
-          if ( this->hand[0].card_pos < this->hand[0].cards.size() )
+          if ( this->hand[0].getCardIndex() < this->hand[0].cards.size() )
           {
-            this->hand[0].card_pos = this->hand[0].card_pos + 1;
+            signed int pos = this->hand[0].getNextCardIndex();
+            this->hand[0].SelectCard ( this->hand[0].cards[pos] );
           }
         }
         else if ( this->cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X && this->cursor.GetY() < 128 )
@@ -529,7 +528,7 @@ void TTcards::update_cursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
   {
-    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * this->card_pos );
+    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * this->hand[0].getCardIndex() );
   }
   else if ( this->get_turn() == 1 ) // player2
   {

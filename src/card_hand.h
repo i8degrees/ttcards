@@ -20,19 +20,26 @@ class CardHand
 
     bool AddCard ( Card &card );
     bool RemoveCard ( Card &card );
-    bool isValid ( Card &card );
-    bool isEmpty ( void );
+
     void ClearSelected ( void );
     Card & GetSelectedCard ( void );
     bool SelectCard ( Card &card );
+
+    signed int getPrevCardIndex ( void );
+    signed int getNextCardIndex ( void );
+    unsigned int getCardIndex ( void );
+    void setCardIndex ( signed int pos );
+
+    bool isValid ( Card &card );
+    bool isEmpty ( void );
     unsigned int CardCount ( void );
     signed int CardPosition ( Card &card );
 
     std::vector<Card> cards;
 
-    unsigned int card_pos; // keeps track of card index cursor is at
   private:
-    Card selectedCard;
+    Card selectedCard; // holds player's selected card
+    unsigned int card_pos; // keeps track of card index cursor is at
 };
 
 #endif // CARD_HAND_HEADERS defined
