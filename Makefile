@@ -4,8 +4,8 @@ LDFLAGS = -L/usr/local/lib -lgamelib
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
 SDL_LDFLAGS := $(shell pkg-config --libs sdl)
 
-SRC = src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp src/card_collection.cpp src/card_hand.cpp src/card_rules.cpp src/cfg.cpp src/main.cpp src/player.cpp src/ttcards.cpp
-OBJ = board.o card.o card_debug.o card_collection.o card_view.o card_hand.o card_rules.o cfg.o main.o player.o ttcards.o
+SRC = src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp src/card_collection.cpp src/card_hand.cpp src/card_rules.cpp src/cfg.cpp src/main.cpp src/player.cpp src/cpu_player.cpp src/ttcards.cpp
+OBJ = board.o card.o card_debug.o card_collection.o card_view.o card_hand.o card_rules.o cfg.o main.o player.o cpu_player.o ttcards.o
 TARGET = ttcards
 
 all: bin
@@ -43,6 +43,9 @@ main.o: src/main.cpp
 player.o: src/player.cpp src/player.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/player.cpp
 
+cpu_player.o: src/cpu_player.cpp src/cpu_player.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) src/cpu_player.cpp
+
 ttcards.o: src/ttcards.cpp src/ttcards.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) src/ttcards.cpp
 
@@ -56,8 +59,8 @@ app:
 	./ttcards
 
 sublime-cpp:
-	subl src/player.cpp src/card_hand.cpp src/board.cpp src/ttcards.cpp src/card_view.cpp src/card_collection.cpp src/card_debug.cpp src/card.cpp src/card_rules.cpp src/cfg.cpp
+	subl src/cpu_player.cpp src/player.cpp src/card_hand.cpp src/board.cpp src/ttcards.cpp src/card_view.cpp src/card_collection.cpp src/card_debug.cpp src/card.cpp src/card_rules.cpp src/cfg.cpp
 sublime-h:
-	subl src/player.h src/card_hand.h src/board.h src/ttcards.h src/card_view.h src/card_collection.h src/card_debug.h src/card.h src/card_rules.h src/cfg.h
+	subl src/cpu_player.h src/player.h src/card_hand.h src/board.h src/ttcards.h src/card_view.h src/card_collection.h src/card_debug.h src/card.h src/card_rules.h src/cfg.h
 
 # DO NOT DELETE
