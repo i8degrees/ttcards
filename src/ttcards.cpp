@@ -567,6 +567,32 @@ void TTcards::update_cursor ( void )
   }
 }
 
+void TTcards::interface_GameOver ( void )
+{
+  this->message_text.SetTextBuffer ( "Game Over" );
+  signed int width = this->message_text.GetTextWidth ();
+  this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
+
+  if ( this->player[0].GetScore() > this->player[1].GetScore() ) // player 1 wins
+  {
+    this->message_text.SetTextBuffer ( "Player 1 wins!" );
+    signed int width = this->message_text.GetTextWidth ();
+    this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+  }
+  else if ( this->player[1].GetScore() > this->player[0].GetScore() ) // player 2 wins
+  {
+    this->message_text.SetTextBuffer ( "Player 2 wins!" );
+    signed int width = this->message_text.GetTextWidth ();
+    this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+  }
+  else if ( this->player[0].GetScore() == this->player[1].GetScore() )  // player tie
+  {
+    this->message_text.SetTextBuffer ( "Tie!" );
+    signed int width = this->message_text.GetTextWidth ();
+    this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+  }
+}
+
 bool TTcards::LoadGameData ( void )
 {
   this->collection.Load ( CARDS_DB );
@@ -576,6 +602,9 @@ bool TTcards::LoadGameData ( void )
 
   this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
   this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
+
+  this->message_text.LoadTTF ( CARD_FONTFACE, 36 );
+  this->message_text.SetTextColor ( 255, 255, 255 ); // color: red
 
   this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.LoadImage ( INTERFACE_CURSOR );
@@ -655,6 +684,11 @@ void TTcards::Run ( void )
     {
       this->card.DrawName ( this->engine, this->hand[1].GetSelectedCard(), 208 );
       this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+    }
+
+    if ( this->board.GetTotalCount () >= 9 ) // game / round is over
+    {
+      interface_GameOver();
     }
 
     this->ShowFPS();

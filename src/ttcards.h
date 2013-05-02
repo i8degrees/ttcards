@@ -48,6 +48,8 @@ class TTcards
     void draw_cursor ( void );
     void update_cursor ( void );
 
+    void interface_GameOver ( void );
+
     bool LoadGameData ( void );
     void Run ( void );
 
@@ -56,6 +58,7 @@ class TTcards
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     Font timer_text; // fps timer font
+    Font message_text;
     Board board; // game board
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database
