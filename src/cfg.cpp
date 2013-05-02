@@ -106,3 +106,4 @@ const char CURSOR_CANCEL[255] = "./data/audio/cursor_cancel.wav";
 const char CURSOR_WRONG[255] = "./data/audio/cursor_wrong.wav";
 const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";
 const char MUSIC_ALT_TRACK[255] = "./data/audio/06_ShuffleOrBoogie.ogg";
+const char MUSIC_WIN_TRACK[255] = "./data/audio/05_TheWinner.ogg";

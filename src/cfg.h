@@ -140,5 +140,6 @@ extern const char CURSOR_CANCEL[255];
 extern const char CURSOR_WRONG[255];
 extern const char MUSIC_TRACK[255];
 extern const char MUSIC_ALT_TRACK[255];
+extern const char MUSIC_WIN_TRACK[255];
 
-#endif // CFG_HEADERS defined
+#endif // GAMEAPP_CFG_HEADERS defined
