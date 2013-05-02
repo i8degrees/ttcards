@@ -22,11 +22,12 @@ Board::Board ( void )
 
   this->grid.resize ( BOARD_GRID_HEIGHT ); // y coords
 
-  for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
+  for ( x = 0; x < BOARD_GRID_WIDTH; x++ ) // x coords
   {
     this->grid[x].resize ( BOARD_GRID_WIDTH );
   }
 
+  /* Initialize our new 2D std::vector grid */
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
@@ -215,8 +216,7 @@ void Board::DrawBoard ( Gfx *engine )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      if ( this->GetStatus ( x, y ) == this->grid[x][y].id )
-        this->card->DrawCard ( engine, this->grid[x][y], BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+      this->card->DrawCard ( engine, this->grid[x][y], BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
   }
 }
