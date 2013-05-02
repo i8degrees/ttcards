@@ -494,7 +494,6 @@ void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
     if ( key == SDLK_ESCAPE || key == SDLK_q )
     {
       this->SetGameState ( false );
-      this->SetGameState ( false );
     }
 
     else if ( key == SDLK_f )
@@ -616,7 +615,7 @@ bool TTcards::LoadGameData ( void )
 
   this->player[0].Init ( &this->hand[0], &this->card );
   this->player[1].Init ( &this->hand[1], &this->card );
-  this->rules.SetRules ( 2 );
+  this->rules.SetRules ( 0 );
 
   return true;
 }
@@ -628,7 +627,7 @@ void TTcards::Run ( void )
   this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
   this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
   this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
-  this->hand[0].AddCard ( this->collection.cards[20] ); // Jelleye [pos 3]
+  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
   this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
 
   // These two cards should be discarded ( MAX_HAND = 5 )
@@ -636,7 +635,7 @@ void TTcards::Run ( void )
   //this->hand[0].AddCard ( this->collection.cards[24] ); // TriFace
 
   // This card should be removed
-  //this->hand[0].RemoveCard ( this->hand[0].cards[3] ); // Jelleye
+  //this->hand[0].RemoveCard ( this->hand[0].cards[3] ); // Ifrit
 
   this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
   this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
@@ -648,7 +647,7 @@ void TTcards::Run ( void )
   //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
 
   this->music.PlayMusicTrack ( -1 );
-  this->music.PauseMusic ();
+  //this->music.PauseMusic ();
 
   this->player[0].SetID ( 1 );
   this->player[1].SetID ( 2 );
@@ -666,8 +665,7 @@ void TTcards::Run ( void )
     this->board.DrawBackground ( this->engine );
     this->board.DrawBoard ( this->engine );
 
-    this->player[0].Draw ( this->engine ); //this->player[0].Update ( this->engine );
-    this->player[1].Draw ( this->engine ); //this->player[1].Update ( this->engine );
+    this->player[0].Draw ( this->engine );
 
     this->draw_cursor();
     this->update_cursor();
