@@ -98,6 +98,15 @@ void TTcards::player_turn ( unsigned int player )
     {
       this->hand[turn].SelectCard ( this->hand[turn].cards.front() );
     }
+
+    if ( this->get_turn() == 0 ) // player1 cursor
+    {
+      this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+    }
+    else if ( this->get_turn() == 1 ) // player2 cursor
+    {
+      this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+    }
   }
 }
 
