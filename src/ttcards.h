@@ -59,6 +59,7 @@ class TTcards
     Board board; // game board
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database
+    CardRules rules;
     CardView card; // card rendering
     CardHand hand[2]; // player hand
     Player player[2]; // player on board

@@ -24,7 +24,7 @@ class Board
     Board ( void );
     ~Board ( void );
 
-    void Init ( CardView *card_gfx );
+    void Init ( CardView *card_gfx, CardRules *rules );
 
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
@@ -44,7 +44,7 @@ class Board
     SDL_Surface *background;
     CardDebug debug;
     CardView *card;
-    CardRules rules;
+    CardRules *rules;
     std::vector<std::vector<Card>> grid;
 
     unsigned int GetPlayerID ( unsigned int x, unsigned int y );

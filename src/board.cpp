@@ -20,6 +20,8 @@ Board::Board ( void )
     std::cout << "Board::Board (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
+  this->rules = NULL;
+
   this->grid.resize ( BOARD_GRID_HEIGHT ); // y coords
 
   for ( x = 0; x < BOARD_GRID_WIDTH; x++ ) // x coords
@@ -35,13 +37,12 @@ Board::Board ( void )
       this->grid[x][y] = 0;
     }
   }
-
-  this->rules.SetRules ( 0 );
 }
 
-void Board::Init ( CardView *card_gfx )
+void Board::Init ( CardView *card_gfx, CardRules *rules )
 {
   this->card = card_gfx;
+  this->rules = rules;
 }
 
 Board::~Board ( void )
@@ -49,6 +50,11 @@ Board::~Board ( void )
   #ifdef DEBUG_BOARD_OBJ
     std::cout << "Board::~Board (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
+
+  if ( this->rules != NULL )
+  {
+    this->rules = NULL;
+  }
 
   if ( this->card != NULL )
   {
@@ -88,14 +94,18 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
       {
         if ( card.player_id != this->GetPlayerID ( rows, cols + 1 ) && this->GetStatus ( rows, cols + 1 ) !=0 )
         {
-          if ( this->rules.CompareCards ( card.rank[2], this->grid[rows][cols+1].rank[0] ) == true )
+          if ( this->rules->CompareCards ( card.rank[2], this->grid[rows][cols+1].rank[0] ) == true )
           {
-
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows, cols + 1 ) << std::endl << std::endl;
             #endif
 
             this->UpdatePlayerID ( rows, cols + 1, card.player_id );
+
+            if ( this->rules->GetRules() == 0 )
+              return;
+            else
+              continue;
           }
         }
       }
@@ -104,14 +114,18 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
       {
         if ( card.player_id != this->GetPlayerID ( rows + 1, cols ) && this->GetStatus ( rows + 1, cols ) !=0 )
         {
-          if ( this->rules.CompareCards ( card.rank[1], this->grid[rows+1][cols].rank[3] ) == true )
+          if ( this->rules->CompareCards ( card.rank[1], this->grid[rows+1][cols].rank[3] ) == true )
           {
-
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows + 1, cols ) << std::endl << std::endl;
             #endif
 
             this->UpdatePlayerID ( rows + 1, cols, card.player_id );
+
+            if ( this->rules->GetRules() == 0 )
+              return;
+            else
+              continue;
           }
         }
       }
@@ -120,13 +134,18 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
       {
         if ( card.player_id != this->GetPlayerID ( rows, cols - 1 ) && this->GetStatus ( rows, cols - 1 ) !=0 )
         {
-          if ( this->rules.CompareCards ( card.rank[0], this->grid[rows][cols-1].rank[2] ) == true )
+          if ( this->rules->CompareCards ( card.rank[0], this->grid[rows][cols-1].rank[2] ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows, cols - 1 ) << std::endl << std::endl;
             #endif
 
             this->UpdatePlayerID ( rows, cols - 1, card.player_id );
+
+            if ( this->rules->GetRules() == 0 )
+              return;
+            else
+              continue;
           }
         }
       }
@@ -135,13 +154,18 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
       {
         if ( card.player_id != this->GetPlayerID ( rows - 1, cols ) && this->GetStatus ( rows - 1, cols ) !=0 )
         {
-          if ( this->rules.CompareCards ( card.rank[3], this->grid[rows-1][cols].rank[1] ) == true )
+          if ( this->rules->CompareCards ( card.rank[3], this->grid[rows-1][cols].rank[1] ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows - 1, cols ) << std::endl << std::endl;
             #endif
 
             this->UpdatePlayerID ( rows - 1, cols, card.player_id );
+
+            if ( this->rules->GetRules() == 0 )
+              return;
+            else
+              continue;
           }
         }
       }

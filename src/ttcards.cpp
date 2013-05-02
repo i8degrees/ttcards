@@ -571,7 +571,7 @@ bool TTcards::LoadGameData ( void )
 {
   this->collection.Load ( CARDS_DB );
 
-  this->board.Init ( &this->card );
+  this->board.Init ( &this->card, &this->rules );
   this->board.LoadBackground ( BOARD_BACKGROUND );
 
   this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
@@ -585,15 +585,16 @@ bool TTcards::LoadGameData ( void )
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
+  this->player[0].Init ( &this->hand[0], &this->card );
+  this->player[1].Init ( &this->hand[1], &this->card );
+  this->rules.SetRules ( 2 );
+
   return true;
 }
 
 void TTcards::Run ( void )
 {
   this->LoadGameData();
-
-  this->player[0].Init ( &this->hand[0], &this->card );
-  this->player[1].Init ( &this->hand[1], &this->card );
 
   this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
   this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
