@@ -29,10 +29,12 @@ class Board
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
-    void checkBoard ( unsigned int x, unsigned int y, Card &card );
+    bool checkBoard ( unsigned int x, unsigned int y, Card &card );
 
     // TODO: Consider branching this into Score class
     unsigned int GetPlayerCardCount ( unsigned int player_id );
+
+    unsigned int GetTotalCount ( void );
 
     unsigned int GetStatus ( unsigned int x, unsigned int y );
 

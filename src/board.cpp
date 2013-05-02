@@ -82,7 +82,7 @@ bool Board::DrawBackground ( Gfx *engine )
   return true;
 }
 
-void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
+bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
 {
   unsigned int cols, rows = 0;
 
@@ -103,7 +103,7 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
             this->UpdatePlayerID ( rows, cols + 1, card.player_id );
 
             if ( this->rules->GetRules() == 0 )
-              return;
+              return true;
             else
               continue;
           }
@@ -123,7 +123,7 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
             this->UpdatePlayerID ( rows + 1, cols, card.player_id );
 
             if ( this->rules->GetRules() == 0 )
-              return;
+              return true;
             else
               continue;
           }
@@ -143,7 +143,7 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
             this->UpdatePlayerID ( rows, cols - 1, card.player_id );
 
             if ( this->rules->GetRules() == 0 )
-              return;
+              return true;
             else
               continue;
           }
@@ -163,7 +163,7 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
             this->UpdatePlayerID ( rows - 1, cols, card.player_id );
 
             if ( this->rules->GetRules() == 0 )
-              return;
+              return true;
             else
               continue;
           }
@@ -171,6 +171,8 @@ void Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
       }
     } // rows for loop
   } // cols for loop
+
+  return false;
 
   #ifdef DEBUG_BOARD_CMP
     std::cout << "\nEnd of comparison." << std::endl;
@@ -194,6 +196,25 @@ unsigned int Board::GetPlayerCardCount ( unsigned int pid )
   }
 
   return pid_count;
+}
+
+unsigned int Board::GetTotalCount ( void )
+{
+  unsigned int total_count = 0;
+  unsigned int x, y = 0;
+
+  for ( y = 0; y < this->grid.size(); y++ )
+  {
+    for ( x = 0; x < this->grid.size(); x++ )
+    {
+      if ( this->GetStatus ( x, y ) != 0 )
+      {
+        total_count += 1;
+      }
+    }
+  }
+
+  return total_count;
 }
 
 unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
