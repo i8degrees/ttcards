@@ -9,7 +9,7 @@
 #ifndef GAMEAPP_TTCARDS_HEADERS
 #define GAMEAPP_TTCARDS_HEADERS
 
-#include "gamelib/gamelib.h"
+#include "gamelib.h"
 
 #include "cfg.h"
 #include "board.h"

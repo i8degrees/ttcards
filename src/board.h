@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-#include "gamelib/gamelib.h"
+#include "gamelib.h"
 
 #include "cfg.h"
 #include "card_debug.h"

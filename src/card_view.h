@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-#include "gamelib/gamelib.h"
+#include "gamelib.h"
 
 #include "cfg.h"
 #include "card.h"
