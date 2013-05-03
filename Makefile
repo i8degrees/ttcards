@@ -1,56 +1,76 @@
 CC := /usr/bin/clang++
-CFLAGS = -gfull -O0 -std=c++11 -stdlib=libc++ -Wall -I/usr/local/include/gamelib
-LDFLAGS = -L/usr/local/lib -lgamelib
+EMCC := ~/local/src/emscripten/emcc
+EMCC_CFLAGS = --jcache -DWEB_APP
+EMCC_PRELOAD_FILES = data/
+
+CFLAGS = -std=c++11 -stdlib=libc++
+DEBUG_CFLAGS := $(CFLAGS) -gfull -O0 -Wall
+RELEASE_CFLAGS := $(CFLAGS) -O2
+
+GAMELIB_CFLAGS = -I/usr/local/include/gamelib
 SDL_CFLAGS := $(shell pkg-config --cflags sdl)
+
+LDFLAGS = -L/usr/local/lib -lgamelib
 SDL_LDFLAGS := $(shell pkg-config --libs sdl)
 
-SRC = src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp src/card_collection.cpp src/card_hand.cpp src/card_rules.cpp src/cfg.cpp src/main.cpp src/player.cpp src/cpu_player.cpp src/ttcards.cpp
-OBJ = board.o card.o card_debug.o card_collection.o card_view.o card_hand.o card_rules.o cfg.o main.o player.o cpu_player.o ttcards.o
-TARGET = ttcards
+SRC = src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp \
+src/card_collection.cpp src/card_hand.cpp src/card_rules.cpp src/cfg.cpp \
+src/main.cpp src/player.cpp src/ttcards.cpp
+
+OBJ = build/board.o build/card.o build/card_debug.o build/card_collection.o \
+build/card_view.o build/card_hand.o build/card_rules.o build/cfg.o build/main.o \
+build/player.o build/ttcards.o
+
+GAMELIB_OBJ = ~/Projects/hax/gamelib.git/libgamelib.bc
+
+TARGET_BIN = ttcards
 
 all: bin
 
 bin: $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(SDL_CFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(SDL_CFLAGS) $(GAMELIB_CFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET_BIN)
 
-board.o: src/board.cpp src/board.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) src/board.cpp
+web: $(OBJ)
+	$(EMCC) $(EMCC_CFLAGS) $(RELEASE_CFLAGS) $(GAMELIB_CFLAGS) $(GAMELIB_OBJ) $(SRC) -o public/index.html --preload-file $(EMCC_PRELOAD_FILES)
 
-card.o: src/card.cpp src/card.h
-	$(CC) -c $(CFLAGS) src/card.cpp
+build/board.o: src/board.cpp src/board.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) $(GAMELIB_CFLAGS) src/board.cpp -o build/board.o
 
-card_debug.o: src/card_debug.cpp src/card_debug.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/card_debug.cpp
+build/card.o: src/card.cpp src/card.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/card.cpp -o build/card.o
 
-card_view.o: src/card_view.cpp src/card_view.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/card_view.cpp
+build/card_debug.o: src/card_debug.cpp src/card_debug.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/card_debug.cpp -o build/card_debug.o
 
-card_collection.o: src/card_collection.cpp src/card_collection.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/card_collection.cpp
+build/card_view.o: src/card_view.cpp src/card_view.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/card_view.cpp -o build/card_view.o
 
-card_hand.o: src/card_hand.cpp src/card_hand.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/card_hand.cpp
+build/card_collection.o: src/card_collection.cpp src/card_collection.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/card_collection.cpp -o build/card_collection.o
 
-card_rules.o: src/card_rules.cpp src/card_rules.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/card_rules.cpp
+build/card_hand.o: src/card_hand.cpp src/card_hand.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/card_hand.cpp -o build/card_hand.o
 
-cfg.o: src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/cfg.cpp
+build/card_rules.o: src/card_rules.cpp src/card_rules.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/card_rules.cpp -o build/card_rules.o
 
-main.o: src/main.cpp
-	$(CC) -c $(CFLAGS) src/main.cpp
+build/cfg.o: src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/cfg.cpp -o build/cfg.o
 
-player.o: src/player.cpp src/player.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/player.cpp
+build/main.o: src/main.cpp
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/main.cpp -o build/main.o
 
-cpu_player.o: src/cpu_player.cpp src/cpu_player.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/cpu_player.cpp
+build/player.o: src/player.cpp src/player.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/player.cpp -o build/player.o
 
-ttcards.o: src/ttcards.cpp src/ttcards.h src/cfg.cpp src/cfg.h
-	$(CC) -c $(CFLAGS) src/ttcards.cpp
+#build/cpu_player.o: src/cpu_player.cpp src/cpu_player.h src/cfg.cpp src/cfg.h
+#	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/cpu_player.cpp -o build/cpu_player.o
+
+build/ttcards.o: src/ttcards.cpp src/ttcards.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/ttcards.cpp -o build/ttcards.o
 
 clean:
-	/bin/rm -rf *.o $(TARGET)
+	/bin/rm -rf *.o build/*.o $(TARGET_BIN)
 
 analyze:
 	scan-build -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c $(CFLAGS) $(SRC)
