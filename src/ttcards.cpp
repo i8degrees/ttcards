@@ -142,9 +142,12 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
+void TTcards::debug_input ( SDL_Event *input )
 {
-  if ( type == SDL_KEYDOWN )
+  SDLKey key = input->key.keysym.sym;
+  unsigned short mod = input->key.keysym.mod;
+
+  if ( input->type == SDL_KEYDOWN )
   {
     if ( key == SDLK_u || ( key == SDLK_e && mod == KMOD_LMETA ) )
     {
@@ -178,9 +181,12 @@ void TTcards::debug_input ( unsigned int type, SDLKey key, SDLMod mod )
   }
 }
 
-void TTcards::board_input ( unsigned int type, SDLKey key, SDLMod mod )
+void TTcards::board_input ( SDL_Event *input )
 {
-  if ( type == SDL_KEYDOWN )
+  SDLKey key = input->key.keysym.sym;
+  unsigned short mod = input->key.keysym.mod;
+
+  if ( input->type == SDL_KEYDOWN )
   {
     if ( key == SDLK_1 && mod == KMOD_LMETA )
     {
@@ -249,9 +255,11 @@ void TTcards::board_input ( unsigned int type, SDLKey key, SDLMod mod )
   }
 }
 
-void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
+void TTcards::cursor_input ( SDL_Event *input )
 {
-  if ( type == SDL_KEYDOWN )
+  SDLKey key = input->key.keysym.sym;
+
+  if ( input->type == SDL_KEYDOWN )
   {
     if ( key == SDLK_SPACE )
     {
@@ -333,14 +341,14 @@ void TTcards::cursor_input ( unsigned int type, SDLKey key, SDLMod mod )
   }
 }
 
-void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
+void TTcards::mouse_input ( SDL_Event *input, SDL_MouseButtonEvent *button )
 {
-  unsigned int x = button.x;
-  unsigned int y = button.y;
+  unsigned int x = button->x;
+  unsigned int y = button->y;
 
-  if ( type == SDL_MOUSEBUTTONDOWN )
+  if ( input->type == SDL_MOUSEBUTTONDOWN )
   {
-    if ( button.button == SDL_BUTTON_LEFT )
+    if ( button->button == SDL_BUTTON_LEFT )
     {
       for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
       {
@@ -477,19 +485,22 @@ void TTcards::mouse_input ( unsigned int type, SDL_MouseButtonEvent button )
   } // if type == SDL_MOUSEBUTTONDOWN
 } // TTcards::mouse_input
 
-void TTcards::InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod )
+void TTcards::InterfaceInput ( SDL_Event *input )
 {
-  if ( type == SDL_QUIT )
+  SDLKey key = input->key.keysym.sym;
+  //SDLMod mod = input->key.keysym.mod;
+
+  if ( input->type == SDL_QUIT )
   {
     this->SetGameState ( false );
   }
 
-  else if ( type == SDL_VIDEORESIZE )
+  else if ( input->type == SDL_VIDEORESIZE )
   {
     // Stub
   }
 
-  else if ( type == SDL_KEYDOWN )
+  else if ( input->type == SDL_KEYDOWN )
   {
     if ( key == SDLK_ESCAPE || key == SDLK_q )
     {
@@ -527,11 +538,11 @@ void TTcards::Input ( void )
 {
   while ( SDL_PollEvent ( &input ) )
   {
-    this->InterfaceInput ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
-    this->debug_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
-    this->board_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
-    this->cursor_input ( this->input.type, this->input.key.keysym.sym, this->input.key.keysym.mod );
-    this->mouse_input ( this->input.type, this->input.button );
+    this->InterfaceInput ( &this->input );
+    this->debug_input ( &this->input );
+    this->board_input ( &this->input );
+    this->cursor_input ( &this->input );
+    this->mouse_input ( &this->input, &this->input.button );
   }
 }
 

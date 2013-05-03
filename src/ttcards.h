@@ -38,12 +38,12 @@ class TTcards
     void moveTo ( unsigned int x, unsigned int y );
 
     void Input ( void );
-    void InterfaceInput ( unsigned int type, SDLKey key, SDLMod mod );
+    void InterfaceInput ( SDL_Event *input );
 
-    void debug_input ( unsigned int type, SDLKey key, SDLMod mod );
-    void board_input ( unsigned int type, SDLKey key, SDLMod mod );
-    void cursor_input ( unsigned int type, SDLKey key, SDLMod mod );
-    void mouse_input ( unsigned int type, SDL_MouseButtonEvent button );
+    void debug_input ( SDL_Event *input );
+    void board_input ( SDL_Event *input );
+    void cursor_input ( SDL_Event *input );
+    void mouse_input ( SDL_Event *input, SDL_MouseButtonEvent *button );
 
     void check_cursor_movement ( void );
     void draw_cursor ( void );
