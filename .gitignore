@@ -17,3 +17,8 @@ project/
 *.debug
 ttcards
 ttcards.dSYM/
+
+# EMCC
+public/index.data
+public/index.html
+
