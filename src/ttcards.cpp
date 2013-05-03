@@ -36,7 +36,7 @@ bool TTcards::Init ( Gfx *engine )
   this->engine = engine; // initialize rendering interface
   this->show_fps = true;
 
-#ifndef WEB_APP
+#ifndef EMSCRIPTEN
   this->engine->SetWindowTitle ( APP_NAME );
   this->engine->SetWindowIcon ( APP_ICON );
 #endif

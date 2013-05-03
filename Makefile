@@ -1,6 +1,6 @@
 CC := /usr/bin/clang++
 EMCC := ~/local/src/emscripten/emcc
-EMCC_CFLAGS = --jcache -DWEB_APP
+EMCC_CFLAGS = --jcache -DEMSCRIPTEN
 EMCC_PRELOAD_FILES = data/
 
 CFLAGS = -std=c++11 -stdlib=libc++
