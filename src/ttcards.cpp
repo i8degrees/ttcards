@@ -667,13 +667,18 @@ bool TTcards::LoadGameData ( void )
   return true;
 }
 
+// REFERENCES:
+//
+// 1. ~/local/src/emscripten/tests/emscripten_api_browser_infloop.cpp
+// 2. https://github.com/kripken/emscripten/wiki/Emscripten-browser-environment
+//
+
 #ifdef EMSCRIPTEN
 void TTcards::Callback ( void )
 {
   instance->Run();
 }
 
-// README:  ~/local/src/emscripten/tests/emscripten_api_browser_infloop.cpp
 void TTcards::Start ( void )
 {
   instance = this;

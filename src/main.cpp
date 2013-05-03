@@ -11,6 +11,8 @@ int main(int argc, char *argv[])
   unsigned int sdl_flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO;
   unsigned int video_flags = SDL_HWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
+  TTcards app;
+
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
   #endif
@@ -19,8 +21,6 @@ int main(int argc, char *argv[])
 
   Gfx engine = ( sdl_flags ); // rendering interface instance
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
-
-  TTcards app;
 
   if ( app.Init ( &engine ) == true )
   {
