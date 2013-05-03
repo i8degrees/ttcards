@@ -36,8 +36,10 @@ bool TTcards::Init ( Gfx *engine )
   this->engine = engine; // initialize rendering interface
   this->show_fps = true;
 
+#ifndef WEB_APP
   this->engine->SetWindowTitle ( APP_NAME );
   this->engine->SetWindowIcon ( APP_ICON );
+#endif
 
   //SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY / 12, SDL_DEFAULT_REPEAT_INTERVAL / 12 );
 
