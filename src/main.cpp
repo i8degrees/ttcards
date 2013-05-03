@@ -24,7 +24,14 @@ int main(int argc, char *argv[])
 
   if ( app.Init ( &engine ) == true )
   {
-    app.Run();
+    #ifdef EMSCRIPTEN
+      app.Start();
+    #else
+      while ( app.IsRunning() == true )
+      {
+        app.Run();
+      }
+    #endif
   }
 
   #ifdef DEBUG_TTCARDS_OBJ

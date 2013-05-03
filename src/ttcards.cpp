@@ -41,6 +41,40 @@ bool TTcards::Init ( Gfx *engine )
   this->engine->SetWindowIcon ( APP_ICON );
 #endif
 
+  this->LoadGameData();
+
+  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
+  this->hand[0].AddCard ( this->collection.cards[109] ); // Squallppp
+  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
+  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
+  this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
+
+  // These two cards should be discarded ( MAX_HAND = 5 )
+  //this->hand[0].AddCard ( this->collection.cards[88] ); // Carbuncle
+  //this->hand[0].AddCard ( this->collection.cards[24] ); // TriFace
+
+  // This card should be removed
+  //this->hand[0].RemoveCard ( this->hand[0].cards[3] ); // Ifrit
+
+  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
+  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[1].AddCard ( this->collection.cards[24] ); // TriFace
+  this->hand[1].AddCard ( this->collection.cards[66] ); // Propagator
+  this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
+
+  // This card should be discarded ( MAX_HAND = 5 )
+  //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
+
+  this->music.PlayMusicTrack ( -1 );
+  //this->music.PauseMusic ();
+
+  this->player[0].SetID ( 1 );
+  this->player[1].SetID ( 2 );
+
+  this->player_turn ( 0 );
+
+  this->fps.Start();
+
   //SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY / 12, SDL_DEFAULT_REPEAT_INTERVAL / 12 );
 
   return true;
@@ -633,63 +667,41 @@ bool TTcards::LoadGameData ( void )
   return true;
 }
 
+#ifdef EMSCRIPTEN
+void TTcards::Callback ( void )
+{
+  instance->Run();
+}
+
+// README:  ~/local/src/emscripten/tests/emscripten_api_browser_infloop.cpp
+void TTcards::Start ( void )
+{
+  instance = this;
+  emscripten_set_main_loop(TTcards::Callback, 10, 1);
+
+}
+#endif
+
 void TTcards::Run ( void )
 {
   unsigned int cpu_difficulty = 1; // easy, hard
 
-  this->LoadGameData();
+  this->check_cursor_movement();
 
-  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
-  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
-  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
-  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
-  this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
+  this->Input ();
 
-  // These two cards should be discarded ( MAX_HAND = 5 )
-  //this->hand[0].AddCard ( this->collection.cards[88] ); // Carbuncle
-  //this->hand[0].AddCard ( this->collection.cards[24] ); // TriFace
+  this->board.DrawBackground ( this->engine );
+  this->board.DrawBoard ( this->engine );
 
-  // This card should be removed
-  //this->hand[0].RemoveCard ( this->hand[0].cards[3] ); // Ifrit
+  this->player[0].Draw ( this->engine );
 
-  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
-  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->hand[1].AddCard ( this->collection.cards[24] ); // TriFace
-  this->hand[1].AddCard ( this->collection.cards[66] ); // Propagator
-  this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
-
-  // This card should be discarded ( MAX_HAND = 5 )
-  //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
-
-  this->music.PlayMusicTrack ( -1 );
-  //this->music.PauseMusic ();
-
-  this->player[0].SetID ( 1 );
-  this->player[1].SetID ( 2 );
-
-  this->player_turn ( 0 );
-
-  this->fps.Start();
-
-  while( this->IsRunning() ) // main loop
+  if ( this->get_turn() == 1 && this->hand[1].cards.size() > 0 ) // player2
   {
-    this->check_cursor_movement();
-
-    this->Input ();
-
-    this->board.DrawBackground ( this->engine );
-    this->board.DrawBoard ( this->engine );
-
-    this->player[0].Draw ( this->engine );
-
-
-    if ( this->get_turn() == 1 && this->hand[1].cards.size() > 0 ) // player2
+    if ( cpu_difficulty == 0 )
     {
-      if ( cpu_difficulty == 0 )
+      if ( this->board.GetPlayerCardCount ( 1 ) <= 2 )
       {
-        if ( this->board.GetPlayerCardCount ( 1 ) <= 2 )
-        {
-          SDL_Rect edge[4];
+        SDL_Rect edge[4];
 
           edge[0].x = 0;
           edge[0].y = 0;
@@ -785,35 +797,33 @@ void TTcards::Run ( void )
     }
   }
 
-    this->player[1].Draw ( this->engine );
+  this->player[1].Draw ( this->engine );
 
-    this->draw_cursor();
-    this->update_cursor();
+  this->draw_cursor();
+  this->update_cursor();
 
-    this->player[0].DrawScore ( this->engine, &this->board, 32, 176 ); // SCREEN_HEIGHT - 48
-    this->player[1].DrawScore ( this->engine, &this->board, 320, 176 ); // 64 * 5
+  this->player[0].DrawScore ( this->engine, &this->board, 32, 176 ); // SCREEN_HEIGHT - 48
+  this->player[1].DrawScore ( this->engine, &this->board, 320, 176 ); // 64 * 5
 
-    if ( this->get_turn() == 0 )
-    {
-      this->card.DrawName ( this->engine, this->hand[0].GetSelectedCard(), 208 );
-      this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
-    }
-    else if ( this->get_turn() == 1 )
-    {
-      this->card.DrawName ( this->engine, this->hand[1].GetSelectedCard(), 208 );
-      this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
-    }
+  if ( this->get_turn() == 0 )
+  {
+    this->card.DrawName ( this->engine, this->hand[0].GetSelectedCard(), 208 );
+    this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
+  }
+  else if ( this->get_turn() == 1 )
+  {
+    this->card.DrawName ( this->engine, this->hand[1].GetSelectedCard(), 208 );
+    this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+  }
 
-    if ( this->board.GetTotalCount () >= 9 ) // game / round is over
-    {
-      interface_GameOver();
-    }
+  if ( this->board.GetTotalCount () >= 9 ) // game / round is over
+  {
+    interface_GameOver();
+  }
 
-    this->ShowFPS();
+  this->ShowFPS();
 
-    this->engine->UpdateScreen ();
+  this->engine->UpdateScreen ();
 
-    this->fps.Update();
-
-  } // while this->IsRunning() == true
+  this->fps.Update();
 }

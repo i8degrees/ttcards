@@ -9,6 +9,10 @@
 #ifndef GAMEAPP_TTCARDS_HEADERS
 #define GAMEAPP_TTCARDS_HEADERS
 
+#ifdef EMSCRIPTEN
+    #include "emscripten.h"
+#endif
+
 #include "gamelib.h"
 
 #include "cfg.h"
@@ -27,6 +31,8 @@ class TTcards
 
     bool Init ( Gfx *engine );
 
+    bool LoadGameData ( void );
+
     bool IsRunning ( void );
     void SetGameState ( bool state );
     void ShowFPS ( void );
@@ -39,7 +45,6 @@ class TTcards
 
     void Input ( void );
     void InterfaceInput ( SDL_Event *input );
-
     void debug_input ( SDL_Event *input );
     void board_input ( SDL_Event *input );
     void cursor_input ( SDL_Event *input );
@@ -51,10 +56,12 @@ class TTcards
 
     void interface_GameOver ( void );
 
-    bool LoadGameData ( void );
-    void Run ( void );
+    static void Callback ( void ); // EMCC compiler related
+    void Start ( void ); // EMCC compiler related
+    void Run ( void ); // game loop
 
   private:
+    static TTcards *instance; // EMCC compiler related
     SDL_Event input; // input events; keyboard, mouse
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
