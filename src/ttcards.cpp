@@ -676,14 +676,14 @@ bool TTcards::LoadGameData ( void )
 #ifdef EMSCRIPTEN
 void TTcards::Callback ( void )
 {
+  //instance->Input ();
   instance->Run();
 }
 
 void TTcards::Start ( void )
 {
   instance = this;
-  emscripten_set_main_loop(TTcards::Callback, 10, 1);
-
+  emscripten_set_main_loop(TTcards::Callback, 30, 1 );
 }
 #endif
 
