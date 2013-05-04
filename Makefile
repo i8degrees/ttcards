@@ -28,10 +28,10 @@ TARGET_BIN = ttcards
 all: bin
 
 bin: $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(SDL_CFLAGS) $(GAMELIB_CFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET_BIN)
+	$(CC) $(CFLAGS) $(DEBUG_CFLAGS) $(LDFLAGS) $(SDL_CFLAGS) $(GAMELIB_CFLAGS) $(SDL_LDFLAGS) $(OBJ) -o $(TARGET_BIN)
 
 web: $(OBJ)
-	$(EMCC) $(EMCC_CFLAGS) $(RELEASE_CFLAGS) $(GAMELIB_CFLAGS) $(GAMELIB_OBJ) $(SRC) -o public/index.html --preload-file $(EMCC_PRELOAD_FILES)
+	$(EMCC) $(CFLAGS) $(EMCC_CFLAGS) $(RELEASE_CFLAGS) $(GAMELIB_CFLAGS) $(GAMELIB_OBJ) $(SRC) -o public/index.html --preload-file $(EMCC_PRELOAD_FILES)
 
 build/board.o: src/board.cpp src/board.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) $(SDL_CFLAGS) $(GAMELIB_CFLAGS) src/board.cpp -o build/board.o
@@ -70,7 +70,7 @@ build/ttcards.o: src/ttcards.cpp src/ttcards.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/ttcards.cpp -o build/ttcards.o
 
 clean:
-	/bin/rm -rf *.o build/*.o $(TARGET_BIN)
+	/bin/rm -rf *.o build/*.o $(TARGET_BIN) public/index.html public/index.data
 
 analyze:
 	scan-build -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c $(CFLAGS) $(SRC)
