@@ -6,18 +6,15 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef CARD_DEBUG_HEADERS
-#define CARD_DEBUG_HEADERS
+#ifndef GAMEAPP_CARD_DEBUG_HEADERS
+#define GAMEAPP_CARD_DEBUG_HEADERS
 
 #include <iostream>
 #include <string>
 
 #include "card.h"
 
-#define DEBUG_CARD_DEBUG
-//#define DEBUG_CARD_DEBUG_OBJ
-
-class CardDebug: public Card
+class CardDebug
 {
   public:
     CardDebug();

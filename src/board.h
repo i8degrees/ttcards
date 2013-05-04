@@ -4,22 +4,19 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef BOARD_HEADERS
-#define BOARD_HEADERS
+#ifndef GAMEAPP_BOARD_HEADERS
+#define GAMEAPP_BOARD_HEADERS
 
-#include "SDL/SDL.h"
 #include <iostream>
 #include <string>
 
+#include "gamelib.h"
+
 #include "cfg.h"
-#include "gfx.h"
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
-
-#define DEBUG_BOARD
-#define DEBUG_BOARD_CMP
-#define DEBUG_BOARD_OBJ
+#include "card_rules.h"
 
 class Board
 {
@@ -27,14 +24,18 @@ class Board
     Board ( void );
     ~Board ( void );
 
-    void Init ( CardHand &player1_cards, CardHand &player2_cards );
+    void Init ( CardView *card_gfx, CardRules *rules );
 
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
-    Card & CompareCards ( unsigned int x, unsigned int y, Card &card );
+    bool checkBoard ( unsigned int x, unsigned int y, Card &card );
 
-    unsigned int GetCount ( unsigned int player_id );
+    // TODO: Consider branching this into Score class
+    unsigned int GetPlayerCardCount ( unsigned int player_id );
+
+    unsigned int GetTotalCount ( void );
+
     unsigned int GetStatus ( unsigned int x, unsigned int y );
 
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );
@@ -44,11 +45,12 @@ class Board
   private:
     SDL_Surface *background;
     CardDebug debug;
-    CardView card;
-    CardHand board_hand;
-    CardHand *player1_hand;
-    CardHand *player2_hand;
+    CardView *card;
+    CardRules *rules;
     std::vector<std::vector<Card>> grid;
+
+    unsigned int GetPlayerID ( unsigned int x, unsigned int y );
+    void UpdatePlayerID ( unsigned int x, unsigned int y, unsigned int player_id );
 };
 
 #endif // BOARD_HEADERS defined

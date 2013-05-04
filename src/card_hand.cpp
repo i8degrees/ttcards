@@ -14,6 +14,7 @@ CardHand::CardHand ( void )
 
   this->cards.clear();
 
+  this->card_pos = 0;
   this->selectedCard = 0;
 }
 
@@ -70,21 +71,58 @@ bool CardHand::RemoveCard ( Card &card )
   return false;
 }
 
+void CardHand::ClearSelected ( void )
+{
+  this->selectedCard = 0;
+}
+
 Card & CardHand::GetSelectedCard ( void )
 {
   return this->selectedCard;
 }
 
-void CardHand::SelectCard ( Card &card )
+bool CardHand::SelectCard ( Card &card )
 {
   if ( this->isValid ( card ) )
   {
     this->selectedCard = card;
+    this->setCardIndex ( this->CardPosition ( card ) );
+    return true;
   }
+
+  return false;
 
   #ifdef DEBUG_CARD_HAND
     std::cout << "CardHand::SelectCard (): " << this->selectedCard.id << std::endl;
   #endif
+}
+
+signed int CardHand::getPrevCardIndex ( void )
+{
+  if ( this->card_pos != -1 )
+  {
+    this->card_pos = this->card_pos - 1;
+  }
+  return this->card_pos;
+}
+
+signed int CardHand::getNextCardIndex ( void )
+{
+  if ( this->card_pos != -1 )
+  {
+    this->card_pos = this->card_pos + 1;
+  }
+  return this->card_pos;
+}
+
+unsigned int CardHand::getCardIndex ( void )
+{
+  return this->card_pos;
+}
+
+void CardHand::setCardIndex ( signed int pos )
+{
+  this->card_pos = pos;
 }
 
 bool CardHand::isValid ( Card &card )

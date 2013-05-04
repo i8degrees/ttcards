@@ -4,18 +4,13 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#ifndef CARD_HAND_HEADERS
-#define CARD_HAND_HEADERS
+#ifndef GAMEAPP_CARD_HAND_HEADERS
+#define GAMEAPP_CARD_HAND_HEADERS
 
 #include <iostream>
 #include <string>
 
-#include "SDL.h"
-
 #include "card.h"
-
-#define DEBUG_CARD_HAND
-#define DEBUG_CARD_HAND_OBJ
 
 class CardHand
 {
@@ -25,16 +20,26 @@ class CardHand
 
     bool AddCard ( Card &card );
     bool RemoveCard ( Card &card );
+
+    void ClearSelected ( void );
+    Card & GetSelectedCard ( void );
+    bool SelectCard ( Card &card );
+
+    signed int getPrevCardIndex ( void );
+    signed int getNextCardIndex ( void );
+    unsigned int getCardIndex ( void );
+    void setCardIndex ( signed int pos );
+
     bool isValid ( Card &card );
     bool isEmpty ( void );
-    Card & GetSelectedCard ( void );
     unsigned int CardCount ( void );
     signed int CardPosition ( Card &card );
-    void SelectCard ( Card &card );
 
     std::vector<Card> cards;
+
   private:
-    Card selectedCard;
+    Card selectedCard; // holds player's selected card
+    unsigned int card_pos; // keeps track of card index cursor is at
 };
 
 #endif // CARD_HAND_HEADERS defined
