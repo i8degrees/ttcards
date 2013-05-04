@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     #ifdef EMSCRIPTEN
       app.Start();
     #else
-      while ( app.IsRunning() == true )
+      while ( app.IsRunning() != false )
       {
         app.Run();
       }
