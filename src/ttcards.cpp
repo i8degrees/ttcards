@@ -667,26 +667,6 @@ bool TTcards::LoadGameData ( void )
   return true;
 }
 
-// REFERENCES:
-//
-// 1. ~/local/src/emscripten/tests/emscripten_api_browser_infloop.cpp
-// 2. https://github.com/kripken/emscripten/wiki/Emscripten-browser-environment
-//
-
-#ifdef EMSCRIPTEN
-void TTcards::Callback ( void )
-{
-  //instance->Input ();
-  instance->Run();
-}
-
-void TTcards::Start ( void )
-{
-  instance = this;
-  emscripten_set_main_loop(TTcards::Callback, 30, 1 );
-}
-#endif
-
 void TTcards::Run ( void )
 {
   unsigned int cpu_difficulty = 1; // easy, hard
