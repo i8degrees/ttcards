@@ -15,11 +15,11 @@ SDL_LDFLAGS := $(shell pkg-config --libs sdl)
 
 SRC = src/board.cpp src/card.cpp src/card_debug.cpp src/card_view.cpp \
 src/card_collection.cpp src/card_hand.cpp src/card_rules.cpp src/cfg.cpp \
-src/main.cpp src/player.cpp src/ttcards.cpp
+src/main.cpp src/cpu_player.cpp src/player.cpp src/ttcards.cpp
 
 OBJ = build/board.o build/card.o build/card_debug.o build/card_collection.o \
 build/card_view.o build/card_hand.o build/card_rules.o build/cfg.o build/main.o \
-build/player.o build/ttcards.o
+build/cpu_player.o build/player.o build/ttcards.o
 
 GAMELIB_OBJ = ~/Projects/hax/gamelib.git/libgamelib.bc
 
@@ -63,8 +63,8 @@ build/main.o: src/main.cpp
 build/player.o: src/player.cpp src/player.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/player.cpp -o build/player.o
 
-#build/cpu_player.o: src/cpu_player.cpp src/cpu_player.h src/cfg.cpp src/cfg.h
-#	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/cpu_player.cpp -o build/cpu_player.o
+build/cpu_player.o: src/cpu_player.cpp src/cpu_player.h src/cfg.cpp src/cfg.h
+	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/cpu_player.cpp -o build/cpu_player.o
 
 build/ttcards.o: src/ttcards.cpp src/ttcards.h src/cfg.cpp src/cfg.h
 	$(CC) -c $(CFLAGS) $(GAMELIB_CFLAGS) src/ttcards.cpp -o build/ttcards.o

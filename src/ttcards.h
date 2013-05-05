@@ -71,6 +71,7 @@ class TTcards
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database
     CardRules rules;
+    CPUPlayer AI;
     CardView card; // card rendering
     CardHand hand[2]; // player hand
     Player player[2]; // player on board

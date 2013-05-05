@@ -13,6 +13,17 @@ CPUPlayer::CPUPlayer ( void )
   #ifdef DEBUG_CPU_PLAYER_OBJ
     std::cout << "CPUPlayer::CPUPlayer (): " << "Hello, world!" << std::endl << std::endl;
   #endif
+
+  this->cpu_difficulty = 2; // easy = 1, hard = 2
+
+  for ( int cols = 0; cols < 3; cols++ )
+  {
+    for ( int rows = 0; rows < 3; rows++ )
+    {
+      this->grid[rows][cols].x = rows;
+      this->grid[rows][cols].y = cols;
+    }
+  }
 }
 
 CPUPlayer::~CPUPlayer ( void )
@@ -22,12 +33,24 @@ CPUPlayer::~CPUPlayer ( void )
   #endif
 }
 
-void CPUPlayer::Init ( Board *board )
+void CPUPlayer::Init ( Board *board, CardHand *cards )
 {
   this->board = board; // initialize game board
+  this->hand = cards;
 }
 
-void CPUPlayer::calcEdgePos ( void )
+void CPUPlayer::randomMove ( void )
+{
+  unsigned int moveX = std::rand() % BOARD_GRID_WIDTH;
+  unsigned int moveY = std::rand() % BOARD_GRID_HEIGHT;
+  unsigned int cID = std::rand() % MAX_PLAYER_HAND;
+
+  std::cout << "CPU:" << " " << "Easy Mode [random]" << std::endl;
+  this->hand->SelectCard ( this->hand->cards[cID] );
+  this->moveTo ( moveX, moveY );
+}
+
+bool CPUPlayer::randomEdgeMove ( void )
 {
   if ( this->board->GetPlayerCardCount ( 0 ) == 0 && this->hand->cards.size() > 0 ) // first turn
     {
@@ -49,9 +72,10 @@ void CPUPlayer::calcEdgePos ( void )
 
       if ( this->board->GetStatus ( edge[rand_choice].x, edge[rand_choice].y ) == false )
       {
-        return;
+        return false;
       }
     }
+    return true;
 }
 
 void CPUPlayer::moveTo ( unsigned int x, unsigned int y )

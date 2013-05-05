@@ -664,12 +664,27 @@ bool TTcards::LoadGameData ( void )
   this->player[1].Init ( &this->hand[1], &this->card );
   this->rules.SetRules ( 0 );
 
+  AI.Init ( &this->board, &this->hand[1] );
+
   return true;
 }
 
 void TTcards::Run ( void )
 {
-  unsigned int cpu_difficulty = 1; // easy, hard
+  if ( this->get_turn() == 1 && this->hand[1].cards.size() > 0 )
+  {
+    unsigned int moveX = std::rand() % 3;
+    unsigned int moveY = std::rand() % 3;
+    unsigned int rID = std::rand() % 4;
+
+    this->hand[1].SelectCard ( this->hand[1].cards[rID] );
+
+    if ( this->board.checkBoard ( moveX, moveY, this->hand[1].GetSelectedCard() ) )
+    {
+      this->moveTo ( moveX, moveY );
+      std::cout << "CPU:" << " " << "[random]" << std::endl;
+    }
+  }
 
   this->check_cursor_movement();
 
@@ -679,109 +694,6 @@ void TTcards::Run ( void )
   this->board.DrawBoard ( this->engine );
 
   this->player[0].Draw ( this->engine );
-
-  if ( this->get_turn() == 1 && this->hand[1].cards.size() > 0 ) // player2
-  {
-    if ( cpu_difficulty == 0 )
-    {
-      if ( this->board.GetPlayerCardCount ( 1 ) <= 2 )
-      {
-        SDL_Rect edge[4];
-
-          edge[0].x = 0;
-          edge[0].y = 0;
-
-          edge[1].x = 2;
-          edge[1].y = 0;
-
-          edge[2].x = 0;
-          edge[2].y = 2;
-
-          edge[3].x = 2;
-          edge[3].y = 2;
-
-          unsigned int rand_choice = std::rand() % 4;
-
-          if ( this->board.GetStatus ( edge[rand_choice].x, edge[rand_choice].y ) == false )
-          {
-            unsigned int rID = std::rand() % 4;
-            this->hand[1].SelectCard ( this->hand[1].cards[rID] );
-            this->moveTo ( edge[rand_choice].x, edge[rand_choice].y );
-            std::cout << "CPU:" << " " << "Easy Mode [edge]" << std::endl;
-          }
-        }
-        else // random move
-        {
-          unsigned int moveX = std::rand() % 3;
-          unsigned int moveY = std::rand() % 3;
-          unsigned int rID = std::rand() % 4;
-          std::cout << "CPU:" << " " << "Easy Mode [random]" << std::endl;
-          this->hand[1].SelectCard ( this->hand[1].cards[rID] );
-          this->moveTo ( moveX, moveY );
-        }
-      }
-
-      else if ( cpu_difficulty == 1 )
-      {
-        if ( this->board.GetPlayerCardCount ( 1 ) <= 2 )
-        {
-          SDL_Rect edge[4];
-
-          edge[0].x = 0;
-          edge[0].y = 0;
-
-          edge[1].x = 2;
-          edge[1].y = 0;
-
-          edge[2].x = 0;
-          edge[2].y = 2;
-
-          edge[3].x = 2;
-          edge[3].y = 2;
-
-          unsigned int rand_choice = std::rand() % 4;
-          unsigned int rID = std::rand() % 4;
-
-          if ( this->board.GetStatus ( edge[rand_choice].x, edge[rand_choice].y ) == false )
-          {
-            this->hand[1].SelectCard ( this->hand[1].cards[rID] );
-            this->moveTo ( edge[rand_choice].x, edge[rand_choice].y );
-            std::cout << "CPU:" << " " << "Hard Mode [edge]" << std::endl;
-          }
-        }
-        else
-        {
-        for ( int y = 0; y < 3; y++ )
-        {
-          for ( int x = 0; x < 3; x++ )
-          {
-            for ( int idx = 0; idx < this->hand[1].cards.size(); idx++ )
-            {
-              if ( this->board.GetStatus ( x, y ) == false )
-              {
-                if ( this->board.checkBoard ( x, y, this->hand[1].cards[idx] ) == true )
-                {
-                  this->hand[1].SelectCard ( this->hand[1].cards[idx] );
-                  this->moveTo ( x, y );
-                  std::cout << "CPU:" << " " << "Hard Mode [checkBoard]" << std::endl;
-                }
-                else
-                {
-                  unsigned int moveX = std::rand() % 3;
-                  unsigned int moveY = std::rand() % 3;
-                  unsigned int rID = std::rand() % 4;
-                  std::cout << "CPU:" << " " << "Hard Mode [random]" << std::endl;
-                  this->hand[1].SelectCard ( this->hand[1].cards[rID] );
-                  this->moveTo ( moveX, moveY );
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   this->player[1].Draw ( this->engine );
 
   this->draw_cursor();
@@ -811,4 +723,6 @@ void TTcards::Run ( void )
   this->engine->UpdateScreen ();
 
   this->fps.Update();
+
+  SDL_Delay ( 250 );
 }
