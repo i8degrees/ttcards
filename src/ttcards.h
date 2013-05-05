@@ -23,7 +23,7 @@
 #include "card_rules.h"
 #include "cpu_player.h"
 
-class TTcards
+class TTcards: public SDLInput
 {
   public:
     TTcards ( void );
@@ -43,9 +43,7 @@ class TTcards
     void moveTo ( unsigned int x, unsigned int y );
 
     void Input ( void );
-    void InterfaceInput ( SDL_Event *input );
-    void debug_input ( SDL_Event *input );
-    void board_input ( SDL_Event *input );
+
     void cursor_input ( SDL_Event *input );
     void mouse_input ( SDL_Event *input, SDL_MouseButtonEvent *button );
 
@@ -58,6 +56,15 @@ class TTcards
     static void Callback ( void ); // EMCC compiler related
     void Start ( void ); // EMCC compiler related
     void Run ( void ); // game loop
+
+    void onResize ( unsigned int width, unsigned int height );
+    void onMouseLeftButtonUp ( unsigned int x, unsigned int y );
+    //void onMouseMotion ( unsigned int x, unsigned int y );
+    void onMouseWheel ( bool up, bool down );
+    void onKeyDown ( SDLKey key, SDLMod mod );
+    void onExit ( void );
+    void onResize ( void );
+    void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
 
   private:
     static TTcards *instance; // EMCC compiler related

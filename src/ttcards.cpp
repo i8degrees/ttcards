@@ -178,119 +178,6 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::debug_input ( SDL_Event *input )
-{
-  SDLKey key = input->key.keysym.sym;
-  unsigned short mod = input->key.keysym.mod;
-
-  if ( input->type == SDL_KEYDOWN )
-  {
-    if ( key == SDLK_u || ( key == SDLK_e && mod == KMOD_LMETA ) )
-    {
-      this->hand[turn].ClearSelected();
-
-      if ( this->get_turn() == 0 )
-        this->player_turn ( 1 );
-      else
-        this->player_turn ( 0 );
-    }
-
-    else if ( key == SDLK_LEFTBRACKET )
-    {
-      this->debug.ListCards ( this->hand[0].cards );
-    }
-
-    else if ( key == SDLK_LEFTBRACKET && mod == KMOD_LMETA )
-    {
-      this->debug.ListCards ( this->hand[1].cards );
-    }
-
-    else if ( key == SDLK_RIGHTBRACKET )
-    {
-      board.ListContents();
-    }
-
-    else if ( key == SDLK_RIGHTBRACKET && mod == KMOD_LMETA )
-    {
-      this->debug.ListCards ( this->collection.cards );
-    }
-  }
-}
-
-void TTcards::board_input ( SDL_Event *input )
-{
-  SDLKey key = input->key.keysym.sym;
-  unsigned short mod = input->key.keysym.mod;
-
-  if ( input->type == SDL_KEYDOWN )
-  {
-    if ( key == SDLK_1 && mod == KMOD_LMETA )
-    {
-      for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
-      {
-        if ( this->get_turn() == turn )
-        {
-          this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() ); //this->hand[0].RemoveCard ( this->hand[0].cards[this->hand[0].card_pos] );
-          this->hand[turn].ClearSelected();
-          this->hand[turn].SelectCard ( this->hand[turn].cards.front() );
-
-          if ( this->get_turn() == 0 ) // player1
-          {
-            this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-          }
-          else if ( this->get_turn() == 1 ) // player2
-            this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
-        }
-      }
-    }
-
-    else if ( key == SDLK_1 ) // move selected card to grid[0][0] if possible
-    {
-      this->moveTo ( 0, 0 );
-    }
-
-    else if ( key == SDLK_2 ) // move selected card to grid[1][0] if possible
-    {
-      this->moveTo ( 1, 0 );
-    }
-
-    else if ( key == SDLK_3 ) // move selected card to grid[2][0] if possible
-    {
-      this->moveTo ( 2, 0 );
-    }
-
-    else if ( key == SDLK_4 ) // move selected card to grid[0][1] if possible
-    {
-      this->moveTo ( 0, 1 );
-    }
-
-    else if ( key == SDLK_5 ) // move selected card to grid[1][1] if possible
-    {
-      this->moveTo ( 1, 1 );
-    }
-
-    else if ( key == SDLK_6 ) // move selected card to grid[2][1] if possible
-    {
-      this->moveTo ( 2, 1 );
-    }
-
-    else if ( key == SDLK_7 ) // move selected card to grid[0][2] if possible
-    {
-      this->moveTo ( 0, 2 );
-    }
-
-    else if ( key == SDLK_8 ) // move selected card to grid[1][2] if possible
-    {
-      this->moveTo ( 1, 2 );
-    }
-
-    else if ( key == SDLK_9 ) // move selected card to grid[2][2] if possible
-    {
-      this->moveTo ( 2, 2 );
-    }
-  }
-}
-
 void TTcards::cursor_input ( SDL_Event *input )
 {
   SDLKey key = input->key.keysym.sym;
@@ -521,65 +408,166 @@ void TTcards::mouse_input ( SDL_Event *input, SDL_MouseButtonEvent *button )
   } // if type == SDL_MOUSEBUTTONDOWN
 } // TTcards::mouse_input
 
-void TTcards::InterfaceInput ( SDL_Event *input )
-{
-  SDLKey key = input->key.keysym.sym;
-  //SDLMod mod = input->key.keysym.mod;
 
-  if ( input->type == SDL_QUIT )
-  {
-    this->SetGameState ( false );
-  }
-
-  else if ( input->type == SDL_VIDEORESIZE )
-  {
-    // Stub
-  }
-
-  else if ( input->type == SDL_KEYDOWN )
-  {
-    if ( key == SDLK_ESCAPE || key == SDLK_q )
-    {
-      this->SetGameState ( false );
-    }
-
-    else if ( key == SDLK_f )
-    {
-      if ( this->IsFullScreen() == true )
-        this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
-      else
-        this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
-    }
-
-    else if ( key == SDLK_p )
-    {
-      this->music.togglePlayingMusic ();
-    }
-
-    else if ( key == SDLK_EQUALS )
-    {
-      if ( this->show_fps == true )
-      {
-        this->show_fps = false;
-      }
-      else // false
-      {
-        this->show_fps = true;
-      }
-    }
-  }
-}
 
 void TTcards::Input ( void )
 {
   while ( SDL_PollEvent ( &input ) )
   {
-    this->InterfaceInput ( &this->input );
-    this->debug_input ( &this->input );
-    this->board_input ( &this->input );
-    this->cursor_input ( &this->input );
-    this->mouse_input ( &this->input, &this->input.button );
+    SDLInput::HandleInput ( &input );
+    //this->debug_input ( &this->input );
+    //this->board_input ( &this->input );
+    //this->cursor_input ( &this->input );
+    //this->mouse_input ( &this->input, &this->input.button );
   }
+}
+
+void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
+{
+  switch ( key )
+  {
+    case SDLK_ESCAPE:
+    case SDLK_q:
+      onExit();
+    break;
+
+    case SDLK_f:
+      onResize(0,0);
+    break;
+
+    case SDLK_p:
+      music.togglePlayingMusic();
+    break;
+
+    case SDLK_EQUALS:
+    {
+      if ( show_fps == true )
+        show_fps = false;
+      else
+        show_fps = true;
+    }
+    break;
+
+    case SDLK_u:
+    case SDLK_e:
+    {
+      for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
+      {
+        hand[turn].ClearSelected();
+      }
+
+      if ( get_turn() == 0 )
+        player_turn ( 1 );
+      else
+        player_turn ( 0 );
+    }
+    break;
+
+    case SDLK_LEFTBRACKET:
+    {
+      if ( mod == KMOD_LMETA )
+        debug.ListCards ( hand[1].cards );
+      else
+        debug.ListCards ( hand[0].cards );
+    }
+    break;
+
+    case SDLK_RIGHTBRACKET:
+    {
+      if ( mod == KMOD_LMETA )
+        debug.ListCards ( collection.cards );
+      else
+        board.ListContents();
+    }
+    break;
+
+    case SDLK_1: // move selected card to grid[0][0] if possible
+    {
+      if ( mod == KMOD_LMETA )
+      {
+        for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
+        {
+          hand[turn].RemoveCard ( hand[turn].GetSelectedCard() );
+          hand[turn].ClearSelected();
+          hand[turn].SelectCard ( hand[turn].cards.front() );
+        }
+
+        if ( get_turn() == 0 ) // player1
+          cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+        else // player2
+          cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+      }
+      else
+        moveTo ( 0, 0 );
+    }
+    break;
+
+    case SDLK_2: // move selected card to grid[1][0] if possible
+      moveTo ( 1, 0 );
+    break;
+
+    case SDLK_3: // move selected card to grid[2][0] if possible
+      moveTo ( 2, 0 );
+    break;
+
+    case SDLK_4: // move selected card to grid[0][1] if possible
+      moveTo ( 0, 1 );
+    break;
+
+    case SDLK_5: // move selected card to grid[1][1] if possible
+      moveTo ( 1, 1 );
+    break;
+
+    case SDLK_6: // move selected card to grid[2][1] if possible
+      moveTo ( 2, 1 );
+    break;
+
+    case SDLK_7: // move selected card to grid[0][2] if possible
+      moveTo ( 0, 2 );
+    break;
+
+    case SDLK_8: // move selected card to grid[1][2] if possible
+      moveTo ( 1, 2 );
+    break;
+
+    case SDLK_9: // move selected card to grid[2][2] if possible
+      moveTo ( 2, 2 );
+    break;
+
+    default:
+    break;
+  }
+}
+
+void TTcards::onExit ( void )
+{
+  SetGameState ( false );
+}
+
+void TTcards::onResize ( unsigned int width, unsigned int height )
+{
+  if ( this->IsFullScreen() == false )
+    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+  else
+    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
+}
+
+void TTcards::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
+{
+  std::cout << "Goodbye!\n\n";
+}
+
+void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+{
+  std::cout << x << " " << y << "\n\n";
+}
+
+void TTcards::onMouseWheel ( bool up, bool down )
+{
+  if ( up )
+    std::cout << "Mouse Wheel [Up]" << "\n\n";
+  else if ( down )
+    std::cout << "Mouse Wheel [Down]" << "\n\n";
 }
 
 void TTcards::check_cursor_movement ( void )
