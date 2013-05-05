@@ -100,6 +100,7 @@ void Player::SetScore ( unsigned int score )
 void Player::Draw ( Gfx *engine )
 {
   unsigned int hand_index = 0;
+  coords = getXY();
 
   for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
   {
@@ -108,16 +109,16 @@ void Player::Draw ( Gfx *engine )
       if ( this->GetID() == 1 )
       {
         if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->getCardIndex() == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(coords) + 16, std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       else if ( this->GetID() == 2 )
       {
         if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->getCardIndex() == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X - 16, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(coords) - 16, std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }
