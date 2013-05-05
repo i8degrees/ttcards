@@ -86,7 +86,7 @@ bool CardHand::SelectCard ( Card &card )
   if ( this->isValid ( card ) )
   {
     this->selectedCard = card;
-    this->setCardIndex ( this->CardPosition ( card ) );
+    this->setCardIndex ( this->CardPosition ( card ) ); // helper for mouse input selection
     return true;
   }
 
