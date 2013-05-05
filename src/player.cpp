@@ -16,11 +16,10 @@ Player::Player ( void )
 
   this->hand = NULL;
 
-  this->x = 0;
-  this->y = 0;
-  this->id = 0;
-  this->state = 0;
-  this->score = 5;
+  std::pair <int, int> coords ( 0, 0 ); // initialize x, y values
+  this->id = 0; // no player
+  this->state = 0; // not used
+  this->score = 5; // initialize scoreboard
 
   this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
   this->text_score.SetTextColor ( 255, 255, 255 ); // white
@@ -49,20 +48,14 @@ void Player::Init ( CardHand *player_cards, CardView *card_gfx )
   this->card = card_gfx;
 }
 
-SDL_Rect Player::GetXY ( void )
+std::pair <int, int> Player::getXY ( void )
 {
-  SDL_Rect coords;
-
-  this->x = coords.x;
-  this->y = coords.y;
-
   return coords;
 }
 
-void Player::SetXY ( unsigned int x, unsigned int y )
+void Player::setXY ( unsigned int x, unsigned int y )
 {
-  this->x = x;
-  this->y = y;
+  coords = std::make_pair ( x, y );
 }
 
 unsigned int Player::GetID ( void )

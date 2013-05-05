@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 
 #include "gamelib.h"
 
@@ -28,8 +29,8 @@ public:
 
   void Init ( CardHand *player_cards, CardView *card_gfx );
 
-  SDL_Rect GetXY ( void );
-  void SetXY ( unsigned int x, unsigned int y );
+  std::pair <int, int> getXY ( void );
+  void setXY ( unsigned int x, unsigned int y );
 
   unsigned int GetID ( void );
   void SetID ( unsigned int id );
@@ -52,8 +53,9 @@ private:
   CardView *card;
   CardHand *hand;
 
-  unsigned int x;
-  unsigned int y;
+  std::pair <int, int> coords; // x, y coords
+  //unsigned int x;
+  //unsigned int y;
   unsigned int id; // unique identifier for tracking each player in game
   unsigned int state;
   unsigned int score;

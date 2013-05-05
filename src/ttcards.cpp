@@ -31,6 +31,40 @@ TTcards::~TTcards ( void )
   }
 }
 
+bool TTcards::LoadGameData ( void )
+{
+  this->collection.Load ( CARDS_DB );
+
+  this->board.Init ( &this->card, &this->rules );
+  this->board.LoadBackground ( BOARD_BACKGROUND );
+
+  this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
+  this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
+
+  this->message_text.LoadTTF ( CARD_FONTFACE, 36 );
+  this->message_text.SetTextColor ( 255, 255, 255 ); // color: red
+
+  this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->cursor.LoadImage ( INTERFACE_CURSOR );
+  this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
+  this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
+  this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
+
+  this->music.LoadMusicTrack ( MUSIC_TRACK );
+
+  this->player[0].Init ( &this->hand[0], &this->card );
+  player[0].setXY ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
+
+  this->player[1].Init ( &this->hand[1], &this->card );
+  player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
+
+  this->rules.SetRules ( 0 );
+
+  AI.Init ( &this->board, &this->hand[1] );
+
+  return true;
+}
+
 bool TTcards::Init ( Gfx *engine )
 {
   this->engine = engine; // initialize rendering interface
@@ -625,36 +659,6 @@ void TTcards::interface_GameOver ( void )
     signed int width = this->message_text.GetTextWidth ();
     this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
-}
-
-bool TTcards::LoadGameData ( void )
-{
-  this->collection.Load ( CARDS_DB );
-
-  this->board.Init ( &this->card, &this->rules );
-  this->board.LoadBackground ( BOARD_BACKGROUND );
-
-  this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
-  this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
-
-  this->message_text.LoadTTF ( CARD_FONTFACE, 36 );
-  this->message_text.SetTextColor ( 255, 255, 255 ); // color: red
-
-  this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->cursor.LoadImage ( INTERFACE_CURSOR );
-  this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
-  this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
-  this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
-
-  this->music.LoadMusicTrack ( MUSIC_TRACK );
-
-  this->player[0].Init ( &this->hand[0], &this->card );
-  this->player[1].Init ( &this->hand[1], &this->card );
-  this->rules.SetRules ( 0 );
-
-  AI.Init ( &this->board, &this->hand[1] );
-
-  return true;
 }
 
 void TTcards::Run ( void )
