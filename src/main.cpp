@@ -22,7 +22,13 @@ int main(int argc, char *argv[])
   std::srand ( ( unsigned ) time ( 0 ) ); // needs to exec before CardHand, Player, Board, etc.
 
   Gfx engine = ( sdl_flags ); // rendering interface instance
+
+  #ifndef EMSCRIPTEN
+    engine.setIcon ( APP_ICON );
+  #endif
+
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+
 
   TTcards app; // needs to be declared before Gfx instance
 

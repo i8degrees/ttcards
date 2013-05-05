@@ -71,8 +71,7 @@ bool TTcards::Init ( Gfx *engine )
   this->show_fps = true;
 
 #ifndef EMSCRIPTEN
-  this->engine->SetWindowTitle ( APP_NAME );
-  this->engine->SetWindowIcon ( APP_ICON );
+  engine->setTitle ( APP_NAME );
 #endif
 
   this->LoadGameData();
