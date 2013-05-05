@@ -298,161 +298,12 @@ void TTcards::cursor_input ( SDL_Event *input )
   }
 }
 
-void TTcards::mouse_input ( SDL_Event *input, SDL_MouseButtonEvent *button )
-{
-  unsigned int x = button->x;
-  unsigned int y = button->y;
-
-  if ( input->type == SDL_MOUSEBUTTONDOWN )
-  {
-    if ( button->button == SDL_BUTTON_LEFT )
-    {
-      for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
-      {
-        if ( this->get_turn() == 0 ) // player1 hand checks
-        {
-          if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( PLAYER1_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[0].cards[0].name << "\n";
-            this->hand[0].SelectCard ( this->hand[0].cards[0] );
-            if ( this->hand[0].cards[0].id != 0 )
-              this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 0 );
-          }
-
-          else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( PLAYER1_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[0].cards[1].name << "\n";
-            this->hand[0].SelectCard ( this->hand[0].cards[1] );
-            if ( this->hand[0].cards[1].id != 0 )
-              this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 );
-          }
-
-          else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( PLAYER1_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[0].cards[2].name << "\n";
-            this->hand[0].SelectCard ( this->hand[0].cards[2] );
-            if ( this->hand[0].cards[2].id != 0 )
-              this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 2 );
-          }
-
-          else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( PLAYER1_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[0].cards[3].name << "\n";
-            this->hand[0].SelectCard ( this->hand[0].cards[3] );
-            if ( this->hand[0].cards[3].id != 0 )
-              this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 3 );
-          }
-
-          else if ( x <= ( PLAYER1_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER1_ORIGIN_X ) && y <= ( PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( PLAYER1_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[0].cards[4].name << "\n";
-            this->hand[0].SelectCard ( this->hand[0].cards[4] );
-            if ( this->hand[0].cards[4].id != 0 )
-              this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 4 );
-          }
-        } // player1 hand checks
-
-        else if ( this->get_turn() == 1 ) // player2 hand checks
-        {
-          if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( PLAYER2_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[1].cards[0].name << "\n";
-            this->hand[1].SelectCard ( this->hand[1].cards[0] );
-            this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 0 );
-          }
-
-          else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( PLAYER2_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[1].cards[1].name << "\n";
-            this->hand[1].SelectCard ( this->hand[1].cards[1] );
-            this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 1 );
-          }
-
-          else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( PLAYER2_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[1].cards[2].name << "\n";
-            this->hand[1].SelectCard ( this->hand[1].cards[2] );
-            this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 2 );
-          }
-
-          else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( PLAYER2_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[1].cards[3].name << "\n";
-            this->hand[1].SelectCard ( this->hand[1].cards[3] );
-            this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 3 );
-          }
-
-          else if ( x <= ( PLAYER2_ORIGIN_X + CARD_WIDTH ) && x >= ( PLAYER2_ORIGIN_X ) && y <= ( PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( PLAYER2_ORIGIN_Y ) )
-          {
-            std::cout << this->hand[1].cards[4].name << "\n";
-            this->hand[1].SelectCard ( this->hand[1].cards[4] );
-            this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 4 );
-          }
-        } // player2 hand checks
-
-        if ( this->get_turn() == turn ) // board grid checks of players
-        {
-          if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-          {
-            this->moveTo ( 0, 0 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-          {
-            this->moveTo ( 1, 0 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-          {
-            this->moveTo ( 2, 0 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-          {
-            this->moveTo ( 0, 1 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-          {
-            this->moveTo ( 1, 1 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-          {
-            this->moveTo ( 2, 1 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-          {
-            this->moveTo ( 0, 2 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-          {
-            this->moveTo ( 1, 2 );
-          }
-
-          else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-          {
-            this->moveTo ( 2, 2 );
-          }
-        } // end each player's board checks
-      } // for each player's turn loop
-    } // if button == SDL_BUTTON_LEFT
-  } // if type == SDL_MOUSEBUTTONDOWN
-} // TTcards::mouse_input
-
-
-
 void TTcards::Input ( void )
 {
   while ( SDL_PollEvent ( &input ) )
   {
     SDLInput::HandleInput ( &input );
-    //this->debug_input ( &this->input );
-    //this->board_input ( &this->input );
     //this->cursor_input ( &this->input );
-    //this->mouse_input ( &this->input, &this->input.button );
   }
 }
 
@@ -588,12 +439,114 @@ void TTcards::onResize ( unsigned int width, unsigned int height )
 
 void TTcards::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
 {
-  std::cout << "Goodbye!\n\n";
+  //std::cout << "Goodbye!\n\n";
 }
 
 void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 {
-  std::cout << x << " " << y << "\n\n";
+  unsigned int turn = 0;
+
+  for ( turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  {
+    if ( get_turn() == turn )
+    {
+      coords = player[turn].getXY(); // PLAYER ORIGIN XY
+
+      // player hand selection checks
+
+      if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(coords) ) )
+      {
+        std::cout << hand[turn].cards[0].name << "\n";
+        hand[turn].SelectCard ( hand[turn].cards[0] );
+
+        if ( hand[turn].cards[0].id != 0 )
+          this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 0 );
+      }
+
+      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(coords) ) )
+      {
+        std::cout << hand[turn].cards[1].name << "\n";
+        hand[turn].SelectCard ( hand[turn].cards[1] );
+
+      if ( hand[turn].cards[1].id != 0 )
+        this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 0 );
+      }
+
+      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(coords) ) )
+      {
+        std::cout << hand[turn].cards[2].name << "\n";
+        hand[turn].SelectCard ( hand[turn].cards[2] );
+
+        if ( hand[turn].cards[2].id != 0 )
+          this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 0 );
+      }
+
+      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(coords) ) )
+      {
+        std::cout << hand[turn].cards[3].name << "\n";
+        hand[turn].SelectCard ( hand[turn].cards[3] );
+
+        if ( hand[turn].cards[3].id != 0 )
+          this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 0 );
+      }
+
+      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(coords) ) )
+      {
+        std::cout << hand[turn].cards[4].name << "\n";
+        hand[turn].SelectCard ( hand[turn].cards[4] );
+
+        if ( hand[turn].cards[4].id != 0 )
+          this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * 0 );
+      }
+
+      // board grid checks of players
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
+      {
+        this->moveTo ( 0, 0 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
+      {
+        this->moveTo ( 1, 0 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
+      {
+        this->moveTo ( 2, 0 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
+      {
+        this->moveTo ( 0, 1 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
+      {
+        this->moveTo ( 1, 1 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
+      {
+        this->moveTo ( 2, 1 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+      {
+        this->moveTo ( 0, 2 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+      {
+        this->moveTo ( 1, 2 );
+      }
+
+      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+      {
+        this->moveTo ( 2, 2 );
+      }
+    } // end get_turn() == turn
+  } // end player turns
 }
 
 void TTcards::onMouseWheel ( bool up, bool down )
@@ -606,7 +559,7 @@ void TTcards::onMouseWheel ( bool up, bool down )
 
 void TTcards::check_cursor_movement ( void )
 {
-
+  //
 }
 
 void TTcards::draw_cursor ( void )
@@ -716,5 +669,5 @@ void TTcards::Run ( void )
 
   this->fps.Update();
 
-  SDL_Delay ( 250 );
+  //SDL_Delay ( 250 );
 }
