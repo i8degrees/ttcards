@@ -18,8 +18,6 @@ set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
 set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 set ( GAMELIB_HEADERS /usr/local/include/gamelib )
 
-include_directories ( ${GAMELIB_HEADERS} )
-
 project(ttcards)
 
 set ( SRC_DIR src ) # project_dir/src
@@ -40,6 +38,8 @@ set ( TTCARDS_SOURCE
     )
 
 find_package ( SDL REQUIRED )
+
+include_directories ( ${GAMELIB_HEADERS} )
 
 link_libraries (  ttcards # makefile target
                   ${SDL_LIBRARY}
