@@ -11,7 +11,7 @@
 #define DEBUG_TTCARDS_OBJ
 
 #define DEBUG_BOARD
-#define DEBUG_BOARD_CMP
+//#define DEBUG_BOARD_CMP
 #define DEBUG_BOARD_OBJ
 
 #define DEBUG_PLAYER
@@ -20,7 +20,7 @@
 #define DEBUG_CPU_PLAYER
 #define DEBUG_CPU_PLAYER_OBJ
 
-#define DEBUG_CARD_HAND
+//#define DEBUG_CARD_HAND
 #define DEBUG_CARD_HAND_OBJ
 
 #define DEBUG_CARD_DEBUG
