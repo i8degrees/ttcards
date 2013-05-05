@@ -1,0 +1,3 @@
+[submodule "gamelib"]
+	path = gamelib
+	url = git://github.com/i8degrees/gamelib
