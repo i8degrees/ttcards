@@ -42,11 +42,24 @@ set ( TTCARDS_SOURCE
     )
 
 find_package ( SDL REQUIRED )
+include_directories ( ${SDL_INCLUDE_DIR} )
+
+find_package ( SDL_image REQUIRED )
+include_directories ( ${SDLIMAGE_INCLUDE_DIR} )
+
+find_package ( SDL_mixer REQUIRED )
+include_directories ( ${SDLMIXER_INCLUDE_DIR} )
+
+find_package ( SDL_ttf REQUIRED )
+include_directories ( ${SDLTTF_INCLUDE_DIR} )
 
 include_directories ( ${GAMELIB_HEADERS} )
 
 link_libraries (  ttcards # makefile target
                   ${SDL_LIBRARY}
+                  ${SDL_IMAGE_LIBRARY}
+                  ${SDL_MIXER_LIBRARY}
+                  ${SDL_TTF_LIBRARY}
                   SDLmain
                   gamelib
                 )

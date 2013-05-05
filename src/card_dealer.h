@@ -15,7 +15,7 @@
 #include <ctime>
 #include <cstdlib>
 
-#include "SDL/SDL.h"
+#include "SDL.h"
 
 #include "cfg.h"
 
