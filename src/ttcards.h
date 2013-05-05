@@ -29,9 +29,8 @@ class TTcards
     TTcards ( void );
     ~TTcards ( void );
 
-    bool Init ( Gfx *engine );
-
     bool LoadGameData ( void );
+    bool Init ( Gfx *engine );
 
     bool IsRunning ( void );
     void SetGameState ( bool state );

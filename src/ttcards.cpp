@@ -65,7 +65,7 @@ bool TTcards::Init ( Gfx *engine )
   // This card should be discarded ( MAX_HAND = 5 )
   //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
 
-  this->music.PlayMusicTrack ( -1 );
+  //this->music.PlayMusicTrack ( -1 );
   //this->music.PauseMusic ();
 
   this->player[0].SetID ( 1 );
