@@ -16,11 +16,15 @@ set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
 set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
 set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
 set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
-set ( GAMELIB_HEADERS /usr/local/include/gamelib )
+set ( SRC_DIR src ) # project_dir/src
+
+set ( GAMELIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/gamelib/src )
+# LIBGAMELIB
+#set ( GAMELIB_HEADERS /usr/local/include/gamelib )
 
 project(ttcards)
 
-set ( SRC_DIR src ) # project_dir/src
+add_subdirectory ( gamelib )
 
 set ( TTCARDS_SOURCE
       ${SRC_DIR}/board.cpp
