@@ -4,12 +4,96 @@
 		"selected_items":
 		[
 			[
-				"card",
-				"card_pos"
+				"BOARD",
+				"BOARD_GRID_WIDTH"
+			],
+			[
+				"Selecte",
+				"selected"
+			],
+			[
+				"GetPla",
+				"GetPlayerCardCount"
+			],
+			[
+				"Update",
+				"UpdateBoard"
+			],
+			[
+				"BOA",
+				"BOARD_GRID_HEIGHT"
+			],
+			[
+				"BOARD_GRI",
+				"BOARD_GRID_HEIGHT"
+			],
+			[
+				"PLAYER1_OR",
+				"PLAYER1_CURSOR_ORIGIN_Y"
+			],
+			[
+				"PLA",
+				"PLAYER1_CURSOR_ORIGIN_Y"
+			],
+			[
+				"PLAYER2",
+				"PLAYER2_CURSOR_ORIGIN_X"
+			],
+			[
+				"Get",
+				"GetSelectedCard"
+			],
+			[
+				"selected",
+				"selectedCard"
+			],
+			[
+				"SCREEN",
+				"SCREEN_WIDTH"
+			],
+			[
+				"selec",
+				"selectedCard"
+			],
+			[
+				"sele",
+				"selectedCard"
+			],
+			[
+				"CURS",
+				"CURSOR_ORIGIN_X"
+			],
+			[
+				"PLAYER1",
+				"PLAYER1_CURSOR_ORIGIN_X"
 			],
 			[
 				"SCRE",
-				"SCREEN_BPP"
+				"SCREEN_HEIGHT"
+			],
+			[
+				"INTERFA",
+				"INTERFACE_CURSOR_LEFT"
+			],
+			[
+				"SetShee",
+				"SetSheetID"
+			],
+			[
+				"PLAYER1_ORI",
+				"PLAYER1_CURSOR_ORIGIN_X"
+			],
+			[
+				"KMOD",
+				"KMOD_LMETA"
+			],
+			[
+				"SetShe",
+				"SetSheetDimensions"
+			],
+			[
+				"card",
+				"card_pos"
 			],
 			[
 				"SCREE",
@@ -24,10 +108,6 @@
 				"DEBUG_BOARD_CMP"
 			],
 			[
-				"SCREEN",
-				"SCREEN_BPP"
-			],
-			[
 				"EXIT_",
 				"EXIT_FAILURE"
 			],
@@ -36,20 +116,12 @@
 				"SetSheetID"
 			],
 			[
-				"BOA",
-				"BOARD_GRID_WIDTH"
-			],
-			[
 				"BOAR",
 				"BOARD_GRID_WIDTH"
 			],
 			[
 				"BOARD_GR",
 				"BOARD_GRID_WIDTH"
-			],
-			[
-				"BOARD",
-				"BOARD_GRID_HEIGHT"
 			],
 			[
 				"PLAY",
@@ -64,16 +136,8 @@
 				"BOARD_ORIGIN_Y"
 			],
 			[
-				"BOARD_GRI",
-				"BOARD_GRID_WIDTH"
-			],
-			[
 				"PLAYER2_CUR",
 				"PLAYER2_CURSOR_ORIGIN_Y"
-			],
-			[
-				"PLAYER1",
-				"PLAYER1_CURSOR_ORIGIN_X"
 			],
 			[
 				"PLAYER1_CUR",
@@ -88,19 +152,11 @@
 				"PLAYER2_ORIGIN_X"
 			],
 			[
-				"PLAYER2",
-				"PLAYER2_CURSOR_ORIGIN_X"
-			],
-			[
 				"CARD",
 				"CARD_HEIGHT"
 			],
 			[
 				"PLAYER",
-				"PLAYER1_ORIGIN_Y"
-			],
-			[
-				"PLA",
 				"PLAYER1_ORIGIN_Y"
 			],
 			[
@@ -158,10 +214,6 @@
 			[
 				"CUR",
 				"CURSOR_CANCEL"
-			],
-			[
-				"CURS",
-				"CURSOR_MOVE"
 			],
 			[
 				"MAX_",
@@ -288,10 +340,6 @@
 				"SYNERGY_LOG_LEVEL"
 			],
 			[
-				"selec",
-				"selection"
-			],
-			[
 				"MPD",
 				"MPDSCRIBBLE_PID"
 			],
@@ -308,10 +356,10 @@
 	"buffers":
 	[
 		{
-			"file": "src/player.cpp",
+			"file": "gamelib/src/input.cpp",
 			"settings":
 			{
-				"buffer_size": 15487,
+				"buffer_size": 613,
 				"line_ending": "Unix"
 			}
 		},
@@ -319,15 +367,39 @@
 			"file": "src/ttcards.cpp",
 			"settings":
 			{
-				"buffer_size": 7617,
+				"buffer_size": 23615,
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/cpu_player.cpp",
+			"settings":
+			{
+				"buffer_size": 1947,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/player.cpp",
+			"settings":
+			{
+				"buffer_size": 3841,
+				"line_ending": "Unix"
 			}
 		},
 		{
 			"file": "src/card_hand.cpp",
 			"settings":
 			{
-				"buffer_size": 3135,
+				"buffer_size": 3779,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/card_rules.cpp",
+			"settings":
+			{
+				"buffer_size": 1583,
 				"line_ending": "Unix"
 			}
 		},
@@ -335,7 +407,7 @@
 			"file": "src/board.cpp",
 			"settings":
 			{
-				"buffer_size": 13150,
+				"buffer_size": 6544,
 				"line_ending": "Unix"
 			}
 		},
@@ -343,7 +415,7 @@
 			"file": "src/card_view.cpp",
 			"settings":
 			{
-				"buffer_size": 4309,
+				"buffer_size": 4763,
 				"line_ending": "Unix"
 			}
 		},
@@ -372,10 +444,10 @@
 			}
 		},
 		{
-			"file": "src/main.cpp",
+			"file": "src/cfg.cpp",
 			"settings":
 			{
-				"buffer_size": 986,
+				"buffer_size": 3804,
 				"line_ending": "Unix"
 			}
 		}
@@ -387,16 +459,48 @@
 		"selected_items":
 		[
 			[
-				"togg",
-				"Toggle Block Comment"
+				"syntax mak",
+				"Set Syntax: Makefile"
 			],
 			[
-				"toggle blo",
-				"Toggle Block Comment"
+				"syntax bash",
+				"Set Syntax: Shell Script (Bash)"
 			],
 			[
 				"comm",
 				"Toggle Comment"
+			],
+			[
+				"com",
+				"Toggle Comment"
+			],
+			[
+				"diff",
+				"FileDiffs: Menu"
+			],
+			[
+				"rename",
+				"File: Rename"
+			],
+			[
+				"inde",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"togg",
+				"Toggle Block Comment"
+			],
+			[
+				"commit",
+				"Git: Quick Commit"
+			],
+			[
+				"git ",
+				"Git: Commit"
+			],
+			[
+				"toggle blo",
+				"Toggle Block Comment"
 			],
 			[
 				"comme",
@@ -411,23 +515,11 @@
 				"Set Syntax: C++"
 			],
 			[
-				"rename",
-				"File: Rename"
-			],
-			[
-				"diff",
-				"FileDiffs: Menu"
-			],
-			[
 				"git status",
 				"Git: Status"
 			],
 			[
 				"syntax sh",
-				"Set Syntax: Shell Script (Bash)"
-			],
-			[
-				"syntax bash",
 				"Set Syntax: Shell Script (Bash)"
 			],
 			[
@@ -512,10 +604,6 @@
 			],
 			[
 				"git",
-				"Git: Commit"
-			],
-			[
-				"git ",
 				"Git: Commit"
 			],
 			[
@@ -803,10 +891,6 @@
 				"File: Refresh"
 			],
 			[
-				"inde",
-				"Indentation: Convert to Spaces"
-			],
-			[
 				"pack",
 				"Package Control: List Packages"
 			],
@@ -885,18 +969,6 @@
 			[
 				"tidy",
 				"Tidy PHP"
-			],
-			[
-				"ruby",
-				"Set Syntax: Ruby"
-			],
-			[
-				"package install",
-				"Package Control: Install Package"
-			],
-			[
-				"git add",
-				"Gist: Add File to Gist"
 			]
 		],
 		"width": 579.0
@@ -916,26 +988,93 @@
 	},
 	"file_history":
 	[
+		"/Users/jeff/Projects/hax/ttcards.git/gamelib/Makefile",
+		"/Users/jeff/Projects/hax/ttcards.git/gamelib/src/gamelib.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/cpu_player.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.cpp",
+		"/Users/jeff/Projects/hax/gamelib.git/src/font.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/main.cpp",
+		"/Users/jeff/local/src/emscripten/tests/emscripten_api_browser_infloop.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/Makefile",
+		"/Users/jeff/Projects/hax/gamelib.git/src/gfx.cpp",
+		"/Users/jeff/Projects/hax/gamelib.git/src/gfx.h",
+		"/Users/jeff/local/src/emcc/tests/emscripten_api_browser_infloop.cpp",
+		"/Users/jeff/Projects/clients/211_Thor/sql/kn353k_wrd1.sql",
+		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.h",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/main.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.elle/GameEngine.cpp",
+		"/Users/jeff/Projects/hax/gamelib.git/src/sprite.cpp",
+		"/Users/jeff/local/src/emscripten/system/include/emscripten/emscripten.h",
+		"/Users/jeff/Projects/hax/ttcards.git/TODO.md",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_hand.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_hand.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.elle/GameEngine.h",
+		"/Users/jeff/local/src/emscripten/tests/enet_server.c",
+		"/Users/jeff/local/src/emscripten/tests/sdl_resize.c",
+		"/Users/jeff/Projects/hax/ttcards.git/src/Mak",
+		"/Users/jeff/Projects/hax/gamelib.git/Makefile",
+		"/Users/jeff/Projects/hax/gamelib.git/.gitignore",
+		"/private/etc/apache2/sites-available/099-pow",
+		"/usr/local/Library/Formula/pow.rb",
+		"/Users/jeff/Projects/hax/homebrew/new/pow.rb",
+		"/Users/jeff/Projects/hax/gamelib.git/src/font.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/gfx.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/font.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/fps.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/timer.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/audio.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/board.h",
+		"/Users/jeff/Projects/hax/gamelib.git/src/gamelib.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/cfg.h",
+		"/Users/jeff/Projects/hax/ttcards.git/main.o",
+		"/Users/jeff/tmp/sdl-ex/sdl-ex.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/src/cpu_player.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/cpu_player.",
+		"/Users/jeff/Projects/hax/ttcards.git/src/player.h",
+		"/Users/jeff/Projects/hax/gamelib.git/src/timer.h",
+		"/Users/jeff/Projects/hax/gamelib.git/src/sprite.h",
+		"/Users/jeff/Projects/hax/gamelib.git/mak",
+		"/Users/jeff/Projects/hax/ttcards.git/src/card_view.h",
+		"/Users/jeff/Projects/hax/gamelib.git/src/audio.cpp",
+		"/Users/jeff/Projects/hax/gamelib.git/src/audio.h",
+		"/Users/jeff/Projects/hax/gamelib.git/src/fps.h",
+		"/Users/jeff/.bashrc",
+		"/Users/jeff/tmp/sdl-ex/Makefile",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Board.cpp",
+		"/Users/jeff/Projects/hax/gamelib.git/src/timer.cpp",
+		"/Users/jeff/tmp/sdl-ex.cpp",
+		"/Users/jeff/tmp/Makefile",
+		"/Users/jeff/Projects/hax/ttcards.git/src/cfg.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/cfg.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/cfg.h",
+		"/Users/jeff/Projects/hax/ttcards.git/data/cards.txt",
+		"/Users/jeff/Projects/hax/ttcards.git/src/rules.cpp",
+		"/Users/jeff/tmp/gfx/K/clip000.ass",
+		"/Users/jeff/Projects/hax/ttcards.git/project/src/ttcards_menu.rb",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Bag.cpp",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Bag.h",
+		"/Users/jeff/Projects/hax/ttcards.git/src/cfg.cp",
+		"/Users/jeff/Projects/hax/gamelib.git/font.cpp",
+		"/Users/jeff/Projects/hax/ttcards.git/ttcards.app/Contents/document.wflow",
+		"/Users/jeff/Projects/hax/ttcards.git/ttcards.app/Contents/Info.plist",
+		"/Users/jeff/Projects/hax/ttcards.git/README.md",
+		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.h",
 		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/Default (OSX).sublime-keymap",
 		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap",
 		"/Users/jeff/Projects/hax/ttcards.git/tmp/board.cpp",
 		"/Users/jeff/Projects/hax/ttcards.git/tmp/board.cpp.new",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.elle/AssetCache.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/data/cards.txt",
 		"/Users/jeff/Projects/hax/ttcards.git/tmp/board.cpp.new.mdown",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.h",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Tetrimino.h",
 		"/Users/jeff/Projects/hax/snippets/fielding.GameOfLife/GameOfLife/main.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Board.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.h",
 		"/Users/jeff/Projects/hax/ttcards.git/score.cpp",
 		"/usr/local/include/gamelib/gamelib.h",
 		"/Users/jeff/Library/Sublime Text 2/Packages/User/Makefile (OSX).sublime-build",
 		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/Makefile (OSX).sublime-build",
-		"/Users/jeff/Projects/hax/gamelib.git/Makefile",
-		"/Users/jeff/Projects/hax/ttcards.git/Makefile",
-		"/Users/jeff/Projects/hax/gamelib.git/.gitignore",
 		"/Users/jeff/Projects/hax/gamelib.git/README.md",
 		"/Users/jeff/Projects/hax/gamelib.git/LICENSE.md",
 		"/Users/jeff/Projects/hax/ttcards.git/src/fps.cpp",
@@ -966,84 +1105,17 @@
 		"/Users/jeff/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
 		"/Users/jeff/Projects/hax/ttcards.git/.gitignore",
 		"/Users/jeff/Projects/hax/dotfiles/.config/awesome/rc.lua",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Bag.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/main.o",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/main.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Block.cpp",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/PlayState.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/main.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameState.h",
 		"/etc/inputrc",
 		"/Users/jeff/Library/Preferences/com.googlecode.iterm2.plist",
 		"/etc/profile",
 		"/etc/bashrc",
-		"/Users/jeff/.bashrc",
 		"/Users/jeff/Projects/hax/ttcards.git/main.cpp",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.h",
 		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/AssetCache.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/data/images/faces.png",
-		"/Users/jeff/Projects/hax/ttcards.git/data/images/backgrounds.png",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/GameEngine.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Locator.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/IAudio.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/NullAudio.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Locator.b",
-		"/Users/jeff/Projects/hax/snippets/fielding.Tetris/Tetris/Locator.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/Makefile.bck",
-		"/Users/jeff/Projects/hax/ttcards.git/src/gfx.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/sprite.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_debug.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_collection.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_view.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/board.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_hand.h",
-		"/Users/jeff/Projects/hax/ttcards.git/src/player.h",
-		"/Users/jeff/Projects/hax/ttcards.git/font.h",
-		"/Users/jeff/Projects/hax/ttcards.git/timer.h",
-		"/Users/jeff/Projects/hax/ttcards.git/fps.h",
-		"/Users/jeff/Projects/hax/snippets/fielding.codejam/rope.cpp",
-		"/Users/jeff/Projects/hax/snippets/fielding.codejam/faf.cpp",
-		"/Users/jeff/Projects/hax/snippets/fielding.codejam/ayb.cpp",
-		"/Users/jeff/Projects/hax/snippets/fielding.codejam/faf.source",
-		"/Users/jeff/Projects/hax/snippets/fielding.codejam/ayb.source",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_debug.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_collection.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_view.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/board.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/card_hand.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/src/player.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/player.h",
-		"/Users/jeff/Projects/hax/ttcards.git/board.h",
-		"/Users/jeff/Projects/hax/ttcards.git/ttcards.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_view.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_collection.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_debug.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card.h",
-		"/Users/jeff/Projects/hax/ttcards.git/sprite.h",
-		"/Users/jeff/Projects/hax/ttcards.git/gfx.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_hand.h",
-		"/Users/jeff/Projects/hax/ttcards.git/card_hand.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/ttcards.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/player.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/board.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/card_view.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/card_collection.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/card_debug.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/card.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/sprite.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/gfx.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/font.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/timer.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/fps.cpp",
-		"/Users/jeff/Projects/hax/ttcards.git/Makefile.debug",
-		"/Users/jeff/Projects/hax/ttcards.git/ttcards.sublime-project",
-		"/Users/jeff/Projects/hax/ttcards.git/src/ttcards.sublime-workspace",
-		"/Users/jeff/Projects/hax/Fielding.GameOfLife/GameOfLife/main.cpp"
+		"/Users/jeff/Projects/hax/ttcards.git/data/images/faces.png"
 	],
 	"find":
 	{
@@ -1062,134 +1134,134 @@
 		"case_sensitive": false,
 		"find_history":
 		[
-			"SDLK_u",
-			"SDLK_U",
-			"fold",
-			"unfold",
-			"front",
-			"it",
-			"score",
-			"-1",
-			"board_hand",
-			"getstat",
-			"board_hand",
-			"comparec",
-			"fuck",
-			"compareca",
-			"grid[1][0]",
-			"updateboard",
-			"updat",
-			"updateboard",
-			"comparec",
-			"comaprec",
-			"comparec",
-			"adj[0][0]",
-			"compare",
-			"card.player_id",
-			"[1][0]",
-			"[0][0]",
-			"adj[0][0]",
-			"[1][0]",
-			"id",
-			"player_id",
-			"cardpos",
-			"90",
-			"\"\\n\"",
-			"BOARD_GRID",
-			"enum",
-			"BIN",
-			"SRC",
-			"-1",
-			"110",
-			"[1][0]",
-			"1, 1",
-			"addcard",
-			"1, 1",
-			"board_hand",
-			"count",
-			"score",
-			"addcard",
-			"board_hand",
-			"addcard",
-			"board_hand",
-			"AddCard",
-			"addcard",
-			"getstatus",
-			"2, 0",
-			"2,0",
-			"isValid",
-			"getstatus",
-			"board",
-			"player_id",
-			"board",
-			"auto",
-			"tab",
-			"complet",
-			"tab",
-			"screen.",
-			"screen",
-			":",
-			"this->board",
-			"board_hand",
-			"this->board",
-			"compareCards",
-			"cards",
-			"player1_hand",
-			"main()",
-			"ttcards::ttcards",
-			"ttcards::~ttcards",
-			"Board::Board",
-			"Board::~Board",
-			"Gfx::~Gfx",
-			"FPS::FPS",
-			"FPS::~FPS",
-			"CardView::CardView",
-			"CardView::~CardView",
-			"Font::Font",
-			"Font::~Font",
-			"~Sprite",
-			"Sprite::Sprite",
-			"player",
-			"drawback",
-			"board",
-			"player",
-			"main",
-			"ttcards",
-			"return true;",
-			"run",
-			"ttcards",
+			"$(SRC)",
+			"$(OBJ)",
+			"OBJ",
+			"storeTet",
+			"updateBlock",
+			"Update",
+			"moveTo",
+			"instance",
+			"DEBUG",
+			"RELEASE",
+			"drawtext",
+			"Init",
+			"engine",
+			"Init",
+			"drawtext",
+			"gettextbuffer",
+			"drawtext",
+			"DrawText",
+			"drawtext",
+			"DrawText",
+			"font",
+			"this->",
+			"input",
+			"ifdef",
+			"start",
+			"interface_GameOver",
+			"interface",
+			"this->",
+			"HandleEv",
+			"Update",
+			"start",
+			"async",
+			"input",
+			"cardposition",
+			"engine",
+			"Init",
+			"Run",
+			"block",
+			"main_loop",
+			"callback",
+			"cpu_player",
+			"TARGET",
+			"GAMELIB_CFLAGS",
+			"EMCC",
+			"mod",
 			"debug",
-			"fold",
-			"super+alt",
-			"super+ctrl",
-			"console",
-			"click",
-			"mou",
-			"mouse",
-			"mid",
-			"middle",
-			"b3",
-			"b1",
-			"fold",
-			"expand",
-			"collapse",
+			"interfaceinput",
+			"interface",
+			"mod",
+			".bc",
+			"drawrect",
+			"(SRC)",
+			"INit",
+			"ttcards",
+			"$(CC)",
+			".bc",
+			".o",
+			"mod",
+			"input",
+			"mod",
+			"colorkey",
+			"this->coords",
+			"float",
+			"mouse_input",
+			"PATH",
+			"checkMoveColl",
+			"move",
+			"cpu_diff",
+			"player_turn",
+			"music",
+			"music_win",
+			"music.",
+			"music",
+			"moveTo",
+			"drawtext",
+			"draw_text",
+			"timer_text",
+			"message_text",
+			"game",
+			"game over",
+			"timer_text",
+			"message_text",
+			"ESCAPE",
+			"debug",
+			"ESCAPE",
+			"PlayState::Update",
+			"Update",
+			"rules",
+			"UpdateBoardPlayer",
+			"y",
+			"check_cu",
+			"getCardIndex",
+			"player_turn",
+			"clearselc",
+			"player1_cursor",
+			"cards",
+			"card_pos",
+			"card_index",
+			"virtual_index",
+			"getCardIndex",
+			"card_pos",
+			"cursor.SetXY",
+			"moveTo",
+			"PLAYER1",
+			"hand[turn]",
+			"hand[0]",
+			"card_pos",
+			"mixer1",
+			"TTcards::player_turn",
+			"player_turn",
+			"selectedCard",
+			"card_name",
+			"timer_text",
 			"gfx",
-			"calculate",
-			"pivot",
-			"drawBlock",
-			"Pivot",
-			"pivot",
-			"update",
-			"display",
-			"player1",
-			"loadimage",
-			"display",
-			"this->engine",
-			"loadimage",
-			"draw",
-			"loadimage",
-			"display",
-			"LoadImage"
+			"drawname",
+			"GetTextWidth",
+			"get_turn",
+			"GetID",
+			"player_turn",
+			"int pos",
+			"pos",
+			"player_turn",
+			"boob",
+			"mouse",
+			"card_pos",
+			"mouse",
+			"selectcard",
+			"mouse"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1197,6 +1269,17 @@
 		"regex": false,
 		"replace_history":
 		[
+			"",
+			"instance->",
+			".o",
+			"$(EMCC)",
+			".o",
+			".bc",
+			"card_rules",
+			"UpdatePlayer",
+			"cols",
+			"PLAYER2",
+			"this->cursor",
 			"0",
 			"std::endl",
 			"this->cursor",
@@ -1273,23 +1356,23 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/player.cpp",
+					"file": "gamelib/src/input.cpp",
 					"settings":
 					{
-						"buffer_size": 15487,
+						"buffer_size": 613,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7576,
-								7576
+								407,
+								407
 							]
 						],
 						"settings":
@@ -1349,7 +1432,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4443.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1359,15 +1442,15 @@
 					"file": "src/ttcards.cpp",
 					"settings":
 					{
-						"buffer_size": 7617,
+						"buffer_size": 23615,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3966,
-								3966
+								22171,
+								22171
 							]
 						],
 						"settings":
@@ -1427,25 +1510,25 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2680.0,
+						"translation.y": 11266.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "src/card_hand.cpp",
+					"file": "src/cpu_player.cpp",
 					"settings":
 					{
-						"buffer_size": 3135,
+						"buffer_size": 1947,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								968,
-								968
+								479,
+								479
 							]
 						],
 						"settings":
@@ -1505,25 +1588,25 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 263.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "src/board.cpp",
+					"file": "src/player.cpp",
 					"settings":
 					{
-						"buffer_size": 13150,
+						"buffer_size": 3841,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								12476,
-								12476
+								2283,
+								2283
 							]
 						],
 						"settings":
@@ -1583,25 +1666,25 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1420.0,
+						"translation.y": 936.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 4,
-					"file": "src/card_view.cpp",
+					"file": "src/card_hand.cpp",
 					"settings":
 					{
-						"buffer_size": 4309,
+						"buffer_size": 3779,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1989,
-								1989
+								1890,
+								1898
 							]
 						],
 						"settings":
@@ -1661,13 +1744,247 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 152.0,
+						"translation.y": 1943.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 5,
+					"file": "src/card_rules.cpp",
+					"settings":
+					{
+						"buffer_size": 1583,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								257,
+								257
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/board.cpp",
+					"settings":
+					{
+						"buffer_size": 6544,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5927,
+								5927
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4110.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/card_view.cpp",
+					"settings":
+					{
+						"buffer_size": 4763,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3931,
+								3931
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1022.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
 					"file": "src/card_collection.cpp",
 					"settings":
 					{
@@ -1745,7 +2062,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 9,
 					"file": "src/card_debug.cpp",
 					"settings":
 					{
@@ -1823,7 +2140,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 10,
 					"file": "src/card.cpp",
 					"settings":
 					{
@@ -1834,8 +2151,8 @@
 						"selection":
 						[
 							[
-								978,
-								978
+								363,
+								387
 							]
 						],
 						"settings":
@@ -1895,25 +2212,25 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 208.0,
+						"translation.y": 105.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 8,
-					"file": "src/main.cpp",
+					"buffer": 11,
+					"file": "src/cfg.cpp",
 					"settings":
 					{
-						"buffer_size": 986,
+						"buffer_size": 3804,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								391,
-								404
+								413,
+								413
 							]
 						],
 						"settings":
@@ -1968,12 +2285,10 @@
 							"incomplete_sync": null,
 							"remote_loading": false,
 							"synced": false,
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/C++/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 90.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -2069,7 +2384,7 @@
 		],
 		"width": 380.0
 	},
-	"show_minimap": false,
+	"show_minimap": true,
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": false,
