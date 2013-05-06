@@ -197,6 +197,13 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
           this->board.UpdateBoard ( x, y, this->hand[turn].GetSelectedCard() );
           this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() );
 
+          std::pair<int, int> coords = board.checkBoard ( x, y, this->hand[turn].GetSelectedCard() );
+
+          if ( std::get<0>(coords) != -1 && std::get<1>(coords) != -1 )
+          {
+            board.UpdatePlayerID ( std::get<0>(coords), std::get<1>(coords), this->hand[turn].GetSelectedCard().player_id );
+          }
+
           if ( this->get_turn() == 0 )
           {
             this->player_turn ( 1 );

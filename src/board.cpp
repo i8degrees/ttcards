@@ -226,9 +226,7 @@ void Board::UpdatePlayerID ( unsigned int x, unsigned int y, unsigned int player
 
 void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
 {
-  this->grid[x][y] = card;
-
-  this->checkBoard ( x, y, card );
+  grid[x][y] = card;
 }
 
 void Board::ListContents ( void )
