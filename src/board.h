@@ -39,6 +39,9 @@ class Board
 
     unsigned int GetStatus ( unsigned int x, unsigned int y );
 
+    unsigned int GetPlayerID ( unsigned int x, unsigned int y );
+    void UpdatePlayerID ( unsigned int x, unsigned int y, unsigned int player_id );
+
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );
     void ListContents ( void );
     void DrawBoard ( Gfx *engine );
@@ -49,9 +52,6 @@ class Board
     CardView *card;
     CardRules *rules;
     std::vector<std::vector<Card>> grid;
-
-    unsigned int GetPlayerID ( unsigned int x, unsigned int y );
-    void UpdatePlayerID ( unsigned int x, unsigned int y, unsigned int player_id );
 };
 
 #endif // BOARD_HEADERS defined
