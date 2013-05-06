@@ -82,7 +82,7 @@ bool Board::DrawBackground ( Gfx *engine )
   return true;
 }
 
-bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
+std::pair <int, int> Board::checkBoard ( unsigned int x, unsigned int y, Card &card ) //bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
 {
   unsigned int cols, rows = 0;
 
@@ -100,10 +100,8 @@ bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows, cols + 1 ) << std::endl << std::endl;
             #endif
 
-            this->UpdatePlayerID ( rows, cols + 1, card.player_id );
-
             if ( this->rules->GetRules() == 0 )
-              return true;
+              return std::make_pair ( rows, cols + 1 );
             else
               continue;
           }
@@ -120,10 +118,8 @@ bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows + 1, cols ) << std::endl << std::endl;
             #endif
 
-            this->UpdatePlayerID ( rows + 1, cols, card.player_id );
-
             if ( this->rules->GetRules() == 0 )
-              return true;
+              return std::make_pair ( rows + 1, cols );
             else
               continue;
           }
@@ -140,10 +136,8 @@ bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows, cols - 1 ) << std::endl << std::endl;
             #endif
 
-            this->UpdatePlayerID ( rows, cols - 1, card.player_id );
-
             if ( this->rules->GetRules() == 0 )
-              return true;
+              return std::make_pair ( rows, cols - 1 );
             else
               continue;
           }
@@ -160,10 +154,8 @@ bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
               std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows - 1, cols ) << std::endl << std::endl;
             #endif
 
-            this->UpdatePlayerID ( rows - 1, cols, card.player_id );
-
             if ( this->rules->GetRules() == 0 )
-              return true;
+              return std::make_pair ( rows - 1, cols );
             else
               continue;
           }
@@ -172,7 +164,7 @@ bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
     } // rows for loop
   } // cols for loop
 
-  return false;
+  return std::make_pair ( -1, -1 );
 
   #ifdef DEBUG_BOARD_CMP
     std::cout << "\nEnd of comparison." << std::endl;

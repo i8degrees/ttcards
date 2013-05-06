@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 
 #include "gamelib.h"
 
@@ -29,7 +30,7 @@ class Board
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
-    bool checkBoard ( unsigned int x, unsigned int y, Card &card );
+    std::pair <int, int> checkBoard ( unsigned int x, unsigned int y, Card &card ); //bool checkBoard ( unsigned int x, unsigned int y, Card &card );
 
     // TODO: Consider branching this into Score class
     unsigned int GetPlayerCardCount ( unsigned int player_id );
