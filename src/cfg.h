@@ -13,7 +13,7 @@
 #define DEBUG_TTCARDS_OBJ
 
 #define DEBUG_BOARD
-//#define DEBUG_BOARD_CMP
+#define DEBUG_BOARD_CMP
 #define DEBUG_BOARD_OBJ
 
 #define DEBUG_PLAYER
