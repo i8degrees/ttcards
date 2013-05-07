@@ -108,7 +108,7 @@ bool TTcards::Init ( Gfx *engine )
 
   this->fps.Start();
 
-  //SDL_EnableKeyRepeat( SDL_DEFAULT_REPEAT_DELAY / 12, SDL_DEFAULT_REPEAT_INTERVAL / 12 );
+  SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
   return true;
 }
@@ -306,11 +306,7 @@ void TTcards::cursor_input ( SDL_Event *input )
 
 void TTcards::Input ( void )
 {
-  while ( SDL_PollEvent ( &input ) )
-  {
-    SDLInput::HandleInput ( &input );
-    //this->cursor_input ( &this->input );
-  }
+  SDLInput::Input (); //this->cursor_input ( &this->input );
 }
 
 void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
