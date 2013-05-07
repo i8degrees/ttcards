@@ -8,6 +8,7 @@
 #define GAMEAPP_CFG_HEADERS
 
 #include <string>
+#include "OSXFs.h"
 
 #define DEBUG_TTCARDS // unused
 #define DEBUG_TTCARDS_OBJ
