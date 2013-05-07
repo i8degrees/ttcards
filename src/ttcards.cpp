@@ -623,6 +623,8 @@ void TTcards::interface_GameOver ( void )
 
 void TTcards::Run ( void )
 {
+  this->fps.Update();
+
   if ( this->get_turn() == 1 && this->hand[1].cards.size() > 0 )
   {
     unsigned int moveX = std::rand() % 3;
@@ -673,8 +675,6 @@ void TTcards::Run ( void )
   this->ShowFPS();
 
   this->engine->UpdateScreen ();
-
-  this->fps.Update();
 
   //SDL_Delay ( 250 );
 }
