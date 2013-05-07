@@ -1,2 +1,2 @@
 app:
-	./ttcards
+	open --fresh -a "Terminal" ./ttcards

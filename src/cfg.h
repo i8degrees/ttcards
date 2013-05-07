@@ -7,6 +7,8 @@
 #ifndef GAMEAPP_CFG_HEADERS
 #define GAMEAPP_CFG_HEADERS
 
+#include <string>
+
 #define DEBUG_TTCARDS // unused
 #define DEBUG_TTCARDS_OBJ
 
@@ -39,7 +41,6 @@
 #define DEBUG_CARD_RULES_OBJ
 
 extern const char APP_NAME[255];
-extern const char APP_ICON[255];
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
@@ -105,13 +106,7 @@ extern const int CARD_ID_ORIGIN_Y;
 
 extern const int BOARD_GRID_WIDTH;
 extern const int BOARD_GRID_HEIGHT;
-extern const char BOARD_BACKGROUND[255];
 
-extern const char CARDS_DB[255];
-extern const char CARD_FONTFACE[255];
-extern const char SCORE_FONTFACE[255];
-
-extern const char CARD_ELEMENTS[255];
 extern const int ELEMENT_NONE;
 extern const int ELEMENT_EARTH;
 extern const int ELEMENT_FIRE;
@@ -122,24 +117,31 @@ extern const int ELEMENT_THUNDER;
 extern const int ELEMENT_WATER;
 extern const int ELEMENT_WIND;
 
-extern const char CARD_FACES[255];
-
-extern const char CARD_BACKGROUNDS[255];
 extern const int NOFACE_ID;
 extern const int NOPLAYER_BACKGROUND_ID;
 extern const int PLAYER1_BACKGROUND_ID;
 extern const int PLAYER2_BACKGROUND_ID;
 
-extern const char INTERFACE_CURSOR[255];
 extern const int INTERFACE_CURSOR_NONE;
 extern const int INTERFACE_CURSOR_LEFT;
 extern const int INTERFACE_CURSOR_RIGHT;
 
-extern const char CURSOR_MOVE[255];
-extern const char CURSOR_CANCEL[255];
-extern const char CURSOR_WRONG[255];
-extern const char MUSIC_TRACK[255];
-extern const char MUSIC_ALT_TRACK[255];
-extern const char MUSIC_WIN_TRACK[255];
+extern const std::string WORKING_DIR;
+extern const std::string CARDS_DB;
+extern const std::string CARD_FONTFACE;
+extern const std::string SCORE_FONTFACE;
+extern const std::string APP_ICON;
+extern const std::string BOARD_BACKGROUND;
+extern const std::string CARD_ELEMENTS;
+extern const std::string CARD_FACES;
+extern const std::string CARD_BACKGROUNDS;
+extern const std::string INTERFACE_CURSOR;
+extern const std::string CURSOR_MOVE;
+extern const std::string CURSOR_CANCEL;
+extern const std::string CURSOR_WRONG;
+extern const std::string MUSIC_TRACK;
+extern const std::string MUSIC_ALT_TRACK;
+extern const std::string MUSIC_WIN_TRACK;
+
 
 #endif // GAMEAPP_CFG_HEADERS defined
