@@ -1,2 +1,2 @@
 app:
-	open --fresh -a "Terminal" ./ttcards
+	open --wait-apps --fresh -a "Terminal" ./ttcards
