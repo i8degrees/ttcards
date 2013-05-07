@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include <list>
 
 #include "gamelib.h"
 
@@ -30,7 +31,7 @@ class Board
     bool LoadBackground ( std::string filename );
     bool DrawBackground ( Gfx *engine );
 
-    std::pair <int, int> checkBoard ( unsigned int x, unsigned int y, Card &card ); //bool checkBoard ( unsigned int x, unsigned int y, Card &card );
+    std::vector<std::pair<int, int>> checkBoard ( unsigned int x, unsigned int y );
 
     // TODO: Consider branching this into Score class
     unsigned int GetPlayerCardCount ( unsigned int player_id );
@@ -38,9 +39,9 @@ class Board
     unsigned int GetTotalCount ( void );
 
     unsigned int GetStatus ( unsigned int x, unsigned int y );
-
-    unsigned int GetPlayerID ( unsigned int x, unsigned int y );
-    void UpdatePlayerID ( unsigned int x, unsigned int y, unsigned int player_id );
+    void flipCard ( unsigned int x, unsigned int y );
+    unsigned int getPlayerID ( unsigned int x, unsigned int y );
+    void updatePlayerID ( unsigned int x, unsigned int y, unsigned int player_id );
 
     void UpdateBoard ( unsigned int x, unsigned int y, Card &card );
     void ListContents ( void );

@@ -66,7 +66,6 @@ class TTcards: public SDLInput
 
   private:
     static TTcards *instance; // EMCC compiler related
-    SDL_Event input; // input events; keyboard, mouse
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     Font timer_text; // fps timer font

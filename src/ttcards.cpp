@@ -108,7 +108,7 @@ bool TTcards::Init ( Gfx *engine )
 
   this->fps.Start();
 
-  SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
+  //SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
   return true;
 }
@@ -197,11 +197,15 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
           this->board.UpdateBoard ( x, y, this->hand[turn].GetSelectedCard() );
           this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() );
 
-          std::pair<int, int> coords = board.checkBoard ( x, y, this->hand[turn].GetSelectedCard() );
+          std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
 
-          if ( std::get<0>(coords) != -1 && std::get<1>(coords) != -1 )
+          if ( ! grid.empty() )
           {
-            board.UpdatePlayerID ( std::get<0>(coords), std::get<1>(coords), this->hand[turn].GetSelectedCard().player_id );
+            for ( int g = 0; g < grid.size(); g++ )
+            {
+              std::cout << grid[g].first << " " << grid[g].second << "\n\n";
+              board.flipCard ( grid[g].first, grid[g].second );
+            }
           }
 
           if ( this->get_turn() == 0 )
@@ -458,7 +462,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
       if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(coords) ) )
       {
-        std::cout << hand[turn].cards[0].name << "\n";
+        //std::cout << hand[turn].cards[0].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[0] );
 
         // Updates Cursor Position
@@ -468,7 +472,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
       else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(coords) ) )
       {
-        std::cout << hand[turn].cards[1].name << "\n";
+        //std::cout << hand[turn].cards[1].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[1] );
 
         // Updates Cursor Position
@@ -478,7 +482,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
       else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(coords) ) )
       {
-        std::cout << hand[turn].cards[2].name << "\n";
+        //std::cout << hand[turn].cards[2].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[2] );
 
         // Updates Cursor Position
@@ -488,7 +492,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
       else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(coords) ) )
       {
-        std::cout << hand[turn].cards[3].name << "\n";
+        //std::cout << hand[turn].cards[3].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[3] );
 
         // Updates Cursor Position
@@ -498,7 +502,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
       else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(coords) ) )
       {
-        std::cout << hand[turn].cards[4].name << "\n";
+        //std::cout << hand[turn].cards[4].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[4] );
 
         // Updates Cursor Position
@@ -624,21 +628,30 @@ void TTcards::interface_GameOver ( void )
 void TTcards::Run ( void )
 {
   this->fps.Update();
-
+/*
   if ( this->get_turn() == 1 && this->hand[1].cards.size() > 0 )
   {
+    std::pair<int, int> coords;
     unsigned int moveX = std::rand() % 3;
     unsigned int moveY = std::rand() % 3;
     unsigned int rID = std::rand() % 4;
 
-    this->hand[1].SelectCard ( this->hand[1].cards[rID] );
+    hand[1].SelectCard ( hand[1].cards[rID] );
 
-    if ( this->board.checkBoard ( moveX, moveY, this->hand[1].GetSelectedCard() ) )
+    //coords = board.checkBoard ( moveX, moveY, this->hand[1].GetSelectedCard() );
+
+    if ( std::get<0>(coords) != -1 && std::get<1>(coords) != -1 )
     {
-      this->moveTo ( moveX, moveY );
+      std::cout << "CPU:" << " " << "[checkBoard]" << std::endl;
+      moveTo ( moveX, moveY );
+    }
+    else
+    {
+      moveTo ( moveX, moveY );
       std::cout << "CPU:" << " " << "[random]" << std::endl;
     }
   }
+*/
 
   this->check_cursor_movement();
 
