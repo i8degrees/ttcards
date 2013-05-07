@@ -22,7 +22,7 @@ set ( GAMELIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/gamelib/src )
 # LIBGAMELIB
 #set ( GAMELIB_HEADERS /usr/local/include/gamelib )
 
-project(ttcards)
+project ( ttcards )
 
 add_subdirectory ( gamelib )
 
