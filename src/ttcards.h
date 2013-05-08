@@ -23,6 +23,9 @@
 #include "card_rules.h"
 #include "cpu_player.h"
 
+#include <map>
+#include <algorithm>
+
 class TTcards: public SDLInput
 {
   public:
@@ -51,9 +54,11 @@ class TTcards: public SDLInput
 
     void interface_GameOver ( void );
 
+    void Update ( void );
+    void Draw ( void );
+    void Run ( void ); // game loop
     static void Callback ( void ); // EMCC compiler related
     void Start ( void ); // EMCC compiler related
-    void Run ( void ); // game loop
 
     void onResize ( unsigned int width, unsigned int height );
     void onMouseLeftButtonUp ( unsigned int x, unsigned int y );

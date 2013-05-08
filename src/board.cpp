@@ -83,7 +83,7 @@ bool Board::DrawBackground ( Gfx *engine )
   return true;
 }
 
-std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned int y ) //bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
+std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned int y )
 {
   unsigned int cols, rows = 0;
   std::vector<std::pair<int, int>> coords;
@@ -98,22 +98,13 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && GetStatus ( rows, cols + 1 ) != 0 )
         {
-          if ( rules->GetRules() == 0 ) // NONE
+          if ( rules->CompareCards ( grid[rows][cols].rank[2], grid[rows][cols + 1].rank[0] ) == true )
           {
-            if ( rules->CompareCards ( grid[rows][cols].rank[2], grid[rows][cols + 1].rank[0] ) == true )
-            {
-              #ifdef DEBUG_BOARD_CMP
-                std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows, cols + 1 ) << std::endl << std::endl;
-              #endif
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows, cols + 1 ) << std::endl << std::endl;
+            #endif
 
-              coords.push_back ( std::make_pair ( rows, cols + 1 ) );
-              return coords;
-            }
-          }
-          else if ( rules->GetRules() == 1 )
-          {
-            if ( rules->CompareCards ( grid[rows][cols].rank[2], grid[rows][cols + 1].rank[0] ) == true )
-              coords.push_back ( std::make_pair ( rows, cols + 1 ) );
+            coords.push_back ( std::make_pair ( rows, cols + 1 ) );
           }
         }
       }
@@ -122,22 +113,13 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && GetStatus ( rows + 1, cols ) != 0 )
         {
-          if ( rules->GetRules() == 0 )
+          if ( rules->CompareCards ( grid[rows][cols].rank[1], grid[rows + 1][cols].rank[3] ) == true )
           {
-            if ( rules->CompareCards ( grid[rows][cols].rank[1], grid[rows + 1][cols].rank[3] ) == true )
-            {
-              #ifdef DEBUG_BOARD_CMP
-                std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows + 1, cols ) << std::endl << std::endl;
-              #endif
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows + 1, cols ) << std::endl << std::endl;
+            #endif
 
-              coords.push_back ( std::make_pair ( rows + 1, cols ) );
-              return coords;
-            }
-          }
-          else if ( rules->GetRules() == 1 )
-          {
-            if ( rules->CompareCards ( grid[rows][cols].rank[1], grid[rows + 1][cols].rank[3] ) == true )
-              coords.push_back ( std::make_pair ( rows + 1, cols ) );
+            coords.push_back ( std::make_pair ( rows + 1, cols ) );
           }
         }
       }
@@ -146,22 +128,13 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && GetStatus ( rows, cols - 1 ) != 0 )
         {
-          if ( rules->GetRules() == 0 )
+          if ( rules->CompareCards ( grid[rows][cols].rank[0], grid[rows][cols - 1].rank[2] ) == true )
           {
-            if ( rules->CompareCards ( grid[rows][cols].rank[0], grid[rows][cols - 1].rank[2] ) == true )
-            {
-              #ifdef DEBUG_BOARD_CMP
-                std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows, cols - 1 ) << std::endl << std::endl;
-              #endif
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows, cols - 1 ) << std::endl << std::endl;
+            #endif
 
-              coords.push_back ( std::make_pair ( rows, cols - 1 ) );
-              return coords;
-            }
-          }
-          else if ( rules->GetRules() == 1 )
-          {
-            if ( rules->CompareCards ( grid[rows][cols].rank[0], grid[rows][cols - 1].rank[2] ) == true )
-              coords.push_back ( std::make_pair ( rows, cols - 1 ) );
+            coords.push_back ( std::make_pair ( rows, cols - 1 ) );
           }
         }
       }
@@ -170,22 +143,13 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && GetStatus ( rows - 1, cols ) != 0 )
         {
-          if ( this->rules->GetRules() == 0 )
+          if ( rules->CompareCards ( grid[rows][cols].rank[3], grid[rows - 1][cols].rank[1] ) == true )
           {
-            if ( rules->CompareCards ( grid[rows][cols].rank[3], grid[rows - 1][cols].rank[1] ) == true )
-            {
-              #ifdef DEBUG_BOARD_CMP
-                std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows - 1, cols ) << std::endl << std::endl;
-              #endif
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows - 1, cols ) << std::endl << std::endl;
+            #endif
 
-              coords.push_back ( std::make_pair ( rows - 1, cols ) );
-              return coords;
-            }
-          }
-          else if ( rules->GetRules() == 1 )
-          {
-            if ( rules->CompareCards ( grid[rows][cols].rank[3], grid[rows - 1][cols].rank[1] ) == true )
-              coords.push_back ( std::make_pair ( rows - 1, cols ) );
+            coords.push_back ( std::make_pair ( rows - 1, cols ) );
           }
         }
       }
@@ -242,15 +206,9 @@ unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
   return this->grid[x][y].id;
 }
 
-void Board::flipCard ( unsigned int x, unsigned int y )
+void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
 {
-  if ( x != -1 && y != -1 )
-  {
-    if ( grid[x][y].player_id == 1 )
-      grid[x][y].player_id = 2;
-    else if ( grid[x][y].player_id == 2 )
-      grid[x][y].player_id = 1;
-  }
+  grid[x][y].player_id = player_id;
 }
 
 unsigned int Board::getPlayerID ( unsigned int x, unsigned int y )
@@ -258,14 +216,14 @@ unsigned int Board::getPlayerID ( unsigned int x, unsigned int y )
   return this->grid[x][y].player_id;
 }
 
-void Board::updatePlayerID ( unsigned int x, unsigned int y, unsigned int player )
-{
-  this->grid[x][y].player_id = player;
-}
-
-void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
+void Board::updateStatus ( unsigned int x, unsigned int y, Card &card )
 {
   grid[x][y] = card;
+}
+
+void Board::updateBoard ( unsigned int x, unsigned int y )
+{
+  //
 }
 
 void Board::ListContents ( void )

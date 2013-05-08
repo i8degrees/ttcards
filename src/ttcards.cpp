@@ -58,7 +58,7 @@ bool TTcards::LoadGameData ( void )
   this->player[1].Init ( &this->hand[1], &this->card );
   player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
-  this->rules.SetRules ( 0 );
+  this->rules.SetRules ( 1 );
 
   AI.Init ( &this->board, &this->hand[1] );
 
@@ -77,7 +77,7 @@ bool TTcards::Init ( Gfx *engine )
   this->LoadGameData();
 
   this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
-  this->hand[0].AddCard ( this->collection.cards[109] ); // Squallppp
+  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
   this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
   this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
   this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
@@ -194,7 +194,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
       {
         if ( this->get_turn() == turn )
         {
-          this->board.UpdateBoard ( x, y, this->hand[turn].GetSelectedCard() );
+          this->board.updateStatus ( x, y, this->hand[turn].GetSelectedCard() );
           this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() );
 
           std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
@@ -203,8 +203,17 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
           {
             for ( int g = 0; g < grid.size(); g++ )
             {
-              std::cout << grid[g].first << " " << grid[g].second << "\n\n";
-              board.flipCard ( grid[g].first, grid[g].second );
+              board.flipCard ( grid[g].first, grid[g].second, turn + 1 );
+
+              if ( rules.GetRules() == 1 )
+              {
+                std::vector<std::pair<int, int>> tgrid = board.checkBoard ( grid[g].first, grid[g].second );
+
+                for ( int tg = 0; tg < tgrid.size(); tg++ )
+                {
+                  board.flipCard( tgrid[tg].first, tgrid[tg].second, turn + 1 );
+                }
+              }
             }
           }
 
@@ -625,69 +634,47 @@ void TTcards::interface_GameOver ( void )
   }
 }
 
-void TTcards::Run ( void )
+void TTcards::Update ( void )
 {
-  this->fps.Update();
-/*
-  if ( this->get_turn() == 1 && this->hand[1].cards.size() > 0 )
-  {
-    std::pair<int, int> coords;
-    unsigned int moveX = std::rand() % 3;
-    unsigned int moveY = std::rand() % 3;
-    unsigned int rID = std::rand() % 4;
-
-    hand[1].SelectCard ( hand[1].cards[rID] );
-
-    //coords = board.checkBoard ( moveX, moveY, this->hand[1].GetSelectedCard() );
-
-    if ( std::get<0>(coords) != -1 && std::get<1>(coords) != -1 )
-    {
-      std::cout << "CPU:" << " " << "[checkBoard]" << std::endl;
-      moveTo ( moveX, moveY );
-    }
-    else
-    {
-      moveTo ( moveX, moveY );
-      std::cout << "CPU:" << " " << "[random]" << std::endl;
-    }
-  }
-*/
-
-  this->check_cursor_movement();
-
-  this->Input ();
-
-  this->board.DrawBackground ( this->engine );
-  this->board.DrawBoard ( this->engine );
-
-  this->player[0].Draw ( this->engine );
-  this->player[1].Draw ( this->engine );
-
-  this->draw_cursor();
-  this->update_cursor();
-
-  this->player[0].DrawScore ( this->engine, &this->board, 32, 176 ); // SCREEN_HEIGHT - 48
-  this->player[1].DrawScore ( this->engine, &this->board, 320, 176 ); // 64 * 5
-
-  if ( this->get_turn() == 0 )
-  {
-    this->card.DrawName ( this->engine, this->hand[0].GetSelectedCard(), 208 );
-    this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
-  }
-  else if ( this->get_turn() == 1 )
-  {
-    this->card.DrawName ( this->engine, this->hand[1].GetSelectedCard(), 208 );
-    this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
-  }
+  fps.Update();
+  update_cursor();
 
   if ( this->board.GetTotalCount () >= 9 ) // game / round is over
   {
     interface_GameOver();
   }
+}
 
-  this->ShowFPS();
+void TTcards::Draw ( void )
+{
+  board.DrawBackground ( this->engine );
+  board.DrawBoard ( this->engine );
 
-  this->engine->UpdateScreen ();
+  player[0].Draw ( this->engine );
+  player[1].Draw ( this->engine );
 
-  //SDL_Delay ( 250 );
+  draw_cursor();
+
+  player[0].DrawScore ( this->engine, &this->board, 32, 176 ); // SCREEN_HEIGHT - 48
+  player[1].DrawScore ( this->engine, &this->board, 320, 176 ); // 64 * 5
+
+  if (get_turn() == 0 )
+  {
+    card.DrawName ( engine, hand[0].GetSelectedCard(), 208 );
+    engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
+  }
+  else if ( get_turn() == 1 )
+  {
+    card.DrawName ( engine, hand[1].GetSelectedCard(), 208 );
+    engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+  }
+  ShowFPS();
+  engine->UpdateScreen ();
+}
+
+void TTcards::Run ( void )
+{
+  Input ();
+  Update();
+  Draw();
 }

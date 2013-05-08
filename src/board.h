@@ -10,7 +10,6 @@
 #include <iostream>
 #include <string>
 #include <utility>
-#include <list>
 
 #include "gamelib.h"
 
@@ -39,11 +38,11 @@ class Board
     unsigned int GetTotalCount ( void );
 
     unsigned int GetStatus ( unsigned int x, unsigned int y );
-    void flipCard ( unsigned int x, unsigned int y );
+    void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
     unsigned int getPlayerID ( unsigned int x, unsigned int y );
-    void updatePlayerID ( unsigned int x, unsigned int y, unsigned int player_id );
 
-    void UpdateBoard ( unsigned int x, unsigned int y, Card &card );
+    void updateStatus ( unsigned int x, unsigned int y, Card &card );
+    void updateBoard ( unsigned int x, unsigned int y );
     void ListContents ( void );
     void DrawBoard ( Gfx *engine );
 
