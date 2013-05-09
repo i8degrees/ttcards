@@ -43,10 +43,9 @@ bool TTcards::Init ( Gfx *engine )
   this->LoadGameData();
 
   #ifdef DEBUG_TTCARDS
-    //this->debugCardsNoRuleset();
-    this->debugCardsSameRuleset();
+    this->debugCardsNoRuleset();
+    //this->debugCardsSameRuleset();
   #endif
-
 
   //this->music.PlayMusicTrack ( -1 );
   //this->music.PauseMusic ();
@@ -145,6 +144,18 @@ void TTcards::debugCardsSameRuleset ( void )
   this->hand[1].AddCard ( this->collection.cards[63] ); // Oilboyle
   this->hand[1].AddCard ( this->collection.cards[77] ); // Chubby Chocobo
   //this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
+}
+
+// debug helper method
+void TTcards::removePlayerCard ( void )
+{
+  unsigned int player_turn = get_turn();
+
+  hand[player_turn].RemoveCard ( hand[player_turn].GetSelectedCard() );
+  hand[player_turn].ClearSelected();
+  hand[player_turn].SelectCard ( hand[player_turn].cards.front() );
+
+  cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) );
 }
 
 bool TTcards::IsFullScreen ( void )
@@ -274,21 +285,6 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
       }
     }
   }
-}
-
-// debug helper method
-void TTcards::removePlayerCard ( void )
-{
-  unsigned int player_turn = get_turn();
-
-  hand[player_turn].RemoveCard ( hand[player_turn].GetSelectedCard() );
-  hand[player_turn].ClearSelected();
-  hand[player_turn].SelectCard ( hand[player_turn].cards.front() );
-
-  if ( player_turn == 0 ) // player1
-    cursor.SetXY ( std::get<0>(player_cursor_coords[0]), std::get<1>(player_cursor_coords[0]) );
-  else // player2
-    cursor.SetXY ( std::get<0>(player_cursor_coords[1]), std::get<1>(player_cursor_coords[1]) );
 }
 
 void TTcards::cursor_input ( SDL_Event *input )
