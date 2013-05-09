@@ -90,8 +90,6 @@ class TTcards: public SDLInput
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks
 
-    std::pair <int, int> player_coords; // x, y coords
-
     unsigned int turn; // player1 = 0, player2 = 1
     bool game_state; // global app state
     bool show_fps; // fps counter

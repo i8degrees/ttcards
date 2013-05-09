@@ -471,7 +471,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
   {
     if ( get_turn() == turn ) // locks the input to the current player
     {
-      player_coords = player[turn].getXY(); // PLAYER ORIGIN XY
+      std::pair<int, int> player_coords = player[turn].getXY(); // PLAYER ORIGIN XY
 
       // player hand selection checks
 
