@@ -81,7 +81,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
   unsigned int cols, rows = 0;
   std::vector<std::pair<int, int>> coords;
 
-  coords.clear();
+  coords.clear(); // initialize a fresh new coords list
 
   for ( cols = y; y < BOARD_GRID_HEIGHT; y++ )
   {
@@ -218,7 +218,7 @@ void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
 
 void Board::Update ( unsigned int x, unsigned int y )
 {
-  //
+  // TODO
 }
 
 void Board::Draw ( Gfx *engine )
