@@ -246,7 +246,7 @@ void Board::List ( void ) // debug
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      std::cout << getStatus ( x, y ) << " " << getPlayerID ( x, y ) << " ";
+      std::cout << getStatus ( x, y ) << "[" << getPlayerID ( x, y ) << "]" << "\t";
     }
     std::cout << std::endl << std::endl;
   }
