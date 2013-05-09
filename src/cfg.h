@@ -10,7 +10,7 @@
 #include <string>
 #include "OSXFs.h"
 
-#define DEBUG_TTCARDS // unused
+#define DEBUG_TTCARDS
 #define DEBUG_TTCARDS_OBJ
 
 #define DEBUG_BOARD
