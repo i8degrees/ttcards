@@ -150,5 +150,40 @@ extern const std::string MUSIC_TRACK;
 extern const std::string MUSIC_ALT_TRACK;
 extern const std::string MUSIC_WIN_TRACK;
 
+// Card elemental type
+enum {
+  NONE=0, // type 0; no element
+  EARTH=1, // type 1 element
+  FIRE=2, // type 2 element
+  HOLY=3, // type 3 element
+  ICE=4, // type 4 element
+  POISON=5, // type 5 element
+  THUNDER=6, // type 6 element
+  WATER=7, // type 7 element
+  WIND=8 // type 8 element
+};
+
+// Card level category
+enum {
+  MONSTER=1,
+  BOSS=2,
+  GF=3,
+  PLAYER=4
+};
+
+// Card ranking sides
+enum {
+  NORTH=0,
+  EAST=1,
+  SOUTH=2,
+  WEST=3
+};
+
+// Player mapping
+enum {
+  NOPLAYER=0,
+  PLAYER1=1,
+  PLAYER2=2
+};
 
 #endif // GAMEAPP_CFG_HEADERS defined
