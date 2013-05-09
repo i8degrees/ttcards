@@ -78,6 +78,11 @@ extern const int PLAYER1_CURSOR_ORIGIN_Y;
 extern const int PLAYER2_CURSOR_ORIGIN_X;
 extern const int PLAYER2_CURSOR_ORIGIN_Y;
 
+extern const int PLAYER1_SCORE_ORIGIN_X;
+extern const int PLAYER1_SCORE_ORIGIN_Y;
+
+extern const int PLAYER2_SCORE_ORIGIN_X;
+extern const int PLAYER2_SCORE_ORIGIN_Y;
 
 extern const int CARD_ORIGIN_X;
 extern const int CARD_ORIGIN_Y;
