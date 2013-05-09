@@ -60,7 +60,7 @@ unsigned int Card::getElement ( void )
   return this->element;
 }
 
-std::array<int, 4> Card::getRank ( void )
+std::array<int, 4> Card::getRanks ( void )
 {
   return this->rank;
 }
