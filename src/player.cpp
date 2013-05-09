@@ -21,8 +21,6 @@ Player::Player ( void )
   this->state = 0; // not used
   this->score = 5; // initialize scoreboard
 
-  //this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
-  //this->text_score.SetTextColor ( 255, 255, 255 ); // white
 }
 
 Player::~Player ( void )

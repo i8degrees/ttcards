@@ -51,8 +51,6 @@ private:
   CardHand *hand;
 
   std::pair <int, int> coords; // x, y coords
-  //unsigned int x;
-  //unsigned int y;
   unsigned int id; // unique identifier for tracking each player in game
   unsigned int state;
   unsigned int score;
