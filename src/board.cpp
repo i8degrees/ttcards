@@ -98,7 +98,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
             if ( grid[rows][cols].getWestRank() == grid[rows - 1][cols].getEastRank() )
             {
               same_count += 1;
-              if ( same_count > 2 && coords.size() < 2 )
+              if ( same_count < 2 && coords.size() < 2 )
                 coords.push_back ( std::make_pair ( rows - 1, cols ) );
             }
           }
