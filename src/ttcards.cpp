@@ -619,8 +619,9 @@ void TTcards::updateScore ( void )
 {
   unsigned int hand_count = 0; // player hand total count
   unsigned int board_count = 0; // board card total count
+  unsigned int turn = 0;
 
-  for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  for ( turn = 0; turn < TOTAL_PLAYERS; turn++ )
   {
     board_count = board.getPlayerCount ( turn + 1 );
 
