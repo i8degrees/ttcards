@@ -36,9 +36,9 @@ bool TTcards::Init ( Gfx *engine )
   this->engine = engine; // initialize rendering interface
   this->show_fps = true;
 
-#ifndef EMSCRIPTEN
-  engine->setTitle ( APP_NAME );
-#endif
+  #ifndef EMSCRIPTEN
+    engine->setTitle ( APP_NAME );
+  #endif
 
   this->LoadGameData();
 
