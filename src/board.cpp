@@ -20,13 +20,13 @@ Board::Board ( void )
     std::cout << "Board::Board (): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->rules = NULL;
+  rules = NULL;
 
-  this->grid.resize ( BOARD_GRID_HEIGHT ); // y coords
+  grid.resize ( BOARD_GRID_HEIGHT ); // y coords
 
   for ( x = 0; x < BOARD_GRID_WIDTH; x++ ) // x coords
   {
-    this->grid[x].resize ( BOARD_GRID_WIDTH );
+    grid[x].resize ( BOARD_GRID_WIDTH );
   }
 
   /* Initialize our new 2D std::vector grid */
@@ -34,7 +34,7 @@ Board::Board ( void )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->grid[x][y] = 0;
+      grid[x][y] = 0;
     }
   }
 
@@ -52,33 +52,26 @@ Board::~Board ( void )
     std::cout << "Board::~Board (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
-  if ( this->rules != NULL )
+  if ( rules != NULL )
   {
     this->rules = NULL;
   }
 
-  if ( this->card != NULL )
+  if ( card != NULL )
   {
     this->card = NULL;
   }
 
-  if ( this->background != NULL )
+  if ( background != NULL )
   {
-    SDL_FreeSurface ( this->background );
-    this->background = NULL;
+    SDL_FreeSurface ( background );
+    background = NULL;
   }
 }
 
 bool Board::LoadBackground ( std::string filename )
 {
-  this->background = Gfx::LoadImage ( filename );
-
-  return true;
-}
-
-bool Board::DrawBackground ( Gfx *engine )
-{
-  engine->DrawSurface ( this->background, 0, 0 );
+  background = Gfx::LoadImage ( filename );
 
   return true;
 }
@@ -96,12 +89,12 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
     {
       if ( cols != 2 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && GetStatus ( rows, cols + 1 ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
         {
           if ( rules->CompareCards ( grid[rows][cols].rank[2], grid[rows][cols + 1].rank[0] ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows, cols + 1 ) << std::endl << std::endl;
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols + 1 ) << std::endl << std::endl;
             #endif
 
             coords.push_back ( std::make_pair ( rows, cols + 1 ) );
@@ -111,12 +104,12 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
 
       if ( rows != 2 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && GetStatus ( rows + 1, cols ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
         {
           if ( rules->CompareCards ( grid[rows][cols].rank[1], grid[rows + 1][cols].rank[3] ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows + 1, cols ) << std::endl << std::endl;
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows + 1, cols ) << std::endl << std::endl;
             #endif
 
             coords.push_back ( std::make_pair ( rows + 1, cols ) );
@@ -126,12 +119,12 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
 
       if ( cols != 0 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && GetStatus ( rows, cols - 1 ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
         {
           if ( rules->CompareCards ( grid[rows][cols].rank[0], grid[rows][cols - 1].rank[2] ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows, cols - 1 ) << std::endl << std::endl;
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols - 1 ) << std::endl << std::endl;
             #endif
 
             coords.push_back ( std::make_pair ( rows, cols - 1 ) );
@@ -141,12 +134,12 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
 
       if ( rows != 0 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && GetStatus ( rows - 1, cols ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
         {
           if ( rules->CompareCards ( grid[rows][cols].rank[3], grid[rows - 1][cols].rank[1] ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << GetStatus ( rows, cols ) << " " << "wins against" << " " << GetStatus ( rows - 1, cols ) << std::endl << std::endl;
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows - 1, cols ) << std::endl << std::endl;
             #endif
 
             coords.push_back ( std::make_pair ( rows - 1, cols ) );
@@ -163,35 +156,16 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
   #endif
 } // end Board::checkBoard()
 
-unsigned int Board::GetPlayerCardCount ( unsigned int pid )
-{
-  unsigned int pid_count = 0;
-  unsigned int x, y = 0;
-
-  for ( y = 0; y < this->grid.size(); y++ )
-  {
-    for ( x = 0; x < this->grid.size(); x++ )
-    {
-      if ( this->getPlayerID ( x, y ) != 0 && this->getPlayerID ( x, y ) == pid )
-      {
-        pid_count += 1;
-      }
-    }
-  }
-
-  return pid_count;
-}
-
-unsigned int Board::GetTotalCount ( void )
+unsigned int Board::getCount ( void ) // by card
 {
   unsigned int total_count = 0;
   unsigned int x, y = 0;
 
-  for ( y = 0; y < this->grid.size(); y++ )
+  for ( y = 0; y < grid.size(); y++ )
   {
-    for ( x = 0; x < this->grid.size(); x++ )
+    for ( x = 0; x < grid.size(); x++ )
     {
-      if ( this->GetStatus ( x, y ) != 0 )
+      if ( getStatus ( x, y ) != 0 )
       {
         total_count += 1;
       }
@@ -201,19 +175,28 @@ unsigned int Board::GetTotalCount ( void )
   return total_count;
 }
 
-unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
+unsigned int Board::getPlayerCount ( unsigned int player_id ) // by playerID
 {
-  return this->grid[x][y].id;
+  unsigned int pid_count = 0;
+  unsigned int x, y = 0;
+
+  for ( y = 0; y < grid.size(); y++ )
+  {
+    for ( x = 0; x < grid.size(); x++ )
+    {
+      if ( getPlayerID ( x, y ) != 0 && getPlayerID ( x, y ) == player_id )
+      {
+        pid_count += 1;
+      }
+    }
+  }
+
+  return pid_count;
 }
 
-void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
+unsigned int Board::getStatus ( unsigned int x, unsigned int y )
 {
-  grid[x][y].player_id = player_id;
-}
-
-unsigned int Board::getPlayerID ( unsigned int x, unsigned int y )
-{
-  return this->grid[x][y].player_id;
+  return grid[x][y].id;
 }
 
 void Board::updateStatus ( unsigned int x, unsigned int y, Card &card )
@@ -221,28 +204,26 @@ void Board::updateStatus ( unsigned int x, unsigned int y, Card &card )
   grid[x][y] = card;
 }
 
-void Board::updateBoard ( unsigned int x, unsigned int y )
+unsigned int Board::getPlayerID ( unsigned int x, unsigned int y )
+{
+  return grid[x][y].player_id;
+}
+
+void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
+{
+  grid[x][y].player_id = player_id;
+}
+
+void Board::Update ( unsigned int x, unsigned int y )
 {
   //
 }
 
-void Board::ListContents ( void )
+void Board::Draw ( Gfx *engine )
 {
   unsigned int x, y = 0;
 
-  for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
-  {
-    for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
-    {
-      std::cout << GetStatus ( x, y ) << " " << getPlayerID ( x, y ) << " ";
-    }
-    std::cout << std::endl << std::endl;
-  }
-}
-
-void Board::DrawBoard ( Gfx *engine )
-{
-  unsigned int x, y = 0;
+  engine->DrawSurface ( this->background, 0, 0 );
 
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
@@ -250,5 +231,19 @@ void Board::DrawBoard ( Gfx *engine )
     {
       this->card->DrawCard ( engine, this->grid[x][y], BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
+  }
+}
+
+void Board::List ( void ) // debug
+{
+  unsigned int x, y = 0;
+
+  for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
+  {
+    for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
+    {
+      std::cout << getStatus ( x, y ) << " " << getPlayerID ( x, y ) << " ";
+    }
+    std::cout << std::endl << std::endl;
   }
 }

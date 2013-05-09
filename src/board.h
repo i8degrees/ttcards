@@ -26,32 +26,29 @@ class Board
     ~Board ( void );
 
     void Init ( CardView *card_gfx, CardRules *rules );
-
     bool LoadBackground ( std::string filename );
-    bool DrawBackground ( Gfx *engine );
 
     std::vector<std::pair<int, int>> checkBoard ( unsigned int x, unsigned int y );
 
     // TODO: Consider branching this into Score class
-    unsigned int GetPlayerCardCount ( unsigned int player_id );
+    unsigned int getCount ( void );
+    unsigned int getPlayerCount ( unsigned int player_id );
 
-    unsigned int GetTotalCount ( void );
-
-    unsigned int GetStatus ( unsigned int x, unsigned int y );
-    void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
-    unsigned int getPlayerID ( unsigned int x, unsigned int y );
-
+    unsigned int getStatus ( unsigned int x, unsigned int y );
     void updateStatus ( unsigned int x, unsigned int y, Card &card );
-    void updateBoard ( unsigned int x, unsigned int y );
-    void ListContents ( void );
-    void DrawBoard ( Gfx *engine );
+    unsigned int getPlayerID ( unsigned int x, unsigned int y );
+    void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
+
+    void Update ( unsigned int x, unsigned int y );
+    void Draw ( Gfx *engine );
+    void List ( void );
 
   private:
-    SDL_Surface *background;
-    CardDebug debug;
-    CardView *card;
+    SDL_Surface *background; // pointer holding our board background image
+    CardDebug debug; // debug support for card attributes
+    CardView *card; // card rendering
     CardRules *rules;
-    std::vector<std::vector<Card>> grid;
+    std::vector<std::vector<Card>> grid; // 2D vector of Card data containers
 };
 
 #endif // BOARD_HEADERS defined
