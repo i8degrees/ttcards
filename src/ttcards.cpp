@@ -236,15 +236,21 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
             {
               board.flipCard ( grid[0].first, grid[0].second, turn + 1 );
             }
+          }
 
           if ( rules.getRules() != 0 )
+          {
+            for ( int g = 0; g < grid.size(); g++ )
             {
-              for ( int g = 0; g < grid.size(); g++ )
+              board.flipCard ( grid[g].first, grid[g].second, turn + 1 );
+
+              std::vector<std::pair<int, int>> tgrid = board.checkBoard ( grid[g].first, grid[g].second );
+
+               // temporary workaround until a more proper solution is found
+              if ( rules.getRules() == 2 || rules.getRules() == 4 )
+                continue;
+              else
               {
-                board.flipCard ( grid[g].first, grid[g].second, turn + 1 );
-
-                std::vector<std::pair<int, int>> tgrid = board.checkBoard ( grid[g].first, grid[g].second );
-
                 for ( int tg = 0; tg < tgrid.size(); tg++ )
                 {
                   board.flipCard( tgrid[tg].first, tgrid[tg].second, turn + 1 );

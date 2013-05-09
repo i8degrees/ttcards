@@ -76,10 +76,10 @@ bool Board::LoadBackground ( std::string filename )
   return true;
 }
 
-// We check cards in a clockwise fashion; NORTH, EAST, SOUTH, WEST
 std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned int y )
 {
   unsigned int cols, rows = 0;
+  unsigned int same_count = 0;
   std::vector<std::pair<int, int>> coords;
 
   coords.clear(); // initialize a fresh new coords list
@@ -88,34 +88,31 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
   {
     for ( rows = x; x < BOARD_GRID_WIDTH; x++ )
     {
-      // Compare card's NORTH rank with opponent's SOUTH rank
-      if ( cols != 0 )
+      // Compare card's WEST rank with opponent's EAST rank
+      if ( rows != 0 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
         {
-          if ( rules->compareCards ( grid[rows][cols].getNorthRank(), grid[rows][cols - 1].getSouthRank() ) == true )
+          if ( rules->getRules() == 2 )
           {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols - 1 ) << std::endl << std::endl;
-            #endif
-
-            coords.push_back ( std::make_pair ( rows, cols - 1 ) );
+            if ( grid[rows][cols].getWestRank() == grid[rows - 1][cols].getEastRank() )
+            {
+              same_count += 1;
+              if ( same_count > 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows - 1, cols ) );
+            }
           }
-        }
-      }
-
-      // Compare card's EAST rank with opponent's WEST rank
-      if ( rows != BOARD_GRID_WIDTH - 1 )
-      {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
-        {
-          if ( rules->compareCards ( grid[rows][cols].getEastRank(), grid[rows + 1][cols].getWestRank() ) == true )
+          else if ( rules->getRules() == 4 )
+          {
+            //
+          }
+          if ( grid[rows][cols].getWestRank() > grid[rows - 1][cols].getEastRank() == true )
           {
             #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows + 1, cols ) << std::endl << std::endl;
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows - 1, cols ) << std::endl << std::endl;
             #endif
 
-            coords.push_back ( std::make_pair ( rows + 1, cols ) );
+            coords.push_back ( std::make_pair ( rows - 1, cols ) );
           }
         }
       }
@@ -125,7 +122,20 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
         {
-          if ( rules->compareCards ( grid[rows][cols].getSouthRank(), grid[rows][cols + 1].getNorthRank() ) == true )
+          if ( rules->getRules() == 2 )
+          {
+            if ( grid[rows][cols].getSouthRank() == grid[rows][cols + 1].getNorthRank() )
+            {
+              same_count += 1;
+              if ( same_count < 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows, cols + 1 ) );
+            }
+          }
+          else if ( rules->getRules() == 4 )
+          {
+            //
+          }
+          if ( grid[rows][cols].getSouthRank() > grid[rows][cols + 1].getNorthRank() == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols + 1 ) << std::endl << std::endl;
@@ -136,18 +146,60 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
         }
       }
 
-      // Compare card's WEST rank with opponent's EAST rank
-      if ( rows != 0 )
+      // Compare card's EAST rank with opponent's WEST rank
+      if ( rows != BOARD_GRID_WIDTH - 1 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
         {
-          if ( rules->compareCards ( grid[rows][cols].getWestRank(), grid[rows - 1][cols].getEastRank() ) == true )
+          if ( rules->getRules() == 2 )
+          {
+            if ( grid[rows][cols].getEastRank() == grid[rows + 1][cols].getWestRank() )
+            {
+              same_count += 1;
+              if ( same_count < 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows + 1, cols ) );
+            }
+          }
+          else if ( rules->getRules() == 4 )
+          {
+            //
+          }
+          if ( grid[rows][cols].getEastRank() > grid[rows + 1][cols].getWestRank() == true )
           {
             #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows - 1, cols ) << std::endl << std::endl;
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows + 1, cols ) << std::endl << std::endl;
             #endif
 
-            coords.push_back ( std::make_pair ( rows - 1, cols ) );
+            coords.push_back ( std::make_pair ( rows + 1, cols ) );
+          }
+        }
+      }
+
+      // Compare card's NORTH rank with opponent's SOUTH rank
+      if ( cols != 0 )
+      {
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
+        {
+          if ( rules->getRules() == 2 )
+          {
+            if ( grid[rows][cols].getNorthRank() == grid[rows][cols - 1].getSouthRank() )
+            {
+              same_count += 1;
+              if ( same_count < 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows, cols - 1 ) );
+            }
+          }
+          else if ( rules->getRules() == 4 )
+          {
+            //
+          }
+          if ( grid[rows][cols].getNorthRank() > grid[rows][cols - 1].getSouthRank() == true )
+          {
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols - 1 ) << std::endl << std::endl;
+            #endif
+
+            coords.push_back ( std::make_pair ( rows, cols - 1 ) );
           }
         }
       }
