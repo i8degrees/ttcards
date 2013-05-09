@@ -649,7 +649,7 @@ void TTcards::Update ( void )
   updateScore();
 
   // game / round is over when board card count >= 9
-  if ( this->board.getCount () >= 9 )
+  if ( this->board.getCount () >= 9 || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 )
   {
     interface_GameOver();
   }
