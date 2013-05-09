@@ -71,6 +71,12 @@ foreach ( filename ${files} )
   set ( PROJECT_FILES ${files} )
 endforeach()
 
+# app target for Sublime Build
+
+add_custom_target ( run
+                    COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/ttcards
+                  )
+
 # analyze target
 
 add_custom_target ( analyze
