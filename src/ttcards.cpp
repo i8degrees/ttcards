@@ -42,27 +42,11 @@ bool TTcards::Init ( Gfx *engine )
 
   this->LoadGameData();
 
-  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
-  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
-  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
-  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
-  this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
+  #ifdef DEBUG_TTCARDS
+    //this->debugCardsNoRuleset();
+    this->debugCardsSameRuleset();
+  #endif
 
-  // These two cards should be discarded ( MAX_HAND = 5 )
-  //this->hand[0].AddCard ( this->collection.cards[88] ); // Carbuncle
-  //this->hand[0].AddCard ( this->collection.cards[24] ); // TriFace
-
-  // This card should be removed
-  //this->hand[0].RemoveCard ( this->hand[0].cards[3] ); // Ifrit
-
-  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
-  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->hand[1].AddCard ( this->collection.cards[24] ); // TriFace
-  this->hand[1].AddCard ( this->collection.cards[66] ); // Propagator
-  this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
-
-  // This card should be discarded ( MAX_HAND = 5 )
-  //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
 
   //this->music.PlayMusicTrack ( -1 );
   //this->music.PauseMusic ();
@@ -114,6 +98,50 @@ bool TTcards::LoadGameData ( void )
   //AI.Init ( &this->board, &this->hand[1] );
 
   return true;
+}
+
+// These cards should be discarded from player's hand ( MAX_HAND = 5 )
+void TTcards::debugCardsDiscard ( void )
+{
+  this->hand[0].AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[0].AddCard ( this->collection.cards[24] ); // TriFace
+
+  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
+}
+
+// Debug player hand set for no and combo rulesets
+void TTcards::debugCardsNoRuleset ( void )
+{
+  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
+  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
+  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
+  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
+  this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
+
+  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
+  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[1].AddCard ( this->collection.cards[24] ); // TriFace
+  this->hand[1].AddCard ( this->collection.cards[66] ); // Propagator
+  this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
+}
+
+// Debug player hand set for same rulesets
+void TTcards::debugCardsSameRuleset ( void )
+{
+  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
+  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
+  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
+  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
+  //this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
+  this->hand[0].AddCard ( this->collection.cards[60] ); // Iguion
+
+  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
+  this->hand[1].AddCard ( this->collection.cards[2] ); // Bite Bug
+  //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[1].AddCard ( this->collection.cards[5] ); // Gayla
+  this->hand[1].AddCard ( this->collection.cards[63] ); // Oilboyle
+  this->hand[1].AddCard ( this->collection.cards[77] ); // Chubby Chocobo
+  //this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
 }
 
 bool TTcards::IsFullScreen ( void )

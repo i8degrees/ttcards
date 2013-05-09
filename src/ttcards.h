@@ -35,6 +35,10 @@ class TTcards: public SDLInput
     bool Init ( Gfx *engine );
     bool LoadGameData ( void );
 
+    void debugCardsDiscard ( void );
+    void debugCardsNoRuleset ( void );
+    void debugCardsSameRuleset ( void );
+
     bool IsRunning ( void );
     void SetGameState ( bool state );
     void drawFPS ( void );
