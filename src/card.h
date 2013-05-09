@@ -21,8 +21,8 @@ class Card
 {
   public:
     Card (  unsigned int id = 0, unsigned int level = 0, unsigned int type = 0,
-            unsigned int element = 0, std::array<int, 4> rank = { { 0, 0, 0, 0 } },
-            std::string name = "\0", unsigned int player_id = 0 );
+            unsigned int element = NONE, std::array<int, 4> rank = { { 0, 0, 0, 0 } },
+            std::string name = "\0", unsigned int player_id = NOPLAYER );
 
     ~Card ( void );
 

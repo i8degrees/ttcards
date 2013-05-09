@@ -34,10 +34,10 @@ Card::~Card ( void )
   this->id = 0;
   this->level = 0;
   this->type = 0;
-  this->element = 0;
+  this->element = NONE;
   this->rank = { { 0, 0, 0, 0 } };
   this->name = "\0";
-  this->player_id = 0;
+  this->player_id = NOPLAYER;
 }
 
 unsigned int Card::getID ( void )
