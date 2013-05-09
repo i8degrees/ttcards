@@ -16,11 +16,10 @@ Player::Player ( void )
 
   this->hand = NULL;
 
-  std::pair <int, int> coords ( 0, 0 ); // initialize x, y values
-  this->id = 0; // no player
-  this->state = 0; // not used
-  this->score = 5; // initialize scoreboard
-
+  std::pair <int, int> coords ( 0, 0 ); // initialize X, Y origin coords
+  id = 0;
+  state = 0;
+  score = 5;
 }
 
 Player::~Player ( void )
@@ -124,5 +123,6 @@ void Player::Draw ( Gfx *engine )
 
 void Player::Update ( Gfx *engine )
 {
+  // TODO
 }
 
