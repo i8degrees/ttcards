@@ -93,7 +93,7 @@ bool TTcards::LoadGameData ( void )
   this->player[1].Init ( &this->hand[1], &this->card );
   player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
-  this->rules.SetRules ( 0 );
+  this->rules.setRules ( 1 );
 
   //AI.Init ( &this->board, &this->hand[1] );
 
@@ -232,12 +232,12 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
 
           if ( grid.empty() == false )
           {
-            if ( rules.GetRules() == 0 )
+            if ( rules.getRules() == 0 )
             {
               board.flipCard ( grid[0].first, grid[0].second, turn + 1 );
             }
 
-            else if ( rules.GetRules() == 1 )
+          if ( rules.getRules() != 0 )
             {
               for ( int g = 0; g < grid.size(); g++ )
               {

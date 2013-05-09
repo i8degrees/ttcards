@@ -26,12 +26,12 @@ CardRules::~CardRules ( void )
   this->rules = 0;
 }
 
-unsigned int CardRules::GetRules ( void )
+unsigned int CardRules::getRules ( void )
 {
   return this->rules;
 }
 
-void CardRules::SetRules ( unsigned int type )
+void CardRules::setRules ( unsigned int type )
 {
   this->rules = type;
 }

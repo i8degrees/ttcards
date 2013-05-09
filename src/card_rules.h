@@ -23,8 +23,8 @@ class CardRules
     CardRules ( void );
     ~CardRules ( void );
 
-    unsigned int GetRules ( void );
-    void SetRules ( unsigned int type );
+    unsigned int getRules ( void );
+    void setRules ( unsigned int type );
 
     bool compareCards ( unsigned int r1, unsigned int r2 );
 
