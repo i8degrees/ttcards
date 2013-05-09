@@ -35,17 +35,19 @@ class Card
 
     // FIXME
     unsigned int player_id;
+    unsigned int getID ( void );
+    unsigned int getLevel ( void );
+    unsigned int getType ( void );
+    unsigned int getElement ( void );
+    std::array<int, 4> getRank ( void );
+    unsigned int getNorthRank ( void );
+    unsigned int getEastRank ( void );
+    unsigned int getSouthRank ( void );
+    unsigned int getWestRank ( void );
+    std::string getName ( void );
 
-    // Card ( id, level, type, element, power[], name );
-    // getID();
-    // getLevel();
-    // getType();
-    // getElement();
-    // getRank();
-    // getName();
-    // isFaceUp();
-    // Flip();
-    // Color();
+    unsigned int getPlayerID ( void );
+    void setPlayerID ( unsigned int player );
 
   private:
     // ...
