@@ -37,7 +37,7 @@ class TTcards: public SDLInput
 
     bool IsRunning ( void );
     void SetGameState ( bool state );
-    void ShowFPS ( void );
+    void drawFPS ( void );
     bool IsFullScreen ( void );
 
     unsigned int get_turn ( void );

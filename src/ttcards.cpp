@@ -139,7 +139,7 @@ void TTcards::SetGameState ( bool state )
   this->game_state = state;
 }
 
-void TTcards::ShowFPS ( void )
+void TTcards::drawFPS ( void )
 {
   if ( this->show_fps == true )
   {
@@ -702,7 +702,7 @@ void TTcards::Draw ( void )
     engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
   }
 
-  ShowFPS();
+  drawFPS();
 }
 
 void TTcards::Run ( void )
