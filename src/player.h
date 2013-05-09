@@ -46,14 +46,14 @@ public:
   void Draw ( Gfx *engine );
 
 private:
-  CardDebug debug;
-  CardView *card;
-  CardHand *hand;
+  CardDebug debug; // debug support for card attributes
+  CardView *card; // pointer referencing our card rendering class
+  CardHand *hand; // pointer reference to player's hand
 
-  std::pair <int, int> coords; // x, y coords
+  std::pair <int, int> coords; // x, y origin coords
   unsigned int id; // unique identifier for tracking each player in game
-  unsigned int state;
-  unsigned int score;
+  unsigned int state; // not implemented
+  unsigned int score; // player's scoreboard
 };
 
 #endif // PLAYERS_HEADERS defined

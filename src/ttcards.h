@@ -77,7 +77,7 @@ class TTcards: public SDLInput
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     Font timer_text; // fps timer font
     Font message_text;
-    Font score_text;
+    Font score_text; // scoreboard text
     Board board; // game board
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database
@@ -85,7 +85,7 @@ class TTcards: public SDLInput
     CPUPlayer AI;
     CardView card; // card rendering
     CardHand hand[2]; // player hand
-    Player player[2]; // player on board
+    Player player[2]; // players in game
     Sprite cursor; // interface cursor
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks

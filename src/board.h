@@ -46,7 +46,7 @@ class Board
   private:
     SDL_Surface *background; // pointer holding our board background image
     CardDebug debug; // debug support for card attributes
-    CardView *card; // card rendering
+    CardView *card; // pointer referencing our card rendering class
     CardRules *rules;
     std::vector<std::vector<Card>> grid; // 2D vector of Card data containers
 };
