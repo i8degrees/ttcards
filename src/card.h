@@ -33,8 +33,6 @@ class Card
     std::array<int, 4> rank; // NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
     std::string name;
 
-    // FIXME
-    unsigned int player_id;
     unsigned int getID ( void );
     unsigned int getLevel ( void );
     unsigned int getType ( void );
@@ -50,7 +48,9 @@ class Card
     void setPlayerID ( unsigned int player );
 
   private:
-    // ...
+    // used to distinguish card background and also used to track player in board
+    // in order to do card flipping, among other things like score tallying
+    unsigned int player_id;
 };
 
 #endif // CARD_HEADERS defined
