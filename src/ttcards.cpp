@@ -199,7 +199,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
 
           std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
 
-          if ( ! grid.empty() )
+          if ( grid.empty() == false )
           {
             if ( rules.GetRules() == 0 )
             {
@@ -220,13 +220,13 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
             }
           }
 
-          if ( this->get_turn() == 0 )
+          if ( get_turn() == 0 )
           {
-            this->player_turn ( 1 );
+            player_turn ( 1 );
           }
-          else if ( this->get_turn() == 1 )
+          else if ( get_turn() == 1 )
           {
-            this->player_turn ( 0 );
+            player_turn ( 0 );
           }
         }
       }
