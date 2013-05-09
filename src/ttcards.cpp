@@ -237,6 +237,21 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
+// debug helper method
+void TTcards::removePlayerCard ( void )
+{
+  unsigned int player_turn = get_turn();
+
+  hand[player_turn].RemoveCard ( hand[player_turn].GetSelectedCard() );
+  hand[player_turn].ClearSelected();
+  hand[player_turn].SelectCard ( hand[player_turn].cards.front() );
+
+  if ( player_turn == 0 ) // player1
+    cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+  else // player2
+    cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+}
+
 void TTcards::cursor_input ( SDL_Event *input )
 {
   SDLKey key = input->key.keysym.sym;
@@ -387,26 +402,11 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     }
     break;
 
-    case SDLK_1: // move selected card to grid[0][0] if possible
-    {
-      if ( mod == KMOD_LMETA )
-      {
-        for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
-        {
-          hand[turn].RemoveCard ( hand[turn].GetSelectedCard() );
-          hand[turn].ClearSelected();
-          hand[turn].SelectCard ( hand[turn].cards.front() );
-        }
+    case SDLK_d:
+      if ( mod == KMOD_LMETA ) removePlayerCard(); break;
 
-        if ( get_turn() == 0 ) // player1
-          cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-        else // player2
-          cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
-      }
-      else
-        moveTo ( 0, 0 );
-    }
-    break;
+    // move selected card to grid[0][0] if possible
+    case SDLK_1: moveTo ( 0, 0 ); break;
 
     case SDLK_2: // move selected card to grid[1][0] if possible
       moveTo ( 1, 0 );

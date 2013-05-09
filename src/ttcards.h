@@ -44,6 +44,7 @@ class TTcards: public SDLInput
     void player_turn ( unsigned int player );
 
     void moveTo ( unsigned int x, unsigned int y );
+    void removePlayerCard ( void );
 
     void Input ( void );
     void cursor_input ( SDL_Event *input );
