@@ -32,18 +32,18 @@ public:
   std::pair <int, int> getXY ( void );
   void setXY ( unsigned int x, unsigned int y );
 
-  unsigned int GetID ( void );
-  void SetID ( unsigned int id );
+  unsigned int getID ( void );
+  void setID ( unsigned int id );
 
-  unsigned int GetState ( void );
-  void SetState ( unsigned int state );
+  unsigned int getState ( void );
+  void setState ( unsigned int state );
 
   // TODO: Consider branching this into Score class
-  unsigned int GetScore ( void );
-  void SetScore ( unsigned int score );
+  unsigned int getScore ( void );
+  void setScore ( unsigned int score );
 
-  void Draw ( Gfx *engine );
   void Update ( Gfx *engine );
+  void Draw ( Gfx *engine );
 
 private:
   CardDebug debug;
