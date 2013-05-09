@@ -52,6 +52,8 @@ class TTcards: public SDLInput
     void draw_cursor ( void );
     void update_cursor ( void );
 
+    void updateScore ( void );
+    void drawScore ( void );
     void interface_GameOver ( void );
 
     void Update ( void );
@@ -75,6 +77,7 @@ class TTcards: public SDLInput
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     Font timer_text; // fps timer font
     Font message_text;
+    Font score_text;
     Board board; // game board
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database

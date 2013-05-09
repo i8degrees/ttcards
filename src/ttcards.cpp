@@ -44,6 +44,9 @@ bool TTcards::LoadGameData ( void )
   this->message_text.LoadTTF ( CARD_FONTFACE, 36 );
   this->message_text.SetTextColor ( 255, 255, 255 ); // color: red
 
+  score_text.LoadTTF ( SCORE_FONTFACE, 32 );
+  score_text.SetTextColor ( 255, 255, 255 ); // white
+
   this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.LoadImage ( INTERFACE_CURSOR );
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
@@ -637,12 +640,39 @@ void TTcards::interface_GameOver ( void )
   }
 }
 
+// Scoring: board_card_count + player_card_count
+void TTcards::updateScore ( void )
+{
+  unsigned int hand_count = 0; // player hand total count
+  unsigned int board_count = 0; // board card total count
+
+  for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  {
+    board_count = board.getPlayerCount ( turn + 1 );
+
+    hand_count = hand[turn].cards.size();
+
+    player[turn].SetScore ( board_count + hand_count );
+  }
+}
+
+void TTcards::drawScore ( void )
+{
+  score_text.SetTextBuffer ( std::to_string ( player[0].GetScore() ) );
+  score_text.DrawText ( engine, PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+
+  score_text.SetTextBuffer ( std::to_string ( player[1].GetScore() ) );
+  score_text.DrawText ( engine, PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+}
+
+
 void TTcards::Update ( void )
 {
   fps.Update();
   update_cursor();
 
   if ( this->board.getCount () >= 9 ) // game / round is over
+  updateScore();
   {
     interface_GameOver();
   }
@@ -659,8 +689,7 @@ void TTcards::Draw ( void )
 
   draw_cursor();
 
-  player[0].DrawScore ( this->engine, &this->board, 32, 176 ); // SCREEN_HEIGHT - 48
-  player[1].DrawScore ( this->engine, &this->board, 320, 176 ); // 64 * 5
+  drawScore ();
 
   if (get_turn() == 0 )
   {

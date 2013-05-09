@@ -21,8 +21,8 @@ Player::Player ( void )
   this->state = 0; // not used
   this->score = 5; // initialize scoreboard
 
-  this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
-  this->text_score.SetTextColor ( 255, 255, 255 ); // white
+  //this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
+  //this->text_score.SetTextColor ( 255, 255, 255 ); // white
 }
 
 Player::~Player ( void )
@@ -128,18 +128,3 @@ void Player::Update ( Gfx *engine )
 {
 }
 
-void Player::DrawScore ( Gfx *engine, Board *board, unsigned int x, unsigned int y )
-{
-  unsigned int hand_count = this->hand->cards.size();
-  unsigned int board_count = 0;
-
-  if ( this->GetID() == 1 ) // player1
-    board_count = board->getPlayerCount ( 1 );
-  else if ( this->GetID() == 2 ) // player2
-    board_count = board->getPlayerCount ( 2 );
-
-  this->SetScore ( hand_count + board_count );
-
-  this->text_score.SetTextBuffer ( std::to_string ( this->GetScore() ) );
-  this->text_score.DrawText ( engine, x, y );
-}
