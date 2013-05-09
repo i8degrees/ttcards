@@ -39,7 +39,7 @@ class Board
     unsigned int getPlayerID ( unsigned int x, unsigned int y );
     void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
 
-    void Update ( unsigned int x, unsigned int y );
+    void Update ( unsigned int x, unsigned int y ); // TODO
     void Draw ( Gfx *engine );
     void List ( void );
 
