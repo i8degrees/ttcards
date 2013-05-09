@@ -29,7 +29,7 @@ CardHand::~CardHand ( void )
 
 bool CardHand::AddCard ( Card &card )
 {
-  if ( this->CardCount() > MAX_PLAYER_HAND - 1) // Remember, we are counting from zero
+  if ( this->getCount() > MAX_PLAYER_HAND - 1) // Remember, we are counting from zero
   {
     #ifdef DEBUG_CARD_HAND
       std::cout << "CardHand::AddCard (): " << "Discarding card " << card.id << ' ' << card.name << std::endl;
@@ -129,7 +129,7 @@ bool CardHand::isValid ( Card &card )
 {
   unsigned int idx = 0;
 
-  for ( idx = 0; idx < this->CardCount(); idx++ )
+  for ( idx = 0; idx < this->getCount(); idx++ )
   {
     if ( ( this->cards[idx].id == card.id ) && ( this->cards[idx].name == card.name ) )
       return true;
@@ -146,7 +146,7 @@ bool CardHand::isEmpty ( void )
   return false;
 }
 
-unsigned int CardHand::CardCount ( void )
+unsigned int CardHand::getCount ( void )
 {
   unsigned int count = 0;
 
@@ -162,7 +162,7 @@ signed int CardHand::CardPosition ( Card &card )
 
   if ( this->isEmpty() == false )
   {
-    for ( idx = 0; idx < this->CardCount() && pos == -1; idx++ )
+    for ( idx = 0; idx < this->getCount() && pos == -1; idx++ )
     {
       if ( this->cards[idx].id == card.id && this->cards[idx].name == card.name )
       {
