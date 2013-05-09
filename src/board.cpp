@@ -156,10 +156,6 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
   } // cols for loop
 
   return coords;
-
-  #ifdef DEBUG_BOARD_CMP
-    std::cout << "\nEnd of comparison." << std::endl;
-  #endif
 } // end Board::checkBoard()
 
 // get card count by placed cards on board
