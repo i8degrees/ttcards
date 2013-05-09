@@ -90,6 +90,7 @@ class TTcards: public SDLInput
     CardHand hand[2]; // player hand
     Player player[2]; // players in game
     Sprite cursor; // interface cursor
+    std::pair<int, int> player_cursor_coords[2];
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks
 

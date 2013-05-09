@@ -93,6 +93,9 @@ bool TTcards::LoadGameData ( void )
   this->player[1].Init ( &this->hand[1], &this->card );
   player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
+  player_cursor_coords[0] = std::make_pair ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+  player_cursor_coords[1] = std::make_pair ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+
   this->rules.setRules ( 1 );
 
   //AI.Init ( &this->board, &this->hand[1] );
@@ -201,11 +204,11 @@ void TTcards::player_turn ( unsigned int player )
 
     if ( this->get_turn() == 0 ) // player1 cursor
     {
-      this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+      this->cursor.SetXY ( std::get<0>(player_cursor_coords[0]), std::get<1>(player_cursor_coords[0]) );
     }
     else if ( this->get_turn() == 1 ) // player2 cursor
     {
-      this->cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+      this->cursor.SetXY ( std::get<0>(player_cursor_coords[1]), std::get<1>(player_cursor_coords[1]) );
     }
   }
 }
@@ -283,9 +286,9 @@ void TTcards::removePlayerCard ( void )
   hand[player_turn].SelectCard ( hand[player_turn].cards.front() );
 
   if ( player_turn == 0 ) // player1
-    cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+    cursor.SetXY ( std::get<0>(player_cursor_coords[0]), std::get<1>(player_cursor_coords[0]) );
   else // player2
-    cursor.SetXY ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+    cursor.SetXY ( std::get<0>(player_cursor_coords[1]), std::get<1>(player_cursor_coords[1]) );
 }
 
 void TTcards::cursor_input ( SDL_Event *input )
@@ -505,7 +508,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
         // Updates Cursor Position
         if ( hand[turn].cards[0].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 0 );
+          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 0 );
       }
 
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
@@ -515,7 +518,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
         // Updates Cursor Position
         if ( hand[turn].cards[1].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 );
+          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 1 );
       }
 
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
@@ -525,7 +528,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
         // Updates Cursor Position
         if ( hand[turn].cards[2].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 );
+          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 2 );
       }
 
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
@@ -535,7 +538,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
         // Updates Cursor Position
         if ( hand[turn].cards[3].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 );
+          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 3 );
       }
 
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
@@ -545,7 +548,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
         // Updates Cursor Position
         if ( hand[turn].cards[4].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 );
+          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 4 );
       }
 
       // board grid checks of players
