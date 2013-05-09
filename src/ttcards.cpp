@@ -671,8 +671,10 @@ void TTcards::Update ( void )
   fps.Update();
   update_cursor();
 
-  if ( this->board.getCount () >= 9 ) // game / round is over
   updateScore();
+
+  // game / round is over when board card count >= 9
+  if ( this->board.getCount () >= 9 )
   {
     interface_GameOver();
   }
