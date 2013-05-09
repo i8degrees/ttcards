@@ -36,7 +36,7 @@ void CardRules::SetRules ( unsigned int type )
   this->rules = type;
 }
 
-bool CardRules::CompareCards ( unsigned int r1, unsigned int r2 )
+bool CardRules::compareCards ( unsigned int r1, unsigned int r2 )
 {
   if ( this->GetRules() == 0 ) // NONE
   {

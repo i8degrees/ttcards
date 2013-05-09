@@ -91,7 +91,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].getSouthRank(), grid[rows][cols + 1].getNorthRank() ) == true )
+          if ( rules->compareCards ( grid[rows][cols].getSouthRank(), grid[rows][cols + 1].getNorthRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols + 1 ) << std::endl << std::endl;
@@ -106,7 +106,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].getEastRank(), grid[rows + 1][cols].getWestRank() ) == true )
+          if ( rules->compareCards ( grid[rows][cols].getEastRank(), grid[rows + 1][cols].getWestRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows + 1, cols ) << std::endl << std::endl;
@@ -121,7 +121,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].getNorthRank(), grid[rows][cols - 1].getSouthRank() ) == true )
+          if ( rules->compareCards ( grid[rows][cols].getNorthRank(), grid[rows][cols - 1].getSouthRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols - 1 ) << std::endl << std::endl;
@@ -136,7 +136,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].getSouthRank(), grid[rows - 1][cols].getEastRank() ) == true )
+          if ( rules->compareCards ( grid[rows][cols].getSouthRank(), grid[rows - 1][cols].getEastRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows - 1, cols ) << std::endl << std::endl;
