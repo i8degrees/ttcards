@@ -102,10 +102,6 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
                 coords.push_back ( std::make_pair ( rows - 1, cols ) );
             }
           }
-          else if ( rules->getRules() == 4 )
-          {
-            //
-          }
           if ( grid[rows][cols].getWestRank() > grid[rows - 1][cols].getEastRank() == true )
           {
             #ifdef DEBUG_BOARD_CMP
@@ -130,10 +126,6 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
               if ( same_count < 2 && coords.size() < 2 )
                 coords.push_back ( std::make_pair ( rows, cols + 1 ) );
             }
-          }
-          else if ( rules->getRules() == 4 )
-          {
-            //
           }
           if ( grid[rows][cols].getSouthRank() > grid[rows][cols + 1].getNorthRank() == true )
           {
@@ -160,10 +152,6 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
                 coords.push_back ( std::make_pair ( rows + 1, cols ) );
             }
           }
-          else if ( rules->getRules() == 4 )
-          {
-            //
-          }
           if ( grid[rows][cols].getEastRank() > grid[rows + 1][cols].getWestRank() == true )
           {
             #ifdef DEBUG_BOARD_CMP
@@ -188,10 +176,6 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
               if ( same_count < 2 && coords.size() < 2 )
                 coords.push_back ( std::make_pair ( rows, cols - 1 ) );
             }
-          }
-          else if ( rules->getRules() == 4 )
-          {
-            //
           }
           if ( grid[rows][cols].getNorthRank() > grid[rows][cols - 1].getSouthRank() == true )
           {
