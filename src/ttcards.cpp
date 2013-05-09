@@ -469,60 +469,60 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
   for ( turn = 0; turn < TOTAL_PLAYERS; turn++ )
   {
-    if ( get_turn() == turn )
+    if ( get_turn() == turn ) // locks the input to the current player
     {
-      coords = player[turn].getXY(); // PLAYER ORIGIN XY
+      player_coords = player[turn].getXY(); // PLAYER ORIGIN XY
 
       // player hand selection checks
 
-      if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(coords) ) )
+      if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[0].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[0] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[0].id != 0 )
-          cursor.SetXY ( std::get<0>(coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 0 );
+          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 0 );
       }
 
-      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(coords) ) )
+      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[1].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[1] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[1].id != 0 )
-          cursor.SetXY ( std::get<0>(coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 1 );
+          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 );
       }
 
-      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(coords) ) )
+      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[2].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[2] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[2].id != 0 )
-          cursor.SetXY ( std::get<0>(coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 2 );
+          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 );
       }
 
-      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(coords) ) )
+      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[3].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[3] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[3].id != 0 )
-          cursor.SetXY ( std::get<0>(coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 3 );
+          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 );
       }
 
-      else if ( x <= ( std::get<0>(coords) + CARD_WIDTH ) && x >= ( std::get<0>(coords) ) && y <= ( std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(coords) ) )
+      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[4].name << "\n";
         hand[turn].SelectCard ( hand[turn].cards[4] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[4].id != 0 )
-          cursor.SetXY ( std::get<0>(coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * 4 );
+          cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 );
       }
 
       // board grid checks of players
