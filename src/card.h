@@ -37,7 +37,7 @@ class Card
     unsigned int getLevel ( void );
     unsigned int getType ( void );
     unsigned int getElement ( void );
-    std::array<int, 4> getRank ( void );
+    std::array<int, 4> getRanks ( void );
     unsigned int getNorthRank ( void );
     unsigned int getEastRank ( void );
     unsigned int getSouthRank ( void );
