@@ -667,12 +667,12 @@ void TTcards::Draw ( void )
 
   drawScore ();
 
-  if (get_turn() == 0 )
+  if ( get_turn() == 0 ) // player1
   {
     card.DrawName ( engine, hand[0].GetSelectedCard(), 208 );
     engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
   }
-  else if ( get_turn() == 1 )
+  else // player2
   {
     card.DrawName ( engine, hand[1].GetSelectedCard(), 208 );
     engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation

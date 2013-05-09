@@ -1,6 +1,8 @@
 /******************************************************************************
     card.h
 
+  Card container class
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
@@ -27,8 +29,8 @@ class Card
     unsigned int id;
     unsigned int level;
     unsigned int type;
-    unsigned int element;
-    std::array<int, 4> rank;
+    unsigned int element; // NONE is no element
+    std::array<int, 4> rank; // NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
     std::string name;
 
     // FIXME

@@ -156,7 +156,8 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
   #endif
 } // end Board::checkBoard()
 
-unsigned int Board::getCount ( void ) // by card
+// get card count by placed cards on board
+unsigned int Board::getCount ( void )
 {
   unsigned int total_count = 0;
   unsigned int x, y = 0;
@@ -175,7 +176,8 @@ unsigned int Board::getCount ( void ) // by card
   return total_count;
 }
 
-unsigned int Board::getPlayerCount ( unsigned int player_id ) // by playerID
+// get card count by player's cards on board
+unsigned int Board::getPlayerCount ( unsigned int player_id )
 {
   unsigned int pid_count = 0;
   unsigned int x, y = 0;
