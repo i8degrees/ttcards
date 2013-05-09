@@ -643,6 +643,8 @@ void TTcards::Update ( void )
   {
     interface_GameOver();
   }
+
+  engine->UpdateScreen ();
 }
 
 void TTcards::Draw ( void )
@@ -668,8 +670,8 @@ void TTcards::Draw ( void )
     card.DrawName ( engine, hand[1].GetSelectedCard(), 208 );
     engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
   }
+
   ShowFPS();
-  engine->UpdateScreen ();
 }
 
 void TTcards::Run ( void )
