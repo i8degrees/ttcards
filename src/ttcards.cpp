@@ -190,7 +190,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
 
     if ( selected.id != 0 )
     {
-      if ( this->board.GetStatus ( x, y ) == false )
+      if ( this->board.getStatus ( x, y ) == false )
       {
         if ( this->get_turn() == turn )
         {
@@ -377,7 +377,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
       if ( mod == KMOD_LMETA )
         debug.ListCards ( collection.cards );
       else
-        board.ListContents();
+        board.List();
     }
     break;
 
@@ -639,7 +639,7 @@ void TTcards::Update ( void )
   fps.Update();
   update_cursor();
 
-  if ( this->board.GetTotalCount () >= 9 ) // game / round is over
+  if ( this->board.getCount () >= 9 ) // game / round is over
   {
     interface_GameOver();
   }
@@ -649,8 +649,7 @@ void TTcards::Update ( void )
 
 void TTcards::Draw ( void )
 {
-  board.DrawBackground ( this->engine );
-  board.DrawBoard ( this->engine );
+  board.Draw ( this->engine );
 
   player[0].Draw ( this->engine );
   player[1].Draw ( this->engine );

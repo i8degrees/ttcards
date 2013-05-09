@@ -134,9 +134,9 @@ void Player::DrawScore ( Gfx *engine, Board *board, unsigned int x, unsigned int
   unsigned int board_count = 0;
 
   if ( this->GetID() == 1 ) // player1
-    board_count = board->GetPlayerCardCount ( 1 );
+    board_count = board->getPlayerCount ( 1 );
   else if ( this->GetID() == 2 ) // player2
-    board_count = board->GetPlayerCardCount ( 2 );
+    board_count = board->getPlayerCount ( 2 );
 
   this->SetScore ( hand_count + board_count );
 

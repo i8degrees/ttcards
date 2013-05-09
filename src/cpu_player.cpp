@@ -52,7 +52,7 @@ void CPUPlayer::randomMove ( void )
 
 bool CPUPlayer::randomEdgeMove ( void )
 {
-  if ( this->board->GetPlayerCardCount ( 0 ) == 0 && this->hand->cards.size() > 0 ) // first turn
+  if ( this->board->getPlayerCount ( 0 ) == 0 && this->hand->cards.size() > 0 ) // first turn
     {
       SDL_Rect edge[4];
 
@@ -70,7 +70,7 @@ bool CPUPlayer::randomEdgeMove ( void )
 
       unsigned int rand_choice = std::rand() % 4;
 
-      if ( this->board->GetStatus ( edge[rand_choice].x, edge[rand_choice].y ) == false )
+      if ( this->board->getStatus ( edge[rand_choice].x, edge[rand_choice].y ) == false )
       {
         return false;
       }
