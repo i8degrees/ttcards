@@ -51,10 +51,10 @@ bool Collection::Load ( std::string filename )
     load >> level;
     load >> type;
     load >> element;
-    load >> rank[0];
-    load >> rank[1];
-    load >> rank[2];
-    load >> rank[3];
+    load >> rank[NORTH];
+    load >> rank[EAST];
+    load >> rank[SOUTH];
+    load >> rank[WEST];
     load >> name;
 
     #ifdef DEBUG_CARD_COLLECTION
@@ -76,7 +76,7 @@ bool Collection::Load ( std::string filename )
       std::cout << std::endl;
     #endif // defined DEBUG_CARD_COLLECTION
 
-    this->cards.push_back ( Card ( id, level, type, element, { { rank[0], rank[1], rank[2], rank[3] } }, name, 0 ) );
+    this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, 0 ) );
   }
 
   #ifdef DEBUG_CARD_COLLECTION

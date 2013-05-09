@@ -24,31 +24,33 @@ CardDebug::~CardDebug ( void )
 
 void CardDebug::ListCard ( Card &card )
 {
-  if ( card.id == 0 )
+  std::array<int, 4> ranks = { { 0, 0, 0, 0 } };
+
+  if ( card.getID() == 0 )
   {
     #ifdef DEBUG_CARD_DEBUG
       std::cout << "CardDebug::ListCard(): " << "Card is empty." << "\n" << std::endl;
     #endif
   }
 
-  std::cout << card.id;
+  std::cout << card.getID();
   std::cout << " ";
-  std::cout << card.level;
+  std::cout << card.getLevel();
   std::cout << " ";
-  std::cout << card.type;
+  std::cout << card.getType();
   std::cout << " ";
-  std::cout << card.element;
+  std::cout << card.getElement();
   std::cout << " ";
 
-  for ( int rdx = 0; rdx < card.rank.size(); rdx++ )
+  for ( int rank = 0; rank < ranks.size(); rank++ )
   {
-    std::cout << card.rank[rdx];
+    std::cout << ranks[rank];
     std::cout << " ";
   }
 
-  std::cout << card.name;
+  std::cout << card.getName();
   std::cout << " ";
-  std::cout << card.player_id;
+  std::cout << card.getPlayerID();
 
   std::cout << std::endl;
 }
@@ -64,24 +66,33 @@ void CardDebug::ListCards ( std::vector<Card> &cards )
 
   for ( int i = 0; i < cards.size(); i++ )
   {
-    std::cout << cards[i].id;
+    std::cout << cards[i].getID();
     std::cout << " ";
-    std::cout << cards[i].level;
+    std::cout << cards[i].getLevel();
     std::cout << " ";
-    std::cout << cards[i].type;
+    std::cout << cards[i].getType();
     std::cout << " ";
-    std::cout << cards[i].element;
+    std::cout << cards[i].getElement();
     std::cout << " ";
 
-    for ( int rdx = 0; rdx < cards[i].rank.size(); rdx++ )
+    for ( int rank = 0; rank < 4; rank++ )
     {
-      std::cout << cards[i].rank[rdx];
+      std::cout << cards[i].getNorthRank();
+      std::cout << " ";
+
+      std::cout << cards[i].getEastRank();
+      std::cout << " ";
+
+      std::cout << cards[i].getSouthRank();
+      std::cout << " ";
+
+      std::cout << cards[i].getWestRank();
       std::cout << " ";
     }
 
-    std::cout << cards[i].name;
+    std::cout << cards[i].getName();
     std::cout << " ";
-    std::cout << cards[i].player_id;
+    std::cout << cards[i].getPlayerID();
 
     std::cout << std::endl;
   }

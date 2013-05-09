@@ -87,11 +87,11 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
   {
     for ( rows = x; x < BOARD_GRID_WIDTH; x++ )
     {
-      if ( cols != 2 )
+      if ( cols != BOARD_GRID_HEIGHT - 1 )
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].rank[2], grid[rows][cols + 1].rank[0] ) == true )
+          if ( rules->CompareCards ( grid[rows][cols].getSouthRank(), grid[rows][cols + 1].getNorthRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols + 1 ) << std::endl << std::endl;
@@ -102,11 +102,11 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
         }
       }
 
-      if ( rows != 2 )
+      if ( rows != BOARD_GRID_WIDTH - 1 )
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].rank[1], grid[rows + 1][cols].rank[3] ) == true )
+          if ( rules->CompareCards ( grid[rows][cols].getEastRank(), grid[rows + 1][cols].getWestRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows + 1, cols ) << std::endl << std::endl;
@@ -121,7 +121,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].rank[0], grid[rows][cols - 1].rank[2] ) == true )
+          if ( rules->CompareCards ( grid[rows][cols].getNorthRank(), grid[rows][cols - 1].getSouthRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols - 1 ) << std::endl << std::endl;
@@ -136,7 +136,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
         {
-          if ( rules->CompareCards ( grid[rows][cols].rank[3], grid[rows - 1][cols].rank[1] ) == true )
+          if ( rules->CompareCards ( grid[rows][cols].getSouthRank(), grid[rows - 1][cols].getEastRank() ) == true )
           {
             #ifdef DEBUG_BOARD_CMP
               std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows - 1, cols ) << std::endl << std::endl;
@@ -198,7 +198,7 @@ unsigned int Board::getPlayerCount ( unsigned int player_id )
 
 unsigned int Board::getStatus ( unsigned int x, unsigned int y )
 {
-  return grid[x][y].id;
+  return grid[x][y].getID();
 }
 
 void Board::updateStatus ( unsigned int x, unsigned int y, Card &card )
@@ -208,12 +208,12 @@ void Board::updateStatus ( unsigned int x, unsigned int y, Card &card )
 
 unsigned int Board::getPlayerID ( unsigned int x, unsigned int y )
 {
-  return grid[x][y].player_id;
+  return grid[x][y].getPlayerID();
 }
 
 void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
 {
-  grid[x][y].player_id = player_id;
+  grid[x][y].setPlayerID ( player_id );
 }
 
 void Board::Update ( unsigned int x, unsigned int y )

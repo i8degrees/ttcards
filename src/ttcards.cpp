@@ -191,7 +191,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   {
     selected = this->hand[turn].GetSelectedCard();
 
-    if ( selected.id != 0 )
+    if ( selected.getID() != 0 )
     {
       if ( this->board.getStatus ( x, y ) == false )
       {
@@ -468,7 +468,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
         hand[turn].SelectCard ( hand[turn].cards[0] );
 
         // Updates Cursor Position
-        if ( hand[turn].cards[0].id != 0 )
+        if ( hand[turn].cards[0].getID() != 0 )
           cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 0 );
       }
 
@@ -478,7 +478,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
         hand[turn].SelectCard ( hand[turn].cards[1] );
 
         // Updates Cursor Position
-        if ( hand[turn].cards[1].id != 0 )
+        if ( hand[turn].cards[1].getID() != 0 )
           cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 );
       }
 
@@ -488,7 +488,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
         hand[turn].SelectCard ( hand[turn].cards[2] );
 
         // Updates Cursor Position
-        if ( hand[turn].cards[2].id != 0 )
+        if ( hand[turn].cards[2].getID() != 0 )
           cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 );
       }
 
@@ -498,7 +498,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
         hand[turn].SelectCard ( hand[turn].cards[3] );
 
         // Updates Cursor Position
-        if ( hand[turn].cards[3].id != 0 )
+        if ( hand[turn].cards[3].getID() != 0 )
           cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 );
       }
 
@@ -508,7 +508,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
         hand[turn].SelectCard ( hand[turn].cards[4] );
 
         // Updates Cursor Position
-        if ( hand[turn].cards[4].id != 0 )
+        if ( hand[turn].cards[4].getID() != 0 )
           cursor.SetXY ( std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 );
       }
 
