@@ -26,13 +26,6 @@ class Card
 
     ~Card ( void );
 
-    unsigned int id;
-    unsigned int level;
-    unsigned int type;
-    unsigned int element; // NONE is no element
-    std::array<int, 4> rank; // NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
-    std::string name;
-
     unsigned int getID ( void );
     unsigned int getLevel ( void );
     unsigned int getType ( void );
@@ -48,6 +41,13 @@ class Card
     void setPlayerID ( unsigned int player );
 
   private:
+    unsigned int id;
+    unsigned int level;
+    unsigned int type;
+    unsigned int element; // NONE is no element
+    std::array<int, 4> rank; // NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
+    std::string name;
+
     // used to distinguish card background and also used to track player in board
     // in order to do card flipping, among other things like score tallying
     unsigned int player_id;
