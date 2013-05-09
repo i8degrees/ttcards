@@ -408,37 +408,29 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     // move selected card to grid[0][0] if possible
     case SDLK_1: moveTo ( 0, 0 ); break;
 
-    case SDLK_2: // move selected card to grid[1][0] if possible
-      moveTo ( 1, 0 );
-    break;
+    // move selected card to grid[1][0] if possible
+    case SDLK_2: moveTo ( 1, 0 ); break;
 
-    case SDLK_3: // move selected card to grid[2][0] if possible
-      moveTo ( 2, 0 );
-    break;
+    // move selected card to grid[2][0] if possible
+    case SDLK_3: moveTo ( 2, 0 ); break;
 
-    case SDLK_4: // move selected card to grid[0][1] if possible
-      moveTo ( 0, 1 );
-    break;
+    // move selected card to grid[0][1] if possible
+    case SDLK_4: moveTo ( 0, 1 ); break;
 
-    case SDLK_5: // move selected card to grid[1][1] if possible
-      moveTo ( 1, 1 );
-    break;
+    // move selected card to grid[1][1] if possible
+    case SDLK_5: moveTo ( 1, 1 ); break;
 
-    case SDLK_6: // move selected card to grid[2][1] if possible
-      moveTo ( 2, 1 );
-    break;
+    // move selected card to grid[2][1] if possible
+    case SDLK_6: moveTo ( 2, 1 ); break;
 
-    case SDLK_7: // move selected card to grid[0][2] if possible
-      moveTo ( 0, 2 );
-    break;
+    // move selected card to grid[0][2] if possible
+    case SDLK_7: moveTo ( 0, 2 ); break;
 
-    case SDLK_8: // move selected card to grid[1][2] if possible
-      moveTo ( 1, 2 );
-    break;
+    // move selected card to grid[1][2] if possible
+    case SDLK_8: moveTo ( 1, 2 ); break;
 
-    case SDLK_9: // move selected card to grid[2][2] if possible
-      moveTo ( 2, 2 );
-    break;
+    // move selected card to grid[2][2] if possible
+    case SDLK_9: moveTo ( 2, 2 ); break;
 
     default:
     break;
@@ -528,49 +520,31 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
       // board grid checks of players
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      {
         moveTo ( 0, 0 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      {
         moveTo ( 1, 0 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      {
         moveTo ( 2, 0 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      {
         moveTo ( 0, 1 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      {
         moveTo ( 1, 1 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      {
         moveTo ( 2, 1 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      {
         moveTo ( 0, 2 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      {
         moveTo ( 1, 2 );
-      }
 
       else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      {
         moveTo ( 2, 2 );
-      }
     } // end get_turn() == turn
   } // end player turns
 }
