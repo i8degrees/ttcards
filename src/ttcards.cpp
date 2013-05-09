@@ -209,10 +209,12 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
               board.flipCard ( grid[0].first, grid[0].second, turn + 1 );
             }
 
-            for ( int g = 0; g < grid.size(); g++ )
+            else if ( rules.GetRules() == 1 )
             {
-              if ( rules.GetRules() == 1 )
+              for ( int g = 0; g < grid.size(); g++ )
               {
+                board.flipCard ( grid[g].first, grid[g].second, turn + 1 );
+
                 std::vector<std::pair<int, int>> tgrid = board.checkBoard ( grid[g].first, grid[g].second );
 
                 for ( int tg = 0; tg < tgrid.size(); tg++ )
