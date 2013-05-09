@@ -111,7 +111,7 @@ bool TTcards::LoadGameData ( void )
 
   this->rules.SetRules ( 0 );
 
-  AI.Init ( &this->board, &this->hand[1] );
+  //AI.Init ( &this->board, &this->hand[1] );
 
   return true;
 }
@@ -448,11 +448,6 @@ void TTcards::onResize ( unsigned int width, unsigned int height )
     this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
   else
     this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
-}
-
-void TTcards::onMouseLeftButtonUp ( unsigned int x, unsigned int y )
-{
-  //std::cout << "Goodbye!\n\n";
 }
 
 void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )

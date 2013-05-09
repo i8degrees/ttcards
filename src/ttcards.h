@@ -64,8 +64,6 @@ class TTcards: public SDLInput
     void Start ( void ); // EMCC compiler related
 
     void onResize ( unsigned int width, unsigned int height );
-    void onMouseLeftButtonUp ( unsigned int x, unsigned int y );
-    //void onMouseMotion ( unsigned int x, unsigned int y );
     void onMouseWheel ( bool up, bool down );
     void onKeyDown ( SDLKey key, SDLMod mod );
     void onExit ( void );
