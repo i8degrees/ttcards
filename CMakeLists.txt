@@ -73,14 +73,14 @@ endforeach()
 
 # analyze target
 
-add_custom_target ( ttcards_analyze
+add_custom_target ( analyze
                     COMMAND ${LLVM_ANALYZER_BIN} ${LLVM_ANALYZER_ARGS}
                     ${SDL_CFLAGS} ${PROJECT_FILES}
                   )
 
 # EMCC (web) target
 
-add_custom_target ( ttcards_emcc
+add_custom_target ( emcc
                     ${EMCC_BIN} ${EMCC_CFLAGS} ${CFLAGS} ${LDFLAGS}
                     ${PROJECT_FILES} -o ${EMCC_TARGET}
                   )
