@@ -39,10 +39,13 @@ class TTcards: public SDLInput
     void debugCardsSameRuleset ( void );
     void removePlayerCard ( void );
 
-    bool IsRunning ( void );
-    void SetGameState ( bool state );
-    void drawFPS ( void );
     bool IsFullScreen ( void );
+    void setFullscreen ( bool fs );
+    bool IsRunning ( void );
+    void setGameState ( bool state );
+    bool getShowFPS ( void );
+    void showFPS ( bool show );
+    void drawFPS ( void );
 
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
@@ -50,6 +53,8 @@ class TTcards: public SDLInput
 
     void moveTo ( unsigned int x, unsigned int y );
 
+    bool isCursorLocked ( void );
+    void lockCursor ( bool lock );
     void resetCursor ( void );
     void unlockSelectedCard ( void );
     void lockSelectedCard ( void );

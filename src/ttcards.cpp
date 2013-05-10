@@ -17,6 +17,7 @@ TTcards::TTcards ( void )
   this->turn = 0;
   this->cursor_locked = false;
   this->game_state = true;
+  this->show_fps = true;
   this->fullscreen = false;
 }
 
@@ -35,7 +36,6 @@ TTcards::~TTcards ( void )
 bool TTcards::Init ( Gfx *engine )
 {
   this->engine = engine; // initialize rendering interface
-  this->show_fps = true;
 
   #ifndef EMSCRIPTEN
     engine->setTitle ( APP_NAME );
@@ -172,6 +172,11 @@ bool TTcards::IsFullScreen ( void )
     return true;
 }
 
+void TTcards::setFullscreen ( bool fs )
+{
+  this->fullscreen = fs;
+}
+
 bool TTcards::IsRunning ( void )
 {
   if ( this->game_state == false )
@@ -180,14 +185,24 @@ bool TTcards::IsRunning ( void )
     return true;
 }
 
-void TTcards::SetGameState ( bool state )
+void TTcards::setGameState ( bool state )
 {
   this->game_state = state;
 }
 
+bool TTcards::getShowFPS ( void )
+{
+  return this->show_fps;
+}
+
+void TTcards::showFPS ( bool show )
+{
+  this->show_fps = show;
+}
+
 void TTcards::drawFPS ( void )
 {
-  if ( this->show_fps == true )
+  if ( this->getShowFPS() == true )
   {
     this->timer_text.SetTextBuffer ( std::to_string ( this->fps.GetFPS() ) );
     signed int w = this->timer_text.GetTextWidth ();
@@ -226,6 +241,19 @@ void TTcards::endTurn ( void )
     this->player_turn ( 0 );
 }
 
+bool TTcards::isCursorLocked ( void )
+{
+  if ( this->cursor_locked == true )
+    return true;
+  else
+    return false;
+}
+
+void TTcards::lockCursor ( bool lock )
+{
+  this->cursor_locked = lock;
+}
+
 // Helper method for resetting cursor related input
 void TTcards::resetCursor ( void )
 {
@@ -245,7 +273,7 @@ void TTcards::unlockSelectedCard ( void )
 
   this->resetCursor();
 
-  this->cursor_locked = false;
+  this->lockCursor ( false );
 }
 
 // helper method for cursor input selection
@@ -253,14 +281,14 @@ void TTcards::lockSelectedCard ( void )
 {
   this->cursor.setState ( 1 ); // board select
 
-  if ( this->cursor_locked == false )
+  if ( this->isCursorLocked() == false )
   {
     if ( get_turn() == 0 )
       this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y ); // FIXME
     else if ( get_turn() == 1 )
       this->cursor.SetXY ( CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y ); // FIXME
 
-    this->cursor_locked = true;
+    this->lockCursor ( true );
   }
   else
   {
@@ -345,12 +373,14 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
 void TTcards::Input ( void )
 {
   SDLInput::Input ();
+  this->setGameState ( false );
 }
 
 
 void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
 {
   switch ( button )
+  if ( this->IsFullScreen() == false )
   {
     case 4: this->moveCursorUp(); break;
     case 5: this->moveCursorRight(); break;
@@ -368,6 +398,13 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
 
     // cross
     case 14: this->lockSelectedCard(); break;
+    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+    this->setFullscreen ( true );
+  }
+  else
+  {
+    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
+    this->setFullscreen ( false );
   }
 }
 
@@ -382,10 +419,10 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_EQUALS:
     {
-      if ( show_fps == true )
-        show_fps = false;
+      if ( this->getShowFPS() == true )
+        this->showFPS ( false );
       else
-        show_fps = true;
+        this->showFPS ( true );
     }
     break;
 
