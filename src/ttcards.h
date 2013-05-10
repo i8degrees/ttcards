@@ -56,6 +56,7 @@ class TTcards: public SDLInput
 
     void Input ( void );
 
+    unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );
     void moveCursorUp ( void );
@@ -99,6 +100,7 @@ class TTcards: public SDLInput
     Player player[2]; // players in game
     Sprite cursor; // interface cursor
     std::pair<int, int> player_cursor_coords[2];
+    std::pair<int, int> cursor_coords_map[4]; // coords mapping: cursor XY to card index
 
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks

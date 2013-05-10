@@ -97,6 +97,10 @@ bool TTcards::LoadGameData ( void )
   player_cursor_coords[0] = std::make_pair ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   player_cursor_coords[1] = std::make_pair ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
 
+  // We cannot map std::pair<0, 0>, so we are "missing" the first element here
+  for ( int idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+    this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
+
   this->rules.setRules ( 1 );
 
   //AI.Init ( &this->board, &this->hand[1] );
@@ -543,6 +547,25 @@ void TTcards::onMouseWheel ( bool up, bool down )
   }
 }
 
+// Helper method for obtaining card hand index position based off coords ID map
+unsigned int TTcards::getCursorPos ( void )
+{
+  unsigned int pos = 0;
+
+  if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[0]) )
+    pos = 0;
+  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[1]) )
+    pos = std::get<1>(cursor_coords_map[1]);
+  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[2]) )
+    pos = std::get<1>(cursor_coords_map[2]);
+  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[3]) )
+    pos = std::get<1>(cursor_coords_map[3]);
+  else
+    pos = 4;
+
+  return pos;
+}
+
 void TTcards::moveCursorLeft ( void )
 {
   if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
@@ -563,6 +586,7 @@ void TTcards::moveCursorRight ( void )
 
 void TTcards::moveCursorUp ( void )
 {
+  unsigned int pos = 0;
   unsigned int player_turn = get_turn();
 
   if ( this->cursor.getState() == 0 )
@@ -571,6 +595,8 @@ void TTcards::moveCursorUp ( void )
     {
       this->cursor.UpdateXY ( 0, -( CARD_HEIGHT / 2 ) );
 
+      pos = this->getCursorPos();
+      this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
     }
   }
   else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
@@ -582,6 +608,7 @@ void TTcards::moveCursorUp ( void )
 
 void TTcards::moveCursorDown ( void )
 {
+  unsigned int pos = 0;
   unsigned int player_turn = get_turn();
 
   if ( this->cursor.getState() == 0 )
@@ -590,6 +617,8 @@ void TTcards::moveCursorDown ( void )
     {
       this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
 
+      pos = this->getCursorPos();
+      this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
     }
   }
   else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
