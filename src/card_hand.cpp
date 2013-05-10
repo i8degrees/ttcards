@@ -49,7 +49,7 @@ bool CardHand::RemoveCard ( Card &card )
   unsigned int previous_id = 0;
   std::string previous_name;
 
-  position = this->CardPosition ( card );
+  position = this->cardPosition ( card );
 
   if ( position == -1 )
   {
@@ -87,7 +87,6 @@ bool CardHand::selectCard ( Card &card )
   if ( this->isValid ( card ) )
   {
     this->selectedCard = card;
-    this->setCardIndex ( this->CardPosition ( card ) ); // helper for mouse input selection
     return true;
   }
 
@@ -127,7 +126,7 @@ unsigned int CardHand::getCount ( void )
   return count;
 }
 
-signed int CardHand::CardPosition ( Card &card )
+signed int CardHand::cardPosition ( Card &card )
 {
   unsigned int idx;
   signed int pos = -1;

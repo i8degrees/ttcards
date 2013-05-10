@@ -30,7 +30,7 @@ class CardHand
     bool isValid ( Card &card );
     bool isEmpty ( void );
     unsigned int getCount ( void );
-    signed int CardPosition ( Card &card );
+    signed int cardPosition ( Card &card );
 
     std::vector<Card> cards;
 
