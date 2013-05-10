@@ -23,9 +23,9 @@ class CardHand
     bool AddCard ( Card &card );
     bool RemoveCard ( Card &card );
 
-    void ClearSelected ( void );
-    Card & GetSelectedCard ( void );
-    bool SelectCard ( Card &card );
+    void clearSelectedCard ( void );
+    Card & getSelectedCard ( void );
+    bool selectCard ( Card &card );
 
     signed int getPrevCardIndex ( void );
     signed int getNextCardIndex ( void );
@@ -40,7 +40,7 @@ class CardHand
     std::vector<Card> cards;
 
   private:
-    Card selectedCard; // holds player's selected card
+    Card selectedCard; // holds player's selected (think: ready to place) card
     unsigned int card_pos; // keeps track of card index cursor is at
 };
 

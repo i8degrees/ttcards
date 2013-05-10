@@ -46,7 +46,7 @@ void CPUPlayer::randomMove ( void )
   unsigned int cID = std::rand() % MAX_PLAYER_HAND;
 
   std::cout << "CPU:" << " " << "Easy Mode [random]" << std::endl;
-  this->hand->SelectCard ( this->hand->cards[cID] );
+  this->hand->selectCard ( this->hand->cards[cID] );
   this->moveTo ( moveX, moveY );
 }
 

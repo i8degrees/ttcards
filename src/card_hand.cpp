@@ -73,17 +73,17 @@ bool CardHand::RemoveCard ( Card &card )
   return false;
 }
 
-void CardHand::ClearSelected ( void )
+void CardHand::clearSelectedCard ( void )
 {
   this->selectedCard = 0;
 }
 
-Card & CardHand::GetSelectedCard ( void )
+Card & CardHand::getSelectedCard ( void )
 {
   return this->selectedCard;
 }
 
-bool CardHand::SelectCard ( Card &card )
+bool CardHand::selectCard ( Card &card )
 {
   if ( this->isValid ( card ) )
   {
@@ -95,7 +95,7 @@ bool CardHand::SelectCard ( Card &card )
   return false;
 
   #ifdef DEBUG_CARD_HAND
-    std::cout << "CardHand::SelectCard (): " << this->selectedCard.getID() << std::endl;
+    std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;
   #endif
 }
 
