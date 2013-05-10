@@ -602,13 +602,9 @@ void TTcards::moveCursorDown ( void )
 void TTcards::updateCursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
-  {
     this->cursor.SetSheetID ( INTERFACE_CURSOR_LEFT );
-  }
   else // player2
-  {
     this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
-  }
 }
 
 void TTcards::drawCursor ( void )
