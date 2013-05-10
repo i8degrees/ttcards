@@ -48,7 +48,10 @@ class TTcards: public SDLInput
     void player_turn ( unsigned int player );
 
     void moveTo ( unsigned int x, unsigned int y );
-    void selectCard ( void );
+
+    void resetCursor ( void );
+    void unlockSelectedCard ( void );
+    void lockSelectedCard ( void );
 
     void Input ( void );
 
@@ -94,10 +97,12 @@ class TTcards: public SDLInput
     Player player[2]; // players in game
     Sprite cursor; // interface cursor
     std::pair<int, int> player_cursor_coords[2];
+
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks
 
     unsigned int turn; // player1 = 0, player2 = 1
+    bool cursor_locked;
     bool game_state; // global app state
     bool show_fps; // fps counter
     bool fullscreen; // toggle window & fullscreen states

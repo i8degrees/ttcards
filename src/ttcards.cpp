@@ -15,6 +15,7 @@ TTcards::TTcards ( void )
   #endif
 
   this->turn = 0;
+  this->cursor_locked = false;
   this->game_state = true;
   this->fullscreen = false;
 }
@@ -83,6 +84,7 @@ bool TTcards::LoadGameData ( void )
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
   this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
+  this->cursor.setState ( 0 ); // player hand select
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
@@ -151,9 +153,9 @@ void TTcards::removePlayerCard ( void )
 {
   unsigned int player_turn = get_turn();
 
-  hand[player_turn].RemoveCard ( hand[player_turn].GetSelectedCard() );
-  hand[player_turn].ClearSelected();
-  hand[player_turn].SelectCard ( hand[player_turn].cards.front() );
+  hand[player_turn].RemoveCard ( hand[player_turn].getSelectedCard() );
+  hand[player_turn].clearSelectedCard();
+  hand[player_turn].selectCard ( hand[player_turn].cards.front() );
 
   cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) );
 }
@@ -204,21 +206,69 @@ void TTcards::player_turn ( unsigned int player )
 {
   this->turn = player;
 
-  for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
-  {
-    if ( this->get_turn() == turn )
-    {
-      this->hand[turn].SelectCard ( this->hand[turn].cards.front() );
-    }
+  resetCursor();
+}
 
-    if ( this->get_turn() == 0 ) // player1 cursor
-    {
-      this->cursor.SetXY ( std::get<0>(player_cursor_coords[0]), std::get<1>(player_cursor_coords[0]) );
-    }
-    else if ( this->get_turn() == 1 ) // player2 cursor
-    {
-      this->cursor.SetXY ( std::get<0>(player_cursor_coords[1]), std::get<1>(player_cursor_coords[1]) );
-    }
+// Helper method for resetting cursor related input
+void TTcards::resetCursor ( void )
+{
+  unsigned int player_turn = get_turn();
+
+  this->hand[turn].clearSelectedCard ();
+  this->hand[turn].selectCard ( this->hand[turn].cards.front() );
+
+  this->cursor.setState ( 0 );
+  this->cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) );
+}
+
+// helper method for cursor input selection
+void TTcards::unlockSelectedCard ( void )
+{
+  //unsigned int player_turn = get_turn();
+
+  this->cursor.setState ( 0 ); // player card select
+
+  this->resetCursor();
+
+  this->cursor_locked = false;
+}
+
+// helper method for cursor input selection
+void TTcards::lockSelectedCard ( void )
+{
+  this->cursor.setState ( 1 ); // board select
+
+  if ( this->cursor_locked == false )
+  {
+    if ( get_turn() == 0 )
+      this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y ); // FIXME
+    else if ( get_turn() == 1 )
+      this->cursor.SetXY ( CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y ); // FIXME
+
+    this->cursor_locked = true;
+  }
+  else
+  {
+    if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
+      moveTo ( 0, 0 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
+      moveTo ( 1, 0 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
+      moveTo ( 2, 0 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
+      moveTo ( 0, 1 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
+      moveTo ( 1, 1 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
+      moveTo ( 2, 1 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+      moveTo ( 0, 2 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+      moveTo ( 1, 2 );
+    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
+      moveTo ( 2, 2 );
+
+    this->unlockSelectedCard();
   }
 }
 
@@ -229,7 +279,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
 
   for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
   {
-    selected = this->hand[turn].GetSelectedCard();
+    selected = this->hand[turn].getSelectedCard();
 
     if ( selected.getID() != 0 )
     {
@@ -237,8 +287,8 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
       {
         if ( this->get_turn() == turn )
         {
-          this->board.updateStatus ( x, y, this->hand[turn].GetSelectedCard() );
-          this->hand[turn].RemoveCard ( this->hand[turn].GetSelectedCard() );
+          this->board.updateStatus ( x, y, this->hand[turn].getSelectedCard() );
+          this->hand[turn].RemoveCard ( this->hand[turn].getSelectedCard() );
 
           std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
 
@@ -285,16 +335,6 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-// helper method for cursor input selection
-void TTcards::selectCard ( void )
-{
-  unsigned int player_turn = get_turn();
-
-  signed int pos = this->hand[player_turn].getCardIndex();
-
-  this->hand[player_turn].SelectCard ( this->hand[player_turn].cards[pos] );
-}
-
 void TTcards::Input ( void )
 {
   SDLInput::Input ();
@@ -323,7 +363,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_u:
     case SDLK_e:
     {
-      hand[turn].ClearSelected();
+      this->hand[turn].clearSelectedCard ();
 
       if ( get_turn() == 0 )
         player_turn ( 1 );
@@ -350,17 +390,15 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     }
     break;
 
-    case SDLK_d: if ( mod == KMOD_LMETA ) removePlayerCard(); break;
+    case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
-
     case SDLK_RIGHT: this->moveCursorRight(); break;
-
     case SDLK_UP: this->moveCursorUp(); break;
-
     case SDLK_DOWN: this->moveCursorDown(); break;
 
-    case SDLK_SPACE: this->selectCard(); break;
+    case SDLK_x: this->unlockSelectedCard(); break;
+    case SDLK_SPACE: this->lockSelectedCard(); break;
 
     case SDLK_1: moveTo ( 0, 0 ); break;
     case SDLK_2: moveTo ( 1, 0 ); break;
@@ -410,7 +448,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
       if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[0].name << "\n";
-        hand[turn].SelectCard ( hand[turn].cards[0] );
+        hand[turn].selectCard ( hand[turn].cards[0] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[0].getID() != 0 )
@@ -420,7 +458,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[1].name << "\n";
-        hand[turn].SelectCard ( hand[turn].cards[1] );
+        hand[turn].selectCard ( hand[turn].cards[1] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[1].getID() != 0 )
@@ -430,7 +468,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[2].name << "\n";
-        hand[turn].SelectCard ( hand[turn].cards[2] );
+        hand[turn].selectCard ( hand[turn].cards[2] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[2].getID() != 0 )
@@ -440,7 +478,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[3].name << "\n";
-        hand[turn].SelectCard ( hand[turn].cards[3] );
+        hand[turn].selectCard ( hand[turn].cards[3] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[3].getID() != 0 )
@@ -450,7 +488,7 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
       else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
       {
         //std::cout << hand[turn].cards[4].name << "\n";
-        hand[turn].SelectCard ( hand[turn].cards[4] );
+        hand[turn].selectCard ( hand[turn].cards[4] );
 
         // Updates Cursor Position
         if ( hand[turn].cards[4].getID() != 0 )
@@ -491,37 +529,54 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 
 void TTcards::onMouseWheel ( bool up, bool down )
 {
-  if ( up )
-    this->moveCursorUp();
-  else if ( down )
-    this->moveCursorDown();
+  if ( this->cursor.getState() == 0 )
+  {
+    if ( up )
+      this->moveCursorUp();
+    else if ( down )
+      this->moveCursorDown();
+  }
 }
 
 void TTcards::moveCursorLeft ( void )
 {
-  if ( this->cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X )
-    this->cursor.UpdateXY ( -42, 0 );
+  if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
+  {
+    if ( this->cursor.GetX() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
+      this->cursor.UpdateXY ( -( CARD_WIDTH ), 0 );
+  }
 }
 
 void TTcards::moveCursorRight ( void )
 {
-  if ( this->cursor.GetX() < PLAYER2_CURSOR_ORIGIN_X )
-    this->cursor.UpdateXY ( 42, 0 );
+  if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
+  {
+    if ( this->cursor.GetX() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
+      this->cursor.UpdateXY ( ( CARD_WIDTH ), 0 );
+  }
 }
 
 void TTcards::moveCursorUp ( void )
 {
   unsigned int player_turn = get_turn();
 
-  if ( this->cursor.GetY() > PLAYER1_CURSOR_ORIGIN_Y )
+  if ( this->cursor.getState() == 0 )
   {
-    this->cursor.UpdateXY ( 0, -( CARD_HEIGHT / 2 ) );
-
-    if ( this->hand[player_turn].getCardIndex() > 0 && this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
+    if ( this->cursor.GetY() > PLAYER1_CURSOR_ORIGIN_Y )
     {
-      signed int pos = this->hand[player_turn].getPrevCardIndex();
-      this->hand[player_turn].SelectCard ( this->hand[player_turn].cards[pos] );
+      this->cursor.UpdateXY ( 0, -( CARD_HEIGHT / 2 ) );
+
+      if ( this->hand[player_turn].getCardIndex() > 0 && this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
+      {
+        signed int pos = this->hand[player_turn].getPrevCardIndex();
+        this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
+      }
     }
+  }
+  else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
+  {
+    if ( this->cursor.GetY() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
+      this->cursor.UpdateXY ( 0, -( CARD_HEIGHT ) );
   }
 }
 
@@ -529,15 +584,23 @@ void TTcards::moveCursorDown ( void )
 {
   unsigned int player_turn = get_turn();
 
-  if ( this->cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand[player_turn].getCount() ) )
+  if ( this->cursor.getState() == 0 )
   {
-    this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
-
-    if ( this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
+    if ( this->cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand[player_turn].getCount() ) )
     {
-      signed int pos = this->hand[player_turn].getNextCardIndex();
-      this->hand[player_turn].SelectCard ( this->hand[player_turn].cards[pos] );
+      this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
+
+      if ( this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
+      {
+        signed int pos = this->hand[player_turn].getNextCardIndex();
+        this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
+      }
     }
+  }
+  else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
+  {
+    if ( this->cursor.GetY() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
+      this->cursor.UpdateXY ( 0, ( CARD_HEIGHT ) );
   }
 }
 
@@ -640,12 +703,12 @@ void TTcards::Draw ( void )
 
   if ( get_turn() == 0 ) // player1
   {
-    card.DrawName ( engine, hand[0].GetSelectedCard(), 208 );
+    card.DrawName ( engine, hand[0].getSelectedCard(), 208 );
     engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
   }
   else // player2
   {
-    card.DrawName ( engine, hand[1].GetSelectedCard(), 208 );
+    card.DrawName ( engine, hand[1].getSelectedCard(), 208 );
     engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
   }
 
