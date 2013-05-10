@@ -51,15 +51,20 @@ class TTcards: public SDLInput
     void player_turn ( unsigned int player );
     void endTurn ( void );
 
-    void moveTo ( unsigned int x, unsigned int y );
-
     bool isCursorLocked ( void );
     void lockCursor ( bool lock );
     void resetCursor ( void );
     void unlockSelectedCard ( void );
     void lockSelectedCard ( void );
+    void moveTo ( unsigned int x, unsigned int y );
 
+    void onExit ( void );
+    void onResize ( unsigned int width, unsigned int height );
     void Input ( void );
+    void onKeyDown ( SDLKey key, SDLMod mod );
+    void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
+    void onMouseWheel ( bool up, bool down );
+    void onJoyButtonDown ( unsigned int which, unsigned int button );
 
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
@@ -79,14 +84,6 @@ class TTcards: public SDLInput
     void Run ( void ); // game loop
     static void Callback ( void ); // EMCC compiler related
     void Start ( void ); // EMCC compiler related
-
-    void onResize ( unsigned int width, unsigned int height );
-    void onMouseWheel ( bool up, bool down );
-    void onKeyDown ( SDLKey key, SDLMod mod );
-    void onExit ( void );
-    void onResize ( void );
-    void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
-    void onJoyButtonDown ( unsigned int which, unsigned int button );
 
   private:
     static TTcards *instance; // EMCC compiler related

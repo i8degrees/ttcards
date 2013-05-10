@@ -370,34 +370,15 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::Input ( void )
+void TTcards::onExit ( void )
 {
-  SDLInput::Input ();
   this->setGameState ( false );
 }
 
-
-void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
+void TTcards::onResize ( unsigned int width, unsigned int height )
 {
-  switch ( button )
   if ( this->IsFullScreen() == false )
   {
-    case 4: this->moveCursorUp(); break;
-    case 5: this->moveCursorRight(); break;
-    case 6: this->moveCursorDown(); break;
-    case 7: this->moveCursorLeft(); break;
-
-    case 10: this->endTurn(); break;
-
-    case 12: // triangle
-      // TODO
-    break;
-
-    // circle
-    case 13: this->unlockSelectedCard(); break;
-
-    // cross
-    case 14: this->lockSelectedCard(); break;
     this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
     this->setFullscreen ( true );
   }
@@ -406,6 +387,11 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
     this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
     this->setFullscreen ( false );
   }
+}
+
+void TTcards::Input ( void )
+{
+  SDLInput::Input ();
 }
 
 void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
@@ -457,25 +443,6 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_SPACE: this->lockSelectedCard(); break;
 
     default: break;
-  }
-}
-
-void TTcards::onExit ( void )
-{
-  SetGameState ( false );
-}
-
-void TTcards::onResize ( unsigned int width, unsigned int height )
-{
-  if ( this->IsFullScreen() == false )
-  {
-    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
-    this->fullscreen = true;
-  }
-  else
-  {
-    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
-    this->fullscreen = false;
   }
 }
 
@@ -581,6 +548,29 @@ void TTcards::onMouseWheel ( bool up, bool down )
       this->moveCursorUp();
     else if ( down )
       this->moveCursorDown();
+  }
+}
+
+void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
+{
+  switch ( button )
+  {
+    case 4: this->moveCursorUp(); break;
+    case 5: this->moveCursorRight(); break;
+    case 6: this->moveCursorDown(); break;
+    case 7: this->moveCursorLeft(); break;
+
+    case 10: this->endTurn(); break;
+
+    case 12: // triangle
+      // TODO
+    break;
+
+    // circle
+    case 13: this->unlockSelectedCard(); break;
+
+    // cross
+    case 14: this->lockSelectedCard(); break;
   }
 }
 
