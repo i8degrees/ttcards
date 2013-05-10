@@ -79,6 +79,7 @@ class TTcards: public SDLInput
     void onExit ( void );
     void onResize ( void );
     void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
+    void onJoyButtonDown ( unsigned int which, unsigned int button );
 
   private:
     static TTcards *instance; // EMCC compiler related

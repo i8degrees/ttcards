@@ -340,6 +340,41 @@ void TTcards::Input ( void )
   SDLInput::Input ();
 }
 
+
+void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
+{
+  switch ( button )
+  {
+    case 4: this->moveCursorUp(); break;
+    case 5: this->moveCursorRight(); break;
+    case 6: this->moveCursorDown(); break;
+    case 7: this->moveCursorLeft(); break;
+
+    case 10:
+    {
+      this->hand[turn].clearSelectedCard ();
+      if ( get_turn() == 0 )
+        player_turn ( 1 );
+      else
+        player_turn ( 0 );
+    }
+    break;
+
+    case 12: // triangle
+      // TODO
+    break;
+
+    // circle
+    case 13: this->unlockSelectedCard(); break;
+
+    // cross
+    case 14: this->lockSelectedCard(); break;
+
+
+  }
+  std::cout << "onJoyButton(): " << button << std::endl;
+}
+
 void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 {
   switch ( key )
