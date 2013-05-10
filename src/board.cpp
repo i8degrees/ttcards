@@ -17,7 +17,7 @@ Board::Board ( void )
   unsigned int x, y = 0;
 
   #ifdef DEBUG_BOARD_OBJ
-    std::cout << "Board::Board (): " << "Hello, world!" << std::endl << std::endl;
+    std::cout << "Board::Board(): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   rules = NULL;

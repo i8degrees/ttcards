@@ -415,21 +415,17 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_e: this->endTurn(); break;
 
     case SDLK_LEFTBRACKET:
-    {
       if ( mod == KMOD_LMETA )
         this->debug.ListCards ( this->hand[1].cards );
       else
         this->debug.ListCards ( this->hand[0].cards );
-    }
     break;
 
     case SDLK_RIGHTBRACKET:
-    {
       if ( mod == KMOD_LMETA )
         this->debug.ListCards ( this->collection.cards );
       else
         this->board.List();
-    }
     break;
 
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
