@@ -571,11 +571,6 @@ void TTcards::moveCursorUp ( void )
     {
       this->cursor.UpdateXY ( 0, -( CARD_HEIGHT / 2 ) );
 
-      if ( this->hand[player_turn].getCardIndex() > 0 && this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
-      {
-        signed int pos = this->hand[player_turn].getPrevCardIndex();
-        this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
-      }
     }
   }
   else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
@@ -595,11 +590,6 @@ void TTcards::moveCursorDown ( void )
     {
       this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
 
-      if ( this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
-      {
-        signed int pos = this->hand[player_turn].getNextCardIndex();
-        this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
-      }
     }
   }
   else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode

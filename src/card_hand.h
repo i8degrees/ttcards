@@ -27,11 +27,6 @@ class CardHand
     Card & getSelectedCard ( void );
     bool selectCard ( Card &card );
 
-    signed int getPrevCardIndex ( void );
-    signed int getNextCardIndex ( void );
-    unsigned int getCardIndex ( void );
-    void setCardIndex ( signed int pos );
-
     bool isValid ( Card &card );
     bool isEmpty ( void );
     unsigned int getCount ( void );
@@ -41,7 +36,6 @@ class CardHand
 
   private:
     Card selectedCard; // holds player's selected (think: ready to place) card
-    unsigned int card_pos; // keeps track of card index cursor is at
 };
 
 #endif // CARD_HAND_HEADERS defined
