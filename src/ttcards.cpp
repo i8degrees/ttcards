@@ -161,11 +161,9 @@ void TTcards::removePlayerCard ( void )
 bool TTcards::IsFullScreen ( void )
 {
   if ( this->fullscreen == false )
-    this->fullscreen = true;
+    return false;
   else
-    this->fullscreen = false;
-
-  return this->fullscreen;
+    return true;
 }
 
 bool TTcards::IsRunning ( void )
@@ -386,9 +384,15 @@ void TTcards::onExit ( void )
 void TTcards::onResize ( unsigned int width, unsigned int height )
 {
   if ( this->IsFullScreen() == false )
+  {
     this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+    this->fullscreen = true;
+  }
   else
+  {
     this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
+    this->fullscreen = false;
+  }
 }
 
 void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
