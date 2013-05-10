@@ -24,7 +24,6 @@
 #include "cpu_player.h"
 
 #include <map>
-#include <algorithm>
 
 class TTcards: public SDLInput
 {
@@ -38,6 +37,7 @@ class TTcards: public SDLInput
     void debugCardsDiscard ( void );
     void debugCardsNoRuleset ( void );
     void debugCardsSameRuleset ( void );
+    void removePlayerCard ( void );
 
     bool IsRunning ( void );
     void SetGameState ( bool state );
@@ -48,14 +48,17 @@ class TTcards: public SDLInput
     void player_turn ( unsigned int player );
 
     void moveTo ( unsigned int x, unsigned int y );
-    void removePlayerCard ( void );
+    void selectCard ( void );
 
     void Input ( void );
-    void cursor_input ( SDL_Event *input );
 
-    void check_cursor_movement ( void );
-    void draw_cursor ( void );
+    void moveCursorLeft ( void );
+    void moveCursorRight ( void );
+    void moveCursorUp ( void );
+    void moveCursorDown ( void );
+
     void update_cursor ( void );
+    void draw_cursor ( void );
 
     void updateScore ( void );
     void drawScore ( void );

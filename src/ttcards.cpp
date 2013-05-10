@@ -287,95 +287,19 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::cursor_input ( SDL_Event *input )
+// helper method for cursor input selection
+void TTcards::selectCard ( void )
 {
-  SDLKey key = input->key.keysym.sym;
+  unsigned int player_turn = get_turn();
 
-  if ( input->type == SDL_KEYDOWN )
-  {
-    if ( key == SDLK_SPACE )
-    {
-      if ( this->get_turn() == 0 ) // player1
-      {
-        signed int pos = this->hand[0].getCardIndex();
-        this->hand[0].SelectCard ( this->hand[0].cards[pos] );
-      }
-      else if ( this->get_turn() == 1 ) // player2
-      {
-        signed int pos = this->hand[1].getCardIndex();
-        this->hand[1].SelectCard ( this->hand[1].cards[pos] );
-      }
-    }
+  signed int pos = this->hand[player_turn].getCardIndex();
 
-    else if ( key == SDLK_LEFT )
-    {
-      if ( this->get_turn() == 0 ) // player1
-      {
-        if ( this->cursor.GetX() > 96 )
-        {
-          this->cursor.UpdateXY ( -32, 0 );
-        }
-      }
-    }
-
-    else if ( key == SDLK_RIGHT )
-    {
-      if ( this->get_turn() == 0 ) // player1
-      {
-        if ( this->cursor.GetX() < 288 )
-        {
-          this->cursor.UpdateXY ( 32, 0 );
-        }
-      }
-    }
-
-    else if ( key == SDLK_UP )
-    {
-      if ( this->get_turn() == 0 ) // player1
-      {
-        if ( this->cursor.GetY() > PLAYER1_CURSOR_ORIGIN_Y && this->cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
-        {
-          this->cursor.UpdateXY ( 0, -32 );
-
-          if ( this->hand[0].getCardIndex() > 0 && this->hand[0].getCardIndex() < this->hand[0].cards.size() )
-          {
-            signed int pos = this->hand[0].getPrevCardIndex();
-            this->hand[0].SelectCard ( this->hand[0].cards[pos] );
-          }
-        }
-        else if ( this->cursor.GetX() > 96 && this->cursor.GetY() > 16 )
-        {
-          this->cursor.SetXY ( 96, this->cursor.GetY() ); // FIXME
-        }
-      }
-    }
-
-    else if ( key == SDLK_DOWN )
-    {
-      if ( this->get_turn() == 0 ) // player1
-      {
-        if ( this->cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand[0].cards.size() ) && this->cursor.GetX() == PLAYER1_CURSOR_ORIGIN_X )
-        {
-          this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
-
-          if ( this->hand[0].getCardIndex() < this->hand[0].cards.size() )
-          {
-            signed int pos = this->hand[0].getNextCardIndex();
-            this->hand[0].SelectCard ( this->hand[0].cards[pos] );
-          }
-        }
-        else if ( this->cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X && this->cursor.GetY() < 128 )
-        {
-          this->cursor.UpdateXY ( 0, 32 );
-        }
-      }
-    }
-  }
+  this->hand[player_turn].SelectCard ( this->hand[player_turn].cards[pos] );
 }
 
 void TTcards::Input ( void )
 {
-  SDLInput::Input (); //this->cursor_input ( &this->input );
+  SDLInput::Input ();
 }
 
 void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
@@ -383,17 +307,11 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
   switch ( key )
   {
     case SDLK_ESCAPE:
-    case SDLK_q:
-      onExit();
-    break;
+    case SDLK_q: onExit(); break;
 
-    case SDLK_f:
-      onResize(0,0);
-    break;
+    case SDLK_f: onResize(0,0); break;
 
-    case SDLK_p:
-      music.togglePlayingMusic();
-    break;
+    case SDLK_p: music.togglePlayingMusic(); break;
 
     case SDLK_EQUALS:
     {
@@ -407,10 +325,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_u:
     case SDLK_e:
     {
-      for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
-      {
-        hand[turn].ClearSelected();
-      }
+      hand[turn].ClearSelected();
 
       if ( get_turn() == 0 )
         player_turn ( 1 );
@@ -437,38 +352,29 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     }
     break;
 
-    case SDLK_d:
-      if ( mod == KMOD_LMETA ) removePlayerCard(); break;
+    case SDLK_d: if ( mod == KMOD_LMETA ) removePlayerCard(); break;
 
-    // move selected card to grid[0][0] if possible
+    case SDLK_LEFT: this->moveCursorLeft(); break;
+
+    case SDLK_RIGHT: this->moveCursorRight(); break;
+
+    case SDLK_UP: this->moveCursorUp(); break;
+
+    case SDLK_DOWN: this->moveCursorDown(); break;
+
+    case SDLK_SPACE: this->selectCard(); break;
+
     case SDLK_1: moveTo ( 0, 0 ); break;
-
-    // move selected card to grid[1][0] if possible
     case SDLK_2: moveTo ( 1, 0 ); break;
-
-    // move selected card to grid[2][0] if possible
     case SDLK_3: moveTo ( 2, 0 ); break;
-
-    // move selected card to grid[0][1] if possible
     case SDLK_4: moveTo ( 0, 1 ); break;
-
-    // move selected card to grid[1][1] if possible
     case SDLK_5: moveTo ( 1, 1 ); break;
-
-    // move selected card to grid[2][1] if possible
     case SDLK_6: moveTo ( 2, 1 ); break;
-
-    // move selected card to grid[0][2] if possible
     case SDLK_7: moveTo ( 0, 2 ); break;
-
-    // move selected card to grid[1][2] if possible
     case SDLK_8: moveTo ( 1, 2 ); break;
-
-    // move selected card to grid[2][2] if possible
     case SDLK_9: moveTo ( 2, 2 ); break;
 
-    default:
-    break;
+    default: break;
   }
 }
 
@@ -582,17 +488,56 @@ void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 void TTcards::onMouseWheel ( bool up, bool down )
 {
   if ( up )
-    std::cout << "Mouse Wheel [Up]" << "\n\n";
+    this->moveCursorUp();
   else if ( down )
-    std::cout << "Mouse Wheel [Down]" << "\n\n";
+    this->moveCursorDown();
 }
 
-void TTcards::check_cursor_movement ( void )
+void TTcards::moveCursorLeft ( void )
 {
-  //
+  if ( this->cursor.GetX() > PLAYER1_CURSOR_ORIGIN_X )
+    this->cursor.UpdateXY ( -42, 0 );
 }
 
-void TTcards::draw_cursor ( void )
+void TTcards::moveCursorRight ( void )
+{
+  if ( this->cursor.GetX() < PLAYER2_CURSOR_ORIGIN_X )
+    this->cursor.UpdateXY ( 42, 0 );
+}
+
+void TTcards::moveCursorUp ( void )
+{
+  unsigned int player_turn = get_turn();
+
+  if ( this->cursor.GetY() > PLAYER1_CURSOR_ORIGIN_Y )
+  {
+    this->cursor.UpdateXY ( 0, -( CARD_HEIGHT / 2 ) );
+
+    if ( this->hand[player_turn].getCardIndex() > 0 && this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
+    {
+      signed int pos = this->hand[player_turn].getPrevCardIndex();
+      this->hand[player_turn].SelectCard ( this->hand[player_turn].cards[pos] );
+    }
+  }
+}
+
+void TTcards::moveCursorDown ( void )
+{
+  unsigned int player_turn = get_turn();
+
+  if ( this->cursor.GetY() < ( CARD_HEIGHT / 2 ) * ( this->hand[player_turn].getCount() ) )
+  {
+    this->cursor.UpdateXY ( 0, ( CARD_HEIGHT / 2 ) );
+
+    if ( this->hand[player_turn].getCardIndex() < this->hand[player_turn].getCount() )
+    {
+      signed int pos = this->hand[player_turn].getNextCardIndex();
+      this->hand[player_turn].SelectCard ( this->hand[player_turn].cards[pos] );
+    }
+  }
+}
+
+void TTcards::update_cursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
   {
@@ -602,20 +547,11 @@ void TTcards::draw_cursor ( void )
   {
     this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
   }
-
-  this->cursor.Draw ( this->engine );
 }
 
-void TTcards::update_cursor ( void )
+void TTcards::draw_cursor ( void )
 {
-  if ( this->get_turn() == 0 ) // player1
-  {
-    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * this->hand[0].getCardIndex() );
-  }
-  else if ( this->get_turn() == 1 ) // player2
-  {
-    //this->card.DrawCard ( engine, this->hand->GetSelectedCard (), PLAYER2_ORIGIN_X - 16, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * card_pos );
-  }
+  this->cursor.Draw ( this->engine );
 }
 
 void TTcards::interface_GameOver ( void )
@@ -715,6 +651,6 @@ void TTcards::Draw ( void )
 void TTcards::Run ( void )
 {
   Input ();
-  Update();
-  Draw();
+  Update ();
+  Draw ();
 }
