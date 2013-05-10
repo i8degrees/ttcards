@@ -99,7 +99,7 @@ void Player::Draw ( Gfx *engine )
   unsigned int hand_index = 0;
   std::pair<int, int> player_coords = getXY();
 
-  for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
+  for ( hand_index = 0; hand_index < this->hand->getCount(); hand_index++ )
   {
     if ( this->hand->isValid ( this->hand->cards.at ( hand_index) ) == true )
     {
