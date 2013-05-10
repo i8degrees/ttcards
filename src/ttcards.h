@@ -46,6 +46,7 @@ class TTcards: public SDLInput
 
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
+    void endTurn ( void );
 
     void moveTo ( unsigned int x, unsigned int y );
 
@@ -60,8 +61,8 @@ class TTcards: public SDLInput
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    void update_cursor ( void );
-    void draw_cursor ( void );
+    void updateCursor ( void );
+    void drawCursor ( void );
 
     void updateScore ( void );
     void drawScore ( void );
@@ -86,13 +87,13 @@ class TTcards: public SDLInput
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     Font timer_text; // fps timer font
-    Font message_text;
+    Font message_text; // dialog text
     Font score_text; // scoreboard text
     Board board; // game board
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database
     CardRules rules;
-    CPUPlayer AI;
+    //CPUPlayer AI;
     CardView card; // card rendering
     CardHand hand[2]; // player hand
     Player player[2]; // players in game
@@ -103,7 +104,7 @@ class TTcards: public SDLInput
     Audio music; // holds our musical tracks
 
     unsigned int turn; // player1 = 0, player2 = 1
-    bool cursor_locked;
+    bool cursor_locked; // locks cursor state to board placement
     bool game_state; // global app state
     bool show_fps; // fps counter
     bool fullscreen; // toggle window & fullscreen states

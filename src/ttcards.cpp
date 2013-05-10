@@ -206,7 +206,20 @@ void TTcards::player_turn ( unsigned int player )
 {
   this->turn = player;
 
-  resetCursor();
+  this->resetCursor();
+}
+
+// Helper method for incrementing to next player's turn
+void TTcards::endTurn ( void )
+{
+  unsigned int player = get_turn();
+
+  this->hand[player].clearSelectedCard();
+
+  if ( this->get_turn() == 0 )
+    this->player_turn ( 1 );
+  else if ( this->get_turn() == 1 )
+    this->player_turn ( 0 );
 }
 
 // Helper method for resetting cursor related input
@@ -224,8 +237,6 @@ void TTcards::resetCursor ( void )
 // helper method for cursor input selection
 void TTcards::unlockSelectedCard ( void )
 {
-  //unsigned int player_turn = get_turn();
-
   this->cursor.setState ( 0 ); // player card select
 
   this->resetCursor();
@@ -320,15 +331,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
               }
             }
           }
-
-          if ( get_turn() == 0 )
-          {
-            player_turn ( 1 );
-          }
-          else if ( get_turn() == 1 )
-          {
-            player_turn ( 0 );
-          }
+          this->endTurn();
         }
       }
     }
@@ -350,15 +353,7 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
     case 6: this->moveCursorDown(); break;
     case 7: this->moveCursorLeft(); break;
 
-    case 10:
-    {
-      this->hand[turn].clearSelectedCard ();
-      if ( get_turn() == 0 )
-        player_turn ( 1 );
-      else
-        player_turn ( 0 );
-    }
-    break;
+    case 10: this->endTurn(); break;
 
     case 12: // triangle
       // TODO
@@ -369,10 +364,7 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
 
     // cross
     case 14: this->lockSelectedCard(); break;
-
-
   }
-  std::cout << "onJoyButton(): " << button << std::endl;
 }
 
 void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
@@ -380,11 +372,9 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
   switch ( key )
   {
     case SDLK_ESCAPE:
-    case SDLK_q: onExit(); break;
-
-    case SDLK_f: onResize(0,0); break;
-
-    case SDLK_p: music.togglePlayingMusic(); break;
+    case SDLK_q: this->onExit(); break;
+    case SDLK_f: this->onResize ( 0, 0 ); break;
+    case SDLK_p: this->music.togglePlayingMusic(); break;
 
     case SDLK_EQUALS:
     {
@@ -395,33 +385,23 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     }
     break;
 
-    case SDLK_u:
-    case SDLK_e:
-    {
-      this->hand[turn].clearSelectedCard ();
-
-      if ( get_turn() == 0 )
-        player_turn ( 1 );
-      else
-        player_turn ( 0 );
-    }
-    break;
+    case SDLK_e: this->endTurn(); break;
 
     case SDLK_LEFTBRACKET:
     {
       if ( mod == KMOD_LMETA )
-        debug.ListCards ( hand[1].cards );
+        this->debug.ListCards ( this->hand[1].cards );
       else
-        debug.ListCards ( hand[0].cards );
+        this->debug.ListCards ( this->hand[0].cards );
     }
     break;
 
     case SDLK_RIGHTBRACKET:
     {
       if ( mod == KMOD_LMETA )
-        debug.ListCards ( collection.cards );
+        this->debug.ListCards ( this->collection.cards );
       else
-        board.List();
+        this->board.List();
     }
     break;
 
@@ -434,16 +414,6 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_x: this->unlockSelectedCard(); break;
     case SDLK_SPACE: this->lockSelectedCard(); break;
-
-    case SDLK_1: moveTo ( 0, 0 ); break;
-    case SDLK_2: moveTo ( 1, 0 ); break;
-    case SDLK_3: moveTo ( 2, 0 ); break;
-    case SDLK_4: moveTo ( 0, 1 ); break;
-    case SDLK_5: moveTo ( 1, 1 ); break;
-    case SDLK_6: moveTo ( 2, 1 ); break;
-    case SDLK_7: moveTo ( 0, 2 ); break;
-    case SDLK_8: moveTo ( 1, 2 ); break;
-    case SDLK_9: moveTo ( 2, 2 ); break;
 
     default: break;
   }
@@ -639,7 +609,7 @@ void TTcards::moveCursorDown ( void )
   }
 }
 
-void TTcards::update_cursor ( void )
+void TTcards::updateCursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
   {
@@ -651,7 +621,7 @@ void TTcards::update_cursor ( void )
   }
 }
 
-void TTcards::draw_cursor ( void )
+void TTcards::drawCursor ( void )
 {
   this->cursor.Draw ( this->engine );
 }
@@ -691,35 +661,35 @@ void TTcards::updateScore ( void )
 
   for ( turn = 0; turn < TOTAL_PLAYERS; turn++ )
   {
-    board_count = board.getPlayerCount ( turn + 1 );
+    board_count = this->board.getPlayerCount ( turn + 1 );
 
-    hand_count = hand[turn].cards.size();
+    hand_count = this->hand[turn].getCount();
 
-    player[turn].setScore ( board_count + hand_count );
+    this->player[turn].setScore ( board_count + hand_count );
   }
 }
 
 void TTcards::drawScore ( void )
 {
-  score_text.SetTextBuffer ( std::to_string ( player[0].getScore() ) );
-  score_text.DrawText ( engine, PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->score_text.SetTextBuffer ( std::to_string ( player[0].getScore() ) );
+  this->score_text.DrawText ( engine, PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
 
-  score_text.SetTextBuffer ( std::to_string ( player[1].getScore() ) );
-  score_text.DrawText ( engine, PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->score_text.SetTextBuffer ( std::to_string ( player[1].getScore() ) );
+  this->score_text.DrawText ( engine, PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 }
 
 
 void TTcards::Update ( void )
 {
-  fps.Update();
-  update_cursor();
+  this->fps.Update();
+  this->updateCursor();
 
-  updateScore();
+  this->updateScore();
 
   // game / round is over when board card count >= 9
   if ( this->board.getCount () >= 9 /* || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 */)
   {
-    interface_GameOver();
+    this->interface_GameOver();
   }
 
   engine->UpdateScreen ();
@@ -727,32 +697,32 @@ void TTcards::Update ( void )
 
 void TTcards::Draw ( void )
 {
-  board.Draw ( this->engine );
+  this->board.Draw ( this->engine );
 
-  player[0].Draw ( this->engine );
-  player[1].Draw ( this->engine );
+  this->player[0].Draw ( this->engine );
+  this->player[1].Draw ( this->engine );
 
-  draw_cursor();
+  this->drawCursor();
 
-  drawScore ();
+  this->drawScore ();
 
-  if ( get_turn() == 0 ) // player1
+  if ( this->get_turn() == 0 ) // player1
   {
-    card.DrawName ( engine, hand[0].getSelectedCard(), 208 );
-    engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
+    this->card.DrawName ( this->engine, this->hand[0].getSelectedCard(), 208 );
+    this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
   }
   else // player2
   {
-    card.DrawName ( engine, hand[1].getSelectedCard(), 208 );
-    engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+    this->card.DrawName ( this->engine, this->hand[1].getSelectedCard(), 208 );
+    this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
   }
 
-  drawFPS();
+  this->drawFPS();
 }
 
 void TTcards::Run ( void )
 {
-  Input ();
-  Update ();
-  Draw ();
+  this->Input ();
+  this->Update ();
+  this->Draw ();
 }
