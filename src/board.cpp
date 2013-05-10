@@ -20,21 +20,19 @@ Board::Board ( void )
     std::cout << "Board::Board(): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  rules = NULL;
+  this->rules = NULL;
 
-  grid.resize ( BOARD_GRID_HEIGHT ); // y coords
+  this->grid.resize ( BOARD_GRID_HEIGHT ); // initialize y coords
 
-  for ( x = 0; x < BOARD_GRID_WIDTH; x++ ) // x coords
-  {
-    grid[x].resize ( BOARD_GRID_WIDTH );
-  }
+  for ( x = 0; x < BOARD_GRID_WIDTH; x++ ) // initialize x coords
+    this->grid[x].resize ( BOARD_GRID_WIDTH );
 
-  /* Initialize our new 2D std::vector grid */
+  /* Say hello to our brand spanking new 2D std::vector grid */
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      grid[x][y] = 0;
+      this->grid[x][y] = 0;
     }
   }
 
@@ -52,26 +50,22 @@ Board::~Board ( void )
     std::cout << "Board::~Board (): " << "Goodbye cruel world!" << std::endl << std::endl;
   #endif
 
-  if ( rules != NULL )
-  {
+  if ( this->rules != NULL )
     this->rules = NULL;
-  }
 
-  if ( card != NULL )
-  {
+  if ( this->card != NULL )
     this->card = NULL;
-  }
 
-  if ( background != NULL )
+  if ( this->background != NULL )
   {
     SDL_FreeSurface ( background );
-    background = NULL;
+    this->background = NULL;
   }
 }
 
 bool Board::LoadBackground ( std::string filename )
 {
-  background = Gfx::LoadImage ( filename );
+  this->background = Gfx::LoadImage ( filename );
 
   return true;
 }
