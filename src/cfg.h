@@ -137,6 +137,7 @@ extern std::string WORKING_DIR;
 
 extern const std::string CARDS_DB;
 extern const std::string CARD_FONTFACE;
+extern const std::string INFO_FONTFACE;
 extern const std::string SCORE_FONTFACE;
 extern const std::string APP_ICON;
 extern const std::string BOARD_BACKGROUND;
