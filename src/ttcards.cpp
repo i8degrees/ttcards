@@ -235,6 +235,8 @@ void TTcards::endTurn ( void )
 
   this->hand[player].clearSelectedCard();
 
+  this->unlockSelectedCard();
+
   if ( this->get_turn() == 0 )
     this->player_turn ( 1 );
   else if ( this->get_turn() == 1 )
