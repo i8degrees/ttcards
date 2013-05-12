@@ -18,8 +18,8 @@ CardView::CardView ( void )
   this->card_background = NULL;
   this->card_element = NULL;
 
-  this->text_buffer.LoadTTF ( CARD_FONTFACE, 12 ); // font: shitty temp
-  this->text_buffer.SetTextColor ( 255, 255, 255 ); // color: white
+  this->card_text.LoadImage ( CARD_FONTFACE, 16, 16, 110, 144, 190 );
+  this->info_text.LoadImage ( INFO_FONTFACE, 16, 16, 110, 144, 190 );
 
   this->card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -63,9 +63,9 @@ void CardView::DrawName ( Gfx *engine, Card &card, unsigned int y )
 {
   if ( card.getName() != "\0" )
   {
-    this->text_buffer.SetTextBuffer ( card.getName() );
-    unsigned int text_width = this->text_buffer.GetTextWidth ();
-    this->text_buffer.DrawText ( engine, ( SCREEN_WIDTH - text_width ) / 2, y );
+    this->info_text.setTextBuffer ( card.getName() );
+    unsigned int text_width = this->info_text.getTextWidth ();
+    this->info_text.DrawText ( engine, ( SCREEN_WIDTH - text_width ) / 2, y );
   }
 }
 
@@ -136,21 +136,37 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
       return false;
 
     #ifdef DEBUG_CARD_VIEW
-      this->text_buffer.SetTextBuffer ( std::to_string ( card.getID() ) );
-      this->text_buffer.DrawText ( engine, CARD_ID_ORIGIN_X + x, CARD_ID_ORIGIN_Y + y );
+      this->card_text.setTextBuffer ( std::to_string ( card.getID() ) );
+      this->card_text.DrawText ( engine, CARD_ID_ORIGIN_X + x, CARD_ID_ORIGIN_Y + y );
     #endif
 
-    this->text_buffer.SetTextBuffer ( std::to_string ( card.getNorthRank() ) );
-    this->text_buffer.DrawText ( engine, RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
+    if ( card.getNorthRank() == 10 )
+      this->card_text.setTextBuffer ( "A" );
+    else
+      this->card_text.setTextBuffer ( std::to_string ( card.getNorthRank() ) );
 
-    this->text_buffer.SetTextBuffer ( std::to_string ( card.getEastRank() ) );
-    this->text_buffer.DrawText ( engine, RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
+    this->card_text.DrawText ( engine, RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
 
-    this->text_buffer.SetTextBuffer ( std::to_string ( card.getSouthRank() ) );
-    this->text_buffer.DrawText ( engine, RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
+    if ( card.getEastRank() == 10 )
+      this->card_text.setTextBuffer ( "A" );
+    else
+      this->card_text.setTextBuffer ( std::to_string ( card.getEastRank() ) );
 
-    this->text_buffer.SetTextBuffer ( std::to_string ( card.getWestRank() ) );
-    this->text_buffer.DrawText ( engine, RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
+    this->card_text.DrawText ( engine, RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
+
+    if ( card.getWestRank() == 10 )
+      this->card_text.setTextBuffer ( "A" );
+    else
+      this->card_text.setTextBuffer ( std::to_string ( card.getWestRank() ) );
+
+    this->card_text.DrawText ( engine, RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
+
+    if ( card.getSouthRank() == 10 )
+      this->card_text.setTextBuffer ( "A" );
+    else
+      this->card_text.setTextBuffer ( std::to_string ( card.getSouthRank() ) );
+
+    this->card_text.DrawText ( engine, RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
 
     return true;
   } // if card.getID() != 0

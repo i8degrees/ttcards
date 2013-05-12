@@ -70,10 +70,10 @@ bool TTcards::LoadGameData ( void )
   this->board.Init ( &this->card, &this->rules );
   this->board.LoadBackground ( BOARD_BACKGROUND );
 
-  this->timer_text.LoadTTF ( CARD_FONTFACE, 12 );
+  this->timer_text.LoadTTF ( SCORE_FONTFACE, 12 );
   this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
 
-  this->message_text.LoadTTF ( CARD_FONTFACE, 36 );
+  this->message_text.LoadTTF ( SCORE_FONTFACE, 36 );
   this->message_text.SetTextColor ( 255, 255, 255 ); // color: red
 
   score_text.LoadTTF ( SCORE_FONTFACE, 32 );

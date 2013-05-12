@@ -29,7 +29,8 @@ class CardView
     Sprite *card_face;
     Sprite *card_background;
     Sprite *card_element;
-    Font text_buffer;
+    SDLBitmapFont card_text;
+    SDLBitmapFont info_text;
 };
 
 #endif // CARD_VIEW_HEADERS defined
