@@ -61,22 +61,22 @@ const int CARD_FACE_ORIGIN_Y = CARD_ORIGIN_Y;
 const int BACKGROUND_ORIGIN_X = CARD_ORIGIN_X;
 const int BACKGROUND_ORIGIN_Y = CARD_ORIGIN_Y;
 
-const int ELEMENT_ORIGIN_X = CARD_ORIGIN_X + 46;
-const int ELEMENT_ORIGIN_Y = CARD_ORIGIN_Y + 4;
+const int ELEMENT_ORIGIN_X = CARD_ORIGIN_X + 42;
+const int ELEMENT_ORIGIN_Y = CARD_ORIGIN_Y + 5;
 
-const int RANK_NORTH_ORIGIN_X = 6;
+const int RANK_NORTH_ORIGIN_X = 8;
 const int RANK_NORTH_ORIGIN_Y = 3;
 
-const int RANK_EAST_ORIGIN_X = 11;
-const int RANK_EAST_ORIGIN_Y = 12;
+const int RANK_EAST_ORIGIN_X = 12;
+const int RANK_EAST_ORIGIN_Y = 11;
 
 const int RANK_SOUTH_ORIGIN_X = RANK_NORTH_ORIGIN_X;
 const int RANK_SOUTH_ORIGIN_Y = 20;
 
-const int RANK_WEST_ORIGIN_X = 3;
-const int RANK_WEST_ORIGIN_Y = 12;
+const int RANK_WEST_ORIGIN_X = 4;
+const int RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
 
-const int CARD_ID_ORIGIN_X = 28;
+const int CARD_ID_ORIGIN_X = 26;
 const int CARD_ID_ORIGIN_Y = 4;
 
 const int BOARD_GRID_WIDTH = 3;
