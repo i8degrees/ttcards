@@ -133,7 +133,8 @@ extern const int INTERFACE_CURSOR_NONE;
 extern const int INTERFACE_CURSOR_LEFT;
 extern const int INTERFACE_CURSOR_RIGHT;
 
-extern const std::string WORKING_DIR;
+extern std::string WORKING_DIR;
+
 extern const std::string CARDS_DB;
 extern const std::string CARD_FONTFACE;
 extern const std::string SCORE_FONTFACE;

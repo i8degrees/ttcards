@@ -19,6 +19,14 @@ int main(int argc, char *argv[])
     std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
   #endif
 
+  #ifndef EMSCRIPTEN
+    // This isn't an absolute guarantee that we can do this reliably; we must use
+    // argv[0] as we need to know the *starting* directory of where ttcards resides
+    // from, not the current working directory in which it is executed from
+    WORKING_DIR = OSXFs::getDirName ( argv[0] );
+    OSXFs::setWorkingDir ( WORKING_DIR );
+  #endif
+
   std::srand ( ( unsigned ) time ( 0 ) ); // needs to exec before CardHand, Player, Board, etc.
 
   Gfx engine = ( sdl_flags ); // rendering interface instance

@@ -100,8 +100,7 @@ const int INTERFACE_CURSOR_NONE = 0;
 const int INTERFACE_CURSOR_LEFT = 1;
 const int INTERFACE_CURSOR_RIGHT = 2;
 
-const std::string WORKING_DIR =         "/Users/jeff/Projects/hax/ttcards.git/";
-//const std::string WORKING_DIR =         OSXFs::getWorkingDir() + "/";
+std::string WORKING_DIR;
 
 const std::string CARDS_DB =            WORKING_DIR + "./data/cards.txt";
 const std::string CARD_FONTFACE =       WORKING_DIR + "./data/fonts/EnvyCodeRb.ttf";
