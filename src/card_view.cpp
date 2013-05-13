@@ -19,7 +19,6 @@ CardView::CardView ( void )
   this->card_element = NULL;
 
   this->card_text.LoadImage ( CARD_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
-  this->info_text.LoadImage ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
   this->card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -56,16 +55,6 @@ CardView::~CardView ( void )
   {
     delete this->card_face;
     this->card_face = NULL;
-  }
-}
-
-void CardView::DrawName ( Gfx *engine, Card &card, unsigned int y )
-{
-  if ( card.getName() != "\0" )
-  {
-    this->info_text.setTextBuffer ( card.getName() );
-    unsigned int text_width = this->info_text.getTextWidth ();
-    this->info_text.DrawText ( engine, ( SCREEN_WIDTH - text_width ) / 2, y );
   }
 }
 

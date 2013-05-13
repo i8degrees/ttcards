@@ -22,7 +22,6 @@ class CardView
     CardView ( void );
     ~CardView ( void );
 
-    void DrawName ( Gfx *engine, Card &card, unsigned int y );
     bool DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y );
 
   private:
@@ -30,7 +29,6 @@ class CardView
     Sprite *card_background;
     Sprite *card_element;
     SDLBitmapFont card_text;
-    SDLBitmapFont info_text;
 };
 
 #endif // CARD_VIEW_HEADERS defined
