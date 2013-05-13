@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   Gfx engine = ( sdl_flags ); // rendering interface instance
 
   #ifndef EMSCRIPTEN
-    engine.setIcon ( APP_ICON );
+    engine.setIcon ( APP_ICON, GColor ( 0, 0, 0 ) );
   #endif
 
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );

@@ -18,8 +18,8 @@ CardView::CardView ( void )
   this->card_background = NULL;
   this->card_element = NULL;
 
-  this->card_text.LoadImage ( CARD_FONTFACE, 16, 16, 110, 144, 190 );
-  this->info_text.LoadImage ( INFO_FONTFACE, 16, 16, 110, 144, 190 );
+  this->card_text.LoadImage ( CARD_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+  this->info_text.LoadImage ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
   this->card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -29,9 +29,9 @@ CardView::CardView ( void )
   this->card_background->SetSheetDimensions ( 256, 64, 0, 0 );
   this->card_element->SetSheetDimensions ( 144, 16, 0, 0 );
 
-  this->card_face->LoadImage ( CARD_FACES );
-  this->card_background->LoadImage ( CARD_BACKGROUNDS );
-  this->card_element->LoadImage ( CARD_ELEMENTS );
+  this->card_face->LoadImage ( CARD_FACES, GColor ( 0, 0, 0 ) );
+  this->card_background->LoadImage ( CARD_BACKGROUNDS, GColor ( 0, 0, 0 ) );
+  this->card_element->LoadImage ( CARD_ELEMENTS, GColor ( 0, 0, 0 ) );
 }
 
 CardView::~CardView ( void )

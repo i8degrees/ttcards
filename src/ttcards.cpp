@@ -80,7 +80,7 @@ bool TTcards::LoadGameData ( void )
   score_text.SetTextColor ( 255, 255, 255 ); // white
 
   this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->cursor.LoadImage ( INTERFACE_CURSOR );
+  this->cursor.LoadImage ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
   this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
@@ -749,12 +749,12 @@ void TTcards::Draw ( void )
   if ( this->get_turn() == 0 ) // player1
   {
     this->card.DrawName ( this->engine, this->hand[0].getSelectedCard(), 208 );
-    this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
+    this->engine->DrawRectangle ( 48, 0, 16, 16, GColor ( 188, 203, 236 ) ); // FIXME: placeholder for player select sprite animation
   }
   else // player2
   {
     this->card.DrawName ( this->engine, this->hand[1].getSelectedCard(), 208 );
-    this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+    this->engine->DrawRectangle ( 320, 0, 16, 16, GColor ( 222, 196, 205 ) ); // // FIXME: placeholder for player select sprite animation
   }
 
   this->drawFPS();
