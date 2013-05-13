@@ -221,15 +221,11 @@ void TTcards::drawFPS ( void )
 {
   if ( this->getShowFPS() == true )
   {
-    this->timer_text.SetTextBuffer ( std::to_string ( this->fps.GetFPS() ) );
-    signed int w = this->timer_text.GetTextWidth ();
-    this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
+    this->engine->setTitle ( std::to_string ( fps.GetFPS() / 1.000f ) );
   }
-  else // false
+  else
   {
-    this->timer_text.SetTextBuffer ( " " );
-    signed int w = this->timer_text.GetTextWidth ();
-    this->timer_text.DrawText ( this->engine, (SCREEN_WIDTH - w) / 2, 4 );
+    this->engine->setTitle ( "TTcards" );
   }
 }
 
