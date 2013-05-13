@@ -92,6 +92,12 @@ class TTcards: public SDLInput
     static TTcards *instance; // EMCC compiler related
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
+
+    SDLBitmapFont info_text;
+    SDLMessageBox info_box;
+    SDLGradient linear;
+    GColor msgbox[6];
+
     Font timer_text; // fps timer font
     Font message_text; // dialog text
     Font score_text; // scoreboard text

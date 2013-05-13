@@ -79,6 +79,8 @@ bool TTcards::LoadGameData ( void )
   score_text.LoadTTF ( SCORE_FONTFACE, 32 );
   score_text.SetTextColor ( 255, 255, 255 ); // white
 
+  this->info_text.LoadImage ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+
   this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.LoadImage ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
@@ -105,6 +107,21 @@ bool TTcards::LoadGameData ( void )
 
   //AI.Init ( &this->board, &this->hand[1] );
 
+  // msgbox.push_back ( setColor ( r, g, b ) );
+
+  this->msgbox[0].setColor ( 41, 41, 41 ); // top1
+  this->msgbox[1].setColor ( 133, 133, 133 ); // top2
+
+  this->msgbox[2].setColor ( 41, 41, 41 ); // left1
+  this->msgbox[3].setColor ( 133, 133, 133 ); // left2
+
+  this->msgbox[4].setColor ( 57, 57, 57 ); // bottom1
+  this->msgbox[5].setColor ( 57, 57, 57 ); // right1
+
+  for ( int i = 0; i < 6; i++ )
+    this->info_box.setBorder ( msgbox[i] );
+
+  this->info_box.setBackground ( &linear );
   return true;
 }
 
@@ -786,15 +803,9 @@ void TTcards::Draw ( void )
     // switch states
 
   if ( this->get_turn() == 0 ) // player1
-  {
-    this->card.DrawName ( this->engine, this->hand[0].getSelectedCard(), 208 );
-    this->engine->DrawRectangle ( 48, 0, 16, 16, GColor ( 188, 203, 236 ) ); // FIXME: placeholder for player select sprite animation
-  }
+    this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
   else // player2
-  {
-    this->card.DrawName ( this->engine, this->hand[1].getSelectedCard(), 208 );
-    this->engine->DrawRectangle ( 320, 0, 16, 16, GColor ( 222, 196, 205 ) ); // // FIXME: placeholder for player select sprite animation
-  }
+    this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
 
   this->drawFPS();
 }
