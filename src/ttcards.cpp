@@ -666,7 +666,22 @@ void TTcards::drawCursor ( void )
   this->cursor.Draw ( this->engine );
 }
 
-void TTcards::interface_GameOver ( void )
+void TTcards::interface_pickOutCards ( void )
+{
+  // 10 pages @ 11/pg for 110
+  // ~12..14 pixels a card
+  //TOP_LEFT = 60, 30
+  //TOP_RIGHT = 199, 30
+  //BOTTOM_RIGHT = 199, 199
+  //BOTTOM_LEFT = 60, 199
+
+  if ( RUNNING_PICKOUTCARDS )
+  {
+    this->info_box.Draw ( this->engine->screen, 60, 30, 140, 170 );
+  }
+}
+
+void TTcards::interface_gameOver ( void )
 {
   this->message_text.SetTextBuffer ( "Game Over" );
   signed int width = this->message_text.GetTextWidth ();
@@ -689,6 +704,24 @@ void TTcards::interface_GameOver ( void )
     this->message_text.SetTextBuffer ( "Tie!" );
     signed int width = this->message_text.GetTextWidth ();
     this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+  }
+}
+
+void TTcards::interface_playingCards ( void )
+{
+  unsigned int player_turn = get_turn();
+
+  Card active;
+
+  active = this->hand[player_turn].getSelectedCard();
+
+  if ( active.getName() != "\0" )
+  {
+    this->info_text.setTextBuffer ( active.getName() );
+    unsigned int text_width = this->info_text.getTextWidth();
+
+    this->info_box.Draw ( this->engine->screen, 104, 194, 176, 24 );
+    this->info_text.DrawText ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 196 );
   }
 }
 
@@ -722,6 +755,7 @@ void TTcards::drawScore ( void )
 void TTcards::Update ( void )
 {
   this->fps.Update();
+
   this->updateCursor();
 
   this->updateScore();
@@ -729,7 +763,7 @@ void TTcards::Update ( void )
   // game / round is over when board card count >= 9
   if ( this->board.getCount () >= 9 /* || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 */)
   {
-    this->interface_GameOver();
+    this->interface_gameOver();
   }
 
   engine->UpdateScreen ();
@@ -745,6 +779,11 @@ void TTcards::Draw ( void )
   this->drawCursor();
 
   this->drawScore ();
+
+  if ( this->isCursorLocked() == false )
+    this->interface_playingCards();
+  //else if ( false )
+    // switch states
 
   if ( this->get_turn() == 0 ) // player1
   {

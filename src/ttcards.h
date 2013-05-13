@@ -75,9 +75,12 @@ class TTcards: public SDLInput
     void updateCursor ( void );
     void drawCursor ( void );
 
+    void interface_pickOutCards ( void );
+    void interface_playingCards ( void );
+    void interface_gameOver ( void );
+
     void updateScore ( void );
     void drawScore ( void );
-    void interface_GameOver ( void );
 
     void Update ( void );
     void Draw ( void );
