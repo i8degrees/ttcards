@@ -118,10 +118,20 @@ bool TTcards::LoadGameData ( void )
   this->msgbox[4].setColor ( 57, 57, 57 ); // bottom1
   this->msgbox[5].setColor ( 57, 57, 57 ); // right1
 
-  for ( int i = 0; i < 6; i++ )
+  this->debug_box.disable ( true );
+  this->menu_box.disable ( true );
+
+  for ( unsigned int i = 0; i < 6; i++ )
+  {
     this->info_box.setBorder ( msgbox[i] );
+    this->debug_box.setBorder ( msgbox[i] );
+    this->menu_box.setBorder ( msgbox[i] );
+  }
 
   this->info_box.setBackground ( &linear );
+  this->debug_box.setBackground ( &linear );
+  this->menu_box.setBackground ( &linear );
+
   return true;
 }
 
@@ -179,6 +189,24 @@ void TTcards::removePlayerCard ( void )
   hand[player_turn].selectCard ( hand[player_turn].cards.front() );
 
   cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) );
+}
+
+// debug helper method; shows Card's ID number in a message box
+void TTcards::showCardID ( void )
+{
+  Card selected;
+
+  unsigned int player_turn = get_turn();
+
+  selected = this->hand[player_turn].getSelectedCard();
+
+  #ifdef DEBUG_CARD_VIEW
+    this->info_text.setTextBuffer ( std::to_string ( selected.getID() ) );
+    signed int text_width = this->info_text.getTextWidth ();
+
+    this->debug_box.Draw ( this->engine->screen, 170, 8, 43, 20 ); // 86x20 @ 140, 8
+    this->info_text.DrawText ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 10 );
+  #endif
 }
 
 bool TTcards::IsFullScreen ( void )
@@ -443,6 +471,24 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
         this->board.List();
     break;
 
+    case SDLK_i:
+    {
+      if ( this->debug_box.isEnabled() == true )
+        this->debug_box.disable ( true );
+      else
+        this->debug_box.enable ( true );
+    }
+    break;
+
+    case SDLK_SLASH:
+    {
+      if ( this->menu_box.isEnabled() == true )
+        this->menu_box.disable ( true );
+      else
+        this->menu_box.enable ( true );
+    }
+    break;
+
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
@@ -672,6 +718,13 @@ void TTcards::updateCursor ( void )
     this->cursor.SetSheetID ( INTERFACE_CURSOR_LEFT );
   else // player2
     this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
+
+  if ( this->debug_box.isEnabled() == true )
+    this->showCardID();
+  else if ( this->menu_box.isEnabled() == true )
+  {
+    this->interface_pickOutCards ();
+  }
 }
 
 void TTcards::drawCursor ( void )
@@ -683,15 +736,8 @@ void TTcards::interface_pickOutCards ( void )
 {
   // 10 pages @ 11/pg for 110
   // ~12..14 pixels a card
-  //TOP_LEFT = 60, 30
-  //TOP_RIGHT = 199, 30
-  //BOTTOM_RIGHT = 199, 199
-  //BOTTOM_LEFT = 60, 199
 
-  if ( RUNNING_PICKOUTCARDS )
-  {
-    this->info_box.Draw ( this->engine->screen, 60, 30, 140, 170 );
-  }
+  this->menu_box.Draw ( this->engine->screen, 60, 30, 140, 170 );
 }
 
 void TTcards::interface_gameOver ( void )

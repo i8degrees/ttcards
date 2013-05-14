@@ -38,6 +38,7 @@ class TTcards: public SDLInput
     void debugCardsNoRuleset ( void );
     void debugCardsSameRuleset ( void );
     void removePlayerCard ( void );
+    void showCardID ( void );
 
     bool IsFullScreen ( void );
     void setFullscreen ( bool fs );
@@ -94,7 +95,10 @@ class TTcards: public SDLInput
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
 
     SDLBitmapFont info_text;
+
+    SDLMessageBox menu_box;
     SDLMessageBox info_box;
+    SDLMessageBox debug_box;
     SDLGradient linear;
     GColor msgbox[6];
 
