@@ -124,11 +124,6 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
     if ( card_element->Draw ( engine ) == false )
       return false;
 
-    #ifdef DEBUG_CARD_VIEW
-      this->card_text.setTextBuffer ( std::to_string ( card.getID() ) );
-      this->card_text.DrawText ( engine, CARD_ID_ORIGIN_X + x, CARD_ID_ORIGIN_Y + y );
-    #endif
-
     if ( card.getNorthRank() == 10 )
       this->card_text.setTextBuffer ( "A" );
     else
