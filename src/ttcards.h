@@ -102,8 +102,8 @@ class TTcards: public SDLInput
     SDLGradient linear;
     GColor msgbox[6];
 
-    Font message_text; // dialog text
-    Font score_text; // scoreboard text
+    SDL_TFont message_text; // dialog text
+    SDL_TFont score_text; // scoreboard text
     Board board; // game board
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database

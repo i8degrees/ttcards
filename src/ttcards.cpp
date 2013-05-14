@@ -70,13 +70,13 @@ bool TTcards::LoadGameData ( void )
   this->board.Init ( &this->card, &this->rules );
   this->board.LoadBackground ( BOARD_BACKGROUND );
 
-  this->message_text.LoadTTF ( SCORE_FONTFACE, 36 );
-  this->message_text.SetTextColor ( 255, 255, 255 ); // color: red
+  this->message_text.Load ( SCORE_FONTFACE, 36 );
+  this->message_text.setTextColor ( 255, 255, 255 ); // color: red
 
-  score_text.LoadTTF ( SCORE_FONTFACE, 32 );
-  score_text.SetTextColor ( 255, 255, 255 ); // white
+  score_text.Load ( SCORE_FONTFACE, 32 );
+  score_text.setTextColor ( 255, 255, 255 ); // white
 
-  this->info_text.LoadImage ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+  this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
   this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.LoadImage ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
@@ -198,7 +198,7 @@ void TTcards::showCardID ( void )
     signed int text_width = this->info_text.getTextWidth ();
 
     this->debug_box.Draw ( this->engine->screen, 170, 8, 43, 20 ); // 86x20 @ 140, 8
-    this->info_text.DrawText ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 10 );
+    this->info_text.Draw ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 10 );
   #endif
 }
 
@@ -735,27 +735,27 @@ void TTcards::interface_pickOutCards ( void )
 
 void TTcards::interface_gameOver ( void )
 {
-  this->message_text.SetTextBuffer ( "Game Over" );
-  signed int width = this->message_text.GetTextWidth ();
-  this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
+  this->message_text.setTextBuffer ( "Game Over" );
+  signed int width = this->message_text.getTextWidth ();
+  this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
 
   if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
   {
-    this->message_text.SetTextBuffer ( "Player 1 wins!" );
-    signed int width = this->message_text.GetTextWidth ();
-    this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+    this->message_text.setTextBuffer ( "Player 1 wins!" );
+    signed int width = this->message_text.getTextWidth ();
+    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
   else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
   {
-    this->message_text.SetTextBuffer ( "Player 2 wins!" );
-    signed int width = this->message_text.GetTextWidth ();
-    this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+    this->message_text.setTextBuffer ( "Player 2 wins!" );
+    signed int width = this->message_text.getTextWidth ();
+    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
   else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
   {
-    this->message_text.SetTextBuffer ( "Tie!" );
-    signed int width = this->message_text.GetTextWidth ();
-    this->message_text.DrawText ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+    this->message_text.setTextBuffer ( "Tie!" );
+    signed int width = this->message_text.getTextWidth ();
+    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
 }
 
@@ -773,7 +773,7 @@ void TTcards::interface_playingCards ( void )
     unsigned int text_width = this->info_text.getTextWidth();
 
     this->info_box.Draw ( this->engine->screen, 104, 194, 176, 24 );
-    this->info_text.DrawText ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 196 );
+    this->info_text.Draw ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 196 );
   }
 }
 
@@ -796,11 +796,11 @@ void TTcards::updateScore ( void )
 
 void TTcards::drawScore ( void )
 {
-  this->score_text.SetTextBuffer ( std::to_string ( player[0].getScore() ) );
-  this->score_text.DrawText ( engine, PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->score_text.setTextBuffer ( std::to_string ( player[0].getScore() ) );
+  this->score_text.Draw ( engine, PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
 
-  this->score_text.SetTextBuffer ( std::to_string ( player[1].getScore() ) );
-  this->score_text.DrawText ( engine, PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->score_text.setTextBuffer ( std::to_string ( player[1].getScore() ) );
+  this->score_text.Draw ( engine, PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 }
 
 
