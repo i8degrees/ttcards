@@ -102,14 +102,12 @@ class TTcards: public SDLInput
     SDLGradient linear;
     GColor msgbox[6];
 
-    Font timer_text; // fps timer font
     Font message_text; // dialog text
     Font score_text; // scoreboard text
     Board board; // game board
     CardDebug debug; // debug support for card attributes
     Collection collection; // cards database
     CardRules rules;
-    //CPUPlayer AI;
     CardView card; // card rendering
     CardHand hand[2]; // player hand
     Player player[2]; // players in game

@@ -70,9 +70,6 @@ bool TTcards::LoadGameData ( void )
   this->board.Init ( &this->card, &this->rules );
   this->board.LoadBackground ( BOARD_BACKGROUND );
 
-  this->timer_text.LoadTTF ( SCORE_FONTFACE, 12 );
-  this->timer_text.SetTextColor ( 170, 17, 17 ); // color: red
-
   this->message_text.LoadTTF ( SCORE_FONTFACE, 36 );
   this->message_text.SetTextColor ( 255, 255, 255 ); // color: red
 
@@ -104,10 +101,6 @@ bool TTcards::LoadGameData ( void )
     this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
 
   this->rules.setRules ( 1 );
-
-  //AI.Init ( &this->board, &this->hand[1] );
-
-  // msgbox.push_back ( setColor ( r, g, b ) );
 
   this->msgbox[0].setColor ( 41, 41, 41 ); // top1
   this->msgbox[1].setColor ( 133, 133, 133 ); // top2
