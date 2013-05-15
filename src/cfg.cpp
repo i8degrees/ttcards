@@ -88,6 +88,10 @@ const int PICK_CARDS_MENU_ORIGIN_Y = 25;
 const int PICK_CARDS_MENU_WIDTH = 160;
 const int PICK_CARDS_MENU_HEIGHT = 190;
 
+// Starting cursor positioning
+const int MENU_CARDS_CURSOR_ORIGIN_X = 40;
+const int MENU_CARDS_CURSOR_ORIGIN_Y = 30; // 20
+
 // "Cards" Title Text
 const int MENU_CARDS_TITLE_ORIGIN_X = 64;
 const int MENU_CARDS_TITLE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;

@@ -119,6 +119,9 @@ extern const int PICK_CARDS_MENU_ORIGIN_Y;
 extern const int PICK_CARDS_MENU_WIDTH;
 extern const int PICK_CARDS_MENU_HEIGHT;
 
+extern const int MENU_CARDS_CURSOR_ORIGIN_X;
+extern const int MENU_CARDS_CURSOR_ORIGIN_Y;
+
 extern const int MENU_CARDS_TITLE_ORIGIN_X;
 extern const int MENU_CARDS_TITLE_ORIGIN_Y;
 
