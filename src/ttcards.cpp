@@ -786,32 +786,32 @@ void TTcards::interface_pickOutCards ( void )
 
   for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
   {
-    // First, draw the top-left box title
+    // Draw the top-left box title
     this->info_small_text.setTextBuffer ( "CARDS" );
     this->info_small_text.Draw ( this->engine, 64, 25 );
 
-    // Secondly, draw the top-right box title
-    this->info_small_text.setTextBuffer ( "NUM" );
+    // Draw page number if we have more than one page to display
+    if ( current_index > 11 )
+    {
+      this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index ) );
+      this->info_small_text.Draw ( this->engine, 115, 25 );
+    }
+
+    // Draw the top-right box title (number of cards)
+    this->info_small_text.setTextBuffer ( "NUM." );
     this->info_small_text.Draw ( this->engine, 180, 25 );
 
-    if ( current_index > 11 )
-      this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index ) );
-    else
-      this->info_small_text.setTextBuffer ( "P. " );
-
-    this->info_small_text.Draw ( this->engine, 115, 25 );
-
-    // Next, draw the card select element
+    // Draw the card select menu element
     this->menu_element.SetXY ( x2_offset, y_offset );
     this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
     this->menu_element.Draw ( this->engine );
 
-    // Now, draw the card's name onto our menu box
+    // Draw the card's name onto our menu box
     this->info_text.setTextBuffer ( this->collection.cards[i].getName() );
     unsigned int height = this->info_text.getTextHeight();
     this->info_text.Draw ( this->engine, x_offset, y_offset );
 
-    // Also, draw the number of cards in player's possession
+    // Draw the number of cards in player's possession
     this->info_text.setTextBuffer ( "1" );
     this->info_text.Draw ( this->engine, 210, y2_offset );
 
