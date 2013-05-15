@@ -31,9 +31,10 @@ bool Collection::Load ( std::string filename )
   std::array<int, 4> rank = { { 0 } };
   std::string name = "\0";
 
-  std::ifstream load ( filename );
+  std::ifstream fp;
+  fp.open ( filename );
 
-  if ( ! load )
+  if ( ! fp )
   {
     #ifdef DEBUG_CARD_COLLECTION
       std::cout << "ERR in Collection::Load () at: " << filename << std::endl;
@@ -47,15 +48,15 @@ bool Collection::Load ( std::string filename )
 
   for ( index = 0; index < ( MAX_COLLECTION ); index++ )
   {
-    load >> id;
-    load >> level;
-    load >> type;
-    load >> element;
-    load >> rank[NORTH];
-    load >> rank[EAST];
-    load >> rank[SOUTH];
-    load >> rank[WEST];
-    load >> name;
+    fp >> id;
+    fp >> level;
+    fp >> type;
+    fp >> element;
+    fp >> rank[NORTH];
+    fp >> rank[EAST];
+    fp >> rank[SOUTH];
+    fp >> rank[WEST];
+    fp >> name;
 
     #ifdef DEBUG_CARD_COLLECTION
       std::cout << id;
@@ -83,7 +84,7 @@ bool Collection::Load ( std::string filename )
     std::cout << "EOF: " << filename << " " << "<From Collection::Load>" << "\n" << std::endl;
   #endif
 
-  load.close();
+  fp.close();
 
   return true;
 }
