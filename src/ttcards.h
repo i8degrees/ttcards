@@ -94,9 +94,7 @@ class TTcards: public SDLInput
     void Run ( void ); // game loop
     static void Callback ( void ); // EMCC compiler related
     void Start ( void ); // EMCC compiler related
-    unsigned int total_pages;
-    unsigned int per_page;
-    unsigned int current_index;
+
   private:
     static TTcards *instance; // EMCC compiler related
     FPS fps; // timer for tracking frames per second
@@ -127,6 +125,10 @@ class TTcards: public SDLInput
 
     Sprite cursor; // interface cursor
     Sprite menu_element; // interface menu elements
+
+    unsigned int total_pages;
+    unsigned int per_page;
+    unsigned int current_index;
 
     std::pair<int, int> player_cursor_coords[2];
     std::pair<int, int> cursor_coords_map[4]; // coords mapping: cursor XY to card index
