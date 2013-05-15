@@ -202,6 +202,38 @@ void TTcards::showCardID ( void )
   #endif
 }
 
+void TTcards::debugBox ( void )
+{
+  if ( this->debug_box.isEnabled() == true )
+    this->debug_box.disable ( true );
+  else
+    this->debug_box.enable ( true );
+}
+
+void TTcards::menuBox ( void )
+{
+  if ( this->menu_box.isEnabled() == true )
+    this->menu_box.disable ( true );
+  else
+    this->menu_box.enable ( true );
+}
+
+void TTcards::debugListCards ( SDLMod mod )
+{
+  if ( mod == KMOD_LMETA )
+    this->debug.ListCards ( this->hand[1].cards );
+  else
+    this->debug.ListCards ( this->hand[0].cards );
+}
+
+void TTcards::debugListCollection ( SDLMod mod )
+{
+  if ( mod == KMOD_LMETA )
+    this->debug.ListCards ( this->collection.cards );
+  else
+    this->board.List();
+}
+
 bool TTcards::IsFullScreen ( void )
 {
   if ( this->fullscreen == false )
@@ -236,6 +268,15 @@ bool TTcards::getShowFPS ( void )
 void TTcards::showFPS ( bool show )
 {
   this->show_fps = show;
+}
+
+// Helper method; toggles showing FPS counter (or not)
+void TTcards::toggleFPS ( void )
+{
+  if ( this->getShowFPS() == true )
+    this->showFPS ( false );
+  else
+    this->showFPS ( true );
 }
 
 void TTcards::drawFPS ( void )
@@ -437,53 +478,17 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_ESCAPE:
     case SDLK_q: this->onExit(); break;
     case SDLK_f: this->onResize ( 0, 0 ); break;
-    case SDLK_p: this->music.togglePlayingMusic(); break;
 
-    case SDLK_EQUALS:
-    {
-      if ( this->getShowFPS() == true )
-        this->showFPS ( false );
-      else
-        this->showFPS ( true );
-    }
-    break;
+    case SDLK_p: this->music.togglePlayingMusic(); break;
+    case SDLK_EQUALS: this->toggleFPS(); break;
 
     case SDLK_e: this->endTurn(); break;
-
-    case SDLK_LEFTBRACKET:
-      if ( mod == KMOD_LMETA )
-        this->debug.ListCards ( this->hand[1].cards );
-      else
-        this->debug.ListCards ( this->hand[0].cards );
-    break;
-
-    case SDLK_RIGHTBRACKET:
-      if ( mod == KMOD_LMETA )
-        this->debug.ListCards ( this->collection.cards );
-      else
-        this->board.List();
-    break;
-
-    case SDLK_i:
-    {
-      if ( this->debug_box.isEnabled() == true )
-        this->debug_box.disable ( true );
-      else
-        this->debug_box.enable ( true );
-    }
-    break;
-
-    case SDLK_SLASH:
-    {
-      if ( this->menu_box.isEnabled() == true )
-        this->menu_box.disable ( true );
-      else
-        this->menu_box.enable ( true );
-    }
-    break;
-
+    case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
+    case SDLK_RIGHTBRACKET: debugListCollection( mod ); break;
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
+    case SDLK_i: debugBox(); break;
+    case SDLK_SLASH: menuBox(); break;
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
     case SDLK_UP: this->moveCursorUp(); break;

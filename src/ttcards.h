@@ -34,11 +34,15 @@ class TTcards: public SDLInput
     bool Init ( Gfx *engine );
     bool LoadGameData ( void );
 
+    void debugListCards ( SDLMod mod );
+    void debugListCollection ( SDLMod mod );
     void debugCardsDiscard ( void );
     void debugCardsNoRuleset ( void );
     void debugCardsSameRuleset ( void );
     void removePlayerCard ( void );
     void showCardID ( void );
+    void debugBox ( void );
+    void menuBox ( void );
 
     bool IsFullScreen ( void );
     void setFullscreen ( bool fs );
@@ -46,6 +50,7 @@ class TTcards: public SDLInput
     void setGameState ( bool state );
     bool getShowFPS ( void );
     void showFPS ( bool show );
+    void toggleFPS ( void );
     void drawFPS ( void );
 
     unsigned int get_turn ( void );
