@@ -781,9 +781,6 @@ void TTcards::interface_pickOutCards ( void )
   unsigned int y2_offset = 30; // card numbers
 
 
-  //unsigned int total_pages = this->collection.cards.size();
-  //unsigned int per_page = 11;
-  //unsigned int current_index = 0;
 
   for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
   {
