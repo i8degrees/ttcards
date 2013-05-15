@@ -681,12 +681,13 @@ void TTcards::moveCursorLeft ( void )
   }
   else if ( this->cursor.getState() == 2 )
   {
-    //std::cout << current_index << " " << per_page << "\n";
+    std::cout << current_index << " " << per_page << "\n";
+
     if ( current_index > 11 )
-      if ( ( current_index += per_page ) >= MAX_COLLECTION )
+      if ( ( current_index -= per_page ) >= MAX_COLLECTION )
         current_index -= per_page;
 
-    //std::cout << current_index << " " << per_page << "\n";
+    std::cout << current_index << " " << per_page << "\n";
   }
 }
 
@@ -727,6 +728,15 @@ void TTcards::moveCursorUp ( void )
     if ( this->cursor.GetY() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->cursor.UpdateXY ( 0, -( CARD_HEIGHT ) );
   }
+  else if ( this->cursor.getState() == 2 ) // interface_pickOutCards() state
+  {
+    if ( this->cursor.GetY() > PICK_CARDS_MENU_ORIGIN_Y )
+    {
+      std::cout << "\ncard_name_height: " << this->card_name_height << "\n\n";
+      this->cursor.UpdateXY ( 0, -( this->card_name_height ) );
+      std::cout << "\ncursorY: " << this->cursor.GetY() << "\n\n";
+    }
+  }
 }
 
 void TTcards::moveCursorDown ( void )
@@ -749,6 +759,15 @@ void TTcards::moveCursorDown ( void )
     if ( this->cursor.GetY() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->cursor.UpdateXY ( 0, ( CARD_HEIGHT ) );
   }
+  else if ( this->cursor.getState() == 2 ) // interface_pickOutCards() state
+  {
+    if ( this->cursor.GetY() < PICK_CARDS_MENU_ORIGIN_Y + PICK_CARDS_MENU_HEIGHT )
+    {
+      std::cout << "\ncard_name_height: " << this->card_name_height << "\n\n";
+      this->cursor.UpdateXY ( 0, this->card_name_height );
+      std::cout << "\ncursorY: " << this->cursor.GetY() << "\n\n";
+    }
+  }
 }
 
 void TTcards::updateCursor ( void )
@@ -760,6 +779,7 @@ void TTcards::updateCursor ( void )
 
   if ( this->debug_box.isEnabled() == true )
     this->showCardID();
+
   else if ( this->menu_box.isEnabled() == true )
   {
     this->interface_pickOutCards ();
@@ -901,7 +921,7 @@ void TTcards::Draw ( void )
   this->player[0].Draw ( this->engine );
   this->player[1].Draw ( this->engine );
 
-  if ( this->isCursorLocked() == false )
+  //if ( this->isCursorLocked() == false )
     this->interface_pickOutCards();
     //this->interface_playingCards();
 
