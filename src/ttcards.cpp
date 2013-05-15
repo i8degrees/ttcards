@@ -774,11 +774,12 @@ void TTcards::interface_pickOutCards ( void )
 
   this->menu_box.Draw ( this->engine->screen, 60, 25, 160, 190 );
 
+  unsigned int x_offset = 80; // card text, menu elements
+  unsigned int x2_offset = 60; // menu element card select
+
   unsigned int y_offset = 30; // card text & menu elements
   unsigned int y2_offset = 30; // card numbers
 
-  unsigned int x_offset = 80; // card text, menu elements
-  unsigned int x2_offset = 60; // card select menu element
 
   //unsigned int total_pages = this->collection.cards.size();
   //unsigned int per_page = 11;
