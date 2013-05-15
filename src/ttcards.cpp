@@ -90,7 +90,6 @@ bool TTcards::LoadGameData ( void )
 
   this->menu_element = Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
   this->menu_element.LoadImage ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
-  this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
@@ -794,6 +793,7 @@ void TTcards::interface_pickOutCards ( void )
 
     // Next, draw the card select element
     this->menu_element.SetXY ( x2_offset, y_offset );
+    this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
     this->menu_element.Draw ( this->engine );
 
     // Now, draw the card's name onto our menu box
