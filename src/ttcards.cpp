@@ -131,9 +131,11 @@ bool TTcards::LoadGameData ( void )
   this->debug_box.setBackground ( &linear );
   this->menu_box.setBackground ( &linear );
 
-  total_pages = MAX_COLLECTION;
-  per_page = 11;
-  current_index = 0;
+  this->total_pages = this->collection.cards.size();
+  this->per_page = 11;
+  this->current_index = 0;
+  this->current_page = 0;
+
 
   return true;
 }
