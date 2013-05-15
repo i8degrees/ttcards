@@ -134,7 +134,11 @@ extern const int PLAYER2_BACKGROUND_ID;
 extern const int INTERFACE_CURSOR_NONE;
 extern const int INTERFACE_CURSOR_LEFT;
 extern const int INTERFACE_CURSOR_RIGHT;
+
 extern const int INTERFACE_MENU_ELEMENT;
+extern const int INTERFACE_MENU_ELEMENT_USED;
+extern const int INTERFACE_MENU_ELEMENT_PAGE_LEFT;
+extern const int INTERFACE_MENU_ELEMENT_PAGE_RIGHT;
 
 extern std::string WORKING_DIR;
 
