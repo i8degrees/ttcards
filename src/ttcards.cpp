@@ -779,7 +779,10 @@ void TTcards::interface_pickOutCards ( void )
   unsigned int y_offset = 30; // card text & menu elements
   unsigned int y2_offset = 30; // card numbers
 
+  unsigned int x3_offset = 60;
+  unsigned int y3_offset = 198;
 
+  unsigned int x4_offset = 204;
 
   for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
   {
@@ -811,6 +814,21 @@ void TTcards::interface_pickOutCards ( void )
     // Also, draw the number of cards in player's possession
     this->info_text.setTextBuffer ( "1" );
     this->info_text.Draw ( this->engine, 210, y2_offset );
+
+    // Lastly, check to see which page indicators we need to draw
+    if ( current_index > 11 )
+    {
+      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
+      this->menu_element.SetXY ( x3_offset, y3_offset );
+      this->menu_element.Draw ( this->engine );
+    }
+
+    if ( current_index < total_pages )
+    {
+      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
+      this->menu_element.SetXY ( x4_offset, y3_offset );
+      this->menu_element.Draw ( this->engine );
+    }
 
     // Move on to the next card in stack to draw
     y_offset += height; // card text & menu element
