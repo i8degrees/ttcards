@@ -43,6 +43,7 @@ class TTcards: public SDLInput
     void showCardID ( void );
     void debugBox ( void );
     void menuBox ( void );
+    void reloadDebugFile ( void );
 
     bool IsFullScreen ( void );
     void setFullscreen ( bool fs );
@@ -93,13 +94,16 @@ class TTcards: public SDLInput
     void Run ( void ); // game loop
     static void Callback ( void ); // EMCC compiler related
     void Start ( void ); // EMCC compiler related
-
+    unsigned int total_pages;
+    unsigned int per_page;
+    unsigned int current_index;
   private:
     static TTcards *instance; // EMCC compiler related
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
 
     SDLBitmapFont info_text;
+    SDLBitmapFont info_small_text;
 
     SDLMessageBox menu_box;
     SDLMessageBox info_box;
@@ -110,13 +114,20 @@ class TTcards: public SDLInput
     SDL_TFont message_text; // dialog text
     SDL_TFont score_text; // scoreboard text
     Board board; // game board
+
     CardDebug debug; // debug support for card attributes
+    Logger logDebug;
+    std::vector<int> logger;
+
     Collection collection; // cards database
     CardRules rules;
     CardView card; // card rendering
     CardHand hand[2]; // player hand
     Player player[2]; // players in game
+
     Sprite cursor; // interface cursor
+    Sprite menu_element; // interface menu elements
+
     std::pair<int, int> player_cursor_coords[2];
     std::pair<int, int> cursor_coords_map[4]; // coords mapping: cursor XY to card index
 

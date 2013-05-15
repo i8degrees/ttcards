@@ -19,6 +19,8 @@ TTcards::TTcards ( void )
   this->game_state = true;
   this->show_fps = true;
   this->fullscreen = false;
+
+  logger = logDebug.Read( "./data/offsets.val" );
 }
 
 TTcards::~TTcards ( void )
@@ -77,6 +79,7 @@ bool TTcards::LoadGameData ( void )
   score_text.setTextColor ( 255, 255, 255 ); // white
 
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+  this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
   this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.LoadImage ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
@@ -84,6 +87,10 @@ bool TTcards::LoadGameData ( void )
   this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
   this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
   this->cursor.setState ( 0 ); // player hand select
+
+  this->menu_element = Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
+  this->menu_element.LoadImage ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
+  this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
 
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
@@ -124,6 +131,10 @@ bool TTcards::LoadGameData ( void )
   this->info_box.setBackground ( &linear );
   this->debug_box.setBackground ( &linear );
   this->menu_box.setBackground ( &linear );
+
+  total_pages = MAX_COLLECTION;
+  per_page = 11;
+  current_index = 0;
 
   return true;
 }
@@ -232,6 +243,13 @@ void TTcards::debugListCollection ( SDLMod mod )
     this->debug.ListCards ( this->collection.cards );
   else
     this->board.List();
+}
+
+void TTcards::reloadDebugFile ( void )
+{
+  logger.clear();
+
+  logger = logDebug.Read ( "./data/offsets.val" );
 }
 
 bool TTcards::IsFullScreen ( void )
@@ -489,6 +507,8 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_i: debugBox(); break;
     case SDLK_SLASH: menuBox(); break;
+    case SDLK_r: reloadDebugFile(); break;
+
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
     case SDLK_UP: this->moveCursorUp(); break;
@@ -655,6 +675,15 @@ void TTcards::moveCursorLeft ( void )
     if ( this->cursor.GetX() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->cursor.UpdateXY ( -( CARD_WIDTH ), 0 );
   }
+  else if ( this->cursor.getState() == 2 )
+  {
+    //std::cout << current_index << " " << per_page << "\n";
+    if ( current_index > 11 )
+      if ( ( current_index += per_page ) >= MAX_COLLECTION )
+        current_index -= per_page;
+
+    //std::cout << current_index << " " << per_page << "\n";
+  }
 }
 
 void TTcards::moveCursorRight ( void )
@@ -663,6 +692,14 @@ void TTcards::moveCursorRight ( void )
   {
     if ( this->cursor.GetX() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->cursor.UpdateXY ( ( CARD_WIDTH ), 0 );
+  }
+  else if ( this->cursor.getState() == 2 )
+  {
+    std::cout << current_index << " " << per_page << "\n";
+    if ( current_index < MAX_COLLECTION )
+      if ( ( current_index += per_page ) <= MAX_COLLECTION )
+        current_index += per_page;
+    std::cout << current_index << " " << per_page << "\n";
   }
 }
 
@@ -735,32 +772,47 @@ void TTcards::interface_pickOutCards ( void )
   // 10 pages @ 11/pg for 110
   // ~12..14 pixels a card
 
-  this->menu_box.Draw ( this->engine->screen, 60, 30, 140, 170 );
-}
+  this->cursor.setState ( 2 );
+  this->cursor.SetXY ( 40, 30 );
 
-void TTcards::interface_gameOver ( void )
-{
-  this->message_text.setTextBuffer ( "Game Over" );
-  signed int width = this->message_text.getTextWidth ();
-  this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
+  this->menu_box.Draw ( this->engine->screen, 60, 25, 160, 190 );
 
-  if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
+  unsigned int y_offset = 30; // card text & menu elements
+  unsigned int y2_offset = 30; // card numbers
+
+  unsigned int x_offset = 80; // card text, menu elements
+  unsigned int x2_offset = 60; // card select menu element
+
+  //unsigned int total_pages = this->collection.cards.size();
+  //unsigned int per_page = 11;
+  //unsigned int current_index = 0;
+
+  for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
   {
-    this->message_text.setTextBuffer ( "Player 1 wins!" );
-    signed int width = this->message_text.getTextWidth ();
-    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
-  }
-  else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
-  {
-    this->message_text.setTextBuffer ( "Player 2 wins!" );
-    signed int width = this->message_text.getTextWidth ();
-    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
-  }
-  else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
-  {
-    this->message_text.setTextBuffer ( "Tie!" );
-    signed int width = this->message_text.getTextWidth ();
-    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+    // First, draw the top-left box title
+    this->info_small_text.setTextBuffer ( "CARDS" );
+    this->info_small_text.Draw ( this->engine, 64, 25 );
+
+    // Secondly, draw the top-right box title
+    this->info_small_text.setTextBuffer ( "NUM" );
+    this->info_small_text.Draw ( this->engine, 180, 25 );
+
+    // Next, draw the card select element
+    this->menu_element.SetXY ( x2_offset, y_offset );
+    this->menu_element.Draw ( this->engine );
+
+    // Now, draw the card's name onto our menu box
+    this->info_text.setTextBuffer ( this->collection.cards[i].getName() );
+    unsigned int height = this->info_text.getTextHeight();
+    this->info_text.Draw ( this->engine, x_offset, y_offset );
+
+    // Also, draw the number of cards in player's possession
+    this->info_text.setTextBuffer ( "1" );
+    this->info_text.Draw ( this->engine, 210, y2_offset );
+
+    // Move on to the next card in stack to draw
+    y_offset += height; // card text & menu element
+    y2_offset += height; // card numbers
   }
 }
 
@@ -776,9 +828,11 @@ void TTcards::interface_playingCards ( void )
   {
     this->info_text.setTextBuffer ( active.getName() );
     unsigned int text_width = this->info_text.getTextWidth();
+    this->info_small_text.setTextBuffer ( "INFO" );
 
     this->info_box.Draw ( this->engine->screen, 104, 194, 176, 24 );
     this->info_text.Draw ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 196 );
+    this->info_small_text.Draw ( this->engine, 108, 194 );
   }
 }
 
@@ -813,15 +867,14 @@ void TTcards::Update ( void )
 {
   this->fps.Update();
 
-  this->updateCursor();
-
-  this->updateScore();
-
   // game / round is over when board card count >= 9
   if ( this->board.getCount () >= 9 /* || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 */)
   {
     this->interface_gameOver();
   }
+
+  this->updateCursor();
+  this->updateScore();
 
   engine->UpdateScreen ();
 }
@@ -833,19 +886,18 @@ void TTcards::Draw ( void )
   this->player[0].Draw ( this->engine );
   this->player[1].Draw ( this->engine );
 
-  this->drawCursor();
-
-  this->drawScore ();
-
   if ( this->isCursorLocked() == false )
-    this->interface_playingCards();
-  //else if ( false )
-    // switch states
+    this->interface_pickOutCards();
+    //this->interface_playingCards();
 
   if ( this->get_turn() == 0 ) // player1
     this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
   else // player2
     this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+
+  this->drawCursor();
+
+  this->drawScore ();
 
   this->drawFPS();
 }
@@ -855,4 +907,30 @@ void TTcards::Run ( void )
   this->Input ();
   this->Update ();
   this->Draw ();
+}
+
+void TTcards::interface_gameOver ( void )
+{
+  this->message_text.setTextBuffer ( "Game Over" );
+  signed int width = this->message_text.getTextWidth ();
+  this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
+
+  if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
+  {
+    this->message_text.setTextBuffer ( "Player 1 wins!" );
+    signed int width = this->message_text.getTextWidth ();
+    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+  }
+  else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
+  {
+    this->message_text.setTextBuffer ( "Player 2 wins!" );
+    signed int width = this->message_text.getTextWidth ();
+    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+  }
+  else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
+  {
+    this->message_text.setTextBuffer ( "Tie!" );
+    signed int width = this->message_text.getTextWidth ();
+    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+  }
 }
