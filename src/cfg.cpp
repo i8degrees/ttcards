@@ -81,6 +81,49 @@ const int RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
 const int CARD_ID_ORIGIN_X = 26;
 const int CARD_ID_ORIGIN_Y = 4;
 
+// interface_pickOutCards() Menu
+const int PICK_CARDS_MENU_ORIGIN_X = 60;
+const int PICK_CARDS_MENU_ORIGIN_Y = 25;
+
+const int PICK_CARDS_MENU_WIDTH = 160;
+const int PICK_CARDS_MENU_HEIGHT = 190;
+
+// "Cards" Title Text
+const int MENU_CARDS_TITLE_ORIGIN_X = 64;
+const int MENU_CARDS_TITLE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
+
+// "P" (page) number header text
+const int MENU_CARDS_TITLE_PAGE_ORIGIN_X = 115;
+const int MENU_CARDS_TITLE_PAGE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
+
+// "Num" header text
+const int MENU_CARDS_TITLE_NUM_ORIGIN_X = 180;
+const int MENU_CARDS_TITLE_NUM_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
+
+// Field elements
+const int MENU_CARDS_FIELD_ORIGIN_X = 60;
+const int MENU_CARDS_FIELD_ORIGIN_Y = 30;
+
+// Card selection helper element
+const int MENU_CARDS_HELPER_ORIGIN_X = MENU_CARDS_FIELD_ORIGIN_X;
+const int MENU_CARDS_HELPER_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
+
+// Card name text
+const int MENU_CARDS_NAME_ORIGIN_X = 80;
+const int MENU_CARDS_NAME_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
+
+// Number of cards text
+const int MENU_CARDS_NUM_ORIGIN_X = 210;
+const int MENU_CARDS_NUM_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
+
+// Page left
+const int MENU_CARDS_PAGE_LEFT_ORIGIN_X = MENU_CARDS_FIELD_ORIGIN_X;
+const int MENU_CARDS_PAGE_LEFT_ORIGIN_Y = 198;
+
+// Page right
+const int MENU_CARDS_PAGE_RIGHT_ORIGIN_X = 204;
+const int MENU_CARDS_PAGE_RIGHT_ORIGIN_Y = MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
+
 const int BOARD_GRID_WIDTH = 3;
 const int BOARD_GRID_HEIGHT = 3;
 

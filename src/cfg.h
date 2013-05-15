@@ -113,6 +113,39 @@ extern const int RANK_WEST_ORIGIN_Y;
 extern const int CARD_ID_ORIGIN_X;
 extern const int CARD_ID_ORIGIN_Y;
 
+extern const int PICK_CARDS_MENU_ORIGIN_X;
+extern const int PICK_CARDS_MENU_ORIGIN_Y;
+
+extern const int PICK_CARDS_MENU_WIDTH;
+extern const int PICK_CARDS_MENU_HEIGHT;
+
+extern const int MENU_CARDS_TITLE_ORIGIN_X;
+extern const int MENU_CARDS_TITLE_ORIGIN_Y;
+
+extern const int MENU_CARDS_TITLE_PAGE_ORIGIN_X;
+extern const int MENU_CARDS_TITLE_PAGE_ORIGIN_Y;
+
+extern const int MENU_CARDS_TITLE_NUM_ORIGIN_X;
+extern const int MENU_CARDS_TITLE_NUM_ORIGIN_Y;
+
+extern const int MENU_CARDS_FIELD_ORIGIN_X;
+extern const int MENU_CARDS_FIELD_ORIGIN_Y;
+
+extern const int MENU_CARDS_HELPER_ORIGIN_X;
+extern const int MENU_CARDS_HELPER_ORIGIN_Y;
+
+extern const int MENU_CARDS_NAME_ORIGIN_X;
+extern const int MENU_CARDS_NAME_ORIGIN_Y;
+
+extern const int MENU_CARDS_NUM_ORIGIN_X;
+extern const int MENU_CARDS_NUM_ORIGIN_Y;
+
+extern const int MENU_CARDS_PAGE_LEFT_ORIGIN_X;
+extern const int MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
+
+extern const int MENU_CARDS_PAGE_RIGHT_ORIGIN_X;
+extern const int MENU_CARDS_PAGE_RIGHT_ORIGIN_Y;
+
 extern const int BOARD_GRID_WIDTH;
 extern const int BOARD_GRID_HEIGHT;
 
