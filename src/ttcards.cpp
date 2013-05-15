@@ -791,6 +791,13 @@ void TTcards::interface_pickOutCards ( void )
     this->info_small_text.setTextBuffer ( "NUM" );
     this->info_small_text.Draw ( this->engine, 180, 25 );
 
+    if ( current_index > 11 )
+      this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index ) );
+    else
+      this->info_small_text.setTextBuffer ( "P. " );
+
+    this->info_small_text.Draw ( this->engine, 115, 25 );
+
     // Next, draw the card select element
     this->menu_element.SetXY ( x2_offset, y_offset );
     this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
