@@ -769,9 +769,6 @@ void TTcards::drawCursor ( void )
 
 void TTcards::interface_pickOutCards ( void )
 {
-  // 10 pages @ 11/pg for 110
-  // ~12..14 pixels a card
-
   this->cursor.setState ( 2 );
   this->cursor.SetXY ( 40, 30 );
 
