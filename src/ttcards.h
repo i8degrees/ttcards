@@ -129,6 +129,8 @@ class TTcards: public SDLInput
     unsigned int total_pages;
     unsigned int per_page;
     unsigned int current_index;
+    unsigned int current_page;
+    unsigned int card_name_height; // height of the card name text
 
     std::pair<int, int> player_cursor_coords[2];
     std::pair<int, int> cursor_coords_map[4]; // coords mapping: cursor XY to card index
