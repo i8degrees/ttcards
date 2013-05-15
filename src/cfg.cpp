@@ -109,6 +109,7 @@ const std::string CARDS_DB =            WORKING_DIR + "./data/cards.txt";
 const std::string MENU_ELEMENTS =       WORKING_DIR + "./data/images/menu_elements.png";
 const std::string CARD_FONTFACE =       WORKING_DIR + "./data/fonts/VIII_cards.png";
 const std::string INFO_FONTFACE =       WORKING_DIR + "./data/fonts/VIII.png";
+const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "./data/fonts/VIII_small.png";
 const std::string SCORE_FONTFACE =      WORKING_DIR + "./data/fonts/EnvyCodeRb.ttf";
 const std::string APP_ICON =            WORKING_DIR + "./data/images/ttcards.bmp";
 const std::string BOARD_BACKGROUND =    WORKING_DIR + "./data/images/board.png";

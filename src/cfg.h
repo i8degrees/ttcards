@@ -142,6 +142,7 @@ extern const std::string CARDS_DB;
 extern const std::string MENU_ELEMENTS;
 extern const std::string CARD_FONTFACE;
 extern const std::string INFO_FONTFACE;
+extern const std::string INFO_SMALL_FONTFACE;
 extern const std::string SCORE_FONTFACE;
 extern const std::string APP_ICON;
 extern const std::string BOARD_BACKGROUND;
