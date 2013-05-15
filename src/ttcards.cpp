@@ -46,7 +46,7 @@ bool TTcards::Init ( Gfx *engine )
   this->LoadGameData();
 
   #ifdef DEBUG_TTCARDS
-    this->debugCardsNoRuleset();
+    //this->debugCardsNoRuleset();
     //this->debugCardsSameRuleset();
   #endif
 
