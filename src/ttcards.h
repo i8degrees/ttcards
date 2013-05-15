@@ -23,7 +23,6 @@
 #include "card_rules.h"
 #include "cpu_player.h"
 
-#include <map>
 
 class TTcards: public SDLInput
 {
