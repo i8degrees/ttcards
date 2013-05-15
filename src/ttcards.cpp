@@ -771,68 +771,59 @@ void TTcards::interface_pickOutCards ( void )
   this->cursor.setState ( 2 );
   this->cursor.SetXY ( 40, 30 );
 
-  this->menu_box.Draw ( this->engine->screen, 60, 25, 160, 190 );
+  this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
-  unsigned int x_offset = 80; // card text, menu elements
-  unsigned int x2_offset = 60; // menu element card select
-
-  unsigned int y_offset = 30; // card text & menu elements
-  unsigned int y2_offset = 30; // card numbers
-
-  unsigned int x3_offset = 60;
-  unsigned int y3_offset = 198;
-
-  unsigned int x4_offset = 204;
+  unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 
   for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
   {
     // Draw the top-left box title
     this->info_small_text.setTextBuffer ( "CARDS" );
-    this->info_small_text.Draw ( this->engine, 64, 25 );
+    this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y );
 
     // Draw page number if we have more than one page to display
     if ( current_index > 11 )
     {
       this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index ) );
-      this->info_small_text.Draw ( this->engine, 115, 25 );
+      this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y );
     }
 
     // Draw the top-right box title (number of cards)
     this->info_small_text.setTextBuffer ( "NUM." );
-    this->info_small_text.Draw ( this->engine, 180, 25 );
+    this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y );
 
-    // Draw the card select menu element
-    this->menu_element.SetXY ( x2_offset, y_offset );
+    // Draw the card selection helper element
+    this->menu_element.SetXY ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
     this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
     this->menu_element.Draw ( this->engine );
 
     // Draw the card's name onto our menu box
     this->info_text.setTextBuffer ( this->collection.cards[i].getName() );
     unsigned int height = this->info_text.getTextHeight();
-    this->info_text.Draw ( this->engine, x_offset, y_offset );
+    this->info_text.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
 
     // Draw the number of cards in player's possession
     this->info_text.setTextBuffer ( "1" );
-    this->info_text.Draw ( this->engine, 210, y2_offset );
+    this->info_text.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
 
     // Lastly, check to see which page indicators we need to draw
     if ( current_index > 11 )
     {
       this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
-      this->menu_element.SetXY ( x3_offset, y3_offset );
+      this->menu_element.SetXY ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
       this->menu_element.Draw ( this->engine );
     }
 
     if ( current_index < total_pages )
     {
       this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
-      this->menu_element.SetXY ( x4_offset, y3_offset );
+      this->menu_element.SetXY ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
       this->menu_element.Draw ( this->engine );
     }
 
     // Move on to the next card in stack to draw
-    y_offset += height; // card text & menu element
-    y2_offset += height; // card numbers
+     // We calculate height after setting the text buffer for each card name
+    y_offset += height;
   }
 }
 
