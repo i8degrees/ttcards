@@ -793,12 +793,13 @@ void TTcards::drawCursor ( void )
 
 void TTcards::interface_pickOutCards ( void )
 {
+  unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
+
   this->cursor.setState ( 2 );
-  this->cursor.SetXY ( 40, 30 );
+
+  this->cursor.SetXY ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
 
   this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
-
-  unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 
   for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
   {
