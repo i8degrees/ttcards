@@ -20,6 +20,8 @@ const int ELEMENT_WIDTH = 16;
 const int ELEMENT_HEIGHT = 16;
 const int CURSOR_WIDTH = 26;
 const int CURSOR_HEIGHT = 16;
+const int MENU_ELEMENT_WIDTH = 16;
+const int MENU_ELEMENT_HEIGHT = 16;
 
 const int TOTAL_PLAYERS = 2; // +1 padding
 const int MAX_COLLECTION = 110; // number of cards in CARDS_DB
@@ -99,10 +101,12 @@ const int PLAYER2_BACKGROUND_ID = 3;
 const int INTERFACE_CURSOR_NONE = 0;
 const int INTERFACE_CURSOR_LEFT = 1;
 const int INTERFACE_CURSOR_RIGHT = 2;
+const int INTERFACE_MENU_ELEMENT = 1;
 
 std::string WORKING_DIR;
 
 const std::string CARDS_DB =            WORKING_DIR + "./data/cards.txt";
+const std::string MENU_ELEMENTS =       WORKING_DIR + "./data/images/menu_elements.png";
 const std::string CARD_FONTFACE =       WORKING_DIR + "./data/fonts/VIII_cards.png";
 const std::string INFO_FONTFACE =       WORKING_DIR + "./data/fonts/VIII.png";
 const std::string SCORE_FONTFACE =      WORKING_DIR + "./data/fonts/EnvyCodeRb.ttf";

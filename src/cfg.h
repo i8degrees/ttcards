@@ -55,6 +55,8 @@ extern const int ELEMENT_WIDTH;
 extern const int ELEMENT_HEIGHT;
 extern const int CURSOR_WIDTH;
 extern const int CURSOR_HEIGHT;
+extern const int MENU_ELEMENT_WIDTH;
+extern const int MENU_ELEMENT_HEIGHT;
 
 extern const int TOTAL_PLAYERS;
 extern const int MAX_COLLECTION;
@@ -132,10 +134,12 @@ extern const int PLAYER2_BACKGROUND_ID;
 extern const int INTERFACE_CURSOR_NONE;
 extern const int INTERFACE_CURSOR_LEFT;
 extern const int INTERFACE_CURSOR_RIGHT;
+extern const int INTERFACE_MENU_ELEMENT;
 
 extern std::string WORKING_DIR;
 
 extern const std::string CARDS_DB;
+extern const std::string MENU_ELEMENTS;
 extern const std::string CARD_FONTFACE;
 extern const std::string INFO_FONTFACE;
 extern const std::string SCORE_FONTFACE;
