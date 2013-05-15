@@ -136,6 +136,9 @@ bool TTcards::LoadGameData ( void )
   this->current_index = 0;
   this->current_page = 0;
 
+  // Initialize card name text so that we can obtain height info ASAP
+  this->info_text.setTextBuffer ( this->collection.cards[0].getName() );
+  this->card_name_height = this->info_text.getTextHeight();
 
   return true;
 }
@@ -801,7 +804,6 @@ void TTcards::interface_pickOutCards ( void )
 
     // Draw the card's name onto our menu box
     this->info_text.setTextBuffer ( this->collection.cards[i].getName() );
-    unsigned int height = this->info_text.getTextHeight();
     this->info_text.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
 
     // Draw the number of cards in player's possession
@@ -825,7 +827,7 @@ void TTcards::interface_pickOutCards ( void )
 
     // Move on to the next card in stack to draw
      // We calculate height after setting the text buffer for each card name
-    y_offset += height;
+    y_offset += this->card_name_height;
   }
 }
 
