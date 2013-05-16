@@ -8,19 +8,22 @@
 ******************************************************************************/
 #include "ttcards.h"
 
-TTcards::TTcards ( void )
+TTcards::TTcards ( Gfx *engine )
 {
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::TTcards (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
+  this->engine = engine; // initialize rendering interface
+
   this->turn = 0;
   this->cursor_locked = false;
-  this->game_state = true;
   this->show_fps = true;
   this->fullscreen = false;
 
   logger = logDebug.Read( "./data/offsets.val" );
+
+  this->Init();
 }
 
 TTcards::~TTcards ( void )
@@ -35,10 +38,8 @@ TTcards::~TTcards ( void )
   }
 }
 
-bool TTcards::Init ( Gfx *engine )
+bool TTcards::Init ( void )
 {
-  this->engine = engine; // initialize rendering interface
-
   #ifndef EMSCRIPTEN
     engine->setTitle ( APP_NAME );
   #endif
@@ -63,6 +64,16 @@ bool TTcards::Init ( Gfx *engine )
   //SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
   return true;
+}
+
+void TTcards::Pause ( void )
+{
+  std::cout << "\n" << "TTcards state Paused" << "\n";
+}
+
+void TTcards::Resume ( void )
+{
+  std::cout << "\n" << "TTcards state Resumed" << "\n";
 }
 
 bool TTcards::LoadGameData ( void )
@@ -269,19 +280,6 @@ void TTcards::setFullscreen ( bool fs )
   this->fullscreen = fs;
 }
 
-bool TTcards::IsRunning ( void )
-{
-  if ( this->game_state == false )
-    return false;
-  else
-    return true;
-}
-
-void TTcards::setGameState ( bool state )
-{
-  this->game_state = state;
-}
-
 bool TTcards::getShowFPS ( void )
 {
   return this->show_fps;
@@ -471,7 +469,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
 
 void TTcards::onExit ( void )
 {
-  this->setGameState ( false );
+  this->engine->Quit();
 }
 
 void TTcards::onResize ( unsigned int width, unsigned int height )
@@ -488,7 +486,7 @@ void TTcards::onResize ( unsigned int width, unsigned int height )
   }
 }
 
-void TTcards::Input ( void )
+void TTcards::HandleInput ( void )
 {
   SDLInput::Input ();
 }
@@ -520,6 +518,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_x: this->unlockSelectedCard(); break;
     case SDLK_SPACE: this->lockSelectedCard(); break;
+    case SDLK_5: engine->PushState ( std::unique_ptr<GameOver>( new GameOver( engine ) ) ); break;
 
     default: break;
   }
@@ -922,7 +921,7 @@ void TTcards::Draw ( void )
   this->player[0].Draw ( this->engine );
   this->player[1].Draw ( this->engine );
 
-  //if ( this->isCursorLocked() == false )
+  if ( this->isCursorLocked() == false )
     this->interface_pickOutCards();
     //this->interface_playingCards();
 
@@ -936,13 +935,6 @@ void TTcards::Draw ( void )
   this->drawScore ();
 
   this->drawFPS();
-}
-
-void TTcards::Run ( void )
-{
-  this->Input ();
-  this->Update ();
-  this->Draw ();
 }
 
 void TTcards::interface_gameOver ( void )

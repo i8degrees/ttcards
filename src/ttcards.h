@@ -28,17 +28,20 @@
 #include "SDL_BitmapFont.h"
 #include "audio.h"
 
-class TTcards: public SDLInput
 #include "GameState.h"
 #include "GameOverState.h"
 
+class TTcards: public GameState
 {
   public:
-    TTcards ( void );
+    TTcards ( Gfx *engine );
     ~TTcards ( void );
 
-    bool Init ( Gfx *engine );
+    bool Init ( void );
     bool LoadGameData ( void );
+
+    void Pause ( void );
+    void Resume ( void );
 
     void debugListCards ( SDLMod mod );
     void debugListCollection ( SDLMod mod );
@@ -73,7 +76,7 @@ class TTcards: public SDLInput
 
     void onExit ( void );
     void onResize ( unsigned int width, unsigned int height );
-    void Input ( void );
+    void HandleInput ( void );
     void onKeyDown ( SDLKey key, SDLMod mod );
     void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
     void onMouseWheel ( bool up, bool down );
@@ -97,7 +100,6 @@ class TTcards: public SDLInput
 
     void Update ( void );
     void Draw ( void );
-    void Run ( void ); // game loop
     static void Callback ( void ); // EMCC compiler related
     void Start ( void ); // EMCC compiler related
 
@@ -146,7 +148,6 @@ class TTcards: public SDLInput
 
     unsigned int turn; // player1 = 0, player2 = 1
     bool cursor_locked; // locks cursor state to board placement
-    bool game_state; // global app state
     bool show_fps; // fps counter
     bool fullscreen; // toggle window & fullscreen states
 };

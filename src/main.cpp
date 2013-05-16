@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
   std::srand ( ( unsigned ) time ( 0 ) ); // needs to exec before CardHand, Player, Board, etc.
 
-  Gfx engine = ( sdl_flags ); // rendering interface instance
+  Gfx engine ( sdl_flags );
 
   #ifndef EMSCRIPTEN
     engine.setIcon ( APP_ICON, GColor ( 0, 0, 0 ) );
@@ -37,20 +37,20 @@ int main(int argc, char *argv[])
 
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
+  engine.ChangeState( std::unique_ptr<TTcards>( new TTcards ( &engine) ) );
 
-  TTcards app; // needs to be declared before Gfx instance
+  engine.Run(); // Set running state to true
 
-  if ( app.Init ( &engine ) == true )
-  {
-    #ifdef EMSCRIPTEN
-      app.Run(); // FIXME
-    #else
-      while ( app.IsRunning() != false )
-      {
-        app.Run();
-      }
-    #endif
-  }
+  #ifdef EMSCRIPTEN
+    //engine.Run(); // FIXME
+  #else
+    while ( engine.isRunning() == true )
+    {
+      engine.HandleInput ();
+      engine.Update();
+      engine.Draw();
+    }
+  #endif
 
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
