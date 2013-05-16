@@ -13,10 +13,7 @@
 #include <string>
 #include <utility>
 
-#include "gamelib.h"
-
 #include "cfg.h"
-#include "board.h"
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"

@@ -13,8 +13,6 @@
     #include "emscripten.h"
 #endif
 
-#include "gamelib.h"
-
 #include "cfg.h"
 #include "board.h"
 #include "player.h"
@@ -23,8 +21,17 @@
 #include "card_rules.h"
 #include "cpu_player.h"
 
+#include "Logger.h"
+#include "fps.h"
+#include "SDLMessageBox.h"
+#include "SDL_TFont.h"
+#include "SDL_BitmapFont.h"
+#include "audio.h"
 
 class TTcards: public SDLInput
+#include "GameState.h"
+#include "GameOverState.h"
+
 {
   public:
     TTcards ( void );

@@ -11,8 +11,6 @@
 #include <string>
 #include <utility>
 
-#include "gamelib.h"
-
 #include "cfg.h"
 #include "card_debug.h"
 #include "card_hand.h"
