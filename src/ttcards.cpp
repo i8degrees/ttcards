@@ -478,6 +478,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
+    case SDLK_r: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine ) ) ); break;
     case SDLK_SLASH: this->engine->PushState ( std::unique_ptr<CardsMenu> ( new CardsMenu ( this->engine, &this->collection ) ) ); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
