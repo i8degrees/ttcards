@@ -45,7 +45,7 @@ class CardsMenu: public GameState
     void moveCursorDown ( void );
 
     Gfx *engine; // Pointer reference to our rendering interface
-    Collection *collection; // cards database pointer ref
+    Collection collection; // cards database
     SDL_Surface *background; // pointer holding our background image
 
     SDLBitmapFont info_text;
