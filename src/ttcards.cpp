@@ -44,7 +44,7 @@ bool TTcards::Init ( void )
     engine->setTitle ( APP_NAME );
   #endif
 
-  this->LoadGameData();
+  this->Load();
 
   #ifdef DEBUG_TTCARDS
     this->debugCardsNoRuleset();
@@ -76,7 +76,7 @@ void TTcards::Resume ( void )
   std::cout << "\n" << "TTcards state Resumed" << "\n";
 }
 
-bool TTcards::LoadGameData ( void )
+bool TTcards::Load ( void )
 {
   this->collection.Load ( CARDS_DB );
 

@@ -39,7 +39,7 @@ class TTcards: public GameState
     ~TTcards ( void );
 
     bool Init ( void );
-    bool LoadGameData ( void );
+    bool Load ( void );
 
     void Pause ( void );
     void Resume ( void );
