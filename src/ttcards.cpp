@@ -145,45 +145,46 @@ bool TTcards::Load ( void )
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
 void TTcards::debugCardsDiscard ( void )
 {
-  this->hand[0].AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->hand[0].AddCard ( this->collection.cards[24] ); // TriFace
+  this->hand[0].addCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[0].addCard ( this->collection.cards[24] ); // TriFace
 
-  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[1].addCard ( this->collection.cards[88] ); // Carbuncle
 }
 
 // Debug player hand set for no and combo rulesets
 void TTcards::debugCardsNoRuleset ( void )
 {
-  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
-  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
-  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
-  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
-  this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
-
-  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
-  this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->hand[1].AddCard ( this->collection.cards[24] ); // TriFace
-  this->hand[1].AddCard ( this->collection.cards[66] ); // Propagator
-  this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
+/*
+  this->hand[0].addCard ( this->collection.cards[89] ); // Diablos
+  this->hand[0].addCard ( this->collection.cards[109] ); // Squall
+  this->hand[0].addCard ( this->collection.cards[99] ); // Ward
+  this->hand[0].addCard ( this->collection.cards[84] ); // Ifrit [pos 3]
+  this->hand[0].addCard ( this->collection.cards[16] ); // Thrustaevis
+*/
+  this->hand[1].addCard ( this->collection.cards[20] ); // Jelleye
+  this->hand[1].addCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[1].addCard ( this->collection.cards[24] ); // TriFace
+  this->hand[1].addCard ( this->collection.cards[66] ); // Propagator
+  this->hand[1].addCard ( this->collection.cards[50] ); // Malboro
 }
 
 // Debug player hand set for same rulesets
 void TTcards::debugCardsSameRuleset ( void )
 {
-  this->hand[0].AddCard ( this->collection.cards[89] ); // Diablos
-  this->hand[0].AddCard ( this->collection.cards[109] ); // Squall
-  this->hand[0].AddCard ( this->collection.cards[99] ); // Ward
-  this->hand[0].AddCard ( this->collection.cards[84] ); // Ifrit [pos 3]
-  //this->hand[0].AddCard ( this->collection.cards[16] ); // Thrustaevis
-  this->hand[0].AddCard ( this->collection.cards[60] ); // Iguion
+  this->hand[0].addCard ( this->collection.cards[89] ); // Diablos
+  this->hand[0].addCard ( this->collection.cards[109] ); // Squall
+  this->hand[0].addCard ( this->collection.cards[99] ); // Ward
+  this->hand[0].addCard ( this->collection.cards[84] ); // Ifrit [pos 3]
+  //this->hand[0].addCard ( this->collection.cards[16] ); // Thrustaevis
+  this->hand[0].addCard ( this->collection.cards[60] ); // Iguion
 
-  this->hand[1].AddCard ( this->collection.cards[20] ); // Jelleye
-  this->hand[1].AddCard ( this->collection.cards[2] ); // Bite Bug
-  //this->hand[1].AddCard ( this->collection.cards[88] ); // Carbuncle
-  this->hand[1].AddCard ( this->collection.cards[5] ); // Gayla
-  this->hand[1].AddCard ( this->collection.cards[63] ); // Oilboyle
-  this->hand[1].AddCard ( this->collection.cards[77] ); // Chubby Chocobo
-  //this->hand[1].AddCard ( this->collection.cards[50] ); // Malboro
+  this->hand[1].addCard ( this->collection.cards[20] ); // Jelleye
+  this->hand[1].addCard ( this->collection.cards[2] ); // Bite Bug
+  //this->hand[1].addCard ( this->collection.cards[88] ); // Carbuncle
+  this->hand[1].addCard ( this->collection.cards[5] ); // Gayla
+  this->hand[1].addCard ( this->collection.cards[63] ); // Oilboyle
+  this->hand[1].addCard ( this->collection.cards[77] ); // Chubby Chocobo
+  //this->hand[1].addCard ( this->collection.cards[50] ); // Malboro
 }
 
 // debug helper method
@@ -191,7 +192,7 @@ void TTcards::removePlayerCard ( void )
 {
   unsigned int player_turn = get_turn();
 
-  hand[player_turn].RemoveCard ( hand[player_turn].getSelectedCard() );
+  hand[player_turn].removeCard ( hand[player_turn].getSelectedCard() );
   hand[player_turn].clearSelectedCard();
   hand[player_turn].selectCard ( hand[player_turn].cards.front() );
 
@@ -401,7 +402,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
         if ( this->get_turn() == turn )
         {
           this->board.updateStatus ( x, y, this->hand[turn].getSelectedCard() );
-          this->hand[turn].RemoveCard ( this->hand[turn].getSelectedCard() );
+          this->hand[turn].removeCard ( this->hand[turn].getSelectedCard() );
 
           std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
 
