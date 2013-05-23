@@ -23,6 +23,8 @@ TTcards::TTcards ( Gfx *engine )
 
   logger = logDebug.Read( "./data/offsets.val" );
 
+  this->collection.cards.clear();
+
   this->Init();
 }
 
