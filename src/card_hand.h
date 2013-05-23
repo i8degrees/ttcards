@@ -32,6 +32,7 @@ class CardHand
     unsigned int getCount ( void );
     signed int cardPosition ( Card &card );
 
+    void reset ( void );
 
     std::vector<Card> cards; // TODO: declare in private scope
 

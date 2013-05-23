@@ -14,7 +14,7 @@ CardHand::CardHand ( void )
     std::cout << "CardHand::CardHand (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 
   this->selectedCard = 0;
 }
@@ -25,7 +25,7 @@ CardHand::~CardHand ( void )
     std::cout << "CardHand::~CardHand (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 }
 
 bool CardHand::AddCard ( Card &card )
@@ -145,4 +145,9 @@ signed int CardHand::cardPosition ( Card &card )
     }
   }
   return pos;
+}
+
+void CardHand::reset ( void )
+{
+  this->cards.clear();
 }
