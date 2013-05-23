@@ -56,8 +56,8 @@ class TTcards: public GameState
 
     bool IsFullScreen ( void );
     void setFullscreen ( bool fs );
-    bool IsRunning ( void );
-    void setGameState ( bool state );
+    //bool IsRunning ( void );
+    //void setGameState ( bool state );
     bool getShowFPS ( void );
     void showFPS ( bool show );
     void toggleFPS ( void );
