@@ -62,7 +62,7 @@ bool TTcards::Init ( void )
 
   this->fps.Start();
 
-  //SDL_EnableKeyRepeat(1, SDL_DEFAULT_REPEAT_INTERVAL / 3);
+  //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
   return true;
 }
@@ -483,8 +483,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
-    case SDLK_r: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine ) ) ); break;
-    case SDLK_SLASH: this->engine->PushState ( std::unique_ptr<CardsMenu> ( new CardsMenu ( this->engine, &this->collection ) ) ); break;
+    case SDLK_r: /*if ( mod == KMOD_LSHIFT ) reloadDebugFile(); else*/ this->engine->PopState(); break;//this->engine->PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;

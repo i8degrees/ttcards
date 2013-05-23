@@ -62,7 +62,7 @@ void GameOver::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_ESCAPE:
     case SDLK_q: this->engine->Quit(); break;
     // Reset / New Game State
-    case SDLK_r: this->engine->PopStateThenChangeState ( std::unique_ptr<TTcards>( new TTcards ( this->engine ) ) ); break;
+    case SDLK_r: /*this->engine->PopState();*/ this->engine->ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 

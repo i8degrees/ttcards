@@ -39,7 +39,7 @@ int main(int argc, char*argv[])
 
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
-  engine.ChangeState( std::unique_ptr<TTcards>( new TTcards ( &engine) ) );
+  engine.ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( &engine ) ) );
 
   engine.Run(); // Set running state to true
 

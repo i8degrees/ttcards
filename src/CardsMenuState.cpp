@@ -135,9 +135,9 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_ESCAPE:
     case SDLK_q: this->engine->Quit(); break;
     // Reset / New Game State
-    case SDLK_r: if ( mod == KMOD_LSHIFT ) reloadDebugFile(); else this->engine->PopStateThenChangeState ( std::unique_ptr<TTcards>( new TTcards ( this->engine ) ) ); break;
+    //case SDLK_r: if ( mod == KMOD_LSHIFT ) reloadDebugFile(); else this->engine->PopStateThenChangeState ( std::unique_ptr<TTcards>( new TTcards ( this->engine ) ) ); break;
      // Pause State
-    //case SDLK_p: this->engine->PopState (); break;
+    case SDLK_p: /*this->engine->PopState ()*/; break;
 
     // Debug helpers
     case SDLK_LEFTBRACKET: this->debug.ListCards ( this->hand.cards ); break;
@@ -149,6 +149,8 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_d: /*if ( mod == KMOD_LMETA )*/ this->hand.removeCard ( this->selectedCard ); break;
     case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
+    case SDLK_RETURN: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
+
     default: break;
   }
 }
