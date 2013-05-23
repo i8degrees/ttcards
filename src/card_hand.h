@@ -20,8 +20,8 @@ class CardHand
     CardHand ( void );
     ~CardHand ( void );
 
-    bool AddCard ( Card &card );
-    bool RemoveCard ( Card &card );
+    bool addCard ( Card &card );
+    bool removeCard ( Card &card );
 
     void clearSelectedCard ( void );
     Card & getSelectedCard ( void );

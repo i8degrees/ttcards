@@ -28,12 +28,12 @@ CardHand::~CardHand ( void )
   this->reset();
 }
 
-bool CardHand::AddCard ( Card &card )
+bool CardHand::addCard ( Card &card )
 {
-  if ( this->getCount() > MAX_PLAYER_HAND - 1) // Remember, we are counting from zero
+  if ( this->getCount() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
   {
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::AddCard (): " << "Discarding card " << card.id << ' ' << card.name << std::endl;
+      std::cout << "CardHand::addCard (): " << "Discarding card " << this->cards.back().getID() << ' ' << this->cards.back().getName() << std::endl;
     #endif
     return false;
   }
@@ -43,7 +43,7 @@ bool CardHand::AddCard ( Card &card )
   return true;
 }
 
-bool CardHand::RemoveCard ( Card &card )
+bool CardHand::removeCard ( Card &card )
 {
   signed int position = 0;
   unsigned int previous_id = 0;
@@ -54,7 +54,7 @@ bool CardHand::RemoveCard ( Card &card )
   if ( position == -1 )
   {
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::RemoveCard (): " << "Not removing card at pos: " << position << std::endl;
+      std::cout << "CardHand::removeCard (): " << "Not removing card at pos: " << position << std::endl;
     #endif
     return false;
   }
@@ -65,7 +65,7 @@ bool CardHand::RemoveCard ( Card &card )
     previous_name = this->cards[position].getName();
     this->cards.erase ( this->cards.begin() + position );
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::RemoveCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
+      std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
     #endif
     return true;
   }
