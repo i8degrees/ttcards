@@ -44,6 +44,10 @@
 #define DEBUG_GAMEOVER
 #define DEBUG_GAMEOVER_OBJ
 
+#define DEBUG_CARDS_MENU
+//#define DEBUG_CARDS_MENU_CURSOR
+#define DEBUG_CARDS_MENU_OBJ
+
 extern const char APP_NAME[255];
 
 extern const int SCREEN_WIDTH;

@@ -14,9 +14,6 @@
 
 #include "ttcards.h"
 
-#define DEBUG_CARDS_MENU
-#define DEBUG_CARDS_MENU_OBJ
-
 class CardsMenu: public GameState
 {
   public:
