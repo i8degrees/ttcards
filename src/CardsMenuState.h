@@ -43,6 +43,7 @@ class CardsMenu: public GameState
 
     Gfx *engine; // Pointer reference to our rendering interface
     Collection *collection; // cards database pointer ref
+    SDL_Surface *background; // pointer holding our background image
 
     SDLBitmapFont info_text;
     SDLBitmapFont info_small_text;
@@ -55,8 +56,8 @@ class CardsMenu: public GameState
     SDLGradient linear;
     GColor msgbox[6];
 
-    //CardView *card; // card rendering
     //CardHand *hand[2]; // player hand
+    CardView card; // card rendering
 
     Sprite cursor; // interface cursor
     Sprite menu_element; // interface menu elements

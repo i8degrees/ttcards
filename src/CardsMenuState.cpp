@@ -52,11 +52,19 @@ CardsMenu::~CardsMenu ( void )
 
   if ( this->collection )
     this->collection = NULL;
+
+  if ( this->background )
+  {
+    SDL_FreeSurface ( this->background );
+    this->background = NULL;
+  }
 }
 
 void CardsMenu::Load ( void )
 {
   unsigned int idx = 0; // cursor_coords_map
+
+  this->background = this->engine->LoadImage ( BOARD_BACKGROUND );
 
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
@@ -141,7 +149,14 @@ void CardsMenu::Draw ( void )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 
-  this->drawCursor();
+  unsigned int hand_index = 0; // "dummy" card index var
+
+  engine->DrawSurface ( this->background, 0, 0 ); // draw static board background
+
+  // static player2 hand background
+  for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ )
+    this->card.drawFaceDown ( this->engine, PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+
   this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
   for ( int i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
@@ -195,7 +210,6 @@ void CardsMenu::Draw ( void )
   }
 
   this->drawCursor();
-
 }
 
 // Helper method for debug logger
