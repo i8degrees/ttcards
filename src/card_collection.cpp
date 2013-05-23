@@ -12,7 +12,7 @@ Collection::Collection ( void )
     std::cout << "Hello, world! <From Collection::Collection>" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 }
 
 Collection::~Collection ( void )
@@ -21,7 +21,7 @@ Collection::~Collection ( void )
     std::cout << "Goodbye cruel world! <From Collection::~Collection>" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 }
 
 bool Collection::Load ( std::string filename )
@@ -104,4 +104,9 @@ std::vector<Card> Collection::getCards ( void )
     temp_cards.push_back ( this->cards[idx] );
 
   return temp_cards;
+}
+
+void Collection::reset ( void )
+{
+  this->cards.clear();
 }
