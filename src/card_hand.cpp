@@ -35,7 +35,8 @@ bool CardHand::addCard ( Card &card )
     #ifdef DEBUG_CARD_HAND
       std::cout << "CardHand::addCard (): " << "Discarding card " << this->cards.back().getID() << ' ' << this->cards.back().getName() << std::endl;
     #endif
-    return false;
+
+    this->cards.pop_back();
   }
 
   this->cards.push_back ( card );
