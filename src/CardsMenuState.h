@@ -17,7 +17,7 @@
 class CardsMenu: public GameState
 {
   public:
-    CardsMenu ( Gfx *engine, Collection *cards_db );
+    CardsMenu ( Gfx *engine );
     ~CardsMenu ( void );
 
     void Pause ( void );

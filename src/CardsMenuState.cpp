@@ -8,14 +8,22 @@
 ******************************************************************************/
 #include "CardsMenuState.h"
 
-CardsMenu::CardsMenu ( Gfx *engine, Collection *cards_db )
+CardsMenu::CardsMenu ( Gfx *engine )
 {
+  unsigned int pid = 0; // temp var for for loop iteration
+
   #ifdef DEBUG_CARDS_MENU_OBJ
     std::cout << "CardsMenu::CardsMenu (): Hello, world!" << "\n" << std::endl;
   #endif
 
+  logger = logDebug.Read( "./data/offsets.val" );
+
   this->engine = engine;
-  this->collection = cards_db;
+  this->collection.Load ( CARDS_DB );
+
+  // Borrowed from Player class; this is perhaps a hack-(ish) workaround
+  for ( pid = 0; pid < this->collection.cards.size(); pid++ )
+    this->collection.cards[pid].setPlayerID ( PLAYER1_ID ); // 1
 
   this->msgbox[0].setColor ( 41, 41, 41 ); // top1
   this->msgbox[1].setColor ( 133, 133, 133 ); // top2
@@ -33,7 +41,7 @@ CardsMenu::CardsMenu ( Gfx *engine, Collection *cards_db )
     this->menu_box.setBorder ( msgbox[i] );
 
   this->per_page = 11; // number of cards to display per menu page
-  this->total_pages = this->collection->cards.size() / per_page;
+  this->total_pages = this->collection.cards.size() / per_page;
   this->current_index = 0; // current card position
 
   logger = logDebug.Read( "./data/offsets.val" );
@@ -43,15 +51,18 @@ CardsMenu::CardsMenu ( Gfx *engine, Collection *cards_db )
 
 CardsMenu::~CardsMenu ( void )
 {
+  unsigned int pid = 0; // temp var for for loop iteration
+
   #ifdef DEBUG_CARDS_MENU_OBJ
     std::cout << "CardsMenu::~CardsMenu (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
+  // Borrowed from Player class
+  for ( pid = 0; pid < this->collection.cards.size(); pid++ )
+    this->collection.cards[pid].setPlayerID ( NOPLAYER_ID ); // 0
+
   if ( this->engine )
     this->engine = NULL;
-
-  if ( this->collection )
-    this->collection = NULL;
 
   if ( this->background )
   {
