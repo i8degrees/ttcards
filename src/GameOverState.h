@@ -17,21 +17,25 @@
 class GameOver: public GameState
 {
   public:
-    GameOver ( Gfx *engine );
+    GameOver ( Gfx *engine, unsigned int state = 0 );
     ~GameOver ( void );
 
-    void Pause();
-    void Resume();
+    void Pause ( void );
+    void Resume ( void );
 
-    void HandleInput();
-    void onExit();
-    void onKeyDown ( SDLKey key, SDLMod mod );
-
-    void Update();
-    void Draw();
+    void HandleInput ( void );
+    void Update ( void );
+    void Draw ( void );
 
   private:
-    Gfx *engine;
+    void onExit ( void );
+    void onKeyDown ( SDLKey key, SDLMod mod );
+    void Load ( void );
+
+    Gfx *engine; // Pointer reference to our rendering interface
+    SDL_TFont gameOver_text; // dialog text
+
+    unsigned int state;
 };
 
 #endif // GAMEAPP_GAMEOVER_HEADERS defined
