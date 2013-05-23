@@ -122,7 +122,9 @@ bool TTcards::LoadGameData ( void )
   this->msgbox[4].setColor ( 57, 57, 57 ); // bottom1
   this->msgbox[5].setColor ( 57, 57, 57 ); // right1
 
-  this->debug_box.disable ( true );
+  #ifndef DEBUG_TTCARDS
+    this->debug_box.disable ( true );
+  #endif
 
   for ( unsigned int i = 0; i < 6; i++ )
   {
