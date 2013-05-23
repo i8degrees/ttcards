@@ -17,6 +17,7 @@ project/
 *.debug
 ttcards
 ttcards.dSYM/
+offsets.val
 
 # EMCC
 public/
