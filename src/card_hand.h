@@ -32,7 +32,8 @@ class CardHand
     unsigned int getCount ( void );
     signed int cardPosition ( Card &card );
 
-    std::vector<Card> cards;
+
+    std::vector<Card> cards; // TODO: declare in private scope
 
   private:
     Card selectedCard; // holds player's selected (think: ready to place) card
