@@ -60,9 +60,16 @@ void CardDebug::ListCards ( std::vector<Card> &cards )
   #ifdef DEBUG_CARD_DEBUG
     if ( cards.empty() == true )
     {
-      std::cout << "CardDebug::ListCards(): " << "Cards are empty." << "\n" << std::endl;
+      std::cout << "CardDebug::ListCards(): " << "Cards vector is empty." << "\n" << std::endl;
     }
   #endif
+
+  std::cout << "\nCardDebug::ListCards";
+  std::cout << "\n====================";
+  std::cout << "\n";
+
+  if ( cards.empty() == true )
+    std::cout << "N/A";
 
   for ( int i = 0; i < cards.size(); i++ )
   {
@@ -96,4 +103,6 @@ void CardDebug::ListCards ( std::vector<Card> &cards )
 
     std::cout << std::endl;
   }
+
+  std::cout << "\n";
 }
