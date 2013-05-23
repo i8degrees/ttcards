@@ -21,8 +21,6 @@ TTcards::TTcards ( Gfx *engine )
   this->show_fps = true;
   this->fullscreen = false;
 
-  logger = logDebug.Read( "./data/offsets.val" );
-
   this->collection.cards.clear();
 
   this->Init();
@@ -49,7 +47,7 @@ bool TTcards::Init ( void )
   this->LoadGameData();
 
   #ifdef DEBUG_TTCARDS
-    //this->debugCardsNoRuleset();
+    this->debugCardsNoRuleset();
     //this->debugCardsSameRuleset();
   #endif
 
@@ -98,9 +96,6 @@ bool TTcards::LoadGameData ( void )
   this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
   this->cursor.setState ( 0 ); // player hand select
 
-  this->menu_element = Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->menu_element.LoadImage ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
-
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
   this->player[0].Init ( &this->hand[0], &this->card );
@@ -128,27 +123,15 @@ bool TTcards::LoadGameData ( void )
   this->msgbox[5].setColor ( 57, 57, 57 ); // right1
 
   this->debug_box.disable ( true );
-  this->menu_box.disable ( true );
 
   for ( unsigned int i = 0; i < 6; i++ )
   {
     this->info_box.setBorder ( msgbox[i] );
     this->debug_box.setBorder ( msgbox[i] );
-    this->menu_box.setBorder ( msgbox[i] );
   }
 
   this->info_box.setBackground ( &linear );
   this->debug_box.setBackground ( &linear );
-  this->menu_box.setBackground ( &linear );
-
-  this->total_pages = this->collection.cards.size();
-  this->per_page = 11;
-  this->current_index = 0;
-  this->current_page = 0;
-
-  // Initialize card name text so that we can obtain height info ASAP
-  this->info_text.setTextBuffer ( this->collection.cards[0].getName() );
-  this->card_name_height = this->info_text.getTextHeight();
 
   return true;
 }
@@ -235,14 +218,6 @@ void TTcards::debugBox ( void )
     this->debug_box.enable ( true );
 }
 
-void TTcards::menuBox ( void )
-{
-  if ( this->menu_box.isEnabled() == true )
-    this->menu_box.disable ( true );
-  else
-    this->menu_box.enable ( true );
-}
-
 void TTcards::debugListCards ( SDLMod mod )
 {
   if ( mod == KMOD_LMETA )
@@ -257,13 +232,6 @@ void TTcards::debugListCollection ( SDLMod mod )
     this->debug.ListCards ( this->collection.cards );
   else
     this->board.List();
-}
-
-void TTcards::reloadDebugFile ( void )
-{
-  logger.clear();
-
-  logger = logDebug.Read ( "./data/offsets.val" );
 }
 
 bool TTcards::IsFullScreen ( void )
@@ -508,8 +476,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
-    case SDLK_SLASH: menuBox(); break;
-    case SDLK_r: reloadDebugFile(); break;
+    case SDLK_SLASH: this->engine->PushState ( std::unique_ptr<CardsMenu> ( new CardsMenu ( this->engine, &this->collection ) ) ); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
@@ -518,7 +485,6 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_x: this->unlockSelectedCard(); break;
     case SDLK_SPACE: this->lockSelectedCard(); break;
-    case SDLK_5: break;
 
     default: break;
   }
@@ -678,16 +644,6 @@ void TTcards::moveCursorLeft ( void )
     if ( this->cursor.GetX() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->cursor.UpdateXY ( -( CARD_WIDTH ), 0 );
   }
-  else if ( this->cursor.getState() == 2 )
-  {
-    std::cout << current_index << " " << per_page << "\n";
-
-    if ( current_index > 11 )
-      if ( ( current_index -= per_page ) >= MAX_COLLECTION )
-        current_index -= per_page;
-
-    std::cout << current_index << " " << per_page << "\n";
-  }
 }
 
 void TTcards::moveCursorRight ( void )
@@ -696,14 +652,6 @@ void TTcards::moveCursorRight ( void )
   {
     if ( this->cursor.GetX() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->cursor.UpdateXY ( ( CARD_WIDTH ), 0 );
-  }
-  else if ( this->cursor.getState() == 2 )
-  {
-    std::cout << current_index << " " << per_page << "\n";
-    if ( current_index < MAX_COLLECTION )
-      if ( ( current_index += per_page ) <= MAX_COLLECTION )
-        current_index += per_page;
-    std::cout << current_index << " " << per_page << "\n";
   }
 }
 
@@ -727,15 +675,6 @@ void TTcards::moveCursorUp ( void )
     if ( this->cursor.GetY() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->cursor.UpdateXY ( 0, -( CARD_HEIGHT ) );
   }
-  else if ( this->cursor.getState() == 2 ) // interface_pickOutCards() state
-  {
-    if ( this->cursor.GetY() > PICK_CARDS_MENU_ORIGIN_Y )
-    {
-      std::cout << "\ncard_name_height: " << this->card_name_height << "\n\n";
-      this->cursor.UpdateXY ( 0, -( this->card_name_height ) );
-      std::cout << "\ncursorY: " << this->cursor.GetY() << "\n\n";
-    }
-  }
 }
 
 void TTcards::moveCursorDown ( void )
@@ -758,15 +697,6 @@ void TTcards::moveCursorDown ( void )
     if ( this->cursor.GetY() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->cursor.UpdateXY ( 0, ( CARD_HEIGHT ) );
   }
-  else if ( this->cursor.getState() == 2 ) // interface_pickOutCards() state
-  {
-    if ( this->cursor.GetY() < PICK_CARDS_MENU_ORIGIN_Y + PICK_CARDS_MENU_HEIGHT )
-    {
-      std::cout << "\ncard_name_height: " << this->card_name_height << "\n\n";
-      this->cursor.UpdateXY ( 0, this->card_name_height );
-      std::cout << "\ncursorY: " << this->cursor.GetY() << "\n\n";
-    }
-  }
 }
 
 void TTcards::updateCursor ( void )
@@ -778,77 +708,11 @@ void TTcards::updateCursor ( void )
 
   if ( this->debug_box.isEnabled() == true )
     this->showCardID();
-
-  else if ( this->menu_box.isEnabled() == true )
-  {
-    this->interface_pickOutCards ();
-  }
 }
 
 void TTcards::drawCursor ( void )
 {
   this->cursor.Draw ( this->engine );
-}
-
-void TTcards::interface_pickOutCards ( void )
-{
-  unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
-
-  this->cursor.setState ( 2 );
-
-  this->cursor.SetXY ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
-
-  this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
-
-  for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
-  {
-    // Draw the top-left box title
-    this->info_small_text.setTextBuffer ( "CARDS" );
-    this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y );
-
-    // Draw page number if we have more than one page to display
-    if ( current_index > 11 )
-    {
-      this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index ) );
-      this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y );
-    }
-
-    // Draw the top-right box title (number of cards)
-    this->info_small_text.setTextBuffer ( "NUM." );
-    this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y );
-
-    // Draw the card selection helper element
-    this->menu_element.SetXY ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
-    this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
-    this->menu_element.Draw ( this->engine );
-
-    // Draw the card's name onto our menu box
-    this->info_text.setTextBuffer ( this->collection.cards[i].getName() );
-    this->info_text.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
-
-    // Draw the number of cards in player's possession
-    this->info_text.setTextBuffer ( "1" );
-    this->info_text.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
-
-    // Lastly, check to see which page indicators we need to draw
-    if ( current_index > 11 )
-    {
-      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
-      this->menu_element.SetXY ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
-      this->menu_element.Draw ( this->engine );
-    }
-
-    if ( current_index < total_pages )
-    {
-      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
-      this->menu_element.SetXY ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
-      this->menu_element.Draw ( this->engine );
-    }
-
-    // Move on to the next card in stack to draw
-     // We calculate height after setting the text buffer for each card name
-    y_offset += this->card_name_height;
-  }
 }
 
 void TTcards::interface_playingCards ( void )
@@ -918,7 +782,7 @@ void TTcards::Update ( void )
   this->updateCursor();
   this->updateScore();
 
-  engine->UpdateScreen ();
+  this->engine->UpdateScreen ();
 }
 
 void TTcards::Draw ( void )
@@ -929,8 +793,7 @@ void TTcards::Draw ( void )
   this->player[1].Draw ( this->engine );
 
   if ( this->isCursorLocked() == false )
-    this->interface_pickOutCards();
-    //this->interface_playingCards();
+    this->interface_playingCards();
 
   if ( this->get_turn() == 0 ) // player1
     this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation

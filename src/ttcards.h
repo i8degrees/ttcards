@@ -29,6 +29,7 @@
 #include "audio.h"
 
 #include "GameState.h"
+#include "CardsMenuState.h"
 #include "GameOverState.h"
 
 class TTcards: public GameState
@@ -51,8 +52,6 @@ class TTcards: public GameState
     void removePlayerCard ( void );
     void showCardID ( void );
     void debugBox ( void );
-    void menuBox ( void );
-    void reloadDebugFile ( void );
 
     bool IsFullScreen ( void );
     void setFullscreen ( bool fs );
@@ -90,7 +89,6 @@ class TTcards: public GameState
     void updateCursor ( void );
     void drawCursor ( void );
 
-    void interface_pickOutCards ( void );
     void interface_playingCards ( void );
 
     void updateScore ( void );
@@ -111,7 +109,6 @@ class TTcards: public GameState
     SDLBitmapFont info_text;
     SDLBitmapFont info_small_text;
 
-    SDLMessageBox menu_box;
     SDLMessageBox info_box;
     SDLMessageBox debug_box;
     SDLGradient linear;
@@ -121,8 +118,6 @@ class TTcards: public GameState
     Board board; // game board
 
     CardDebug debug; // debug support for card attributes
-    Logger logDebug;
-    std::vector<int> logger;
 
     Collection collection; // cards database
     CardRules rules;
@@ -131,13 +126,6 @@ class TTcards: public GameState
     Player player[2]; // players in game
 
     Sprite cursor; // interface cursor
-    Sprite menu_element; // interface menu elements
-
-    unsigned int total_pages;
-    unsigned int per_page;
-    unsigned int current_index;
-    unsigned int current_page;
-    unsigned int card_name_height; // height of the card name text
 
     std::pair<int, int> player_cursor_coords[2];
     std::pair<int, int> cursor_coords_map[4]; // coords mapping: cursor XY to card index
