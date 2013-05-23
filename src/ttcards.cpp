@@ -78,6 +78,8 @@ void TTcards::Resume ( void )
 
 bool TTcards::Load ( void )
 {
+  unsigned int idx = 0; // cursor_coords_map
+
   this->collection.Load ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
@@ -107,8 +109,9 @@ bool TTcards::Load ( void )
   player_cursor_coords[0] = std::make_pair ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   player_cursor_coords[1] = std::make_pair ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
 
-  // We cannot map std::pair<0, 0>, so we are "missing" the first element here
-  for ( int idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  // We cannot map std::pair<0, 0>, so we are "missing" the first element here,
+  // which we do account for within the card tracking / positioning code
+  for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
     this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
 
   this->rules.setRules ( 1 );
@@ -621,21 +624,26 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
   }
 }
 
-// Helper method for obtaining card hand index position based off coords ID map
+// Helper method for obtaining card hand index position based off given origin
+// coords definitions, creating us an ID map, initialized early on within the
+// encapsulating class
+//
+// cursor_coords_map
+//   [ index, y coordinate value ]
+//
 unsigned int TTcards::getCursorPos ( void )
 {
   unsigned int pos = 0;
+  unsigned int idx = 0;
 
-  if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[0]) )
-    pos = 0;
-  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[1]) )
-    pos = std::get<1>(cursor_coords_map[1]);
-  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[2]) )
-    pos = std::get<1>(cursor_coords_map[2]);
-  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[3]) )
-    pos = std::get<1>(cursor_coords_map[3]);
-  else
-    pos = 4;
+  for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  {
+    if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[idx]) )
+      return std::get<1>(cursor_coords_map[idx]);
+    else // catch all safety switch
+    // assume we are at the last position in the index when all else fails
+      pos = MAX_PLAYER_HAND;
+  }
 
   return pos;
 }

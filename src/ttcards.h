@@ -127,8 +127,11 @@ class TTcards: public GameState
 
     Sprite cursor; // interface cursor
 
+    // x, y coords mapping for player1, player2 cursor starting position
     std::pair<int, int> player_cursor_coords[2];
-    std::pair<int, int> cursor_coords_map[4]; // coords mapping: cursor XY to card index
+
+    // y coords mapping for cursor -> card position index
+    std::pair<int, int> cursor_coords_map[4]; // minus one (1) padding
 
     Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     Audio music; // holds our musical tracks
