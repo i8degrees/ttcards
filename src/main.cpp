@@ -6,11 +6,13 @@
 ******************************************************************************/
 #include "ttcards.h"
 
+#include "SDL.h"
+
 #ifdef EMSCRIPTEN
   #include "emscripten.h"
 #endif
 
-int main(int argc, char *argv[])
+int main(int argc, char*argv[])
 {
   unsigned int sdl_flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO;
   unsigned int video_flags = SDL_HWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
