@@ -84,9 +84,10 @@ void CardsMenu::Load ( void )
 
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+  this->info_text_gray.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
   // Initialize card name text so that we can obtain height info early on
-  this->info_text.setTextBuffer ( this->collection->cards[0].getName() );
+  this->info_text.setTextBuffer ( this->collection.cards[0].getName() );
   this->info_text_height = this->info_text.getTextHeight();
 
   this->menu_element = Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
@@ -109,9 +110,6 @@ void CardsMenu::Load ( void )
       std::cout << "\nidx:" << std::get<1>(this->cursor_coords_map[idx]) << " " << "y:" << std::get<0>(this->cursor_coords_map[idx]) << "\n";
     #endif
   }
-
-
-
 }
 
 void CardsMenu::Pause ( void )
@@ -187,7 +185,6 @@ void CardsMenu::Update ( void )
 void CardsMenu::Draw ( void )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
-
   unsigned int hand_index = 0; // "dummy" card index var
 
   engine->DrawSurface ( this->background, 0, 0 ); // draw static board background
@@ -224,16 +221,40 @@ void CardsMenu::Draw ( void )
 
     // Draw the card selection helper element
     this->menu_element.SetXY ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
-    this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
+
+    if ( this->hand.isValid ( this->collection.cards[i] ) )
+      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_USED );
+    else
+      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
+
     this->menu_element.Draw ( this->engine );
 
     // Draw the card's name onto our menu box
-    this->info_text.setTextBuffer ( this->collection->cards[i].getName() );
-    this->info_text.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
+    // FIXME ( this->info_text_gray )
+    if ( this->hand.isValid ( this->collection.cards[i] ) )
+    {
+      this->info_text_gray.greyedOutText ( 150 );
+      this->info_text_gray.setTextBuffer ( this->collection.cards[i].getName() );
+      this->info_text_gray.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
+    }
+    else
+    {
+      this->info_text.setTextBuffer ( this->collection.cards[i].getName() );
+      this->info_text.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
+    }
 
     // Draw the number of cards in player's possession
-    this->info_text.setTextBuffer ( "1" );
-    this->info_text.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
+    // TODO: Stub
+    if ( this->hand.isValid ( this->collection.cards[i] ) )
+    {
+      this->info_text_gray.setTextBuffer ( "0" );
+      this->info_text_gray.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
+    }
+    else
+    {
+      this->info_text.setTextBuffer ( "1" );
+      this->info_text.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
+    }
 
     // Lastly, check to see which page indicators we need to draw
     if ( current_index >= per_page )

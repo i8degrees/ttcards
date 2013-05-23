@@ -50,6 +50,7 @@ class CardsMenu: public GameState
 
     SDLBitmapFont info_text;
     SDLBitmapFont info_small_text;
+    SDLBitmapFont info_text_gray;
 
     CardDebug debug; // debug support for card attributes
     Logger logDebug;
