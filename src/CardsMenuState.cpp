@@ -53,8 +53,6 @@ CardsMenu::CardsMenu ( Gfx *engine )
 
 CardsMenu::~CardsMenu ( void )
 {
-  unsigned int pid = 0; // temp var for for loop iteration
-
   #ifdef DEBUG_CARDS_MENU_OBJ
     std::cout << "CardsMenu::~CardsMenu (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
