@@ -83,9 +83,6 @@ bool TTcards::LoadGameData ( void )
   this->board.Init ( &this->card, &this->rules );
   this->board.LoadBackground ( BOARD_BACKGROUND );
 
-  this->message_text.Load ( SCORE_FONTFACE, 36 );
-  this->message_text.setTextColor ( 255, 255, 255 ); // color: red
-
   score_text.Load ( SCORE_FONTFACE, 32 );
   score_text.setTextColor ( 255, 255, 255 ); // white
 
@@ -518,7 +515,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_x: this->unlockSelectedCard(); break;
     case SDLK_SPACE: this->lockSelectedCard(); break;
-    case SDLK_5: engine->PushState ( std::unique_ptr<GameOver>( new GameOver( engine ) ) ); break;
+    case SDLK_5: break;
 
     default: break;
   }
@@ -897,7 +894,6 @@ void TTcards::drawScore ( void )
   this->score_text.Draw ( engine, PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 }
 
-
 void TTcards::Update ( void )
 {
   this->fps.Update();
@@ -905,7 +901,15 @@ void TTcards::Update ( void )
   // game / round is over when board card count >= 9
   if ( this->board.getCount () >= 9 /* || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 */)
   {
-    this->interface_gameOver();
+    // Game Over State
+    if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 1 ) ) );
+    else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 2 ) ) );
+    else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 3 ) ) );
+    else
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 0 ) ) );
   }
 
   this->updateCursor();
@@ -935,30 +939,4 @@ void TTcards::Draw ( void )
   this->drawScore ();
 
   this->drawFPS();
-}
-
-void TTcards::interface_gameOver ( void )
-{
-  this->message_text.setTextBuffer ( "Game Over" );
-  signed int width = this->message_text.getTextWidth ();
-  this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
-
-  if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
-  {
-    this->message_text.setTextBuffer ( "Player 1 wins!" );
-    signed int width = this->message_text.getTextWidth ();
-    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
-  }
-  else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
-  {
-    this->message_text.setTextBuffer ( "Player 2 wins!" );
-    signed int width = this->message_text.getTextWidth ();
-    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
-  }
-  else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
-  {
-    this->message_text.setTextBuffer ( "Tie!" );
-    signed int width = this->message_text.getTextWidth ();
-    this->message_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
-  }
 }

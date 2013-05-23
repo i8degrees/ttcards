@@ -92,7 +92,6 @@ class TTcards: public GameState
 
     void interface_pickOutCards ( void );
     void interface_playingCards ( void );
-    void interface_gameOver ( void );
 
     void updateScore ( void );
     void drawScore ( void );
@@ -118,7 +117,6 @@ class TTcards: public GameState
     SDLGradient linear;
     GColor msgbox[6];
 
-    SDL_TFont message_text; // dialog text
     SDL_TFont score_text; // scoreboard text
     Board board; // game board
 
