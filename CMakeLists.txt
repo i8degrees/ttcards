@@ -40,6 +40,7 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/cpu_player.cpp
       ${SRC_DIR}/ttcards.cpp
       ${SRC_DIR}/GameOverState.cpp
+      ${SRC_DIR}/CardsMenuState.cpp
     )
 
 find_package ( SDL REQUIRED )
