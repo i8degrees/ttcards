@@ -496,7 +496,8 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_q: this->onExit(); break;
     case SDLK_f: this->onResize ( 0, 0 ); break;
 
-    case SDLK_p: this->music.togglePlayingMusic(); break;
+    case SDLK_p: /* Pause State ... */ break;
+    case SDLK_m: this->music.togglePlayingMusic(); break;
     case SDLK_EQUALS: this->toggleFPS(); break;
 
     case SDLK_e: this->endTurn(); break;
