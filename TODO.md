@@ -8,6 +8,13 @@
     5. https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/PropertyLists/CreatePropListProgram/CreatePropListProgram.html
     6. py2app
 
+* GameOverState static background image
+* PauseState ( msgbox w/ blinking Pause text )
+* show card name info box upon cursor lock selection of placed cards on board
+* rename methods in Sprite to lowerCaseCamelStyle
+* swap player1, player2 coords (human player AKA blue is on the right side )
+* break CardView class up further?
+
 ## Completed
 
 * Stub
