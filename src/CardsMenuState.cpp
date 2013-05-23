@@ -32,11 +32,9 @@ CardsMenu::CardsMenu ( Gfx *engine, Collection *cards_db )
   for ( unsigned int i = 0; i < 6; i++ )
     this->menu_box.setBorder ( msgbox[i] );
 
-  this->total_pages = this->collection->cards.size();
-  this->per_page = 11;
-  this->current_index = 0;
-  this->current_page = 0;
-
+  this->per_page = 11; // number of cards to display per menu page
+  this->total_pages = this->collection->cards.size() / per_page;
+  this->current_index = 0; // current card position
 
   logger = logDebug.Read( "./data/offsets.val" );
 
@@ -58,8 +56,14 @@ CardsMenu::~CardsMenu ( void )
 
 void CardsMenu::Load ( void )
 {
+  unsigned int idx = 0; // cursor_coords_map
+
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+
+  // Initialize card name text so that we can obtain height info early on
+  this->info_text.setTextBuffer ( this->collection->cards[0].getName() );
+  this->info_text_height = this->info_text.getTextHeight();
 
   this->menu_element = Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
   this->menu_element.LoadImage ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
@@ -69,15 +73,21 @@ void CardsMenu::Load ( void )
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
   this->cursor.SetXY ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
-  this->cursor.setState ( 2 );
+  this->cursor.setState ( 0 ); // default state for navigating card menu
 
-  // We cannot map std::pair<0, 0>, so we are "missing" the first element here
-  //for ( int idx = 0; idx < MAX_PLAYER_HAND; idx++ )
-    //this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
+  // We cannot map std::pair<0, 0>, so we are "missing" the first element here,
+  // which we do account for within the card tracking / positioning code
+  for ( idx = 0; idx < per_page; idx++ )
+  {
+    this->cursor_coords_map[idx] = std::make_pair ( MENU_CARDS_CURSOR_ORIGIN_Y + ( this->info_text_height * idx ), idx );
 
-  // Initialize card name text so that we can obtain height info ASAP
-  this->info_text.setTextBuffer ( this->collection->cards[0].getName() );
-  this->card_name_height = this->info_text.getTextHeight();
+    #ifdef DEBUG_CARDS_MENU_CURSOR
+      std::cout << "\nidx:" << std::get<1>(this->cursor_coords_map[idx]) << " " << "y:" << std::get<0>(this->cursor_coords_map[idx]) << "\n";
+    #endif
+  }
+
+
+
 }
 
 void CardsMenu::Pause ( void )
@@ -134,16 +144,16 @@ void CardsMenu::Draw ( void )
   this->drawCursor();
   this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
-  for ( int i = current_index; i < total_pages / per_page + current_index; i++ )
+  for ( int i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {
     // Draw the top-left box title
     this->info_small_text.setTextBuffer ( "CARDS" );
     this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y );
 
     // Draw page number if we have more than one page to display
-    if ( current_index > 11 )
+    if ( total_pages > 0 )
     {
-      this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index ) );
+      this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
       this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y );
     }
 
@@ -165,14 +175,14 @@ void CardsMenu::Draw ( void )
     this->info_text.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
 
     // Lastly, check to see which page indicators we need to draw
-    if ( current_index > 11 )
+    if ( current_index >= per_page )
     {
       this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->menu_element.SetXY ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
       this->menu_element.Draw ( this->engine );
     }
 
-    if ( current_index < total_pages )
+    if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
       this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->menu_element.SetXY ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
@@ -181,8 +191,11 @@ void CardsMenu::Draw ( void )
 
     // Move on to the next card in stack to draw
      // We calculate height after setting the text buffer for each card name
-    y_offset += this->card_name_height;
+    y_offset += this->info_text_height;
   }
+
+  this->drawCursor();
+
 }
 
 // Helper method for debug logger
@@ -203,77 +216,90 @@ void CardsMenu::drawCursor ( void )
   this->cursor.Draw ( this->engine );
 }
 
-// Helper method for obtaining card hand index position based off coords ID map
+// Helper method for obtaining card hand index position based off given origin
+// coords definitions, creating us an ID map, initialized early on within the
+// encapsulating class
+//
+// cursor_coords_map
+//   [ index, y coordinate value ]
+//
 unsigned int CardsMenu::getCursorPos ( void )
 {
   unsigned int pos = 0;
-/*
-  if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[0]) )
-    pos = 0;
-  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[1]) )
-    pos = std::get<1>(cursor_coords_map[1]);
-  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[2]) )
-    pos = std::get<1>(cursor_coords_map[2]);
-  else if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[3]) )
-    pos = std::get<1>(cursor_coords_map[3]);
-  else
-    pos = 4;
-*/
+  unsigned int idx = 0;
+
+  for ( idx = 0; idx < per_page; idx++ )
+  {
+    if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[idx]) )
+      return std::get<1>(cursor_coords_map[idx]);
+    else // catch all safety switch
+    // assume we are at the last position in the index when all else fails
+      pos = per_page;
+  }
+
   return pos;
 }
 
 void CardsMenu::moveCursorLeft ( void )
 {
-  if ( this->cursor.getState() == 2 )
+  if ( this->cursor.getState() == 0 )
   {
-    std::cout << current_index << " " << per_page << "\n";
+    #ifdef DEBUG_CARDS_MENU_CURSOR
+      std::cout << current_index << " " << per_page << "\n";
+    #endif
 
-    if ( current_index > 11 )
-      if ( ( current_index -= per_page ) >= MAX_COLLECTION )
-        current_index -= per_page;
-
-    std::cout << current_index << " " << per_page << "\n";
+    if ( current_index > 0 )
+      current_index -= per_page;
   }
 }
 
 void CardsMenu::moveCursorRight ( void )
 {
-  if ( this->cursor.getState() == 2 )
+  if ( this->cursor.getState() == 0 )
   {
-    std::cout << current_index << " " << per_page << "\n";
-    if ( current_index < MAX_COLLECTION )
-      if ( ( current_index += per_page ) <= MAX_COLLECTION )
+    #ifdef DEBUG_CARDS_MENU_CURSOR
+      std::cout << current_index << " " << per_page << "\n";
+    #endif
+
+    if ( current_index < MAX_COLLECTION - per_page )
         current_index += per_page;
-    std::cout << current_index << " " << per_page << "\n";
   }
 }
 
 void CardsMenu::moveCursorUp ( void )
 {
-  //unsigned int pos = 0;
+  unsigned int pos = 0;
 
-  if ( this->cursor.getState() == 2 )
+  if ( this->cursor.getState() == 0 )
   {
-    if ( this->cursor.GetY() > PICK_CARDS_MENU_ORIGIN_Y )
+    if ( this->cursor.GetY() > MENU_CARDS_CURSOR_ORIGIN_Y )
     {
-      std::cout << "\ncard_name_height: " << this->card_name_height << "\n\n";
-      this->cursor.UpdateXY ( 0, -( this->card_name_height ) );
-      std::cout << "\ncursorY: " << this->cursor.GetY() << "\n\n";
+      pos = this->getCursorPos();
+
+      #ifdef DEBUG_CARDS_MENU_CURSOR
+        std::cout << "\npos: " << pos << "\n";
+      #endif
+
+      this->cursor.UpdateXY ( 0, -( this->info_text_height ) );
     }
   }
 }
 
 void CardsMenu::moveCursorDown ( void )
 {
-  //unsigned int pos = 0;
+  unsigned int pos = 0;
 
-  if ( this->cursor.getState() == 2 )
+  if ( this->cursor.getState() == 0 )
   {
-    if ( this->cursor.GetY() < PICK_CARDS_MENU_ORIGIN_Y + PICK_CARDS_MENU_HEIGHT )
+    if ( this->cursor.GetY() < PICK_CARDS_MENU_HEIGHT )
     {
-      std::cout << "\ncard_name_height: " << this->card_name_height << "\n\n";
-      this->cursor.UpdateXY ( 0, this->card_name_height );
-      std::cout << "\ncursorY: " << this->cursor.GetY() << "\n\n";
+      pos = this->getCursorPos();
+
+      #ifdef DEBUG_CARDS_MENU_CURSOR
+        std::cout << "\npos: " << pos << "\n";
+      #endif
+
+      this->cursor.UpdateXY ( 0, this->info_text_height );
     }
   }
 }

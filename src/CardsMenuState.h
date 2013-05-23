@@ -61,13 +61,13 @@ class CardsMenu: public GameState
     Sprite cursor; // interface cursor
     Sprite menu_element; // interface menu elements
 
-    unsigned int total_pages;
-    unsigned int per_page;
-    unsigned int current_index;
-    unsigned int current_page;
-    unsigned int card_name_height; // height of the card name text
+    unsigned int total_pages; // MAX_COLLECTION / per_page
+    unsigned int per_page; // number of cards to display per menu page
+    unsigned int current_index; // current card position
+    unsigned int info_text_height; // height of the card name text
 
-    //std::pair<int, int> cursor_coords_map[4]; // coords mapping: cursor XY to card index
+    // y coords mapping for cursor -> card position index
+    std::pair<int, int> cursor_coords_map[10]; // minus one (1) padding
 };
 
 #endif // GAMEAPP_CARDS_MENU_HEADERS defined
