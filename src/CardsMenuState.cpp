@@ -59,21 +59,19 @@ CardsMenu::~CardsMenu ( void )
     std::cout << "CardsMenu::~CardsMenu (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  // Borrowed from Player class
-  for ( pid = 0; pid < this->collection.cards.size(); pid++ )
-    this->collection.cards[pid].setPlayerID ( NOPLAYER_ID ); // 0
-
-  this->selectedCard = 0;
-  this->hand.reset ();
-
-  if ( this->engine )
-    this->engine = NULL;
-
   if ( this->background )
   {
     SDL_FreeSurface ( this->background );
     this->background = NULL;
   }
+
+  this->selectedCard = 0;
+  this->hand.reset ();
+
+  this->collection.reset();
+
+  if ( this->engine )
+    this->engine = NULL;
 }
 
 void CardsMenu::Load ( void )
