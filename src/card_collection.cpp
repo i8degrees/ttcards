@@ -88,3 +88,20 @@ bool Collection::Load ( std::string filename )
 
   return true;
 }
+
+Card &Collection::getCards ( unsigned int idx )
+{
+  return this->cards[idx];
+}
+
+std::vector<Card> Collection::getCards ( void )
+{
+  unsigned int idx = 0;
+  std::vector<Card> temp_cards; // temp var for return passing
+  temp_cards.clear();
+
+  for ( idx = 0; idx < this->cards.size(); idx++ )
+    temp_cards.push_back ( this->cards[idx] );
+
+  return temp_cards;
+}
