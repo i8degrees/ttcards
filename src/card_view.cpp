@@ -58,6 +58,18 @@ CardView::~CardView ( void )
   }
 }
 
+// Helper method for drawing cards face down
+bool CardView::drawFaceDown ( Gfx *engine, unsigned int x, unsigned int y )
+{
+  this->card_background->SetSheetID ( NOFACE_ID );
+  this->card_background->SetXY ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
+
+  if ( this->card_background->Draw ( engine ) == false )
+    return false;
+
+  return true;
+}
+
 bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y )
 {
   if ( card.getID() != 0 )
