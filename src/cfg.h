@@ -183,6 +183,11 @@ extern const int INTERFACE_MENU_ELEMENT_USED;
 extern const int INTERFACE_MENU_ELEMENT_PAGE_LEFT;
 extern const int INTERFACE_MENU_ELEMENT_PAGE_RIGHT;
 
+extern const int NOPLAYER_ID;
+extern const int PLAYER1_ID;
+extern const int PLAYER2_ID;
+extern const int PLAYER_AI_ID;
+
 extern std::string WORKING_DIR;
 
 extern const std::string CARDS_DB;

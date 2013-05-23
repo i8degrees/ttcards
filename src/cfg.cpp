@@ -154,6 +154,11 @@ const int INTERFACE_MENU_ELEMENT_USED = 1;
 const int INTERFACE_MENU_ELEMENT_PAGE_LEFT = 2;
 const int INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
 
+const int NOPLAYER_ID = 0;
+const int PLAYER1_ID = 1;
+const int PLAYER2_ID = 2;
+const int PLAYER_AI_ID = 4;
+
 std::string WORKING_DIR;
 
 const std::string CARDS_DB =            WORKING_DIR + "./data/cards.txt";
