@@ -141,6 +141,9 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 
+    // Debug helpers
+    case SDLK_LEFTBRACKET: this->debug.ListCards ( this->hand.cards ); break;
+
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
     case SDLK_UP: this->moveCursorUp(); break;
