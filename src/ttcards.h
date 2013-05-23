@@ -76,7 +76,6 @@ class TTcards: public GameState
 
     void onExit ( void );
     void onResize ( unsigned int width, unsigned int height );
-    void HandleInput ( void );
     void onKeyDown ( SDLKey key, SDLMod mod );
     void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
     void onMouseWheel ( bool up, bool down );
@@ -98,8 +97,10 @@ class TTcards: public GameState
     void updateScore ( void );
     void drawScore ( void );
 
+    void HandleInput ( void );
     void Update ( void );
     void Draw ( void );
+
     static void Callback ( void ); // EMCC compiler related
     void Start ( void ); // EMCC compiler related
 
