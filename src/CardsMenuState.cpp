@@ -25,6 +25,8 @@ CardsMenu::CardsMenu ( Gfx *engine )
   for ( pid = 0; pid < this->collection.cards.size(); pid++ )
     this->collection.cards[pid].setPlayerID ( PLAYER1_ID ); // 1
 
+  this->hand.reset ();
+
   this->msgbox[0].setColor ( 41, 41, 41 ); // top1
   this->msgbox[1].setColor ( 133, 133, 133 ); // top2
 
@@ -44,7 +46,7 @@ CardsMenu::CardsMenu ( Gfx *engine )
   this->total_pages = this->collection.cards.size() / per_page;
   this->current_index = 0; // current card position
 
-  logger = logDebug.Read( "./data/offsets.val" );
+  this->selectedCard = this->collection.cards.front();
 
   this->Load();
 }
@@ -60,6 +62,9 @@ CardsMenu::~CardsMenu ( void )
   // Borrowed from Player class
   for ( pid = 0; pid < this->collection.cards.size(); pid++ )
     this->collection.cards[pid].setPlayerID ( NOPLAYER_ID ); // 0
+
+  this->selectedCard = 0;
+  this->hand.reset ();
 
   if ( this->engine )
     this->engine = NULL;
@@ -145,6 +150,8 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_UP: this->moveCursorUp(); break;
     case SDLK_DOWN: this->moveCursorDown(); break;
 
+    case SDLK_d: /*if ( mod == KMOD_LMETA )*/ this->hand.removeCard ( this->selectedCard ); break;
+    case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
     default: break;
   }
 }
@@ -186,8 +193,15 @@ void CardsMenu::Draw ( void )
   engine->DrawSurface ( this->background, 0, 0 ); // draw static board background
 
   // static player2 hand background
-  for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ )
+  for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)
     this->card.drawFaceDown ( this->engine, PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+
+  // Active player's card selection(s)
+  for ( hand_index = 0; hand_index < this->hand.getCount(); hand_index++ ) // TODO: std::get<1>(player_coords)
+  {
+    if ( this->hand.isValid ( this->hand.cards.at ( hand_index) ) == true )
+      this->card.DrawCard ( this->engine, this->hand.cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+  }
 
   this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
@@ -242,6 +256,8 @@ void CardsMenu::Draw ( void )
   }
 
   this->drawCursor();
+
+  this->card.DrawCard ( this->engine, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
 }
 
 // Helper method for debug logger
@@ -286,8 +302,11 @@ unsigned int CardsMenu::getCursorPos ( void )
   return pos;
 }
 
-void CardsMenu::moveCursorLeft ( void )
+// Helper method for paging menu backwards
+void CardsMenu::moveCursorLeft ( void ) // TODO: rename method call
 {
+  unsigned int pos = 0;
+
   if ( this->cursor.getState() == 0 )
   {
     #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -296,11 +315,23 @@ void CardsMenu::moveCursorLeft ( void )
 
     if ( current_index > 0 )
       current_index -= per_page;
+
+    pos = this->getCursorPos();
+    pos = this->current_index + pos;
+    this->selectedCard = this->collection.cards[pos];
+
+    #ifdef DEBUG_CARDS_MENU_CURSOR
+      std::cout << "\npos: " << pos << "\n";
+      std::cout << "\nselectedCard: " << this->collection.cards[pos].getName() << "\n";
+    #endif
   }
 }
 
-void CardsMenu::moveCursorRight ( void )
+// Helper method for paging menu forwards
+void CardsMenu::moveCursorRight ( void ) // TODO: rename method call
 {
+  unsigned int pos = 0;
+
   if ( this->cursor.getState() == 0 )
   {
     #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -309,6 +340,15 @@ void CardsMenu::moveCursorRight ( void )
 
     if ( current_index < MAX_COLLECTION - per_page )
         current_index += per_page;
+
+    pos = this->getCursorPos();
+    pos = this->current_index + pos;
+    this->selectedCard = this->collection.cards[pos];
+
+    #ifdef DEBUG_CARDS_MENU_CURSOR
+      std::cout << "\npos: " << pos << "\n";
+      std::cout << "\nselectedCard: " << this->collection.cards[pos].getName() << "\n";
+    #endif
   }
 }
 
@@ -320,13 +360,16 @@ void CardsMenu::moveCursorUp ( void )
   {
     if ( this->cursor.GetY() > MENU_CARDS_CURSOR_ORIGIN_Y )
     {
+      this->cursor.UpdateXY ( 0, -( this->info_text_height ) );
+
       pos = this->getCursorPos();
+      pos = this->current_index + pos;
+      this->selectedCard = this->collection.cards[pos];
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";
+        std::cout << "\nselectedCard: " << this->collection.getCards (pos).getName() << "\n";
       #endif
-
-      this->cursor.UpdateXY ( 0, -( this->info_text_height ) );
     }
   }
 }
@@ -339,13 +382,16 @@ void CardsMenu::moveCursorDown ( void )
   {
     if ( this->cursor.GetY() < PICK_CARDS_MENU_HEIGHT )
     {
+      this->cursor.UpdateXY ( 0, this->info_text_height );
+
       pos = this->getCursorPos();
+      pos = current_index + pos;
+      this->selectedCard = this->collection.cards[pos];
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";
+        std::cout << "\nselectedCard: " << this->collection.getCards (pos).getName() << "\n";
       #endif
-
-      this->cursor.UpdateXY ( 0, this->info_text_height );
     }
   }
 }

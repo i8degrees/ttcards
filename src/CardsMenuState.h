@@ -59,8 +59,9 @@ class CardsMenu: public GameState
     SDLGradient linear;
     GColor msgbox[6];
 
-    //CardHand *hand[2]; // player hand
     CardView card; // card rendering
+    CardHand hand; // player1 hand
+    Card selectedCard; // CardHand-derived implementation
 
     Sprite cursor; // interface cursor
     Sprite menu_element; // interface menu elements
