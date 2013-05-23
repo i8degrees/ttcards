@@ -138,6 +138,27 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
   }
 }
 
+void CardsMenu::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+{
+  // TODO
+}
+
+void CardsMenu::onMouseRightButtonDown ( unsigned int x, unsigned int y )
+{
+  // TODO
+}
+
+void CardsMenu::onMouseWheel ( bool up, bool down )
+{
+  if ( this->cursor.getState() == 0 )
+  {
+    if ( up )
+      this->moveCursorUp();
+    else if ( down )
+      this->moveCursorDown();
+  }
+}
+
 void CardsMenu::Update ( void )
 {
   this->updateCursor();
