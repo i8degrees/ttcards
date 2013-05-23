@@ -35,7 +35,7 @@
 class TTcards: public GameState
 {
   public:
-    TTcards ( Gfx *engine );
+    TTcards ( Gfx *engine, CardHand player1_hand );
     ~TTcards ( void );
 
     bool Init ( void );

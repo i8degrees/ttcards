@@ -8,13 +8,14 @@
 ******************************************************************************/
 #include "ttcards.h"
 
-TTcards::TTcards ( Gfx *engine )
+TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
 {
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::TTcards (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->engine = engine; // initialize rendering interface
+  this->hand[0] = player1_hand;
 
   this->turn = 0;
   this->cursor_locked = false;
