@@ -17,19 +17,17 @@ Board::Board ( void )
   unsigned int x, y = 0;
 
   #ifdef DEBUG_BOARD_OBJ
-    std::cout << "Board::Board (): " << "Hello, world!" << std::endl << std::endl;
+    std::cout << "Board::Board(): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
   this->rules = NULL;
 
-  this->grid.resize ( BOARD_GRID_HEIGHT ); // y coords
+  this->grid.resize ( BOARD_GRID_HEIGHT ); // initialize y coords
 
-  for ( x = 0; x < BOARD_GRID_WIDTH; x++ ) // x coords
-  {
+  for ( x = 0; x < BOARD_GRID_WIDTH; x++ ) // initialize x coords
     this->grid[x].resize ( BOARD_GRID_WIDTH );
-  }
 
-  /* Initialize our new 2D std::vector grid */
+  /* Say hello to our brand spanking new 2D std::vector grid */
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
@@ -37,6 +35,7 @@ Board::Board ( void )
       this->grid[x][y] = 0;
     }
   }
+
 }
 
 void Board::Init ( CardView *card_gfx, CardRules *rules )
@@ -52,18 +51,14 @@ Board::~Board ( void )
   #endif
 
   if ( this->rules != NULL )
-  {
     this->rules = NULL;
-  }
 
   if ( this->card != NULL )
-  {
     this->card = NULL;
-  }
 
   if ( this->background != NULL )
   {
-    SDL_FreeSurface ( this->background );
+    SDL_FreeSurface ( background );
     this->background = NULL;
   }
 }
@@ -75,139 +70,135 @@ bool Board::LoadBackground ( std::string filename )
   return true;
 }
 
-bool Board::DrawBackground ( Gfx *engine )
-{
-  engine->DrawSurface ( this->background, 0, 0 );
-
-  return true;
-}
-
-bool Board::checkBoard ( unsigned int x, unsigned int y, Card &card )
+std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned int y )
 {
   unsigned int cols, rows = 0;
+  unsigned int same_count = 0;
+  std::vector<std::pair<int, int>> coords;
+
+  coords.clear(); // initialize a fresh new coords list
 
   for ( cols = y; y < BOARD_GRID_HEIGHT; y++ )
   {
     for ( rows = x; x < BOARD_GRID_WIDTH; x++ )
     {
-      if ( cols != 2 )
-      {
-        if ( card.player_id != this->GetPlayerID ( rows, cols + 1 ) && this->GetStatus ( rows, cols + 1 ) !=0 )
-        {
-          if ( this->rules->CompareCards ( card.rank[2], this->grid[rows][cols+1].rank[0] ) == true )
-          {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows, cols + 1 ) << std::endl << std::endl;
-            #endif
-
-            this->UpdatePlayerID ( rows, cols + 1, card.player_id );
-
-            if ( this->rules->GetRules() == 0 )
-              return true;
-            else
-              continue;
-          }
-        }
-      }
-
-      if ( rows != 2 )
-      {
-        if ( card.player_id != this->GetPlayerID ( rows + 1, cols ) && this->GetStatus ( rows + 1, cols ) !=0 )
-        {
-          if ( this->rules->CompareCards ( card.rank[1], this->grid[rows+1][cols].rank[3] ) == true )
-          {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows + 1, cols ) << std::endl << std::endl;
-            #endif
-
-            this->UpdatePlayerID ( rows + 1, cols, card.player_id );
-
-            if ( this->rules->GetRules() == 0 )
-              return true;
-            else
-              continue;
-          }
-        }
-      }
-
-      if ( cols != 0 )
-      {
-        if ( card.player_id != this->GetPlayerID ( rows, cols - 1 ) && this->GetStatus ( rows, cols - 1 ) !=0 )
-        {
-          if ( this->rules->CompareCards ( card.rank[0], this->grid[rows][cols-1].rank[2] ) == true )
-          {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows, cols - 1 ) << std::endl << std::endl;
-            #endif
-
-            this->UpdatePlayerID ( rows, cols - 1, card.player_id );
-
-            if ( this->rules->GetRules() == 0 )
-              return true;
-            else
-              continue;
-          }
-        }
-      }
-
+      // Compare card's WEST rank with opponent's EAST rank
       if ( rows != 0 )
       {
-        if ( card.player_id != this->GetPlayerID ( rows - 1, cols ) && this->GetStatus ( rows - 1, cols ) !=0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
         {
-          if ( this->rules->CompareCards ( card.rank[3], this->grid[rows-1][cols].rank[1] ) == true )
+          if ( rules->getRules() == 2 )
+          {
+            if ( grid[rows][cols].getWestRank() == grid[rows - 1][cols].getEastRank() )
+            {
+              same_count += 1;
+              if ( same_count < 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows - 1, cols ) );
+            }
+          }
+          if ( grid[rows][cols].getWestRank() > grid[rows - 1][cols].getEastRank() == true )
           {
             #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << card.id << " " << "wins against" << " " << this->GetStatus ( rows - 1, cols ) << std::endl << std::endl;
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows - 1, cols ) << std::endl << std::endl;
             #endif
 
-            this->UpdatePlayerID ( rows - 1, cols, card.player_id );
-
-            if ( this->rules->GetRules() == 0 )
-              return true;
-            else
-              continue;
+            coords.push_back ( std::make_pair ( rows - 1, cols ) );
           }
         }
       }
+
+      // Compare card's SOUTH rank with opponent's NORTH rank
+      if ( cols != BOARD_GRID_HEIGHT - 1 )
+      {
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
+        {
+          if ( rules->getRules() == 2 )
+          {
+            if ( grid[rows][cols].getSouthRank() == grid[rows][cols + 1].getNorthRank() )
+            {
+              same_count += 1;
+              if ( same_count < 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows, cols + 1 ) );
+            }
+          }
+          if ( grid[rows][cols].getSouthRank() > grid[rows][cols + 1].getNorthRank() == true )
+          {
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols + 1 ) << std::endl << std::endl;
+            #endif
+
+            coords.push_back ( std::make_pair ( rows, cols + 1 ) );
+          }
+        }
+      }
+
+      // Compare card's EAST rank with opponent's WEST rank
+      if ( rows != BOARD_GRID_WIDTH - 1 )
+      {
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
+        {
+          if ( rules->getRules() == 2 )
+          {
+            if ( grid[rows][cols].getEastRank() == grid[rows + 1][cols].getWestRank() )
+            {
+              same_count += 1;
+              if ( same_count < 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows + 1, cols ) );
+            }
+          }
+          if ( grid[rows][cols].getEastRank() > grid[rows + 1][cols].getWestRank() == true )
+          {
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows + 1, cols ) << std::endl << std::endl;
+            #endif
+
+            coords.push_back ( std::make_pair ( rows + 1, cols ) );
+          }
+        }
+      }
+
+      // Compare card's NORTH rank with opponent's SOUTH rank
+      if ( cols != 0 )
+      {
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
+        {
+          if ( rules->getRules() == 2 )
+          {
+            if ( grid[rows][cols].getNorthRank() == grid[rows][cols - 1].getSouthRank() )
+            {
+              same_count += 1;
+              if ( same_count < 2 && coords.size() < 2 )
+                coords.push_back ( std::make_pair ( rows, cols - 1 ) );
+            }
+          }
+          if ( grid[rows][cols].getNorthRank() > grid[rows][cols - 1].getSouthRank() == true )
+          {
+            #ifdef DEBUG_BOARD_CMP
+              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols - 1 ) << std::endl << std::endl;
+            #endif
+
+            coords.push_back ( std::make_pair ( rows, cols - 1 ) );
+          }
+        }
+      }
+
     } // rows for loop
   } // cols for loop
 
-  return false;
-
-  #ifdef DEBUG_BOARD_CMP
-    std::cout << "\nEnd of comparison." << std::endl;
-  #endif
+  return coords;
 } // end Board::checkBoard()
 
-unsigned int Board::GetPlayerCardCount ( unsigned int pid )
-{
-  unsigned int pid_count = 0;
-  unsigned int x, y = 0;
-
-  for ( y = 0; y < this->grid.size(); y++ )
-  {
-    for ( x = 0; x < this->grid.size(); x++ )
-    {
-      if ( this->GetPlayerID ( x, y ) != 0 && this->GetPlayerID ( x, y ) == pid )
-      {
-        pid_count += 1;
-      }
-    }
-  }
-
-  return pid_count;
-}
-
-unsigned int Board::GetTotalCount ( void )
+// get card count by placed cards on board
+unsigned int Board::getCount ( void )
 {
   unsigned int total_count = 0;
   unsigned int x, y = 0;
 
-  for ( y = 0; y < this->grid.size(); y++ )
+  for ( y = 0; y < grid.size(); y++ )
   {
-    for ( x = 0; x < this->grid.size(); x++ )
+    for ( x = 0; x < grid.size(); x++ )
     {
-      if ( this->GetStatus ( x, y ) != 0 )
+      if ( getStatus ( x, y ) != 0 )
       {
         total_count += 1;
       }
@@ -217,45 +208,56 @@ unsigned int Board::GetTotalCount ( void )
   return total_count;
 }
 
-unsigned int Board::GetStatus ( unsigned int x, unsigned int y )
+// get card count by player's cards on board
+unsigned int Board::getPlayerCount ( unsigned int player_id )
 {
-  return this->grid[x][y].id;
-}
-
-unsigned int Board::GetPlayerID ( unsigned int x, unsigned int y )
-{
-  return this->grid[x][y].player_id;
-}
-
-void Board::UpdatePlayerID ( unsigned int x, unsigned int y, unsigned int player )
-{
-  this->grid[x][y].player_id = player;
-}
-
-void Board::UpdateBoard ( unsigned int x, unsigned int y, Card &card )
-{
-  this->grid[x][y] = card;
-
-  this->checkBoard ( x, y, card );
-}
-
-void Board::ListContents ( void )
-{
+  unsigned int pid_count = 0;
   unsigned int x, y = 0;
 
-  for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
+  for ( y = 0; y < grid.size(); y++ )
   {
-    for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
+    for ( x = 0; x < grid.size(); x++ )
     {
-      std::cout << this->GetStatus ( x, y ) << " " << this->GetPlayerID ( x, y ) << " ";
+      if ( getPlayerID ( x, y ) != 0 && getPlayerID ( x, y ) == player_id )
+      {
+        pid_count += 1;
+      }
     }
-    std::cout << std::endl << std::endl;
   }
+
+  return pid_count;
 }
 
-void Board::DrawBoard ( Gfx *engine )
+unsigned int Board::getStatus ( unsigned int x, unsigned int y )
+{
+  return grid[x][y].getID();
+}
+
+void Board::updateStatus ( unsigned int x, unsigned int y, Card &card )
+{
+  grid[x][y] = card;
+}
+
+unsigned int Board::getPlayerID ( unsigned int x, unsigned int y )
+{
+  return grid[x][y].getPlayerID();
+}
+
+void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
+{
+  grid[x][y].setPlayerID ( player_id );
+}
+
+void Board::Update ( unsigned int x, unsigned int y )
+{
+  // TODO
+}
+
+void Board::Draw ( Gfx *engine )
 {
   unsigned int x, y = 0;
+
+  engine->DrawSurface ( this->background, 0, 0 );
 
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
@@ -263,5 +265,19 @@ void Board::DrawBoard ( Gfx *engine )
     {
       this->card->DrawCard ( engine, this->grid[x][y], BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
+  }
+}
+
+void Board::List ( void ) // debug
+{
+  unsigned int x, y = 0;
+
+  for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
+  {
+    for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
+    {
+      std::cout << getStatus ( x, y ) << "[" << getPlayerID ( x, y ) << "]" << "\t";
+    }
+    std::cout << std::endl << std::endl;
   }
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
     card_debug.h
 
-    Debugging Class for Card objects ( including <Card> vectors )
+  Debugging Class for Card objects ( including <Card> vectors )
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -9,8 +9,7 @@
 
 #include <iostream>
 #include <string>
-
-#include "gamelib.h"
+#include <utility>
 
 #include "cfg.h"
 #include "card_debug.h"
@@ -25,32 +24,29 @@ class Board
     ~Board ( void );
 
     void Init ( CardView *card_gfx, CardRules *rules );
-
     bool LoadBackground ( std::string filename );
-    bool DrawBackground ( Gfx *engine );
 
-    bool checkBoard ( unsigned int x, unsigned int y, Card &card );
+    std::vector<std::pair<int, int>> checkBoard ( unsigned int x, unsigned int y );
 
     // TODO: Consider branching this into Score class
-    unsigned int GetPlayerCardCount ( unsigned int player_id );
+    unsigned int getCount ( void );
+    unsigned int getPlayerCount ( unsigned int player_id );
 
-    unsigned int GetTotalCount ( void );
+    unsigned int getStatus ( unsigned int x, unsigned int y );
+    void updateStatus ( unsigned int x, unsigned int y, Card &card );
+    unsigned int getPlayerID ( unsigned int x, unsigned int y );
+    void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
 
-    unsigned int GetStatus ( unsigned int x, unsigned int y );
-
-    void UpdateBoard ( unsigned int x, unsigned int y, Card &card );
-    void ListContents ( void );
-    void DrawBoard ( Gfx *engine );
+    void Update ( unsigned int x, unsigned int y ); // TODO
+    void Draw ( Gfx *engine );
+    void List ( void );
 
   private:
-    SDL_Surface *background;
-    CardDebug debug;
-    CardView *card;
+    SDL_Surface *background; // pointer holding our board background image
+    CardDebug debug; // debug support for card attributes
+    CardView *card; // pointer referencing our card rendering class
     CardRules *rules;
-    std::vector<std::vector<Card>> grid;
-
-    unsigned int GetPlayerID ( unsigned int x, unsigned int y );
-    void UpdatePlayerID ( unsigned int x, unsigned int y, unsigned int player_id );
+    std::vector<std::vector<Card>> grid; // 2D vector of Card data containers
 };
 
 #endif // BOARD_HEADERS defined

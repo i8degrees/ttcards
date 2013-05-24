@@ -26,61 +26,61 @@ CardRules::~CardRules ( void )
   this->rules = 0;
 }
 
-unsigned int CardRules::GetRules ( void )
+unsigned int CardRules::getRules ( void )
 {
   return this->rules;
 }
 
-void CardRules::SetRules ( unsigned int type )
+void CardRules::setRules ( unsigned int type )
 {
   this->rules = type;
 }
 
-bool CardRules::CompareCards ( unsigned int r1, unsigned int r2 )
+bool CardRules::compareCards ( unsigned int r1, unsigned int r2 )
 {
-  if ( this->GetRules() == 0 ) // NONE
+  if ( this->getRules() == 0 ) // NONE
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 1 ) // COMBO
+  else if ( this->getRules() == 1 ) // COMBO
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 2 ) // SAME
+  else if ( this->getRules() == 2 ) // SAME
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 3 ) // WALL
+  else if ( this->getRules() == 3 ) // WALL
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 4 ) // PLUS
+  else if ( this->getRules() == 4 ) // PLUS
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 5 ) // ELEMENTAL
+  else if ( this->getRules() == 5 ) // ELEMENTAL
   {
     if ( r1 > r2 )
     {
       return true;
     }
   }
-  else if ( this->GetRules() == 6 ) // LOSER_WINNER
+  else if ( this->getRules() == 6 ) // LOSER_WINNER
   {
     if ( r1 < r2 )
     {
@@ -90,3 +90,4 @@ bool CardRules::CompareCards ( unsigned int r1, unsigned int r2 )
 
   return false;
 }
+

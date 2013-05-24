@@ -1,6 +1,8 @@
 /******************************************************************************
     card_hand.h
 
+  Helper Class for player defined cards
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
@@ -18,28 +20,24 @@ class CardHand
     CardHand ( void );
     ~CardHand ( void );
 
-    bool AddCard ( Card &card );
-    bool RemoveCard ( Card &card );
+    bool addCard ( Card &card );
+    bool removeCard ( Card &card );
 
-    void ClearSelected ( void );
-    Card & GetSelectedCard ( void );
-    bool SelectCard ( Card &card );
-
-    signed int getPrevCardIndex ( void );
-    signed int getNextCardIndex ( void );
-    unsigned int getCardIndex ( void );
-    void setCardIndex ( signed int pos );
+    void clearSelectedCard ( void );
+    Card & getSelectedCard ( void );
+    bool selectCard ( Card &card );
 
     bool isValid ( Card &card );
     bool isEmpty ( void );
-    unsigned int CardCount ( void );
-    signed int CardPosition ( Card &card );
+    unsigned int getCount ( void );
+    signed int cardPosition ( Card &card );
 
-    std::vector<Card> cards;
+    void reset ( void );
+
+    std::vector<Card> cards; // TODO: declare in private scope
 
   private:
-    Card selectedCard; // holds player's selected card
-    unsigned int card_pos; // keeps track of card index cursor is at
+    Card selectedCard; // holds player's selected (think: ready to place) card
 };
 
 #endif // CARD_HAND_HEADERS defined

@@ -1,6 +1,8 @@
 /******************************************************************************
     card_hand.cpp
 
+  Helper Class for player defined cards
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
@@ -12,9 +14,8 @@ CardHand::CardHand ( void )
     std::cout << "CardHand::CardHand (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 
-  this->card_pos = 0;
   this->selectedCard = 0;
 }
 
@@ -24,17 +25,18 @@ CardHand::~CardHand ( void )
     std::cout << "CardHand::~CardHand (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 }
 
-bool CardHand::AddCard ( Card &card )
+bool CardHand::addCard ( Card &card )
 {
-  if ( this->CardCount() > MAX_PLAYER_HAND - 1) // Remember, we are counting from zero
+  if ( this->getCount() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
   {
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::AddCard (): " << "Discarding card " << card.id << ' ' << card.name << std::endl;
+      std::cout << "CardHand::addCard (): " << "Discarding card " << this->cards.back().getID() << ' ' << this->cards.back().getName() << std::endl;
     #endif
-    return false;
+
+    this->cards.pop_back();
   }
 
   this->cards.push_back ( card );
@@ -42,96 +44,66 @@ bool CardHand::AddCard ( Card &card )
   return true;
 }
 
-bool CardHand::RemoveCard ( Card &card )
+bool CardHand::removeCard ( Card &card )
 {
   signed int position = 0;
   unsigned int previous_id = 0;
   std::string previous_name;
 
-  position = this->CardPosition ( card );
+  position = this->cardPosition ( card );
 
   if ( position == -1 )
   {
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::RemoveCard (): " << "Not removing card at pos: " << position << std::endl;
+      std::cout << "CardHand::removeCard (): " << "Not removing card at pos: " << position << std::endl;
     #endif
     return false;
   }
 
   if ( this->isEmpty() == false )
   {
-    previous_id = this->cards[position].id;
-    previous_name = this->cards[position].name;
+    previous_id = this->cards[position].getID();
+    previous_name = this->cards[position].getName();
     this->cards.erase ( this->cards.begin() + position );
     #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::RemoveCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
+      std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
     #endif
     return true;
   }
   return false;
 }
 
-void CardHand::ClearSelected ( void )
+void CardHand::clearSelectedCard ( void )
 {
   this->selectedCard = 0;
 }
 
-Card & CardHand::GetSelectedCard ( void )
+Card & CardHand::getSelectedCard ( void )
 {
   return this->selectedCard;
 }
 
-bool CardHand::SelectCard ( Card &card )
+bool CardHand::selectCard ( Card &card )
 {
   if ( this->isValid ( card ) )
   {
     this->selectedCard = card;
-    this->setCardIndex ( this->CardPosition ( card ) );
     return true;
   }
 
   return false;
 
   #ifdef DEBUG_CARD_HAND
-    std::cout << "CardHand::SelectCard (): " << this->selectedCard.id << std::endl;
+    std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;
   #endif
 }
-
-signed int CardHand::getPrevCardIndex ( void )
-{
-  if ( this->card_pos != -1 )
-  {
-    this->card_pos = this->card_pos - 1;
-  }
-  return this->card_pos;
-}
-
-signed int CardHand::getNextCardIndex ( void )
-{
-  if ( this->card_pos != -1 )
-  {
-    this->card_pos = this->card_pos + 1;
-  }
-  return this->card_pos;
-}
-
-unsigned int CardHand::getCardIndex ( void )
-{
-  return this->card_pos;
-}
-
-void CardHand::setCardIndex ( signed int pos )
-{
-  this->card_pos = pos;
-}
-
 bool CardHand::isValid ( Card &card )
 {
   unsigned int idx = 0;
 
-  for ( idx = 0; idx < this->CardCount(); idx++ )
+  for ( idx = 0; idx < this->getCount(); idx++ )
   {
-    if ( ( this->cards[idx].id == card.id ) && ( this->cards[idx].name == card.name ) )
+    if ( ( this->cards[idx].getID() == card.getID() ) && ( this->cards[idx].getName() == card.getName() ) )
       return true;
   }
 
@@ -146,7 +118,7 @@ bool CardHand::isEmpty ( void )
   return false;
 }
 
-unsigned int CardHand::CardCount ( void )
+unsigned int CardHand::getCount ( void )
 {
   unsigned int count = 0;
 
@@ -155,23 +127,28 @@ unsigned int CardHand::CardCount ( void )
   return count;
 }
 
-signed int CardHand::CardPosition ( Card &card )
+signed int CardHand::cardPosition ( Card &card )
 {
   unsigned int idx;
   signed int pos = -1;
 
   if ( this->isEmpty() == false )
   {
-    for ( idx = 0; idx < this->CardCount() && pos == -1; idx++ )
+    for ( idx = 0; idx < this->getCount() && pos == -1; idx++ )
     {
-      if ( this->cards[idx].id == card.id && this->cards[idx].name == card.name )
+      if ( this->cards[idx].getID() == card.getID() && this->cards[idx].getName() == card.getName() )
       {
         pos = idx;
         #ifdef DEBUG_CARD_HAND
-          std::cout << "CardHand::CardPosition (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << this->cards[idx].id << ' ' << this->cards[idx].name << std::endl;
+          std::cout << "CardHand::CardPosition (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << this->cards[idx].getID() << ' ' << this->cards[idx].getName() << std::endl;
         #endif
       }
     }
   }
   return pos;
+}
+
+void CardHand::reset ( void )
+{
+  this->cards.clear();
 }

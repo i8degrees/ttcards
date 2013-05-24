@@ -16,14 +16,10 @@ Player::Player ( void )
 
   this->hand = NULL;
 
-  this->x = 0;
-  this->y = 0;
-  this->id = 0;
-  this->state = 0;
-  this->score = 5;
-
-  this->text_score.LoadTTF ( SCORE_FONTFACE, 32 );
-  this->text_score.SetTextColor ( 255, 255, 255 ); // white
+  std::pair <int, int> coords ( 0, 0 ); // initialize X, Y origin coords
+  id = 0;
+  state = 0;
+  score = 5;
 }
 
 Player::~Player ( void )
@@ -49,57 +45,49 @@ void Player::Init ( CardHand *player_cards, CardView *card_gfx )
   this->card = card_gfx;
 }
 
-SDL_Rect Player::GetXY ( void )
+std::pair <int, int> Player::getXY ( void )
 {
-  SDL_Rect coords;
-
-  this->x = coords.x;
-  this->y = coords.y;
-
   return coords;
 }
 
-void Player::SetXY ( unsigned int x, unsigned int y )
+void Player::setXY ( unsigned int x, unsigned int y )
 {
-  this->x = x;
-  this->y = y;
+  coords = std::make_pair ( x, y );
 }
 
-unsigned int Player::GetID ( void )
+unsigned int Player::getID ( void )
 {
   return this->id;
 }
 
-void Player::SetID ( unsigned int id )
+// Maps the player's (card) hand with their respective ID; this keeps track of
+// who's card is which and is used in CardView -- the rendering the card
+// background -- and most importantly, in the Board class where we compare cards
+// placed to determine whom's card to flip over to the respective player.
+void Player::setID ( unsigned int id )
 {
   this->id = id;
 
-  // Maps the player's (card) hand with their respective ID; this keeps track of
-  // who's card is which and is used in CardView -- the rendering the card
-  // background -- and most importantly, in the Board class where we compare cards
-  // placed to determine whom's card to flip over to the respective player.
   for ( int pid = 0; pid < this->hand->cards.size(); pid++ )
-  {
-    this->hand->cards[pid].player_id = id;
-  }
+    this->hand->cards[pid].setPlayerID ( id );
 }
 
-unsigned int Player::GetState ( void )
+unsigned int Player::getState ( void )
 {
   return this->state;
 }
 
-void Player::SetState ( unsigned int state )
+void Player::setState ( unsigned int state )
 {
   this->state = state;
 }
 
-unsigned int Player::GetScore ( void )
+unsigned int Player::getScore ( void )
 {
   return this->score;
 }
 
-void Player::SetScore ( unsigned int score )
+void Player::setScore ( unsigned int score )
 {
   this->score = score;
 }
@@ -107,24 +95,25 @@ void Player::SetScore ( unsigned int score )
 void Player::Draw ( Gfx *engine )
 {
   unsigned int hand_index = 0;
+  std::pair<int, int> player_coords = getXY();
 
-  for ( hand_index = 0; hand_index < this->hand->cards.size(); hand_index++ )
+  for ( hand_index = 0; hand_index < this->hand->getCount(); hand_index++ )
   {
     if ( this->hand->isValid ( this->hand->cards.at ( hand_index) ) == true )
     {
-      if ( this->GetID() == 1 )
+      if ( this->getID() == 1 )
       {
-        if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->getCardIndex() == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X + 16, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+        if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords) + 16, std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * hand_index );
       }
-      else if ( this->GetID() == 2 )
+      else if ( this->getID() == 2 )
       {
-        if ( this->hand->isValid ( this->hand->GetSelectedCard() ) && this->hand->getCardIndex() == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X - 16, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+        if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords) - 16, std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }
@@ -132,20 +121,6 @@ void Player::Draw ( Gfx *engine )
 
 void Player::Update ( Gfx *engine )
 {
+  // TODO
 }
 
-void Player::DrawScore ( Gfx *engine, Board *board, unsigned int x, unsigned int y )
-{
-  unsigned int hand_count = this->hand->cards.size();
-  unsigned int board_count = 0;
-
-  if ( this->GetID() == 1 ) // player1
-    board_count = board->GetPlayerCardCount ( 1 );
-  else if ( this->GetID() == 2 ) // player2
-    board_count = board->GetPlayerCardCount ( 2 );
-
-  this->SetScore ( hand_count + board_count );
-
-  this->text_score.SetTextBuffer ( std::to_string ( this->GetScore() ) );
-  this->text_score.DrawText ( engine, x, y );
-}

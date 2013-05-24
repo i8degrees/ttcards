@@ -20,6 +20,8 @@ const int ELEMENT_WIDTH = 16;
 const int ELEMENT_HEIGHT = 16;
 const int CURSOR_WIDTH = 26;
 const int CURSOR_HEIGHT = 16;
+const int MENU_ELEMENT_WIDTH = 16;
+const int MENU_ELEMENT_HEIGHT = 16;
 
 const int TOTAL_PLAYERS = 2; // +1 padding
 const int MAX_COLLECTION = 110; // number of cards in CARDS_DB
@@ -29,20 +31,28 @@ const int MAX_PLAYER_HAND = 5;
 const int BOARD_ORIGIN_X = 96;
 const int BOARD_ORIGIN_Y = 16;
 
-const int CURSOR_ORIGIN_X = ( SCREEN_WIDTH - CURSOR_WIDTH ) / 2 ;
-const int CURSOR_ORIGIN_Y = ( SCREEN_HEIGHT - CURSOR_HEIGHT ) / 2;
-
 const int PLAYER1_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ); // 16
 const int PLAYER1_ORIGIN_Y = BOARD_ORIGIN_Y; // 16
 
 const int PLAYER2_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ) + BOARD_ORIGIN_X + ( CARD_WIDTH * 3 );
 const int PLAYER2_ORIGIN_Y = BOARD_ORIGIN_Y;
 
-const int PLAYER1_CURSOR_ORIGIN_X = BOARD_ORIGIN_X - PLAYER1_ORIGIN_X; // 80
-const int PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 );
+const int CURSOR_ORIGIN_X = ( SCREEN_WIDTH - CURSOR_WIDTH ) / 2 ;
+const int CURSOR_ORIGIN_Y = ( SCREEN_HEIGHT - CURSOR_HEIGHT ) / 2;
 
-const int PLAYER2_CURSOR_ORIGIN_X = BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) - ( CURSOR_WIDTH / 2 );
-const int PLAYER2_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 );
+const int PLAYER1_CURSOR_ORIGIN_X = BOARD_ORIGIN_X - PLAYER1_ORIGIN_X; // 80
+const int PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
+
+const int PLAYER2_CURSOR_ORIGIN_X = BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) - ( CURSOR_WIDTH / 2 ); // 275
+const int PLAYER2_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
+
+// SCREEN_HEIGHT - 48
+// 64 * 5
+const int PLAYER1_SCORE_ORIGIN_X = 32; // TODO
+const int PLAYER1_SCORE_ORIGIN_Y = 176; // TODO
+
+const int PLAYER2_SCORE_ORIGIN_X = 320; // TODO
+const int PLAYER2_SCORE_ORIGIN_Y = PLAYER1_SCORE_ORIGIN_Y; // TODO
 
 const int CARD_ORIGIN_X = 0;
 const int CARD_ORIGIN_Y = 0;
@@ -53,23 +63,70 @@ const int CARD_FACE_ORIGIN_Y = CARD_ORIGIN_Y;
 const int BACKGROUND_ORIGIN_X = CARD_ORIGIN_X;
 const int BACKGROUND_ORIGIN_Y = CARD_ORIGIN_Y;
 
-const int ELEMENT_ORIGIN_X = CARD_ORIGIN_X + 46;
-const int ELEMENT_ORIGIN_Y = CARD_ORIGIN_Y + 4;
+const int ELEMENT_ORIGIN_X = CARD_ORIGIN_X + 42;
+const int ELEMENT_ORIGIN_Y = CARD_ORIGIN_Y + 5;
 
 const int RANK_NORTH_ORIGIN_X = 8;
-const int RANK_NORTH_ORIGIN_Y = 0;
+const int RANK_NORTH_ORIGIN_Y = 3;
 
 const int RANK_EAST_ORIGIN_X = 12;
-const int RANK_EAST_ORIGIN_Y = 8;
+const int RANK_EAST_ORIGIN_Y = 11;
 
-const int RANK_SOUTH_ORIGIN_X = 8;
-const int RANK_SOUTH_ORIGIN_Y = 16;
+const int RANK_SOUTH_ORIGIN_X = RANK_NORTH_ORIGIN_X;
+const int RANK_SOUTH_ORIGIN_Y = 20;
 
 const int RANK_WEST_ORIGIN_X = 4;
-const int RANK_WEST_ORIGIN_Y = 8;
+const int RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
 
-const int CARD_ID_ORIGIN_X = 40;
-const int CARD_ID_ORIGIN_Y = 0;
+const int CARD_ID_ORIGIN_X = 26;
+const int CARD_ID_ORIGIN_Y = 4;
+
+// interface_pickOutCards() Menu
+const int PICK_CARDS_MENU_ORIGIN_X = 60;
+const int PICK_CARDS_MENU_ORIGIN_Y = 25;
+
+const int PICK_CARDS_MENU_WIDTH = 164;
+const int PICK_CARDS_MENU_HEIGHT = 196;
+
+// Starting cursor positioning
+const int MENU_CARDS_CURSOR_ORIGIN_X = 40;
+const int MENU_CARDS_CURSOR_ORIGIN_Y = 34; // 20
+
+// "Cards" Title Text
+const int MENU_CARDS_TITLE_ORIGIN_X = 64;
+const int MENU_CARDS_TITLE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
+
+// "P" (page) number header text
+const int MENU_CARDS_TITLE_PAGE_ORIGIN_X = 119;
+const int MENU_CARDS_TITLE_PAGE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
+
+// "Num" header text
+const int MENU_CARDS_TITLE_NUM_ORIGIN_X = 184;
+const int MENU_CARDS_TITLE_NUM_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
+
+// Field elements
+const int MENU_CARDS_FIELD_ORIGIN_X = 64;
+const int MENU_CARDS_FIELD_ORIGIN_Y = 30;
+
+// Card selection helper element
+const int MENU_CARDS_HELPER_ORIGIN_X = MENU_CARDS_FIELD_ORIGIN_X;
+const int MENU_CARDS_HELPER_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
+
+// Card name text
+const int MENU_CARDS_NAME_ORIGIN_X = 80;
+const int MENU_CARDS_NAME_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
+
+// Number of cards text
+const int MENU_CARDS_NUM_ORIGIN_X = 210;
+const int MENU_CARDS_NUM_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
+
+// Page left
+const int MENU_CARDS_PAGE_LEFT_ORIGIN_X = 58;
+const int MENU_CARDS_PAGE_LEFT_ORIGIN_Y = 208;
+
+// Page right
+const int MENU_CARDS_PAGE_RIGHT_ORIGIN_X = 210;
+const int MENU_CARDS_PAGE_RIGHT_ORIGIN_Y = MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
 
 const int BOARD_GRID_WIDTH = 3;
 const int BOARD_GRID_HEIGHT = 3;
@@ -92,18 +149,33 @@ const int INTERFACE_CURSOR_NONE = 0;
 const int INTERFACE_CURSOR_LEFT = 1;
 const int INTERFACE_CURSOR_RIGHT = 2;
 
-const char CARDS_DB[255] = "./data/cards.txt";
-const char CARD_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
-const char SCORE_FONTFACE[255] = "./data/fonts/EnvyCodeRb.ttf";
-const char APP_ICON[255] = "./data/images/ttcards.bmp";
-const char BOARD_BACKGROUND[255] = "./data/images/board.png";
-const char CARD_ELEMENTS[255] = "./data/images/elements.png";
-const char CARD_FACES[255] = "./data/images/faces.png";
-const char CARD_BACKGROUNDS[255] = "./data/images/backgrounds.png";
-const char INTERFACE_CURSOR[255] = "./data/images/cursors.png";
-const char CURSOR_MOVE[255] = "./data/audio/cursor_move.wav";
-const char CURSOR_CANCEL[255] = "./data/audio/cursor_cancel.wav";
-const char CURSOR_WRONG[255] = "./data/audio/cursor_wrong.wav";
-const char MUSIC_TRACK[255] = "./data/audio/15_ShuffleOrBoogie.ogg";
-const char MUSIC_ALT_TRACK[255] = "./data/audio/06_ShuffleOrBoogie.ogg";
-const char MUSIC_WIN_TRACK[255] = "./data/audio/05_TheWinner.ogg";
+const int INTERFACE_MENU_ELEMENT = 0;
+const int INTERFACE_MENU_ELEMENT_USED = 1;
+const int INTERFACE_MENU_ELEMENT_PAGE_LEFT = 2;
+const int INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
+
+const int NOPLAYER_ID = 0;
+const int PLAYER1_ID = 1;
+const int PLAYER2_ID = 2;
+const int PLAYER_AI_ID = 4;
+
+std::string WORKING_DIR;
+
+const std::string CARDS_DB =            WORKING_DIR + "./data/cards.txt";
+const std::string MENU_ELEMENTS =       WORKING_DIR + "./data/images/menu_elements.png";
+const std::string CARD_FONTFACE =       WORKING_DIR + "./data/fonts/VIII_cards.png";
+const std::string INFO_FONTFACE =       WORKING_DIR + "./data/fonts/VIII.png";
+const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "./data/fonts/VIII_small.png";
+const std::string SCORE_FONTFACE =      WORKING_DIR + "./data/fonts/EnvyCodeRb.ttf";
+const std::string APP_ICON =            WORKING_DIR + "./data/images/ttcards.bmp";
+const std::string BOARD_BACKGROUND =    WORKING_DIR + "./data/images/board.png";
+const std::string CARD_ELEMENTS =       WORKING_DIR + "./data/images/elements.png";
+const std::string CARD_FACES =          WORKING_DIR + "./data/images/faces.png";
+const std::string CARD_BACKGROUNDS =    WORKING_DIR + "./data/images/backgrounds.png";
+const std::string INTERFACE_CURSOR =    WORKING_DIR + "./data/images/cursors.png";
+const std::string CURSOR_MOVE =         WORKING_DIR + "./data/audio/cursor_move.wav";
+const std::string CURSOR_CANCEL =       WORKING_DIR + "./data/audio/cursor_cancel.wav";
+const std::string CURSOR_WRONG =        WORKING_DIR + "./data/audio/cursor_wrong.wav";
+const std::string MUSIC_TRACK =         WORKING_DIR + "./data/audio/15_ShuffleOrBoogie.ogg";
+const std::string MUSIC_ALT_TRACK =     WORKING_DIR + "./data/audio/06_ShuffleOrBoogie.ogg";
+const std::string MUSIC_WIN_TRACK =     WORKING_DIR + "./data/audio/05_TheWinner.ogg";

@@ -19,19 +19,25 @@
 #include "player.h"
 #include "board.h"
 
-class CPUPlayer: public Player
+class CPUPlayer
 {
 public:
   CPUPlayer ( void );
   ~CPUPlayer ( void );
 
-  void Init ( Board *board );
+  void Init ( Board *board, CardHand *cards );
 
-  void calcEdgePos ( void );
+  void randomMove ( void );
+  bool randomEdgeMove ( void );
+  bool checkBoard ( void );
   void moveTo ( unsigned int x, unsigned int y );
+
 
 private:
   Board *board;
+  CardHand *hand;
+  SDL_Rect grid[3][3]; // lookup table
+  unsigned int cpu_difficulty; // easy = 1, hard = 2
 };
 
 #endif // CPU_PLAYERS_HEADERS defined

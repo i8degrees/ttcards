@@ -11,10 +11,11 @@
 
 #include <iostream>
 
-#include "gamelib.h"
-
 #include "cfg.h"
 #include "card.h"
+
+#include "SDL_BitmapFont.h"
+#include "sprite.h"
 
 class CardView
 {
@@ -22,14 +23,14 @@ class CardView
     CardView ( void );
     ~CardView ( void );
 
-    void DrawName ( Gfx *engine, Card &card, unsigned int y );
+    bool drawFaceDown ( Gfx *engine, unsigned int x, unsigned int y );
     bool DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y );
-    // bool flipCard ();
+
   private:
     Sprite *card_face;
     Sprite *card_background;
     Sprite *card_element;
-    Font text_buffer;
+    SDLBitmapFont card_text;
 };
 
 #endif // CARD_VIEW_HEADERS defined

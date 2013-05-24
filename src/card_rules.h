@@ -23,10 +23,10 @@ class CardRules
     CardRules ( void );
     ~CardRules ( void );
 
-    unsigned int GetRules ( void );
-    void SetRules ( unsigned int type );
+    unsigned int getRules ( void );
+    void setRules ( unsigned int type );
 
-    bool CompareCards ( unsigned int r1, unsigned int r2 );
+    bool compareCards ( unsigned int r1, unsigned int r2 );
 
 /*
     enum Rules {

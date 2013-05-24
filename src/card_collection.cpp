@@ -12,7 +12,7 @@ Collection::Collection ( void )
     std::cout << "Hello, world! <From Collection::Collection>" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 }
 
 Collection::~Collection ( void )
@@ -21,7 +21,7 @@ Collection::~Collection ( void )
     std::cout << "Goodbye cruel world! <From Collection::~Collection>" << "\n" << std::endl;
   #endif
 
-  this->cards.clear();
+  this->reset();
 }
 
 bool Collection::Load ( std::string filename )
@@ -31,9 +31,10 @@ bool Collection::Load ( std::string filename )
   std::array<int, 4> rank = { { 0 } };
   std::string name = "\0";
 
-  std::ifstream load ( filename );
+  std::ifstream fp;
+  fp.open ( filename );
 
-  if ( ! load )
+  if ( ! fp )
   {
     #ifdef DEBUG_CARD_COLLECTION
       std::cout << "ERR in Collection::Load () at: " << filename << std::endl;
@@ -47,15 +48,15 @@ bool Collection::Load ( std::string filename )
 
   for ( index = 0; index < ( MAX_COLLECTION ); index++ )
   {
-    load >> id;
-    load >> level;
-    load >> type;
-    load >> element;
-    load >> rank[0];
-    load >> rank[1];
-    load >> rank[2];
-    load >> rank[3];
-    load >> name;
+    fp >> id;
+    fp >> level;
+    fp >> type;
+    fp >> element;
+    fp >> rank[NORTH];
+    fp >> rank[EAST];
+    fp >> rank[SOUTH];
+    fp >> rank[WEST];
+    fp >> name;
 
     #ifdef DEBUG_CARD_COLLECTION
       std::cout << id;
@@ -76,14 +77,36 @@ bool Collection::Load ( std::string filename )
       std::cout << std::endl;
     #endif // defined DEBUG_CARD_COLLECTION
 
-    this->cards.push_back ( Card ( id, level, type, element, { { rank[0], rank[1], rank[2], rank[3] } }, name, 0 ) );
+    this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, 0 ) );
   }
 
   #ifdef DEBUG_CARD_COLLECTION
     std::cout << "EOF: " << filename << " " << "<From Collection::Load>" << "\n" << std::endl;
   #endif
 
-  load.close();
+  fp.close();
 
   return true;
+}
+
+Card &Collection::getCards ( unsigned int idx )
+{
+  return this->cards[idx];
+}
+
+std::vector<Card> Collection::getCards ( void )
+{
+  unsigned int idx = 0;
+  std::vector<Card> temp_cards; // temp var for return passing
+  temp_cards.clear();
+
+  for ( idx = 0; idx < this->cards.size(); idx++ )
+    temp_cards.push_back ( this->cards[idx] );
+
+  return temp_cards;
+}
+
+void Collection::reset ( void )
+{
+  this->cards.clear();
 }

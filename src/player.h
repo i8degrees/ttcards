@@ -11,11 +11,9 @@
 
 #include <iostream>
 #include <string>
-
-#include "gamelib.h"
+#include <utility>
 
 #include "cfg.h"
-#include "board.h"
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
@@ -28,35 +26,31 @@ public:
 
   void Init ( CardHand *player_cards, CardView *card_gfx );
 
-  SDL_Rect GetXY ( void );
-  void SetXY ( unsigned int x, unsigned int y );
+  std::pair <int, int> getXY ( void );
+  void setXY ( unsigned int x, unsigned int y );
 
-  unsigned int GetID ( void );
-  void SetID ( unsigned int id );
+  unsigned int getID ( void );
+  void setID ( unsigned int id );
 
-  unsigned int GetState ( void );
-  void SetState ( unsigned int state );
+  unsigned int getState ( void );
+  void setState ( unsigned int state );
 
   // TODO: Consider branching this into Score class
-  unsigned int GetScore ( void );
-  void SetScore ( unsigned int score );
+  unsigned int getScore ( void );
+  void setScore ( unsigned int score );
 
-  void Draw ( Gfx *engine );
   void Update ( Gfx *engine );
-
-  void DrawScore ( Gfx *engine, Board *board, unsigned int x, unsigned int y );
+  void Draw ( Gfx *engine );
 
 private:
-  Font text_score;
-  CardDebug debug;
-  CardView *card;
-  CardHand *hand;
+  CardDebug debug; // debug support for card attributes
+  CardView *card; // pointer referencing our card rendering class
+  CardHand *hand; // pointer reference to player's hand
 
-  unsigned int x;
-  unsigned int y;
+  std::pair <int, int> coords; // x, y origin coords
   unsigned int id; // unique identifier for tracking each player in game
-  unsigned int state;
-  unsigned int score;
+  unsigned int state; // not implemented
+  unsigned int score; // player's scoreboard
 };
 
 #endif // PLAYERS_HEADERS defined

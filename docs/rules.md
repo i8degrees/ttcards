@@ -2,10 +2,6 @@
 
 ## Regional Rules
 
-  - Open
-    > Enables the player to see which cards the opponent is using.
-    (Balamb)
-
   - Same
     > When a card is placed touching two or more other cards (one or both of
     them have to be the opposite color), and the touching sides of each card is
@@ -15,23 +11,12 @@
 
   - Same Wall
     > An extension of the Same rule. The edges of the board are counted as A
-    ranks for the purposes of the Same rule. Combo rule applies. If the Same
-    rule is not present in a region that has Same Wall, Same Wall will not
-    appear in the list of rules when starting a game because it can have no
-    effect without Same. However, it will still be carried with the player to
-    other regions, and can therefore still be spread.
+    ranks for the purposes of the Same rule. If the Same rule is not present in
+    a region that has Same Wall, Same Wall will not appear in the list of rules
+    when starting a game because it can have no effect without Same. However,
+    it will still be carried with the player to other regions, and can therefore
+    still be spread. Combo rule applies.
     (Esthar, Lunar)
-
-  - Sudden Death
-    > If the game ends in a draw, a sudden death occurs in which a new game is
-    started but the cards are distributed on the side of the color they were on
-    at the end of the game.
-    (FH, Lunar)
-
-  - Random
-    > Five cards are randomly chosen from the player's deck instead of the
-    player being able to choose five cards themselves.
-    (Dollet, Trabia, Centra, Lunar)
 
   - Plus
     > Similar to the Same rule. When one card is placed touching two others
@@ -48,6 +33,21 @@
     non-matching element, each rank goes down one point. This does not affect
     the Same, Plus and Same Wall rules, where the cards' original ranks apply.
     (Dollet, FH, Esthar, Lunar)
+
+  - Open
+    > Enables the player to see which cards the opponent is using.
+    (Balamb)
+
+  - Random
+    > Five cards are randomly chosen from the player's deck instead of the
+    player being able to choose five cards themselves.
+    (Dollet, Trabia, Centra, Lunar)
+
+  - Sudden Death
+    > If the game ends in a draw, a sudden death occurs in which a new game is
+    started but the cards are distributed on the side of the color they were on
+    at the end of the game.
+    (FH, Lunar)
 
 ### Additional Notes
 

@@ -34,8 +34,69 @@ Card::~Card ( void )
   this->id = 0;
   this->level = 0;
   this->type = 0;
-  this->element = 0;
+  this->element = NONE;
   this->rank = { { 0, 0, 0, 0 } };
   this->name = "\0";
-  this->player_id = 0;
+  this->player_id = NOPLAYER;
+}
+
+unsigned int Card::getID ( void )
+{
+  return this->id;
+}
+
+unsigned int Card::getLevel ( void )
+{
+  return this->level;
+}
+
+unsigned int Card::getType ( void )
+{
+  return this->type;
+}
+
+unsigned int Card::getElement ( void )
+{
+  return this->element;
+}
+
+std::array<int, 4> Card::getRanks ( void )
+{
+  return this->rank;
+}
+
+unsigned int Card::getNorthRank ( void )
+{
+  return this->rank[NORTH];
+}
+
+unsigned int Card::getEastRank ( void )
+{
+  return this->rank[EAST];
+}
+
+unsigned int Card::getSouthRank ( void )
+{
+  return this->rank[SOUTH];
+}
+
+unsigned int Card::getWestRank ( void )
+{
+  return this->rank[WEST];
+}
+
+std::string Card::getName ( void )
+{
+  return this->name;
+}
+
+unsigned int Card::getPlayerID ( void )
+{
+  return this->player_id;
+}
+
+// Presently, this is the only card attribute that is ever modified in game
+void Card::setPlayerID ( unsigned int player )
+{
+  this->player_id = player;
 }
