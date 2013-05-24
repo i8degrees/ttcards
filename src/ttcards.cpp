@@ -268,13 +268,9 @@ void TTcards::toggleFPS ( void )
 void TTcards::drawFPS ( void )
 {
   if ( this->getShowFPS() == true )
-  {
-    this->engine->setTitle ( std::to_string ( fps.GetFPS() / 1.000f ) );
-  }
+    this->engine->setTitle ( std::to_string ( fps.GetFPS() ) );
   else
-  {
     this->engine->setTitle ( "TTcards" );
-  }
 }
 
 unsigned int TTcards::get_turn ( void )
