@@ -123,7 +123,10 @@ void CardsMenu::Resume ( void )
 
 void CardsMenu::HandleInput ( void )
 {
-  SDLInput::Input();
+  SDL_Event event;
+
+  while ( SDL_PollEvent ( &event ) )
+    SDLInput::Input ( &event );
 }
 
 void CardsMenu::onExit ( void )

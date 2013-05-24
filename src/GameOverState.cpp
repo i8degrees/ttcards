@@ -47,7 +47,10 @@ void GameOver::Resume ( void )
 
 void GameOver::HandleInput ( void )
 {
-  SDLInput::Input();
+  SDL_Event event;
+
+  while ( SDL_PollEvent ( &event ) )
+    SDLInput::Input ( &event );
 }
 
 void GameOver::onExit ( void )

@@ -509,7 +509,10 @@ void TTcards::onResize ( unsigned int width, unsigned int height )
 
 void TTcards::HandleInput ( void )
 {
-  SDLInput::Input ();
+  SDL_Event event;
+
+  while ( SDL_PollEvent ( &event ) )
+    SDLInput::Input ( &event );
 }
 
 void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
