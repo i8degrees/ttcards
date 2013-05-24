@@ -804,20 +804,6 @@ void TTcards::Update ( void )
 {
   this->fps.Update();
 
-  // game / round is over when board card count >= 9
-  if ( this->board.getCount () >= 9 /* || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 */)
-  {
-    // Game Over State
-    if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 1 ) ) );
-    else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 2 ) ) );
-    else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 3 ) ) );
-    else
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 0 ) ) );
-  }
-
   this->updateCursor();
 
   this->showCardInfoBox();
@@ -846,4 +832,21 @@ void TTcards::Draw ( void )
   this->drawScore ();
 
   this->drawFPS();
+
+  // FIXME: We keep game over check logic here in order to allow for the last
+  // card placed to be shown to the player
+  //
+  // game / round is over when board card count >= 9
+  if ( this->board.getCount () >= 9 /* || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 */)
+  {
+    // Game Over State
+    if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 1 ) ) );
+    else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 2 ) ) );
+    else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 3 ) ) );
+    else
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 0 ) ) );
+  }
 }
