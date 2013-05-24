@@ -164,7 +164,7 @@ const int PLAYER1_ID = 1;
 const int PLAYER2_ID = 2;
 const int PLAYER_AI_ID = 4;
 
-std::string WORKING_DIR;
+std::string WORKING_DIR; // See main.cpp
 
 const std::string CARDS_DB =            WORKING_DIR + "./data/cards.txt";
 const std::string MENU_ELEMENTS =       WORKING_DIR + "./data/images/menu_elements.png";
