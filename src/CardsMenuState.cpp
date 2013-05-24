@@ -37,7 +37,7 @@ CardsMenu::CardsMenu ( Gfx *engine )
   this->msgbox[5].setColor ( 57, 57, 57 ); // right1
 
   this->menu_box.setBackground ( &linear );
-  //this->menu_box.disable ( true );
+  //this->menu_box.disable ();
 
   for ( unsigned int i = 0; i < 6; i++ )
     this->menu_box.setBorder ( msgbox[i] );

@@ -127,7 +127,7 @@ bool TTcards::Load ( void )
   this->msgbox[5].setColor ( 57, 57, 57 ); // right1
 
   #ifndef DEBUG_TTCARDS
-    this->debug_box.disable ( true );
+    this->debug_box.disable ();
   #endif
 
   for ( unsigned int i = 0; i < 6; i++ )
@@ -220,9 +220,9 @@ void TTcards::showCardID ( void )
 void TTcards::debugBox ( void )
 {
   if ( this->debug_box.isEnabled() == true )
-    this->debug_box.disable ( true );
+    this->debug_box.disable ();
   else
-    this->debug_box.enable ( true );
+    this->debug_box.enable ();
 }
 
 void TTcards::debugListCards ( SDLMod mod )
