@@ -15,7 +15,6 @@
 * swap player1, player2 coords (human player AKA blue is on the right side )
 * break CardView class up further?
 * Remove LoadBackground, DrawBackground from Board Class
-* msgbox bottom, right border (needs additional depth)
 * Relocate cfg.cpp declarations to their applicable class header files
 * Relocate Timer & FPS declarations to main.cpp
 * Clean up Timer class; 1. match Timer & FPS; 2. goodbye FPS (!)
@@ -23,7 +22,7 @@
 
 ## Completed
 
-* Stub
+* msgbox bottom, right border (needs additional depth)
 
 ### Footer
 
