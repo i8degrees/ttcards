@@ -103,7 +103,7 @@ bool TTcards::Load ( void )
   this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
   this->cursor.setState ( 0 ); // player hand select
 
-  this->music.LoadMusicTrack ( MUSIC_TRACK );
+  //this->music.LoadMusicTrack ( MUSIC_TRACK );
 
   this->player[0].Init ( &this->hand[0], &this->card );
   this->player[0].setXY ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
@@ -524,7 +524,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_f: this->onResize ( 0, 0 ); break;
 
     case SDLK_p: /* Pause State ... */ break;
-    case SDLK_m: this->music.togglePlayingMusic(); break;
+    case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
     case SDLK_EQUALS: this->toggleFPS(); break;
 
     case SDLK_e: this->endTurn(); break;
