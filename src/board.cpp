@@ -261,7 +261,7 @@ std::string Board::getName ( unsigned int x, unsigned int y )
 }
 
 // (Private) Getter helper method for obtaining card placed at x, y coords;
-// Used in Board::Draw() method
+// Used within Board::Draw(), TTcards::showCardInfoBox() method calls
 //
 Card &Board::getCard ( unsigned int x, unsigned int y )
 {
