@@ -20,8 +20,6 @@ TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
 
   this->turn = 0;
   this->cursor_locked = false;
-  this->show_fps = true;
-  this->fullscreen = false;
 
   this->collection.cards.clear();
 
@@ -63,8 +61,6 @@ bool TTcards::Init ( void )
   this->player[1].setID ( 2 ); // player2
 
   this->player_turn ( 0 );
-
-  this->fps.Start();
 
   //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
@@ -243,46 +239,6 @@ void TTcards::debugListCollection ( SDLMod mod )
     this->debug.ListCards ( this->collection.cards );
   else
     this->board.List();
-}
-
-bool TTcards::IsFullScreen ( void )
-{
-  if ( this->fullscreen == false )
-    return false;
-  else
-    return true;
-}
-
-void TTcards::setFullscreen ( bool fs )
-{
-  this->fullscreen = fs;
-}
-
-bool TTcards::getShowFPS ( void )
-{
-  return this->show_fps;
-}
-
-void TTcards::showFPS ( bool show )
-{
-  this->show_fps = show;
-}
-
-// Helper method; toggles showing FPS counter (or not)
-void TTcards::toggleFPS ( void )
-{
-  if ( this->getShowFPS() == true )
-    this->showFPS ( false );
-  else
-    this->showFPS ( true );
-}
-
-void TTcards::drawFPS ( void )
-{
-  if ( this->getShowFPS() == true )
-    this->engine->setTitle ( std::to_string ( fps.GetFPS() ) );
-  else
-    this->engine->setTitle ( "TTcards" );
 }
 
 unsigned int TTcards::get_turn ( void )
@@ -771,8 +727,6 @@ void TTcards::drawScore ( void )
 
 void TTcards::Update ( void )
 {
-  this->fps.Update();
-
   this->updateCursor();
 
   this->showCardInfoBox();
@@ -799,8 +753,6 @@ void TTcards::Draw ( void )
   this->drawCursor();
 
   this->drawScore ();
-
-  this->drawFPS();
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player

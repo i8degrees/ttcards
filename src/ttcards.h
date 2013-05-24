@@ -51,15 +51,6 @@ class TTcards: public GameState
     void removePlayerCard ( void );
     void debugBox ( void );
 
-    bool IsFullScreen ( void );
-    void setFullscreen ( bool fs );
-    //bool IsRunning ( void );
-    //void setGameState ( bool state );
-    bool getShowFPS ( void );
-    void showFPS ( bool show );
-    void toggleFPS ( void );
-    void drawFPS ( void );
-
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
     void endTurn ( void );
@@ -101,7 +92,6 @@ class TTcards: public GameState
 
   private:
     //static TTcards *instance; // EMCC compiler related
-    FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     SDL_Surface *background; // pointer holding our board background image
 
@@ -140,8 +130,6 @@ class TTcards: public GameState
 
     unsigned int turn; // FIXME: player1 = 0, player2 = 1
     bool cursor_locked; // locks cursor state to board placement
-    bool show_fps; // fps counter
-    bool fullscreen; // toggle window & fullscreen states
 };
 
 #endif // GAMEAPP_TTCARDS_HEADERS defined
