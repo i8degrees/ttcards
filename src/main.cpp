@@ -20,6 +20,9 @@ int main(int argc, char*argv[])
   unsigned int sdl_flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO;
   unsigned int video_flags = SDL_HWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
+  unsigned int loops = 0; // globalTimer related
+  unsigned int next_game_tick = 0; // globalTimer related
+
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
   #endif
@@ -43,6 +46,15 @@ int main(int argc, char*argv[])
 
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
+  // Dependencies: after video init
+  Timer globalTimer;
+  FPS fps; // timer for tracking frames per second
+
+  globalTimer.Start();
+  fps.Start();
+
+  next_game_tick = globalTimer.getTicks();
+
   engine.ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( &engine ) ) );
 
   engine.Run(); // ...here we go!
@@ -52,9 +64,25 @@ int main(int argc, char*argv[])
   #else
     while ( engine.isRunning() )
     {
-      engine.HandleInput ();
-      engine.Update();
-      engine.Draw();
+      loops = 0;
+
+      while ( globalTimer.getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
+      {
+        engine.HandleInput ();
+
+        fps.Update();
+
+        engine.Update();
+        engine.Draw();
+
+        if ( engine.getShowFPS() )
+          engine.setTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
+        else
+          engine.setTitle ( APP_NAME );
+
+        next_game_tick += SKIP_TICKS;
+        loops++;
+      }
     }
   #endif
 
