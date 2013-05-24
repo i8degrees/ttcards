@@ -188,7 +188,7 @@ std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned in
   return coords;
 } // end Board::checkBoard()
 
-// get card count by placed cards on board
+// Getter helper method for obtaining total count of placed cards on board
 unsigned int Board::getCount ( void )
 {
   unsigned int total_count = 0;
@@ -228,21 +228,27 @@ unsigned int Board::getPlayerCount ( unsigned int player_id )
   return pid_count;
 }
 
+// Getter helper method for obtaining card ID at x, y coords
 unsigned int Board::getStatus ( unsigned int x, unsigned int y )
 {
   return grid[x][y].getID();
 }
 
+// Setter helper method for placing a card on the board at x, y coords
 void Board::updateStatus ( unsigned int x, unsigned int y, Card &card )
 {
   grid[x][y] = card;
 }
 
+// Getter helper method for obtaining player owner tag / ID on a card at x, y
+// coords
 unsigned int Board::getPlayerID ( unsigned int x, unsigned int y )
 {
   return grid[x][y].getPlayerID();
 }
 
+// Setter helper method for swapping player owner tags / IDs on a card at x, y
+// coords
 void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
 {
   grid[x][y].setPlayerID ( player_id );
@@ -253,6 +259,7 @@ void Board::Update ( unsigned int x, unsigned int y )
   // TODO
 }
 
+// Draws our active board grid based on their values (card IDs)
 void Board::Draw ( Gfx *engine )
 {
   unsigned int x, y = 0;
@@ -268,7 +275,8 @@ void Board::Draw ( Gfx *engine )
   }
 }
 
-void Board::List ( void ) // debug
+// Debug helper method
+void Board::List ( void )
 {
   unsigned int x, y = 0;
 
