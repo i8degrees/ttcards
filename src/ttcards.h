@@ -89,8 +89,6 @@ class TTcards: public GameState
     void updateCursor ( void );
     void drawCursor ( void );
 
-    void interface_playingCards ( void );
-
     void updateScore ( void );
     void drawScore ( void );
 

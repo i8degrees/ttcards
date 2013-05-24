@@ -730,26 +730,6 @@ void TTcards::drawCursor ( void )
   this->cursor.Draw ( this->engine );
 }
 
-void TTcards::interface_playingCards ( void )
-{
-  unsigned int player_turn = get_turn();
-
-  Card active;
-
-  active = this->hand[player_turn].getSelectedCard();
-
-  if ( active.getName() != "\0" )
-  {
-    this->info_text.setTextBuffer ( active.getName() );
-    unsigned int text_width = this->info_text.getTextWidth();
-    this->info_small_text.setTextBuffer ( "INFO" );
-
-    this->info_box.Draw ( this->engine->screen, 104, 194, 176, 24 );
-    this->info_text.Draw ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 196 );
-    this->info_small_text.Draw ( this->engine, 108, 194 );
-  }
-}
-
 // Scoring: board_card_count + player_card_count
 void TTcards::updateScore ( void )
 {
@@ -806,9 +786,6 @@ void TTcards::Draw ( void )
 
   this->player[0].Draw ( this->engine );
   this->player[1].Draw ( this->engine );
-
-  if ( this->isCursorLocked() == false )
-    this->interface_playingCards();
 
   if ( this->get_turn() == 0 ) // player1
     this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
