@@ -124,13 +124,16 @@ bool TTcards::Load ( void )
   this->msgbox[3].setColor ( 133, 133, 133 ); // left2
 
   this->msgbox[4].setColor ( 57, 57, 57 ); // bottom1
-  this->msgbox[5].setColor ( 57, 57, 57 ); // right1
+  this->msgbox[5].setColor ( 41, 41, 41 ); // bottom2
+
+  this->msgbox[6].setColor ( 57, 57, 57 ); // right1
+  this->msgbox[7].setColor ( 41, 41, 41 ); // right2
 
   #ifndef DEBUG_TTCARDS
     this->debug_box.disable ();
   #endif
 
-  for ( unsigned int i = 0; i < 6; i++ )
+  for ( unsigned int i = 0; i < 8; i++ )
   {
     this->info_box.setBorder ( msgbox[i] );
     this->debug_box.setBorder ( msgbox[i] );

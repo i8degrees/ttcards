@@ -112,7 +112,7 @@ class TTcards: public GameState
     SDLMessageBox info_box;
     SDLMessageBox debug_box;
     SDLGradient linear;
-    GColor msgbox[6];
+    GColor msgbox[8];
 
     SDL_TFont score_text; // scoreboard text
     Board board; // game board
