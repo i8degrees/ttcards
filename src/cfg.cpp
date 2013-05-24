@@ -12,6 +12,11 @@ const int SCREEN_WIDTH = 384;
 const int SCREEN_HEIGHT = 224;
 const int SCREEN_BPP = 32;
 
+const int TICKS_PER_SECOND = 15; // As per PSX_SCUS Final Fantasy VIII
+const int SKIP_TICKS = 1000 / TICKS_PER_SECOND; // TODO: calculation used to determine how many ticks to wait between updating
+const int MAX_FRAMESKIP = 5; // TODO: Max amount of frames we can skip if the framerate takes a dip
+const int FRAMES_PER_SECOND = 15; // TODO: Not implemented
+
 const int CARD_WIDTH = 64;
 const int CARD_HEIGHT = 64;
 const int BACKGROUND_WIDTH = CARD_WIDTH;
