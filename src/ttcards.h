@@ -103,6 +103,7 @@ class TTcards: public GameState
     static TTcards *instance; // EMCC compiler related
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
+    SDL_Surface *background; // pointer holding our board background image
 
     SDLBitmapFont info_text;
     SDLBitmapFont info_small_text;

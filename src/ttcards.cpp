@@ -16,6 +16,7 @@ TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
 
   this->engine = engine; // initialize rendering interface
   this->hand[0] = player1_hand;
+  this->background = NULL;
 
   this->turn = 0;
   this->cursor_locked = false;
@@ -33,10 +34,13 @@ TTcards::~TTcards ( void )
     std::cout << "TTcards::~TTcards (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  if ( this->engine != NULL )
-  {
+  if ( this->background )
+    SDL_FreeSurface ( this->background );
+
+  this->background = NULL;
+
+  if ( this->engine )
     this->engine = NULL;
-  }
 }
 
 bool TTcards::Init ( void )
@@ -84,7 +88,7 @@ bool TTcards::Load ( void )
   this->collection.Load ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
-  this->board.LoadBackground ( BOARD_BACKGROUND );
+  this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
   score_text.Load ( SCORE_FONTFACE, 32 );
   score_text.setTextColor ( 255, 255, 255 ); // white
@@ -822,6 +826,8 @@ void TTcards::Update ( void )
 
 void TTcards::Draw ( void )
 {
+  this->engine->DrawSurface ( this->background, 0, 0 );
+
   this->board.Draw ( this->engine );
 
   this->player[0].Draw ( this->engine );
