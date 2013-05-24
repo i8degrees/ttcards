@@ -48,7 +48,7 @@
 //#define DEBUG_CARDS_MENU_CURSOR
 #define DEBUG_CARDS_MENU_OBJ
 
-extern const char APP_NAME[255];
+extern std::string APP_NAME;
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;

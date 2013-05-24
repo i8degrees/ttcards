@@ -6,7 +6,7 @@
 ******************************************************************************/
 #include "cfg.h"
 
-const char APP_NAME[255] = "TTcards";
+std::string APP_NAME = "TTcards";
 
 const int SCREEN_WIDTH = 384;
 const int SCREEN_HEIGHT = 224;
