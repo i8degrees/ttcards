@@ -254,6 +254,20 @@ void Board::flipCard ( unsigned int x, unsigned int y, unsigned int player_id )
   grid[x][y].setPlayerID ( player_id );
 }
 
+// Getter helper method for obtaining card name at x, y coords
+std::string Board::getName ( unsigned int x, unsigned int y )
+{
+  return this->grid[x][y].getName();
+}
+
+// (Private) Getter helper method for obtaining card placed at x, y coords;
+// Used in Board::Draw() method
+//
+Card &Board::getCard ( unsigned int x, unsigned int y )
+{
+  return this->grid[x][y];
+}
+
 void Board::Update ( unsigned int x, unsigned int y )
 {
   // TODO

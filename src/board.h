@@ -36,6 +36,7 @@ class Board
     void updateStatus ( unsigned int x, unsigned int y, Card &card );
     unsigned int getPlayerID ( unsigned int x, unsigned int y );
     void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
+    std::string getName ( unsigned int x, unsigned int y );
 
     void Update ( unsigned int x, unsigned int y ); // TODO
     void Draw ( Gfx *engine );
@@ -47,6 +48,8 @@ class Board
     CardView *card; // pointer referencing our card rendering class
     CardRules *rules;
     std::vector<std::vector<Card>> grid; // 2D vector of Card data containers
+
+    Card &getCard ( unsigned int x, unsigned int y );
 };
 
 #endif // BOARD_HEADERS defined
