@@ -202,6 +202,7 @@ void TTcards::removePlayerCard ( void )
   cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) );
 }
 
+// Debug -- input events helper method
 void TTcards::debugBox ( void )
 {
   if ( this->debug_box.isEnabled() == true )
@@ -210,6 +211,7 @@ void TTcards::debugBox ( void )
     this->debug_box.enable ();
 }
 
+// Debug -- input events helper method
 void TTcards::debugListCards ( SDLMod mod )
 {
   if ( mod == KMOD_LMETA )
@@ -218,6 +220,7 @@ void TTcards::debugListCards ( SDLMod mod )
     this->debug.ListCards ( this->hand[0].cards );
 }
 
+// Debug -- input events helper method
 void TTcards::debugListCollection ( SDLMod mod )
 {
   if ( mod == KMOD_LMETA )
