@@ -26,7 +26,8 @@ GameOver::~GameOver ( void )
     std::cout << "GameOver::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  this->engine = NULL;
+  if ( this->engine )
+    this->engine = NULL;
 }
 
 void GameOver::Load ( void )
