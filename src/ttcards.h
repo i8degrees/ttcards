@@ -134,7 +134,7 @@ class TTcards: public GameState
     std::pair<int, int> cursor_coords_map[4]; // minus one (1) padding
 
     // x, y coords for cursor -> board placement
-    GCoords board_coords_map[8]; // minus one (1) padding
+    GCoords board_coords_map[9];
 
     //Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     //Audio music; // holds our musical tracks

@@ -668,7 +668,7 @@ GCoords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
   unsigned int idx = 0;
   GCoords pos ( 1, 1 ); // ...when all else fails, default to this
 
-  for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ) - 1; idx++ )
+  for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
   {
     if ( x <= this->board_coords_map[idx].getWidth() && x >= BOARD_ORIGIN_X && y <= this->board_coords_map[idx].getHeight() && y >= BOARD_ORIGIN_Y )
       return this->board_coords_map[idx];
