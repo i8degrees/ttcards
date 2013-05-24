@@ -50,7 +50,6 @@ class TTcards: public GameState
     void debugCardsNoRuleset ( void );
     void debugCardsSameRuleset ( void );
     void removePlayerCard ( void );
-    void showCardID ( void );
     void debugBox ( void );
 
     bool IsFullScreen ( void );
@@ -66,6 +65,7 @@ class TTcards: public GameState
     void player_turn ( unsigned int player );
     void endTurn ( void );
 
+    void showCardInfoBox ( void );
     bool isCursorLocked ( void );
     void lockCursor ( bool lock );
     void resetCursor ( void );
