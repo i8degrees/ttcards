@@ -538,96 +538,62 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
 void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 {
-  unsigned int turn = 0;
+  GCoords coords ( x, y ); // temp container var to hold cursor pos mapping coords
+  unsigned int player_turn = get_turn();
 
-  for ( turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  std::pair<int, int> player_coords = player[player_turn].getXY(); // PLAYER ORIGIN XY
+
+  // player hand selection checks
+  if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(player_coords) ) )
   {
-    if ( get_turn() == turn ) // locks the input to the current player
-    {
-      std::pair<int, int> player_coords = player[turn].getXY(); // PLAYER ORIGIN XY
+    hand[player_turn].selectCard ( hand[player_turn].cards[0] );
 
-      // player hand selection checks
+    // Updates Cursor Position
+    if ( hand[player_turn].cards[0].getID() != 0 )
+      cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) + ( CARD_HEIGHT / 2 ) * 0 );
+  }
 
-      if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(player_coords) ) )
-      {
-        //std::cout << hand[turn].cards[0].name << "\n";
-        hand[turn].selectCard ( hand[turn].cards[0] );
+  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
+  {
+    hand[player_turn].selectCard ( hand[player_turn].cards[1] );
 
-        // Updates Cursor Position
-        if ( hand[turn].cards[0].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 0 );
-      }
+    // Updates Cursor Position
+    if ( hand[player_turn].cards[1].getID() != 0 )
+      cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) + ( CARD_HEIGHT / 2 ) * 1 );
+  }
 
-      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
-      {
-        //std::cout << hand[turn].cards[1].name << "\n";
-        hand[turn].selectCard ( hand[turn].cards[1] );
+  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
+  {
+    hand[player_turn].selectCard ( hand[player_turn].cards[2] );
 
-        // Updates Cursor Position
-        if ( hand[turn].cards[1].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 1 );
-      }
+    // Updates Cursor Position
+    if ( hand[player_turn].cards[2].getID() != 0 )
+      cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) + ( CARD_HEIGHT / 2 ) * 2 );
+  }
 
-      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
-      {
-        //std::cout << hand[turn].cards[2].name << "\n";
-        hand[turn].selectCard ( hand[turn].cards[2] );
+  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
+  {
+    hand[player_turn].selectCard ( hand[player_turn].cards[3] );
 
-        // Updates Cursor Position
-        if ( hand[turn].cards[2].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 2 );
-      }
+    // Updates Cursor Position
+    if ( hand[player_turn].cards[3].getID() != 0 )
+      cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) + ( CARD_HEIGHT / 2 ) * 3 );
+  }
 
-      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
-      {
-        //std::cout << hand[turn].cards[3].name << "\n";
-        hand[turn].selectCard ( hand[turn].cards[3] );
+  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
+  {
+    hand[player_turn].selectCard ( hand[player_turn].cards[4] );
 
-        // Updates Cursor Position
-        if ( hand[turn].cards[3].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 3 );
-      }
+    // Updates Cursor Position
+    if ( hand[player_turn].cards[4].getID() != 0 )
+      cursor.SetXY ( std::get<0>(player_cursor_coords[player_turn]), std::get<1>(player_cursor_coords[player_turn]) + ( CARD_HEIGHT / 2 ) * 4 );
+  }
 
-      else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
-      {
-        //std::cout << hand[turn].cards[4].name << "\n";
-        hand[turn].selectCard ( hand[turn].cards[4] );
+  // board grid checks of players
+  coords = this->getCursorBoardPos ( x, y );
 
-        // Updates Cursor Position
-        if ( hand[turn].cards[4].getID() != 0 )
-          cursor.SetXY ( std::get<0>(player_cursor_coords[turn]), std::get<1>(player_cursor_coords[turn]) + ( CARD_HEIGHT / 2 ) * 4 );
-      }
-
-      // board grid checks of players
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-        moveTo ( 0, 0 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-        moveTo ( 1, 0 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-        moveTo ( 2, 0 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-        moveTo ( 0, 1 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-        moveTo ( 1, 1 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-        moveTo ( 2, 1 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && x >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-        moveTo ( 0, 2 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-        moveTo ( 1, 2 );
-
-      else if ( x <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && x >= ( BOARD_ORIGIN_X ) && y <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && y >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-        moveTo ( 2, 2 );
-    } // end get_turn() == turn
-  } // end player turns
+  if ( coords.getX() != -1 && coords.getY() != -1 )
+    this->moveTo ( coords.getX(), coords.getY() );
 }
 
 void TTcards::onMouseWheel ( bool up, bool down )
