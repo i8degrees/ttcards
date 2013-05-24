@@ -90,8 +90,8 @@ bool TTcards::Load ( void )
   this->board.Init ( &this->card, &this->rules );
   this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
-  score_text.Load ( SCORE_FONTFACE, 32 );
-  score_text.setTextColor ( 255, 255, 255 ); // white
+  this->score_text.Load ( SCORE_FONTFACE, 32 );
+  this->score_text.setTextColor ( 255, 255, 255 ); // white
 
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
@@ -106,18 +106,18 @@ bool TTcards::Load ( void )
   this->music.LoadMusicTrack ( MUSIC_TRACK );
 
   this->player[0].Init ( &this->hand[0], &this->card );
-  player[0].setXY ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
+  this->player[0].setXY ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
   this->player[1].Init ( &this->hand[1], &this->card );
-  player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
+  this->player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
-  player_cursor_coords[0] = std::make_pair ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-  player_cursor_coords[1] = std::make_pair ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+  this->player_cursor_coords[0] = std::make_pair ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+  this->player_cursor_coords[1] = std::make_pair ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
 
   // We cannot map std::pair<0, 0>, so we are "missing" the first element here,
   // which we do account for within the card tracking / positioning code
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
-    this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
+    this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(this->player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
 
   this->rules.setRules ( 1 );
 
