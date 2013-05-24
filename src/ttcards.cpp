@@ -83,7 +83,7 @@ void TTcards::Resume ( void )
 
 bool TTcards::Load ( void )
 {
-  unsigned int idx = 0; // cursor_coords_map
+  unsigned int idx = 0; // for loop iterations
 
   this->collection.Load ( CARDS_DB );
 
@@ -100,7 +100,7 @@ bool TTcards::Load ( void )
   this->cursor.LoadImage ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
   this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.SetSheetID ( INTERFACE_CURSOR_NONE );
-  this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y ); //this->cursor.SetXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y );
+  this->cursor.SetXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   this->cursor.setState ( 0 ); // player hand select
 
   //this->music.LoadMusicTrack ( MUSIC_TRACK );
@@ -111,6 +111,7 @@ bool TTcards::Load ( void )
   this->player[1].Init ( &this->hand[1], &this->card );
   this->player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
+  // player1, player2 cursor X, Y coords
   this->player_cursor_coords[0] = std::make_pair ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   this->player_cursor_coords[1] = std::make_pair ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
 
@@ -119,6 +120,7 @@ bool TTcards::Load ( void )
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
     this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(this->player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
 
+  // Cursor X, Y coords mapping for placing cards on board
   this->board_coords_map[0].setCoords ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
   this->board_coords_map[1].setCoords ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
   this->board_coords_map[2].setCoords ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
@@ -680,6 +682,8 @@ GCoords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
 // Helper method for obtaining card hand index position based off given origin
 // coords definitions, creating us an ID map, initialized early on within the
 // encapsulating class
+//
+// Works with both player1 and player2 coords mapping
 //
 // cursor_coords_map
 //   [ index, y coordinate value ]
