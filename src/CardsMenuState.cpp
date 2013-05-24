@@ -344,8 +344,7 @@ void CardsMenu::moveCursorLeft ( void ) // TODO: rename method call
     if ( current_index > 0 )
       current_index -= per_page;
 
-    pos = this->getCursorPos();
-    pos = this->current_index + pos;
+    pos = this->getCursorPos() + this->current_index;
     this->selectedCard = this->collection.cards[pos];
 
     #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -369,8 +368,7 @@ void CardsMenu::moveCursorRight ( void ) // TODO: rename method call
     if ( current_index < MAX_COLLECTION - per_page )
         current_index += per_page;
 
-    pos = this->getCursorPos();
-    pos = this->current_index + pos;
+    pos = this->getCursorPos() + this->current_index;
     this->selectedCard = this->collection.cards[pos];
 
     #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -390,8 +388,7 @@ void CardsMenu::moveCursorUp ( void )
     {
       this->cursor.UpdateXY ( 0, -( this->info_text_height ) );
 
-      pos = this->getCursorPos();
-      pos = this->current_index + pos;
+      pos = this->current_index + this->getCursorPos();;
       this->selectedCard = this->collection.cards[pos];
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -412,8 +409,7 @@ void CardsMenu::moveCursorDown ( void )
     {
       this->cursor.UpdateXY ( 0, this->info_text_height );
 
-      pos = this->getCursorPos();
-      pos = current_index + pos;
+      pos = current_index + this->getCursorPos();
       this->selectedCard = this->collection.cards[pos];
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
