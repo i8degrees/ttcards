@@ -16,7 +16,7 @@ Player::Player ( void )
 
   this->hand = NULL;
 
-  std::pair <int, int> coords ( 0, 0 ); // initialize X, Y origin coords
+  this->coords.setCoords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
   id = 0;
   state = 0;
   score = 5;
@@ -45,14 +45,24 @@ void Player::Init ( CardHand *player_cards, CardView *card_gfx )
   this->card = card_gfx;
 }
 
+unsigned int Player::getX ( void )
+{
+  return this->coords.getX();
+}
+
+unsigned int Player::getY ( void )
+{
+  return this->coords.getY();
+}
+
 std::pair <int, int> Player::getXY ( void )
 {
-  return coords;
+  return this->coords.getXY();
 }
 
 void Player::setXY ( unsigned int x, unsigned int y )
 {
-  coords = std::make_pair ( x, y );
+  this->coords.setXY ( x, y );
 }
 
 unsigned int Player::getID ( void )
@@ -95,7 +105,6 @@ void Player::setScore ( unsigned int score )
 void Player::Draw ( Gfx *engine )
 {
   unsigned int hand_index = 0;
-  std::pair<int, int> player_coords = getXY();
 
   for ( hand_index = 0; hand_index < this->hand->getCount(); hand_index++ )
   {
@@ -104,16 +113,16 @@ void Player::Draw ( Gfx *engine )
       if ( this->getID() == 1 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords) + 16, std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords), std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       else if ( this->getID() == 2 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords) - 16, std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), std::get<0>(player_coords), std::get<1>(coords) + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }

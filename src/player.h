@@ -17,6 +17,8 @@
 #include "card_hand.h"
 #include "card_view.h"
 
+#include "GCoords.h"
+
 class Player
 {
 public:
@@ -24,6 +26,9 @@ public:
   ~Player ( void );
 
   void Init ( CardHand *player_cards, CardView *card_gfx );
+
+  unsigned int getX ( void );
+  unsigned int getY ( void );
 
   std::pair <int, int> getXY ( void );
   void setXY ( unsigned int x, unsigned int y );
@@ -46,7 +51,7 @@ private:
   CardView *card; // pointer referencing our card rendering class
   CardHand *hand; // pointer reference to player's hand
 
-  std::pair <int, int> coords; // x, y origin coords
+  GCoords coords; // x, y origin coords
   unsigned int id; // unique identifier for tracking each player in game
   unsigned int state; // not implemented
   unsigned int score; // player's scoreboard
