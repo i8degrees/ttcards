@@ -22,11 +22,10 @@
 #include "cpu_player.h"
 
 #include "Logger.h"
-#include "fps.h"
 #include "SDLMessageBox.h"
 #include "SDL_TFont.h"
 #include "SDL_BitmapFont.h"
-#include "audio.h"
+//#include "audio.h"
 
 #include "GameState.h"
 #include "CardsMenuState.h"
