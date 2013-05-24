@@ -128,18 +128,18 @@ class TTcards: public GameState
     Sprite cursor; // interface cursor
 
     // x, y coords mapping for player1, player2 cursor starting position
-    std::pair<int, int> player_cursor_coords[2];
+    GCoords player_cursor_coords[2];
 
     // y coords mapping for cursor -> card position index
-    std::pair<int, int> cursor_coords_map[4]; // minus one (1) padding
+    GCoords cursor_coords_map[5];
 
-    // x, y coords for cursor -> board placement
+    // x, y coords for selectedCard from cursor to board placement
     GCoords board_coords_map[9];
 
     //Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     //Audio music; // holds our musical tracks
 
-    unsigned int turn; // player1 = 0, player2 = 1
+    unsigned int turn; // FIXME: player1 = 0, player2 = 1
     bool cursor_locked; // locks cursor state to board placement
     bool show_fps; // fps counter
     bool fullscreen; // toggle window & fullscreen states
