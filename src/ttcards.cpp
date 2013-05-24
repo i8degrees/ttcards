@@ -319,7 +319,7 @@ void TTcards::endTurn ( void )
 void TTcards::showCardInfoBox ( void )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
-  GCoords coords ( 0, 0 ); // temp container var to hold cursor pos mapping coords
+  GCoords coords; // temp container var to hold cursor pos mapping coords
 
   unsigned int player_turn = get_turn();
 
@@ -328,7 +328,8 @@ void TTcards::showCardInfoBox ( void )
   {
     coords = getCursorBoardPos ( this->cursor.GetX(), this->cursor.GetY() );
 
-    selectedCard = this->board.getCard ( coords.getX(), coords.getY() );
+    if ( coords.getX() != -1 && coords.getY() != -1 )
+      selectedCard = this->board.getCard ( coords.getX(), coords.getY() );
   }
   // player hand selection state
   else
@@ -414,8 +415,8 @@ void TTcards::lockSelectedCard ( void )
   else
   {
     coords = getCursorBoardPos ( this->cursor.GetX(), this->cursor.GetY() );
-
-    this->moveTo ( coords.getX(), coords.getY() );
+    if ( coords.getX() != -1 && coords.getY() != -1 )
+      this->moveTo ( coords.getX(), coords.getY() );
 
     this->unlockSelectedCard();
   }
@@ -666,14 +667,12 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
 GCoords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
 {
   unsigned int idx = 0;
-  GCoords pos ( 1, 1 ); // ...when all else fails, default to this
+  GCoords pos ( -1, -1 ); // ...when all else fails, default to undefined
 
   for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
   {
     if ( x <= this->board_coords_map[idx].getWidth() && x >= BOARD_ORIGIN_X && y <= this->board_coords_map[idx].getHeight() && y >= BOARD_ORIGIN_Y )
       return this->board_coords_map[idx];
-    else
-      pos.setXY ( 2, 2 ); // FIXME
   }
 
   return pos;
