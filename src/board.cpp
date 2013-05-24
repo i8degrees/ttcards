@@ -284,7 +284,7 @@ void Board::Draw ( Gfx *engine )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->card->DrawCard ( engine, this->grid[x][y], BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+      this->card->DrawCard ( engine, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
   }
 }
