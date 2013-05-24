@@ -19,6 +19,7 @@ CardsMenu::CardsMenu ( Gfx *engine )
   logger = logDebug.Read( "./data/offsets.val" );
 
   this->engine = engine;
+  this->background = NULL;
   this->collection.Load ( CARDS_DB );
 
   // Borrowed from Player class; this is perhaps a hack-(ish) workaround
@@ -61,10 +62,9 @@ CardsMenu::~CardsMenu ( void )
   #endif
 
   if ( this->background )
-  {
     SDL_FreeSurface ( this->background );
-    this->background = NULL;
-  }
+
+  this->background = NULL;
 
   this->selectedCard = 0;
   this->hand.reset ();
@@ -79,7 +79,7 @@ void CardsMenu::Load ( void )
 {
   unsigned int idx = 0; // cursor_coords_map
 
-  this->background = this->engine->LoadImage ( BOARD_BACKGROUND );
+  this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
