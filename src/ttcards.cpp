@@ -683,13 +683,13 @@ unsigned int TTcards::getCursorPos ( void )
   unsigned int pos = 0;
   unsigned int idx = 0;
 
-  for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  for ( idx = 0; idx < MAX_PLAYER_HAND - 1; idx++ )
   {
     if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[idx]) )
       return std::get<1>(cursor_coords_map[idx]);
     else // catch all safety switch
     // assume we are at the last position in the index when all else fails
-      pos = MAX_PLAYER_HAND;
+      pos = MAX_PLAYER_HAND - 1;
   }
 
   return pos;
