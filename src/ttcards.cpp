@@ -438,15 +438,15 @@ void TTcards::onExit ( void )
 
 void TTcards::onResize ( unsigned int width, unsigned int height )
 {
-  if ( this->IsFullScreen() == false )
+  if ( this->engine->isFullScreen() )
   {
-    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
-    this->setFullscreen ( true );
+    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
+    this->engine->setFullScreen ( false );
   }
   else
   {
-    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
-    this->setFullscreen ( false );
+    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+    this->engine->setFullScreen ( true );
   }
 }
 
@@ -468,7 +468,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_p: /* Pause State ... */ break;
     case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
-    case SDLK_EQUALS: this->toggleFPS(); break;
+    case SDLK_EQUALS: this->engine->toggleFPS(); break;
 
     case SDLK_e: this->endTurn(); break;
     case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
