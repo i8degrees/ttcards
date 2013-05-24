@@ -21,40 +21,40 @@
 
 class Player
 {
-public:
-  Player ( void );
-  ~Player ( void );
+  public:
+    Player ( void );
+    ~Player ( void );
 
-  void Init ( CardHand *player_cards, CardView *card_gfx );
+    void Init ( CardHand *player_cards, CardView *card_gfx );
 
-  unsigned int getX ( void );
-  unsigned int getY ( void );
+    unsigned int getX ( void );
+    unsigned int getY ( void );
 
-  std::pair <int, int> getXY ( void );
-  void setXY ( unsigned int x, unsigned int y );
+    std::pair <int, int> getXY ( void );
+    void setXY ( unsigned int x, unsigned int y );
 
-  unsigned int getID ( void );
-  void setID ( unsigned int id );
+    unsigned int getID ( void );
+    void setID ( unsigned int id );
 
-  unsigned int getState ( void );
-  void setState ( unsigned int state );
+    unsigned int getState ( void );
+    void setState ( unsigned int state );
 
-  // TODO: Consider branching this into Score class
-  unsigned int getScore ( void );
-  void setScore ( unsigned int score );
+    // TODO: Consider branching this into Score class
+    unsigned int getScore ( void );
+    void setScore ( unsigned int score );
 
-  void Update ( Gfx *engine );
-  void Draw ( Gfx *engine );
+    void Update ( Gfx *engine );
+    void Draw ( Gfx *engine );
 
-private:
-  CardDebug debug; // debug support for card attributes
-  CardView *card; // pointer referencing our card rendering class
-  CardHand *hand; // pointer reference to player's hand
+  private:
+    CardDebug debug; // debug support for card attributes
+    CardView *card; // pointer referencing our card rendering class
+    CardHand *hand; // pointer reference to player's hand
 
-  GCoords coords; // x, y origin coords
-  unsigned int id; // unique identifier for tracking each player in game
-  unsigned int state; // not implemented
-  unsigned int score; // player's scoreboard
+    GCoords coords; // x, y origin coords
+    unsigned int id; // unique identifier for tracking each player in game
+    unsigned int state; // not implemented
+    unsigned int score; // player's scoreboard
 };
 
 #endif // GAMEAPP_PLAYER_HEADERS defined
