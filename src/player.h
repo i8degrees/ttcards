@@ -57,4 +57,4 @@ private:
   unsigned int score; // player's scoreboard
 };
 
-#endif // PLAYERS_HEADERS defined
+#endif // GAMEAPP_PLAYER_HEADERS defined
