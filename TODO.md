@@ -1,4 +1,6 @@
-# TTcards TODO
+# TTcards
+
+## TODO
 
 * ttcards.app bundle (think: SteerMouse)
     1. http://qt-project.org/doc/qt-4.8/deployment-mac.html
