@@ -1,10 +1,13 @@
 /******************************************************************************
     main.cpp
 
+  TTcards app execution loop
+
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
 #include "ttcards.h"
+#include "fps.h"
 
 #include "SDL.h"
 
@@ -21,6 +24,7 @@ int main(int argc, char*argv[])
     std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
   #endif
 
+  // Dependencies: First priority
   #ifndef EMSCRIPTEN
     // This isn't an absolute guarantee that we can do this reliably; we must use
     // argv[0] as we need to know the *starting* directory of where ttcards resides
@@ -29,24 +33,24 @@ int main(int argc, char*argv[])
     OSXFs::setWorkingDir ( WORKING_DIR );
   #endif
 
-  std::srand ( ( unsigned ) time ( 0 ) ); // needs to exec before CardHand, Player, Board, etc.
+  std::srand ( ( unsigned ) time ( 0 ) ); // Dependencies: before app state init
 
-  Gfx engine ( sdl_flags );
+  Gfx engine ( sdl_flags ); // Second priority
 
   #ifndef EMSCRIPTEN
-    engine.setIcon ( APP_ICON, GColor ( 0, 0, 0 ) );
+    engine.setIcon ( APP_ICON, GColor ( 0, 0, 0 ) ); // Dependencies: before video init
   #endif
 
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
   engine.ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( &engine ) ) );
 
-  engine.Run(); // Set running state to true
+  engine.Run(); // ...here we go!
 
   #ifdef EMSCRIPTEN
     //engine.Run(); // FIXME
   #else
-    while ( engine.isRunning() == true )
+    while ( engine.isRunning() )
     {
       engine.HandleInput ();
       engine.Update();
