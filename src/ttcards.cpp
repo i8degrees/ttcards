@@ -119,6 +119,18 @@ bool TTcards::Load ( void )
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
     this->cursor_coords_map[idx] = std::make_pair ( std::get<1>(this->player_cursor_coords[0]) + ( CARD_HEIGHT / 2 ) * idx, idx );
 
+  this->board_coords_map[0].setCoords ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_coords_map[1].setCoords ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_coords_map[2].setCoords ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+
+  this->board_coords_map[3].setCoords ( 0, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_coords_map[4].setCoords ( 1, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_coords_map[5].setCoords ( 2, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+
+  this->board_coords_map[6].setCoords ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_coords_map[7].setCoords ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_coords_map[8].setCoords ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+
   this->rules.setRules ( 1 );
 
   this->msgbox[0].setColor ( 41, 41, 41 ); // top1
@@ -305,32 +317,22 @@ void TTcards::endTurn ( void )
 void TTcards::showCardInfoBox ( void )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
+  GCoords coords ( 0, 0 ); // temp container var to hold cursor pos mapping coords
+
   unsigned int player_turn = get_turn();
 
+  // board selection state
   if ( this->isCursorLocked() == true )
   {
-    if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      selectedCard = this->board.getCard ( 0, 0 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      selectedCard = this->board.getCard ( 1, 0 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      selectedCard = this->board.getCard ( 2, 0 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      selectedCard = this->board.getCard ( 0, 1 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      selectedCard = this->board.getCard ( 1, 1 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      selectedCard = this->board.getCard ( 2, 1 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      selectedCard = this->board.getCard ( 0, 2 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      selectedCard = this->board.getCard ( 1, 2 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      selectedCard = this->board.getCard ( 2, 2 );
+    coords = getCursorBoardPos ( this->cursor.GetX(), this->cursor.GetY() );
+
+    selectedCard = this->board.getCard ( coords.getX(), coords.getY() );
   }
-  else if ( this->isCursorLocked() == false )
+  // player hand selection state
+  else
     selectedCard = this->hand[player_turn].getSelectedCard();
 
+  // Debug helping info MessageBox display
   if ( this->debug_box.isEnabled() == true )
   {
     if ( selectedCard.getID() != 0 )
@@ -343,6 +345,7 @@ void TTcards::showCardInfoBox ( void )
     }
   }
 
+  // (Southern) informational MessageBox display (selected / active card's name)
   if ( selectedCard.getName().length() != 0 || selectedCard.getName() != "\0" )
   {
     this->info_text.setTextBuffer ( selectedCard.getName() );
@@ -393,6 +396,8 @@ void TTcards::unlockSelectedCard ( void )
 // helper method for cursor input selection
 void TTcards::lockSelectedCard ( void )
 {
+  GCoords coords; // temp container var to hold cursor pos mapping coords
+
   this->cursor.setState ( 1 ); // board select
 
   if ( this->isCursorLocked() == false )
@@ -406,24 +411,9 @@ void TTcards::lockSelectedCard ( void )
   }
   else
   {
-    if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      moveTo ( 0, 0 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      moveTo ( 1, 0 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0 ) ) )
-      moveTo ( 2, 0 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      moveTo ( 0, 1 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      moveTo ( 1, 1 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) ) )
-      moveTo ( 2, 1 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 0 ) ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      moveTo ( 0, 2 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      moveTo ( 1, 2 );
-    else if ( this->cursor.GetX() <= ( BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) ) && this->cursor.GetX() >= ( BOARD_ORIGIN_X ) && this->cursor.GetY() <= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) ) && this->cursor.GetY() >= ( BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) ) )
-      moveTo ( 2, 2 );
+    coords = getCursorBoardPos ( this->cursor.GetX(), this->cursor.GetY() );
+
+    this->moveTo ( coords.getX(), coords.getY() );
 
     this->unlockSelectedCard();
   }
@@ -669,6 +659,22 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
     // cross
     case 14: this->lockSelectedCard(); break;
   }
+}
+
+GCoords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
+{
+  unsigned int idx = 0;
+  GCoords pos ( 1, 1 ); // ...when all else fails, default to this
+
+  for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ) - 1; idx++ )
+  {
+    if ( x <= this->board_coords_map[idx].getWidth() && x >= BOARD_ORIGIN_X && y <= this->board_coords_map[idx].getHeight() && y >= BOARD_ORIGIN_Y )
+      return this->board_coords_map[idx];
+    else
+      pos.setXY ( 2, 2 ); // FIXME
+  }
+
+  return pos;
 }
 
 // Helper method for obtaining card hand index position based off given origin

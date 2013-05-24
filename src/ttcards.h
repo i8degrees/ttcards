@@ -80,6 +80,7 @@ class TTcards: public GameState
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( unsigned int which, unsigned int button );
 
+    GCoords getCursorBoardPos ( unsigned int x, unsigned int y );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );
@@ -131,6 +132,9 @@ class TTcards: public GameState
 
     // y coords mapping for cursor -> card position index
     std::pair<int, int> cursor_coords_map[4]; // minus one (1) padding
+
+    // x, y coords for cursor -> board placement
+    GCoords board_coords_map[8]; // minus one (1) padding
 
     //Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     //Audio music; // holds our musical tracks
