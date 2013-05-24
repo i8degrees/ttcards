@@ -55,19 +55,6 @@ Board::~Board ( void )
 
   if ( this->card != NULL )
     this->card = NULL;
-
-  if ( this->background != NULL )
-  {
-    SDL_FreeSurface ( background );
-    this->background = NULL;
-  }
-}
-
-bool Board::LoadBackground ( std::string filename )
-{
-  this->background = Gfx::LoadImage ( filename );
-
-  return true;
 }
 
 std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned int y )
@@ -277,8 +264,6 @@ void Board::Update ( unsigned int x, unsigned int y )
 void Board::Draw ( Gfx *engine )
 {
   unsigned int x, y = 0;
-
-  engine->DrawSurface ( this->background, 0, 0 );
 
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {

@@ -24,7 +24,6 @@ class Board
     ~Board ( void );
 
     void Init ( CardView *card_gfx, CardRules *rules );
-    bool LoadBackground ( std::string filename );
 
     std::vector<std::pair<int, int>> checkBoard ( unsigned int x, unsigned int y );
 
@@ -44,7 +43,6 @@ class Board
     void List ( void );
 
   private:
-    SDL_Surface *background; // pointer holding our board background image
     CardDebug debug; // debug support for card attributes
     CardView *card; // pointer referencing our card rendering class
     CardRules *rules;
