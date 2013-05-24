@@ -96,11 +96,11 @@ class TTcards: public GameState
     void Update ( void );
     void Draw ( void );
 
-    static void Callback ( void ); // EMCC compiler related
-    void Start ( void ); // EMCC compiler related
+    //static void Callback ( void ); // EMCC compiler related
+    //void Start ( void ); // EMCC compiler related
 
   private:
-    static TTcards *instance; // EMCC compiler related
+    //static TTcards *instance; // EMCC compiler related
     FPS fps; // timer for tracking frames per second
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     SDL_Surface *background; // pointer holding our board background image
