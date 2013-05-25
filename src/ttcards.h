@@ -25,6 +25,7 @@
 #include "SDLMessageBox.h"
 #include "SDL_TFont.h"
 #include "SDL_BitmapFont.h"
+#include "SDL_Cursor.h"
 //#include "audio.h"
 
 #include "GameState.h"
@@ -114,7 +115,7 @@ class TTcards: public GameState
     CardHand hand[2]; // player hand
     Player player[2]; // players in game
 
-    nom::Sprite cursor; // interface cursor
+    nom::SDL_Cursor cursor; // interface cursor
 
     // x, y coords mapping for player1, player2 cursor starting position
     GCoords player_cursor_coords[2];

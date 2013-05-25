@@ -88,12 +88,10 @@ bool TTcards::Load ( void )
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
-  this->cursor = nom::Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->cursor = nom::SDL_Cursor ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.Load ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
-  this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
-  this->cursor.setSheetID ( INTERFACE_CURSOR_NONE );
-  this->cursor.setXY ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-  this->cursor.setState ( 0 ); // player hand select
+  this->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
+  this->cursor.setState ( 0 ); // default state; player hand select
 
   //this->music.LoadMusicTrack ( MUSIC_TRACK );
 
