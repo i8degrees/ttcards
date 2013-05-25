@@ -93,10 +93,8 @@ void CardsMenu::Load ( void )
   this->menu_element.Load ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
 
   this->cursor = nom::SDL_Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-
   this->cursor.Load ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
-
-  this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+  this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image
   this->cursor.setState ( 0 ); // default state for navigating card menu
 
   // We cannot map std::pair<0, 0>, so we are "missing" the first element here,
@@ -298,7 +296,20 @@ void CardsMenu::reloadDebugFile ( void )
 
 void CardsMenu::updateCursor ( void )
 {
-  this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+  unsigned int pos = 0;
+
+  if ( this->cursor.getState() == 0 )
+  {
+    this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+
+    pos = this->getCursorPos() + this->current_index;
+    this->selectedCard = this->collection.cards[pos];
+
+    #ifdef DEBUG_CARDS_MENU_CURSOR
+      std::cout << "\npos: " << pos << "\n";
+      std::cout << "\nselectedCard: " << this->collection.cards[pos].getName() << "\n";
+    #endif
+  }
 }
 
 void CardsMenu::drawCursor ( void )
@@ -331,10 +342,9 @@ unsigned int CardsMenu::getCursorPos ( void )
 }
 
 // Helper method for paging menu backwards
-void CardsMenu::moveCursorLeft ( void ) // TODO: rename method call
+ // TODO: rename method call
+void CardsMenu::moveCursorLeft ( void )
 {
-  unsigned int pos = 0;
-
   if ( this->cursor.getState() == 0 )
   {
     #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -343,22 +353,13 @@ void CardsMenu::moveCursorLeft ( void ) // TODO: rename method call
 
     if ( current_index > 0 )
       current_index -= per_page;
-
-    pos = this->getCursorPos() + this->current_index;
-    this->selectedCard = this->collection.cards[pos];
-
-    #ifdef DEBUG_CARDS_MENU_CURSOR
-      std::cout << "\npos: " << pos << "\n";
-      std::cout << "\nselectedCard: " << this->collection.cards[pos].getName() << "\n";
-    #endif
   }
 }
 
 // Helper method for paging menu forwards
-void CardsMenu::moveCursorRight ( void ) // TODO: rename method call
+// TODO: rename method call
+void CardsMenu::moveCursorRight ( void )
 {
-  unsigned int pos = 0;
-
   if ( this->cursor.getState() == 0 )
   {
     #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -367,14 +368,6 @@ void CardsMenu::moveCursorRight ( void ) // TODO: rename method call
 
     if ( current_index < MAX_COLLECTION - per_page )
         current_index += per_page;
-
-    pos = this->getCursorPos() + this->current_index;
-    this->selectedCard = this->collection.cards[pos];
-
-    #ifdef DEBUG_CARDS_MENU_CURSOR
-      std::cout << "\npos: " << pos << "\n";
-      std::cout << "\nselectedCard: " << this->collection.cards[pos].getName() << "\n";
-    #endif
   }
 }
 
@@ -388,7 +381,8 @@ void CardsMenu::moveCursorUp ( void )
     {
       this->cursor.updateXY ( 0, -( this->info_text_height ) );
 
-      pos = this->current_index + this->getCursorPos();;
+      // FIXME: onMouseWheel breaks without the below support code:
+      pos = this->current_index + this->getCursorPos();
       this->selectedCard = this->collection.cards[pos];
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
@@ -409,6 +403,7 @@ void CardsMenu::moveCursorDown ( void )
     {
       this->cursor.updateXY ( 0, this->info_text_height );
 
+      // FIXME: onMouseWheel breaks without the below support code:
       pos = current_index + this->getCursorPos();
       this->selectedCard = this->collection.cards[pos];
 
