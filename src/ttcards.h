@@ -109,7 +109,7 @@ class TTcards: public GameState
     CardDebug debug; // debug support for card attributes
 
     Collection collection; // cards database
-    CardRules rules;
+    CardRules rules; // TODO
     CardView card; // card rendering
     CardHand hand[2]; // player hand
     Player player[2]; // players in game
