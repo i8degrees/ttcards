@@ -89,15 +89,14 @@ void CardsMenu::Load ( void )
   this->info_text.setTextBuffer ( this->collection.cards[0].getName() );
   this->info_text_height = this->info_text.getTextHeight();
 
-  this->menu_element = Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->menu_element.LoadImage ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
+  this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
+  this->menu_element.Load ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
 
-  this->cursor = Sprite ( CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->cursor.LoadImage ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
-  this->cursor.SetSheetDimensions ( 78, 16, 0, 0 );
-  this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
-  this->cursor.SetXY ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
-  this->cursor.setState ( 0 ); // default state for navigating card menu
+  this->cursor.Load ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
+
+  this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+
+  //this->cursor.setState ( 0 ); // default state for navigating card menu
 
   // We cannot map std::pair<0, 0>, so we are "missing" the first element here,
   // which we do account for within the card tracking / positioning code
@@ -227,12 +226,12 @@ void CardsMenu::Draw ( void )
     this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y );
 
     // Draw the card selection helper element
-    this->menu_element.SetXY ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
+    this->menu_element.setXY ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
 
     if ( this->hand.isValid ( this->collection.cards[i] ) )
-      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_USED );
+      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_USED );
     else
-      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT );
+      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT );
 
     this->menu_element.Draw ( this->engine );
 
@@ -266,15 +265,15 @@ void CardsMenu::Draw ( void )
     // Lastly, check to see which page indicators we need to draw
     if ( current_index >= per_page )
     {
-      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
-      this->menu_element.SetXY ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
+      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
+      this->menu_element.setXY ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
       this->menu_element.Draw ( this->engine );
     }
 
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
-      this->menu_element.SetSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
-      this->menu_element.SetXY ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
+      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
+      this->menu_element.setXY ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
       this->menu_element.Draw ( this->engine );
     }
 
@@ -298,12 +297,12 @@ void CardsMenu::reloadDebugFile ( void )
 
 void CardsMenu::updateCursor ( void )
 {
-  this->cursor.SetSheetID ( INTERFACE_CURSOR_RIGHT );
+  this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
 }
 
 void CardsMenu::drawCursor ( void )
 {
-  this->cursor.Draw ( this->engine );
+  this->cursor.Draw ( this->engine->screen );
 }
 
 // Helper method for obtaining card hand index position based off given origin
@@ -320,7 +319,7 @@ unsigned int CardsMenu::getCursorPos ( void )
 
   for ( idx = 0; idx < per_page; idx++ )
   {
-    if ( this->cursor.GetY() <= std::get<0>(cursor_coords_map[idx]) )
+    if ( this->cursor.getY() <= std::get<0>(cursor_coords_map[idx]) )
       return std::get<1>(cursor_coords_map[idx]);
     else // catch all safety switch
     // assume we are at the last position in the index when all else fails
@@ -384,9 +383,9 @@ void CardsMenu::moveCursorUp ( void )
 
   if ( this->cursor.getState() == 0 )
   {
-    if ( this->cursor.GetY() > MENU_CARDS_CURSOR_ORIGIN_Y )
+    if ( this->cursor.getY() > MENU_CARDS_CURSOR_ORIGIN_Y )
     {
-      this->cursor.UpdateXY ( 0, -( this->info_text_height ) );
+      this->cursor.updateXY ( 0, -( this->info_text_height ) );
 
       pos = this->current_index + this->getCursorPos();;
       this->selectedCard = this->collection.cards[pos];
@@ -405,9 +404,9 @@ void CardsMenu::moveCursorDown ( void )
 
   if ( this->cursor.getState() == 0 )
   {
-    if ( this->cursor.GetY() < PICK_CARDS_MENU_HEIGHT )
+    if ( this->cursor.getY() < PICK_CARDS_MENU_HEIGHT )
     {
-      this->cursor.UpdateXY ( 0, this->info_text_height );
+      this->cursor.updateXY ( 0, this->info_text_height );
 
       pos = current_index + this->getCursorPos();
       this->selectedCard = this->collection.cards[pos];

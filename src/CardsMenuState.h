@@ -64,8 +64,9 @@ class CardsMenu: public GameState
     CardHand hand; // player1 hand
     Card selectedCard; // CardHand-derived implementation
 
-    Sprite cursor; // interface cursor
-    Sprite menu_element; // interface menu elements
+    //Sprite cursor; // interface cursor
+
+    nom::Sprite menu_element; // interface menu elements
 
     unsigned int total_pages; // MAX_COLLECTION / per_page
     unsigned int per_page; // number of cards to display per menu page
