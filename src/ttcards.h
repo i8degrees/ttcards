@@ -114,7 +114,7 @@ class TTcards: public GameState
     CardHand hand[2]; // player hand
     Player player[2]; // players in game
 
-    Sprite cursor; // interface cursor
+    nom::Sprite cursor; // interface cursor
 
     // x, y coords mapping for player1, player2 cursor starting position
     GCoords player_cursor_coords[2];
