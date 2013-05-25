@@ -43,10 +43,6 @@ TTcards::~TTcards ( void )
 
 bool TTcards::Init ( void )
 {
-  #ifndef EMSCRIPTEN
-    engine->setTitle ( APP_NAME );
-  #endif
-
   this->Load();
 
   #ifdef DEBUG_TTCARDS
