@@ -27,9 +27,9 @@ class CardView
     bool DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y );
 
   private:
-    Sprite *card_face;
-    Sprite *card_background;
-    Sprite *card_element;
+    nom::Sprite *card_face;
+    nom::Sprite *card_background;
+    nom::Sprite *card_element;
     SDLBitmapFont card_text;
 };
 

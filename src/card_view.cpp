@@ -20,17 +20,17 @@ CardView::CardView ( void )
 
   this->card_text.Load ( CARD_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
-  this->card_face = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  this->card_background = new Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  this->card_element = new Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+  this->card_face = new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
+  this->card_background = new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
+  this->card_element = new nom::Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
 
-  this->card_face->SetSheetDimensions ( 7104, 64, 0, 0 );
-  this->card_background->SetSheetDimensions ( 256, 64, 0, 0 );
-  this->card_element->SetSheetDimensions ( 144, 16, 0, 0 );
+  this->card_face->setSheetDimensions ( 7104, 64, 0, 0 );
+  this->card_background->setSheetDimensions ( 256, 64, 0, 0 );
+  this->card_element->setSheetDimensions ( 144, 16, 0, 0 );
 
-  this->card_face->LoadImage ( CARD_FACES, GColor ( 0, 0, 0 ) );
-  this->card_background->LoadImage ( CARD_BACKGROUNDS, GColor ( 0, 0, 0 ) );
-  this->card_element->LoadImage ( CARD_ELEMENTS, GColor ( 0, 0, 0 ) );
+  this->card_face->Load ( CARD_FACES, GColor ( 0, 0, 0 ) );
+  this->card_background->Load ( CARD_BACKGROUNDS, GColor ( 0, 0, 0 ) );
+  this->card_element->Load ( CARD_ELEMENTS, GColor ( 0, 0, 0 ) );
 }
 
 CardView::~CardView ( void )
@@ -61,8 +61,8 @@ CardView::~CardView ( void )
 // Helper method for drawing cards face down
 bool CardView::drawFaceDown ( Gfx *engine, unsigned int x, unsigned int y )
 {
-  this->card_background->SetSheetID ( NOFACE_ID );
-  this->card_background->SetXY ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
+  this->card_background->setSheetID ( NOFACE_ID );
+  this->card_background->setXY ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
 
   if ( this->card_background->Draw ( engine ) == false )
     return false;
@@ -77,25 +77,25 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
     switch ( card.getPlayerID() ) // player1 = 1, player2 = 2
     {
       case PLAYER1:
-        card_background->SetSheetID ( PLAYER1_BACKGROUND_ID );
+        card_background->setSheetID ( PLAYER1_BACKGROUND_ID );
         break;
       case PLAYER2:
-        card_background->SetSheetID ( PLAYER2_BACKGROUND_ID );
+        card_background->setSheetID ( PLAYER2_BACKGROUND_ID );
         break;
       case NOPLAYER:
       default:
-        card_background->SetSheetID ( NOPLAYER_BACKGROUND_ID );
+        card_background->setSheetID ( NOPLAYER_BACKGROUND_ID );
         break;
     }
 
-    card_background->SetX ( BACKGROUND_ORIGIN_X + x );
-    card_background->SetY ( BACKGROUND_ORIGIN_Y + y );
+    card_background->setX ( BACKGROUND_ORIGIN_X + x );
+    card_background->setY ( BACKGROUND_ORIGIN_Y + y );
     if ( card_background->Draw ( engine ) == false )
       return false;
 
-    card_face->SetSheetID ( card.getID() );
-    card_face->SetX ( CARD_FACE_ORIGIN_X + x );
-    card_face->SetY ( CARD_FACE_ORIGIN_Y + y );
+    card_face->setSheetID ( card.getID() );
+    card_face->setX ( CARD_FACE_ORIGIN_X + x );
+    card_face->setY ( CARD_FACE_ORIGIN_Y + y );
 
     if ( card_face->Draw ( engine ) == false )
       return false;
@@ -103,36 +103,36 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
     switch ( card.getElement() )
     {
       case NONE:
-        card_element->SetSheetID ( ELEMENT_NONE );
+        card_element->setSheetID ( ELEMENT_NONE );
         break;
       case EARTH:
-        card_element->SetSheetID ( ELEMENT_EARTH );
+        card_element->setSheetID ( ELEMENT_EARTH );
         break;
       case FIRE:
-        card_element->SetSheetID ( ELEMENT_FIRE );
+        card_element->setSheetID ( ELEMENT_FIRE );
         break;
       case HOLY:
-        card_element->SetSheetID ( ELEMENT_HOLY );
+        card_element->setSheetID ( ELEMENT_HOLY );
         break;
       case ICE:
-        card_element->SetSheetID ( ELEMENT_ICE );
+        card_element->setSheetID ( ELEMENT_ICE );
         break;
       case POISON:
-        card_element->SetSheetID ( ELEMENT_POISON );
+        card_element->setSheetID ( ELEMENT_POISON );
         break;
       case THUNDER:
-        card_element->SetSheetID ( ELEMENT_THUNDER );
+        card_element->setSheetID ( ELEMENT_THUNDER );
         break;
       case WATER:
-        card_element->SetSheetID ( ELEMENT_WATER );
+        card_element->setSheetID ( ELEMENT_WATER );
         break;
       case WIND:
-        card_element->SetSheetID ( ELEMENT_WIND );
+        card_element->setSheetID ( ELEMENT_WIND );
         break;
     }
 
-    card_element->SetX ( ELEMENT_ORIGIN_X + x );
-    card_element->SetY ( ELEMENT_ORIGIN_Y + y );
+    card_element->setX ( ELEMENT_ORIGIN_X + x );
+    card_element->setY ( ELEMENT_ORIGIN_Y + y );
     if ( card_element->Draw ( engine ) == false )
       return false;
 
