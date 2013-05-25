@@ -92,11 +92,12 @@ void CardsMenu::Load ( void )
   this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
   this->menu_element.Load ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
 
+  this->cursor = nom::SDL_Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
+
   this->cursor.Load ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
 
   this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
-
-  //this->cursor.setState ( 0 ); // default state for navigating card menu
+  this->cursor.setState ( 0 ); // default state for navigating card menu
 
   // We cannot map std::pair<0, 0>, so we are "missing" the first element here,
   // which we do account for within the card tracking / positioning code
@@ -302,7 +303,7 @@ void CardsMenu::updateCursor ( void )
 
 void CardsMenu::drawCursor ( void )
 {
-  this->cursor.Draw ( this->engine->screen );
+  this->cursor.Draw ( this->engine );
 }
 
 // Helper method for obtaining card hand index position based off given origin

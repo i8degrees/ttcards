@@ -14,6 +14,8 @@
 
 #include "ttcards.h"
 
+#include "SDL_Cursor.h"
+
 class CardsMenu: public GameState
 {
   public:
@@ -64,6 +66,7 @@ class CardsMenu: public GameState
     CardHand hand; // player1 hand
     Card selectedCard; // CardHand-derived implementation
 
+    nom::SDL_Cursor cursor;
     //Sprite cursor; // interface cursor
 
     nom::Sprite menu_element; // interface menu elements
