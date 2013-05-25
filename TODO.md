@@ -19,8 +19,10 @@
 * Relocate cfg.cpp declarations to their applicable class header files
 * Collection::getCards() implementation
 
-* gamelib proposed project name
-    > NomNom
+    - gamelib proposed project name
+        > NomNom
+        * namespace NomNom {} namespace nom = NomNom;
+
 
 ## Completed
 
