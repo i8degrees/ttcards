@@ -12,20 +12,20 @@
 
 * GameOverState static background image
 * PauseState ( msgbox w/ blinking Pause text )
-* rename methods in gamelib/Sprite to lowerCaseCamelStyle
 * swap player1, player2 coords (human player AKA blue is on the right side )
 * break CardView class up further?
 * Re-enable AI control
 * Relocate cfg.cpp declarations to their applicable class header files
 * Collection::getCards() implementation
 
-    - gamelib proposed project name
-        > NomNom
-        * namespace NomNom {} namespace nom = NomNom;
+- gamelib proposed project name
+> NomNom
+* namespace NomNom {} namespace nom = NomNom;
 
 
 ## Completed
 
+* rename methods in gamelib/Sprite to lowerCaseCamelStyle
 * Clean up Timer class; 1. match Timer & FPS; <strikethrough> 2. goodbye FPS (!) </strikethrough>
 * Relocate Timer & FPS declarations to main.cpp
 * show card name info box upon cursor lock selection of placed cards on board
