@@ -89,6 +89,72 @@ bool Collection::Load ( std::string filename )
   return true;
 }
 
+/*
+bool Collection::LoadJSON ( std::string filename )
+{
+  //int index = 0;
+  //unsigned int id, level, type, element = 0;
+  //std::array<int, 4> rank = { { 0 } };
+  //std::string name = "\0";
+
+  json_spirit::Object obj;
+
+  nom::JSON_FileReader parser;
+
+  parser.Parse ( "cards.json" );
+
+  return true;
+}
+*/
+
+bool Collection::ExportASCII ( std::string filename )
+{
+  // NOT IMPLEMENTED (Stub )
+  return false;
+}
+
+bool Collection::ExportJSON ( std::string filename )
+{
+  nom::JSON_FileWriter writer;
+  nom::JSON_Object root;
+  json_spirit::Array ranks; // FIXME
+
+  if ( this->cards.empty() )
+  {
+    this->Load ( CARDS_DB );
+  }
+
+  for ( int i = 0; i < this->cards.size(); i++ )
+  {
+    ranks.clear(); // FIXME
+
+    nom::JSON_Value id ( "ID", (int)this->cards[i].getID() );
+    nom::JSON_Value name ( "Name", this->cards[i].getName() );
+    nom::JSON_Value level ( "Level", (int)this->cards[i].getLevel() );
+    nom::JSON_Value type ( "Type", (int)this->cards[i].getType() );
+    nom::JSON_Value element ( "Element", (int)this->cards[i].getElement() );
+
+    root.Add ( id );
+    root.Add ( name );
+    root.Add ( level );
+    root.Add ( type );
+    root.Add ( element );
+
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[i].getNorthRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[i].getEastRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[i].getSouthRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[i].getWestRank() ) );
+
+    root.obj.push_back ( json_spirit::Pair ( "Ranks", ranks ) ); // FIXME
+
+    root.endl();
+  }
+
+  writer.Write ( filename, root );
+
+  return true;
+}
+
 Card &Collection::getCards ( unsigned int idx )
 {
   return this->cards[idx];

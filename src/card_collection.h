@@ -27,6 +27,10 @@ class Collection
     ~Collection ( void );
 
     bool Load ( std::string filename );
+    //bool LoadJSON ( std::string filename );
+
+    bool ExportASCII ( std::string filename ); // NOT IMPLEMENTED
+    bool ExportJSON ( std::string filename );
 
     // TODO: a) ERR handling; b) reconsider how we pass
     Card &getCards ( unsigned int idx );
