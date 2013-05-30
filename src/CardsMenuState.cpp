@@ -164,17 +164,17 @@ void CardsMenu::onJoyButtonDown ( unsigned int which, unsigned int button )
   switch ( button )
   {
     // Debug helpers
-    case PSXBUTTON::L1: this->debug.ListCards ( this->hand.cards ); break;
+    case nom::PSXBUTTON::L1: this->debug.ListCards ( this->hand.cards ); break;
 
-    case PSXBUTTON::UP: this->moveCursorUp(); break;
-    case PSXBUTTON::RIGHT: this->moveCursorRight(); break;
-    case PSXBUTTON::DOWN: this->moveCursorDown(); break;
-    case PSXBUTTON::LEFT: this->moveCursorLeft(); break;
+    case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
+    case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;
+    case nom::PSXBUTTON::DOWN: this->moveCursorDown(); break;
+    case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
 
-    case PSXBUTTON::TRIANGLE: /* TODO */ break;
-    case PSXBUTTON::CIRCLE: this->hand.removeCard ( this->selectedCard ); break;
-    case PSXBUTTON::CROSS: this->hand.addCard ( this->selectedCard ); break;
-    case PSXBUTTON::START: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
+    case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
+    case nom::PSXBUTTON::CIRCLE: this->hand.removeCard ( this->selectedCard ); break;
+    case nom::PSXBUTTON::CROSS: this->hand.addCard ( this->selectedCard ); break;
+    case nom::PSXBUTTON::START: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
 
     default: break;
   }
