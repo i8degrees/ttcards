@@ -113,14 +113,14 @@ void Player::Draw ( Gfx *engine )
       if ( this->getID() == 1 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       else if ( this->getID() == 2 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }

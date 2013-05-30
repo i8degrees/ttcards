@@ -680,9 +680,9 @@ void TTcards::moveCursorDown ( void )
 void TTcards::updateCursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
-    this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
-  else // player2
     this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+  else // player2
+    this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
 }
 
 void TTcards::drawCursor ( void )
@@ -737,9 +737,9 @@ void TTcards::Draw ( void )
   this->player[1].Draw ( this->engine );
 
   if ( this->get_turn() == 0 ) // player1
-    this->engine->DrawRectangle ( 48, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
+    this->engine->DrawRectangle ( 320, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
   else // player2
-    this->engine->DrawRectangle ( 320, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+    this->engine->DrawRectangle ( 40, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
 
   this->drawCursor();
 

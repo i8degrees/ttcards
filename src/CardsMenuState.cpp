@@ -217,13 +217,13 @@ void CardsMenu::Draw ( void )
 
   // static player2 hand background
   for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)
-    this->card.drawFaceDown ( this->engine, PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+    this->card.drawFaceDown ( this->engine, PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
 
   // Active player's card selection(s)
   for ( hand_index = 0; hand_index < this->hand.getCount(); hand_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->hand.isValid ( this->hand.cards.at ( hand_index) ) == true )
-      this->card.DrawCard ( this->engine, this->hand.cards.at ( hand_index ), PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+      this->card.DrawCard ( this->engine, this->hand.cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
   }
 
   this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
