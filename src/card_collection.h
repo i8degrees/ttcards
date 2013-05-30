@@ -15,6 +15,10 @@
 
 #include "cfg.h"
 #include "card.h"
+#include "card_debug.h"
+
+#include "JSON_FileReader.h"
+#include "JSON_FileWriter.h"
 
 class Collection
 {
