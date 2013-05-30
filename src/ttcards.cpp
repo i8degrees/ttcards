@@ -559,22 +559,19 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
 {
   switch ( button )
   {
-    case 4: this->moveCursorUp(); break;
-    case 5: this->moveCursorRight(); break;
-    case 6: this->moveCursorDown(); break;
-    case 7: this->moveCursorLeft(); break;
+    // Debug helpers
+    case PSXBUTTON::L1: this->endTurn(); break;
 
-    case 10: this->endTurn(); break;
+    case PSXBUTTON::UP: this->moveCursorUp(); break;
+    case PSXBUTTON::RIGHT: this->moveCursorRight(); break;
+    case PSXBUTTON::DOWN: this->moveCursorDown(); break;
+    case PSXBUTTON::LEFT: this->moveCursorLeft(); break;
 
-    case 12: // triangle
-      // TODO
-    break;
+    case PSXBUTTON::TRIANGLE: /* TODO */ break;
+    case PSXBUTTON::CIRCLE: this->unlockSelectedCard(); break;
+    case PSXBUTTON::CROSS: this->lockSelectedCard(); break;
 
-    // circle
-    case 13: this->unlockSelectedCard(); break;
-
-    // cross
-    case 14: this->lockSelectedCard(); break;
+    default: break;
   }
 }
 
