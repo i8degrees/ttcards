@@ -354,9 +354,9 @@ void TTcards::lockSelectedCard ( void )
   if ( this->isCursorLocked() == false )
   {
     if ( get_turn() == 0 )
-      this->cursor.setXY ( CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y ); // FIXME
-    else if ( get_turn() == 1 )
       this->cursor.setXY ( CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y ); // FIXME
+    else if ( get_turn() == 1 )
+      this->cursor.setXY ( CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y ); // FIXME
 
     this->lockCursor ( true );
   }
