@@ -67,8 +67,6 @@ class CardsMenu: public GameState
     Card selectedCard; // CardHand-derived implementation
 
     nom::SDL_Cursor cursor;
-    //Sprite cursor; // interface cursor
-
     nom::Sprite menu_element; // interface menu elements
 
     unsigned int total_pages; // MAX_COLLECTION / per_page
