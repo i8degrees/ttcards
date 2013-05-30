@@ -17,14 +17,16 @@ set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
 set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
 set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 set ( SRC_DIR src ) # project_dir/src
+set ( GAMELIB_SRC gamelib/src ) # project_dir/gamelib/src
+set ( NOMJSON_SRC nomjson/src ) # project_dir/nomJSON/src
 
-set ( GAMELIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/gamelib/src )
 # LIBGAMELIB
 #set ( GAMELIB_HEADERS /usr/local/include/gamelib )
 
-project ( ttcards )
+set ( GAMELIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/gamelib/src )
+set ( NOMJSON_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/nomJSON/src )
 
-add_subdirectory ( gamelib )
+project ( ttcards )
 
 set ( TTCARDS_SOURCE
       ${SRC_DIR}/board.cpp
@@ -43,6 +45,34 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/CardsMenuState.cpp
     )
 
+set ( GAMELIB_SOURCE
+      ${GAMELIB_SRC}/GCoords.cpp
+      ${GAMELIB_SRC}/GColor.cpp
+      ${GAMELIB_SRC}/Logger.cpp
+      ${GAMELIB_SRC}/audio.cpp
+      #${GAMELIB_SRC}/font.cpp
+      ${GAMELIB_SRC}/SDL_TFont.cpp
+      ${GAMELIB_SRC}/SDLGradient.cpp
+      ${GAMELIB_SRC}/SDLWindowFrame.cpp
+      ${GAMELIB_SRC}/SDLMessageBox.cpp
+      ${GAMELIB_SRC}/SDL_BitmapFont.cpp
+      ${GAMELIB_SRC}/SDL_Cursor.cpp
+      ${GAMELIB_SRC}/gfx.cpp
+      ${GAMELIB_SRC}/sprite.cpp
+      ${GAMELIB_SRC}/SDLInput.cpp
+      ${GAMELIB_SRC}/timer.cpp
+      ${GAMELIB_SRC}/fps.cpp
+      ${GAMELIB_SRC}/OSXFs.cpp
+    )
+
+set ( NOMJSON_SOURCE
+      ${NOMJSON_SRC}/JSON_Array.cpp
+      ${NOMJSON_SRC}/JSON_FileReader.cpp
+      ${NOMJSON_SRC}/JSON_FileWriter.cpp
+      ${NOMJSON_SRC}/JSON_Object.cpp
+      ${NOMJSON_SRC}/JSON_Value.cpp
+    )
+
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
 
@@ -57,16 +87,18 @@ include_directories ( ${SDLTTF_INCLUDE_DIR} )
 
 include_directories ( ${GAMELIB_HEADERS} )
 
+include_directories ( ${NOMJSON_HEADERS} )
+
 link_libraries (  ttcards # makefile target
                   ${SDL_LIBRARY}
                   ${SDL_IMAGE_LIBRARY}
                   ${SDL_MIXER_LIBRARY}
                   ${SDL_TTF_LIBRARY}
                   SDLmain
-                  gamelib
+                  #gamelib # LIBGAMELIB
                 )
 
-add_executable ( ttcards ${TTCARDS_SOURCE} )
+add_executable ( ttcards ${TTCARDS_SOURCE} ${GAMELIB_SOURCE} ${NOMJSON_SOURCE} ) # GAMELIB_SOURCE_COMPILE
 
 file ( GLOB files ${TTCARDS_SOURCE} )
 foreach ( filename ${files} )
