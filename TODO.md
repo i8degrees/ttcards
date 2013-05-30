@@ -34,4 +34,4 @@
 
 ### Footer
 
-Copyright (c) 2013 Jeffrey Carpenter <jeffrey.carp@gmail.com>
+Copyright (c) 2013 Jeffrey Carpenter
