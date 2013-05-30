@@ -36,6 +36,29 @@ int main(int argc, char*argv[])
     OSXFs::setWorkingDir ( WORKING_DIR );
   #endif
 
+  if ( argc > 1 )
+  {
+    if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
+    {
+      Collection cards;
+
+      if ( cards.ExportJSON ( "cards.json" ) == false )
+      {
+        std::cout << "ERR: " << "Unknown failure to serialize JSON into cards.json" << std::endl;
+        exit ( EXIT_FAILURE );
+      }
+
+      std::cout << "File cards.json successfully saved" << std::endl;
+      exit ( EXIT_SUCCESS );
+    }
+    else if ( strcmp ( argv[1], "-h" ) == 0 || strcmp ( argv[1], "--help" ) == 0 )
+    {
+      std::cout << "\tttcards [ -h | --help ]" << std::endl;
+      std::cout << "\tttcards [ -e | --export ]" << std::endl;
+      exit ( EXIT_SUCCESS );
+    }
+  }
+
   std::srand ( ( unsigned ) time ( 0 ) ); // Dependencies: before app state init
 
   Gfx engine ( sdl_flags ); // Second priority
