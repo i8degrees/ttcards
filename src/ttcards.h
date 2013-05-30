@@ -19,7 +19,7 @@
 #include "card.h"
 #include "card_collection.h"
 #include "card_rules.h"
-#include "cpu_player.h"
+//#include "cpu_player.h"
 
 #include "Logger.h"
 #include "SDLMessageBox.h"
