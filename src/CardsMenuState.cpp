@@ -159,6 +159,27 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
   }
 }
 
+void CardsMenu::onJoyButtonDown ( unsigned int which, unsigned int button )
+{
+  switch ( button )
+  {
+    // Debug helpers
+    case PSXBUTTON::L1: this->debug.ListCards ( this->hand.cards ); break;
+
+    case PSXBUTTON::UP: this->moveCursorUp(); break;
+    case PSXBUTTON::RIGHT: this->moveCursorRight(); break;
+    case PSXBUTTON::DOWN: this->moveCursorDown(); break;
+    case PSXBUTTON::LEFT: this->moveCursorLeft(); break;
+
+    case PSXBUTTON::TRIANGLE: /* TODO */ break;
+    case PSXBUTTON::CIRCLE: this->hand.removeCard ( this->selectedCard ); break;
+    case PSXBUTTON::CROSS: this->hand.addCard ( this->selectedCard ); break;
+    case PSXBUTTON::START: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
+
+    default: break;
+  }
+}
+
 void CardsMenu::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 {
   // TODO

@@ -32,6 +32,7 @@ class CardsMenu: public GameState
   private:
     void onExit ( void );
     void onKeyDown ( SDLKey key, SDLMod mod );
+    void onJoyButtonDown ( unsigned int which, unsigned int button );
     void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
     void onMouseRightButtonDown ( unsigned int x, unsigned int y );
     void onMouseWheel ( bool up, bool down );
