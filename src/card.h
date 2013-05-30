@@ -20,9 +20,9 @@
 class Card
 {
   public:
-    Card (  unsigned int id = 0, unsigned int level = 0, unsigned int type = 0,
-            unsigned int element = NONE, std::array<int, 4> rank = { { 0, 0, 0, 0 } },
-            std::string name = "\0", unsigned int player_id = NOPLAYER );
+    Card (  unsigned int id_ = 0, unsigned int level_ = 0, unsigned int type_ = 0,
+            unsigned int element_ = NONE, std::array<int, 4> rank_ = { { 0, 0, 0, 0 } },
+            std::string name_ = "\0", unsigned int player_id_ = NOPLAYER );
 
     ~Card ( void );
 
@@ -49,7 +49,7 @@ class Card
 
 
     unsigned int getPlayerID ( void );
-    void setPlayerID ( unsigned int player );
+    void setPlayerID ( unsigned int player_id_ );
 
   private:
     unsigned int id;

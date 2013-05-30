@@ -8,21 +8,21 @@
 ******************************************************************************/
 #include "card.h"
 
-Card::Card (  unsigned int id, unsigned int level, unsigned int type,
-              unsigned int element, std::array<int, 4> rank,
-              std::string name, unsigned int player_id )
+Card::Card (  unsigned int id_, unsigned int level_, unsigned int type_,
+              unsigned int element_, std::array<int, 4> rank_,
+              std::string name_, unsigned int player_id_ )
 {
   #ifdef DEBUG_CARD_OBJ
     std::cout << "Card::Card (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->id = id;
-  this->level = level;
-  this->type = type;
-  this->element = element;
-  this->rank = rank;
-  this->name = name;
-  this->player_id = player_id;
+  this->id = id_;
+  this->level = level_;
+  this->type = type_;
+  this->element = element_;
+  this->rank = rank_;
+  this->name = name_;
+  this->player_id = player_id_;
 }
 
 Card::~Card ( void )
@@ -96,9 +96,9 @@ unsigned int Card::getPlayerID ( void )
 }
 
 // Presently, this is the only card attribute that is ever modified in game
-void Card::setPlayerID ( unsigned int player )
+void Card::setPlayerID ( unsigned int player_id_ )
 {
-  this->player_id = player;
+  this->player_id = player_id_;
 }
 
 void Card::setID ( unsigned int id_ )
