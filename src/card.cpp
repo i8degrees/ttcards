@@ -100,3 +100,48 @@ void Card::setPlayerID ( unsigned int player )
 {
   this->player_id = player;
 }
+
+void Card::setID ( unsigned int id_ )
+{
+  this->id = id_;
+}
+
+void Card::setLevel ( unsigned int level_ )
+{
+  this->level = level_;
+}
+
+void Card::setType ( unsigned int type_ )
+{
+  this->type = type_;
+}
+
+void Card::setElement ( unsigned int element_ )
+{
+  this->element = element_;
+}
+
+void Card::setNorthRank ( unsigned int rank )
+{
+  this->rank[NORTH] = rank;
+}
+
+void Card::setEastRank ( unsigned int rank )
+{
+  this->rank[EAST] = rank;
+}
+
+void Card::setSouthRank ( unsigned int rank )
+{
+  this->rank[SOUTH] = rank;
+}
+
+void Card::setWestRank ( unsigned int rank )
+{
+  this->rank[WEST] = rank;
+}
+
+void Card::setName ( std::string name_ )
+{
+  this->name = name_;
+}

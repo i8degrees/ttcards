@@ -37,6 +37,17 @@ class Card
     unsigned int getWestRank ( void );
     std::string getName ( void );
 
+    void setID ( unsigned int id_ );
+    void setLevel ( unsigned int level_ );
+    void setType ( unsigned int type_ );
+    void setElement ( unsigned int element_ );
+    void setNorthRank ( unsigned int rank );
+    void setEastRank ( unsigned int rank );
+    void setSouthRank ( unsigned int rank );
+    void setWestRank ( unsigned int rank );
+    void setName ( std::string name_ );
+
+
     unsigned int getPlayerID ( void );
     void setPlayerID ( unsigned int player );
 
