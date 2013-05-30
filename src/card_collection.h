@@ -36,7 +36,7 @@ class Collection
     Card &getCards ( unsigned int idx );
     std::vector<Card> getCards ( void );
 
-    void reset ( void );
+    void clear ( void );
 
     std::vector<Card> cards; // TODO: redeclare private scope
   private:

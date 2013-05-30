@@ -12,7 +12,7 @@ Collection::Collection ( void )
     std::cout << "Hello, world! <From Collection::Collection>" << "\n" << std::endl;
   #endif
 
-  this->reset();
+  this->clear();
 }
 
 Collection::~Collection ( void )
@@ -21,7 +21,7 @@ Collection::~Collection ( void )
     std::cout << "Goodbye cruel world! <From Collection::~Collection>" << "\n" << std::endl;
   #endif
 
-  this->reset();
+  this->clear();
 }
 
 bool Collection::Load ( std::string filename )
@@ -155,6 +155,12 @@ bool Collection::ExportJSON ( std::string filename )
   return true;
 }
 
+void Collection::clear ( void )
+{
+  this->cards.clear();
+}
+
+
 Card &Collection::getCards ( unsigned int idx )
 {
   return this->cards[idx];
@@ -170,9 +176,4 @@ std::vector<Card> Collection::getCards ( void )
     temp_cards.push_back ( this->cards[idx] );
 
   return temp_cards;
-}
-
-void Collection::reset ( void )
-{
-  this->cards.clear();
 }

@@ -69,7 +69,7 @@ CardsMenu::~CardsMenu ( void )
   this->selectedCard = 0;
   this->hand.reset ();
 
-  this->collection.reset();
+  this->collection.clear();
 
   if ( this->engine )
     this->engine = NULL;
