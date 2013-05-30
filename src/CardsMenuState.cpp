@@ -151,7 +151,7 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_UP: this->moveCursorUp(); break;
     case SDLK_DOWN: this->moveCursorDown(); break;
 
-    case SDLK_d: /*if ( mod == KMOD_LMETA )*/ this->hand.removeCard ( this->selectedCard ); break;
+    case SDLK_d: this->hand.removeCard ( this->selectedCard ); break;
     case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
     case SDLK_RETURN: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
 
