@@ -243,7 +243,10 @@ enum {
   WEST=3
 };
 
+// TTcards::turn[players]
 enum {
+  PLAYER1=0,
+  PLAYER2=1
 };
 
 #endif // GAMEAPP_CFG_HEADERS defined
