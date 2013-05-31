@@ -20,9 +20,11 @@
 class Card
 {
   public:
-    Card (  unsigned int id_ = 0, unsigned int level_ = 0, unsigned int type_ = 0,
-            unsigned int element_ = NONE, std::array<int, 4> rank_ = { { 0, 0, 0, 0 } },
-            std::string name_ = "\0", unsigned int player_id_ = Card::NOPLAYER );
+    Card  (   unsigned int id_ = 0, unsigned int level_ = 0, unsigned int type_ = 0,
+              unsigned int element_ = NONE, std::array<int, 4> rank_ = { { 0, 0, 0, 0 } },
+              std::string name_ = "\0", unsigned int player_id_ = Card::NOPLAYER,
+              unsigned int player_owner_ = Card::NOPLAYER
+          );
 
     ~Card ( void );
 
@@ -58,6 +60,9 @@ class Card
     unsigned int getPlayerID ( void );
     void setPlayerID ( unsigned int player_id_ );
 
+    unsigned int getPlayerOwner ( void );
+    void setPlayerOwner ( unsigned int player_owner_ );
+
   private:
     unsigned int id;
     unsigned int level;
@@ -69,6 +74,9 @@ class Card
     // used to distinguish card background and also used to track player in board
     // in order to do card flipping, among other things like score tallying
     unsigned int player_id;
+
+    // Original owner of the card
+    unsigned int player_owner;
 };
 
 #endif // CARD_HEADERS defined

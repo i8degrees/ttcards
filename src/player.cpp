@@ -74,12 +74,19 @@ unsigned int Player::getID ( void )
 // who's card is which and is used in CardView -- the rendering the card
 // background -- and most importantly, in the Board class where we compare cards
 // placed to determine whom's card to flip over to the respective player.
-void Player::setID ( unsigned int id )
+//
+// card.player_owner is the *original* player owner of a card and should never be
+// altered once set initially here.
+//
+void Player::setID ( unsigned int id_ )
 {
-  this->id = id;
+  this->id = id_;
 
   for ( int pid = 0; pid < this->hand->cards.size(); pid++ )
-    this->hand->cards[pid].setPlayerID ( id );
+  {
+    this->hand->cards[pid].setPlayerID ( id_ );
+    this->hand->cards[pid].setPlayerOwner ( id_ );
+  }
 }
 
 unsigned int Player::getState ( void )

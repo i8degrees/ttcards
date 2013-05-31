@@ -34,7 +34,7 @@ class Player
     void setXY ( unsigned int x, unsigned int y );
 
     unsigned int getID ( void );
-    void setID ( unsigned int id );
+    void setID ( unsigned int id_ );
 
     unsigned int getState ( void );
     void setState ( unsigned int state );

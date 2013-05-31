@@ -53,8 +53,8 @@ bool TTcards::Init ( void )
   //this->music.PlayMusicTrack ( -1 );
   //this->music.PauseMusic ();
 
-  this->player[0].setID ( 1 ); // player1
-  this->player[1].setID ( 2 ); // player2
+  this->player[0].setID ( Card::PLAYER1 );
+  this->player[1].setID ( Card::PLAYER2 );
 
   this->player_turn ( 0 );
 

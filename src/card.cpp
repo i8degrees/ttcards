@@ -8,9 +8,11 @@
 ******************************************************************************/
 #include "card.h"
 
-Card::Card (  unsigned int id_, unsigned int level_, unsigned int type_,
+Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
               unsigned int element_, std::array<int, 4> rank_,
-              std::string name_, unsigned int player_id_ )
+              std::string name_, unsigned int player_id_,
+              unsigned int player_owner_
+            )
 {
   #ifdef DEBUG_CARD_OBJ
     std::cout << "Card::Card (): Hello, world!" << "\n" << std::endl;
@@ -22,7 +24,9 @@ Card::Card (  unsigned int id_, unsigned int level_, unsigned int type_,
   this->element = element_;
   this->rank = rank_;
   this->name = name_;
+
   this->player_id = player_id_;
+  this->player_owner = player_owner_;
 }
 
 Card::~Card ( void )
@@ -37,7 +41,9 @@ Card::~Card ( void )
   this->element = NONE;
   this->rank = { { 0, 0, 0, 0 } };
   this->name = "\0";
+
   this->player_id = Card::NOPLAYER;
+  this->player_owner = Card::NOPLAYER;
 }
 
 unsigned int Card::getID ( void )
@@ -101,6 +107,16 @@ void Card::setPlayerID ( unsigned int player_id_ )
   this->player_id = player_id_;
 }
 
+unsigned int Card::getPlayerOwner ( void )
+{
+  return this->player_owner;
+}
+
+void Card::setPlayerOwner ( unsigned int player_owner_ )
+{
+  this->player_owner = player_owner_;
+}
+
 void Card::setID ( unsigned int id_ )
 {
   this->id = id_;
@@ -145,3 +161,4 @@ void Card::setName ( std::string name_ )
 {
   this->name = name_;
 }
+
