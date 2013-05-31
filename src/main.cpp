@@ -70,13 +70,10 @@ int main(int argc, char*argv[])
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
   // Dependencies: after video init
-  Timer globalTimer;
   FPS fps; // timer for tracking frames per second
-
-  globalTimer.Start();
   fps.Start();
 
-  next_game_tick = globalTimer.getTicks();
+  next_game_tick = engine.getTicks();
 
   engine.ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( &engine ) ) );
 
@@ -89,14 +86,14 @@ int main(int argc, char*argv[])
     {
       loops = 0;
 
-      while ( globalTimer.getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
+      while ( engine.getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
       {
         engine.HandleInput ();
 
         fps.Update();
 
-        engine.Update();
-        engine.Draw();
+        engine.Update ();
+        engine.Draw ();
 
         if ( engine.getShowFPS() )
           engine.setTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
