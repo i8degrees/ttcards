@@ -14,7 +14,7 @@ CardHand::CardHand ( void )
     std::cout << "CardHand::CardHand (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->reset();
+  this->clear();
 
   this->selectedCard = 0;
 }
@@ -25,12 +25,12 @@ CardHand::~CardHand ( void )
     std::cout << "CardHand::~CardHand (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  this->reset();
+  this->clear();
 }
 
 bool CardHand::addCard ( Card &card )
 {
-  if ( this->getCount() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
+  if ( this->size() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
   {
     #ifdef DEBUG_CARD_HAND
       std::cout << "CardHand::addCard (): " << "Discarding card " << this->cards.back().getID() << ' ' << this->cards.back().getName() << std::endl;
@@ -50,7 +50,7 @@ bool CardHand::removeCard ( Card &card )
   unsigned int previous_id = 0;
   std::string previous_name;
 
-  position = this->cardPosition ( card );
+  position = this->pos ( card );
 
   if ( position == -1 )
   {
@@ -60,7 +60,7 @@ bool CardHand::removeCard ( Card &card )
     return false;
   }
 
-  if ( this->isEmpty() == false )
+  if ( this->empty() == false )
   {
     previous_id = this->cards[position].getID();
     previous_name = this->cards[position].getName();
@@ -101,7 +101,7 @@ bool CardHand::isValid ( Card &card )
 {
   unsigned int idx = 0;
 
-  for ( idx = 0; idx < this->getCount(); idx++ )
+  for ( idx = 0; idx < this->size(); idx++ )
   {
     if ( ( this->cards[idx].getID() == card.getID() ) && ( this->cards[idx].getName() == card.getName() ) )
       return true;
@@ -110,7 +110,7 @@ bool CardHand::isValid ( Card &card )
   return false;
 }
 
-bool CardHand::isEmpty ( void )
+bool CardHand::empty ( void )
 {
   if ( this->cards.empty() )
     return true;
@@ -118,7 +118,7 @@ bool CardHand::isEmpty ( void )
   return false;
 }
 
-unsigned int CardHand::getCount ( void )
+unsigned int CardHand::size ( void )
 {
   unsigned int count = 0;
 
@@ -127,20 +127,20 @@ unsigned int CardHand::getCount ( void )
   return count;
 }
 
-signed int CardHand::cardPosition ( Card &card )
+signed int CardHand::pos ( Card &card )
 {
   unsigned int idx;
   signed int pos = -1;
 
-  if ( this->isEmpty() == false )
+  if ( this->empty() == false )
   {
-    for ( idx = 0; idx < this->getCount() && pos == -1; idx++ )
+    for ( idx = 0; idx < this->size() && pos == -1; idx++ )
     {
       if ( this->cards[idx].getID() == card.getID() && this->cards[idx].getName() == card.getName() )
       {
         pos = idx;
         #ifdef DEBUG_CARD_HAND
-          std::cout << "CardHand::CardPosition (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << this->cards[idx].getID() << ' ' << this->cards[idx].getName() << std::endl;
+          std::cout << "CardHand::pos (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << this->cards[idx].getID() << ' ' << this->cards[idx].getName() << std::endl;
         #endif
       }
     }
@@ -148,7 +148,7 @@ signed int CardHand::cardPosition ( Card &card )
   return pos;
 }
 
-void CardHand::reset ( void )
+void CardHand::clear ( void )
 {
   this->cards.clear();
 }

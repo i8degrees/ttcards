@@ -28,11 +28,11 @@ class CardHand
     bool selectCard ( Card &card );
 
     bool isValid ( Card &card );
-    bool isEmpty ( void );
-    unsigned int getCount ( void );
-    signed int cardPosition ( Card &card );
 
-    void reset ( void );
+    void clear ( void );
+    bool empty ( void );
+    unsigned int size ( void );
+    signed int pos ( Card &card );
 
     std::vector<Card> cards; // TODO: declare in private scope
 

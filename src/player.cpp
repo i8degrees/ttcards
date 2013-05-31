@@ -106,20 +106,20 @@ void Player::Draw ( Gfx *engine )
 {
   unsigned int hand_index = 0;
 
-  for ( hand_index = 0; hand_index < this->hand->getCount(); hand_index++ )
+  for ( hand_index = 0; hand_index < this->hand->size(); hand_index++ )
   {
     if ( this->hand->isValid ( this->hand->cards.at ( hand_index) ) == true )
     {
       if ( this->getID() == 1 )
       {
-        if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
+        if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       else if ( this->getID() == 2 )
       {
-        if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->cardPosition ( this->hand->getSelectedCard() ) == hand_index )
+        if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
           this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );

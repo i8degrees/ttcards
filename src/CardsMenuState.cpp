@@ -26,7 +26,7 @@ CardsMenu::CardsMenu ( Gfx *engine )
   for ( pid = 0; pid < this->collection.cards.size(); pid++ )
     this->collection.cards[pid].setPlayerID ( PLAYER1_ID ); // 1
 
-  this->hand.reset ();
+  this->hand.clear ();
 
   this->msgbox[0].setColor ( 41, 41, 41 ); // top1
   this->msgbox[1].setColor ( 133, 133, 133 ); // top2
@@ -67,7 +67,7 @@ CardsMenu::~CardsMenu ( void )
   this->background = NULL;
 
   this->selectedCard = 0;
-  this->hand.reset ();
+  this->hand.clear ();
 
   this->collection.clear();
 
@@ -220,7 +220,7 @@ void CardsMenu::Draw ( void )
     this->card.drawFaceDown ( this->engine, PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
 
   // Active player's card selection(s)
-  for ( hand_index = 0; hand_index < this->hand.getCount(); hand_index++ ) // TODO: std::get<1>(player_coords)
+  for ( hand_index = 0; hand_index < this->hand.size(); hand_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->hand.isValid ( this->hand.cards.at ( hand_index) ) == true )
       this->card.DrawCard ( this->engine, this->hand.cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );

@@ -662,7 +662,7 @@ void TTcards::moveCursorDown ( void )
 
   if ( this->cursor.getState() == 0 )
   {
-    if ( this->cursor.getY() < ( CARD_HEIGHT / 2 ) * ( this->hand[player_turn].getCount() ) )
+    if ( this->cursor.getY() < ( CARD_HEIGHT / 2 ) * ( this->hand[player_turn].size() ) )
     {
       this->cursor.updateXY ( 0, ( CARD_HEIGHT / 2 ) );
 
@@ -701,7 +701,7 @@ void TTcards::updateScore ( void )
   {
     board_count = this->board.getPlayerCount ( turn + 1 );
 
-    hand_count = this->hand[turn].getCount();
+    hand_count = this->hand[turn].size();
 
     this->player[turn].setScore ( board_count + hand_count );
   }
