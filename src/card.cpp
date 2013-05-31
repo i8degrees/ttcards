@@ -37,7 +37,7 @@ Card::~Card ( void )
   this->element = NONE;
   this->rank = { { 0, 0, 0, 0 } };
   this->name = "\0";
-  this->player_id = NOPLAYER;
+  this->player_id = Card::NOPLAYER;
 }
 
 unsigned int Card::getID ( void )

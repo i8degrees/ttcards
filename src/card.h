@@ -22,7 +22,7 @@ class Card
   public:
     Card (  unsigned int id_ = 0, unsigned int level_ = 0, unsigned int type_ = 0,
             unsigned int element_ = NONE, std::array<int, 4> rank_ = { { 0, 0, 0, 0 } },
-            std::string name_ = "\0", unsigned int player_id_ = NOPLAYER );
+            std::string name_ = "\0", unsigned int player_id_ = Card::NOPLAYER );
 
     ~Card ( void );
 
@@ -47,6 +47,13 @@ class Card
     void setWestRank ( unsigned int rank );
     void setName ( std::string name_ );
 
+    // card.player_id AKA owner tag
+    enum
+    {
+      NOPLAYER=0,
+      PLAYER1=1,
+      PLAYER2=2
+    };
 
     unsigned int getPlayerID ( void );
     void setPlayerID ( unsigned int player_id_ );

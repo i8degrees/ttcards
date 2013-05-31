@@ -243,11 +243,7 @@ enum {
   WEST=3
 };
 
-// Player mapping
 enum {
-  NOPLAYER=0,
-  PLAYER1=1,
-  PLAYER2=2
 };
 
 #endif // GAMEAPP_CFG_HEADERS defined

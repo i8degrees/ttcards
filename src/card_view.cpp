@@ -74,15 +74,15 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
 {
   if ( card.getID() != 0 )
   {
-    switch ( card.getPlayerID() ) // player1 = 1, player2 = 2
+    switch ( card.getPlayerID() )
     {
-      case PLAYER1:
+      case Card::PLAYER1:
         card_background->setSheetID ( PLAYER1_BACKGROUND_ID );
         break;
-      case PLAYER2:
+      case Card::PLAYER2:
         card_background->setSheetID ( PLAYER2_BACKGROUND_ID );
         break;
-      case NOPLAYER:
+      case Card::NOPLAYER:
       default:
         card_background->setSheetID ( NOPLAYER_BACKGROUND_ID );
         break;
