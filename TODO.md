@@ -10,27 +10,19 @@
     5. https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/PropertyLists/CreatePropListProgram/CreatePropListProgram.html
     6. py2app
 
-* GameOverState static background image
 * PauseState ( msgbox w/ blinking Pause text )
 * break CardView class up further?
 * Re-enable AI control
 * Relocate cfg.cpp declarations to their applicable class header files
 * Collection::getCards() implementation
 
-    - gamelib proposed project name
-        > NomNom
-    * namespace NomNom {} namespace nom = NomNom;
-
-
 ## Completed
 
+* GameOverState static background image
 * swap player1, player2 coords (human player AKA blue is on the right side )
-* rename methods in gamelib/Sprite to lowerCaseCamelStyle
-* Clean up Timer class; 1. match Timer & FPS; <strikethrough> 2. goodbye FPS (!) </strikethrough>
 * Relocate Timer & FPS declarations to main.cpp
 * show card name info box upon cursor lock selection of placed cards on board
 * Remove LoadBackground, DrawBackground from Board Class
-* msgbox bottom, right border (needs additional depth)
 
 ### Footer
 
