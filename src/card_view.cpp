@@ -59,18 +59,18 @@ CardView::~CardView ( void )
 }
 
 // Helper method for drawing cards face down
-bool CardView::drawFaceDown ( Gfx *engine, unsigned int x, unsigned int y )
+bool CardView::drawFaceDown ( SDL_Surface *video_buffer, unsigned int x, unsigned int y )
 {
   this->card_background->setSheetID ( NOFACE_ID );
   this->card_background->setXY ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
 
-  if ( this->card_background->Draw ( engine ) == false )
+  if ( this->card_background->Draw ( video_buffer ) == false )
     return false;
 
   return true;
 }
 
-bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int y )
+bool CardView::DrawCard ( SDL_Surface *video_buffer, Card &card, unsigned int x, unsigned int y )
 {
   if ( card.getID() != 0 )
   {
@@ -90,14 +90,14 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
 
     card_background->setX ( BACKGROUND_ORIGIN_X + x );
     card_background->setY ( BACKGROUND_ORIGIN_Y + y );
-    if ( card_background->Draw ( engine ) == false )
+    if ( card_background->Draw ( video_buffer ) == false )
       return false;
 
     card_face->setSheetID ( card.getID() );
     card_face->setX ( CARD_FACE_ORIGIN_X + x );
     card_face->setY ( CARD_FACE_ORIGIN_Y + y );
 
-    if ( card_face->Draw ( engine ) == false )
+    if ( card_face->Draw ( video_buffer ) == false )
       return false;
 
     switch ( card.getElement() )
@@ -133,36 +133,40 @@ bool CardView::DrawCard ( Gfx *engine, Card &card, unsigned int x, unsigned int 
 
     card_element->setX ( ELEMENT_ORIGIN_X + x );
     card_element->setY ( ELEMENT_ORIGIN_Y + y );
-    if ( card_element->Draw ( engine ) == false )
+    if ( card_element->Draw ( video_buffer ) == false )
       return false;
 
     if ( card.getNorthRank() == 10 )
-      this->card_text.setTextBuffer ( "A" );
+      this->card_text.setText ( "A" );
     else
-      this->card_text.setTextBuffer ( std::to_string ( card.getNorthRank() ) );
+      this->card_text.setText ( std::to_string ( card.getNorthRank() ) );
 
-    this->card_text.Draw ( engine, RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
+    this->card_text.setXY ( RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
+    this->card_text.Draw ( video_buffer );
 
     if ( card.getEastRank() == 10 )
-      this->card_text.setTextBuffer ( "A" );
+      this->card_text.setText ( "A" );
     else
-      this->card_text.setTextBuffer ( std::to_string ( card.getEastRank() ) );
+      this->card_text.setText ( std::to_string ( card.getEastRank() ) );
 
-    this->card_text.Draw ( engine, RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
+    this->card_text.setXY ( RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
+    this->card_text.Draw ( video_buffer );
 
     if ( card.getWestRank() == 10 )
-      this->card_text.setTextBuffer ( "A" );
+      this->card_text.setText ( "A" );
     else
-      this->card_text.setTextBuffer ( std::to_string ( card.getWestRank() ) );
+      this->card_text.setText ( std::to_string ( card.getWestRank() ) );
 
-    this->card_text.Draw ( engine, RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
+    this->card_text.setXY ( RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
+    this->card_text.Draw ( video_buffer );
 
     if ( card.getSouthRank() == 10 )
-      this->card_text.setTextBuffer ( "A" );
+      this->card_text.setText ( "A" );
     else
-      this->card_text.setTextBuffer ( std::to_string ( card.getSouthRank() ) );
+      this->card_text.setText ( std::to_string ( card.getSouthRank() ) );
 
-    this->card_text.Draw ( engine, RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
+    this->card_text.setXY ( RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
+    this->card_text.Draw ( video_buffer );
 
     return true;
   } // if card.getID() != 0

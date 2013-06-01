@@ -43,8 +43,8 @@ class Player
     unsigned int getScore ( void );
     void setScore ( unsigned int score );
 
-    void Update ( Gfx *engine );
-    void Draw ( Gfx *engine );
+    void Update ( void );
+    void Draw ( SDL_Surface *video_buffer );
 
   private:
     CardDebug debug; // debug support for card attributes

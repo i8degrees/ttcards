@@ -27,7 +27,7 @@ class GameOver: public GameState
 
     void HandleInput ( void );
     void Update ( void );
-    void Draw ( void );
+    void Draw ( SDL_Surface *video_buffer );
 
   private:
     void onExit ( void );

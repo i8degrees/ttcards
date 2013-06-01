@@ -261,7 +261,7 @@ void Board::Update ( unsigned int x, unsigned int y )
 }
 
 // Draws our active board grid based on their values (card IDs)
-void Board::Draw ( Gfx *engine )
+void Board::Draw ( SDL_Surface *video_buffer )
 {
   unsigned int x, y = 0;
 
@@ -269,7 +269,7 @@ void Board::Draw ( Gfx *engine )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->card->DrawCard ( engine, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+      this->card->DrawCard ( video_buffer, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
   }
 }

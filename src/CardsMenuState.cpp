@@ -92,7 +92,7 @@ void CardsMenu::Load ( void )
   this->info_text_gray.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
 
   // Initialize card name text so that we can obtain height info early on
-  this->info_text.setTextBuffer ( this->collection.cards[0].getName() );
+  this->info_text.setText ( this->collection.cards[0].getName() );
   this->info_text_height = this->info_text.getTextHeight();
 
   this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
@@ -210,46 +210,47 @@ void CardsMenu::onMouseWheel ( bool up, bool down )
 void CardsMenu::Update ( void )
 {
   this->updateCursor();
-
-  this->engine->UpdateScreen ();
 }
 
-void CardsMenu::Draw ( void )
+void CardsMenu::Draw ( SDL_Surface *video_buffer )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
   unsigned int hand_index = 0; // "dummy" card index var
 
-  engine->DrawSurface ( this->background, 0, 0 ); // draw static board background
+  Gfx::DrawSurface ( this->background, video_buffer, GCoords ( 0, 0 ), GCoords ( 0, 0, 384, 224 ) ); // draw static board background
 
   // static player2 hand background
   for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)
-    this->card.drawFaceDown ( this->engine, PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+    this->card.drawFaceDown ( video_buffer, PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
 
   // Active player's card selection(s)
   for ( hand_index = 0; hand_index < this->hand.size(); hand_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->hand.isValid ( this->hand.cards.at ( hand_index) ) == true )
-      this->card.DrawCard ( this->engine, this->hand.cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+      this->card.DrawCard ( video_buffer, this->hand.cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
   }
 
-  this->menu_box.Draw ( this->engine->screen, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
+  this->menu_box.Draw ( video_buffer, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
   for ( int i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {
     // Draw the top-left box title
-    this->info_small_text.setTextBuffer ( "CARDS" );
-    this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y );
+    this->info_small_text.setText ( "CARDS" );
+    this->info_small_text.setXY ( MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y );
+    this->info_small_text.Draw ( video_buffer );
 
     // Draw page number if we have more than one page to display
     if ( total_pages > 0 )
     {
-      this->info_small_text.setTextBuffer ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
-      this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y );
+      this->info_small_text.setText ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
+      this->info_small_text.setXY ( MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y );
+      this->info_small_text.Draw ( video_buffer );
     }
 
     // Draw the top-right box title (number of cards)
-    this->info_small_text.setTextBuffer ( "NUM." );
-    this->info_small_text.Draw ( this->engine, MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y );
+    this->info_small_text.setText ( "NUM." );
+    this->info_small_text.setXY ( MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y );
+    this->info_small_text.Draw ( video_buffer );
 
     // Draw the card selection helper element
     this->menu_element.setXY ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
@@ -259,33 +260,37 @@ void CardsMenu::Draw ( void )
     else
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT );
 
-    this->menu_element.Draw ( this->engine );
+    this->menu_element.Draw ( video_buffer );
 
     // Draw the card's name onto our menu box
     // FIXME ( this->info_text_gray )
     if ( this->hand.isValid ( this->collection.cards[i] ) )
     {
       this->info_text_gray.greyedOutText ( 150 );
-      this->info_text_gray.setTextBuffer ( this->collection.cards[i].getName() );
-      this->info_text_gray.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->info_text_gray.setText ( this->collection.cards[i].getName() );
+      this->info_text_gray.setXY ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->info_text_gray.Draw ( video_buffer );
     }
     else
     {
-      this->info_text.setTextBuffer ( this->collection.cards[i].getName() );
-      this->info_text.Draw ( this->engine, MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->info_text.setText ( this->collection.cards[i].getName() );
+      this->info_text.setXY ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->info_text.Draw ( video_buffer );
     }
 
     // Draw the number of cards in player's possession
     // TODO: Stub
     if ( this->hand.isValid ( this->collection.cards[i] ) )
     {
-      this->info_text_gray.setTextBuffer ( "0" );
-      this->info_text_gray.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->info_text_gray.setText ( "0" );
+      this->info_text_gray.setXY ( MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->info_text_gray.Draw ( video_buffer );
     }
     else
     {
-      this->info_text.setTextBuffer ( "1" );
-      this->info_text.Draw ( this->engine, MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->info_text.setText ( "1" );
+      this->info_text.setXY ( MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->info_text.Draw ( video_buffer );
     }
 
     // Lastly, check to see which page indicators we need to draw
@@ -293,14 +298,14 @@ void CardsMenu::Draw ( void )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->menu_element.setXY ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
-      this->menu_element.Draw ( this->engine );
+      this->menu_element.Draw ( video_buffer );
     }
 
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->menu_element.setXY ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
-      this->menu_element.Draw ( this->engine );
+      this->menu_element.Draw ( video_buffer );
     }
 
     // Move on to the next card in stack to draw
@@ -308,9 +313,11 @@ void CardsMenu::Draw ( void )
     y_offset += this->info_text_height;
   }
 
-  this->drawCursor();
+  this->drawCursor ( video_buffer );
 
-  this->card.DrawCard ( this->engine, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
+  this->card.DrawCard ( video_buffer, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
+
+  Gfx::UpdateScreen ( video_buffer );
 }
 
 // Helper method for debug logger
@@ -339,9 +346,9 @@ void CardsMenu::updateCursor ( void )
   }
 }
 
-void CardsMenu::drawCursor ( void )
+void CardsMenu::drawCursor ( SDL_Surface *video_buffer )
 {
-  this->cursor.Draw ( this->engine );
+  this->cursor.Draw ( video_buffer );
 }
 
 // Helper method for obtaining card hand index position based off given origin

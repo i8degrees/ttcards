@@ -93,7 +93,7 @@ int main(int argc, char*argv[])
         fps.Update();
 
         engine.Update ();
-        engine.Draw ();
+        engine.Draw ( Gfx::getDisplay() );
 
         if ( engine.getShowFPS() )
           engine.setTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );

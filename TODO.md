@@ -10,8 +10,9 @@
     5. https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/PropertyLists/CreatePropListProgram/CreatePropListProgram.html
     6. py2app
 
+* Card class: get/set XY && width/height ?
 * PauseState ( msgbox w/ blinking Pause text )
-* break CardView class up further?
+* break CardView class up further? ...drawElement, drawBackground, drawRanks, etc.
 * Re-enable AI control
 * Relocate cfg.cpp declarations to their applicable class header files
 * Collection::getCards() implementation

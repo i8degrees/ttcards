@@ -27,7 +27,7 @@ class CardsMenu: public GameState
 
     void HandleInput ( void );
     void Update ( void );
-    void Draw ( void );
+    void Draw ( SDL_Surface *video_buffer );
 
   private:
     void onExit ( void );
@@ -40,7 +40,7 @@ class CardsMenu: public GameState
 
     void reloadDebugFile ( void );
     void updateCursor ( void );
-    void drawCursor ( void );
+    void drawCursor ( SDL_Surface *video_buffer );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );

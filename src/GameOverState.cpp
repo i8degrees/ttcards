@@ -91,9 +91,9 @@ void GameOver::Update ( void )
   this->engine->UpdateScreen ();
 }
 
-void GameOver::Draw ( void )
+void GameOver::Draw ( SDL_Surface *video_buffer )
 {
-  engine->DrawSurface ( this->background, 0, 0 ); // draw static board background
+  Gfx::DrawSurface ( this->background, video_buffer, GCoords ( 0, 0 ), GCoords ( 0, 0, 384, 224 ) ); // draw static board background
 
   //this->gameOver_text.setTextBuffer ( "Game Over" );
   //signed int width = this->gameOver_text.getTextWidth ();
@@ -103,9 +103,9 @@ void GameOver::Draw ( void )
   for ( int cards_index = 0; cards_index < this->cards.size(); cards_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER1 )
-      this->card.DrawCard ( this->engine, this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+      this->card.DrawCard ( Gfx::getDisplay(), this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
     else if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER2 )
-      this->card.DrawCard ( this->engine, this->cards.at ( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+      this->card.DrawCard ( Gfx::getDisplay(), this->cards.at ( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
   }
 
   if ( this->state == 1 )

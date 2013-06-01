@@ -57,7 +57,7 @@ unsigned int Player::getY ( void )
 
 std::pair <int, int> Player::getXY ( void )
 {
-  return this->coords.getXY();
+  return std::make_pair ( this->coords.getX(), this->coords.getY() );
 }
 
 void Player::setXY ( unsigned int x, unsigned int y )
@@ -109,7 +109,7 @@ void Player::setScore ( unsigned int score )
   this->score = score;
 }
 
-void Player::Draw ( Gfx *engine )
+void Player::Draw ( SDL_Surface *video_buffer )
 {
   unsigned int hand_index = 0;
 
@@ -120,22 +120,22 @@ void Player::Draw ( Gfx *engine )
       if ( this->getID() == 1 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       else if ( this->getID() == 2 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( engine, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }
 }
 
-void Player::Update ( Gfx *engine )
+void Player::Update ( void )
 {
   // TODO
 }

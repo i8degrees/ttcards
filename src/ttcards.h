@@ -56,7 +56,7 @@ class TTcards: public GameState
     void player_turn ( unsigned int player );
     void endTurn ( void );
 
-    void showCardInfoBox ( void );
+    void showCardInfoBox ( SDL_Surface *video_buffer );
     bool isCursorLocked ( void );
     void lockCursor ( bool lock );
     void resetCursor ( void );
@@ -79,14 +79,14 @@ class TTcards: public GameState
     void moveCursorDown ( void );
 
     void updateCursor ( void );
-    void drawCursor ( void );
+    void drawCursor ( SDL_Surface *video_buffer );
 
     void updateScore ( void );
-    void drawScore ( void );
+    void drawScore ( SDL_Surface *video_buffer );
 
     void HandleInput ( void );
     void Update ( void );
-    void Draw ( void );
+    void Draw ( SDL_Surface *video_buffer );
 
     //static void Callback ( void ); // EMCC compiler related
     //void Start ( void ); // EMCC compiler related

@@ -58,7 +58,7 @@ bool TTcards::Init ( void )
 
   this->player_turn ( 0 );
 
-  update.Start();
+  //update.Start();
 
   //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
@@ -85,10 +85,10 @@ bool TTcards::Load ( void )
   this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
-  this->score_text.setTextColor ( 255, 255, 255 ); // white
+  this->score_text.setTextColor ( GColor ( 255, 255, 255 ) ); // white
 
   this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
-  this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
+  this->gameOver_text.setTextColor ( GColor ( 255, 255, 255 ) ); // color: red
 
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
@@ -269,7 +269,7 @@ void TTcards::endTurn ( void )
 
 // Interface Helper method; shows Card's ID number in a message box for both cursor
 // states; player's hand and placed board cards -- debug handling included
-void TTcards::showCardInfoBox ( void )
+void TTcards::showCardInfoBox ( SDL_Surface *video_buffer )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
   GCoords coords; // temp container var to hold cursor pos mapping coords
@@ -293,24 +293,30 @@ void TTcards::showCardInfoBox ( void )
   {
     if ( selectedCard.getID() != 0 )
     {
-      this->info_text.setTextBuffer ( std::to_string ( selectedCard.getID() ) );
+      this->info_text.setText ( std::to_string ( selectedCard.getID() ) );
       signed int text_width = this->info_text.getTextWidth ();
 
-      this->debug_box.Draw ( this->engine->screen, 170, 8, 43, 20 ); // 86x20 @ 140, 8
-      this->info_text.Draw ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 10 );
+      this->debug_box.Draw ( video_buffer, 170, 8, 43, 20 ); // 86x20 @ 140, 8
+
+      this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 10 );
+      this->info_text.Draw ( video_buffer );
     }
   }
 
   // (Southern) informational MessageBox display (selected / active card's name)
   if ( selectedCard.getName().length() != 0 || selectedCard.getName() != "\0" )
   {
-    this->info_text.setTextBuffer ( selectedCard.getName() );
+    this->info_text.setText ( selectedCard.getName() );
     unsigned int text_width = this->info_text.getTextWidth();
-    this->info_small_text.setTextBuffer ( "INFO" );
+    this->info_small_text.setText ( "INFO" );
 
-    this->info_box.Draw ( this->engine->screen, 104, 194, 176, 24 );
-    this->info_text.Draw ( this->engine, ( SCREEN_WIDTH - text_width ) / 2, 196 );
-    this->info_small_text.Draw ( this->engine, 108, 194 );
+    this->info_box.Draw ( video_buffer, 104, 194, 176, 24 );
+
+    this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 196 );
+    this->info_text.Draw ( video_buffer );
+
+    this->info_small_text.setXY ( 108, 194 );
+    this->info_small_text.Draw ( video_buffer );
   }
 }
 
@@ -439,12 +445,12 @@ void TTcards::onResize ( unsigned int width, unsigned int height )
 {
   if ( this->engine->isFullScreen() )
   {
-    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
+    Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
     this->engine->setFullScreen ( false );
   }
   else
   {
-    this->engine->SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+    Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
     this->engine->setFullScreen ( true );
   }
 }
@@ -690,9 +696,9 @@ void TTcards::updateCursor ( void )
     this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
 }
 
-void TTcards::drawCursor ( void )
+void TTcards::drawCursor ( SDL_Surface *video_buffer )
 {
-  this->cursor.Draw ( this->engine );
+  this->cursor.Draw ( video_buffer );
 }
 
 // Scoring: board_card_count + player_card_count
@@ -712,20 +718,20 @@ void TTcards::updateScore ( void )
   }
 }
 
-void TTcards::drawScore ( void )
+void TTcards::drawScore ( SDL_Surface *video_buffer )
 {
-  this->score_text.setTextBuffer ( std::to_string ( player[0].getScore() ) );
-  this->score_text.Draw ( engine, PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->score_text.setText ( std::to_string ( player[0].getScore() ) );
+  this->score_text.setXY ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->score_text.Draw ( video_buffer );
 
-  this->score_text.setTextBuffer ( std::to_string ( player[1].getScore() ) );
-  this->score_text.Draw ( engine, PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->score_text.setText ( std::to_string ( player[1].getScore() ) );
+  this->score_text.setXY ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->score_text.Draw ( video_buffer );
 }
 
 void TTcards::Update ( void )
 {
   this->updateCursor();
-
-  this->showCardInfoBox();
 
   this->updateScore();
 
@@ -733,32 +739,32 @@ void TTcards::Update ( void )
   {
     this->update.Start(); // restart
   }
-
-  this->engine->UpdateScreen ();
 }
 
-void TTcards::Draw ( void )
+void TTcards::Draw ( SDL_Surface *video_buffer )
 {
-  this->engine->DrawSurface ( this->background, 0, 0 );
+  Gfx::DrawSurface ( this->background, video_buffer, GCoords ( 0, 0 ), GCoords ( 0, 0, 384, 224 ) );
 
-  this->board.Draw ( this->engine );
+  this->board.Draw ( video_buffer );
 
-  this->player[0].Draw ( this->engine );
-  this->player[1].Draw ( this->engine );
+  this->player[0].Draw ( video_buffer );
+  this->player[1].Draw ( video_buffer );
 
   if ( this->get_turn() == 0 ) // player1
-    this->engine->DrawRectangle ( 320, 0, 16, 16, 188, 203, 236 ); // FIXME: placeholder for player select sprite animation
+    Gfx::drawRect ( video_buffer, GCoords ( 320, 0, 16, 16 ), GColor ( 188, 203, 236 ) ); // FIXME: placeholder for player select sprite animation
   else // player2
-    this->engine->DrawRectangle ( 40, 0, 16, 16, 222, 196, 205 ); // // FIXME: placeholder for player select sprite animation
+    Gfx::drawRect ( video_buffer, GCoords ( 40, 0, 16, 16 ), GColor ( 222, 196, 205 ) ); // // FIXME: placeholder for player select sprite animation
 
-  this->drawCursor();
+  this->drawCursor ( video_buffer );
 
-  this->drawScore ();
+  this->showCardInfoBox ( video_buffer );
 
-  if ( this->update.getTicks() > 1000 )
-  {
-    this->engine->DrawRectangle ( 0, 0, 384, 224, 255, 255, 255 );
-  }
+  this->drawScore ( video_buffer );
+
+  //if ( this->update.getTicks() > 1000 )
+  //{
+    //Gfx::drawRect ( 0, 0, 384, 224, 255, 255, 255 );
+  //}
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
@@ -772,9 +778,10 @@ void TTcards::Draw ( void )
 
     if ( this->player[PLAYER1].getScore() > this->player[PLAYER2].getScore() ) // player 1 wins
     {
-      this->gameOver_text.setTextBuffer ( "Player 1 wins!" );
+      this->gameOver_text.setText ( "Player 1 wins!" );
       signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.Draw ( video_buffer );
 
       for ( unsigned int i = 0; i < this->hand[PLAYER2].size(); i++ )
         winning_cards.push_back ( this->hand[PLAYER2].cards[i] );
@@ -789,15 +796,18 @@ void TTcards::Draw ( void )
             winning_cards.push_back ( card );
         }
       }
-      //SDL_Delay ( 2500 );
+
+      Gfx::UpdateScreen(); // FIXME
+      SDL_Delay ( 2500 );
 
       engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 1 ) ) );
     }
     else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
     {
-      this->gameOver_text.setTextBuffer ( "Player 2 wins!" );
+      this->gameOver_text.setText ( "Player 2 wins!" );
       signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.Draw ( video_buffer );
 
       for ( unsigned int i = 0; i < this->hand[PLAYER1].size(); i++ )
         winning_cards.push_back ( this->hand[PLAYER1].cards[i] );
@@ -813,19 +823,22 @@ void TTcards::Draw ( void )
         }
       }
 
-      //SDL_Delay ( 2500 );
+      Gfx::UpdateScreen(); // FIXME
+      SDL_Delay ( 2500 );
 
       engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 2 ) ) );
     }
     else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
     {
-      this->gameOver_text.setTextBuffer ( "Tie!" );
+      this->gameOver_text.setText ( "Tie!" );
       signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.Draw ( video_buffer );
 
       winning_cards.clear();
 
-      //SDL_Delay ( 2500 );
+      Gfx::UpdateScreen (); // FIXME
+      SDL_Delay ( 2500 );
 
       engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 3 ) ) );
     }
@@ -835,4 +848,5 @@ void TTcards::Draw ( void )
       exit(1);
     }
   }
+  Gfx::UpdateScreen ( video_buffer );
 }
