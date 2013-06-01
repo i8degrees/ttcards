@@ -18,7 +18,7 @@
 int main(int argc, char*argv[])
 {
   unsigned int sdl_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
-  unsigned int video_flags = SDL_HWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
+  unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
   unsigned int loops = 0; // globalTimer related
   unsigned int next_game_tick = 0; // globalTimer related
