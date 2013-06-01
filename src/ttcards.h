@@ -96,6 +96,8 @@ class TTcards: public GameState
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     SDL_Surface *background; // pointer holding our board background image
 
+    Timer update;
+    SDL_TFont gameOver_text; // dialog text
     SDLBitmapFont info_text;
     SDLBitmapFont info_small_text;
 

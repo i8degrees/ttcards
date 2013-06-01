@@ -8,14 +8,16 @@
 ******************************************************************************/
 #include "GameOverState.h"
 
-GameOver::GameOver ( Gfx *engine, unsigned int state )
+GameOver::GameOver ( Gfx *engine, std::vector<Card> cards_, unsigned int state )
 {
   #ifdef DEBUG_GAMEOVER_OBJ
     std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
   #endif
 
   this->engine = engine;
+  this->background = NULL;
   this->state = state;
+  this->cards = cards_; // FIXME?
 
   this->Load();
 }
@@ -26,14 +28,24 @@ GameOver::~GameOver ( void )
     std::cout << "GameOver::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
+  if ( this->background )
+    SDL_FreeSurface ( this->background );
+
+  this->background = NULL;
+
   if ( this->engine )
     this->engine = NULL;
 }
 
 void GameOver::Load ( void )
 {
-  this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
-  this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
+  for ( int i = 0; i < cards.size(); i++ )
+    std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
+
+  this->background = Gfx::LoadImage ( GAMEOVER_BACKGROUND );
+
+  //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
+  //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
 }
 
 void GameOver::Pause ( void )
@@ -81,26 +93,39 @@ void GameOver::Update ( void )
 
 void GameOver::Draw ( void )
 {
-  this->gameOver_text.setTextBuffer ( "Game Over" );
-  signed int width = this->gameOver_text.getTextWidth ();
-  this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
+  engine->DrawSurface ( this->background, 0, 0 ); // draw static board background
+
+  //this->gameOver_text.setTextBuffer ( "Game Over" );
+  //signed int width = this->gameOver_text.getTextWidth ();
+  //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
+
+  // Active player's card selection(s)
+  for ( int cards_index = 0; cards_index < this->cards.size(); cards_index++ ) // TODO: std::get<1>(player_coords)
+  {
+    if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER1 )
+      this->card.DrawCard ( this->engine, this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+    else if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER2 )
+      this->card.DrawCard ( this->engine, this->cards.at ( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+  }
 
   if ( this->state == 1 )
   {
-    this->gameOver_text.setTextBuffer ( "Player 1 wins!" );
-    signed int width = this->gameOver_text.getTextWidth ();
-    this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+    //this->gameOver_text.setTextBuffer ( "Player 1 wins!" );
+    //signed int width = this->gameOver_text.getTextWidth ();
+    //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
   else if ( this->state == 2 )
   {
-    this->gameOver_text.setTextBuffer ( "Player 2 wins!" );
-    signed int width = this->gameOver_text.getTextWidth ();
-    this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+    //this->gameOver_text.setTextBuffer ( "Player 2 wins!" );
+    //signed int width = this->gameOver_text.getTextWidth ();
+    //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
   else if ( this->state == 3 )
   {
-    this->gameOver_text.setTextBuffer ( "Tie!" );
-    signed int width = this->gameOver_text.getTextWidth ();
-    this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+    //this->gameOver_text.setTextBuffer ( "Tie!" );
+    //signed int width = this->gameOver_text.getTextWidth ();
+    //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
+
+
 }

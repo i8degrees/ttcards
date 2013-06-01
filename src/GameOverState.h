@@ -14,10 +14,12 @@
 
 #include "ttcards.h"
 
+#include "timer.h"
+
 class GameOver: public GameState
 {
   public:
-    GameOver ( Gfx *engine, unsigned int state = 0 );
+    GameOver ( Gfx *engine, std::vector<Card> cards_, unsigned int state );
     ~GameOver ( void );
 
     void Pause ( void );
@@ -33,7 +35,10 @@ class GameOver: public GameState
     void Load ( void );
 
     Gfx *engine; // Pointer reference to our rendering interface
-    SDL_TFont gameOver_text; // dialog text
+    CardView card; // card rendering
+    SDL_Surface *background;
+    //SDL_TFont gameOver_text; // dialog text
+    std::vector<Card> cards;
 
     unsigned int state;
 };

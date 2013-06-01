@@ -58,6 +58,8 @@ bool TTcards::Init ( void )
 
   this->player_turn ( 0 );
 
+  update.Start();
+
   //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 
   return true;
@@ -84,6 +86,9 @@ bool TTcards::Load ( void )
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( 255, 255, 255 ); // white
+
+  this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
+  this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
 
   this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
@@ -724,6 +729,11 @@ void TTcards::Update ( void )
 
   this->updateScore();
 
+  if ( this->update.getTicks() > 1100 )
+  {
+    this->update.Start(); // restart
+  }
+
   this->engine->UpdateScreen ();
 }
 
@@ -745,20 +755,84 @@ void TTcards::Draw ( void )
 
   this->drawScore ();
 
+  if ( this->update.getTicks() > 1000 )
+  {
+    this->engine->DrawRectangle ( 0, 0, 384, 224, 255, 255, 255 );
+  }
+
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
   //
+  // Game Over States
   // game / round is over when board card count >= 9
-  if ( this->board.getCount () >= 9 /* || this->hand[0].getCount() == 0 || this->hand[1].getCount() == 0 */)
+  if ( this->board.getCount () >= 9 || this->hand[PLAYER1].size() == 0 || this->hand[PLAYER2].size() == 0 )
   {
-    // Game Over State
-    if ( this->player[0].getScore() > this->player[1].getScore() ) // player 1 wins
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 1 ) ) );
-    else if ( this->player[1].getScore() > this->player[0].getScore() ) // player 2 wins
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 2 ) ) );
-    else if ( this->player[0].getScore() == this->player[1].getScore() )  // player tie
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 3 ) ) );
-    else
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, 0 ) ) );
+    std::vector<Card> winning_cards;
+    winning_cards.clear();
+
+    if ( this->player[PLAYER1].getScore() > this->player[PLAYER2].getScore() ) // player 1 wins
+    {
+      this->gameOver_text.setTextBuffer ( "Player 1 wins!" );
+      signed int width = this->gameOver_text.getTextWidth ();
+      this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+
+      for ( unsigned int i = 0; i < this->hand[PLAYER2].size(); i++ )
+        winning_cards.push_back ( this->hand[PLAYER2].cards[i] );
+
+      for ( int y = 0; y < BOARD_GRID_HEIGHT; y++ )
+      {
+        for ( int x = 0; x < BOARD_GRID_WIDTH; x++ )
+        {
+          Card card = this->board.getCard ( x, y );
+
+          if ( card.getPlayerOwner() == Card::PLAYER2 )
+            winning_cards.push_back ( card );
+        }
+      }
+      //SDL_Delay ( 2500 );
+
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 1 ) ) );
+    }
+    else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
+    {
+      this->gameOver_text.setTextBuffer ( "Player 2 wins!" );
+      signed int width = this->gameOver_text.getTextWidth ();
+      this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+
+      for ( unsigned int i = 0; i < this->hand[PLAYER1].size(); i++ )
+        winning_cards.push_back ( this->hand[PLAYER1].cards[i] );
+
+      for ( int y = 0; y < BOARD_GRID_HEIGHT; y++ )
+      {
+        for ( int x = 0; x < BOARD_GRID_WIDTH; x++ )
+        {
+          Card card = this->board.getCard ( x, y );
+
+          if ( card.getPlayerOwner() == Card::PLAYER1 )
+            winning_cards.push_back ( card );
+        }
+      }
+
+      //SDL_Delay ( 2500 );
+
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 2 ) ) );
+    }
+    else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
+    {
+      this->gameOver_text.setTextBuffer ( "Tie!" );
+      signed int width = this->gameOver_text.getTextWidth ();
+      this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+
+      winning_cards.clear();
+
+      //SDL_Delay ( 2500 );
+
+      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 3 ) ) );
+    }
+    else // Undefined
+    {
+      std::cout << "ERR in isGameOver()" << "\n";
+      exit(1);
+    }
   }
 }
