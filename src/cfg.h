@@ -203,6 +203,7 @@ extern const std::string INFO_SMALL_FONTFACE;
 extern const std::string SCORE_FONTFACE;
 extern const std::string APP_ICON;
 extern const std::string BOARD_BACKGROUND;
+extern const std::string GAMEOVER_BACKGROUND;
 extern const std::string CARD_ELEMENTS;
 extern const std::string CARD_FACES;
 extern const std::string CARD_BACKGROUNDS;

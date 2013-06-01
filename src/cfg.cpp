@@ -174,6 +174,7 @@ const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "./data/fonts/VIII_small.p
 const std::string SCORE_FONTFACE =      WORKING_DIR + "./data/fonts/EnvyCodeRb.ttf";
 const std::string APP_ICON =            WORKING_DIR + "./data/images/ttcards.bmp";
 const std::string BOARD_BACKGROUND =    WORKING_DIR + "./data/images/board.png";
+const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "./data/images/game-over_background.png";
 const std::string CARD_ELEMENTS =       WORKING_DIR + "./data/images/elements.png";
 const std::string CARD_FACES =          WORKING_DIR + "./data/images/faces.png";
 const std::string CARD_BACKGROUNDS =    WORKING_DIR + "./data/images/backgrounds.png";
