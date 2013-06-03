@@ -11,11 +11,13 @@ set ( EMCC_PRELOAD "${CMAKE_CURRENT_SOURCE_DIR}/data/images" )
 set ( LLVM_ANALYZER_BIN "$ENV{HOME}/local/checker/scan-build" )
 set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
 
-set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
-set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
-set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
-set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
+#set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
+#set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
+#set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
+#set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
+
 set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
+
 set ( SRC_DIR src ) # project_dir/src
 #set ( GAMELIB_SRC gamelib/src ) # project_dir/gamelib/src
 #set ( NOMJSON_SRC nomJSON/src ) # project_dir/nomJSON/src
