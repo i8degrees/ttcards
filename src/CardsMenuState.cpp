@@ -317,7 +317,7 @@ void CardsMenu::Draw ( SDL_Surface *video_buffer )
 
   this->card.DrawCard ( video_buffer, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
 
-  Gfx::UpdateScreen ( video_buffer );
+  Gfx::updateSurface ( video_buffer ); // FIXME
 }
 
 // Helper method for debug logger

@@ -739,6 +739,8 @@ void TTcards::Update ( void )
   {
     this->update.Start(); // restart
   }
+
+  //Gfx::updateSurface ( video_buffer ); // FIXME
 }
 
 void TTcards::Draw ( SDL_Surface *video_buffer )
@@ -797,7 +799,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
         }
       }
 
-      Gfx::UpdateScreen(); // FIXME
+      Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
       engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 1 ) ) );
@@ -823,7 +825,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
         }
       }
 
-      Gfx::UpdateScreen(); // FIXME
+      Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
       engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 2 ) ) );
@@ -837,7 +839,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
 
       winning_cards.clear();
 
-      Gfx::UpdateScreen (); // FIXME
+      Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
       engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 3 ) ) );
@@ -848,5 +850,5 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
       exit(1);
     }
   }
-  Gfx::UpdateScreen ( video_buffer );
+  Gfx::updateSurface ( video_buffer );
 }

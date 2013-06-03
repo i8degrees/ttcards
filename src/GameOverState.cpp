@@ -88,7 +88,6 @@ void GameOver::onKeyDown ( SDLKey key, SDLMod mod )
 
 void GameOver::Update ( void )
 {
-  this->engine->UpdateScreen ();
 }
 
 void GameOver::Draw ( SDL_Surface *video_buffer )
@@ -127,5 +126,6 @@ void GameOver::Draw ( SDL_Surface *video_buffer )
     //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
 
+  Gfx::updateSurface ( video_buffer ); // FIXME
 
 }
