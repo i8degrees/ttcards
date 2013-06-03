@@ -46,8 +46,8 @@ set ( TTCARDS_SOURCE
     )
 
 set ( GAMELIB_SOURCE
-      ${GAMELIB_SRC}/GCoords.cpp
-      ${GAMELIB_SRC}/GColor.cpp
+      ${GAMELIB_SRC}/Coords.cpp
+      ${GAMELIB_SRC}/Color.cpp
       ${GAMELIB_SRC}/Logger.cpp
       ${GAMELIB_SRC}/audio.cpp
       #${GAMELIB_SRC}/font.cpp
