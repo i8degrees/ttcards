@@ -93,7 +93,7 @@ void GameOver::Update ( void )
 
 void GameOver::Draw ( SDL_Surface *video_buffer )
 {
-  Gfx::DrawSurface ( this->background, video_buffer, GCoords ( 0, 0 ), GCoords ( 0, 0, 384, 224 ) ); // draw static board background
+  Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background
 
   //this->gameOver_text.setTextBuffer ( "Game Over" );
   //signed int width = this->gameOver_text.getTextWidth ();

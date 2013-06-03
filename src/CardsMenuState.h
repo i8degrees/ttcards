@@ -61,7 +61,7 @@ class CardsMenu: public GameState
 
     SDLMessageBox menu_box;
     SDLGradient linear;
-    GColor msgbox[8];
+    nom::Color msgbox[8];
 
     CardView card; // card rendering
     CardHand hand; // player1 hand

@@ -85,16 +85,16 @@ bool TTcards::Load ( void )
   this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
-  this->score_text.setTextColor ( GColor ( 255, 255, 255 ) ); // white
+  this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
 
   this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
-  this->gameOver_text.setTextColor ( GColor ( 255, 255, 255 ) ); // color: red
+  this->gameOver_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // color: red
 
-  this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
-  this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+  this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
+  this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
 
   this->cursor = nom::SDL_Cursor ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->cursor.Load ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
+  this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ) );
   this->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->cursor.setState ( 0 ); // default state; player hand select
 
@@ -272,7 +272,7 @@ void TTcards::endTurn ( void )
 void TTcards::showCardInfoBox ( SDL_Surface *video_buffer )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
-  GCoords coords; // temp container var to hold cursor pos mapping coords
+  nom::Coords coords; // temp container var to hold cursor pos mapping coords
 
   unsigned int player_turn = get_turn();
 
@@ -358,7 +358,7 @@ void TTcards::unlockSelectedCard ( void )
 // helper method for cursor input selection
 void TTcards::lockSelectedCard ( void )
 {
-  GCoords coords; // temp container var to hold cursor pos mapping coords
+  nom::Coords coords; // temp container var to hold cursor pos mapping coords
 
   this->cursor.setState ( 1 ); // board select
 
@@ -497,7 +497,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 
 void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
 {
-  GCoords coords ( x, y ); // temp container var to hold cursor pos mapping coords
+  nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
   unsigned int player_turn = get_turn();
 
   std::pair<int, int> player_coords = player[player_turn].getXY(); // PLAYER ORIGIN XY
@@ -586,10 +586,10 @@ void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
   }
 }
 
-GCoords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
+nom::Coords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
 {
   unsigned int idx = 0;
-  GCoords pos ( -1, -1 ); // ...when all else fails, default to undefined
+  nom::Coords pos ( -1, -1 ); // ...when all else fails, default to undefined
 
   for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
   {
@@ -743,7 +743,7 @@ void TTcards::Update ( void )
 
 void TTcards::Draw ( SDL_Surface *video_buffer )
 {
-  Gfx::DrawSurface ( this->background, video_buffer, GCoords ( 0, 0 ), GCoords ( 0, 0, 384, 224 ) );
+  Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) );
 
   this->board.Draw ( video_buffer );
 
@@ -751,9 +751,9 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
   this->player[1].Draw ( video_buffer );
 
   if ( this->get_turn() == 0 ) // player1
-    Gfx::drawRect ( video_buffer, GCoords ( 320, 0, 16, 16 ), GColor ( 188, 203, 236 ) ); // FIXME: placeholder for player select sprite animation
+    Gfx::drawRect ( video_buffer, nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ); // FIXME: placeholder for player select sprite animation
   else // player2
-    Gfx::drawRect ( video_buffer, GCoords ( 40, 0, 16, 16 ), GColor ( 222, 196, 205 ) ); // // FIXME: placeholder for player select sprite animation
+    Gfx::drawRect ( video_buffer, nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ); // // FIXME: placeholder for player select sprite animation
 
   this->drawCursor ( video_buffer );
 

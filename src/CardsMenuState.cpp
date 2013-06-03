@@ -87,19 +87,19 @@ void CardsMenu::Load ( void )
 
   this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
-  this->info_text.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
-  this->info_small_text.Load ( INFO_SMALL_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
-  this->info_text_gray.Load ( INFO_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+  this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
+  this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
+  this->info_text_gray.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
 
   // Initialize card name text so that we can obtain height info early on
   this->info_text.setText ( this->collection.cards[0].getName() );
   this->info_text_height = this->info_text.getTextHeight();
 
   this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->menu_element.Load ( MENU_ELEMENTS, GColor ( 0, 0, 0 ) );
+  this->menu_element.Load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ) );
 
   this->cursor = nom::SDL_Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->cursor.Load ( INTERFACE_CURSOR, GColor ( 0, 0, 0 ) );
+  this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ) );
   this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image
   this->cursor.setState ( 0 ); // default state for navigating card menu
 
@@ -217,7 +217,7 @@ void CardsMenu::Draw ( SDL_Surface *video_buffer )
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
   unsigned int hand_index = 0; // "dummy" card index var
 
-  Gfx::DrawSurface ( this->background, video_buffer, GCoords ( 0, 0 ), GCoords ( 0, 0, 384, 224 ) ); // draw static board background
+  Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background
 
   // static player2 hand background
   for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)

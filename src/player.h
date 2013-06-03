@@ -51,7 +51,7 @@ class Player
     CardView *card; // pointer referencing our card rendering class
     CardHand *hand; // pointer reference to player's hand
 
-    GCoords coords; // x, y origin coords
+    nom::Coords coords; // x, y origin coords
     unsigned int id; // unique identifier for tracking each player in game
     unsigned int state; // not implemented
     unsigned int score; // player's scoreboard

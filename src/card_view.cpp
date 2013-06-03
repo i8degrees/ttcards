@@ -18,7 +18,7 @@ CardView::CardView ( void )
   this->card_background = NULL;
   this->card_element = NULL;
 
-  this->card_text.Load ( CARD_FONTFACE, GColor ( 110, 144, 190 ), 16, 16 );
+  this->card_text.Load ( CARD_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
 
   this->card_face = new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -28,9 +28,9 @@ CardView::CardView ( void )
   this->card_background->setSheetDimensions ( 256, 64, 0, 0 );
   this->card_element->setSheetDimensions ( 144, 16, 0, 0 );
 
-  this->card_face->Load ( CARD_FACES, GColor ( 0, 0, 0 ) );
-  this->card_background->Load ( CARD_BACKGROUNDS, GColor ( 0, 0, 0 ) );
-  this->card_element->Load ( CARD_ELEMENTS, GColor ( 0, 0, 0 ) );
+  this->card_face->Load ( CARD_FACES, nom::Color ( 0, 0, 0 ) );
+  this->card_background->Load ( CARD_BACKGROUNDS, nom::Color ( 0, 0, 0 ) );
+  this->card_element->Load ( CARD_ELEMENTS, nom::Color ( 0, 0, 0 ) );
 }
 
 CardView::~CardView ( void )

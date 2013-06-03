@@ -71,7 +71,7 @@ class TTcards: public GameState
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( unsigned int which, unsigned int button );
 
-    GCoords getCursorBoardPos ( unsigned int x, unsigned int y );
+    nom::Coords getCursorBoardPos ( unsigned int x, unsigned int y );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );
@@ -104,7 +104,7 @@ class TTcards: public GameState
     SDLMessageBox info_box;
     SDLMessageBox debug_box;
     SDLGradient linear;
-    GColor msgbox[8];
+    nom::Color msgbox[8];
 
     SDL_TFont score_text; // scoreboard text
     Board board; // game board
@@ -120,13 +120,13 @@ class TTcards: public GameState
     nom::SDL_Cursor cursor; // interface cursor
 
     // x, y coords mapping for player1, player2 cursor starting position
-    GCoords player_cursor_coords[2];
+    nom::Coords player_cursor_coords[2];
 
     // y coords mapping for cursor -> card position index
-    GCoords cursor_coords_map[5];
+    nom::Coords cursor_coords_map[5];
 
     // x, y coords for selectedCard from cursor to board placement
-    GCoords board_coords_map[9];
+    nom::Coords board_coords_map[9];
 
     //Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     //Audio music; // holds our musical tracks

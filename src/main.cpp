@@ -64,7 +64,7 @@ int main(int argc, char*argv[])
   Gfx engine ( sdl_flags ); // Second priority
 
   #ifndef EMSCRIPTEN
-    engine.setIcon ( APP_ICON, GColor ( 0, 0, 0 ) ); // Dependencies: before video init
+    engine.setIcon ( APP_ICON, nom::Color ( 0, 0, 0 ) ); // Dependencies: before video init
   #endif
 
   engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
