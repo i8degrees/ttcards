@@ -1,5 +1,6 @@
 # Project Folders
 project/
+tmp/
 
 # Project Files
 \*.ttcards.sublime-workspace
@@ -15,9 +16,9 @@ project/
 
 # Debugging
 *.debug
-ttcards
-ttcards.dSYM/
-offsets.val
+ttcards/ttcards
+*ttcards.dSYM*
+*.offsets.val
 
 # EMCC
 public/

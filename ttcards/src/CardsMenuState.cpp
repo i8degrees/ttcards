@@ -20,7 +20,7 @@ CardsMenu::CardsMenu ( Gfx *engine )
 
   this->engine = engine;
   this->background = NULL;
-  this->collection.Load ( CARDS_DB );
+  this->collection.LoadJSON ( CARDS_DB );
 
   // Borrowed from Player class; this is perhaps a hack-(ish) workaround
     /* FIXME: */

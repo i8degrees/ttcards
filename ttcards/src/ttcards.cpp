@@ -79,7 +79,7 @@ bool TTcards::Load ( void )
 {
   unsigned int idx = 0; // for loop iterations
 
-  this->collection.Load ( CARDS_DB );
+  this->collection.LoadJSON ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
   this->background = Gfx::LoadImage ( BOARD_BACKGROUND );

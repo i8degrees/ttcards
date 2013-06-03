@@ -82,20 +82,17 @@ void CardDebug::ListCards ( std::vector<Card> &cards )
     std::cout << cards[i].getElement();
     std::cout << " ";
 
-    for ( int rank = 0; rank < 4; rank++ )
-    {
-      std::cout << cards[i].getNorthRank();
-      std::cout << " ";
+    std::cout << cards[i].getNorthRank();
+    std::cout << ", ";
 
-      std::cout << cards[i].getEastRank();
-      std::cout << " ";
+    std::cout << cards[i].getEastRank();
+    std::cout << ", ";
 
-      std::cout << cards[i].getSouthRank();
-      std::cout << " ";
+    std::cout << cards[i].getSouthRank();
+    std::cout << ", ";
 
-      std::cout << cards[i].getWestRank();
-      std::cout << " ";
-    }
+    std::cout << cards[i].getWestRank();
+    std::cout << " ";
 
     std::cout << cards[i].getName();
     std::cout << " ";

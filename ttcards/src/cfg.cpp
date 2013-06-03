@@ -172,7 +172,7 @@ const int PLAYER_AI_ID = 4;
 
 std::string WORKING_DIR; // See main.cpp
 
-const std::string CARDS_DB =            WORKING_DIR + "./data/cards.txt";
+const std::string CARDS_DB =            WORKING_DIR + "./data/cards.json";
 const std::string MENU_ELEMENTS =       WORKING_DIR + "./data/images/menu_elements.png";
 const std::string CARD_FONTFACE =       WORKING_DIR + "./data/fonts/VIII_cards.png";
 const std::string INFO_FONTFACE =       WORKING_DIR + "./data/fonts/VIII.png";

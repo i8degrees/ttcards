@@ -3,4 +3,7 @@
 	url = git://github.com/i8degrees/gamelib
 [submodule "nomJSON"]
 	path = nomJSON
-	url = git://github.com/i8degrees/nomJSON.git
+  url = git://github.com/i8degrees/nomJSON.git
+[submodule "json_spirit"]
+	path = json_spirit
+	url = git://github.com/i8degrees/json_spirit.git
