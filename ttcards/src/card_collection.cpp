@@ -181,8 +181,10 @@ bool Collection::LoadJSON ( std::string filename )
     }
   }
 
-  CardDebug debug;
-  debug.ListCards ( this->cards );
+  #ifdef DEBUG_CARD_COLLECTION
+    CardDebug debug;
+    debug.ListCards ( this->cards );
+  #endif
 
   fp.close();
 
