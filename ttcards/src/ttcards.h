@@ -138,6 +138,7 @@ class TTcards: public GameState
 
     typedef std::vector<nom::SDL_Drawable*> drawable_t;
     drawable_t drawableRects;
+    nom::Rectangle rect;
 };
 
 #endif // GAMEAPP_TTCARDS_HEADERS defined

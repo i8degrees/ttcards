@@ -739,6 +739,11 @@ void TTcards::Update ( void )
 {
   this->updateCursor();
 
+  if ( this->get_turn() == 0 ) // player1
+    rect.set ( Coords ( 320, 0, 16, 16 ), Color ( 188, 203, 236 ) );
+  else // player2
+    rect.set ( Coords ( 40, 0, 16, 16 ), Color ( 222, 196, 205 ) );
+
   this->updateScore();
 
   if ( this->update.getTicks() > 1100 )
@@ -758,10 +763,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );
 
-  if ( this->get_turn() == 0 ) // player1
-    drawableRects[0]->Draw ( video_buffer );
-  else // player2
-    drawableRects[1]->Draw ( video_buffer );
+  rect.Draw ( video_buffer );
 
   this->drawCursor ( video_buffer );
 
