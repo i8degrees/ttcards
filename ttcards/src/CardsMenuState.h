@@ -51,9 +51,9 @@ class CardsMenu: public GameState
     Collection collection; // cards database
     SDL_Surface *background; // pointer holding our background image
 
-    SDLBitmapFont info_text;
-    SDLBitmapFont info_small_text;
-    SDLBitmapFont info_text_gray;
+    nom::SDL_BitmapFont info_text;
+    nom::SDL_BitmapFont info_small_text;
+    nom::SDL_BitmapFont info_text_gray;
 
     CardDebug debug; // debug support for card attributes
     Logger logDebug;

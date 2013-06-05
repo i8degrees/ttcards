@@ -8,6 +8,8 @@
 ******************************************************************************/
 #include "GameOverState.h"
 
+using namespace nom;
+
 GameOver::GameOver ( Gfx *engine, std::vector<Card> cards_, unsigned int state )
 {
   #ifdef DEBUG_GAMEOVER_OBJ

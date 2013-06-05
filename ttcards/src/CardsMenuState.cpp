@@ -8,6 +8,8 @@
 ******************************************************************************/
 #include "CardsMenuState.h"
 
+using namespace nom;
+
 CardsMenu::CardsMenu ( Gfx *engine )
 {
   unsigned int pid = 0; // temp var for for loop iteration

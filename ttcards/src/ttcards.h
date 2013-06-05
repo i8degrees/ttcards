@@ -23,7 +23,7 @@
 
 #include "Logger.h"
 #include "SDLMessageBox.h"
-#include "SDL_TFont.h"
+#include "SDL_Font.h"
 #include "SDL_BitmapFont.h"
 #include "SDL_Cursor.h"
 #include "SDLDrawable.h"
@@ -99,16 +99,16 @@ class TTcards: public GameState
     SDL_Surface *background; // pointer holding our board background image
 
     Timer update;
-    SDL_TFont gameOver_text; // dialog text
-    SDLBitmapFont info_text;
-    SDLBitmapFont info_small_text;
+    nom::SDL_Font gameOver_text; // dialog text
+    nom::SDL_BitmapFont info_text;
+    nom::SDL_BitmapFont info_small_text;
 
     SDLMessageBox info_box;
     SDLMessageBox debug_box;
     SDLGradient linear;
     nom::Color msgbox[8];
 
-    SDL_TFont score_text; // scoreboard text
+    nom::SDL_Font score_text; // scoreboard text
     Board board; // game board
 
     CardDebug debug; // debug support for card attributes

@@ -16,8 +16,6 @@
   #include "emscripten.h"
 #endif
 
-using namespace nom;
-
 int main(int argc, char*argv[])
 {
   unsigned int sdl_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
@@ -64,7 +62,7 @@ int main(int argc, char*argv[])
 
   std::srand ( ( unsigned ) time ( 0 ) ); // Dependencies: before app state init
 
-  SDL_Display display ( sdl_flags );
+  nom::SDL_Display display ( sdl_flags );
 
   Gfx engine; // GameStates
 

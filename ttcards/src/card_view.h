@@ -30,7 +30,7 @@ class CardView
     nom::Sprite *card_face;
     nom::Sprite *card_background;
     nom::Sprite *card_element;
-    SDLBitmapFont card_text;
+    nom::SDL_BitmapFont card_text;
 };
 
 #endif // CARD_VIEW_HEADERS defined

@@ -8,6 +8,8 @@
 ******************************************************************************/
 #include "card_view.h"
 
+using namespace nom;
+
 CardView::CardView ( void )
 {
   #ifdef DEBUG_CARD_VIEW_OBJ
