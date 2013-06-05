@@ -10,6 +10,7 @@
     5. https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/PropertyLists/CreatePropListProgram/CreatePropListProgram.html
     6. py2app
 
+* Rename header file extensions to .hpp
 * Card class: get/set XY && width/height ?
 * PauseState ( msgbox w/ blinking Pause text )
 * break CardView class up further? ...drawElement, drawBackground, drawRanks, etc.
