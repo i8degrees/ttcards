@@ -19,8 +19,6 @@
 #include "card_debug.h"
 
 #include "json_spirit.h"
-#include "json_spirit_stream_reader.h"
-#include "json_spirit_writer_template.h" // FIXME
 
 #ifndef JSON_SPIRIT_VALUE_ENABLED
   #define JSON_SPIRIT_VALUE_ENABLED

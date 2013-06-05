@@ -111,7 +111,7 @@ bool Collection::LoadJSON ( std::string filename )
   {
     if ( fp.good() )
     {
-      json_spirit::read_stream ( fp, value );
+      json_spirit::read ( fp, value );
 
       assert ( value.type() == json_spirit::array_type );
       values = value.get_array();
@@ -234,8 +234,7 @@ bool Collection::ExportJSON ( std::string filename )
 
   fp.open ( filename );
 
-  json_spirit::write_stream ( json_spirit::Value ( values ), fp, json_spirit::pretty_print );
-  //json_spirit::write_formatted ( values, fp );
+  json_spirit::write ( values, fp );
 
   fp.close();
 
