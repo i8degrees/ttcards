@@ -42,7 +42,7 @@ void GameOver::Load ( void )
   for ( int i = 0; i < cards.size(); i++ )
     std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
 
-  this->background = Gfx::LoadImage ( GAMEOVER_BACKGROUND );
+  this->background = Gfx::LoadImage ( GAMEOVER_BACKGROUND, nom::Color ( 0, 0, 0 ) );
 
   //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
@@ -102,9 +102,9 @@ void GameOver::Draw ( SDL_Surface *video_buffer )
   for ( int cards_index = 0; cards_index < this->cards.size(); cards_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER1 )
-      this->card.DrawCard ( Gfx::getDisplay(), this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+      this->card.DrawCard ( video_buffer, this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
     else if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER2 )
-      this->card.DrawCard ( Gfx::getDisplay(), this->cards.at ( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+      this->card.DrawCard ( video_buffer, this->cards.at ( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
   }
 
   if ( this->state == 1 )

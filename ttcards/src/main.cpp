@@ -6,6 +6,7 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
+#include "SDL_Display.h"
 #include "ttcards.h"
 #include "fps.h"
 
@@ -14,6 +15,8 @@
 #ifdef EMSCRIPTEN
   #include "emscripten.h"
 #endif
+
+using namespace nom;
 
 int main(int argc, char*argv[])
 {
@@ -61,13 +64,16 @@ int main(int argc, char*argv[])
 
   std::srand ( ( unsigned ) time ( 0 ) ); // Dependencies: before app state init
 
-  Gfx engine ( sdl_flags ); // Second priority
+  SDL_Display display ( sdl_flags );
+
+  Gfx engine; // GameStates
 
   #ifndef EMSCRIPTEN
-    engine.setIcon ( APP_ICON, nom::Color ( 0, 0, 0 ) ); // Dependencies: before video init
+    display.setIcon ( APP_ICON ); // Dependencies: before video init
   #endif
 
-  engine.SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+  display.CreateWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+  std::cout << display.getDisplayWidth() << " " << display.getDisplayHeight() << "\n";
 
   // Dependencies: after video init
   FPS fps; // timer for tracking frames per second
@@ -93,12 +99,12 @@ int main(int argc, char*argv[])
         fps.Update();
 
         engine.Update ();
-        engine.Draw ( Gfx::getDisplay() );
+        engine.Draw ( display.getDisplay() );
 
         if ( engine.getShowFPS() )
-          engine.setTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
+          display.setTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
         else
-          engine.setTitle ( APP_NAME );
+          display.setTitle ( APP_NAME );
 
         next_game_tick += SKIP_TICKS;
         loops++;

@@ -26,11 +26,13 @@
 #include "SDL_TFont.h"
 #include "SDL_BitmapFont.h"
 #include "SDL_Cursor.h"
+#include "SDLDrawable.h"
 //#include "audio.h"
 
 #include "GameState.h"
 #include "CardsMenuState.h"
 #include "GameOverState.h"
+#include "SDL_Display.h"
 
 class TTcards: public GameState
 {
@@ -133,6 +135,9 @@ class TTcards: public GameState
 
     unsigned int turn; // FIXME: player1 = 0, player2 = 1
     bool cursor_locked; // locks cursor state to board placement
+
+    typedef std::vector<nom::SDL_Drawable*> drawable_t;
+    drawable_t drawableRects;
 };
 
 #endif // GAMEAPP_TTCARDS_HEADERS defined

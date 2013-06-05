@@ -8,6 +8,8 @@
 ******************************************************************************/
 #include "ttcards.h"
 
+using namespace nom;
+
 TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
 {
   #ifdef DEBUG_TTCARDS_OBJ
@@ -16,6 +18,7 @@ TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
 
   this->engine = engine; // initialize rendering interface
   this->hand[0] = player1_hand;
+
   this->background = NULL;
 
   this->turn = 0;
@@ -82,7 +85,7 @@ bool TTcards::Load ( void )
   this->collection.LoadJSON ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
-  this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
+  this->background = Gfx::LoadImage ( BOARD_BACKGROUND, Color ( 0, 0, 0 ) );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
@@ -152,6 +155,9 @@ bool TTcards::Load ( void )
 
   this->info_box.setBackground ( &linear );
   this->debug_box.setBackground ( &linear );
+
+  drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ) );
+  drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ) );
 
   return true;
 }
@@ -445,12 +451,12 @@ void TTcards::onResize ( unsigned int width, unsigned int height )
 {
   if ( this->engine->isFullScreen() )
   {
-    Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
+    //Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
     this->engine->setFullScreen ( false );
   }
   else
   {
-    Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+    //Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
     this->engine->setFullScreen ( true );
   }
 }
@@ -753,9 +759,9 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
   this->player[1].Draw ( video_buffer );
 
   if ( this->get_turn() == 0 ) // player1
-    Gfx::drawRect ( video_buffer, nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ); // FIXME: placeholder for player select sprite animation
+    drawableRects[0]->Draw ( video_buffer );
   else // player2
-    Gfx::drawRect ( video_buffer, nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ); // // FIXME: placeholder for player select sprite animation
+    drawableRects[1]->Draw ( video_buffer );
 
   this->drawCursor ( video_buffer );
 
