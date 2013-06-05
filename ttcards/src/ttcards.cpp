@@ -23,7 +23,7 @@ TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
 
   this->collection.cards.clear();
 
-  this->Init();
+  this->Load();
 }
 
 TTcards::~TTcards ( void )
@@ -41,30 +41,6 @@ TTcards::~TTcards ( void )
     this->engine = NULL;
 }
 
-bool TTcards::Init ( void )
-{
-  this->Load();
-
-  #ifdef DEBUG_TTCARDS
-    this->debugCardsNoRuleset();
-    //this->debugCardsSameRuleset();
-  #endif
-
-  //this->music.PlayMusicTrack ( -1 );
-  //this->music.PauseMusic ();
-
-  this->player[0].setID ( Card::PLAYER1 );
-  this->player[1].setID ( Card::PLAYER2 );
-
-  this->player_turn ( 0 );
-
-  //update.Start();
-
-  //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
-
-  return true;
-}
-
 void TTcards::Pause ( void )
 {
   std::cout << "\n" << "TTcards state Paused" << "\n";
@@ -75,7 +51,7 @@ void TTcards::Resume ( void )
   std::cout << "\n" << "TTcards state Resumed" << "\n";
 }
 
-bool TTcards::Load ( void )
+void TTcards::Load ( void )
 {
   unsigned int idx = 0; // for loop iterations
 
@@ -153,7 +129,22 @@ bool TTcards::Load ( void )
   this->info_box.setBackground ( &linear );
   this->debug_box.setBackground ( &linear );
 
-  return true;
+  #ifdef DEBUG_TTCARDS
+    this->debugCardsNoRuleset();
+    //this->debugCardsSameRuleset();
+  #endif
+
+  //this->music.PlayMusicTrack ( -1 );
+  //this->music.PauseMusic ();
+
+  this->player[0].setID ( Card::PLAYER1 );
+  this->player[1].setID ( Card::PLAYER2 );
+
+  this->player_turn ( 0 );
+
+  //update.Start();
+
+  //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
 }
 
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )

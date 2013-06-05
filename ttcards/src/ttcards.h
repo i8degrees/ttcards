@@ -38,9 +38,6 @@ class TTcards: public GameState
     TTcards ( Gfx *engine, CardHand player1_hand );
     ~TTcards ( void );
 
-    bool Init ( void );
-    bool Load ( void );
-
     void Pause ( void );
     void Resume ( void );
 
@@ -92,6 +89,7 @@ class TTcards: public GameState
     //void Start ( void ); // EMCC compiler related
 
   private:
+    void Load ( void );
     //static TTcards *instance; // EMCC compiler related
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     SDL_Surface *background; // pointer holding our board background image
