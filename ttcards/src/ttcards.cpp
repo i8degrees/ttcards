@@ -85,7 +85,7 @@ bool TTcards::Load ( void )
   this->collection.LoadJSON ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
-  this->background = Gfx::LoadImage ( BOARD_BACKGROUND, Color ( 0, 0, 0 ) );
+  this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
