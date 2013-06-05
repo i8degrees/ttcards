@@ -78,7 +78,7 @@ void TTcards::Resume ( void )
   std::cout << "\n" << "TTcards state Resumed" << "\n";
 }
 
-bool TTcards::Load ( void )
+void TTcards::Load ( void )
 {
   unsigned int idx = 0; // for loop iterations
 
@@ -159,7 +159,7 @@ bool TTcards::Load ( void )
   drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ) );
   drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ) );
 
-  return true;
+  //return true;
 }
 
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )

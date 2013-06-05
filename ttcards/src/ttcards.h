@@ -41,7 +41,7 @@ class TTcards: public GameState
     ~TTcards ( void );
 
     bool Init ( void );
-    bool Load ( void );
+    void Load ( void );
 
     void Pause ( void );
     void Resume ( void );
@@ -92,7 +92,6 @@ class TTcards: public GameState
 
     //static void Callback ( void ); // EMCC compiler related
     //void Start ( void ); // EMCC compiler related
-
   private:
     //static TTcards *instance; // EMCC compiler related
     Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
