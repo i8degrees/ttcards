@@ -16,18 +16,21 @@
 
 #include "SDL_Cursor.h"
 
+#include "SDL_Canvas.hpp"
+
 class CardsMenu: public GameState
 {
   public:
-    CardsMenu ( Gfx *engine );
+    CardsMenu ( nom::GameApp *engine );
     ~CardsMenu ( void );
 
     void Pause ( void );
     void Resume ( void );
 
     void HandleInput ( void );
+
     void Update ( void );
-    void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void *video_buffer );
 
   private:
     void onExit ( void );
@@ -40,16 +43,17 @@ class CardsMenu: public GameState
 
     void reloadDebugFile ( void );
     void updateCursor ( void );
-    void drawCursor ( SDL_Surface *video_buffer );
+    void drawCursor ( void* video_buffer );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    Gfx *engine; // Pointer reference to our rendering interface
+    nom::GameApp *engine; // Pointer reference to our rendering interface
     Collection collection; // cards database
-    SDL_Surface *background; // pointer holding our background image
+    nom::SDL_Canvas background; // pointer holding our background image
+    //SDL_Surface *background; // pointer holding our background image
 
     nom::SDL_BitmapFont info_text;
     nom::SDL_BitmapFont info_small_text;

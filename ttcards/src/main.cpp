@@ -16,9 +16,11 @@
   #include "emscripten.h"
 #endif
 
+#include "GameApp.hpp"
+#include "GameStates.hpp"
+
 int main(int argc, char*argv[])
 {
-  unsigned int sdl_flags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
   unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
   unsigned int loops = 0; // globalTimer related
@@ -62,15 +64,14 @@ int main(int argc, char*argv[])
 
   std::srand ( ( unsigned ) time ( 0 ) ); // Dependencies: before app state init
 
-  nom::SDL_Display display ( sdl_flags );
-
-  Gfx engine; // GameStates
+  nom::SDL_Display display;
+  nom::GameApp engine; // GameStates
 
   #ifndef EMSCRIPTEN
-    display.setIcon ( APP_ICON ); // Dependencies: before video init
+    display.setWindowIcon ( APP_ICON ); // Dependencies: before video init
   #endif
 
-  display.CreateWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+  display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
   std::cout << display.getDisplayWidth() << " " << display.getDisplayHeight() << "\n";
 
   // Dependencies: after video init
@@ -79,30 +80,30 @@ int main(int argc, char*argv[])
 
   next_game_tick = engine.getTicks();
 
-  engine.ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( &engine ) ) );
+  nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( &engine ) ) );
 
   engine.Run(); // ...here we go!
 
   #ifdef EMSCRIPTEN
     //engine.Run(); // FIXME
   #else
-    while ( engine.isRunning() )
+    while ( engine.isRunning() == true )
     {
       loops = 0;
 
       while ( engine.getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
       {
-        engine.HandleInput ();
+        nom::GameStates::HandleInput ();
 
         fps.Update();
 
-        engine.Update ();
-        engine.Draw ( display.getDisplay() );
+        nom::GameStates::Update ();
+        nom::GameStates::Draw ( display.get() );
 
         if ( engine.getShowFPS() )
-          display.setTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
+          display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
         else
-          display.setTitle ( APP_NAME );
+          display.setWindowTitle ( APP_NAME );
 
         next_game_tick += SKIP_TICKS;
         loops++;

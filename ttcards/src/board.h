@@ -39,7 +39,7 @@ class Board
     Card &getCard ( unsigned int x, unsigned int y );
 
     void Update ( unsigned int x, unsigned int y ); // TODO
-    void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void* video_buffer );
     void List ( void );
 
   private:

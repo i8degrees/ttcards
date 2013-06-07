@@ -10,7 +10,7 @@
 
 using namespace nom;
 
-CardsMenu::CardsMenu ( Gfx *engine )
+CardsMenu::CardsMenu ( GameApp *engine )
 {
   unsigned int pid = 0; // temp var for for loop iteration
 
@@ -21,7 +21,7 @@ CardsMenu::CardsMenu ( Gfx *engine )
   logger = logDebug.Read( "./data/offsets.val" );
 
   this->engine = engine;
-  this->background = NULL;
+  //this->background = NULL;
   this->collection.LoadJSON ( CARDS_DB );
 
   // Borrowed from Player class; this is perhaps a hack-(ish) workaround
@@ -69,10 +69,10 @@ CardsMenu::~CardsMenu ( void )
     std::cout << "CardsMenu::~CardsMenu (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  if ( this->background )
-    SDL_FreeSurface ( this->background );
+  //if ( this->background )
+    //SDL_FreeSurface ( this->background );
 
-  this->background = NULL;
+  //this->background = NULL;
 
   this->selectedCard = 0;
   this->hand.clear ();
@@ -87,7 +87,9 @@ void CardsMenu::Load ( void )
 {
   unsigned int idx = 0; // cursor_coords_map
 
-  this->background = Gfx::LoadImage ( BOARD_BACKGROUND, nom::Color ( 0, 0, 0 ) );
+  this->background.loadImage ( BOARD_BACKGROUND );
+  //this->background.setCanvas ( Gfx::LoadImage ( BOARD_BACKGROUND, nom::Color ( 0, 0, 0 ) ) );
+  //this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
@@ -161,7 +163,7 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_d: this->hand.removeCard ( this->selectedCard ); break;
     case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
-    case SDLK_RETURN: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
+    case SDLK_RETURN: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
 
     default: break;
   }
@@ -182,7 +184,7 @@ void CardsMenu::onJoyButtonDown ( unsigned int which, unsigned int button )
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
     case nom::PSXBUTTON::CIRCLE: this->hand.removeCard ( this->selectedCard ); break;
     case nom::PSXBUTTON::CROSS: this->hand.addCard ( this->selectedCard ); break;
-    case nom::PSXBUTTON::START: this->engine->PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
+    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
 
     default: break;
   }
@@ -214,12 +216,13 @@ void CardsMenu::Update ( void )
   this->updateCursor();
 }
 
-void CardsMenu::Draw ( SDL_Surface *video_buffer )
+void CardsMenu::Draw ( void* video_buffer )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
   unsigned int hand_index = 0; // "dummy" card index var
 
-  Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background
+  this->background.Draw ( video_buffer );/*video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background */
+  //Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background
 
   // static player2 hand background
   for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)
@@ -348,7 +351,7 @@ void CardsMenu::updateCursor ( void )
   }
 }
 
-void CardsMenu::drawCursor ( SDL_Surface *video_buffer )
+void CardsMenu::drawCursor ( void* video_buffer )
 {
   this->cursor.Draw ( video_buffer );
 }

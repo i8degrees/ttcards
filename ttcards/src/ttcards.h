@@ -29,7 +29,9 @@
 #include "SDLDrawable.h"
 //#include "audio.h"
 
+#include "GameApp.hpp"
 #include "GameState.h"
+#include "GameStates.hpp"
 #include "CardsMenuState.h"
 #include "GameOverState.h"
 #include "SDL_Display.h"
@@ -37,7 +39,7 @@
 class TTcards: public GameState
 {
   public:
-    TTcards ( Gfx *engine, CardHand player1_hand );
+    TTcards ( nom::GameApp *engine, CardHand player1_hand );
     ~TTcards ( void );
 
     bool Init ( void );
@@ -58,7 +60,7 @@ class TTcards: public GameState
     void player_turn ( unsigned int player );
     void endTurn ( void );
 
-    void showCardInfoBox ( SDL_Surface *video_buffer );
+    void showCardInfoBox ( void *video_buffer );
     bool isCursorLocked ( void );
     void lockCursor ( bool lock );
     void resetCursor ( void );
@@ -81,20 +83,20 @@ class TTcards: public GameState
     void moveCursorDown ( void );
 
     void updateCursor ( void );
-    void drawCursor ( SDL_Surface *video_buffer );
+    void drawCursor ( void* video_buffer );
 
     void updateScore ( void );
-    void drawScore ( SDL_Surface *video_buffer );
+    void drawScore ( void* video_buffer );
 
     void HandleInput ( void );
     void Update ( void );
-    void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void* video_buffer );
 
     //static void Callback ( void ); // EMCC compiler related
     //void Start ( void ); // EMCC compiler related
   private:
     //static TTcards *instance; // EMCC compiler related
-    Gfx *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
+    nom::GameApp *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     SDL_Surface *background; // pointer holding our board background image
 
     Timer update;

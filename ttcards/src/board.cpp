@@ -261,7 +261,7 @@ void Board::Update ( unsigned int x, unsigned int y )
 }
 
 // Draws our active board grid based on their values (card IDs)
-void Board::Draw ( SDL_Surface *video_buffer )
+void Board::Draw ( void* video_buffer )
 {
   unsigned int x, y = 0;
 

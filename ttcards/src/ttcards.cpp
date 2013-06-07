@@ -10,7 +10,7 @@
 
 using namespace nom;
 
-TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
+TTcards::TTcards ( nom::GameApp *engine, CardHand player1_hand )
 {
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::TTcards (): " << "Hello, world!" << "\n" << std::endl;
@@ -85,7 +85,7 @@ void TTcards::Load ( void )
   this->collection.LoadJSON ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
-  this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
+  this->background = (SDL_Surface*) Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
@@ -275,7 +275,7 @@ void TTcards::endTurn ( void )
 
 // Interface Helper method; shows Card's ID number in a message box for both cursor
 // states; player's hand and placed board cards -- debug handling included
-void TTcards::showCardInfoBox ( SDL_Surface *video_buffer )
+void TTcards::showCardInfoBox ( void* video_buffer )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
@@ -449,14 +449,16 @@ void TTcards::onExit ( void )
 
 void TTcards::onResize ( unsigned int width, unsigned int height )
 {
+  nom::SDL_Display display;
+
   if ( this->engine->isFullScreen() )
   {
-    //Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
+    display.toggleFullScreenWindow ( 0, 0 );
     this->engine->setFullScreen ( false );
   }
   else
   {
-    //Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
+    display.toggleFullScreenWindow ( 0, 0 );
     this->engine->setFullScreen ( true );
   }
 }
@@ -487,7 +489,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
-    case SDLK_r: this->engine->PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
+    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
@@ -702,7 +704,7 @@ void TTcards::updateCursor ( void )
     this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
 }
 
-void TTcards::drawCursor ( SDL_Surface *video_buffer )
+void TTcards::drawCursor ( void* video_buffer )
 {
   this->cursor.Draw ( video_buffer );
 }
@@ -724,7 +726,7 @@ void TTcards::updateScore ( void )
   }
 }
 
-void TTcards::drawScore ( SDL_Surface *video_buffer )
+void TTcards::drawScore ( void *video_buffer )
 {
   this->score_text.setText ( std::to_string ( player[0].getScore() ) );
   this->score_text.setXY ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
@@ -740,9 +742,9 @@ void TTcards::Update ( void )
   this->updateCursor();
 
   if ( this->get_turn() == 0 ) // player1
-    rect.set ( Coords ( 320, 0, 16, 16 ), Color ( 188, 203, 236 ) );
+    rect.setPosition ( Coords ( 320, 0, 16, 16 ), Color ( 188, 203, 236 ) );
   else // player2
-    rect.set ( Coords ( 40, 0, 16, 16 ), Color ( 222, 196, 205 ) );
+    rect.setPosition ( Coords ( 40, 0, 16, 16 ), Color ( 222, 196, 205 ) );
 
   this->updateScore();
 
@@ -754,7 +756,7 @@ void TTcards::Update ( void )
   //Gfx::updateSurface ( video_buffer ); // FIXME
 }
 
-void TTcards::Draw ( SDL_Surface *video_buffer )
+void TTcards::Draw ( void *video_buffer )
 {
   Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) );
 
@@ -810,7 +812,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 1 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 1 ) ) );
     }
     else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
     {
@@ -836,7 +838,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 2 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 2 ) ) );
     }
     else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
     {
@@ -850,7 +852,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 3 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 3 ) ) );
     }
     else // Undefined
     {

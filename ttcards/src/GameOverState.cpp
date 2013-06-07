@@ -10,7 +10,7 @@
 
 using namespace nom;
 
-GameOver::GameOver ( Gfx *engine, std::vector<Card> cards_, unsigned int state )
+GameOver::GameOver ( GameApp *engine, std::vector<Card> cards_, unsigned int state )
 {
   #ifdef DEBUG_GAMEOVER_OBJ
     std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
@@ -44,7 +44,7 @@ void GameOver::Load ( void )
   for ( int i = 0; i < cards.size(); i++ )
     std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
 
-  this->background = Gfx::LoadImage ( GAMEOVER_BACKGROUND );
+  this->background = (SDL_Surface*) Gfx::LoadImage ( GAMEOVER_BACKGROUND );
 
   //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
@@ -80,7 +80,7 @@ void GameOver::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_ESCAPE:
     case SDLK_q: this->engine->Quit(); break;
     // Reset / New Game State
-    case SDLK_r: this->engine->PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
+    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 
@@ -92,7 +92,7 @@ void GameOver::Update ( void )
 {
 }
 
-void GameOver::Draw ( SDL_Surface *video_buffer )
+void GameOver::Draw ( void* video_buffer )
 {
   Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background
 

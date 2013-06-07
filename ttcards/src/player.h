@@ -44,7 +44,7 @@ class Player
     void setScore ( unsigned int score );
 
     void Update ( void );
-    void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void* video_buffer );
 
   private:
     CardDebug debug; // debug support for card attributes
