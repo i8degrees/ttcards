@@ -29,7 +29,7 @@
 #include "SDLDrawable.h"
 //#include "audio.h"
 
-#include "GameState.h"
+#include "GameState.hpp"
 #include "GameStates.hpp"
 #include "CardsMenuState.h"
 #include "GameOverState.h"
