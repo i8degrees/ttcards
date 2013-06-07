@@ -47,8 +47,8 @@ class TTcards: public GameState
     void Pause ( void );
     void Resume ( void );
 
-    void debugListCards ( SDLMod mod );
-    void debugListCollection ( SDLMod mod );
+    void debugListCards ( int32_t mod );
+    void debugListCollection ( int32_t mod );
     void debugCardsDiscard ( void );
     void debugCardsNoRuleset ( void );
     void debugCardsSameRuleset ( void );
@@ -67,10 +67,10 @@ class TTcards: public GameState
     void lockSelectedCard ( void );
     void moveTo ( unsigned int x, unsigned int y );
 
-    void onKeyDown ( SDLKey key, SDLMod mod );
-    void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
+    void onKeyDown ( int32_t key, int32_t mod );
+    void onMouseLeftButtonDown ( int32_t x, int32_t y );
     void onMouseWheel ( bool up, bool down );
-    void onJoyButtonDown ( unsigned int which, unsigned int button );
+    void onJoyButtonDown ( int32_t which, int32_t button );
 
     nom::Coords getCursorBoardPos ( unsigned int x, unsigned int y );
     unsigned int getCursorPos ( void );

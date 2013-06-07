@@ -56,7 +56,7 @@ void GameOver::Resume ( void )
   std::cout << "\n" << "GameOver state Resumed" << "\n";
 }
 
-void GameOver::onKeyDown ( SDLKey key, SDLMod mod )
+void GameOver::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {

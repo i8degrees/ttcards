@@ -31,10 +31,10 @@ class CardsMenu: public GameState
     void Draw ( void *video_buffer );
 
   private:
-    void onKeyDown ( SDLKey key, SDLMod mod );
-    void onJoyButtonDown ( unsigned int which, unsigned int button );
-    void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
-    void onMouseRightButtonDown ( unsigned int x, unsigned int y );
+    void onKeyDown ( int32_t key, int32_t mod );
+    void onJoyButtonDown ( int32_t which, int32_t button );
+    void onMouseLeftButtonDown ( int32_t x, int32_t y );
+    void onMouseRightButtonDown ( int32_t x, int32_t y );
     void onMouseWheel ( bool up, bool down );
     void Load ( void );
 

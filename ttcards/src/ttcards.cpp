@@ -225,7 +225,7 @@ void TTcards::debugBox ( void )
 }
 
 // Debug -- input events helper method
-void TTcards::debugListCards ( SDLMod mod )
+void TTcards::debugListCards ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->hand[1].cards );
@@ -234,7 +234,7 @@ void TTcards::debugListCards ( SDLMod mod )
 }
 
 // Debug -- input events helper method
-void TTcards::debugListCollection ( SDLMod mod )
+void TTcards::debugListCollection ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->collection.cards );
@@ -438,7 +438,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
+void TTcards::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
@@ -465,7 +465,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
   }
 }
 
-void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
   unsigned int player_turn = get_turn();
@@ -536,7 +536,7 @@ void TTcards::onMouseWheel ( bool up, bool down )
   }
 }
 
-void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
+void TTcards::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {

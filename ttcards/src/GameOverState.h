@@ -29,7 +29,7 @@ class GameOver: public GameState
     void Draw ( void *video_buffer );
 
   private:
-    void onKeyDown ( SDLKey key, SDLMod mod );
+    void onKeyDown ( int32_t key, int32_t mod );
     void Load ( void );
 
     CardView card; // card rendering

@@ -54,7 +54,7 @@ class App: public nom::SDL_App
     }
 
     /// Default quit app event handlers
-    void onKeyDown ( SDLKey key, SDLMod mod )
+    void onKeyDown ( int32_t key, int32_t mod )
     {
       switch ( key )
       {
@@ -66,7 +66,7 @@ class App: public nom::SDL_App
       }
     }
 
-    void onResize ( unsigned int width, unsigned int height )
+    void onResize ( int32_t width, int32_t height )
     {
 
       if ( this->isFullScreen() )

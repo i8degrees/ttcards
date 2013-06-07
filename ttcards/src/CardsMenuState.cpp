@@ -125,7 +125,7 @@ void CardsMenu::Resume ( void )
   std::cout << "\n" << "CardsMenu state Resumed" << "\n";
 }
 
-void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
+void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
@@ -150,7 +150,7 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
   }
 }
 
-void CardsMenu::onJoyButtonDown ( unsigned int which, unsigned int button )
+void CardsMenu::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {
@@ -171,12 +171,12 @@ void CardsMenu::onJoyButtonDown ( unsigned int which, unsigned int button )
   }
 }
 
-void CardsMenu::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+void CardsMenu::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   // TODO
 }
 
-void CardsMenu::onMouseRightButtonDown ( unsigned int x, unsigned int y )
+void CardsMenu::onMouseRightButtonDown ( int32_t x, int32_t y )
 {
   // TODO
 }
