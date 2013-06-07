@@ -16,10 +16,10 @@
   #include "emscripten.h"
 #endif
 
-#include "GameApp.hpp"
+#include "SDL_App.hpp"
 #include "GameStates.hpp"
 
-class App: public nom::GameApp
+class App: public nom::SDL_App
 {
   public:
     App ( void )
