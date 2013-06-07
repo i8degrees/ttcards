@@ -46,10 +46,10 @@ class App: public nom::SDL_App
 
     void onEvent ( SDL_Event *event )
     {
-      SDLInput::Input ( event );  /// First, take care of our own object's event
-                                  /// requests; this allows us to use SDL even in
-                                  /// headless mode.
-                                  /// (no fancy dangled graphical-subsystem)
+      SDL_Input::HandleInput ( event ); /// First, take care of our own object's event
+                                        /// requests; this allows us to use SDL even in
+                                        /// headless mode.
+                                        /// (no fancy dangled graphical-subsystem)
       nom::GameStates::onEvent ( event ); /// Take care of each game state's events
     }
 
