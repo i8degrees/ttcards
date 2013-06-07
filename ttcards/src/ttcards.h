@@ -39,7 +39,7 @@
 class TTcards: public GameState
 {
   public:
-    TTcards ( nom::GameApp *engine, CardHand player1_hand );
+    TTcards ( CardHand player1_hand );
     ~TTcards ( void );
 
     bool Init ( void );
@@ -68,8 +68,6 @@ class TTcards: public GameState
     void lockSelectedCard ( void );
     void moveTo ( unsigned int x, unsigned int y );
 
-    void onExit ( void );
-    void onResize ( unsigned int width, unsigned int height );
     void onKeyDown ( SDLKey key, SDLMod mod );
     void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
     void onMouseWheel ( bool up, bool down );
@@ -88,7 +86,7 @@ class TTcards: public GameState
     void updateScore ( void );
     void drawScore ( void* video_buffer );
 
-    void HandleInput ( void );
+    //void HandleInput ( void );
     void Update ( void );
     void Draw ( void* video_buffer );
 
@@ -96,7 +94,6 @@ class TTcards: public GameState
     //void Start ( void ); // EMCC compiler related
   private:
     //static TTcards *instance; // EMCC compiler related
-    nom::GameApp *engine; // Pointer reference to our rendering interface; we ought not have more than one Gfx object instance at any given time
     SDL_Surface *background; // pointer holding our board background image
 
     Timer update;

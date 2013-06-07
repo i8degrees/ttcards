@@ -10,7 +10,7 @@
 
 using namespace nom;
 
-CardsMenu::CardsMenu ( GameApp *engine )
+CardsMenu::CardsMenu ( void )
 {
   unsigned int pid = 0; // temp var for for loop iteration
 
@@ -20,7 +20,6 @@ CardsMenu::CardsMenu ( GameApp *engine )
 
   logger = logDebug.Read( "./data/offsets.val" );
 
-  this->engine = engine;
   //this->background = NULL;
   this->collection.LoadJSON ( CARDS_DB );
 
@@ -78,9 +77,6 @@ CardsMenu::~CardsMenu ( void )
   this->hand.clear ();
 
   this->collection.clear();
-
-  if ( this->engine )
-    this->engine = NULL;
 }
 
 void CardsMenu::Load ( void )
@@ -129,25 +125,10 @@ void CardsMenu::Resume ( void )
   std::cout << "\n" << "CardsMenu state Resumed" << "\n";
 }
 
-void CardsMenu::HandleInput ( void )
-{
-  SDL_Event event;
-
-  while ( SDL_PollEvent ( &event ) )
-    SDLInput::Input ( &event );
-}
-
-void CardsMenu::onExit ( void )
-{
-  this->engine->Quit();
-}
-
 void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
 {
   switch ( key )
   {
-    case SDLK_ESCAPE:
-    case SDLK_q: this->engine->Quit(); break;
     // Reset / New Game State
     //case SDLK_r: if ( mod == KMOD_LSHIFT ) reloadDebugFile(); else this->engine->PopStateThenChangeState ( std::unique_ptr<TTcards>( new TTcards ( this->engine ) ) ); break;
      // Pause State
@@ -163,7 +144,7 @@ void CardsMenu::onKeyDown ( SDLKey key, SDLMod mod )
 
     case SDLK_d: this->hand.removeCard ( this->selectedCard ); break;
     case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
-    case SDLK_RETURN: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
+    case SDLK_RETURN: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->hand ) ) ); break;
 
     default: break;
   }
@@ -184,7 +165,7 @@ void CardsMenu::onJoyButtonDown ( unsigned int which, unsigned int button )
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
     case nom::PSXBUTTON::CIRCLE: this->hand.removeCard ( this->selectedCard ); break;
     case nom::PSXBUTTON::CROSS: this->hand.addCard ( this->selectedCard ); break;
-    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->engine, this->hand ) ) ); break;
+    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->hand ) ) ); break;
 
     default: break;
   }

@@ -10,13 +10,12 @@
 
 using namespace nom;
 
-GameOver::GameOver ( GameApp *engine, std::vector<Card> cards_, unsigned int state )
+GameOver::GameOver ( std::vector<Card> cards_, unsigned int state )
 {
   #ifdef DEBUG_GAMEOVER_OBJ
     std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->engine = engine;
   this->background = NULL;
   this->state = state;
   this->cards = cards_; // FIXME?
@@ -34,9 +33,6 @@ GameOver::~GameOver ( void )
     SDL_FreeSurface ( this->background );
 
   this->background = NULL;
-
-  if ( this->engine )
-    this->engine = NULL;
 }
 
 void GameOver::Load ( void )
@@ -60,27 +56,12 @@ void GameOver::Resume ( void )
   std::cout << "\n" << "GameOver state Resumed" << "\n";
 }
 
-void GameOver::HandleInput ( void )
-{
-  SDL_Event event;
-
-  while ( SDL_PollEvent ( &event ) )
-    SDLInput::Input ( &event );
-}
-
-void GameOver::onExit ( void )
-{
-  this->engine->Quit();
-}
-
 void GameOver::onKeyDown ( SDLKey key, SDLMod mod )
 {
   switch ( key )
   {
-    case SDLK_ESCAPE:
-    case SDLK_q: this->engine->Quit(); break;
     // Reset / New Game State
-    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
+    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu() ) ); break;
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 

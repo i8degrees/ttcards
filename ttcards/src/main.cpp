@@ -19,17 +19,125 @@
 #include "GameApp.hpp"
 #include "GameStates.hpp"
 
+class App: public nom::GameApp
+{
+  public:
+    App ( void )
+    {
+      unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
+
+      #ifdef DEBUG_TTCARDS_OBJ
+        std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
+      #endif
+
+      #ifndef EMSCRIPTEN
+        display.setWindowIcon ( APP_ICON ); // Dependencies: before video init
+      #endif
+
+      display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+      std::cout << display.getDisplayWidth() << " " << display.getDisplayHeight() << "\n";
+    }
+    ~App ( void )
+    {
+      #ifdef DEBUG_TTCARDS_OBJ
+        std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
+      #endif
+    }
+
+    void onEvent ( SDL_Event *event )
+    {
+      SDLInput::Input ( event );  /// First, take care of our own object's event
+                                  /// requests; this allows us to use SDL even in
+                                  /// headless mode.
+                                  /// (no fancy dangled graphical-subsystem)
+      nom::GameStates::onEvent ( event ); /// Take care of each game state's events
+    }
+
+    /// Default quit app event handlers
+    void onKeyDown ( SDLKey key, SDLMod mod )
+    {
+      switch ( key )
+      {
+        case SDLK_ESCAPE:
+        case SDLK_q: this->onExit(); break;
+        case SDLK_EQUALS: this->toggleFPS(); break;
+        case SDLK_f: this->onResize ( 0, 0 ); break;
+        default: break;
+      }
+    }
+
+    void onResize ( unsigned int width, unsigned int height )
+    {
+
+      if ( this->isFullScreen() )
+      {
+        display.toggleFullScreenWindow ( 0, 0 );
+        this->setFullScreen ( false );
+      }
+      else
+      {
+        display.toggleFullScreenWindow ( 0, 0 );
+        this->setFullScreen ( true );
+      }
+    }
+
+    void onExit ( void )
+    {
+      this->Quit();
+    }
+
+    int32_t Run ( void )
+    {
+      unsigned int loops = 0; // globalTimer related
+      unsigned int next_game_tick = 0; // globalTimer related
+
+      // Dependencies: after video init
+      FPS fps; // timer for tracking frames per second
+      fps.Start();
+
+      next_game_tick = getTicks();
+
+      nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu() ) );
+
+      Running(); // ...here we go!
+
+      SDL_Event event;
+
+      while ( isRunning() == true )
+      {
+        loops = 0;
+
+        while ( getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
+        {
+          while ( SDL_PollEvent ( &event ) )
+          {
+            onEvent ( &event );
+          }
+
+          fps.Update();
+
+          nom::GameStates::Update ();
+          nom::GameStates::Draw ( display.get() );
+
+          if ( getShowFPS() )
+            display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
+          else
+            display.setWindowTitle ( APP_NAME );
+
+          next_game_tick += SKIP_TICKS;
+          loops++;
+        }
+      }
+
+      return EXIT_SUCCESS;
+    }
+
+  private:
+    nom::SDL_Display display;
+};
+
 int main(int argc, char*argv[])
 {
-  unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
-
-  unsigned int loops = 0; // globalTimer related
-  unsigned int next_game_tick = 0; // globalTimer related
-
-  #ifdef DEBUG_TTCARDS_OBJ
-    std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
-  #endif
-
   // Dependencies: First priority
   #ifndef EMSCRIPTEN
     // This isn't an absolute guarantee that we can do this reliably; we must use
@@ -64,56 +172,11 @@ int main(int argc, char*argv[])
 
   std::srand ( ( unsigned ) time ( 0 ) ); // Dependencies: before app state init
 
-  nom::SDL_Display display;
-  nom::GameApp engine; // GameStates
-
-  #ifndef EMSCRIPTEN
-    display.setWindowIcon ( APP_ICON ); // Dependencies: before video init
-  #endif
-
-  display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
-  std::cout << display.getDisplayWidth() << " " << display.getDisplayHeight() << "\n";
-
-  // Dependencies: after video init
-  FPS fps; // timer for tracking frames per second
-  fps.Start();
-
-  next_game_tick = engine.getTicks();
-
-  nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( &engine ) ) );
-
-  engine.Run(); // ...here we go!
+  App engine; // GameStates
 
   #ifdef EMSCRIPTEN
     //engine.Run(); // FIXME
   #else
-    while ( engine.isRunning() == true )
-    {
-      loops = 0;
-
-      while ( engine.getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
-      {
-        nom::GameStates::HandleInput ();
-
-        fps.Update();
-
-        nom::GameStates::Update ();
-        nom::GameStates::Draw ( display.get() );
-
-        if ( engine.getShowFPS() )
-          display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
-        else
-          display.setWindowTitle ( APP_NAME );
-
-        next_game_tick += SKIP_TICKS;
-        loops++;
-      }
-    }
+    return engine.Run();
   #endif
-
-  #ifdef DEBUG_TTCARDS_OBJ
-    std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
-
-  return EXIT_SUCCESS;
 }

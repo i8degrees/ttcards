@@ -10,13 +10,12 @@
 
 using namespace nom;
 
-TTcards::TTcards ( nom::GameApp *engine, CardHand player1_hand )
+TTcards::TTcards ( CardHand player1_hand )
 {
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::TTcards (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->engine = engine; // initialize rendering interface
   this->hand[0] = player1_hand;
 
   this->background = NULL;
@@ -39,9 +38,6 @@ TTcards::~TTcards ( void )
     SDL_FreeSurface ( this->background );
 
   this->background = NULL;
-
-  if ( this->engine )
-    this->engine = NULL;
 }
 
 bool TTcards::Init ( void )
@@ -442,46 +438,12 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::onExit ( void )
-{
-  this->engine->Quit();
-}
-
-void TTcards::onResize ( unsigned int width, unsigned int height )
-{
-  nom::SDL_Display display;
-
-  if ( this->engine->isFullScreen() )
-  {
-    display.toggleFullScreenWindow ( 0, 0 );
-    this->engine->setFullScreen ( false );
-  }
-  else
-  {
-    display.toggleFullScreenWindow ( 0, 0 );
-    this->engine->setFullScreen ( true );
-  }
-}
-
-void TTcards::HandleInput ( void )
-{
-  SDL_Event event;
-
-  while ( SDL_PollEvent ( &event ) )
-    SDLInput::Input ( &event );
-}
-
 void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
 {
   switch ( key )
   {
-    case SDLK_ESCAPE:
-    case SDLK_q: this->onExit(); break;
-    case SDLK_f: this->onResize ( 0, 0 ); break;
-
     case SDLK_p: /* Pause State ... */ break;
     case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
-    case SDLK_EQUALS: this->engine->toggleFPS(); break;
 
     case SDLK_e: this->endTurn(); break;
     case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
@@ -489,7 +451,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
-    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
+    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
@@ -812,7 +774,7 @@ void TTcards::Draw ( void *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 1 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 1 ) ) );
     }
     else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
     {
@@ -838,7 +800,7 @@ void TTcards::Draw ( void *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 2 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 2 ) ) );
     }
     else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
     {
@@ -852,7 +814,7 @@ void TTcards::Draw ( void *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 3 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 3 ) ) );
     }
     else // Undefined
     {

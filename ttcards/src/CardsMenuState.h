@@ -21,19 +21,16 @@
 class CardsMenu: public GameState
 {
   public:
-    CardsMenu ( nom::GameApp *engine );
+    CardsMenu ( void );
     ~CardsMenu ( void );
 
     void Pause ( void );
     void Resume ( void );
 
-    void HandleInput ( void );
-
     void Update ( void );
     void Draw ( void *video_buffer );
 
   private:
-    void onExit ( void );
     void onKeyDown ( SDLKey key, SDLMod mod );
     void onJoyButtonDown ( unsigned int which, unsigned int button );
     void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
@@ -50,7 +47,6 @@ class CardsMenu: public GameState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    nom::GameApp *engine; // Pointer reference to our rendering interface
     Collection collection; // cards database
     nom::SDL_Canvas background; // pointer holding our background image
     //SDL_Surface *background; // pointer holding our background image

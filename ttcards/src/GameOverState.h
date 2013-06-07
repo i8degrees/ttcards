@@ -19,22 +19,19 @@
 class GameOver: public GameState
 {
   public:
-    GameOver ( nom::GameApp *engine, std::vector<Card> cards_, unsigned int state );
+    GameOver ( std::vector<Card> cards_, unsigned int state );
     ~GameOver ( void );
 
     void Pause ( void );
     void Resume ( void );
 
-    void HandleInput ( void );
     void Update ( void );
     void Draw ( void *video_buffer );
 
   private:
-    void onExit ( void );
     void onKeyDown ( SDLKey key, SDLMod mod );
     void Load ( void );
 
-    nom::GameApp *engine; // Pointer reference to our rendering interface
     CardView card; // card rendering
     SDL_Surface *background;
     //SDL_TFont gameOver_text; // dialog text
