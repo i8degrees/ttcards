@@ -47,15 +47,14 @@ class CardsMenu: public GameState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    Collection collection; // cards database
-    nom::SDL_Canvas background; // pointer holding our background image
-    //SDL_Surface *background; // pointer holding our background image
+    Collection collection; /// cards database
+    nom::SDL_Canvas background; /// pointer holding our background image
 
     nom::SDL_BitmapFont info_text;
     nom::SDL_BitmapFont info_small_text;
     nom::SDL_BitmapFont info_text_gray;
 
-    CardDebug debug; // debug support for card attributes
+    CardDebug debug; /// debug support for card attributes
     Logger logDebug;
     std::vector<int> logger;
 
@@ -63,20 +62,20 @@ class CardsMenu: public GameState
     SDLGradient linear;
     nom::Color msgbox[8];
 
-    CardView card; // card rendering
-    CardHand hand; // player1 hand
-    Card selectedCard; // CardHand-derived implementation
+    CardView card; /// card rendering
+    CardHand hand; /// player1 hand
+    Card selectedCard; /// CardHand-derived implementation
 
     nom::SDL_Cursor cursor;
-    nom::Sprite menu_element; // interface menu elements
+    nom::Sprite menu_element; /// interface menu elements
 
-    unsigned int total_pages; // MAX_COLLECTION / per_page
-    unsigned int per_page; // number of cards to display per menu page
-    unsigned int current_index; // current card position
-    unsigned int info_text_height; // height of the card name text
+    unsigned int total_pages; /// MAX_COLLECTION / per_page
+    unsigned int per_page; /// number of cards to display per menu page
+    unsigned int current_index; /// current card position
+    unsigned int info_text_height; /// height of the card name text
 
-    // y coords mapping for cursor -> card position index
-    std::pair<int, int> cursor_coords_map[10]; // minus one (1) padding
+    /// y coords mapping for cursor -> card position index
+    std::pair<int, int> cursor_coords_map[10]; /// minus one (1) padding
 };
 
 #endif // GAMEAPP_CARDS_MENU_HEADERS defined

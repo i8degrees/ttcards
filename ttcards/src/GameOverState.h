@@ -32,7 +32,7 @@ class GameOver: public GameState
     void onKeyDown ( int32_t key, int32_t mod );
     void Load ( void );
 
-    CardView card; // card rendering
+    CardView card; /// card rendering
     SDL_Surface *background;
     //SDL_TFont gameOver_text; // dialog text
     std::vector<Card> cards;

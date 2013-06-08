@@ -86,7 +86,6 @@ class TTcards: public GameState
     void updateScore ( void );
     void drawScore ( void* video_buffer );
 
-    //void HandleInput ( void );
     void Update ( void );
     void Draw ( void* video_buffer );
 
@@ -94,10 +93,10 @@ class TTcards: public GameState
     //void Start ( void ); // EMCC compiler related
   private:
     //static TTcards *instance; // EMCC compiler related
-    SDL_Surface *background; // pointer holding our board background image
+    SDL_Surface *background; /// pointer holding our board background image
 
     Timer update;
-    nom::SDL_Font gameOver_text; // dialog text
+    nom::SDL_Font gameOver_text; /// dialog text
     nom::SDL_BitmapFont info_text;
     nom::SDL_BitmapFont info_small_text;
 
@@ -106,33 +105,33 @@ class TTcards: public GameState
     SDLGradient linear;
     nom::Color msgbox[8];
 
-    nom::SDL_Font score_text; // scoreboard text
-    Board board; // game board
+    nom::SDL_Font score_text; /// scoreboard text
+    Board board; /// game board
 
-    CardDebug debug; // debug support for card attributes
+    CardDebug debug; /// debug support for card attributes
 
-    Collection collection; // cards database
-    CardRules rules; // TODO
-    CardView card; // card rendering
-    CardHand hand[2]; // player hand
-    Player player[2]; // players in game
+    Collection collection; /// cards database
+    CardRules rules; /// TODO
+    CardView card; /// card rendering
+    CardHand hand[2]; /// player hand
+    Player player[2]; /// players in game
 
-    nom::SDL_Cursor cursor; // interface cursor
+    nom::SDL_Cursor cursor; /// interface cursor
 
-    // x, y coords mapping for player1, player2 cursor starting position
+    /// x, y coords mapping for player1, player2 cursor starting position
     nom::Coords player_cursor_coords[2];
 
-    // y coords mapping for cursor -> card position index
+    /// y coords mapping for cursor -> card position index
     nom::Coords cursor_coords_map[5];
 
-    // x, y coords for selectedCard from cursor to board placement
+    /// x, y coords for selectedCard from cursor to board placement
     nom::Coords board_coords_map[9];
 
     //Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     //Audio music; // holds our musical tracks
 
-    unsigned int turn; // FIXME: player1 = 0, player2 = 1
-    bool cursor_locked; // locks cursor state to board placement
+    unsigned int turn; /// FIXME: player1 = 0, player2 = 1
+    bool cursor_locked; /// locks cursor state to board placement
 
     typedef std::vector<nom::SDL_Drawable*> drawable_t;
     drawable_t drawableRects;
