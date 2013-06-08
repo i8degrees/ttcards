@@ -83,7 +83,7 @@ void CardsMenu::Load ( void )
 {
   unsigned int idx = 0; // cursor_coords_map
 
-  this->background.loadImage ( BOARD_BACKGROUND );
+  this->background.loadImageFromFile ( BOARD_BACKGROUND );
   //this->background.setCanvas ( Gfx::LoadImage ( BOARD_BACKGROUND, nom::Color ( 0, 0, 0 ) ) );
   //this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 

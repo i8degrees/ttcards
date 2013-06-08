@@ -37,6 +37,7 @@ class App: public nom::SDL_App
       display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
       std::cout << display.getDisplayWidth() << " " << display.getDisplayHeight() << "\n";
     }
+
     ~App ( void )
     {
       #ifdef DEBUG_TTCARDS_OBJ
@@ -175,7 +176,7 @@ int main(int argc, char*argv[])
   App engine; // GameStates
 
   #ifdef EMSCRIPTEN
-    //engine.Run(); // FIXME
+    // FIXME
   #else
     return engine.Run();
   #endif

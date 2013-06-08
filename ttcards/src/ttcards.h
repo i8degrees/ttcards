@@ -10,7 +10,7 @@
 #define GAMEAPP_TTCARDS_HEADERS
 
 #ifdef EMSCRIPTEN
-    #include "emscripten.h"
+  #include "emscripten.h"
 #endif
 
 #include "cfg.h"
@@ -26,8 +26,9 @@
 #include "SDL_Font.h"
 #include "SDL_BitmapFont.h"
 #include "SDL_Cursor.h"
-#include "SDLDrawable.h"
+#include "SDL_Drawable.hpp"
 //#include "audio.h"
+#include "fps.h"
 
 #include "GameState.hpp"
 #include "GameStates.hpp"
