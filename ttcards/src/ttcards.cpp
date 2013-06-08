@@ -8,14 +8,16 @@
 ******************************************************************************/
 #include "ttcards.h"
 
-TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
+using namespace nom;
+
+TTcards::TTcards ( CardHand player1_hand )
 {
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::TTcards (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->engine = engine; // initialize rendering interface
   this->hand[0] = player1_hand;
+
   this->background = NULL;
 
   this->turn = 0;
@@ -23,7 +25,7 @@ TTcards::TTcards ( Gfx *engine, CardHand player1_hand )
 
   this->collection.cards.clear();
 
-  this->Load();
+  this->Init();
 }
 
 TTcards::~TTcards ( void )
@@ -36,9 +38,30 @@ TTcards::~TTcards ( void )
     SDL_FreeSurface ( this->background );
 
   this->background = NULL;
+}
 
-  if ( this->engine )
-    this->engine = NULL;
+bool TTcards::Init ( void )
+{
+  this->Load();
+
+  #ifdef DEBUG_TTCARDS
+    this->debugCardsNoRuleset();
+    //this->debugCardsSameRuleset();
+  #endif
+
+  //this->music.PlayMusicTrack ( -1 );
+  //this->music.PauseMusic ();
+
+  this->player[0].setID ( Card::PLAYER1 );
+  this->player[1].setID ( Card::PLAYER2 );
+
+  this->player_turn ( 0 );
+
+  //update.Start();
+
+  //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
+
+  return true;
 }
 
 void TTcards::Pause ( void )
@@ -58,7 +81,7 @@ void TTcards::Load ( void )
   this->collection.LoadJSON ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
-  this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
+  this->background = (SDL_Surface*) Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
@@ -129,22 +152,10 @@ void TTcards::Load ( void )
   this->info_box.setBackground ( &linear );
   this->debug_box.setBackground ( &linear );
 
-  #ifdef DEBUG_TTCARDS
-    this->debugCardsNoRuleset();
-    //this->debugCardsSameRuleset();
-  #endif
+  drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ) );
+  drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ) );
 
-  //this->music.PlayMusicTrack ( -1 );
-  //this->music.PauseMusic ();
-
-  this->player[0].setID ( Card::PLAYER1 );
-  this->player[1].setID ( Card::PLAYER2 );
-
-  this->player_turn ( 0 );
-
-  //update.Start();
-
-  //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
+  //return true;
 }
 
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
@@ -214,7 +225,7 @@ void TTcards::debugBox ( void )
 }
 
 // Debug -- input events helper method
-void TTcards::debugListCards ( SDLMod mod )
+void TTcards::debugListCards ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->hand[1].cards );
@@ -223,7 +234,7 @@ void TTcards::debugListCards ( SDLMod mod )
 }
 
 // Debug -- input events helper method
-void TTcards::debugListCollection ( SDLMod mod )
+void TTcards::debugListCollection ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->collection.cards );
@@ -260,7 +271,7 @@ void TTcards::endTurn ( void )
 
 // Interface Helper method; shows Card's ID number in a message box for both cursor
 // states; player's hand and placed board cards -- debug handling included
-void TTcards::showCardInfoBox ( SDL_Surface *video_buffer )
+void TTcards::showCardInfoBox ( void* video_buffer )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
@@ -427,44 +438,12 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::onExit ( void )
-{
-  this->engine->Quit();
-}
-
-void TTcards::onResize ( unsigned int width, unsigned int height )
-{
-  if ( this->engine->isFullScreen() )
-  {
-    Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_RESIZABLE );
-    this->engine->setFullScreen ( false );
-  }
-  else
-  {
-    Gfx::SetVideoMode ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_FULLSCREEN );
-    this->engine->setFullScreen ( true );
-  }
-}
-
-void TTcards::HandleInput ( void )
-{
-  SDL_Event event;
-
-  while ( SDL_PollEvent ( &event ) )
-    SDLInput::Input ( &event );
-}
-
-void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
+void TTcards::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
-    case SDLK_ESCAPE:
-    case SDLK_q: this->onExit(); break;
-    case SDLK_f: this->onResize ( 0, 0 ); break;
-
     case SDLK_p: /* Pause State ... */ break;
     case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
-    case SDLK_EQUALS: this->engine->toggleFPS(); break;
 
     case SDLK_e: this->endTurn(); break;
     case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
@@ -472,7 +451,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
-    case SDLK_r: this->engine->PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
+    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
@@ -486,7 +465,7 @@ void TTcards::onKeyDown ( SDLKey key, SDLMod mod )
   }
 }
 
-void TTcards::onMouseLeftButtonDown ( unsigned int x, unsigned int y )
+void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
   unsigned int player_turn = get_turn();
@@ -557,7 +536,7 @@ void TTcards::onMouseWheel ( bool up, bool down )
   }
 }
 
-void TTcards::onJoyButtonDown ( unsigned int which, unsigned int button )
+void TTcards::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {
@@ -687,7 +666,7 @@ void TTcards::updateCursor ( void )
     this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
 }
 
-void TTcards::drawCursor ( SDL_Surface *video_buffer )
+void TTcards::drawCursor ( void* video_buffer )
 {
   this->cursor.Draw ( video_buffer );
 }
@@ -709,7 +688,7 @@ void TTcards::updateScore ( void )
   }
 }
 
-void TTcards::drawScore ( SDL_Surface *video_buffer )
+void TTcards::drawScore ( void *video_buffer )
 {
   this->score_text.setText ( std::to_string ( player[0].getScore() ) );
   this->score_text.setXY ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
@@ -724,6 +703,11 @@ void TTcards::Update ( void )
 {
   this->updateCursor();
 
+  if ( this->get_turn() == 0 ) // player1
+    rect.setPosition ( Coords ( 320, 0, 16, 16 ), Color ( 188, 203, 236 ) );
+  else // player2
+    rect.setPosition ( Coords ( 40, 0, 16, 16 ), Color ( 222, 196, 205 ) );
+
   this->updateScore();
 
   if ( this->update.getTicks() > 1100 )
@@ -734,7 +718,7 @@ void TTcards::Update ( void )
   //Gfx::updateSurface ( video_buffer ); // FIXME
 }
 
-void TTcards::Draw ( SDL_Surface *video_buffer )
+void TTcards::Draw ( void *video_buffer )
 {
   Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) );
 
@@ -743,10 +727,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );
 
-  if ( this->get_turn() == 0 ) // player1
-    Gfx::drawRect ( video_buffer, nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ); // FIXME: placeholder for player select sprite animation
-  else // player2
-    Gfx::drawRect ( video_buffer, nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ); // // FIXME: placeholder for player select sprite animation
+  rect.Draw ( video_buffer );
 
   this->drawCursor ( video_buffer );
 
@@ -793,7 +774,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 1 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 1 ) ) );
     }
     else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
     {
@@ -819,7 +800,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 2 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 2 ) ) );
     }
     else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
     {
@@ -833,7 +814,7 @@ void TTcards::Draw ( SDL_Surface *video_buffer )
       Gfx::updateSurface ( video_buffer ); // FIXME
       SDL_Delay ( 2500 );
 
-      engine->PushState ( std::unique_ptr<GameOver>( new GameOver( this->engine, winning_cards, 3 ) ) );
+      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 3 ) ) );
     }
     else // Undefined
     {

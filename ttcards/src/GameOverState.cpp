@@ -8,13 +8,14 @@
 ******************************************************************************/
 #include "GameOverState.h"
 
-GameOver::GameOver ( Gfx *engine, std::vector<Card> cards_, unsigned int state )
+using namespace nom;
+
+GameOver::GameOver ( std::vector<Card> cards_, unsigned int state )
 {
   #ifdef DEBUG_GAMEOVER_OBJ
     std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->engine = engine;
   this->background = NULL;
   this->state = state;
   this->cards = cards_; // FIXME?
@@ -32,9 +33,6 @@ GameOver::~GameOver ( void )
     SDL_FreeSurface ( this->background );
 
   this->background = NULL;
-
-  if ( this->engine )
-    this->engine = NULL;
 }
 
 void GameOver::Load ( void )
@@ -42,7 +40,7 @@ void GameOver::Load ( void )
   for ( int i = 0; i < cards.size(); i++ )
     std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
 
-  this->background = Gfx::LoadImage ( GAMEOVER_BACKGROUND );
+  this->background = (SDL_Surface*) Gfx::LoadImage ( GAMEOVER_BACKGROUND );
 
   //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
@@ -58,27 +56,12 @@ void GameOver::Resume ( void )
   std::cout << "\n" << "GameOver state Resumed" << "\n";
 }
 
-void GameOver::HandleInput ( void )
-{
-  SDL_Event event;
-
-  while ( SDL_PollEvent ( &event ) )
-    SDLInput::Input ( &event );
-}
-
-void GameOver::onExit ( void )
-{
-  this->engine->Quit();
-}
-
-void GameOver::onKeyDown ( SDLKey key, SDLMod mod )
+void GameOver::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
-    case SDLK_ESCAPE:
-    case SDLK_q: this->engine->Quit(); break;
     // Reset / New Game State
-    case SDLK_r: this->engine->PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->engine ) ) ); break;
+    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu() ) ); break;
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 
@@ -90,7 +73,7 @@ void GameOver::Update ( void )
 {
 }
 
-void GameOver::Draw ( SDL_Surface *video_buffer )
+void GameOver::Draw ( void* video_buffer )
 {
   Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background
 
@@ -102,9 +85,9 @@ void GameOver::Draw ( SDL_Surface *video_buffer )
   for ( int cards_index = 0; cards_index < this->cards.size(); cards_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER1 )
-      this->card.DrawCard ( Gfx::getDisplay(), this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+      this->card.DrawCard ( video_buffer, this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
     else if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER2 )
-      this->card.DrawCard ( Gfx::getDisplay(), this->cards.at ( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+      this->card.DrawCard ( video_buffer, this->cards.at ( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
   }
 
   if ( this->state == 1 )

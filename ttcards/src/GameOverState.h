@@ -19,23 +19,20 @@
 class GameOver: public GameState
 {
   public:
-    GameOver ( Gfx *engine, std::vector<Card> cards_, unsigned int state );
+    GameOver ( std::vector<Card> cards_, unsigned int state );
     ~GameOver ( void );
 
     void Pause ( void );
     void Resume ( void );
 
-    void HandleInput ( void );
     void Update ( void );
-    void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void *video_buffer );
 
   private:
-    void onExit ( void );
-    void onKeyDown ( SDLKey key, SDLMod mod );
+    void onKeyDown ( int32_t key, int32_t mod );
     void Load ( void );
 
-    Gfx *engine; // Pointer reference to our rendering interface
-    CardView card; // card rendering
+    CardView card; /// card rendering
     SDL_Surface *background;
     //SDL_TFont gameOver_text; // dialog text
     std::vector<Card> cards;

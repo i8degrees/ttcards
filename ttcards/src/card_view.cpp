@@ -8,6 +8,8 @@
 ******************************************************************************/
 #include "card_view.h"
 
+using namespace nom;
+
 CardView::CardView ( void )
 {
   #ifdef DEBUG_CARD_VIEW_OBJ
@@ -59,18 +61,17 @@ CardView::~CardView ( void )
 }
 
 // Helper method for drawing cards face down
-bool CardView::drawFaceDown ( SDL_Surface *video_buffer, unsigned int x, unsigned int y )
+bool CardView::drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y )
 {
   this->card_background->setSheetID ( NOFACE_ID );
   this->card_background->setXY ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
 
-  if ( this->card_background->Draw ( video_buffer ) == false )
-    return false;
+  this->card_background->Draw ( video_buffer );
 
   return true;
 }
 
-bool CardView::DrawCard ( SDL_Surface *video_buffer, Card &card, unsigned int x, unsigned int y )
+bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y )
 {
   if ( card.getID() != 0 )
   {
@@ -90,15 +91,13 @@ bool CardView::DrawCard ( SDL_Surface *video_buffer, Card &card, unsigned int x,
 
     card_background->setX ( BACKGROUND_ORIGIN_X + x );
     card_background->setY ( BACKGROUND_ORIGIN_Y + y );
-    if ( card_background->Draw ( video_buffer ) == false )
-      return false;
+    card_background->Draw ( video_buffer );
 
     card_face->setSheetID ( card.getID() );
     card_face->setX ( CARD_FACE_ORIGIN_X + x );
     card_face->setY ( CARD_FACE_ORIGIN_Y + y );
 
-    if ( card_face->Draw ( video_buffer ) == false )
-      return false;
+    card_face->Draw ( video_buffer );
 
     switch ( card.getElement() )
     {
@@ -133,8 +132,7 @@ bool CardView::DrawCard ( SDL_Surface *video_buffer, Card &card, unsigned int x,
 
     card_element->setX ( ELEMENT_ORIGIN_X + x );
     card_element->setY ( ELEMENT_ORIGIN_Y + y );
-    if ( card_element->Draw ( video_buffer ) == false )
-      return false;
+    card_element->Draw ( video_buffer );
 
     if ( card.getNorthRank() == 10 )
       this->card_text.setText ( "A" );

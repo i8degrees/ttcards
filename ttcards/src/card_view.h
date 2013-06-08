@@ -23,14 +23,14 @@ class CardView
     CardView ( void );
     ~CardView ( void );
 
-    bool drawFaceDown ( SDL_Surface *video_buffer, unsigned int x, unsigned int y );
-    bool DrawCard ( SDL_Surface *video_buffer, Card &card, unsigned int x, unsigned int y );
+    bool drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y );
+    bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );
 
   private:
     nom::Sprite *card_face;
     nom::Sprite *card_background;
     nom::Sprite *card_element;
-    SDLBitmapFont card_text;
+    nom::SDL_BitmapFont card_text;
 };
 
 #endif // CARD_VIEW_HEADERS defined

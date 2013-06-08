@@ -16,46 +16,45 @@
 
 #include "SDL_Cursor.h"
 
+#include "SDL_Canvas.hpp"
+
 class CardsMenu: public GameState
 {
   public:
-    CardsMenu ( Gfx *engine );
+    CardsMenu ( void );
     ~CardsMenu ( void );
 
     void Pause ( void );
     void Resume ( void );
 
-    void HandleInput ( void );
     void Update ( void );
-    void Draw ( SDL_Surface *video_buffer );
+    void Draw ( void *video_buffer );
 
   private:
-    void onExit ( void );
-    void onKeyDown ( SDLKey key, SDLMod mod );
-    void onJoyButtonDown ( unsigned int which, unsigned int button );
-    void onMouseLeftButtonDown ( unsigned int x, unsigned int y );
-    void onMouseRightButtonDown ( unsigned int x, unsigned int y );
+    void onKeyDown ( int32_t key, int32_t mod );
+    void onJoyButtonDown ( int32_t which, int32_t button );
+    void onMouseLeftButtonDown ( int32_t x, int32_t y );
+    void onMouseRightButtonDown ( int32_t x, int32_t y );
     void onMouseWheel ( bool up, bool down );
     void Load ( void );
 
     void reloadDebugFile ( void );
     void updateCursor ( void );
-    void drawCursor ( SDL_Surface *video_buffer );
+    void drawCursor ( void* video_buffer );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    Gfx *engine; // Pointer reference to our rendering interface
-    Collection collection; // cards database
-    SDL_Surface *background; // pointer holding our background image
+    Collection collection; /// cards database
+    nom::SDL_Canvas background; /// pointer holding our background image
 
-    SDLBitmapFont info_text;
-    SDLBitmapFont info_small_text;
-    SDLBitmapFont info_text_gray;
+    nom::SDL_BitmapFont info_text;
+    nom::SDL_BitmapFont info_small_text;
+    nom::SDL_BitmapFont info_text_gray;
 
-    CardDebug debug; // debug support for card attributes
+    CardDebug debug; /// debug support for card attributes
     Logger logDebug;
     std::vector<int> logger;
 
@@ -63,20 +62,20 @@ class CardsMenu: public GameState
     SDLGradient linear;
     nom::Color msgbox[8];
 
-    CardView card; // card rendering
-    CardHand hand; // player1 hand
-    Card selectedCard; // CardHand-derived implementation
+    CardView card; /// card rendering
+    CardHand hand; /// player1 hand
+    Card selectedCard; /// CardHand-derived implementation
 
     nom::SDL_Cursor cursor;
-    nom::Sprite menu_element; // interface menu elements
+    nom::Sprite menu_element; /// interface menu elements
 
-    unsigned int total_pages; // MAX_COLLECTION / per_page
-    unsigned int per_page; // number of cards to display per menu page
-    unsigned int current_index; // current card position
-    unsigned int info_text_height; // height of the card name text
+    unsigned int total_pages; /// MAX_COLLECTION / per_page
+    unsigned int per_page; /// number of cards to display per menu page
+    unsigned int current_index; /// current card position
+    unsigned int info_text_height; /// height of the card name text
 
-    // y coords mapping for cursor -> card position index
-    std::pair<int, int> cursor_coords_map[10]; // minus one (1) padding
+    /// y coords mapping for cursor -> card position index
+    std::pair<int, int> cursor_coords_map[10]; /// minus one (1) padding
 };
 
 #endif // GAMEAPP_CARDS_MENU_HEADERS defined

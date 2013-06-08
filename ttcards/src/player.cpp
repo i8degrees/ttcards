@@ -109,7 +109,7 @@ void Player::setScore ( unsigned int score )
   this->score = score;
 }
 
-void Player::Draw ( SDL_Surface *video_buffer )
+void Player::Draw ( void* video_buffer )
 {
   unsigned int hand_index = 0;
 
