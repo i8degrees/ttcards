@@ -16,7 +16,7 @@ CardHand::CardHand ( void )
 
   this->clear();
 
-  this->selectedCard = Card::Card();
+  this->selectedCard = Card();
 }
 
 CardHand::~CardHand ( void )
@@ -75,7 +75,7 @@ bool CardHand::removeCard ( Card &card )
 
 void CardHand::clearSelectedCard ( void )
 {
-  this->selectedCard = Card::Card();
+  this->selectedCard = Card();
 }
 
 Card & CardHand::getSelectedCard ( void )

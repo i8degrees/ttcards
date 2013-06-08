@@ -73,7 +73,7 @@ CardsMenu::~CardsMenu ( void )
 
   //this->background = NULL;
 
-  this->selectedCard = Card::Card();
+  this->selectedCard = Card();
   this->hand.clear ();
 
   this->collection.clear();
