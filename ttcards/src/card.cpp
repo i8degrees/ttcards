@@ -8,6 +8,16 @@
 ******************************************************************************/
 #include "card.h"
 
+Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
+                      rank( { { 0, 0, 0, 0 } } ), name ( "\0" ),
+                      player_id ( Card::NOPLAYER ),
+                      player_owner ( Card::NOPLAYER )
+{
+  #ifdef DEBUG_CARD_OBJ
+    std::cout << "Card::Card (): Hello, world!" << "\n" << std::endl;
+  #endif
+}
+
 Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
               unsigned int element_, std::array<int, 4> rank_,
               std::string name_, unsigned int player_id_,
@@ -101,7 +111,6 @@ unsigned int Card::getPlayerID ( void )
   return this->player_id;
 }
 
-// Presently, this is the only card attribute that is ever modified in game
 void Card::setPlayerID ( unsigned int player_id_ )
 {
   this->player_id = player_id_;

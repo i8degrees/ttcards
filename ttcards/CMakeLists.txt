@@ -33,9 +33,6 @@ include_directories ( ${SDLTTF_INCLUDE_DIR} )
 
 link_libraries (  ttcards # makefile target
                   ${SDL_LIBRARY}
-                  ${SDL_IMAGE_LIBRARY}
-                  ${SDL_MIXER_LIBRARY}
-                  ${SDL_TTF_LIBRARY}
                   SDLmain
                   gamelib
                   #nomjson

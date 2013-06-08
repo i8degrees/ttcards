@@ -16,7 +16,7 @@ set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
 set ( CMAKE_EXE_LINKER_FLAGS "-std=c++11 -stdlib=libc++" )
 set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
 # if LINUX
-#set ( CMAKE_CXX_FLAGS -std=gnu++0x )
+    #set ( CMAKE_CXX_FLAGS -std=gnu++0x )
 # endif ()
 set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall" )
 set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )

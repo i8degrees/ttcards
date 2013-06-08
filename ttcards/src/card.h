@@ -20,9 +20,12 @@
 class Card
 {
   public:
-    Card  (   unsigned int id_ = 0, unsigned int level_ = 0, unsigned int type_ = 0,
-              unsigned int element_ = NONE, std::array<int, 4> rank_ = { { 0, 0, 0, 0 } },
-              std::string name_ = "\0", unsigned int player_id_ = Card::NOPLAYER,
+
+    Card ( void );
+
+    Card  (   unsigned int id_, unsigned int level_, unsigned int type_,
+              unsigned int element_, std::array<int, 4> rank_,
+              std::string name_, unsigned int player_id_,
               unsigned int player_owner_ = Card::NOPLAYER
           );
 
@@ -49,7 +52,7 @@ class Card
     void setWestRank ( unsigned int rank );
     void setName ( std::string name_ );
 
-    // card.player_id AKA owner tag
+    /// card.player_id AKA owner tag
     enum
     {
       NOPLAYER=0,
@@ -67,15 +70,15 @@ class Card
     unsigned int id;
     unsigned int level;
     unsigned int type;
-    unsigned int element; // NONE is no element
-    std::array<int, 4> rank; // NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
+    unsigned int element; /// NONE is no element
+    std::array<int, 4> rank; /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
     std::string name;
 
-    // used to distinguish card background and also used to track player in board
-    // in order to do card flipping, among other things like score tallying
+    /// used to distinguish card background and also used to track player in board
+    /// in order to do card flipping, among other things like score tallying
     unsigned int player_id;
 
-    // Original owner of the card
+    /// Original owner of the card
     unsigned int player_owner;
 };
 
