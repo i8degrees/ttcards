@@ -92,8 +92,6 @@ class App: public nom::SDL_App
       unsigned int loops = 0; // globalTimer related
       unsigned int next_game_tick = 0; // globalTimer related
 
-      // Dependencies: after video init
-      FPS fps; // timer for tracking frames per second
       fps.Start();
 
       next_game_tick = getTicks();
@@ -135,6 +133,8 @@ class App: public nom::SDL_App
 
   private:
     nom::SDL_Display display;
+    // Dependencies: after video init
+    FPS fps; // timer for tracking frames per second
 };
 
 int main(int argc, char*argv[])
