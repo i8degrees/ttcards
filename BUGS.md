@@ -2,6 +2,8 @@
 
 ## Known Bugs
 
+## Squashed Bugs
+
 * Consistent crashes upon PopStateThenChangeState method call *only* when using
 while loop within SDLInput::Input with SDL_PollEvent
 
