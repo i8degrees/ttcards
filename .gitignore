@@ -19,6 +19,7 @@ tmp/
 ttcards/ttcards
 *ttcards.dSYM*
 *.offsets.val
+ttcards.dtps
 
 # EMCC
 public/
