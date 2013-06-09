@@ -12,9 +12,11 @@
 #include <iostream>
 #include <string>
 
-#include "ttcards.h"
-
 #include "timer.h"
+
+#include "ttcards.h"
+#include "SDL_Display.h"
+
 
 class GameOver: public GameState
 {
@@ -32,6 +34,7 @@ class GameOver: public GameState
     void onKeyDown ( int32_t key, int32_t mod );
     void Load ( void );
 
+    nom::SDL_Display context;   // our public / visible display context handle
     CardView card; /// card rendering
     nom::SDL_Canvas background;
     //SDL_TFont gameOver_text; // dialog text

@@ -28,8 +28,7 @@
 #include "SDL_Cursor.h"
 #include "SDL_Drawable.hpp"
 //#include "audio.h"
-#include "fps.h"
-
+#include "timer.h"
 #include "GameState.hpp"
 #include "GameStates.hpp"
 #include "CardsMenuState.h"
@@ -93,6 +92,7 @@ class TTcards: public GameState
     //void Start ( void ); // EMCC compiler related
   private:
     //static TTcards *instance; // EMCC compiler related
+    nom::SDL_Display context;   // our public / visible display context handle
     nom::SDL_Canvas background; /// pointer holding our board background image
 
     Timer update;

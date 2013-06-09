@@ -705,7 +705,7 @@ void TTcards::Update ( void* video_buffer )
 
   this->updateScore();
 
-  SDL_Display::Update ( video_buffer ); // FIXME
+  context.Update ( video_buffer );
 }
 
 void TTcards::Draw ( void *video_buffer )
@@ -756,7 +756,7 @@ void TTcards::Draw ( void *video_buffer )
         }
       }
 
-      SDL_Display::Update ( video_buffer ); // FIXME
+      context.Update ( video_buffer );
 
       this->update.Start();
 
@@ -790,7 +790,7 @@ void TTcards::Draw ( void *video_buffer )
         }
       }
 
-      SDL_Display::Update ( video_buffer ); // FIXME
+      context.Update ( video_buffer );
 
       this->update.Start();
 
@@ -812,7 +812,7 @@ void TTcards::Draw ( void *video_buffer )
 
       winning_cards.clear();
 
-      SDL_Display::Update ( video_buffer ); // FIXME
+      context.Update ( video_buffer );
 
       this->update.Start();
 
@@ -831,6 +831,4 @@ void TTcards::Draw ( void *video_buffer )
       exit(1);
     }
   }
-
-  SDL_Display::Update ( video_buffer ); // FIXME
 }

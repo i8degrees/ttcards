@@ -65,7 +65,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
 
 void GameOver::Update ( void* video_buffer )
 {
-  SDL_Display::Update ( video_buffer ); // FIXME
+  context.Update ( video_buffer );
 }
 
 void GameOver::Draw ( void* video_buffer )

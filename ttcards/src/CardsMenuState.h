@@ -13,10 +13,9 @@
 #include <string>
 
 #include "ttcards.h"
-
 #include "SDL_Cursor.h"
-
 #include "SDL_Canvas.hpp"
+#include "SDL_Display.h"
 
 class CardsMenu: public GameState
 {
@@ -47,6 +46,7 @@ class CardsMenu: public GameState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
+    nom::SDL_Display context;   // our public / visible display context handle
     Collection collection; /// cards database
     nom::SDL_Canvas background; /// pointer holding our background image
 

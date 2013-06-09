@@ -191,7 +191,7 @@ void CardsMenu::Update ( void* video_buffer )
 {
   this->updateCursor();
 
-  SDL_Display::Update ( video_buffer ); // FIXME
+  context.Update ( video_buffer );
 }
 
 void CardsMenu::Draw ( void* video_buffer )
