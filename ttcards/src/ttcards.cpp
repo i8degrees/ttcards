@@ -94,6 +94,7 @@ void TTcards::Load ( void )
 
   this->cursor = nom::SDL_Cursor ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ) );
+  this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->cursor.setState ( 0 ); // default state; player hand select
 
@@ -710,17 +711,12 @@ void TTcards::Update ( void )
 
   this->updateScore();
 
-  if ( this->update.getTicks() > 1100 )
-  {
-    this->update.Start(); // restart
-  }
-
   //Gfx::updateSurface ( video_buffer ); // FIXME
 }
 
 void TTcards::Draw ( void *video_buffer )
 {
-  Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) );
+  Gfx::DrawSurface ( this->background, video_buffer );
 
   this->board.Draw ( video_buffer );
 
@@ -734,11 +730,6 @@ void TTcards::Draw ( void *video_buffer )
   this->showCardInfoBox ( video_buffer );
 
   this->drawScore ( video_buffer );
-
-  //if ( this->update.getTicks() > 1000 )
-  //{
-    //Gfx::drawRect ( 0, 0, 384, 224, 255, 255, 255 );
-  //}
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
@@ -772,7 +763,15 @@ void TTcards::Draw ( void *video_buffer )
       }
 
       Gfx::updateSurface ( video_buffer ); // FIXME
-      SDL_Delay ( 2500 );
+
+      this->update.Start();
+
+      while ( this->update.getTicks() < 1000 )
+      {
+        // Do nothing loop for 1 second
+      }
+
+      this->update.Stop();
 
       nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 1 ) ) );
     }
@@ -798,7 +797,15 @@ void TTcards::Draw ( void *video_buffer )
       }
 
       Gfx::updateSurface ( video_buffer ); // FIXME
-      SDL_Delay ( 2500 );
+
+      this->update.Start();
+
+      while ( this->update.getTicks() < 1000 )
+      {
+        // Do nothing loop for 1 second
+      }
+
+      this->update.Stop();
 
       nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 2 ) ) );
     }
@@ -812,7 +819,15 @@ void TTcards::Draw ( void *video_buffer )
       winning_cards.clear();
 
       Gfx::updateSurface ( video_buffer ); // FIXME
-      SDL_Delay ( 2500 );
+
+      this->update.Start();
+
+      while ( this->update.getTicks() < 1000 )
+      {
+        // Do nothing loop for 1 second
+      }
+
+      this->update.Stop();
 
       nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 3 ) ) );
     }
