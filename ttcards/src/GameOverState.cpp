@@ -16,7 +16,6 @@ GameOver::GameOver ( std::vector<Card> cards_, unsigned int state )
     std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->background = NULL;
   this->state = state;
   this->cards = cards_; // FIXME?
 
@@ -28,11 +27,6 @@ GameOver::~GameOver ( void )
   #ifdef DEBUG_GAMEOVER_OBJ
     std::cout << "GameOver::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
-
-  if ( this->background )
-    SDL_FreeSurface ( this->background );
-
-  this->background = NULL;
 }
 
 void GameOver::Load ( void )
@@ -40,7 +34,7 @@ void GameOver::Load ( void )
   for ( int i = 0; i < cards.size(); i++ )
     std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
 
-  this->background = (SDL_Surface*) Gfx::LoadImage ( GAMEOVER_BACKGROUND );
+  this->background.loadImageFromFile ( GAMEOVER_BACKGROUND );
 
   //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
@@ -75,7 +69,7 @@ void GameOver::Update ( void )
 
 void GameOver::Draw ( void* video_buffer )
 {
-  Gfx::DrawSurface ( this->background, video_buffer ); // draw static board background
+  this->background.Draw ( video_buffer ); // draw static board background
 
   //this->gameOver_text.setTextBuffer ( "Game Over" );
   //signed int width = this->gameOver_text.getTextWidth ();

@@ -33,7 +33,7 @@ class GameOver: public GameState
     void Load ( void );
 
     CardView card; /// card rendering
-    SDL_Surface *background;
+    nom::SDL_Canvas background;
     //SDL_TFont gameOver_text; // dialog text
     std::vector<Card> cards;
 

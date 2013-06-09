@@ -18,8 +18,6 @@ TTcards::TTcards ( CardHand player1_hand )
 
   this->hand[0] = player1_hand;
 
-  this->background = NULL;
-
   this->turn = 0;
   this->cursor_locked = false;
 
@@ -33,11 +31,6 @@ TTcards::~TTcards ( void )
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::~TTcards (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
-
-  if ( this->background )
-    SDL_FreeSurface ( this->background );
-
-  this->background = NULL;
 }
 
 bool TTcards::Init ( void )
@@ -81,7 +74,8 @@ void TTcards::Load ( void )
   this->collection.LoadJSON ( CARDS_DB );
 
   this->board.Init ( &this->card, &this->rules );
-  this->background = (SDL_Surface*) Gfx::LoadImage ( BOARD_BACKGROUND );
+
+  this->background.loadImageFromFile ( BOARD_BACKGROUND );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
@@ -716,7 +710,7 @@ void TTcards::Update ( void )
 
 void TTcards::Draw ( void *video_buffer )
 {
-  Gfx::DrawSurface ( this->background, video_buffer );
+  this->background.Draw ( video_buffer );
 
   this->board.Draw ( video_buffer );
 

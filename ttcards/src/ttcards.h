@@ -93,7 +93,7 @@ class TTcards: public GameState
     //void Start ( void ); // EMCC compiler related
   private:
     //static TTcards *instance; // EMCC compiler related
-    SDL_Surface *background; /// pointer holding our board background image
+    nom::SDL_Canvas background; /// pointer holding our board background image
 
     Timer update;
     nom::SDL_Font gameOver_text; /// dialog text
