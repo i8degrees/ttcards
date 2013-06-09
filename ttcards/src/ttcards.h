@@ -86,7 +86,7 @@ class TTcards: public GameState
     void updateScore ( void );
     void drawScore ( void* video_buffer );
 
-    void Update ( void );
+    void Update ( void* video_buffer );
     void Draw ( void* video_buffer );
 
     //static void Callback ( void ); // EMCC compiler related

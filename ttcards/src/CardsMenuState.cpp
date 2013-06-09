@@ -187,9 +187,11 @@ void CardsMenu::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenu::Update ( void )
+void CardsMenu::Update ( void* video_buffer )
 {
   this->updateCursor();
+
+  SDL_Display::Update ( video_buffer ); // FIXME
 }
 
 void CardsMenu::Draw ( void* video_buffer )
@@ -246,8 +248,8 @@ void CardsMenu::Draw ( void* video_buffer )
     // FIXME ( this->info_text_gray )
     if ( this->hand.isValid ( this->collection.cards[i] ) )
     {
-      this->info_text_gray.greyedOutText ( 150 );
       this->info_text_gray.setText ( this->collection.cards[i].getName() );
+      this->info_text_gray.setStyle ( Style::Faded, 150 );
       this->info_text_gray.setXY ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
       this->info_text_gray.Draw ( video_buffer );
     }
@@ -296,8 +298,6 @@ void CardsMenu::Draw ( void* video_buffer )
   this->drawCursor ( video_buffer );
 
   this->card.DrawCard ( video_buffer, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
-
-  Gfx::updateSurface ( video_buffer ); // FIXME
 }
 
 // Helper method for debug logger

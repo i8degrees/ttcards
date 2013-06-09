@@ -115,7 +115,7 @@ class App: public nom::SDL_App
 
           fps.Update();
 
-          nom::GameStates::Update ();
+          nom::GameStates::Update ( display.get() );
           nom::GameStates::Draw ( display.get() );
 
           if ( getShowFPS() )

@@ -63,8 +63,9 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
   }
 }
 
-void GameOver::Update ( void )
+void GameOver::Update ( void* video_buffer )
 {
+  SDL_Display::Update ( video_buffer ); // FIXME
 }
 
 void GameOver::Draw ( void* video_buffer )
@@ -102,7 +103,4 @@ void GameOver::Draw ( void* video_buffer )
     //signed int width = this->gameOver_text.getTextWidth ();
     //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
-
-  Gfx::updateSurface ( video_buffer ); // FIXME
-
 }

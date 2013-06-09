@@ -25,8 +25,8 @@ class GameOver: public GameState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( void );
-    void Draw ( void *video_buffer );
+    void Update ( void* video_buffer );
+    void Draw ( void* video_buffer );
 
   private:
     void onKeyDown ( int32_t key, int32_t mod );

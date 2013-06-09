@@ -27,7 +27,7 @@ class CardsMenu: public GameState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( void );
+    void Update ( void* video_buffer );
     void Draw ( void *video_buffer );
 
   private:
