@@ -34,7 +34,7 @@ void GameOver::Load ( void )
   for ( int i = 0; i < cards.size(); i++ )
     std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
 
-  this->background.loadImageFromFile ( GAMEOVER_BACKGROUND );
+  this->background.loadFromImage ( GAMEOVER_BACKGROUND );
 
   //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
