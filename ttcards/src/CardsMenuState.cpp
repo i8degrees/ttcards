@@ -68,11 +68,6 @@ CardsMenu::~CardsMenu ( void )
     std::cout << "CardsMenu::~CardsMenu (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  //if ( this->background )
-    //SDL_FreeSurface ( this->background );
-
-  //this->background = NULL;
-
   this->selectedCard = Card();
   this->hand.clear ();
 
@@ -84,8 +79,6 @@ void CardsMenu::Load ( void )
   unsigned int idx = 0; // cursor_coords_map
 
   this->background.loadImageFromFile ( BOARD_BACKGROUND );
-  //this->background.setCanvas ( Gfx::LoadImage ( BOARD_BACKGROUND, nom::Color ( 0, 0, 0 ) ) );
-  //this->background = Gfx::LoadImage ( BOARD_BACKGROUND );
 
   this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
@@ -202,8 +195,7 @@ void CardsMenu::Draw ( void* video_buffer )
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
   unsigned int hand_index = 0; // "dummy" card index var
 
-  this->background.Draw ( video_buffer );/*video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background */
-  //Gfx::DrawSurface ( this->background, video_buffer, nom::Coords ( 0, 0 ), nom::Coords ( 0, 0, 384, 224 ) ); // draw static board background
+  this->background.Draw ( video_buffer );
 
   // static player2 hand background
   for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)
