@@ -31,6 +31,12 @@ TTcards::~TTcards ( void )
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::~TTcards (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
+
+  for ( drawable_t::const_iterator it = drawableRects.begin(); it != drawableRects.end(); it++ )
+  {
+    nom::SDL_Drawable *obj = *it;
+    delete obj;
+  }
 }
 
 bool TTcards::Init ( void )
