@@ -35,7 +35,7 @@
 #include "GameOverState.h"
 #include "SDL_Display.h"
 
-class TTcards: public GameState
+class TTcards: public nom::GameState
 {
   public:
     TTcards ( CardHand player1_hand );

@@ -18,7 +18,7 @@
 #include "SDL_Display.h"
 
 
-class GameOver: public GameState
+class GameOver: public nom::GameState
 {
   public:
     GameOver ( std::vector<Card> cards_, unsigned int state );

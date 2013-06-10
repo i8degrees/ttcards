@@ -17,7 +17,7 @@
 #include "SDL_Canvas.hpp"
 #include "SDL_Display.h"
 
-class CardsMenu: public GameState
+class CardsMenu: public nom::GameState
 {
   public:
     CardsMenu ( void );
