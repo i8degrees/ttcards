@@ -18,6 +18,7 @@
 
 #include "SDL_App.hpp"
 #include "GameStates.hpp"
+#include "SDL_Image.hpp"
 
 class App: public nom::SDL_App
 {
@@ -63,6 +64,12 @@ class App: public nom::SDL_App
         case SDLK_q: this->onExit(); break;
         case SDLK_EQUALS: this->toggleFPS(); break;
         case SDLK_f: this->onResize ( 0, 0 ); break;
+        case SDLK_s:
+        {
+          nom::SDL_Image image;
+          image.saveToFile ( "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
+          break;
+        }
         default: break;
       }
     }
