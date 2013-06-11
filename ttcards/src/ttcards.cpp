@@ -708,7 +708,7 @@ void TTcards::Update ( void* video_buffer )
 
   this->updateScore();
 
-  context.Update ( video_buffer );
+  this->context.Update();
 }
 
 void TTcards::Draw ( void *video_buffer )
@@ -759,7 +759,7 @@ void TTcards::Draw ( void *video_buffer )
         }
       }
 
-      context.Update ( video_buffer );
+      this->context.Update();
 
       this->update.Start();
 
@@ -793,7 +793,7 @@ void TTcards::Draw ( void *video_buffer )
         }
       }
 
-      context.Update ( video_buffer );
+      this->context.Update();
 
       this->update.Start();
 
@@ -815,7 +815,7 @@ void TTcards::Draw ( void *video_buffer )
 
       winning_cards.clear();
 
-      context.Update ( video_buffer );
+      this->context.Update();
 
       this->update.Start();
 

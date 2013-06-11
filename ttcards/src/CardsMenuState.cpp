@@ -190,9 +190,9 @@ void CardsMenu::Update ( void* video_buffer )
 {
   this->updateCursor();
 
-  context.Update ( video_buffer );
   this->menu_box.Update();
 
+  this->context.Update();
 }
 
 void CardsMenu::Draw ( void* video_buffer )

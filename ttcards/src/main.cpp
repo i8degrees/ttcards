@@ -36,7 +36,6 @@ class App: public nom::SDL_App
       #endif
 
       display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
-      std::cout << display.getDisplayWidth() << " " << display.getDisplayHeight() << "\n";
     }
 
     ~App ( void )

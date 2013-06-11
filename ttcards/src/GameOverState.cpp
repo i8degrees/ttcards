@@ -65,7 +65,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
 
 void GameOver::Update ( void* video_buffer )
 {
-  context.Update ( video_buffer );
+  this->context.Update();
 }
 
 void GameOver::Draw ( void* video_buffer )
