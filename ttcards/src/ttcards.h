@@ -102,7 +102,7 @@ class TTcards: public nom::GameState
 
     SDLMessageBox info_box;
     SDLMessageBox debug_box;
-    SDLGradient linear;
+    nom::SDL_Gradient linear;
     nom::Color msgbox[8];
 
     nom::SDL_Font score_text; /// scoreboard text
