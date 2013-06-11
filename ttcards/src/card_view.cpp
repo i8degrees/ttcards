@@ -65,7 +65,7 @@ bool CardView::drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y
 {
   this->card_background->setSheetID ( NOFACE_ID );
   this->card_background->setXY ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
-
+  this->card_background->Update();
   this->card_background->Draw ( video_buffer );
 
   return true;
@@ -78,60 +78,63 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
     switch ( card.getPlayerID() )
     {
       case Card::PLAYER1:
-        card_background->setSheetID ( PLAYER1_BACKGROUND_ID );
+        this->card_background->setSheetID ( PLAYER1_BACKGROUND_ID );
         break;
       case Card::PLAYER2:
-        card_background->setSheetID ( PLAYER2_BACKGROUND_ID );
+        this->card_background->setSheetID ( PLAYER2_BACKGROUND_ID );
         break;
       case Card::NOPLAYER:
       default:
-        card_background->setSheetID ( NOPLAYER_BACKGROUND_ID );
+        this->card_background->setSheetID ( NOPLAYER_BACKGROUND_ID );
         break;
     }
 
-    card_background->setX ( BACKGROUND_ORIGIN_X + x );
-    card_background->setY ( BACKGROUND_ORIGIN_Y + y );
-    card_background->Draw ( video_buffer );
+    this->card_background->setX ( BACKGROUND_ORIGIN_X + x );
+    this->card_background->setY ( BACKGROUND_ORIGIN_Y + y );
+    this->card_background->Update();
+    this->card_background->Draw ( video_buffer );
 
-    card_face->setSheetID ( card.getID() );
-    card_face->setX ( CARD_FACE_ORIGIN_X + x );
-    card_face->setY ( CARD_FACE_ORIGIN_Y + y );
+    this->card_face->setSheetID ( card.getID() );
+    this->card_face->setX ( CARD_FACE_ORIGIN_X + x );
+    this->card_face->setY ( CARD_FACE_ORIGIN_Y + y );
+    this->card_face->Update();
 
-    card_face->Draw ( video_buffer );
+    this->card_face->Draw ( video_buffer );
 
     switch ( card.getElement() )
     {
       case NONE:
-        card_element->setSheetID ( ELEMENT_NONE );
+        this->card_element->setSheetID ( ELEMENT_NONE );
         break;
       case EARTH:
-        card_element->setSheetID ( ELEMENT_EARTH );
+        this->card_element->setSheetID ( ELEMENT_EARTH );
         break;
       case FIRE:
-        card_element->setSheetID ( ELEMENT_FIRE );
+        this->card_element->setSheetID ( ELEMENT_FIRE );
         break;
       case HOLY:
-        card_element->setSheetID ( ELEMENT_HOLY );
+        this->card_element->setSheetID ( ELEMENT_HOLY );
         break;
       case ICE:
-        card_element->setSheetID ( ELEMENT_ICE );
+        this->card_element->setSheetID ( ELEMENT_ICE );
         break;
       case POISON:
-        card_element->setSheetID ( ELEMENT_POISON );
+        this->card_element->setSheetID ( ELEMENT_POISON );
         break;
       case THUNDER:
-        card_element->setSheetID ( ELEMENT_THUNDER );
+        this->card_element->setSheetID ( ELEMENT_THUNDER );
         break;
       case WATER:
-        card_element->setSheetID ( ELEMENT_WATER );
+        this->card_element->setSheetID ( ELEMENT_WATER );
         break;
       case WIND:
-        card_element->setSheetID ( ELEMENT_WIND );
+        this->card_element->setSheetID ( ELEMENT_WIND );
         break;
     }
 
     card_element->setX ( ELEMENT_ORIGIN_X + x );
     card_element->setY ( ELEMENT_ORIGIN_Y + y );
+    card_element->Update();
     card_element->Draw ( video_buffer );
 
     if ( card.getNorthRank() == 10 )
@@ -140,6 +143,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
       this->card_text.setText ( std::to_string ( card.getNorthRank() ) );
 
     this->card_text.setXY ( RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
+    this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 
     if ( card.getEastRank() == 10 )
@@ -148,6 +152,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
       this->card_text.setText ( std::to_string ( card.getEastRank() ) );
 
     this->card_text.setXY ( RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
+    this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 
     if ( card.getWestRank() == 10 )
@@ -156,6 +161,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
       this->card_text.setText ( std::to_string ( card.getWestRank() ) );
 
     this->card_text.setXY ( RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
+    this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 
     if ( card.getSouthRank() == 10 )
@@ -164,6 +170,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
       this->card_text.setText ( std::to_string ( card.getSouthRank() ) );
 
     this->card_text.setXY ( RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
+    this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 
     return true;

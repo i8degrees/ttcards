@@ -650,6 +650,8 @@ void TTcards::updateCursor ( void )
     this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
   else // player2
     this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+
+  this->cursor.Update();
 }
 
 void TTcards::drawCursor ( void* video_buffer )

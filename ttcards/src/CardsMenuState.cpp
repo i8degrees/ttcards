@@ -186,6 +186,7 @@ void CardsMenu::Update ( void* video_buffer )
   this->updateCursor();
 
   this->menu_box.Update();
+  //this->menu_element.Update();
 
   this->context.Update();
 }
@@ -238,6 +239,7 @@ void CardsMenu::Draw ( void* video_buffer )
     else
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT );
 
+    this->menu_element.Update();
     this->menu_element.Draw ( video_buffer );
 
     // Draw the card's name onto our menu box
@@ -276,6 +278,7 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->menu_element.setXY ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
+      this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }
 
@@ -283,6 +286,7 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->menu_element.setXY ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
+      this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }
 
@@ -320,6 +324,8 @@ void CardsMenu::updateCursor ( void )
       std::cout << "\nselectedCard: " << this->collection.cards[pos].getName() << "\n";
     #endif
   }
+
+  this->cursor.Update();
 }
 
 void CardsMenu::drawCursor ( void* video_buffer )
