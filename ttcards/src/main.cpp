@@ -132,6 +132,11 @@ class App: public nom::SDL_App
 
           next_game_tick += SKIP_TICKS;
           loops++;
+
+          // FIXME: this is a lazy patch to keep CPU cycles down; on my system,
+          // usage drops from 99% to ~22..30%
+          if ( fps.getFPS() >= TICKS_PER_SECOND )
+            SDL_Delay ( 50 );
         }
       }
 
