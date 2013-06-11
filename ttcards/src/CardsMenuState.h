@@ -60,7 +60,7 @@ class CardsMenu: public nom::GameState
 
     SDLMessageBox menu_box;
     nom::SDL_Gradient linear;
-    nom::Color msgbox[8];
+    std::vector<nom::Color> msgbox;
 
     CardView card; /// card rendering
     CardHand hand; /// player1 hand

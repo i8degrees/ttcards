@@ -122,33 +122,27 @@ void TTcards::Load ( void )
 
   this->rules.setRules ( 1 );
 
-  this->msgbox[0].setColor ( 41, 41, 41 ); // top1
-  this->msgbox[1].setColor ( 133, 133, 133 ); // top2
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
+  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
 
-  this->msgbox[2].setColor ( 41, 41, 41 ); // left1
-  this->msgbox[3].setColor ( 133, 133, 133 ); // left2
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
+  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
 
-  this->msgbox[4].setColor ( 57, 57, 57 ); // bottom1
-  this->msgbox[5].setColor ( 41, 41, 41 ); // bottom2
+  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
 
-  this->msgbox[6].setColor ( 57, 57, 57 ); // right1
-  this->msgbox[7].setColor ( 41, 41, 41 ); // right2
+  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
   #ifndef DEBUG_TTCARDS
     this->debug_box.disable ();
   #endif
 
-  for ( unsigned int i = 0; i < 8; i++ )
-  {
-    this->info_box.setBorder ( msgbox[i] );
-    this->debug_box.setBorder ( msgbox[i] );
-  }
-
   this->info_box.setBackground ( &linear );
   this->debug_box.setBackground ( &linear );
 
-  this->info_box.Init ( 104, 194, 176, 24 );
-  this->debug_box.Init ( 170, 8, 43, 20 );
+  this->info_box.Init ( 104, 194, 176, 24, msgbox );
+  this->debug_box.Init ( 170, 8, 43, 20, msgbox );
 
   //return true;
 }
@@ -293,7 +287,7 @@ void TTcards::showCardInfoBox ( void* video_buffer )
       this->info_text.setText ( std::to_string ( selectedCard.getID() ) );
       signed int text_width = this->info_text.getTextWidth ();
 
-      this->debug_box.Draw ( video_buffer, 170, 8, 43, 20 ); // 86x20 @ 140, 8
+      this->debug_box.Draw ( video_buffer );
 
       this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 10 );
       this->info_text.Draw ( video_buffer );
@@ -307,7 +301,7 @@ void TTcards::showCardInfoBox ( void* video_buffer )
     unsigned int text_width = this->info_text.getTextWidth();
     this->info_small_text.setText ( "INFO" );
 
-    this->info_box.Draw ( video_buffer, 104, 194, 176, 24 );
+    this->info_box.Draw ( video_buffer );
 
     this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 196 );
     this->info_text.Draw ( video_buffer );
@@ -708,6 +702,9 @@ void TTcards::Update ( void* video_buffer )
     this->player_rect.setPosition ( nom::Coords ( 40, 0, 16, 16 ) );
     this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
   }
+
+  this->debug_box.Update();
+  this->info_box.Update();
 
   this->updateScore();
 

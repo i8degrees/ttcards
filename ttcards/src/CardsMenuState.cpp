@@ -35,25 +35,22 @@ CardsMenu::CardsMenu ( void )
 
   this->hand.clear ();
 
-  this->msgbox[0].setColor ( 41, 41, 41 ); // top1
-  this->msgbox[1].setColor ( 133, 133, 133 ); // top2
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
+  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
 
-  this->msgbox[2].setColor ( 41, 41, 41 ); // left1
-  this->msgbox[3].setColor ( 133, 133, 133 ); // left2
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
+  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
 
-  this->msgbox[4].setColor ( 57, 57, 57 ); // bottom1
-  this->msgbox[5].setColor ( 41, 41, 41 ); // bottom2
+  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
 
-  this->msgbox[6].setColor ( 57, 57, 57 ); // right1
-  this->msgbox[7].setColor ( 41, 41, 41 ); // right2
+  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
+  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
   this->menu_box.setBackground ( &linear );
   //this->menu_box.disable ();
 
-  for ( unsigned int i = 0; i < 8; i++ )
-    this->menu_box.setBorder ( msgbox[i] );
-
-  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
+  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT, msgbox );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->collection.cards.size() / per_page;
@@ -194,6 +191,8 @@ void CardsMenu::Update ( void* video_buffer )
   this->updateCursor();
 
   context.Update ( video_buffer );
+  this->menu_box.Update();
+
 }
 
 void CardsMenu::Draw ( void* video_buffer )
@@ -214,7 +213,7 @@ void CardsMenu::Draw ( void* video_buffer )
       this->card.DrawCard ( video_buffer, this->hand.cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
   }
 
-  this->menu_box.Draw ( video_buffer, PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
+  this->menu_box.Draw ( video_buffer );
 
   for ( int i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {

@@ -103,7 +103,7 @@ class TTcards: public nom::GameState
     SDLMessageBox info_box;
     SDLMessageBox debug_box;
     nom::SDL_Gradient linear;
-    nom::Color msgbox[8];
+    std::vector<nom::Color> msgbox;
 
     nom::SDL_Font score_text; /// scoreboard text
     Board board; /// game board
