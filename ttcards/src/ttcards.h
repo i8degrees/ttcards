@@ -133,9 +133,9 @@ class TTcards: public nom::GameState
     unsigned int turn; /// FIXME: player1 = 0, player2 = 1
     bool cursor_locked; /// locks cursor state to board placement
 
-    typedef std::vector<nom::SDL_Drawable*> drawable_t;
-    drawable_t drawableRects;
-    nom::Rectangle rect;
+    /// visual indication of which player's turn
+    /// it is
+    nom::Rectangle player_rect;
 };
 
 #endif // GAMEAPP_TTCARDS_HEADERS defined

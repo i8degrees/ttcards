@@ -31,12 +31,6 @@ TTcards::~TTcards ( void )
   #ifdef DEBUG_TTCARDS_OBJ
     std::cout << "TTcards::~TTcards (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
-
-  for ( drawable_t::const_iterator it = drawableRects.begin(); it != drawableRects.end(); it++ )
-  {
-    nom::SDL_Drawable *obj = *it;
-    delete obj;
-  }
 }
 
 bool TTcards::Init ( void )
@@ -153,8 +147,6 @@ void TTcards::Load ( void )
   this->info_box.setBackground ( &linear );
   this->debug_box.setBackground ( &linear );
 
-  drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ) );
-  drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ) );
   this->info_box.Init ( 104, 194, 176, 24 );
   this->debug_box.Init ( 170, 8, 43, 20 );
 
@@ -707,9 +699,15 @@ void TTcards::Update ( void* video_buffer )
   this->updateCursor();
 
   if ( this->get_turn() == 0 ) // player1
-    rect.setPosition ( Coords ( 320, 0, 16, 16 ), Color ( 188, 203, 236 ) );
+  {
+    this->player_rect.setPosition ( nom::Coords ( 320, 0, 16, 16 ) );
+    this->player_rect.setColor ( nom::Color ( 188, 203, 236 ) );
+  }
   else // player2
-    rect.setPosition ( Coords ( 40, 0, 16, 16 ), Color ( 222, 196, 205 ) );
+  {
+    this->player_rect.setPosition ( nom::Coords ( 40, 0, 16, 16 ) );
+    this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
+  }
 
   this->updateScore();
 
@@ -725,7 +723,7 @@ void TTcards::Draw ( void *video_buffer )
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );
 
-  rect.Draw ( video_buffer );
+  this->player_rect.Draw ( video_buffer );
 
   this->drawCursor ( video_buffer );
 
