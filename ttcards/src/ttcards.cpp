@@ -287,6 +287,7 @@ void TTcards::showCardInfoBox ( void* video_buffer )
       this->debug_box.Draw ( video_buffer );
 
       this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 10 );
+      this->info_text.Update();
       this->info_text.Draw ( video_buffer );
     }
   }
@@ -301,10 +302,13 @@ void TTcards::showCardInfoBox ( void* video_buffer )
     this->info_box.Draw ( video_buffer );
 
     this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 196 );
+    this->info_text.Update();
     this->info_text.Draw ( video_buffer );
 
     this->info_small_text.setXY ( 108, 194 );
+    this->info_small_text.Update();
     this->info_small_text.Draw ( video_buffer );
+
   }
 }
 
@@ -680,10 +684,12 @@ void TTcards::drawScore ( void *video_buffer )
 {
   this->score_text.setText ( std::to_string ( player[0].getScore() ) );
   this->score_text.setXY ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->score_text.Update();
   this->score_text.Draw ( video_buffer );
 
   this->score_text.setText ( std::to_string ( player[1].getScore() ) );
   this->score_text.setXY ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->score_text.Update();
   this->score_text.Draw ( video_buffer );
 }
 
@@ -742,6 +748,7 @@ void TTcards::Draw ( void *video_buffer )
       this->gameOver_text.setText ( "Player 1 wins!" );
       signed int width = this->gameOver_text.getTextWidth ();
       this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
       for ( unsigned int i = 0; i < this->hand[PLAYER2].size(); i++ )
@@ -776,6 +783,7 @@ void TTcards::Draw ( void *video_buffer )
       this->gameOver_text.setText ( "Player 2 wins!" );
       signed int width = this->gameOver_text.getTextWidth ();
       this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
       for ( unsigned int i = 0; i < this->hand[PLAYER1].size(); i++ )
@@ -810,6 +818,7 @@ void TTcards::Draw ( void *video_buffer )
       this->gameOver_text.setText ( "Tie!" );
       signed int width = this->gameOver_text.getTextWidth ();
       this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
       winning_cards.clear();

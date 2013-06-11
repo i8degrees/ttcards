@@ -216,6 +216,7 @@ void CardsMenu::Draw ( void* video_buffer )
     // Draw the top-left box title
     this->info_small_text.setText ( "CARDS" );
     this->info_small_text.setXY ( MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y );
+    this->info_small_text.Update();
     this->info_small_text.Draw ( video_buffer );
 
     // Draw page number if we have more than one page to display
@@ -223,12 +224,14 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->info_small_text.setText ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
       this->info_small_text.setXY ( MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y );
+      this->info_small_text.Update();
       this->info_small_text.Draw ( video_buffer );
     }
 
     // Draw the top-right box title (number of cards)
     this->info_small_text.setText ( "NUM." );
     this->info_small_text.setXY ( MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y );
+    this->info_small_text.Update();
     this->info_small_text.Draw ( video_buffer );
 
     // Draw the card selection helper element
@@ -249,12 +252,14 @@ void CardsMenu::Draw ( void* video_buffer )
       this->info_text_gray.setText ( this->collection.cards[i].getName() );
       this->info_text_gray.setStyle ( Style::Faded, 150 );
       this->info_text_gray.setXY ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->info_text_gray.Update();
       this->info_text_gray.Draw ( video_buffer );
     }
     else
     {
       this->info_text.setText ( this->collection.cards[i].getName() );
       this->info_text.setXY ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->info_text.Update();
       this->info_text.Draw ( video_buffer );
     }
 
@@ -264,12 +269,14 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->info_text_gray.setText ( "0" );
       this->info_text_gray.setXY ( MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->info_text_gray.Update();
       this->info_text_gray.Draw ( video_buffer );
     }
     else
     {
       this->info_text.setText ( "1" );
       this->info_text.setXY ( MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->info_text.Update();
       this->info_text.Draw ( video_buffer );
     }
 
