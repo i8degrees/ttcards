@@ -53,6 +53,8 @@ CardsMenu::CardsMenu ( void )
   for ( unsigned int i = 0; i < 8; i++ )
     this->menu_box.setBorder ( msgbox[i] );
 
+  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
+
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->collection.cards.size() / per_page;
   this->current_index = 0; // current card position

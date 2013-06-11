@@ -155,6 +155,8 @@ void TTcards::Load ( void )
 
   drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 320, 0, 16, 16 ), nom::Color ( 188, 203, 236 ) ) );
   drawableRects.push_back ( new nom::Rectangle ( nom::Coords ( 40, 0, 16, 16 ), nom::Color ( 222, 196, 205 ) ) );
+  this->info_box.Init ( 104, 194, 176, 24 );
+  this->debug_box.Init ( 170, 8, 43, 20 );
 
   //return true;
 }
