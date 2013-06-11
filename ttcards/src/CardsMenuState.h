@@ -58,7 +58,7 @@ class CardsMenu: public nom::GameState
     Logger logDebug;
     std::vector<int> logger;
 
-    SDLMessageBox menu_box;
+    nom::SDL_MessageBox menu_box;
     nom::SDL_Gradient linear;
     std::vector<nom::Color> msgbox;
 

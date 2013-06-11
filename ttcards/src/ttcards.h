@@ -22,7 +22,7 @@
 //#include "cpu_player.h"
 
 #include "Logger.h"
-#include "SDLMessageBox.h"
+#include "SDL_MessageBox.hpp"
 #include "SDL_Font.h"
 #include "SDL_BitmapFont.h"
 #include "SDL_Cursor.h"
@@ -100,8 +100,8 @@ class TTcards: public nom::GameState
     nom::SDL_BitmapFont info_text;
     nom::SDL_BitmapFont info_small_text;
 
-    SDLMessageBox info_box;
-    SDLMessageBox debug_box;
+    nom::SDL_MessageBox info_box;
+    nom::SDL_MessageBox debug_box;
     nom::SDL_Gradient linear;
     std::vector<nom::Color> msgbox;
 
