@@ -138,11 +138,8 @@ void TTcards::Load ( void )
     this->debug_box.disable ();
   #endif
 
-  this->info_box.setBackground ( &linear );
-  this->debug_box.setBackground ( &linear );
-
-  this->info_box.Init ( 104, 194, 176, 24, msgbox );
-  this->debug_box.Init ( 170, 8, 43, 20, msgbox );
+  this->info_box.Init ( 104, 194, 176, 24, msgbox, &linear );
+  this->debug_box.Init ( 170, 8, 43, 20, msgbox, &linear );
 
   //return true;
 }

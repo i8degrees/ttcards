@@ -47,10 +47,7 @@ CardsMenu::CardsMenu ( void )
   this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
   this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
-  this->menu_box.setBackground ( &linear );
-  //this->menu_box.disable ();
-
-  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT, msgbox );
+  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT, msgbox, &linear );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->collection.cards.size() / per_page;
@@ -97,8 +94,6 @@ void CardsMenu::Load ( void )
   this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image
   this->cursor.setState ( 0 ); // default state for navigating card menu
 
-  // We cannot map std::pair<0, 0>, so we are "missing" the first element here,
-  // which we do account for within the card tracking / positioning code
   for ( idx = 0; idx < per_page; idx++ )
   {
     this->cursor_coords_map[idx] = std::make_pair ( MENU_CARDS_CURSOR_ORIGIN_Y + ( this->info_text_height * idx ), idx );
