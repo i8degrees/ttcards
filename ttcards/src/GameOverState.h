@@ -15,7 +15,7 @@
 #include "timer.h"
 
 #include "ttcards.h"
-#include "SDL_Display.h"
+#include "SDL_Display.hpp"
 
 
 class GameOver: public nom::GameState

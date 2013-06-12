@@ -17,7 +17,7 @@
 #include "card_hand.h"
 #include "card_view.h"
 
-#include "Coords.h"
+#include "Coords.hpp"
 
 class Player
 {

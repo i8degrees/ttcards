@@ -14,8 +14,8 @@
 #include "cfg.h"
 #include "card.h"
 
-#include "SDL_BitmapFont.h"
-#include "sprite.h"
+#include "SDL_BitmapFont.hpp"
+#include "Sprite.hpp"
 
 class CardView
 {

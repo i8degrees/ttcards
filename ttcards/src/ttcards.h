@@ -23,8 +23,8 @@
 
 #include "Logger.h"
 #include "SDL_MessageBox.hpp"
-#include "SDL_Font.h"
-#include "SDL_BitmapFont.h"
+#include "SDL_Font.hpp"
+#include "SDL_BitmapFont.hpp"
 #include "SDL_Cursor.h"
 #include "SDL_Drawable.hpp"
 //#include "audio.h"
@@ -33,7 +33,7 @@
 #include "GameStates.hpp"
 #include "CardsMenuState.h"
 #include "GameOverState.h"
-#include "SDL_Display.h"
+#include "SDL_Display.hpp"
 
 class TTcards: public nom::GameState
 {

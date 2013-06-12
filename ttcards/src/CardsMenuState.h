@@ -15,7 +15,7 @@
 #include "ttcards.h"
 #include "SDL_Cursor.h"
 #include "SDL_Canvas.hpp"
-#include "SDL_Display.h"
+#include "SDL_Display.hpp"
 
 class CardsMenu: public nom::GameState
 {
