@@ -47,7 +47,10 @@ CardsMenu::CardsMenu ( void )
   this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
   this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
-  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT, msgbox, &linear );
+  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
+
+  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT, msgbox, linear );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->collection.cards.size() / per_page;
@@ -285,7 +288,7 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->menu_element.setPosition ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
-      this->menu_element.Update();
+      //this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }
 
@@ -293,7 +296,7 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->menu_element.setPosition ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
-      this->menu_element.Update();
+      //this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }
 

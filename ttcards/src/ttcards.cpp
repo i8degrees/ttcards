@@ -136,8 +136,11 @@ void TTcards::Load ( void )
     this->debug_box.disable ();
   #endif
 
-  this->info_box.Init ( 104, 194, 176, 24, msgbox, &linear );
-  this->debug_box.Init ( 170, 8, 43, 20, msgbox, &linear );
+  linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
+  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+
+  this->debug_box.Init ( 170, 8, 43, 20, msgbox, linear );
+  this->info_box.Init ( 104, 194, 176, 24, msgbox, linear );
 
   //return true;
 }
