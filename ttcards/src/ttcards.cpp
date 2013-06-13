@@ -458,58 +458,32 @@ void TTcards::onKeyDown ( int32_t key, int32_t mod )
 
 void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
+  uint32_t player_turn = get_turn();
   nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
-  unsigned int player_turn = get_turn();
+  nom::Coords player_coords = player[player_turn].getPosition(); // Player origin coordinates
 
-  nom::Coords player_coords = player[player_turn].getPosition(); // PLAYER ORIGIN XY
-
-  // player hand selection checks
-  if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( player_coords.y ) )
+  // Player hand selection checks
+  for ( uint32_t hand_idx = 0; hand_idx < this->hand[ player_turn ].size(); hand_idx++ )
   {
-    hand[player_turn].selectCard ( hand[player_turn].cards[0] );
+    if  (
+          x <= ( player_coords.x + CARD_WIDTH ) &&
+          x >= ( player_coords.x ) &&
+          // hand_index+1 because we start the loop iterator at zero; mouse check
+          // calculation is invalid at this number whereas it is not for the
+          // actions that take place if said check yields true
+          y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * hand_idx+1 ) &&
+          y >= ( player_coords.y )
+        )
+    {
+      // Update player's selected card
+      this->hand[ player_turn ].selectCard ( this->hand[ player_turn ].cards[ hand_idx ] );
 
-    // Updates Cursor Position
-    if ( hand[player_turn].cards[0].getID() != 0 )
-      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 0 );
+      // Updates Cursor Position
+      this->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_idx );
+    }
   }
 
-  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( player_coords.y ) )
-  {
-    hand[player_turn].selectCard ( hand[player_turn].cards[1] );
-
-    // Updates Cursor Position
-    if ( hand[player_turn].cards[1].getID() != 0 )
-      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 1 );
-  }
-
-  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( player_coords.y ) )
-  {
-    hand[player_turn].selectCard ( hand[player_turn].cards[2] );
-
-    // Updates Cursor Position
-    if ( hand[player_turn].cards[2].getID() != 0 )
-      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 2 );
-  }
-
-  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( player_coords.y ) )
-  {
-    hand[player_turn].selectCard ( hand[player_turn].cards[3] );
-
-    // Updates Cursor Position
-    if ( hand[player_turn].cards[3].getID() != 0 )
-      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 3 );
-  }
-
-  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( player_coords.y ) )
-  {
-    hand[player_turn].selectCard ( hand[player_turn].cards[4] );
-
-    // Updates Cursor Position
-    if ( hand[player_turn].cards[4].getID() != 0 )
-      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 4 );
-  }
-
-  // board grid checks of players
+  // Board grid checks of players
   coords = this->getCursorBoardPos ( x, y );
 
   if ( coords.x != -1 && coords.y != -1 )
