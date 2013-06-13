@@ -101,24 +101,24 @@ void TTcards::Load ( void )
   this->player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
   // player1, player2 cursor X, Y coords
-  this->player_cursor_coords[0].setCoords ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-  this->player_cursor_coords[1].setCoords ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+  this->player_cursor_coords[0] = nom::Coords ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+  this->player_cursor_coords[1] = nom::Coords ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
-    this->cursor_coords_map[idx].setCoords ( idx, this->player_cursor_coords[0].getY() + ( CARD_HEIGHT / 2 * idx ) );
+    this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
 
   // Cursor X, Y coords mapping for placing cards on board
-  this->board_coords_map[0].setCoords ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_coords_map[1].setCoords ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_coords_map[2].setCoords ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_coords_map[0] = nom::Coords ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_coords_map[1] = nom::Coords ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_coords_map[2] = nom::Coords ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
 
-  this->board_coords_map[3].setCoords ( 0, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_coords_map[4].setCoords ( 1, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_coords_map[5].setCoords ( 2, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_coords_map[3] = nom::Coords ( 0, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_coords_map[4] = nom::Coords ( 1, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_coords_map[5] = nom::Coords ( 2, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
 
-  this->board_coords_map[6].setCoords ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_coords_map[7].setCoords ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_coords_map[8].setCoords ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_coords_map[6] = nom::Coords ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_coords_map[7] = nom::Coords ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_coords_map[8] = nom::Coords ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
 
   this->rules.setRules ( 1 );
 
@@ -198,7 +198,7 @@ void TTcards::removePlayerCard ( void )
   hand[player_turn].clearSelectedCard();
   hand[player_turn].selectCard ( hand[player_turn].cards.front() );
 
-  this->cursor.setXY ( this->player_cursor_coords[player_turn].getX(), this->player_cursor_coords[player_turn].getY() );
+  this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
 }
 
 // Debug -- input events helper method
@@ -269,8 +269,8 @@ void TTcards::showCardInfoBox ( void* video_buffer )
   {
     coords = getCursorBoardPos ( this->cursor.getX(), this->cursor.getY() );
 
-    if ( coords.getX() != -1 && coords.getY() != -1 )
-      selectedCard = this->board.getCard ( coords.getX(), coords.getY() );
+    if ( coords.x != -1 && coords.y != -1 )
+      selectedCard = this->board.getCard ( coords.x, coords.y );
   }
   // player hand selection state
   else
@@ -286,7 +286,7 @@ void TTcards::showCardInfoBox ( void* video_buffer )
 
       this->debug_box.Draw ( video_buffer );
 
-      this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 10 );
+      this->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, 10 );
       this->info_text.Update();
       this->info_text.Draw ( video_buffer );
     }
@@ -301,11 +301,11 @@ void TTcards::showCardInfoBox ( void* video_buffer )
 
     this->info_box.Draw ( video_buffer );
 
-    this->info_text.setXY ( ( SCREEN_WIDTH - text_width ) / 2, 196 );
+    this->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, 196 );
     this->info_text.Update();
     this->info_text.Draw ( video_buffer );
 
-    this->info_small_text.setXY ( 108, 194 );
+    this->info_small_text.setPosition ( 108, 194 );
     this->info_small_text.Update();
     this->info_small_text.Draw ( video_buffer );
 
@@ -334,7 +334,7 @@ void TTcards::resetCursor ( void )
   this->hand[turn].selectCard ( this->hand[turn].cards.front() );
 
   this->cursor.setState ( 0 );
-  this->cursor.setXY ( this->player_cursor_coords[player_turn].getX(), this->player_cursor_coords[player_turn].getY() );
+  this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
 }
 
 // helper method for cursor input selection
@@ -366,8 +366,8 @@ void TTcards::lockSelectedCard ( void )
   else
   {
     coords = getCursorBoardPos ( this->cursor.getX(), this->cursor.getY() );
-    if ( coords.getX() != -1 && coords.getY() != -1 )
-      this->moveTo ( coords.getX(), coords.getY() );
+    if ( coords.x != -1 && coords.y != -1 )
+      this->moveTo ( coords.x, coords.y );
 
     this->unlockSelectedCard();
   }
@@ -469,7 +469,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[0].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].getX(), this->player_cursor_coords[player_turn].getY() + ( CARD_HEIGHT / 2 ) * 0 );
+      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 0 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
@@ -478,7 +478,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[1].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].getX(), this->player_cursor_coords[player_turn].getY() + ( CARD_HEIGHT / 2 ) * 1 );
+      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 1 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
@@ -487,7 +487,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[2].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].getX(), this->player_cursor_coords[player_turn].getY() + ( CARD_HEIGHT / 2 ) * 2 );
+      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 2 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
@@ -496,7 +496,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[3].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].getX(), this->player_cursor_coords[player_turn].getY() + ( CARD_HEIGHT / 2 ) * 3 );
+      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 3 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
@@ -505,14 +505,14 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[4].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].getX(), this->player_cursor_coords[player_turn].getY() + ( CARD_HEIGHT / 2 ) * 4 );
+      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 4 );
   }
 
   // board grid checks of players
   coords = this->getCursorBoardPos ( x, y );
 
-  if ( coords.getX() != -1 && coords.getY() != -1 )
-    this->moveTo ( coords.getX(), coords.getY() );
+  if ( coords.x != -1 && coords.y != -1 )
+    this->moveTo ( coords.x, coords.y );
 }
 
 void TTcards::onMouseWheel ( bool up, bool down )
@@ -553,7 +553,7 @@ nom::Coords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
 
   for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
   {
-    if ( x <= this->board_coords_map[idx].getWidth() && x >= BOARD_ORIGIN_X && y <= this->board_coords_map[idx].getHeight() && y >= BOARD_ORIGIN_Y )
+    if ( x <= this->board_coords_map[idx].width && x >= BOARD_ORIGIN_X && y <= this->board_coords_map[idx].height && y >= BOARD_ORIGIN_Y )
       return this->board_coords_map[idx];
   }
 
@@ -576,8 +576,8 @@ unsigned int TTcards::getCursorPos ( void )
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    if ( this->cursor.getY() <= this->cursor_coords_map[idx].getY() )
-      return this->cursor_coords_map[idx].getX();
+    if ( this->cursor.getY() <= this->cursor_coords_map[idx].y )
+      return this->cursor_coords_map[idx].x;
     else // catch all safety switch
       // assume we are at the last position in the index when all else fails
       pos = MAX_PLAYER_HAND;
@@ -683,12 +683,12 @@ void TTcards::updateScore ( void )
 void TTcards::drawScore ( void *video_buffer )
 {
   this->score_text.setText ( std::to_string ( player[0].getScore() ) );
-  this->score_text.setXY ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->score_text.setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
   this->score_text.Update();
   this->score_text.Draw ( video_buffer );
 
   this->score_text.setText ( std::to_string ( player[1].getScore() ) );
-  this->score_text.setXY ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->score_text.setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
   this->score_text.Update();
   this->score_text.Draw ( video_buffer );
 }
@@ -747,7 +747,7 @@ void TTcards::Draw ( void *video_buffer )
     {
       this->gameOver_text.setText ( "Player 1 wins!" );
       signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.setPosition ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
@@ -782,7 +782,7 @@ void TTcards::Draw ( void *video_buffer )
     {
       this->gameOver_text.setText ( "Player 2 wins!" );
       signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.setPosition ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
@@ -817,7 +817,7 @@ void TTcards::Draw ( void *video_buffer )
     {
       this->gameOver_text.setText ( "Tie!" );
       signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.setXY ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      this->gameOver_text.setPosition ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 

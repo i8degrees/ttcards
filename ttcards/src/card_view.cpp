@@ -64,7 +64,7 @@ CardView::~CardView ( void )
 bool CardView::drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y )
 {
   this->card_background->setSheetID ( NOFACE_ID );
-  this->card_background->setXY ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
+  this->card_background->setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
   this->card_background->Update();
   this->card_background->Draw ( video_buffer );
 
@@ -89,14 +89,12 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
         break;
     }
 
-    this->card_background->setX ( BACKGROUND_ORIGIN_X + x );
-    this->card_background->setY ( BACKGROUND_ORIGIN_Y + y );
+    this->card_background->setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
     this->card_background->Update();
     this->card_background->Draw ( video_buffer );
 
     this->card_face->setSheetID ( card.getID() );
-    this->card_face->setX ( CARD_FACE_ORIGIN_X + x );
-    this->card_face->setY ( CARD_FACE_ORIGIN_Y + y );
+    this->card_face->setPosition ( CARD_FACE_ORIGIN_X + x, CARD_FACE_ORIGIN_Y + y );
     this->card_face->Update();
 
     this->card_face->Draw ( video_buffer );
@@ -132,8 +130,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
         break;
     }
 
-    card_element->setX ( ELEMENT_ORIGIN_X + x );
-    card_element->setY ( ELEMENT_ORIGIN_Y + y );
+    card_element->setPosition ( ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y );
     card_element->Update();
     card_element->Draw ( video_buffer );
 
@@ -142,7 +139,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
     else
       this->card_text.setText ( std::to_string ( card.getNorthRank() ) );
 
-    this->card_text.setXY ( RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
+    this->card_text.setPosition ( RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
     this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 
@@ -151,7 +148,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
     else
       this->card_text.setText ( std::to_string ( card.getEastRank() ) );
 
-    this->card_text.setXY ( RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
+    this->card_text.setPosition ( RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
     this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 
@@ -160,7 +157,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
     else
       this->card_text.setText ( std::to_string ( card.getWestRank() ) );
 
-    this->card_text.setXY ( RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
+    this->card_text.setPosition ( RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
     this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 
@@ -169,7 +166,7 @@ bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsign
     else
       this->card_text.setText ( std::to_string ( card.getSouthRank() ) );
 
-    this->card_text.setXY ( RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
+    this->card_text.setPosition ( RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
     this->card_text.Update();
     this->card_text.Draw ( video_buffer );
 

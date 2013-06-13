@@ -16,7 +16,7 @@ Player::Player ( void )
 
   this->hand = NULL;
 
-  this->coords.setCoords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
+  this->coords = nom::Coords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
   id = 0;
   state = 0;
   score = 5;
@@ -47,22 +47,22 @@ void Player::Init ( CardHand *player_cards, CardView *card_gfx )
 
 unsigned int Player::getX ( void )
 {
-  return this->coords.getX();
+  return this->coords.x;
 }
 
 unsigned int Player::getY ( void )
 {
-  return this->coords.getY();
+  return this->coords.y;
 }
 
 std::pair <int, int> Player::getXY ( void )
 {
-  return std::make_pair ( this->coords.getX(), this->coords.getY() );
+  return std::make_pair ( this->coords.x, this->coords.y );
 }
 
 void Player::setXY ( unsigned int x, unsigned int y )
 {
-  this->coords.setXY ( x, y );
+  this->coords.setPosition ( x, y );
 }
 
 unsigned int Player::getID ( void )
