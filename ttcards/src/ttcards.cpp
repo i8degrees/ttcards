@@ -198,7 +198,7 @@ void TTcards::removePlayerCard ( void )
   hand[player_turn].clearSelectedCard();
   hand[player_turn].selectCard ( hand[player_turn].cards.front() );
 
-  this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+  this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
 }
 
 // Debug -- input events helper method
@@ -334,7 +334,7 @@ void TTcards::resetCursor ( void )
   this->hand[turn].selectCard ( this->hand[turn].cards.front() );
 
   this->cursor.setState ( 0 );
-  this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+  this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
 }
 
 // helper method for cursor input selection
@@ -357,9 +357,9 @@ void TTcards::lockSelectedCard ( void )
   if ( this->isCursorLocked() == false )
   {
     if ( get_turn() == 0 )
-      this->cursor.setXY ( CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y ); // FIXME
+      this->cursor.setPosition ( CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y ); // FIXME
     else if ( get_turn() == 1 )
-      this->cursor.setXY ( CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y ); // FIXME
+      this->cursor.setPosition ( CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y ); // FIXME
 
     this->lockCursor ( true );
   }
@@ -469,7 +469,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[0].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 0 );
+      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 0 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
@@ -478,7 +478,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[1].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 1 );
+      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 1 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
@@ -487,7 +487,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[2].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 2 );
+      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 2 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
@@ -496,7 +496,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[3].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 3 );
+      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 3 );
   }
 
   else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
@@ -505,7 +505,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
     // Updates Cursor Position
     if ( hand[player_turn].cards[4].getID() != 0 )
-      this->cursor.setXY ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 4 );
+      this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 4 );
   }
 
   // board grid checks of players
@@ -591,7 +591,7 @@ void TTcards::moveCursorLeft ( void )
   if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
   {
     if ( this->cursor.getX() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
-      this->cursor.updateXY ( -( CARD_WIDTH ), 0 );
+      this->cursor.move ( -( CARD_WIDTH ), 0 );
   }
 }
 
@@ -600,7 +600,7 @@ void TTcards::moveCursorRight ( void )
   if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
   {
     if ( this->cursor.getX() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
-      this->cursor.updateXY ( ( CARD_WIDTH ), 0 );
+      this->cursor.move ( ( CARD_WIDTH ), 0 );
   }
 }
 
@@ -613,7 +613,7 @@ void TTcards::moveCursorUp ( void )
   {
     if ( this->cursor.getY() > PLAYER1_CURSOR_ORIGIN_Y )
     {
-      this->cursor.updateXY ( 0, -( CARD_HEIGHT / 2 ) );
+      this->cursor.move ( 0, -( CARD_HEIGHT / 2 ) );
 
       pos = this->getCursorPos();
       this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
@@ -622,7 +622,7 @@ void TTcards::moveCursorUp ( void )
   else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
   {
     if ( this->cursor.getY() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
-      this->cursor.updateXY ( 0, -( CARD_HEIGHT ) );
+      this->cursor.move ( 0, -( CARD_HEIGHT ) );
   }
 }
 
@@ -635,7 +635,7 @@ void TTcards::moveCursorDown ( void )
   {
     if ( this->cursor.getY() < ( CARD_HEIGHT / 2 ) * ( this->hand[player_turn].size() ) )
     {
-      this->cursor.updateXY ( 0, ( CARD_HEIGHT / 2 ) );
+      this->cursor.move ( 0, ( CARD_HEIGHT / 2 ) );
 
       pos = this->getCursorPos();
       this->hand[player_turn].selectCard ( this->hand[player_turn].cards[pos] );
@@ -644,7 +644,7 @@ void TTcards::moveCursorDown ( void )
   else if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
   {
     if ( this->cursor.getY() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
-      this->cursor.updateXY ( 0, ( CARD_HEIGHT ) );
+      this->cursor.move ( 0, ( CARD_HEIGHT ) );
   }
 }
 

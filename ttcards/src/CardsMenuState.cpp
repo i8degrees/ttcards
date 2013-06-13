@@ -402,7 +402,7 @@ void CardsMenu::moveCursorUp ( void )
   {
     if ( this->cursor.getY() > MENU_CARDS_CURSOR_ORIGIN_Y )
     {
-      this->cursor.updateXY ( 0, -( this->info_text_height ) );
+      this->cursor.move ( 0, -( this->info_text_height ) );
 
       // FIXME: onMouseWheel breaks without the below support code:
       pos = this->current_index + this->getCursorPos();
@@ -424,7 +424,7 @@ void CardsMenu::moveCursorDown ( void )
   {
     if ( this->cursor.getY() < PICK_CARDS_MENU_HEIGHT )
     {
-      this->cursor.updateXY ( 0, this->info_text_height );
+      this->cursor.move ( 0, this->info_text_height );
 
       // FIXME: onMouseWheel breaks without the below support code:
       pos = current_index + this->getCursorPos();
