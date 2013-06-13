@@ -22,8 +22,6 @@ TTcards::TTcards ( CardHand player1_hand )
   this->cursor_locked = false;
 
   this->collection.cards.clear();
-
-  this->Init();
 }
 
 TTcards::~TTcards ( void )
@@ -33,26 +31,9 @@ TTcards::~TTcards ( void )
   #endif
 }
 
-bool TTcards::Init ( void )
+void TTcards::onClose ( void )
 {
-  this->Load();
-
-  #ifdef DEBUG_TTCARDS
-    this->debugCardsNoRuleset();
-    //this->debugCardsSameRuleset();
-  #endif
-
-  //this->music.PlayMusicTrack ( -1 );
-  //this->music.PauseMusic ();
-
-  this->player[0].setID ( Card::PLAYER1 );
-  this->player[1].setID ( Card::PLAYER2 );
-
-  this->player_turn ( 0 );
-
-  //update.Start();
-
-  return true;
+  std::cout << "\n" << "TTcards state onClose" << "\n";
 }
 
 void TTcards::Pause ( void )
@@ -142,7 +123,20 @@ void TTcards::Load ( void )
   this->debug_box.Init ( 170, 8, 43, 20, msgbox, linear );
   this->info_box.Init ( 104, 194, 176, 24, msgbox, linear );
 
-  //return true;
+  #ifdef DEBUG_TTCARDS
+    this->debugCardsNoRuleset();
+    //this->debugCardsSameRuleset();
+  #endif
+
+  //this->music.PlayMusicTrack ( -1 );
+  //this->music.PauseMusic ();
+
+  this->player[0].setID ( Card::PLAYER1 );
+  this->player[1].setID ( Card::PLAYER2 );
+
+  this->player_turn ( 0 );
+
+  //update.Start();
 }
 
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
@@ -442,7 +436,7 @@ void TTcards::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
-    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
@@ -668,7 +662,7 @@ void TTcards::drawScore ( void *video_buffer )
   this->score_text.Draw ( video_buffer );
 }
 
-void TTcards::Update ( void* video_buffer )
+void TTcards::Update ( void )
 {
   this->updateCursor();
 
@@ -751,7 +745,7 @@ void TTcards::Draw ( void *video_buffer )
 
       this->update.Stop();
 
-      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 1 ) ) );
+      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 1 ) ) );
     }
     else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
     {
@@ -786,7 +780,7 @@ void TTcards::Draw ( void *video_buffer )
 
       this->update.Stop();
 
-      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 2 ) ) );
+      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 2 ) ) );
     }
     else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
     {
@@ -809,7 +803,7 @@ void TTcards::Draw ( void *video_buffer )
 
       this->update.Stop();
 
-      nom::GameStates::PushState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 3 ) ) );
+      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 3 ) ) );
     }
     else // Undefined
     {

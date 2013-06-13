@@ -20,7 +20,9 @@ CardsMenu::CardsMenu ( void )
 
   logger = logDebug.Read( "./data/offsets.val" );
 
-  //this->background = NULL;
+  this->collection.clear();
+  this->hand.clear ();
+
   this->collection.LoadJSON ( CARDS_DB );
 
   // Borrowed from Player class; this is perhaps a hack-(ish) workaround
@@ -32,8 +34,6 @@ CardsMenu::CardsMenu ( void )
   //
   for ( pid = 0; pid < this->collection.cards.size(); pid++ )
     this->collection.cards[pid].setPlayerID ( PLAYER1_ID );
-
-  this->hand.clear ();
 
   this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
   this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
@@ -57,8 +57,6 @@ CardsMenu::CardsMenu ( void )
   this->current_index = 0; // current card position
 
   this->selectedCard = this->collection.cards.front();
-
-  this->Load();
 }
 
 CardsMenu::~CardsMenu ( void )
@@ -107,6 +105,11 @@ void CardsMenu::Load ( void )
   }
 }
 
+void CardsMenu::onClose ( void )
+{
+  std::cout << "\n" << "CardsMenu state onClose" << "\n";
+}
+
 void CardsMenu::Pause ( void )
 {
   std::cout << "\n" << "CardsMenu state Paused" << "\n";
@@ -136,7 +139,7 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
 
     case SDLK_d: this->hand.removeCard ( this->selectedCard ); break;
     case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
-    case SDLK_RETURN: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->hand ) ) ); break;
+    case SDLK_RETURN: nom::GameStates::ChangeState ( std::unique_ptr<TTcards>( new TTcards ( this->hand ) ) ); break;
 
     default: break;
   }
@@ -184,7 +187,7 @@ void CardsMenu::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenu::Update ( void* video_buffer )
+void CardsMenu::Update ( void )
 {
   this->updateCursor();
 

@@ -42,10 +42,23 @@ class TTcards: public nom::GameState
     ~TTcards ( void );
 
     bool Init ( void );
+
+    void onClose ( void );
     void Load ( void );
 
     void Pause ( void );
     void Resume ( void );
+
+    void Update ( void );
+    void Draw ( void* video_buffer );
+
+    //static void Callback ( void ); // EMCC compiler related
+    //void Start ( void ); // EMCC compiler related
+  private:
+    void onKeyDown ( int32_t key, int32_t mod );
+    void onMouseLeftButtonDown ( int32_t x, int32_t y );
+    void onMouseWheel ( bool up, bool down );
+    void onJoyButtonDown ( int32_t which, int32_t button );
 
     void debugListCards ( int32_t mod );
     void debugListCollection ( int32_t mod );
@@ -67,11 +80,6 @@ class TTcards: public nom::GameState
     void lockSelectedCard ( void );
     void moveTo ( unsigned int x, unsigned int y );
 
-    void onKeyDown ( int32_t key, int32_t mod );
-    void onMouseLeftButtonDown ( int32_t x, int32_t y );
-    void onMouseWheel ( bool up, bool down );
-    void onJoyButtonDown ( int32_t which, int32_t button );
-
     nom::Coords getCursorBoardPos ( unsigned int x, unsigned int y );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
@@ -84,13 +92,6 @@ class TTcards: public nom::GameState
 
     void updateScore ( void );
     void drawScore ( void* video_buffer );
-
-    void Update ( void* video_buffer );
-    void Draw ( void* video_buffer );
-
-    //static void Callback ( void ); // EMCC compiler related
-    //void Start ( void ); // EMCC compiler related
-  private:
     //static TTcards *instance; // EMCC compiler related
     nom::SDL_Display context;   // our public / visible display context handle
     nom::SDL_Canvas background; /// pointer holding our board background image

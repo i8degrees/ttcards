@@ -23,10 +23,13 @@ class CardsMenu: public nom::GameState
     CardsMenu ( void );
     ~CardsMenu ( void );
 
+    void onClose ( void );
+    void Load ( void );
+
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( void* video_buffer );
+    void Update ( void );
     void Draw ( void *video_buffer );
 
   private:
@@ -35,7 +38,6 @@ class CardsMenu: public nom::GameState
     void onMouseLeftButtonDown ( int32_t x, int32_t y );
     void onMouseRightButtonDown ( int32_t x, int32_t y );
     void onMouseWheel ( bool up, bool down );
-    void Load ( void );
 
     void reloadDebugFile ( void );
     void updateCursor ( void );

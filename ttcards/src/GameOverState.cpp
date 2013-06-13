@@ -19,7 +19,8 @@ GameOver::GameOver ( std::vector<Card> cards_, unsigned int state )
   this->state = state;
   this->cards = cards_; // FIXME?
 
-  this->Load();
+  for ( int i = 0; i < cards.size(); i++ )
+    std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
 }
 
 GameOver::~GameOver ( void )
@@ -31,13 +32,15 @@ GameOver::~GameOver ( void )
 
 void GameOver::Load ( void )
 {
-  for ( int i = 0; i < cards.size(); i++ )
-    std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
-
   this->background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
 
   //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
+}
+
+void GameOver::onClose ( void )
+{
+  std::cout << "\n" << "GameOver state onClose" << "\n";
 }
 
 void GameOver::Pause ( void )
@@ -55,7 +58,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
   switch ( key )
   {
     // Reset / New Game State
-    case SDLK_r: nom::GameStates::PopStateThenChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu() ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu() ) ); break;
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 
@@ -63,7 +66,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
   }
 }
 
-void GameOver::Update ( void* video_buffer )
+void GameOver::Update ( void )
 {
   this->context.Update();
 }

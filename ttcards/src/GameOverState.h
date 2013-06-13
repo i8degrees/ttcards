@@ -24,15 +24,17 @@ class GameOver: public nom::GameState
     GameOver ( std::vector<Card> cards_, unsigned int state );
     ~GameOver ( void );
 
+    void onClose ( void );
+    void Load ( void );
+
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( void* video_buffer );
+    void Update ( void );
     void Draw ( void* video_buffer );
 
   private:
     void onKeyDown ( int32_t key, int32_t mod );
-    void Load ( void );
 
     nom::SDL_Display context;   // our public / visible display context handle
     CardView card; /// card rendering
