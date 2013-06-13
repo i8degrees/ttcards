@@ -36,6 +36,8 @@ class App: public nom::SDL_App
       #endif
 
       display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+
+      //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
     }
 
     ~App ( void )
@@ -144,7 +146,6 @@ class App: public nom::SDL_App
 
   private:
     nom::SDL_Display display;
-    // Dependencies: after video init
     FPS fps; // timer for tracking frames per second
 };
 

@@ -52,8 +52,6 @@ bool TTcards::Init ( void )
 
   //update.Start();
 
-  //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
-
   return true;
 }
 
