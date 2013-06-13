@@ -75,7 +75,7 @@ void TTcards::Load ( void )
 
   this->board.Init ( &this->card, &this->rules );
 
-  this->background.loadFromImage ( BOARD_BACKGROUND );
+  this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white

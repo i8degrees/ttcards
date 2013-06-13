@@ -74,7 +74,7 @@ void CardsMenu::Load ( void )
 {
   unsigned int idx = 0; // cursor_coords_map
 
-  this->background.loadFromImage ( BOARD_BACKGROUND );
+  this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
 
   this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
