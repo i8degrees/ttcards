@@ -55,9 +55,9 @@ unsigned int Player::getY ( void )
   return this->coords.y;
 }
 
-std::pair <int, int> Player::getXY ( void )
+const nom::Coords Player::getPosition ( void ) const
 {
-  return std::make_pair ( this->coords.x, this->coords.y );
+  return this->coords;
 }
 
 void Player::setXY ( unsigned int x, unsigned int y )

@@ -30,7 +30,7 @@ class Player
     unsigned int getX ( void );
     unsigned int getY ( void );
 
-    std::pair <int, int> getXY ( void );
+    const nom::Coords getPosition ( void ) const;
     void setXY ( unsigned int x, unsigned int y );
 
     unsigned int getID ( void );

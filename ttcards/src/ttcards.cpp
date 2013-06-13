@@ -461,10 +461,10 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
   nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
   unsigned int player_turn = get_turn();
 
-  std::pair<int, int> player_coords = player[player_turn].getXY(); // PLAYER ORIGIN XY
+  nom::Coords player_coords = player[player_turn].getPosition(); // PLAYER ORIGIN XY
 
   // player hand selection checks
-  if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( std::get<1>(player_coords) ) )
+  if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 1 ) && y >= ( player_coords.y ) )
   {
     hand[player_turn].selectCard ( hand[player_turn].cards[0] );
 
@@ -473,7 +473,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
       this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 0 );
   }
 
-  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( std::get<1>(player_coords) ) )
+  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 2 ) && y >= ( player_coords.y ) )
   {
     hand[player_turn].selectCard ( hand[player_turn].cards[1] );
 
@@ -482,7 +482,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
       this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 1 );
   }
 
-  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( std::get<1>(player_coords) ) )
+  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 3 ) && y >= ( player_coords.y ) )
   {
     hand[player_turn].selectCard ( hand[player_turn].cards[2] );
 
@@ -491,7 +491,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
       this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 2 );
   }
 
-  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( std::get<1>(player_coords) ) )
+  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 4 ) && y >= ( player_coords.y ) )
   {
     hand[player_turn].selectCard ( hand[player_turn].cards[3] );
 
@@ -500,7 +500,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
       this->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y + ( CARD_HEIGHT / 2 ) * 3 );
   }
 
-  else if ( x <= ( std::get<0>(player_coords) + CARD_WIDTH ) && x >= ( std::get<0>(player_coords) ) && y <= ( std::get<1>(player_coords) + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( std::get<1>(player_coords) ) )
+  else if ( x <= ( player_coords.x + CARD_WIDTH ) && x >= ( player_coords.x ) && y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * 5 ) && y >= ( player_coords.y ) )
   {
     hand[player_turn].selectCard ( hand[player_turn].cards[4] );
 
