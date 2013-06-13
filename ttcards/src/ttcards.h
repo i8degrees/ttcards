@@ -60,6 +60,7 @@ class TTcards: public nom::GameState
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( int32_t which, int32_t button );
 
+    // TTcards_debug.cpp
     void debugListCards ( int32_t mod );
     void debugListCollection ( int32_t mod );
     void debugCardsDiscard ( void );

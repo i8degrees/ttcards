@@ -15,6 +15,7 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/player.cpp
       #${SRC_DIR}/cpu_player.cpp
       ${SRC_DIR}/ttcards.cpp
+      ${SRC_DIR}/ttcards_debug.cpp
       ${SRC_DIR}/GameOverState.cpp
       ${SRC_DIR}/CardsMenuState.cpp
     )
