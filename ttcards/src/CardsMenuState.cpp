@@ -103,6 +103,10 @@ void CardsMenu::Load ( void )
       std::cout << "\nidx:" << std::get<1>(this->cursor_coords_map[idx]) << " " << "y:" << std::get<0>(this->cursor_coords_map[idx]) << "\n";
     #endif
   }
+
+  //this->info_text.setPosition ( 20, 20 );
+  //nom::Coords glyph = this->info_text.findGlyph ( "Geezard!" );
+  //std::cout << "\n" << glyph.x << " " << glyph.y << " " << glyph.width << " " << glyph.height << "\n";
 }
 
 void CardsMenu::onClose ( void )
@@ -291,7 +295,7 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->menu_element.setPosition ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
-      //this->menu_element.Update();
+      this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }
 
@@ -299,7 +303,7 @@ void CardsMenu::Draw ( void* video_buffer )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->menu_element.setPosition ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
-      //this->menu_element.Update();
+      this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }
 
