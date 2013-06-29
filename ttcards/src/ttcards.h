@@ -49,7 +49,7 @@ class TTcards: public nom::GameState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( void );
+    void Update ( uint32_t elapsed_time );
     void Draw ( void* video_buffer );
 
     //static void Callback ( void ); // EMCC compiler related

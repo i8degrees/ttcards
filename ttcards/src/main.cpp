@@ -99,6 +99,7 @@ class App: public nom::SDL_App
     {
       unsigned int loops = 0; // globalTimer related
       unsigned int next_game_tick = 0; // globalTimer related
+      float delta_time = 0; // TODO; this is a stub out
 
       fps.Start();
 
@@ -123,7 +124,7 @@ class App: public nom::SDL_App
 
           fps.Update();
 
-          nom::GameStates::Update();
+          nom::GameStates::Update ( delta_time ); // FIXME; this is a stub out
           nom::GameStates::Draw ( display.get() );
 
           if ( getShowFPS() )

@@ -577,7 +577,7 @@ void TTcards::drawScore ( void *video_buffer )
   this->score_text.Draw ( video_buffer );
 }
 
-void TTcards::Update ( void )
+void TTcards::Update ( uint32_t elapsed_time )
 {
   this->updateCursor();
 

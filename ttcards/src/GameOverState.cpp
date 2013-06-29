@@ -66,7 +66,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
   }
 }
 
-void GameOver::Update ( void )
+void GameOver::Update ( uint32_t elapsed_time )
 {
   this->context.Update();
 }

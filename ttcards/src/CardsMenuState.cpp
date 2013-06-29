@@ -191,7 +191,7 @@ void CardsMenu::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenu::Update ( void )
+void CardsMenu::Update ( uint32_t elapsed_time )
 {
   this->updateCursor();
 
