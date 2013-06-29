@@ -1,13 +1,13 @@
 /******************************************************************************
     main.cpp
 
-  TTcards app execution loop
+  TTcards game app execution
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
 #include "SDL_Display.hpp"
-#include "ttcards.h"
+#include "Game.hpp"
 #include "fps.h"
 
 #include "SDL.h"
@@ -27,7 +27,7 @@ class App: public nom::SDL_App
     {
       unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
-      #ifdef DEBUG_TTCARDS_OBJ
+      #ifdef DEBUG_GAME_OBJ
         std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
       #endif
 
@@ -42,7 +42,7 @@ class App: public nom::SDL_App
 
     ~App ( void )
     {
-      #ifdef DEBUG_TTCARDS_OBJ
+      #ifdef DEBUG_GAME_OBJ
         std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
       #endif
     }

@@ -1,19 +1,19 @@
 /******************************************************************************
-    ttcards.cpp
+    Game.cpp
 
   Final Fantasy VIII Triple Triad Remake
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "ttcards.h"
+#include "Game.hpp"
 
 using namespace nom;
 
-TTcards::TTcards ( CardHand player1_hand )
+Game::Game ( CardHand player1_hand )
 {
-  #ifdef DEBUG_TTCARDS_OBJ
-    std::cout << "TTcards::TTcards (): " << "Hello, world!" << "\n" << std::endl;
+  #ifdef DEBUG_GAME_OBJ
+    std::cout << "Game::Game (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->hand[0] = player1_hand;
@@ -24,29 +24,29 @@ TTcards::TTcards ( CardHand player1_hand )
   this->collection.cards.clear();
 }
 
-TTcards::~TTcards ( void )
+Game::~Game ( void )
 {
-  #ifdef DEBUG_TTCARDS_OBJ
-    std::cout << "TTcards::~TTcards (): " << "Goodbye cruel world!" << "\n" << std::endl;
+  #ifdef DEBUG_GAME_OBJ
+    std::cout << "Game::~Game (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 }
 
-void TTcards::onClose ( void )
+void Game::onClose ( void )
 {
-  std::cout << "\n" << "TTcards state onClose" << "\n";
+  std::cout << "\n" << "Game state onClose" << "\n";
 }
 
-void TTcards::Pause ( void )
+void Game::Pause ( void )
 {
-  std::cout << "\n" << "TTcards state Paused" << "\n";
+  std::cout << "\n" << "Game state Paused" << "\n";
 }
 
-void TTcards::Resume ( void )
+void Game::Resume ( void )
 {
-  std::cout << "\n" << "TTcards state Resumed" << "\n";
+  std::cout << "\n" << "Game state Resumed" << "\n";
 }
 
-void TTcards::Load ( void )
+void Game::Load ( void )
 {
   unsigned int idx = 0; // for loop iterations
 
@@ -113,7 +113,7 @@ void TTcards::Load ( void )
   this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
   this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
-  #ifndef DEBUG_TTCARDS
+  #ifndef DEBUG_GAME
     this->debug_box.disable ();
   #endif
 
@@ -123,7 +123,7 @@ void TTcards::Load ( void )
   this->debug_box.Init ( 170, 8, 43, 20, msgbox, linear );
   this->info_box.Init ( 104, 194, 176, 24, msgbox, linear );
 
-  #ifdef DEBUG_TTCARDS
+  #ifdef DEBUG_GAME
     this->debugCardsNoRuleset();
     //this->debugCardsSameRuleset();
   #endif
@@ -139,12 +139,12 @@ void TTcards::Load ( void )
   //update.Start();
 }
 
-unsigned int TTcards::get_turn ( void )
+unsigned int Game::get_turn ( void )
 {
   return this->turn;
 }
 
-void TTcards::player_turn ( unsigned int player )
+void Game::player_turn ( unsigned int player )
 {
   this->turn = player;
 
@@ -152,7 +152,7 @@ void TTcards::player_turn ( unsigned int player )
 }
 
 // Helper method for incrementing to next player's turn
-void TTcards::endTurn ( void )
+void Game::endTurn ( void )
 {
   unsigned int player = get_turn();
 
@@ -168,7 +168,7 @@ void TTcards::endTurn ( void )
 
 // Interface Helper method; shows Card's ID number in a message box for both cursor
 // states; player's hand and placed board cards -- debug handling included
-void TTcards::showCardInfoBox ( void* video_buffer )
+void Game::showCardInfoBox ( void* video_buffer )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
@@ -222,7 +222,7 @@ void TTcards::showCardInfoBox ( void* video_buffer )
   }
 }
 
-bool TTcards::isCursorLocked ( void )
+bool Game::isCursorLocked ( void )
 {
   if ( this->cursor_locked == true )
     return true;
@@ -230,13 +230,13 @@ bool TTcards::isCursorLocked ( void )
     return false;
 }
 
-void TTcards::lockCursor ( bool lock )
+void Game::lockCursor ( bool lock )
 {
   this->cursor_locked = lock;
 }
 
 // Helper method for resetting cursor related input
-void TTcards::resetCursor ( void )
+void Game::resetCursor ( void )
 {
   unsigned int player_turn = get_turn();
 
@@ -248,7 +248,7 @@ void TTcards::resetCursor ( void )
 }
 
 // helper method for cursor input selection
-void TTcards::unlockSelectedCard ( void )
+void Game::unlockSelectedCard ( void )
 {
   this->cursor.setState ( 0 ); // player card select
 
@@ -258,7 +258,7 @@ void TTcards::unlockSelectedCard ( void )
 }
 
 // helper method for cursor input selection
-void TTcards::lockSelectedCard ( void )
+void Game::lockSelectedCard ( void )
 {
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
 
@@ -284,7 +284,7 @@ void TTcards::lockSelectedCard ( void )
 }
 
 // Helper method for updating board with player's selected card
-void TTcards::moveTo ( unsigned int x, unsigned int y )
+void Game::moveTo ( unsigned int x, unsigned int y )
 {
   Card selected;
 
@@ -338,7 +338,7 @@ void TTcards::moveTo ( unsigned int x, unsigned int y )
   }
 }
 
-void TTcards::onKeyDown ( int32_t key, int32_t mod )
+void Game::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
@@ -365,7 +365,7 @@ void TTcards::onKeyDown ( int32_t key, int32_t mod )
   }
 }
 
-void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
+void Game::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   uint32_t player_turn = get_turn();
   nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
@@ -399,7 +399,7 @@ void TTcards::onMouseLeftButtonDown ( int32_t x, int32_t y )
     this->moveTo ( coords.x, coords.y );
 }
 
-void TTcards::onMouseWheel ( bool up, bool down )
+void Game::onMouseWheel ( bool up, bool down )
 {
   if ( this->cursor.getState() == 0 )
   {
@@ -410,7 +410,7 @@ void TTcards::onMouseWheel ( bool up, bool down )
   }
 }
 
-void TTcards::onJoyButtonDown ( int32_t which, int32_t button )
+void Game::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {
@@ -430,7 +430,7 @@ void TTcards::onJoyButtonDown ( int32_t which, int32_t button )
   }
 }
 
-nom::Coords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
+nom::Coords Game::getCursorBoardPos ( unsigned int x, unsigned int y )
 {
   unsigned int idx = 0;
   nom::Coords pos ( -1, -1 ); // ...when all else fails, default to undefined
@@ -453,7 +453,7 @@ nom::Coords TTcards::getCursorBoardPos ( unsigned int x, unsigned int y )
 // cursor_coords_map
 //   [ index, y coordinate value ]
 //
-unsigned int TTcards::getCursorPos ( void )
+unsigned int Game::getCursorPos ( void )
 {
   unsigned int pos = 0;
   unsigned int idx = 0;
@@ -470,7 +470,7 @@ unsigned int TTcards::getCursorPos ( void )
   return pos;
 }
 
-void TTcards::moveCursorLeft ( void )
+void Game::moveCursorLeft ( void )
 {
   if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
   {
@@ -479,7 +479,7 @@ void TTcards::moveCursorLeft ( void )
   }
 }
 
-void TTcards::moveCursorRight ( void )
+void Game::moveCursorRight ( void )
 {
   if ( this->cursor.getState() == 1 ) // locked cursor to board select mode
   {
@@ -488,7 +488,7 @@ void TTcards::moveCursorRight ( void )
   }
 }
 
-void TTcards::moveCursorUp ( void )
+void Game::moveCursorUp ( void )
 {
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
@@ -510,7 +510,7 @@ void TTcards::moveCursorUp ( void )
   }
 }
 
-void TTcards::moveCursorDown ( void )
+void Game::moveCursorDown ( void )
 {
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
@@ -532,7 +532,7 @@ void TTcards::moveCursorDown ( void )
   }
 }
 
-void TTcards::updateCursor ( void )
+void Game::updateCursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
     this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
@@ -542,13 +542,13 @@ void TTcards::updateCursor ( void )
   this->cursor.Update();
 }
 
-void TTcards::drawCursor ( void* video_buffer )
+void Game::drawCursor ( void* video_buffer )
 {
   this->cursor.Draw ( video_buffer );
 }
 
 // Scoring: board_card_count + player_card_count
-void TTcards::updateScore ( void )
+void Game::updateScore ( void )
 {
   unsigned int hand_count = 0; // player hand total count
   unsigned int board_count = 0; // board card total count
@@ -564,7 +564,7 @@ void TTcards::updateScore ( void )
   }
 }
 
-void TTcards::drawScore ( void *video_buffer )
+void Game::drawScore ( void *video_buffer )
 {
   this->score_text.setText ( std::to_string ( player[0].getScore() ) );
   this->score_text.setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
@@ -577,7 +577,7 @@ void TTcards::drawScore ( void *video_buffer )
   this->score_text.Draw ( video_buffer );
 }
 
-void TTcards::Update ( uint32_t elapsed_time )
+void Game::Update ( uint32_t elapsed_time )
 {
   this->updateCursor();
 
@@ -600,7 +600,7 @@ void TTcards::Update ( uint32_t elapsed_time )
   this->context.Update();
 }
 
-void TTcards::Draw ( void *video_buffer )
+void Game::Draw ( void *video_buffer )
 {
   this->background.Draw ( video_buffer );
 

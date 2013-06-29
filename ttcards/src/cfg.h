@@ -10,8 +10,8 @@
 #include <string>
 #include "OSXFs.h"
 
-#define DEBUG_TTCARDS
-#define DEBUG_TTCARDS_OBJ
+#define DEBUG_GAME
+#define DEBUG_GAME_OBJ
 
 #define DEBUG_BOARD
 #define DEBUG_BOARD_CMP
@@ -250,7 +250,7 @@ enum {
   WEST=3
 };
 
-// TTcards::turn[players]
+// Game::turn[players]
 enum {
   PLAYER1=0,
   PLAYER2=1

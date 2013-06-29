@@ -1,17 +1,17 @@
 /******************************************************************************
-    TTcards_debug.cpp
+    Game_debug.cpp
 
   Final Fantasy VIII Triple Triad Remake
 
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
-#include "ttcards.h"
+#include "Game.hpp"
 
 using namespace nom;
 
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
-void TTcards::debugCardsDiscard ( void )
+void Game::debugCardsDiscard ( void )
 {
   this->hand[0].addCard ( this->collection.cards[88] ); // Carbuncle
   this->hand[0].addCard ( this->collection.cards[24] ); // TriFace
@@ -20,7 +20,7 @@ void TTcards::debugCardsDiscard ( void )
 }
 
 // Debug player hand set for no and combo rulesets
-void TTcards::debugCardsNoRuleset ( void )
+void Game::debugCardsNoRuleset ( void )
 {
 /*
   this->hand[0].addCard ( this->collection.cards[89] ); // Diablos
@@ -37,7 +37,7 @@ void TTcards::debugCardsNoRuleset ( void )
 }
 
 // Debug player hand set for same rulesets
-void TTcards::debugCardsSameRuleset ( void )
+void Game::debugCardsSameRuleset ( void )
 {
   this->hand[0].addCard ( this->collection.cards[89] ); // Diablos
   this->hand[0].addCard ( this->collection.cards[109] ); // Squall
@@ -56,7 +56,7 @@ void TTcards::debugCardsSameRuleset ( void )
 }
 
 // debug helper method
-void TTcards::removePlayerCard ( void )
+void Game::removePlayerCard ( void )
 {
   unsigned int player_turn = get_turn();
 
@@ -68,7 +68,7 @@ void TTcards::removePlayerCard ( void )
 }
 
 // Debug -- input events helper method
-void TTcards::debugBox ( void )
+void Game::debugBox ( void )
 {
   if ( this->debug_box.isEnabled() == true )
     this->debug_box.disable ();
@@ -77,7 +77,7 @@ void TTcards::debugBox ( void )
 }
 
 // Debug -- input events helper method
-void TTcards::debugListCards ( int32_t mod )
+void Game::debugListCards ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->hand[1].cards );
@@ -86,7 +86,7 @@ void TTcards::debugListCards ( int32_t mod )
 }
 
 // Debug -- input events helper method
-void TTcards::debugListCollection ( int32_t mod )
+void Game::debugListCollection ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->collection.cards );

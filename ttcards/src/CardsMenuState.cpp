@@ -129,7 +129,7 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
   switch ( key )
   {
     // Reset / New Game State
-    //case SDLK_r: if ( mod == KMOD_LSHIFT ) reloadDebugFile(); else this->engine->PopStateThenChangeState ( std::unique_ptr<TTcards>( new TTcards ( this->engine ) ) ); break;
+    //case SDLK_r: if ( mod == KMOD_LSHIFT ) reloadDebugFile(); else this->engine->PopStateThenChangeState ( std::unique_ptr<Game>( new Game ( this->engine ) ) ); break;
      // Pause State
     case SDLK_p: /*this->engine->PopState ()*/; break;
 
@@ -143,7 +143,7 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
 
     case SDLK_d: this->hand.removeCard ( this->selectedCard ); break;
     case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
-    case SDLK_RETURN: nom::GameStates::ChangeState ( std::unique_ptr<TTcards>( new TTcards ( this->hand ) ) ); break;
+    case SDLK_RETURN: nom::GameStates::ChangeState ( std::unique_ptr<Game>( new Game ( this->hand ) ) ); break;
 
     default: break;
   }
@@ -164,7 +164,7 @@ void CardsMenu::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
     case nom::PSXBUTTON::CIRCLE: this->hand.removeCard ( this->selectedCard ); break;
     case nom::PSXBUTTON::CROSS: this->hand.addCard ( this->selectedCard ); break;
-    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<TTcards>( new TTcards ( this->hand ) ) ); break;
+    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<Game>( new Game ( this->hand ) ) ); break;
 
     default: break;
   }

@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 
-#include "ttcards.h"
+#include "Game.hpp"
 #include "SDL_Cursor.h"
 #include "SDL_Canvas.hpp"
 #include "SDL_Display.hpp"

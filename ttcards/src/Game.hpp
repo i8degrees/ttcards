@@ -1,5 +1,5 @@
 /******************************************************************************
-    ttcards.h
+    Game.hpp
 
     Final Fantasy VIII Triple Triad Remake
 
@@ -35,11 +35,11 @@
 #include "GameOverState.h"
 #include "SDL_Display.hpp"
 
-class TTcards: public nom::GameState
+class Game: public nom::GameState
 {
   public:
-    TTcards ( CardHand player1_hand );
-    ~TTcards ( void );
+    Game ( CardHand player1_hand );
+    ~Game ( void );
 
     bool Init ( void );
 
@@ -60,7 +60,7 @@ class TTcards: public nom::GameState
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( int32_t which, int32_t button );
 
-    // TTcards_debug.cpp
+    // Game_debug.cpp
     void debugListCards ( int32_t mod );
     void debugListCollection ( int32_t mod );
     void debugCardsDiscard ( void );
@@ -93,7 +93,7 @@ class TTcards: public nom::GameState
 
     void updateScore ( void );
     void drawScore ( void* video_buffer );
-    //static TTcards *instance; // EMCC compiler related
+    //static Game *instance; // EMCC compiler related
     nom::SDL_Display context;   // our public / visible display context handle
     nom::SDL_Canvas background; /// pointer holding our board background image
 
