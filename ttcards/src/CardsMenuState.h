@@ -14,7 +14,6 @@
 
 #include "Game.hpp"
 
-#include "Logger.h"
 #include "SDL_Gradient.hpp"
 #include "SDL_MessageBox.hpp"
 #include "SDL_Cursor.h"
@@ -61,7 +60,6 @@ class CardsMenu: public nom::GameState
     nom::SDL_BitmapFont info_text_gray;
 
     CardDebug debug; /// debug support for card attributes
-    Logger logDebug;
     std::vector<int> logger;
 
     nom::SDL_MessageBox menu_box;
