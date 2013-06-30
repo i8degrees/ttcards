@@ -16,7 +16,7 @@
 
 #include "SDL_Gradient.hpp"
 #include "SDL_MessageBox.hpp"
-#include "SDL_Cursor.h"
+#include "SDL_Cursor.hpp"
 #include "SDL_Canvas.hpp"
 #include "SDL_Display.hpp"
 

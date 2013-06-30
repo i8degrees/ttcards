@@ -28,7 +28,7 @@
 #include "SDL_MessageBox.hpp"
 #include "SDL_Font.hpp"
 #include "SDL_BitmapFont.hpp"
-#include "SDL_Cursor.h"
+#include "SDL_Cursor.hpp"
 #include "SDL_Drawable.hpp"
 //#include "audio.h"
 #include "SDL_Timer.hpp"
