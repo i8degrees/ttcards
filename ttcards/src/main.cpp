@@ -101,7 +101,7 @@ class App: public nom::SDL_App
       unsigned int next_game_tick = 0; // globalTimer related
       float delta_time = 0; // TODO; this is a stub out
 
-      fps.Start();
+      this->fps.Start();
 
       next_game_tick = getTicks();
 
@@ -122,13 +122,13 @@ class App: public nom::SDL_App
             onEvent ( &event );
           }
 
-          fps.Update();
+          this->fps.Update();
 
           nom::GameStates::Update ( delta_time ); // FIXME; this is a stub out
           nom::GameStates::Draw ( display.get() );
 
           if ( getShowFPS() )
-            display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( fps.getFPS() ) + " " + "fps" );
+            display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
           else
             display.setWindowTitle ( APP_NAME );
 
@@ -137,8 +137,8 @@ class App: public nom::SDL_App
 
           // FIXME: this is a lazy patch to keep CPU cycles down; on my system,
           // usage drops from 99% to ~22..30%
-          if ( fps.getFPS() >= TICKS_PER_SECOND )
-            SDL_Delay ( 50 );
+          if ( this->fps.getFPS() >= TICKS_PER_SECOND )
+            this->fps.sleep ( 50 );
         }
       }
 
