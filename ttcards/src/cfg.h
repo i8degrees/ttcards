@@ -8,7 +8,7 @@
 #define GAMEAPP_CFG_HEADERS
 
 #include <string>
-#include "OSXFs.h"
+#include "OSXFS.hpp"
 
 #define DEBUG_GAME
 #define DEBUG_GAME_OBJ

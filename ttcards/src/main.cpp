@@ -157,8 +157,8 @@ int main(int argc, char*argv[])
     // This isn't an absolute guarantee that we can do this reliably; we must use
     // argv[0] as we need to know the *starting* directory of where ttcards resides
     // from, not the current working directory in which it is executed from
-    WORKING_DIR = OSXFs::getDirName ( argv[0] );
-    OSXFs::setWorkingDir ( WORKING_DIR );
+    WORKING_DIR = nom::OSXFS::getDirName ( argv[0] );
+    nom::OSXFS::setWorkingDir ( WORKING_DIR );
   #endif
 
   if ( argc > 1 )
