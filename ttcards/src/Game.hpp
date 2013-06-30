@@ -28,7 +28,7 @@
 #include "SDL_Cursor.h"
 #include "SDL_Drawable.hpp"
 //#include "audio.h"
-#include "timer.h"
+#include "SDL_Timer.hpp"
 #include "GameState.hpp"
 #include "GameStates.hpp"
 #include "CardsMenuState.h"

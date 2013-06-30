@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 
-#include "timer.h"
+#include "SDL_Timer.hpp"
 
 #include "Game.hpp"
 #include "SDL_Display.hpp"

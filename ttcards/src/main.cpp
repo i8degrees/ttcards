@@ -8,7 +8,7 @@
 ******************************************************************************/
 #include "SDL_Display.hpp"
 #include "Game.hpp"
-#include "fps.h"
+#include "FPS.hpp"
 
 #include "SDL.h"
 
