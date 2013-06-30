@@ -24,7 +24,6 @@
 #include "CardsMenuState.h"
 #include "GameOverState.h"
 
-#include "GameState.hpp"
 #include "SDL_MessageBox.hpp"
 #include "SDL_Font.hpp"
 #include "SDL_BitmapFont.hpp"
@@ -34,7 +33,7 @@
 #include "SDL_Timer.hpp"
 #include "SDL_Display.hpp"
 
-class Game: public nom::GameState
+class Game: public nom::IState
 {
   public:
     Game ( CardHand player1_hand );

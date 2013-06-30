@@ -20,7 +20,7 @@
 #include "SDL_Canvas.hpp"
 #include "SDL_Display.hpp"
 
-class CardsMenu: public nom::GameState
+class CardsMenu: public nom::IState
 {
   public:
     CardsMenu ( void );
