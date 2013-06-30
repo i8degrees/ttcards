@@ -20,8 +20,11 @@
 #include "card_collection.h"
 #include "card_rules.h"
 //#include "cpu_player.h"
+#include "GameStates.hpp"
+#include "CardsMenuState.h"
+#include "GameOverState.h"
 
-#include "Logger.h"
+#include "GameState.hpp"
 #include "SDL_MessageBox.hpp"
 #include "SDL_Font.hpp"
 #include "SDL_BitmapFont.hpp"
@@ -29,10 +32,6 @@
 #include "SDL_Drawable.hpp"
 //#include "audio.h"
 #include "SDL_Timer.hpp"
-#include "GameState.hpp"
-#include "GameStates.hpp"
-#include "CardsMenuState.h"
-#include "GameOverState.h"
 #include "SDL_Display.hpp"
 
 class Game: public nom::GameState
