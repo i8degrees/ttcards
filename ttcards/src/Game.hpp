@@ -97,7 +97,7 @@ class Game: public nom::GameState
     nom::SDL_Display context;   // our public / visible display context handle
     nom::SDL_Canvas background; /// pointer holding our board background image
 
-    Timer update;
+    nom::Timer update;
     nom::SDL_Font gameOver_text; /// dialog text
     nom::SDL_BitmapFont info_text;
     nom::SDL_BitmapFont info_small_text;
