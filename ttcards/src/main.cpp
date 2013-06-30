@@ -147,7 +147,7 @@ class App: public nom::SDL_App
 
   private:
     nom::SDL_Display display;
-    FPS fps; // timer for tracking frames per second
+    nom::FPS fps; // timer for tracking frames per second
 };
 
 int main(int argc, char*argv[])
