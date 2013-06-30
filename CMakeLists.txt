@@ -36,6 +36,10 @@ if ( EMCC STREQUAL on )
     set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
 endif ()
 
+# global project doxygen defaults
+set ( DOXYGEN_COMMAND doxygen )
+set ( DOXYGEN_CONFIG_FILE doxygen.cfg )
+
 set ( SRC_DIR src ) # project_dir/src
 
 SUBDIRS ( json_spirit gamelib ttcards )

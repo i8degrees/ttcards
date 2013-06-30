@@ -47,3 +47,8 @@ add_executable ( ttcards ${TTCARDS_SOURCE} )
 add_custom_target ( run
                     COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/ttcards
                   )
+
+# FIXME
+add_custom_target ( ttcards-docs
+                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
+                  )
