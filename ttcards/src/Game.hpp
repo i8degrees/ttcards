@@ -47,7 +47,7 @@ class Game: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( uint32_t elapsed_time );
+    void Update ( float elapsed_time );
     void Draw ( void* video_buffer );
 
     //static void Callback ( void ); // EMCC compiler related
