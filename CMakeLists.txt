@@ -47,6 +47,10 @@ SUBDIRS ( json_spirit gamelib ttcards )
 
 include_directories ( json_spirit )
 include_directories ( gamelib/src )
+include_directories ( gamelib/src/audio )
+include_directories ( gamelib/src/gfx )
+include_directories ( gamelib/src/math )
+include_directories ( gamelib/src/sys )
 
 if ( NOMJSON_LIBRARY STREQUAL on )
     add_subdirectory ( nomJSON )
