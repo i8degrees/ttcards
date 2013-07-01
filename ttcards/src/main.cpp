@@ -32,7 +32,7 @@ class App: public nom::SDL_App
       #endif
 
       #ifndef EMSCRIPTEN
-        display.setWindowIcon ( APP_ICON ); // Dependencies: before video init
+        display.setWindowIcon ( APP_ICON );
       #endif
 
       display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
@@ -49,14 +49,13 @@ class App: public nom::SDL_App
 
     void onEvent ( SDL_Event *event )
     {
-      SDL_Input::HandleInput ( event ); /// First, take care of our own object's event
-                                        /// requests; this allows us to use SDL even in
-                                        /// headless mode.
-                                        /// (no fancy dangled graphical-subsystem)
-      nom::GameStates::onEvent ( event ); /// Take care of each game state's events
+      // Take care of our own events
+      SDL_Input::HandleInput ( event );
+
+      // Take care of each state's event
+      nom::GameStates::onEvent ( event );
     }
 
-    /// Default quit app event handlers
     void onKeyDown ( int32_t key, int32_t mod )
     {
       switch ( key )
@@ -75,6 +74,7 @@ class App: public nom::SDL_App
       }
     }
 
+    // Default resize app event handler
     void onResize ( int32_t width, int32_t height )
     {
 
@@ -90,6 +90,7 @@ class App: public nom::SDL_App
       }
     }
 
+    // Default quit app event handler
     void onQuit ( void )
     {
       this->Quit();
@@ -97,8 +98,8 @@ class App: public nom::SDL_App
 
     int32_t Run ( void )
     {
-      unsigned int loops = 0; // globalTimer related
-      unsigned int next_game_tick = 0; // globalTimer related
+      unsigned int loops = 0;
+      unsigned int next_game_tick = 0;
       float delta_time = 0; // TODO; this is a stub out
 
       this->fps.Start();
@@ -146,13 +147,14 @@ class App: public nom::SDL_App
     }
 
   private:
+    /// display context
     nom::SDL_Display display;
-    nom::FPS fps; // timer for tracking frames per second
+    /// timer for tracking frames per second
+    nom::FPS fps;
 };
 
 int main(int argc, char*argv[])
 {
-  // Dependencies: First priority
   #ifndef EMSCRIPTEN
     // This isn't an absolute guarantee that we can do this reliably; we must use
     // argv[0] as we need to know the *starting* directory of where ttcards resides
@@ -161,13 +163,14 @@ int main(int argc, char*argv[])
     nom::OSXFS::setWorkingDir ( WORKING_DIR );
   #endif
 
+  // Command line arguments check
   if ( argc > 1 )
   {
     if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
     {
       Collection cards;
 
-      if ( cards.ExportJSON ( "tcards.json" ) == false )
+      if ( cards.ExportJSON ( "cards.json" ) == false )
       {
         std::cout << "ERR: " << "Unknown failure to serialize JSON into cards.json" << std::endl;
         exit ( EXIT_FAILURE );
@@ -184,12 +187,12 @@ int main(int argc, char*argv[])
     }
   }
 
-  std::srand ( ( unsigned ) time ( 0 ) ); // Dependencies: before app state init
+  std::srand ( ( unsigned ) time ( 0 ) );
 
-  App engine; // GameStates
+  App engine;
 
   #ifdef EMSCRIPTEN
-    // FIXME
+    // TODO
   #else
     return engine.Run();
   #endif
