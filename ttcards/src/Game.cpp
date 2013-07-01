@@ -342,6 +342,8 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
+    default: break;
+
     case SDLK_p: /* Pause State ... */ break;
     case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
 
@@ -361,8 +363,33 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_x: this->unlockSelectedCard(); break;
     case SDLK_SPACE: this->lockSelectedCard(); break;
 
-    default: break;
-  }
+    // move selected card to grid[0][0]
+    case SDLK_1: this->moveTo ( 0, 0 ); break;
+
+    // move selected card to grid[1][0]
+    case SDLK_2: this->moveTo ( 1, 0 ); break;
+
+    // move selected card to grid[2][0]
+    case SDLK_3: this->moveTo ( 2, 0 ); break;
+
+    // move selected card to grid[0][1]
+    case SDLK_4: this->moveTo ( 0, 1 ); break;
+
+    // move selected card to grid[1][1]
+    case SDLK_5: this->moveTo ( 1, 1 ); break;
+
+    // move selected card to grid[2][1]
+    case SDLK_6: this->moveTo ( 2, 1 ); break;
+
+    // move selected card to grid[0][2]
+    case SDLK_7: this->moveTo ( 0, 2 ); break;
+
+    // move selected card to grid[1][2]
+    case SDLK_8: this->moveTo ( 1, 2 ); break;
+
+    // move selected card to grid[2][2] if possible
+    case SDLK_9: this->moveTo ( 2, 2 ); break;
+  } // end key switch
 }
 
 void Game::onMouseLeftButtonDown ( int32_t x, int32_t y )
