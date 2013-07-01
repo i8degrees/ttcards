@@ -29,7 +29,3 @@ before a crash occurs!
 * SDL_mixer v1.2.12
 * SDL_ttf v2.0.11
 * A recent compiler that has support for the latest C++11 extensions
-
-### Footer
-
-Copyright (c) 2013 Jeffrey Carpenter

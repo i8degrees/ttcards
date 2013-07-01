@@ -1,4 +1,4 @@
-# Triple Triad (Card) Types
+# Card Types
 
 ## Categories & Levels
 

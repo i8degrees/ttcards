@@ -1,6 +1,4 @@
-# TTcards
-
-## TODO
+# TODO
 
 * ttcards.app bundle (think: SteerMouse)
     1. http://qt-project.org/doc/qt-4.8/deployment-mac.html
@@ -25,7 +23,3 @@
 * Relocate Timer & FPS declarations to main.cpp
 * show card name info box upon cursor lock selection of placed cards on board
 * Remove LoadBackground, DrawBackground from Board Class
-
-### Footer
-
-Copyright (c) 2013 Jeffrey Carpenter

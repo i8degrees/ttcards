@@ -1,4 +1,4 @@
-# Triple Triad Region & Trade Rules
+# Region & Trade Rules
 
 ## Regional Rules
 
@@ -86,4 +86,4 @@
 ### References
 
 1. http://finalfantasy.wikia.com/wiki/Triple_Triad
-(Verbatim copy)
+  > Verbatim copy
