@@ -62,7 +62,7 @@ class App: public nom::SDL_App
       switch ( key )
       {
         case SDLK_ESCAPE:
-        case SDLK_q: this->onExit(); break;
+        case SDLK_q: this->onQuit(); break;
         case SDLK_EQUALS: this->toggleFPS(); break;
         case SDLK_f: this->onResize ( 0, 0 ); break;
         case SDLK_s:
@@ -90,7 +90,7 @@ class App: public nom::SDL_App
       }
     }
 
-    void onExit ( void )
+    void onQuit ( void )
     {
       this->Quit();
     }
