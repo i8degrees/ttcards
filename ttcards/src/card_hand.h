@@ -20,19 +20,19 @@ class CardHand
     CardHand ( void );
     ~CardHand ( void );
 
-    bool addCard ( Card &card );
-    bool removeCard ( Card &card );
+    bool addCard ( Card& card );
+    bool removeCard ( Card& card );
 
     void clearSelectedCard ( void );
-    Card & getSelectedCard ( void );
-    bool selectCard ( Card &card );
+    Card& getSelectedCard ( void );
+    bool selectCard ( Card& card );
 
-    bool isValid ( Card &card );
+    bool isValid ( Card& card );
 
     void clear ( void );
     bool empty ( void );
     unsigned int size ( void );
-    signed int pos ( Card &card );
+    signed int pos ( Card& card );
 
     /// \internal
     ///

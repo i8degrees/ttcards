@@ -28,7 +28,7 @@ CardHand::~CardHand ( void )
   this->clear();
 }
 
-bool CardHand::addCard ( Card &card )
+bool CardHand::addCard ( Card& card )
 {
   if ( this->size() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
   {
@@ -44,7 +44,7 @@ bool CardHand::addCard ( Card &card )
   return true;
 }
 
-bool CardHand::removeCard ( Card &card )
+bool CardHand::removeCard ( Card& card )
 {
   signed int position = 0;
   unsigned int previous_id = 0;
@@ -83,7 +83,7 @@ Card & CardHand::getSelectedCard ( void )
   return this->selectedCard;
 }
 
-bool CardHand::selectCard ( Card &card )
+bool CardHand::selectCard ( Card& card )
 {
   if ( this->isValid ( card ) )
   {
@@ -97,7 +97,7 @@ bool CardHand::selectCard ( Card &card )
     std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;
   #endif
 }
-bool CardHand::isValid ( Card &card )
+bool CardHand::isValid ( Card& card )
 {
   unsigned int idx = 0;
 
@@ -127,7 +127,7 @@ unsigned int CardHand::size ( void )
   return count;
 }
 
-signed int CardHand::pos ( Card &card )
+signed int CardHand::pos ( Card& card )
 {
   unsigned int idx;
   signed int pos = -1;

@@ -22,7 +22,7 @@ CardDebug::~CardDebug ( void )
   #endif
 }
 
-void CardDebug::ListCard ( Card &card )
+void CardDebug::ListCard ( Card& card )
 {
   std::array<int, 4> ranks = { { 0, 0, 0, 0 } };
 
@@ -55,7 +55,7 @@ void CardDebug::ListCard ( Card &card )
   std::cout << std::endl;
 }
 
-void CardDebug::ListCards ( std::vector<Card> &cards )
+void CardDebug::ListCards ( std::vector<Card>& cards )
 {
   #ifdef DEBUG_CARD_DEBUG
     if ( cards.empty() == true )

@@ -37,7 +37,7 @@ class Collection
     bool ExportJSON ( std::string filename );
 
     // TODO: a) ERR handling; b) reconsider how we pass
-    Card &getCards ( unsigned int idx );
+    Card& getCards ( unsigned int idx );
     std::vector<Card> getCards ( void );
 
     void clear ( void );
