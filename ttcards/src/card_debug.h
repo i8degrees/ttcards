@@ -1,7 +1,7 @@
 /******************************************************************************
     card_debug.h
 
-  Debugging Class for Card objects ( including <Card> vectors )
+  Debugging Class for Card deriving objects
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -27,4 +27,4 @@ class CardDebug
     // ...
 };
 
-#endif // CARD_DEBUG_HEADERS defined
+#endif // GAMEAPP_CARD_DEBUG_HEADERS defined

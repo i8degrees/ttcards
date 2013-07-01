@@ -59,7 +59,8 @@ class CardsMenu: public nom::IState
     nom::SDL_BitmapFont info_small_text;
     nom::SDL_BitmapFont info_text_gray;
 
-    CardDebug debug; /// debug support for card attributes
+    /// debug support for card attributes
+    CardDebug debug;
     std::vector<int> logger;
 
     nom::SDL_MessageBox menu_box;

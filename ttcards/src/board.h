@@ -49,4 +49,4 @@ class Board
     std::vector<std::vector<Card>> grid; // 2D vector of Card data containers
 };
 
-#endif // BOARD_HEADERS defined
+#endif // GAMEAPP_BOARD_HEADERS defined

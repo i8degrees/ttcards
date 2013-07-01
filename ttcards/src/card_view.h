@@ -1,7 +1,7 @@
 /******************************************************************************
     card_view.h
 
-    Card graphics / drawing
+  Card graphics / drawing
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -33,4 +33,4 @@ class CardView
     nom::SDL_BitmapFont card_text;
 };
 
-#endif // CARD_VIEW_HEADERS defined
+#endif // GAMEAPP_CARD_VIEW_HEADERS defined

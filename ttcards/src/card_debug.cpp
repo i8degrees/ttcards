@@ -1,7 +1,7 @@
 /******************************************************************************
     card_debug.cpp
 
-  Debugging for Card objects ( including <Card> vectors )
+  Debugging Class for Card deriving objects
 
   Copyright (c) 2013 Jeffrey Carpenter
 

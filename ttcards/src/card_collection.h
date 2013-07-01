@@ -47,4 +47,4 @@ class Collection
     // ...
 };
 
-#endif // CARD_COLLECTION_HEADERS defined
+#endif // GAMEAPP_CARD_COLLECTION_HEADERS defined

@@ -1,7 +1,7 @@
 /******************************************************************************
     Game.hpp
 
-    Final Fantasy VIII Triple Triad Remake
+  Final Fantasy VIII Triple Triad Remake
 
   Copyright (c) 2013 Jeffrey Carpenter
 
@@ -108,7 +108,8 @@ class Game: public nom::IState
     nom::SDL_Font score_text; /// scoreboard text
     Board board; /// game board
 
-    CardDebug debug; /// debug support for card attributes
+    /// debug support for card attributes
+    CardDebug debug;
 
     Collection collection; /// cards database
     CardRules rules; /// TODO

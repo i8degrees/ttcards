@@ -34,10 +34,15 @@ class CardHand
     unsigned int size ( void );
     signed int pos ( Card &card );
 
-    std::vector<Card> cards; // TODO: declare in private scope
+    /// \internal
+    ///
+    /// TODO: declare in private scope
+    /// \endinternal
+    std::vector<Card> cards;
 
   private:
-    Card selectedCard; // holds player's selected (think: ready to place) card
+    /// holds player's selected (think: ready to place) card
+    Card selectedCard;
 };
 
-#endif // CARD_HAND_HEADERS defined
+#endif // GAMEAPP_CARD_HAND_HEADERS defined

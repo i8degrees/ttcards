@@ -82,4 +82,4 @@ class Card
     unsigned int player_owner;
 };
 
-#endif // CARD_HEADERS defined
+#endif // GAMEAPP_CARD_HEADERS defined
