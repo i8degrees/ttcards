@@ -29,7 +29,7 @@ class GameOver: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( float elapsed_time );
+    void Update ( float delta_time );
     void Draw ( void* video_buffer );
 
   private:
