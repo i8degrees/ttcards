@@ -23,8 +23,8 @@ class GameOver: public nom::IState
     GameOver ( std::vector<Card> cards_, unsigned int state );
     ~GameOver ( void );
 
-    void onClose ( void );
     void onInit ( void );
+    void onExit ( void );
 
     void Pause ( void );
     void Resume ( void );

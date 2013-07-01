@@ -31,9 +31,9 @@ Game::~Game ( void )
   #endif
 }
 
-void Game::onClose ( void )
+void Game::onExit ( void )
 {
-  std::cout << "\n" << "Game state onClose" << "\n";
+  std::cout << "\n" << "Game state onExit" << "\n";
 }
 
 void Game::Pause ( void )

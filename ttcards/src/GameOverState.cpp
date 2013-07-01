@@ -38,9 +38,9 @@ void GameOver::onInit ( void )
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
 }
 
-void GameOver::onClose ( void )
+void GameOver::onExit ( void )
 {
-  std::cout << "\n" << "GameOver state onClose" << "\n";
+  std::cout << "\n" << "GameOver state onExit" << "\n";
 }
 
 void GameOver::Pause ( void )

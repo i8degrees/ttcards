@@ -107,9 +107,9 @@ void CardsMenu::onInit ( void )
   //std::cout << "\n" << glyph.x << " " << glyph.y << " " << glyph.width << " " << glyph.height << "\n";
 }
 
-void CardsMenu::onClose ( void )
+void CardsMenu::onExit ( void )
 {
-  std::cout << "\n" << "CardsMenu state onClose" << "\n";
+  std::cout << "\n" << "CardsMenu state onExit" << "\n";
 }
 
 void CardsMenu::Pause ( void )
