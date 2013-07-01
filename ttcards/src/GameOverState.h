@@ -24,7 +24,7 @@ class GameOver: public nom::IState
     ~GameOver ( void );
 
     void onClose ( void );
-    void Load ( void );
+    void onInit ( void );
 
     void Pause ( void );
     void Resume ( void );

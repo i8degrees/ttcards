@@ -46,7 +46,7 @@ void Game::Resume ( void )
   std::cout << "\n" << "Game state Resumed" << "\n";
 }
 
-void Game::Load ( void )
+void Game::onInit ( void )
 {
   unsigned int idx = 0; // for loop iterations
 

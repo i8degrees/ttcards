@@ -69,7 +69,7 @@ CardsMenu::~CardsMenu ( void )
   this->collection.clear();
 }
 
-void CardsMenu::Load ( void )
+void CardsMenu::onInit ( void )
 {
   unsigned int idx = 0; // cursor_coords_map
 

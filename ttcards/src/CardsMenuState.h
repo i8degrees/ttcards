@@ -27,7 +27,7 @@ class CardsMenu: public nom::IState
     ~CardsMenu ( void );
 
     void onClose ( void );
-    void Load ( void );
+    void onInit ( void );
 
     void Pause ( void );
     void Resume ( void );

@@ -42,7 +42,7 @@ class Game: public nom::IState
     bool Init ( void );
 
     void onClose ( void );
-    void Load ( void );
+    void onInit ( void );
 
     void Pause ( void );
     void Resume ( void );

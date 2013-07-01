@@ -30,7 +30,7 @@ GameOver::~GameOver ( void )
   #endif
 }
 
-void GameOver::Load ( void )
+void GameOver::onInit ( void )
 {
   this->background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
 
