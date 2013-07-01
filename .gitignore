@@ -25,4 +25,6 @@ ttcards.dtps
 public/
 
 # docs
+ttcards/docs/install.sh
 ttcards/docs/public/
+ttcards/docs/man
