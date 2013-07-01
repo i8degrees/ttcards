@@ -13,6 +13,7 @@
 #include <string>
 
 #include "card.h"
+#include "cfg.h"
 
 class CardHand
 {

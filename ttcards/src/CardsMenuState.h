@@ -12,13 +12,16 @@
 #include <iostream>
 #include <string>
 
-#include "Game.hpp"
-
 #include "SDL_Gradient.hpp"
 #include "SDL_MessageBox.hpp"
 #include "SDL_Cursor.hpp"
 #include "SDL_Canvas.hpp"
 #include "SDL_Display.hpp"
+
+#include "Game.hpp"
+#include "card.h"
+#include "card_debug.h"
+#include "cfg.h"
 
 class CardsMenu: public nom::IState
 {

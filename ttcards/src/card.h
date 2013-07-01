@@ -12,7 +12,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <string>
 #include <array>
 
 #include "cfg.h"

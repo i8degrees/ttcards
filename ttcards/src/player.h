@@ -12,12 +12,13 @@
 #include <iostream>
 #include <string>
 
-#include "cfg.h"
+#include "Coords.hpp"
+
+#include "card.h"
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
-
-#include "Coords.hpp"
+#include "cfg.h"
 
 class Player
 {

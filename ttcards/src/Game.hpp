@@ -13,17 +13,6 @@
   #include "emscripten.h"
 #endif
 
-#include "cfg.h"
-#include "board.h"
-#include "player.h"
-#include "card.h"
-#include "card_collection.h"
-#include "card_rules.h"
-//#include "cpu_player.h"
-#include "GameStates.hpp"
-#include "CardsMenuState.h"
-#include "GameOverState.h"
-
 #include "SDL_MessageBox.hpp"
 #include "SDL_Font.hpp"
 #include "SDL_BitmapFont.hpp"
@@ -32,6 +21,18 @@
 //#include "audio.h"
 #include "SDL_Timer.hpp"
 #include "SDL_Display.hpp"
+
+#include "board.h"
+#include "player.h"
+#include "card.h"
+#include "card_debug.h"
+#include "card_collection.h"
+#include "card_rules.h"
+//#include "cpu_player.h"
+#include "GameStates.hpp"
+#include "CardsMenuState.h"
+#include "GameOverState.h"
+#include "cfg.h"
 
 class Game: public nom::IState
 {

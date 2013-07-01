@@ -13,9 +13,12 @@
 #include <string>
 
 #include "SDL_Timer.hpp"
+#include "SDL_Display.hpp"
 
 #include "Game.hpp"
-#include "SDL_Display.hpp"
+#include "card.h"
+#include "card_debug.h"
+#include "cfg.h"
 
 class GameOver: public nom::IState
 {

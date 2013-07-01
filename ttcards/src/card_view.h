@@ -11,11 +11,11 @@
 
 #include <iostream>
 
-#include "cfg.h"
-#include "card.h"
-
 #include "SDL_BitmapFont.hpp"
 #include "Sprite.hpp"
+
+#include "card.h"
+#include "cfg.h"
 
 class CardView
 {

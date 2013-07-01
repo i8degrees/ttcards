@@ -10,9 +10,9 @@
 #define GAMEAPP_CARD_DEBUG_HEADERS
 
 #include <iostream>
-#include <string>
 
 #include "card.h"
+#include "cfg.h"
 
 class CardDebug
 {

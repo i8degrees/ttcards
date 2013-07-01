@@ -11,11 +11,12 @@
 #include <string>
 #include <utility>
 
-#include "cfg.h"
+#include "card.h"
 #include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
 #include "card_rules.h"
+#include "cfg.h"
 
 class Board
 {

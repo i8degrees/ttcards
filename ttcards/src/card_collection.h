@@ -14,15 +14,15 @@
 #include <vector>
 #include <cassert>
 
-#include "cfg.h"
-#include "card.h"
-#include "card_debug.h"
-
 #include "json_spirit.h"
 
 #ifndef JSON_SPIRIT_VALUE_ENABLED
   #define JSON_SPIRIT_VALUE_ENABLED
 #endif
+
+#include "card.h"
+#include "card_debug.h"
+#include "cfg.h"
 
 class Collection
 {
