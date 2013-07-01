@@ -44,7 +44,8 @@ class Collection
 
     std::vector<Card> cards; // TODO: redeclare private scope
   private:
-    // ...
+    /// debug support for card attributes
+    CardDebug debug;
 };
 
 #endif // GAMEAPP_CARD_COLLECTION_HEADERS defined
