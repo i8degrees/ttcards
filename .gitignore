@@ -6,7 +6,7 @@ tmp/
 .LSOverride
 
 # Project Files
-*.sublime-workspace
+
 *.bck
 *.xcf
 *.mp3
