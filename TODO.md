@@ -1,6 +1,5 @@
 # TODO
 
-* Remove file name from header files
 * Use new preprocessor debugging code methodology from nomlib
 
 * ttcards.app bundle (think: SteerMouse)
@@ -21,6 +20,7 @@
 
 ## Completed
 
+* Remove file name from header files
 * GameOverState static background image
 * swap player1, player2 coords (human player AKA blue is on the right side )
 * Relocate Timer & FPS declarations to main.cpp
