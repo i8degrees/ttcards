@@ -8,7 +8,7 @@
 #define GAMEAPP_CFG_HEADERS
 
 #include <string> // for std::string support
-#include "nomlib.hpp" // for portable fixed-types
+#include "nomlib_config.hpp" // for portable fixed-types
 
 #define DEBUG_GAME
 #define DEBUG_GAME_OBJ
