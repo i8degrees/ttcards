@@ -8,8 +8,6 @@
 ******************************************************************************/
 #include "Game.hpp"
 
-using namespace nom;
-
 Game::Game ( CardHand player1_hand )
 {
   #ifdef DEBUG_GAME_OBJ

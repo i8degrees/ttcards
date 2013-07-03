@@ -8,8 +8,6 @@
 ******************************************************************************/
 #include "CardsMenuState.h"
 
-using namespace nom;
-
 CardsMenu::CardsMenu ( void )
 {
   unsigned int pid = 0; // temp var for for loop iteration
@@ -263,7 +261,7 @@ void CardsMenu::Draw ( void* video_buffer )
     if ( this->hand.isValid ( this->collection.cards[i] ) )
     {
       this->info_text_gray.setText ( this->collection.cards[i].getName() );
-      this->info_text_gray.setStyle ( Style::Faded, 150 );
+      this->info_text_gray.setStyle ( nom::Style::Faded, 150 );
       this->info_text_gray.setPosition ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
       this->info_text_gray.Update();
       this->info_text_gray.Draw ( video_buffer );
