@@ -126,8 +126,9 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
-    // Reset / New Game State
-    //case SDLK_r: if ( mod == KMOD_LSHIFT ) reloadDebugFile(); else this->engine->PopStateThenChangeState ( std::unique_ptr<Game>( new Game ( this->engine ) ) ); break;
+    // Reset game
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>
+                                              ( new CardsMenu ) ); break;
      // Pause State
     case SDLK_p: /*this->engine->PopState ()*/; break;
 
@@ -141,7 +142,11 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
 
     case SDLK_d: this->hand.removeCard ( this->selectedCard ); break;
     case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
-    case SDLK_RETURN: nom::GameStates::ChangeState ( std::unique_ptr<Game>( new Game ( this->hand ) ) ); break;
+    case SDLK_RETURN: nom::GameStates::ChangeState  ( std::unique_ptr<Game>
+                                                        ( new Game ( this->hand ) )
+                                                    ); break;
+
+     nom::GameStates::ChangeState ( std::unique_ptr<Game>( new Game ( this->hand ) ) ); break;
 
     default: break;
   }
