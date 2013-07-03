@@ -12,13 +12,13 @@ const int SCREEN_WIDTH = 384;
 const int SCREEN_HEIGHT = 224;
 const int SCREEN_BPP = 32;
 
-const int TICKS_PER_SECOND = 15; // As per PSX_SCUS Final Fantasy VIII
-const int SKIP_TICKS = 1000 / TICKS_PER_SECOND; // TODO: calculation used to determine how many ticks to wait between updating
-const int MAX_FRAMESKIP = 5; // TODO: Max amount of frames we can skip if the framerate takes a dip
-const int FRAMES_PER_SECOND = 15; // TODO: Not implemented
+const nom::uint32 TICKS_PER_SECOND = 15; // As per PSX_SCUS Final Fantasy VIII
+const nom::uint32 SKIP_TICKS = 1000 / TICKS_PER_SECOND; // TODO: calculation used to determine how many ticks to wait between updating
+const nom::uint32 MAX_FRAMESKIP = 5; // TODO: Max amount of frames we can skip if the framerate takes a dip
+const nom::uint32 FRAMES_PER_SECOND = 15; // TODO: Not implemented
 
-const int CARD_WIDTH = 64;
-const int CARD_HEIGHT = 64;
+const nom::uint32 CARD_WIDTH = 64;
+const nom::uint32 CARD_HEIGHT = 64;
 const int BACKGROUND_WIDTH = CARD_WIDTH;
 const int BACKGROUND_HEIGHT = CARD_HEIGHT;
 const int ELEMENT_WIDTH = 16;
@@ -28,13 +28,13 @@ const int CURSOR_HEIGHT = 16;
 const int MENU_ELEMENT_WIDTH = 16;
 const int MENU_ELEMENT_HEIGHT = 16;
 
-const int TOTAL_PLAYERS = 2; // +1 padding
+const nom::uint32 TOTAL_PLAYERS = 2; // +1 padding
 const int MAX_COLLECTION = 110; // number of cards in CARDS_DB
-const int MAX_PLAYER_HAND = 5;
+const nom::uint32 MAX_PLAYER_HAND = 5;
 
 // top-left of board grid
-const int BOARD_ORIGIN_X = 96;
-const int BOARD_ORIGIN_Y = 16;
+const nom::int32 BOARD_ORIGIN_X = 96;
+const nom::int32 BOARD_ORIGIN_Y = 16;
 
 const int PLAYER2_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ); // 16
 const int PLAYER2_ORIGIN_Y = BOARD_ORIGIN_Y; // 16
@@ -48,8 +48,8 @@ const int CURSOR_ORIGIN_Y = ( SCREEN_HEIGHT - CURSOR_HEIGHT ) / 2;
 const int PLAYER2_CURSOR_ORIGIN_X = BOARD_ORIGIN_X - PLAYER2_ORIGIN_X; // 80
 const int PLAYER2_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
 
-const int PLAYER1_CURSOR_ORIGIN_X = BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) - ( CURSOR_WIDTH / 2 ); // 275
-const int PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
+const nom::int32 PLAYER1_CURSOR_ORIGIN_X = BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) - ( CURSOR_WIDTH / 2 ); // 275
+const nom::int32 PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
 
 // SCREEN_HEIGHT - 48
 // 64 * 5
@@ -93,15 +93,15 @@ const int CARD_ID_ORIGIN_X = 26;
 const int CARD_ID_ORIGIN_Y = 4;
 
 // interface_pickOutCards() Menu
-const int PICK_CARDS_MENU_ORIGIN_X = 60;
-const int PICK_CARDS_MENU_ORIGIN_Y = 25;
+const nom::int32 PICK_CARDS_MENU_ORIGIN_X = 60;
+const nom::int32 PICK_CARDS_MENU_ORIGIN_Y = 25;
 
-const int PICK_CARDS_MENU_WIDTH = 164;
-const int PICK_CARDS_MENU_HEIGHT = 196;
+const nom::int32 PICK_CARDS_MENU_WIDTH = 164;
+const nom::int32 PICK_CARDS_MENU_HEIGHT = 196;
 
 // Starting cursor positioning
-const int MENU_CARDS_CURSOR_ORIGIN_X = 40;
-const int MENU_CARDS_CURSOR_ORIGIN_Y = 34; // 20
+const nom::int32 MENU_CARDS_CURSOR_ORIGIN_X = 40;
+const nom::int32 MENU_CARDS_CURSOR_ORIGIN_Y = 34; // 20
 
 // "Cards" Title Text
 const int MENU_CARDS_TITLE_ORIGIN_X = 64;
@@ -139,8 +139,8 @@ const int MENU_CARDS_PAGE_LEFT_ORIGIN_Y = 208;
 const int MENU_CARDS_PAGE_RIGHT_ORIGIN_X = 210;
 const int MENU_CARDS_PAGE_RIGHT_ORIGIN_Y = MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
 
-const int BOARD_GRID_WIDTH = 3;
-const int BOARD_GRID_HEIGHT = 3;
+const nom::int32 BOARD_GRID_WIDTH = 3;
+const nom::int32 BOARD_GRID_HEIGHT = 3;
 
 const int ELEMENT_NONE = 0;
 const int ELEMENT_EARTH = 1;

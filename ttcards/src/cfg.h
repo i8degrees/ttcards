@@ -9,6 +9,7 @@
 
 #include <string>
 #include "OSXFS.hpp"
+#include "nomlib.hpp"
 
 #define DEBUG_GAME
 #define DEBUG_GAME_OBJ
@@ -54,13 +55,13 @@ extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 extern const int SCREEN_BPP;
 
-extern const int TICKS_PER_SECOND;
-extern const int SKIP_TICKS;
-extern const int MAX_FRAMESKIP;
-extern const int FRAMES_PER_SECOND;
+extern const nom::uint32 TICKS_PER_SECOND;
+extern const nom::uint32 SKIP_TICKS;
+extern const nom::uint32 MAX_FRAMESKIP;
+extern const nom::uint32 FRAMES_PER_SECOND;
 
-extern const int CARD_WIDTH;
-extern const int CARD_HEIGHT;
+extern const nom::uint32 CARD_WIDTH;
+extern const nom::uint32 CARD_HEIGHT;
 extern const int BACKGROUND_WIDTH;
 extern const int BACKGROUND_HEIGHT;
 extern const int ELEMENT_WIDTH;
@@ -70,12 +71,12 @@ extern const int CURSOR_HEIGHT;
 extern const int MENU_ELEMENT_WIDTH;
 extern const int MENU_ELEMENT_HEIGHT;
 
-extern const int TOTAL_PLAYERS;
+extern const nom::uint32 TOTAL_PLAYERS;
 extern const int MAX_COLLECTION;
-extern const int MAX_PLAYER_HAND;
+extern const nom::uint32 MAX_PLAYER_HAND;
 
-extern const int BOARD_ORIGIN_X;
-extern const int BOARD_ORIGIN_Y;
+extern const nom::int32 BOARD_ORIGIN_X;
+extern const nom::int32 BOARD_ORIGIN_Y;
 
 extern const int PLAYER1_ORIGIN_X;
 extern const int PLAYER1_ORIGIN_Y;
@@ -86,8 +87,8 @@ extern const int PLAYER2_ORIGIN_Y;
 extern const int CURSOR_ORIGIN_X;
 extern const int CURSOR_ORIGIN_Y;
 
-extern const int PLAYER1_CURSOR_ORIGIN_X;
-extern const int PLAYER1_CURSOR_ORIGIN_Y;
+extern const nom::int32 PLAYER1_CURSOR_ORIGIN_X;
+extern const nom::int32 PLAYER1_CURSOR_ORIGIN_Y;
 
 extern const int PLAYER2_CURSOR_ORIGIN_X;
 extern const int PLAYER2_CURSOR_ORIGIN_Y;
@@ -134,11 +135,11 @@ extern const int CARD_ID_ORIGIN_Y;
 extern const int PICK_CARDS_MENU_ORIGIN_X;
 extern const int PICK_CARDS_MENU_ORIGIN_Y;
 
-extern const int PICK_CARDS_MENU_WIDTH;
-extern const int PICK_CARDS_MENU_HEIGHT;
+extern const nom::int32 PICK_CARDS_MENU_WIDTH;
+extern const nom::int32 PICK_CARDS_MENU_HEIGHT;
 
-extern const int MENU_CARDS_CURSOR_ORIGIN_X;
-extern const int MENU_CARDS_CURSOR_ORIGIN_Y;
+extern const nom::int32 MENU_CARDS_CURSOR_ORIGIN_X;
+extern const nom::int32 MENU_CARDS_CURSOR_ORIGIN_Y;
 
 extern const int MENU_CARDS_TITLE_ORIGIN_X;
 extern const int MENU_CARDS_TITLE_ORIGIN_Y;
@@ -167,8 +168,8 @@ extern const int MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
 extern const int MENU_CARDS_PAGE_RIGHT_ORIGIN_X;
 extern const int MENU_CARDS_PAGE_RIGHT_ORIGIN_Y;
 
-extern const int BOARD_GRID_WIDTH;
-extern const int BOARD_GRID_HEIGHT;
+extern const nom::int32 BOARD_GRID_WIDTH;
+extern const nom::int32 BOARD_GRID_HEIGHT;
 
 extern const int ELEMENT_NONE;
 extern const int ELEMENT_EARTH;
