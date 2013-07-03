@@ -72,11 +72,12 @@ class Card
     std::array<int, 4> rank; /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
     std::string name;
 
-    /// used to distinguish card background and also used to track player in board
-    /// in order to do card flipping, among other things like score tallying
+    /// Additional field; used to distinguish card background and also used to
+    // track player in board in order to do card flipping, among other things
+    // like score tallying
     unsigned int player_id;
 
-    /// Original owner of the card
+    /// Additional field; original owner of the card
     unsigned int player_owner;
 };
 
