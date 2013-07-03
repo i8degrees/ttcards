@@ -71,10 +71,10 @@ void Game::onInit ( void )
   //this->music.LoadMusicTrack ( MUSIC_TRACK );
 
   this->player[0].Init ( &this->hand[0], &this->card );
-  this->player[0].setXY ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
+  this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
   this->player[1].Init ( &this->hand[1], &this->card );
-  this->player[1].setXY ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
+  this->player[1].setPosition ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
   // player1, player2 cursor X, Y coords
   this->player_cursor_coords[0] = nom::Coords ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
@@ -392,9 +392,10 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
 void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 {
   nom::int32 hand_index = 0; // iterator
-  uint32_t player_turn = get_turn();
-  nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
-  nom::Coords player_coords = player[player_turn].getPosition(); // Player origin coordinates
+  uint32_t player_turn = this->get_turn();
+
+  nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
+  nom::Coords player_coords = player[player_turn].getPosition(); // Player cursor origin coordinates
 
   // Player hand selection checks
   for ( hand_index = 0; hand_index < this->hand[ player_turn ].size(); hand_index++ )

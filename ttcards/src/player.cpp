@@ -59,7 +59,7 @@ const nom::Coords Player::getPosition ( void ) const
   return this->coords;
 }
 
-void Player::setXY ( nom::int32 x, nom::int32 y )
+void Player::setPosition ( nom::int32 x, nom::int32 y )
 {
   this->coords.setPosition ( x, y );
 }

@@ -32,7 +32,7 @@ class Player
     nom::int32 getY ( void );
 
     const nom::Coords getPosition ( void ) const;
-    void setXY ( nom::int32 x, nom::int32 y );
+    void setPosition ( nom::int32 x, nom::int32 y );
 
     unsigned int getID ( void );
     void setID ( unsigned int id_ );
