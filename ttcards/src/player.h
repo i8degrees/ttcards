@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 
+#include <nomlib_config.hpp>
 #include "Coords.hpp"
 
 #include "card.h"
@@ -27,11 +28,11 @@ class Player
 
     void Init ( CardHand *player_cards, CardView *card_gfx );
 
-    unsigned int getX ( void );
-    unsigned int getY ( void );
+    nom::int32 getX ( void );
+    nom::int32 getY ( void );
 
     const nom::Coords getPosition ( void ) const;
-    void setXY ( unsigned int x, unsigned int y );
+    void setXY ( nom::int32 x, nom::int32 y );
 
     unsigned int getID ( void );
     void setID ( unsigned int id_ );

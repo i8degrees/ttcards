@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 
+#include <nomlib_config.hpp>
 #include "SDL_Gradient.hpp"
 #include "SDL_MessageBox.hpp"
 #include "SDL_Cursor.hpp"

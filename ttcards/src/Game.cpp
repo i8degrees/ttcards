@@ -45,7 +45,7 @@ void Game::Resume ( void )
 
 void Game::onInit ( void )
 {
-  unsigned int idx = 0; // for loop iterations
+  nom::int32 idx = 0; // for loop iterations
 
   this->collection.LoadJSON ( CARDS_DB );
 
@@ -285,7 +285,7 @@ void Game::moveTo ( unsigned int x, unsigned int y )
 {
   Card selected;
 
-  for ( int turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  for ( nom::uint32 turn = 0; turn < TOTAL_PLAYERS; turn++ )
   {
     selected = this->hand[turn].getSelectedCard();
 
@@ -310,7 +310,7 @@ void Game::moveTo ( unsigned int x, unsigned int y )
 
           if ( rules.getRules() != 0 )
           {
-            for ( int g = 0; g < grid.size(); g++ )
+            for ( nom::ulong g = 0; g < grid.size(); g++ )
             {
               board.flipCard ( grid[g].first, grid[g].second, turn + 1 );
 
@@ -321,7 +321,7 @@ void Game::moveTo ( unsigned int x, unsigned int y )
                 continue;
               else
               {
-                for ( int tg = 0; tg < tgrid.size(); tg++ )
+                for ( nom::ulong tg = 0; tg < tgrid.size(); tg++ )
                 {
                   board.flipCard( tgrid[tg].first, tgrid[tg].second, turn + 1 );
                 }
@@ -389,14 +389,15 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
   } // end key switch
 }
 
-void Game::onMouseLeftButtonDown ( int32_t x, int32_t y )
+void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 {
+  nom::int32 hand_index = 0; // iterator
   uint32_t player_turn = get_turn();
   nom::Coords coords ( x, y ); // temp container var to hold cursor pos mapping coords
   nom::Coords player_coords = player[player_turn].getPosition(); // Player origin coordinates
 
   // Player hand selection checks
-  for ( uint32_t hand_idx = 0; hand_idx < this->hand[ player_turn ].size(); hand_idx++ )
+  for ( hand_index = 0; hand_index < this->hand[ player_turn ].size(); hand_index++ )
   {
     if  (
           x <= ( player_coords.x + CARD_WIDTH ) &&
@@ -404,22 +405,31 @@ void Game::onMouseLeftButtonDown ( int32_t x, int32_t y )
           // hand_index+1 because we start the loop iterator at zero; mouse check
           // calculation is invalid at this number whereas it is not for the
           // actions that take place if said check yields true
-          y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * hand_idx+1 ) &&
+          y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * ( hand_index + 1 ) ) &&
           y >= ( player_coords.y )
         )
     {
+
       // Update player's selected card
-      this->hand[ player_turn ].selectCard ( this->hand[ player_turn ].cards[ hand_idx ] );
+      this->hand[ player_turn ].selectCard ( this->hand[ player_turn ].cards[ hand_index ] );
 
       // Updates Cursor Position
-      this->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_idx );
+      this->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
+
+      // We must break the loop here upon the end of a matching coords check
+      // in order to prevent a nasty "last card stays permanently selected"
+      // bug from cropping back up!
+      break;
     }
   }
 
-  // Board grid checks of players
+  // Board grid coords check; player is attempting to place a card on the board
+  // when the player hand coords check above comes back false
   coords = this->getCursorBoardPos ( x, y );
 
-  if ( coords.x != -1 && coords.y != -1 )
+  // Attempts to move card onto board; validity checking is performed within
+  // the following method call
+  if ( coords.x != -1 && coords.y != -1 ) // undefined if -1, -1
     this->moveTo ( coords.x, coords.y );
 }
 
@@ -454,9 +464,20 @@ void Game::onJoyButtonDown ( int32_t which, int32_t button )
   }
 }
 
-nom::Coords Game::getCursorBoardPos ( unsigned int x, unsigned int y )
+// Default return value is -1, -1 AKA undefined
+//
+// Translates global bounds coordinates onto local board grid bounds coords
+//
+// TODO / STUB:
+//
+//    0, 0    0, 1    0, 2
+//    0, 1    1, 1    2, 1
+//    0, 2    1, 2    2, 2
+//
+//
+nom::Coords Game::getCursorBoardPos ( nom::int32 x, nom::int32 y )
 {
-  unsigned int idx = 0;
+  nom::int32 idx = 0; // iterator
   nom::Coords pos ( -1, -1 ); // ...when all else fails, default to undefined
 
   for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
@@ -480,7 +501,7 @@ nom::Coords Game::getCursorBoardPos ( unsigned int x, unsigned int y )
 unsigned int Game::getCursorPos ( void )
 {
   unsigned int pos = 0;
-  unsigned int idx = 0;
+  nom::int32 idx = 0;
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
@@ -659,7 +680,7 @@ void Game::Draw ( void *video_buffer )
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
-      for ( unsigned int i = 0; i < this->hand[PLAYER2].size(); i++ )
+      for ( nom::int32 i = 0; i < this->hand[PLAYER2].size(); i++ )
         winning_cards.push_back ( this->hand[PLAYER2].cards[i] );
 
       for ( int y = 0; y < BOARD_GRID_HEIGHT; y++ )
@@ -694,12 +715,12 @@ void Game::Draw ( void *video_buffer )
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
-      for ( unsigned int i = 0; i < this->hand[PLAYER1].size(); i++ )
+      for ( nom::int32 i = 0; i < this->hand[PLAYER1].size(); i++ )
         winning_cards.push_back ( this->hand[PLAYER1].cards[i] );
 
-      for ( int y = 0; y < BOARD_GRID_HEIGHT; y++ )
+      for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
       {
-        for ( int x = 0; x < BOARD_GRID_WIDTH; x++ )
+        for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
         {
           Card card = this->board.getCard ( x, y );
 

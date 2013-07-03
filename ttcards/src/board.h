@@ -12,6 +12,8 @@
 #include <string>
 #include <utility>
 
+#include <nomlib_config.hpp>
+
 #include "card.h"
 #include "card_debug.h"
 #include "card_hand.h"
@@ -27,7 +29,7 @@ class Board
 
     void Init ( CardView *card_gfx, CardRules *rules );
 
-    std::vector<std::pair<int, int>> checkBoard ( unsigned int x, unsigned int y );
+    std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
 
     // TODO: Consider branching this into Score class
     unsigned int getCount ( void );

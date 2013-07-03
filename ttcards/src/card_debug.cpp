@@ -41,7 +41,7 @@ void CardDebug::ListCard ( Card& card )
   std::cout << card.getElement();
   std::cout << " ";
 
-  for ( int rank = 0; rank < ranks.size(); rank++ )
+  for ( nom::ulong rank = 0; rank < ranks.size(); rank++ )
   {
     std::cout << ranks[rank];
     std::cout << " ";
@@ -70,7 +70,7 @@ void CardDebug::ListCards ( std::vector<Card>& cards )
   if ( cards.empty() == true )
     std::cout << "N/A";
 
-  for ( int i = 0; i < cards.size(); i++ )
+  for ( nom::ulong i = 0; i < cards.size(); i++ )
   {
     std::cout << cards[i].getID();
     std::cout << " ";

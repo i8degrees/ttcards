@@ -18,8 +18,8 @@ const nom::uint32 SKIP_TICKS = 1000 / TICKS_PER_SECOND; // TODO: calculation use
 const nom::uint32 MAX_FRAMESKIP = 5; // TODO: Max amount of frames we can skip if the framerate takes a dip
 const nom::uint32 FRAMES_PER_SECOND = 15; // TODO: Not implemented
 
-const nom::uint32 CARD_WIDTH = 64;
-const nom::uint32 CARD_HEIGHT = 64;
+const nom::int32 CARD_WIDTH = 64;
+const nom::int32 CARD_HEIGHT = 64;
 const int BACKGROUND_WIDTH = CARD_WIDTH;
 const int BACKGROUND_HEIGHT = CARD_HEIGHT;
 const int ELEMENT_WIDTH = 16;
@@ -31,7 +31,7 @@ const int MENU_ELEMENT_HEIGHT = 16;
 
 const nom::uint32 TOTAL_PLAYERS = 2; // +1 padding
 const int MAX_COLLECTION = 110; // number of cards in CARDS_DB
-const nom::uint32 MAX_PLAYER_HAND = 5;
+const nom::int32 MAX_PLAYER_HAND = 5;
 
 // top-left of board grid
 const nom::int32 BOARD_ORIGIN_X = 96;

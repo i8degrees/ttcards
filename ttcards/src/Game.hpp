@@ -12,6 +12,7 @@
   #include "emscripten.h"
 #endif
 
+#include <nomlib_config.hpp>
 #include "SDL_MessageBox.hpp"
 #include "SDL_Font.hpp"
 #include "SDL_BitmapFont.hpp"
@@ -54,7 +55,7 @@ class Game: public nom::IState
     //void Start ( void ); // EMCC compiler related
   private:
     void onKeyDown ( int32_t key, int32_t mod );
-    void onMouseLeftButtonDown ( int32_t x, int32_t y );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( int32_t which, int32_t button );
 
@@ -79,7 +80,7 @@ class Game: public nom::IState
     void lockSelectedCard ( void );
     void moveTo ( unsigned int x, unsigned int y );
 
-    nom::Coords getCursorBoardPos ( unsigned int x, unsigned int y );
+    nom::Coords getCursorBoardPos ( nom::int32 x, nom::int32 y );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );

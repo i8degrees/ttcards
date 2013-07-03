@@ -204,7 +204,7 @@ void CardsMenu::Update ( float delta_time )
 void CardsMenu::Draw ( void* video_buffer )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
-  unsigned int hand_index = 0; // "dummy" card index var
+  nom::int32 hand_index = 0; // "dummy" card index var
 
   this->background.Draw ( video_buffer );
 
@@ -221,7 +221,7 @@ void CardsMenu::Draw ( void* video_buffer )
 
   this->menu_box.Draw ( video_buffer );
 
-  for ( int i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
+  for ( nom::uint32 i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {
     // Draw the top-left box title
     this->info_small_text.setText ( "CARDS" );

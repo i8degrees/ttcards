@@ -60,8 +60,8 @@ extern const nom::uint32 SKIP_TICKS;
 extern const nom::uint32 MAX_FRAMESKIP;
 extern const nom::uint32 FRAMES_PER_SECOND;
 
-extern const nom::uint32 CARD_WIDTH;
-extern const nom::uint32 CARD_HEIGHT;
+extern const nom::int32 CARD_WIDTH;
+extern const nom::int32 CARD_HEIGHT;
 extern const int BACKGROUND_WIDTH;
 extern const int BACKGROUND_HEIGHT;
 extern const int ELEMENT_WIDTH;
@@ -73,7 +73,7 @@ extern const int MENU_ELEMENT_HEIGHT;
 
 extern const nom::uint32 TOTAL_PLAYERS;
 extern const int MAX_COLLECTION;
-extern const nom::uint32 MAX_PLAYER_HAND;
+extern const nom::int32 MAX_PLAYER_HAND;
 
 extern const nom::int32 BOARD_ORIGIN_X;
 extern const nom::int32 BOARD_ORIGIN_Y;

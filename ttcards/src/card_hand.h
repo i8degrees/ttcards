@@ -11,6 +11,8 @@
 #include <iostream>
 #include <string>
 
+#include <nomlib_config.hpp>
+
 #include "card.h"
 #include "cfg.h"
 
@@ -31,8 +33,8 @@ class CardHand
 
     void clear ( void );
     bool empty ( void );
-    unsigned int size ( void );
-    signed int pos ( Card& card );
+    nom::int32 size ( void );
+    nom::int32 pos ( Card& card );
 
     /// \internal
     ///

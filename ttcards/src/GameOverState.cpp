@@ -16,7 +16,7 @@ GameOver::GameOver ( std::vector<Card> cards_, unsigned int state )
   this->state = state;
   this->cards = cards_; // FIXME?
 
-  for ( int i = 0; i < cards.size(); i++ )
+  for ( nom::ulong i = 0; i < cards.size(); i++ )
     std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
 }
 
@@ -77,7 +77,7 @@ void GameOver::Draw ( void* video_buffer )
   //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
 
   // Active player's card selection(s)
-  for ( int cards_index = 0; cards_index < this->cards.size(); cards_index++ ) // TODO: std::get<1>(player_coords)
+  for ( nom::ulong cards_index = 0; cards_index < this->cards.size(); cards_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER1 )
       this->card.DrawCard ( video_buffer, this->cards.at ( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );

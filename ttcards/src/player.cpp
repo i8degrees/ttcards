@@ -44,12 +44,12 @@ void Player::Init ( CardHand *player_cards, CardView *card_gfx )
   this->card = card_gfx;
 }
 
-unsigned int Player::getX ( void )
+nom::int32 Player::getX ( void )
 {
   return this->coords.x;
 }
 
-unsigned int Player::getY ( void )
+nom::int32 Player::getY ( void )
 {
   return this->coords.y;
 }
@@ -59,7 +59,7 @@ const nom::Coords Player::getPosition ( void ) const
   return this->coords;
 }
 
-void Player::setXY ( unsigned int x, unsigned int y )
+void Player::setXY ( nom::int32 x, nom::int32 y )
 {
   this->coords.setPosition ( x, y );
 }
@@ -79,9 +79,11 @@ unsigned int Player::getID ( void )
 //
 void Player::setID ( unsigned int id_ )
 {
+  nom::ulong pid = 0; // iterator
+
   this->id = id_;
 
-  for ( int pid = 0; pid < this->hand->cards.size(); pid++ )
+  for ( pid = 0; pid < this->hand->cards.size(); pid++ )
   {
     this->hand->cards[pid].setPlayerID ( id_ );
     this->hand->cards[pid].setPlayerOwner ( id_ );
@@ -110,7 +112,7 @@ void Player::setScore ( unsigned int score )
 
 void Player::Draw ( void* video_buffer )
 {
-  unsigned int hand_index = 0;
+  nom::int32 hand_index = 0; // iterator
 
   for ( hand_index = 0; hand_index < this->hand->size(); hand_index++ )
   {

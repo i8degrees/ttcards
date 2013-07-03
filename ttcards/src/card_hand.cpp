@@ -98,7 +98,7 @@ bool CardHand::selectCard ( Card& card )
 }
 bool CardHand::isValid ( Card& card )
 {
-  unsigned int idx = 0;
+  nom::int32 idx = 0;
 
   for ( idx = 0; idx < this->size(); idx++ )
   {
@@ -117,19 +117,19 @@ bool CardHand::empty ( void )
   return false;
 }
 
-unsigned int CardHand::size ( void )
+nom::int32 CardHand::size ( void )
 {
-  unsigned int count = 0;
+  nom::int32 count = 0;
 
   count = this->cards.size();
 
   return count;
 }
 
-signed int CardHand::pos ( Card& card )
+nom::int32 CardHand::pos ( Card& card )
 {
-  unsigned int idx;
-  signed int pos = -1;
+  nom::int32 idx;
+  nom::int32 pos = -1;
 
   if ( this->empty() == false )
   {

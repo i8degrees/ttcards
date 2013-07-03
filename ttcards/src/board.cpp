@@ -15,7 +15,7 @@ TODO: Add configurable board init, such as:
 */
 Board::Board ( void )
 {
-  unsigned int x, y = 0;
+  nom::int32 x, y = 0; // iterator
 
   #ifdef DEBUG_BOARD_OBJ
     std::cout << "Board::Board(): " << "Hello, world!" << std::endl << std::endl;
@@ -58,11 +58,11 @@ Board::~Board ( void )
     this->card = NULL;
 }
 
-std::vector<std::pair<int, int>> Board::checkBoard ( unsigned int x, unsigned int y )
+std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x, nom::int32 y )
 {
-  unsigned int cols, rows = 0;
-  unsigned int same_count = 0;
-  std::vector<std::pair<int, int>> coords;
+  nom::int32 cols, rows = 0; // iterator
+  nom::int32 same_count = 0;
+  std::vector<std::pair<nom::int32, nom::int32>> coords;
 
   coords.clear(); // initialize a fresh new coords list
 
@@ -200,7 +200,7 @@ unsigned int Board::getCount ( void )
 unsigned int Board::getPlayerCount ( unsigned int player_id )
 {
   unsigned int pid_count = 0;
-  unsigned int x, y = 0;
+  nom::ulong x, y = 0; // iterator
 
   for ( y = 0; y < grid.size(); y++ )
   {
@@ -264,7 +264,7 @@ void Board::Update ( unsigned int x, unsigned int y )
 // Draws our active board grid based on their values (card IDs)
 void Board::Draw ( void* video_buffer )
 {
-  unsigned int x, y = 0;
+  nom::int32 x, y = 0; // iterator
 
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
@@ -278,7 +278,7 @@ void Board::Draw ( void* video_buffer )
 // Debug helper method
 void Board::List ( void )
 {
-  unsigned int x, y = 0;
+  nom::int32 x, y = 0; // iterator
 
   for ( y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
