@@ -28,3 +28,10 @@ public/
 ttcards/docs/install.sh
 ttcards/docs/public/
 ttcards/docs/man
+
+# convenience symbolic links
+ttcards/BUGS.md
+ttcards/LICENSE.md
+ttcards/README.md
+ttcards/TODO.md
+
