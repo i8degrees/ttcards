@@ -1,5 +1,8 @@
 # TODO
 
+* Remove file name from header files
+* Use new preprocessor debugging code methodology from nomlib
+
 * ttcards.app bundle (think: SteerMouse)
     1. http://qt-project.org/doc/qt-4.8/deployment-mac.html
     2. http://stackoverflow.com/questions/5131015/creating-an-application-bundle-on-osx-with-eclipse-c
