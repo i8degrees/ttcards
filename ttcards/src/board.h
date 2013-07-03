@@ -1,5 +1,6 @@
 /******************************************************************************
-    board.h
+
+    Game board class
 
   Copyright (c) 2013 Jeffrey Carpenter
 

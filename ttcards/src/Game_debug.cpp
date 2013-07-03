@@ -1,7 +1,6 @@
 /******************************************************************************
-    Game_debug.cpp
 
-  Final Fantasy VIII Triple Triad Remake
+    TTcards class game debug methods
 
   Copyright (c) 2013 Jeffrey Carpenter
 

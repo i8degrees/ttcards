@@ -1,5 +1,6 @@
 /******************************************************************************
-    card_collection.cpp
+
+    Collection of cards class
 
   Copyright (c) 2013 Jeffrey Carpenter
 

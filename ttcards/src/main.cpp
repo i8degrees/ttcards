@@ -1,7 +1,6 @@
 /******************************************************************************
-    main.cpp
 
-  TTcards game app execution
+    TTcards game app execution
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -1,7 +1,6 @@
 /******************************************************************************
-    GameOverState.h
 
-  Game Over state
+    Game Over state
 
   Copyright (c) 2013 Jeffrey Carpenter
 

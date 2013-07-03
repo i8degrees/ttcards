@@ -1,7 +1,6 @@
 /******************************************************************************
-    card_view.cpp
 
-  Card Graphics / Rendering
+    Card Graphics / Rendering
 
   Copyright (c) 2013 Jeffrey Carpenter
 

@@ -1,5 +1,6 @@
 /******************************************************************************
-    cfg.h
+
+    TTcards configuration declarations
 
   Copyright (c) 2013 Jeffrey Carpenter
 

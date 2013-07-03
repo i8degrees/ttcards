@@ -1,7 +1,6 @@
 /******************************************************************************
-    card_view.h
 
-  Card graphics / drawing
+    Card graphics / drawing
 
   Copyright (c) 2013 Jeffrey Carpenter
 

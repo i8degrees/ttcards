@@ -1,7 +1,6 @@
 /******************************************************************************
-    card_debug.h
 
-  Debugging Class for Card deriving objects
+    Debugging Class for Card deriving objects
 
   Copyright (c) 2013 Jeffrey Carpenter
 

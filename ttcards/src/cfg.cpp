@@ -1,5 +1,6 @@
 /******************************************************************************
-    cfg.cpp
+
+    TTcards configuration
 
   Copyright (c) 2013 Jeffrey Carpenter
 

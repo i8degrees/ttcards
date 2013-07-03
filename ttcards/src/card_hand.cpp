@@ -1,7 +1,6 @@
 /******************************************************************************
-    card_hand.cpp
 
-  Helper Class for player defined cards
+    Helper Class for player defined cards
 
   Copyright (c) 2013 Jeffrey Carpenter
 

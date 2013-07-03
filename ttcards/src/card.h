@@ -1,7 +1,6 @@
 /******************************************************************************
-    card.h
 
-  Card container class
+    Card container class
 
   Copyright (c) 2013 Jeffrey Carpenter
 

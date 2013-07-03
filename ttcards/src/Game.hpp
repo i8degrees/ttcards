@@ -1,7 +1,6 @@
 /******************************************************************************
-    Game.hpp
 
-  Final Fantasy VIII Triple Triad Remake
+    Final Fantasy VIII Triple Triad Remake
 
   Copyright (c) 2013 Jeffrey Carpenter
 

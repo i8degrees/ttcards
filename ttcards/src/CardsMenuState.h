@@ -1,7 +1,6 @@
 /******************************************************************************
-    CardsMenuState.h
 
-  Cards Menu state
+    Cards Menu state
 
   Copyright (c) 2013 Jeffrey Carpenter
 
