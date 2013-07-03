@@ -7,9 +7,8 @@
 #ifndef GAMEAPP_CFG_HEADERS
 #define GAMEAPP_CFG_HEADERS
 
-#include <string>
-#include "OSXFS.hpp"
-#include "nomlib.hpp"
+#include <string> // for std::string support
+#include "nomlib.hpp" // for portable fixed-types
 
 #define DEBUG_GAME
 #define DEBUG_GAME_OBJ

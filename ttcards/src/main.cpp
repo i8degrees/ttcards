@@ -19,6 +19,7 @@
 #include "SDL_App.hpp"
 #include "GameStates.hpp"
 #include "SDL_Image.hpp"
+#include "OSXFS.hpp"
 
 class App: public nom::SDL_App
 {
