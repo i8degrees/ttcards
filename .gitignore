@@ -2,6 +2,9 @@
 design/
 tmp/
 
+# OSX related
+.LSOverride
+
 # Project Files
 \*.ttcards.sublime-workspace
 *.sublime-project
