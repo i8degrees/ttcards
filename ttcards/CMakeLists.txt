@@ -32,6 +32,12 @@ include_directories ( ${SDLMIXER_INCLUDE_DIR} )
 find_package ( SDL_ttf REQUIRED )
 include_directories ( ${SDLTTF_INCLUDE_DIR} )
 
+if ( TTCARDS_NOMLIB_COMPILE STREQUAL off )
+  message ( TODO: this is a stub! )
+  find_package ( gamelib REQUIRED )
+  include_directories ( ${GAMELIB_INCLUDE_DIR} )
+endif ()
+
 link_libraries (  ttcards # makefile target
                   ${SDL_LIBRARY}
                   SDLmain
