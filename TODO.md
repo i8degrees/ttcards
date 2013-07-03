@@ -2,14 +2,6 @@
 
 * Use new preprocessor debugging code methodology from nomlib
 
-* ttcards.app bundle (think: SteerMouse)
-    1. http://qt-project.org/doc/qt-4.8/deployment-mac.html
-    2. http://stackoverflow.com/questions/5131015/creating-an-application-bundle-on-osx-with-eclipse-c
-    3. http://stackoverflow.com/questions/1596945/building-osx-app-bundle
-    4. http://www.j-schell.de/node/316
-    5. https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/PropertyLists/CreatePropListProgram/CreatePropListProgram.html
-    6. py2app
-
 * Rename header file extensions to .hpp
 * Card class: get/set XY && width/height ?
 * PauseState ( msgbox w/ blinking Pause text )
