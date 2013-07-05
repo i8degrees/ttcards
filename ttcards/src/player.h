@@ -12,7 +12,7 @@
 #include <string>
 
 #include <nomlib_types.hpp>
-#include "Coords.hpp"
+#include <math/Coords.hpp>
 
 #include "card.h"
 #include "card_debug.h"

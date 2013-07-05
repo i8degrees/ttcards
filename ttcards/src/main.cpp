@@ -7,20 +7,21 @@
 ******************************************************************************/
 #include <cstdlib>
 
-#include "SDL_Display.hpp"
-#include "Game.hpp"
-#include "FPS.hpp"
-
-#include "SDL.h"
-
 #ifdef EMSCRIPTEN
   #include "emscripten.h"
 #endif
 
-#include "SDL_App.hpp"
-#include "GameStates.hpp"
-#include "SDL_Image.hpp"
-#include "OSXFS.hpp"
+#include <SDL/SDL.h>
+
+#include <gfx/SDL_Display.hpp>
+#include <gfx/SDL_Image.hpp>
+#include <sys/FPS.hpp>
+#include <sys/GameStates.hpp>
+#include <sys/OSXFS.hpp>
+#include <sys/SDL_App.hpp>
+#include <nomlib_types.hpp>
+
+#include "Game.hpp"
 
 class App: public nom::SDL_App
 {

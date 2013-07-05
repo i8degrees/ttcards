@@ -15,7 +15,7 @@
 #include <vector>
 #include <cassert>
 
-#include "json_spirit.h"
+#include <json_spirit.h>
 
 #ifndef JSON_SPIRIT_VALUE_ENABLED
   #define JSON_SPIRIT_VALUE_ENABLED

@@ -32,10 +32,17 @@ include_directories ( ${SDLMIXER_INCLUDE_DIR} )
 find_package ( SDL_ttf REQUIRED )
 include_directories ( ${SDLTTF_INCLUDE_DIR} )
 
+# FIXME
 if ( TTCARDS_NOMLIB_COMPILE STREQUAL off )
-  message ( TODO: this is a stub! )
-  find_package ( gamelib REQUIRED )
-  include_directories ( ${GAMELIB_INCLUDE_DIR} )
+  include_directories ( /usr/local/include/gamelib )
+  #find_package ( gamelib REQUIRED )
+  #include_directories ( ${GAMELIB_INCLUDE_DIR} )
+endif ()
+
+if ( TTCARDS_JSON_SPIRIT_COMPILE STREQUAL off )
+  include_directories ( /usr/local/include/json_spirit )
+  #find_package ( json_spirit REQUIRED )
+  #include_directories ( ${JSON_SPIRIT_INCLUDE_DIR} )
 endif ()
 
 link_libraries (  ttcards # makefile target

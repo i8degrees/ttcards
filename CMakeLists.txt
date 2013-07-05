@@ -10,11 +10,12 @@ set ( CMAKE_BUILD_TYPE Debug )
 set ( EMCC off )
 set ( NOMJSON_LIBRARY off )
 
-# required dependencies:
-
-# set false to build & install nomlib from external source; otherwise let
-# us take over and build nomlib along with the other TTcards dependencies
-set ( TTCARDS_NOMLIB_COMPILE on )
+#     Required Dependencies
+#
+# set false to build & install nomlib & json_spirit from external sources;
+# otherwise let us take over and build our own dependencies
+set ( TTCARDS_NOMLIB_COMPILE off )
+set ( TTCARDS_JSON_SPIRIT_COMPILE off )
 
 if ( CMAKE_GENERATOR STREQUAL Xcode )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
@@ -59,14 +60,17 @@ set ( SRC_DIR src ) # project_dir/src
 
 # TTcards dependencies
 
-add_subdirectory ( json_spirit )
-include_directories ( json_spirit )
+if ( TTCARDS_JSON_SPIRIT_COMPILE STREQUAL on )
+  add_subdirectory ( json_spirit )
+  include_directories ( json_spirit )
+endif ()
 
 if ( TTCARDS_NOMLIB_COMPILE STREQUAL on )
   add_subdirectory ( gamelib )
   include_directories ( gamelib/src )
   include_directories ( gamelib/src/audio )
   include_directories ( gamelib/src/gfx )
+  include_directories ( gamelib/src/gui )
   include_directories ( gamelib/src/math )
   include_directories ( gamelib/src/sys )
 endif ()

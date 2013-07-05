@@ -10,8 +10,8 @@
 
 #include <iostream>
 
-#include "SDL_BitmapFont.hpp"
-#include "Sprite.hpp"
+#include <gfx/SDL_BitmapFont.hpp>
+#include <gfx/Sprite.hpp>
 
 #include "card.h"
 #include "cfg.h"
