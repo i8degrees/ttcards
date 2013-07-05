@@ -25,7 +25,7 @@ CardsMenu::CardsMenu ( void )
   // As we presently expect / depend on this state to always be player1 and we
   // know the only required data structure being passed onwards is the player1
   // hand, we can fudge all the cards / objects leading up to said point without
-  // anybody knowing the differnece.
+  // anybody knowing the difference.
   //
   for ( pid = 0; pid < this->collection.cards.size(); pid++ )
     this->collection.cards[pid].setPlayerID ( PLAYER1_ID );
