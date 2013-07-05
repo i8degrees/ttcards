@@ -1,14 +1,14 @@
 cmake_minimum_required ( VERSION 2.8 )
 
-# CMake configuration:
+#     CMake Environment
 
 set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_BUILD_TYPE Debug )
 #set ( CMAKE_OSX_ARCHITECTURES i386;x86_64 ) # OSX Universal Library
-
-# optional dependencies:
-set ( EMCC off )
-set ( NOMJSON_LIBRARY off )
+if ( CMAKE_GENERATOR STREQUAL Xcode )
+    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
+    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
+endif ()
 
 #     Required Dependencies
 #
@@ -17,12 +17,12 @@ set ( NOMJSON_LIBRARY off )
 set ( TTCARDS_NOMLIB_COMPILE off )
 set ( TTCARDS_JSON_SPIRIT_COMPILE off )
 
-if ( CMAKE_GENERATOR STREQUAL Xcode )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-endif ()
+#     Optional Dependencies
 
-# Platform specific:
+set ( EMCC off )
+set ( NOMJSON_LIBRARY off )
+
+#     Platform specific
 
 if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS(?) with
                                         # applicable dependencies installed
