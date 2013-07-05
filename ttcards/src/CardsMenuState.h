@@ -64,7 +64,6 @@ class CardsMenu: public nom::IState
 
     /// debug support for card attributes
     CardDebug debug;
-    std::vector<int> logger;
 
     nom::SDL_MessageBox menu_box;
     nom::SDL_Gradient linear;
