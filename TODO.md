@@ -1,5 +1,8 @@
 # TODO
 
+* Resolve data paths issue when installed under /usr/local
+* Fix uninstall script
+
 * Use new preprocessor debugging code methodology from nomlib
 
 * Rename header file extensions to .hpp
