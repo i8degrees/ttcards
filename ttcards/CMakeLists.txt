@@ -58,7 +58,7 @@ set ( TTCARDS_DATA_FONTS
 
 # Image assets
 set ( TTCARDS_DATA_IMAGES
-      ${TTCARDS_DATA_IMAGES_DIR}/Backgrounds.png
+      ${TTCARDS_DATA_IMAGES_DIR}/backgrounds.png
       ${TTCARDS_DATA_IMAGES_DIR}/board.png
       ${TTCARDS_DATA_IMAGES_DIR}/cursors.png
       ${TTCARDS_DATA_IMAGES_DIR}/elements.png
