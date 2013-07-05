@@ -5,6 +5,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
+#include <cstdlib>
+
 #include "SDL_Display.hpp"
 #include "Game.hpp"
 #include "FPS.hpp"
@@ -37,7 +39,7 @@ class App: public nom::SDL_App
 
       display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
-      //SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
+      SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL / 3);
     }
 
     ~App ( void )
@@ -196,4 +198,6 @@ int main(int argc, char*argv[])
   #else
     return engine.Run();
   #endif
+
+  // This is past the point of execution; all execution must reside within our App
 }
