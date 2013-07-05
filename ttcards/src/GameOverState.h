@@ -11,8 +11,9 @@
 #include <iostream>
 #include <string>
 
-#include "SDL_Timer.hpp"
-#include "SDL_Display.hpp"
+#include <gfx/SDL_Display.hpp>
+#include <sys/SDL_Timer.hpp>
+#include <nomlib_types.hpp>
 
 #include "Game.hpp"
 #include "card.h"

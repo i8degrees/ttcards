@@ -11,12 +11,12 @@
 #include <iostream>
 #include <string>
 
-#include <nomlib_config.hpp>
-#include "SDL_Gradient.hpp"
-#include "SDL_MessageBox.hpp"
-#include "SDL_Cursor.hpp"
-#include "SDL_Canvas.hpp"
-#include "SDL_Display.hpp"
+#include <gfx/SDL_Canvas.hpp>
+#include <gfx/SDL_Display.hpp>
+#include <gfx/SDL_Gradient.hpp>
+#include <gui/SDL_MessageBox.hpp>
+#include <gui/SDL_Cursor.hpp>
+#include <nomlib_types.hpp>
 
 #include "Game.hpp"
 #include "card.h"

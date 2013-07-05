@@ -12,15 +12,17 @@
   #include "emscripten.h"
 #endif
 
-#include <nomlib_config.hpp>
-#include "SDL_MessageBox.hpp"
-#include "SDL_Font.hpp"
-#include "SDL_BitmapFont.hpp"
-#include "SDL_Cursor.hpp"
-#include "SDL_Drawable.hpp"
-//#include "audio.h"
-#include "SDL_Timer.hpp"
-#include "SDL_Display.hpp"
+
+#include <gfx/SDL_Font.hpp>
+#include <gfx/SDL_BitmapFont.hpp>
+#include <gfx/SDL_Drawable.hpp>
+#include <gfx/SDL_Display.hpp>
+
+#include <gui/SDL_MessageBox.hpp>
+#include <gui/SDL_Cursor.hpp>
+
+#include <sys/SDL_Timer.hpp>
+#include <nomlib_types.hpp>
 
 #include "board.h"
 #include "player.h"
