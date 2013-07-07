@@ -35,19 +35,15 @@ if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS(?) with
 
   set ( CMAKE_CXX_COMPILER "/usr/bin/c++" )
   set ( CMAKE_CXX_FLAGS -std=c++0x )
-  set ( CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wsign-compare" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL Darwin )
   message ( "Darwin OS (Mac OSX) detected" )  # Developed 100% on OSX v10.8.3
 
   set ( CMAKE_CXX_COMPILER "/usr/bin/clang++" )
   set ( CMAKE_EXE_LINKER_FLAGS "-std=c++11 -stdlib=libc++" )
   set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
-  set ( CMAKE_CXX_FLAGS_DEBUG "-gfull -O0 -Wall -Wsign-compare" )
 else ()
   message ( "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
 endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
-
-set ( CMAKE_CXX_FLAGS_RELEASE "-O2" )
 
 if ( EMCC )
   set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
