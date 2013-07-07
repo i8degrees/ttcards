@@ -68,7 +68,7 @@ CardsMenu::~CardsMenu ( void )
 
 void CardsMenu::onInit ( void )
 {
-  unsigned int idx = 0; // cursor_coords_map
+  unsigned int idx = 0; // iterator for cursor_coords_map
 
   this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
 
