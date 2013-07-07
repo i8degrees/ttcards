@@ -27,7 +27,7 @@ class Board
     Board ( void );
     ~Board ( void );
 
-    void Init ( CardView *card_gfx, CardRules *rules );
+    void Init ( CardRules *rules );
 
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
 
@@ -48,7 +48,8 @@ class Board
 
   private:
     CardDebug debug; // debug support for card attributes
-    CardView *card; // pointer referencing our card rendering class
+    /// Card rendering
+    CardView card;
     CardRules *rules;
     std::vector<std::vector<Card>> grid; // 2D vector of Card data containers
 };

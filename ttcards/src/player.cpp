@@ -27,21 +27,15 @@ Player::~Player ( void )
     std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  if ( this->card != NULL )
-  {
-    this->card = NULL;
-  }
-
   if ( this->hand != NULL )
   {
     this->hand = NULL;
   }
 }
 
-void Player::Init ( CardHand *player_cards, CardView *card_gfx )
+void Player::Init ( CardHand *player_cards )
 {
   this->hand = player_cards;
-  this->card = card_gfx;
 }
 
 nom::int32 Player::getX ( void )
@@ -121,16 +115,16 @@ void Player::Draw ( void* video_buffer )
       if ( this->getID() == 1 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       else if ( this->getID() == 2 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
-          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }

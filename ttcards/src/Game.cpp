@@ -49,7 +49,7 @@ void Game::onInit ( void )
 
   this->collection.LoadJSON ( CARDS_DB );
 
-  this->board.Init ( &this->card, &this->rules );
+  this->board.Init ( &this->rules );
 
   this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
 
@@ -70,10 +70,10 @@ void Game::onInit ( void )
 
   //this->music.LoadMusicTrack ( MUSIC_TRACK );
 
-  this->player[0].Init ( &this->hand[0], &this->card );
+  this->player[0].Init ( &this->hand[0] );
   this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
-  this->player[1].Init ( &this->hand[1], &this->card );
+  this->player[1].Init ( &this->hand[1] );
   this->player[1].setPosition ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
   // player1, player2 cursor X, Y coords

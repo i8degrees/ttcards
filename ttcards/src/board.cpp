@@ -39,9 +39,8 @@ Board::Board ( void )
 
 }
 
-void Board::Init ( CardView *card_gfx, CardRules *rules )
+void Board::Init ( CardRules *rules )
 {
-  this->card = card_gfx;
   this->rules = rules;
 }
 
@@ -53,9 +52,6 @@ Board::~Board ( void )
 
   if ( this->rules != NULL )
     this->rules = NULL;
-
-  if ( this->card != NULL )
-    this->card = NULL;
 }
 
 std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x, nom::int32 y )
@@ -270,7 +266,7 @@ void Board::Draw ( void* video_buffer )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->card->DrawCard ( video_buffer, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+      this->card.DrawCard ( video_buffer, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
   }
 }

@@ -26,7 +26,7 @@ class Player
     Player ( void );
     ~Player ( void );
 
-    void Init ( CardHand *player_cards, CardView *card_gfx );
+    void Init ( CardHand *player_cards );
 
     nom::int32 getX ( void );
     nom::int32 getY ( void );
@@ -49,13 +49,14 @@ class Player
 
   private:
     CardDebug debug; // debug support for card attributes
-    CardView *card; // pointer referencing our card rendering class
     CardHand *hand; // pointer reference to player's hand
 
     nom::Coords coords; // x, y origin coords
     unsigned int id; // unique identifier for tracking each player in game
     unsigned int state; // not implemented
     unsigned int score; // player's scoreboard
+    /// Card rendering
+    CardView card;
 };
 
 #endif // GAMEAPP_PLAYER_HEADERS defined
