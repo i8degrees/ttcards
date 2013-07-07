@@ -5,6 +5,8 @@
   Copyright (c) 2013 Jeffrey Carpenter
 
 ******************************************************************************/
+#include <iostream>
+#include <string>
 #include <cstdlib>
 
 #ifdef EMSCRIPTEN
