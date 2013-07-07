@@ -70,22 +70,22 @@ void CardsMenu::onInit ( void )
 {
   unsigned int idx = 0; // iterator for cursor_coords_map
 
-  this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
+  this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
 
-  this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
-  this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
-  this->info_text_gray.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
+  this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->info_text_gray.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
 
   // Initialize card name text so that we can obtain height info early on
   this->info_text.setText ( this->collection.cards[0].getName() );
   this->info_text_height = this->info_text.getTextHeight();
 
   this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->menu_element.Load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ) );
+  this->menu_element.Load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
   this->menu_element.setSheetDimensions ( 58, 16, 0, 0 );
 
   this->cursor = nom::SDL_Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ) );
+  this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image
   this->cursor.setState ( 0 ); // default state for navigating card menu

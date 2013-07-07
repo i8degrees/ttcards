@@ -29,7 +29,7 @@ GameOver::~GameOver ( void )
 
 void GameOver::onInit ( void )
 {
-  this->background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
+  this->background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 );
 
   //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red

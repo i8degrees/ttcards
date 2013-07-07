@@ -51,7 +51,7 @@ void Game::onInit ( void )
 
   this->board.Init ( &this->rules );
 
-  this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), 0 );
+  this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 );
 
   this->score_text.Load ( SCORE_FONTFACE, 32 );
   this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
@@ -59,11 +59,11 @@ void Game::onInit ( void )
   this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
   this->gameOver_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // color: red
 
-  this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
-  this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), 16, 16 );
+  this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
 
   this->cursor = nom::SDL_Cursor ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ) );
+  this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->cursor.setState ( 0 ); // default state; player hand select

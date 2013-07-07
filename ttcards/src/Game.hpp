@@ -8,6 +8,9 @@
 #ifndef GAMEAPP_TTCARDS_HEADERS
 #define GAMEAPP_TTCARDS_HEADERS
 
+#include <string>
+#include <iostream>
+
 #ifdef EMSCRIPTEN
   #include "emscripten.h"
 #endif
