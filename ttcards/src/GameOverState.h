@@ -38,10 +38,13 @@ class GameOver: public nom::IState
   private:
     void onKeyDown ( int32_t key, int32_t mod );
 
-    nom::SDL_Display context;   // our public / visible display context handle
-    CardView card; /// card rendering
+    /// our public / visible display context handle
+    nom::SDL_Display context;
+    /// card rendering
+    CardView card;
+    /// Board background image
     nom::SDL_Canvas background;
-    //SDL_TFont gameOver_text; // dialog text
+    // SDL_TFont gameOver_text; // dialog text
     std::vector<Card> cards;
 
     unsigned int state;

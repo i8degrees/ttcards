@@ -95,11 +95,16 @@ class Game: public nom::IState
     void updateScore ( void );
     void drawScore ( void* video_buffer );
     //static Game *instance; // EMCC compiler related
-    nom::SDL_Display context;   // our public / visible display context handle
-    nom::SDL_Canvas background; /// pointer holding our board background image
+    /// our public / visible display context handle
+    nom::SDL_Display context;
+    /// Board background image
+    nom::SDL_Canvas background;
 
     nom::Timer update;
-    nom::SDL_Font gameOver_text; /// dialog text
+
+    /// Game Over text
+    nom::SDL_Font gameOver_text;
+    /// dialog text
     nom::SDL_BitmapFont info_text;
     nom::SDL_BitmapFont info_small_text;
 
@@ -108,19 +113,27 @@ class Game: public nom::IState
     nom::SDL_Gradient linear;
     std::vector<nom::Color> msgbox;
 
-    nom::SDL_Font score_text; /// scoreboard text
-    Board board; /// game board
+    /// scoreboard text
+    nom::SDL_Font score_text;
+    /// game board
+    Board board;
 
     /// debug support for card attributes
     CardDebug debug;
 
-    Collection collection; /// cards database
-    CardRules rules; /// TODO
-    CardView card; /// card rendering
-    CardHand hand[2]; /// player hand
-    Player player[2]; /// players in game
+    /// cards database
+    Collection collection;
+    /// TODO
+    CardRules rules;
+    /// card rendering
+    CardView card;
+    /// player hand
+    CardHand hand[2];
+    /// players in game
+    Player player[2];
 
-    nom::SDL_Cursor cursor; /// interface cursor
+    /// interface cursor
+    nom::SDL_Cursor cursor;
 
     /// x, y coords mapping for player1, player2 cursor starting position
     nom::Coords player_cursor_coords[2];
@@ -134,11 +147,11 @@ class Game: public nom::IState
     //Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
     //Audio music; // holds our musical tracks
 
-    unsigned int turn; /// FIXME: player1 = 0, player2 = 1
-    bool cursor_locked; /// locks cursor state to board placement
+    unsigned int turn; // FIXME: player1 = 0, player2 = 1
+    /// locks cursor state to board placement
+    bool cursor_locked;
 
-    /// visual indication of which player's turn
-    /// it is
+    /// visual indication of which player's turn it is
     nom::Rectangle player_rect;
 };
 

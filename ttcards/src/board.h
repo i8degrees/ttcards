@@ -47,11 +47,13 @@ class Board
     void List ( void );
 
   private:
-    CardDebug debug; // debug support for card attributes
+    /// Debug support for card attributes
+    CardDebug debug;
     /// Card rendering
     CardView card;
     CardRules *rules;
-    std::vector<std::vector<Card>> grid; // 2D vector of Card data containers
+    /// 2D vector of Card data containers
+    std::vector<std::vector<Card>> grid;
 };
 
 #endif // GAMEAPP_BOARD_HEADERS defined

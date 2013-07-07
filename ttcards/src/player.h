@@ -48,15 +48,21 @@ class Player
     void Draw ( void* video_buffer );
 
   private:
-    CardDebug debug; // debug support for card attributes
-    CardHand *hand; // pointer reference to player's hand
-
-    nom::Coords coords; // x, y origin coords
-    unsigned int id; // unique identifier for tracking each player in game
-    unsigned int state; // not implemented
-    unsigned int score; // player's scoreboard
+    /// debug support for card attributes
+    CardDebug debug;
     /// Card rendering
     CardView card;
+    /// pointer reference to player's hand
+    CardHand *hand;
+
+    /// x, y origin coords
+    nom::Coords coords;
+    /// unique identifier for tracking each player in game
+    unsigned int id;
+    /// not implemented
+    unsigned int state;
+    /// player's scoreboard
+    unsigned int score;
 };
 
 #endif // GAMEAPP_PLAYER_HEADERS defined
