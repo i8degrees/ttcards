@@ -32,13 +32,13 @@ class App: public nom::SDL_App
     {
       unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
-      #ifdef DEBUG_GAME_OBJ
-        std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
-      #endif
+#ifdef DEBUG_GAME_OBJ
+  std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
+#endif
 
-      #ifndef EMSCRIPTEN
-        display.setWindowIcon ( APP_ICON );
-      #endif
+#ifndef EMSCRIPTEN
+  display.setWindowIcon ( APP_ICON );
+#endif
 
       display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
@@ -47,9 +47,9 @@ class App: public nom::SDL_App
 
     ~App ( void )
     {
-      #ifdef DEBUG_GAME_OBJ
-        std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
-      #endif
+#ifdef DEBUG_GAME_OBJ
+  std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
+#endif
     }
 
     void onEvent ( SDL_Event *event )
@@ -160,13 +160,17 @@ class App: public nom::SDL_App
 
 int main(int argc, char*argv[])
 {
-  #ifndef EMSCRIPTEN
-    // This isn't an absolute guarantee that we can do this reliably; we must use
-    // argv[0] as we need to know the *starting* directory of where ttcards resides
-    // from, not the current working directory in which it is executed from
-    WORKING_DIR = nom::OSXFS::getDirName ( argv[0] );
-    nom::OSXFS::setWorkingDir ( WORKING_DIR );
-  #endif
+#ifndef EMSCRIPTEN
+  // This isn't an absolute guarantee that we can do this reliably; we must use
+  // argv[0] as we need to know the *starting* directory of where ttcards resides
+  // from, not the current working directory in which it is executed from
+#ifdef TTCARDS_RELEASE
+  WORKING_DIR = "/usr/local/share/ttcards/";
+#else
+  WORKING_DIR = nom::OSXFS::getDirName ( argv[0] );
+#endif
+  nom::OSXFS::setWorkingDir ( WORKING_DIR );
+#endif
 
   // Command line arguments check
   if ( argc > 1 )
@@ -196,11 +200,11 @@ int main(int argc, char*argv[])
 
   App engine;
 
-  #ifdef EMSCRIPTEN
-    // TODO
-  #else
-    return engine.Run();
-  #endif
+#ifdef EMSCRIPTEN
+  // TODO
+#else
+  return engine.Run();
+#endif
 
   // This is past the point of execution; all execution must reside within our App
 }
