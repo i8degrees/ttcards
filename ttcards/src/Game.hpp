@@ -12,7 +12,6 @@
   #include "emscripten.h"
 #endif
 
-
 #include <gfx/SDL_Font.hpp>
 #include <gfx/SDL_BitmapFont.hpp>
 #include <gfx/SDL_Drawable.hpp>
