@@ -9,6 +9,7 @@
 #define GAMEAPP_CARD_VIEW_HEADERS
 
 #include <iostream>
+#include <string>
 
 #include <gfx/SDL_BitmapFont.hpp>
 #include <gfx/Sprite.hpp>
@@ -26,9 +27,9 @@ class CardView
     bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );
 
   private:
-    nom::Sprite *card_face;
-    nom::Sprite *card_background;
-    nom::Sprite *card_element;
+    nom::Sprite card_face;
+    nom::Sprite card_background;
+    nom::Sprite card_element;
     nom::SDL_BitmapFont card_text;
 };
 
