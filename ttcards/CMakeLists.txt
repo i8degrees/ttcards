@@ -72,27 +72,16 @@ set ( TTCARDS_DATA_IMAGES
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
 
-find_package ( SDL_image REQUIRED )
-include_directories ( ${SDLIMAGE_INCLUDE_DIR} )
-
-find_package ( SDL_mixer REQUIRED )
-include_directories ( ${SDLMIXER_INCLUDE_DIR} )
-
-find_package ( SDL_ttf REQUIRED )
-include_directories ( ${SDLTTF_INCLUDE_DIR} )
-
 # FIXME
 if ( NOT TTCARDS_NOMLIB_COMPILE )
+  find_library ( gamelib REQUIRED )
   include_directories ( /usr/local/include/gamelib )
-  #find_package ( gamelib REQUIRED )
-  #include_directories ( ${GAMELIB_INCLUDE_DIR} )
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
 # FIXME
 if ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
+  find_library ( json_spirit REQUIRED )
   include_directories ( /usr/local/include/json_spirit )
-  #find_package ( json_spirit REQUIRED )
-  #include_directories ( ${JSON_SPIRIT_INCLUDE_DIR} )
 endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
 
 link_libraries (  ttcards # makefile target
