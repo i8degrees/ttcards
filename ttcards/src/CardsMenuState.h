@@ -13,10 +13,14 @@
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
+#include <nomlib/system.hpp>
 
-#include "Game.hpp"
 #include "card.h"
 #include "card_debug.h"
+#include "card_collection.h"
+#include "card_hand.h"
+#include "card_view.h"
+#include "Game.hpp"
 #include "cfg.h"
 
 class CardsMenu: public nom::IState

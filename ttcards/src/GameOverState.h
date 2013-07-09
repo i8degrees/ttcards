@@ -14,9 +14,10 @@
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-#include "Game.hpp"
 #include "card.h"
 #include "card_debug.h"
+#include "card_view.h"
+#include "CardsMenuState.h"
 #include "cfg.h"
 
 class GameOver: public nom::IState

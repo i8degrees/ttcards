@@ -18,7 +18,8 @@
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-#include "Game.hpp"
+#include "CardsMenuState.h"
+#include "cfg.h"
 
 class App: public nom::SDL_App
 {
