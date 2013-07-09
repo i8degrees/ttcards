@@ -3,6 +3,7 @@ cmake_minimum_required ( VERSION 2.8 )
 #     CMake Environment
 set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_BUILD_TYPE Debug )
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/" )
 
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
 

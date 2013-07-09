@@ -72,10 +72,9 @@ set ( TTCARDS_DATA_IMAGES
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
 
-# FIXME
 if ( NOT TTCARDS_NOMLIB_COMPILE )
-  find_library ( gamelib REQUIRED )
-  include_directories ( /usr/local/include/nomlib )
+  find_package ( nomlib REQUIRED )
+  include_directories ( "${NOMLIB_INCLUDE_DIR}/nomlib" ) # FIXME
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
 # FIXME
@@ -87,7 +86,7 @@ endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
 link_libraries (  ttcards # makefile target
                   ${SDL_LIBRARY}
                   SDLmain
-                  gamelib
+                  ${NOMLIB_LIBRARY}
                   #nomjson
                   json_spirit
                 )
