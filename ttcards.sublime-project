@@ -10,15 +10,15 @@
     {
       "name": "docs",
       "path": "ttcards",
-      "file_include_patterns": ["*.md", "*.css", "*.html", "doxygen.cfg", "CMakeLists.txt"],
-      "folder_exclude_patterns": ["build", "tmp", "docs/public", "docs/man", "ttcards.dSYM", "public", "data", "src"]
+      "file_include_patterns": ["*.md", "*.css", "*.html", "doxygen.cfg", "*.txt" ],
+      "folder_exclude_patterns": ["build", "tmp", "docs/public", "docs/man", "ttcards.dSYM", "public", "data", "src" ]
     },
 
     {
-      "name": "root",
+      "name": "top-level",
       "path": ".",
-      "file_include_patterns": ["CMakeLists.txt"],
-      "folder_exclude_patterns": ["*"]
+      "file_include_patterns": [ "*.txt", "*.cmake" ],
+      "folder_include_patterns": [ "cmake", "modules" ]
     },
 
     {} // placeholder
