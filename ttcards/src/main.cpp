@@ -111,17 +111,15 @@ class App: public nom::SDL_App
 
       Running(); // ...here we go!
 
-      SDL_Event event;
-
       while ( isRunning() == true )
       {
         loops = 0;
 
         while ( getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
         {
-          while ( SDL_PollEvent ( &event ) )
+          while ( this->PollEvents ( &event ) )
           {
-            onEvent ( &event );
+            this->onEvent ( &event );
           }
 
           this->fps.Update();
@@ -152,6 +150,8 @@ class App: public nom::SDL_App
     nom::SDL_Display display;
     /// timer for tracking frames per second
     nom::FPS fps;
+    /// Input events
+    SDL_Event event;
 };
 
 int main(int argc, char*argv[])
