@@ -75,7 +75,7 @@ include_directories ( ${SDL_INCLUDE_DIR} )
 # FIXME
 if ( NOT TTCARDS_NOMLIB_COMPILE )
   find_library ( gamelib REQUIRED )
-  include_directories ( /usr/local/include/gamelib )
+  include_directories ( /usr/local/include/nomlib )
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
 # FIXME

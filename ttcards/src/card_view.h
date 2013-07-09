@@ -11,8 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include <gfx/SDL_BitmapFont.hpp>
-#include <gfx/Sprite.hpp>
+#include <nomlib/graphics.hpp>
 
 #include "card.h"
 #include "cfg.h"

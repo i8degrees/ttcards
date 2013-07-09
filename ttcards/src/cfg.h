@@ -9,7 +9,7 @@
 #define GAMEAPP_CFG_HEADERS
 
 #include <string> // for std::string support
-#include <nomlib_types.hpp> // for portable fixed-types
+#include <nomlib/nomlib_types.hpp> // for portable fixed-types
 
 #define TTCARDS_DEBUG
 //#define TTCARDS_RELEASE

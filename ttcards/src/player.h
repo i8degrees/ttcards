@@ -11,8 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include <nomlib_types.hpp>
-#include <math/Coords.hpp>
+#include <nomlib/math.hpp>
 
 #include "card.h"
 #include "card_debug.h"

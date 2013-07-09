@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include <nomlib_types.hpp>
+#include <nomlib/nomlib_types.hpp>
 
 #include "card.h"
 #include "cfg.h"

@@ -15,13 +15,8 @@
 
 #include <SDL/SDL.h>
 
-#include <gfx/SDL_Display.hpp>
-#include <gfx/SDL_Image.hpp>
-#include <sys/FPS.hpp>
-#include <sys/GameStates.hpp>
-#include <sys/OSXFS.hpp>
-#include <sys/SDL_App.hpp>
-#include <nomlib_types.hpp>
+#include <nomlib/graphics.hpp>
+#include <nomlib/system.hpp>
 
 #include "Game.hpp"
 
