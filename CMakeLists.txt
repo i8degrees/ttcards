@@ -86,7 +86,7 @@ if ( CMAKE_BUILD_TYPE STREQUAL Release )
   #     Uninstall target
 
   configure_file  (
-                    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
                     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
                     IMMEDIATE @ONLY
                   )
