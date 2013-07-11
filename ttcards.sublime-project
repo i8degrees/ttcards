@@ -17,7 +17,7 @@
     {
       "name": "top-level",
       "path": ".",
-      "file_include_patterns": [ "*.txt", "*.cmake" ],
+      "file_include_patterns": [ "*.txt", "*.cmake", ".gitignore" ],
       "folder_include_patterns": [ "cmake", "modules" ]
     },
 
