@@ -108,7 +108,7 @@ add_custom_target ( ttcards-docs
                     COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
                   )
 
-if ( CMAKE_BUILD_TYPE STREQUAL Release )
+if ( CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel )
 
   #     Install executable
   install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
@@ -122,4 +122,4 @@ if ( CMAKE_BUILD_TYPE STREQUAL Release )
 
   install ( FILES ${TTCARDS_DATA_IMAGES} DESTINATION share/${PROJECT_NAME}/data/images )
 
-endif ( CMAKE_BUILD_TYPE STREQUAL Release )
+endif ( CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel )
