@@ -15,6 +15,7 @@ tmp/
 *.o
 *.ttf
 *.plist
+*.bmp
 
 # Debugging
 *.debug
