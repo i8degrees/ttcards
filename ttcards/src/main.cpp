@@ -36,7 +36,7 @@ class App: public nom::SDL_App
   display.setWindowIcon ( APP_ICON );
 #endif
 
-      display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+      this->display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
       this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
     }
@@ -81,12 +81,12 @@ class App: public nom::SDL_App
 
       if ( this->isFullScreen() )
       {
-        display.toggleFullScreenWindow ( 0, 0 );
+        this->display.toggleFullScreenWindow ( 0, 0 );
         this->setFullScreen ( false );
       }
       else
       {
-        display.toggleFullScreenWindow ( 0, 0 );
+        this->display.toggleFullScreenWindow ( 0, 0 );
         this->setFullScreen ( true );
       }
     }
@@ -109,13 +109,13 @@ class App: public nom::SDL_App
 
       nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu() ) );
 
-      Running(); // ...here we go!
+      this->Running(); // ...here we go!
 
-      while ( isRunning() == true )
+      while ( this->isRunning() == true )
       {
         loops = 0;
 
-        while ( getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
+        while ( this->getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
         {
           while ( this->PollEvents ( &event ) )
           {
@@ -125,12 +125,12 @@ class App: public nom::SDL_App
           this->fps.Update();
 
           nom::GameStates::Update ( delta_time ); // FIXME; this is a stub out
-          nom::GameStates::Draw ( display.get() );
+          nom::GameStates::Draw ( this->display.get() );
 
-          if ( getShowFPS() )
-            display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
+          if ( this->getShowFPS() )
+            this->display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
           else
-            display.setWindowTitle ( APP_NAME );
+            this->display.setWindowTitle ( APP_NAME );
 
           next_game_tick += SKIP_TICKS;
           loops++;
