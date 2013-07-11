@@ -91,12 +91,6 @@ class App: public nom::SDL_App
       }
     }
 
-    // Default quit app event handler
-    void onQuit ( void )
-    {
-      this->Quit();
-    }
-
     int32_t Run ( void )
     {
       unsigned int loops = 0;
