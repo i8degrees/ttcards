@@ -1,6 +1,10 @@
 cmake_minimum_required ( VERSION 2.8 )
 
-project ( ttcards )
+set ( PROJECT_VERSION_MAJOR 0 )
+set ( PROJECT_VERSION_MINOR 1 )
+set ( PROJECT_VERSION_PATCH 0 )
+
+project ( ttcards ) # $PROJECT_NAME
 
 set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 
@@ -83,7 +87,7 @@ if ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
   include_directories ( /usr/local/include/json_spirit )
 endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
 
-link_libraries (  ttcards # makefile target
+link_libraries (  ${PROJECT_NAME} # makefile target
                   ${SDL_LIBRARY}
                   SDLmain
                   ${NOMLIB_LIBRARY}
@@ -91,12 +95,12 @@ link_libraries (  ttcards # makefile target
                   json_spirit
                 )
 
-add_executable ( ttcards ${TTCARDS_SOURCE} )
+add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
 
 #     Run app target for Sublime Text Editor Custom Build Settings
 
 add_custom_target ( run
-                    COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/ttcards
+                    COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/${PROJECT_NAME}
                   )
 
 #     FIXME: doxygen docs generation
@@ -107,15 +111,15 @@ add_custom_target ( ttcards-docs
 if ( CMAKE_BUILD_TYPE STREQUAL Release )
 
   #     Install executable
-  install ( TARGETS ttcards DESTINATION bin )
+  install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
 
   #     Install game data
-  install ( FILES ${TTCARDS_DATA} DESTINATION share/ttcards/data )
+  install ( FILES ${TTCARDS_DATA} DESTINATION share/${PROJECT_NAME}/data )
 
-  install ( FILES ${TTCARDS_DATA_AUDIO} DESTINATION share/ttcards/data/audio )
+  install ( FILES ${TTCARDS_DATA_AUDIO} DESTINATION share/${PROJECT_NAME}/data/audio )
 
-  install ( FILES ${TTCARDS_DATA_FONTS} DESTINATION share/ttcards/data/fonts )
+  install ( FILES ${TTCARDS_DATA_FONTS} DESTINATION share/${PROJECT_NAME}/data/fonts )
 
-  install ( FILES ${TTCARDS_DATA_IMAGES} DESTINATION share/ttcards/data/images )
+  install ( FILES ${TTCARDS_DATA_IMAGES} DESTINATION share/${PROJECT_NAME}/data/images )
 
 endif ( CMAKE_BUILD_TYPE STREQUAL Release )
