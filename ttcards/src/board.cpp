@@ -288,3 +288,8 @@ void Board::List ( void )
     std::cout << std::endl << std::endl;
   }
 }
+
+const nom::int32 Board::operator() ( const nom::int32 x, const nom::int32 y )
+{
+  return this->getStatus ( x, y );
+}

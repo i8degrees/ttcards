@@ -46,6 +46,8 @@ class Board
     void Draw ( void* video_buffer );
     void List ( void );
 
+    const nom::int32 operator() ( const nom::int32 x, const nom::int32 y );
+
   private:
     /// Debug support for card attributes
     CardDebug debug;

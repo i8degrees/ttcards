@@ -290,8 +290,8 @@ void Game::moveTo ( unsigned int x, unsigned int y )
     selected = this->hand[turn].getSelectedCard();
 
     if ( selected.getID() != 0 )
+    if ( this->board ( x, y ) == false )
     {
-      if ( this->board.getStatus ( x, y ) == false )
       {
         if ( this->get_turn() == turn )
         {
