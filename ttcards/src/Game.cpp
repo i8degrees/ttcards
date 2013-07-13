@@ -284,53 +284,50 @@ void Game::lockSelectedCard ( void )
 void Game::moveTo ( unsigned int x, unsigned int y )
 {
   Card selected;
+  nom::uint32 player_turn = this->get_turn();
 
-  for ( nom::uint32 turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  selected = this->hand[ player_turn ].getSelectedCard();
+
+  if ( selected.getID() != 0 )
   {
-    selected = this->hand[turn].getSelectedCard();
 
-    if ( selected.getID() != 0 )
     if ( this->board ( x, y ) == false )
     {
+      this->board.updateStatus ( x, y, this->hand[ player_turn ].getSelectedCard() );
+      this->hand[ player_turn ].removeCard ( this->hand[ player_turn ].getSelectedCard() );
+
+
+      std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
+
+      if ( grid.empty() == false )
       {
-        if ( this->get_turn() == turn )
+        if ( rules.getRules() == 0 )
         {
-          this->board.updateStatus ( x, y, this->hand[turn].getSelectedCard() );
-          this->hand[turn].removeCard ( this->hand[turn].getSelectedCard() );
-
-          std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
-
-          if ( grid.empty() == false )
-          {
-            if ( rules.getRules() == 0 )
-            {
-              board.flipCard ( grid[0].first, grid[0].second, turn + 1 );
-            }
-          }
-
-          if ( rules.getRules() != 0 )
-          {
-            for ( nom::ulong g = 0; g < grid.size(); g++ )
-            {
-              board.flipCard ( grid[g].first, grid[g].second, turn + 1 );
-
-              std::vector<std::pair<int, int>> tgrid = board.checkBoard ( grid[g].first, grid[g].second );
-
-               // temporary workaround until a more proper solution is found
-              if ( rules.getRules() == 2 || rules.getRules() == 4 )
-                continue;
-              else
-              {
-                for ( nom::ulong tg = 0; tg < tgrid.size(); tg++ )
-                {
-                  board.flipCard( tgrid[tg].first, tgrid[tg].second, turn + 1 );
-                }
-              }
-            }
-          }
-          this->endTurn();
+          board.flipCard ( grid[0].first, grid[0].second, player_turn + 1 );
         }
       }
+
+      if ( rules.getRules() != 0 )
+      {
+        for ( nom::ulong g = 0; g < grid.size(); g++ )
+        {
+          board.flipCard ( grid[g].first, grid[g].second, player_turn + 1 );
+
+          std::vector<std::pair<int, int>> tgrid = board.checkBoard ( grid[g].first, grid[g].second );
+
+          // temporary workaround until a more proper solution is found
+          if ( rules.getRules() == 2 || rules.getRules() == 4 )
+            continue;
+          else
+          {
+            for ( nom::ulong tg = 0; tg < tgrid.size(); tg++ )
+            {
+              board.flipCard( tgrid[tg].first, tgrid[tg].second, player_turn + 1 );
+            }
+          }
+        }
+      }
+      this->endTurn();
     }
   }
 }
