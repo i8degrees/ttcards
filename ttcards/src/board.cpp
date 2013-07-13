@@ -213,9 +213,12 @@ unsigned int Board::getPlayerCount ( unsigned int player_id )
 }
 
 // Getter helper method for obtaining card ID at x, y coords
-unsigned int Board::getStatus ( unsigned int x, unsigned int y )
+nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y )
 {
-  return grid[x][y].getID();
+  if ( ( x >= 0 && x <= BOARD_GRID_WIDTH ) && ( y >= 0 && y <= BOARD_GRID_HEIGHT ) )
+    return grid[x][y].getID();
+  else
+    return -1;
 }
 
 // Setter helper method for placing a card on the board at x, y coords

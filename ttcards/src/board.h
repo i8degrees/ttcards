@@ -35,7 +35,7 @@ class Board
     unsigned int getCount ( void );
     unsigned int getPlayerCount ( unsigned int player_id );
 
-    unsigned int getStatus ( unsigned int x, unsigned int y );
+    nom::int32 getStatus ( nom::int32 x, nom::int32 y );
     void updateStatus ( unsigned int x, unsigned int y, Card &card );
     unsigned int getPlayerID ( unsigned int x, unsigned int y );
     void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
