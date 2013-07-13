@@ -108,7 +108,7 @@ class App: public nom::SDL_App
       {
         loops = 0;
 
-        while ( this->getTicks() > next_game_tick && loops < MAX_FRAMESKIP )
+        while ( this->getTicks() > next_game_tick && loops <= MAX_FRAMESKIP )
         {
           while ( this->PollEvents ( &event ) )
           {
