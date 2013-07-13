@@ -15,6 +15,7 @@
   #include "emscripten.h"
 #endif
 
+#include <nomlib/audio.hpp>
 #include <nomlib/gui.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
@@ -138,8 +139,22 @@ class Game: public nom::IState
     /// x, y coords for selectedCard from cursor to board placement
     nom::Coords board_coords_map[9];
 
-    //Audio mixer1, mixer2; // Two audio mixing channels for playing sound effects
-    //Audio music; // holds our musical tracks
+    nom::OpenAL::AudioDevice dev;
+    nom::OpenAL::SoundBuffer sound_buffer;
+    //nom::OpenAL::SoundBuffer move_buffer;
+    //nom::OpenAL::SoundBuffer cancel_buffer;
+    //nom::OpenAL::SoundBuffer wrong_buffer;
+    //nom::OpenAL::SoundBuffer flip_buffer;
+    //nom::OpenAL::SoundBuffer place_buffer;
+
+    nom::OpenAL::Sound cursor_move;
+    nom::OpenAL::Sound cursor_cancel;
+    nom::OpenAL::Sound cursor_wrong;
+    nom::OpenAL::Sound card_flip;
+    nom::OpenAL::Sound card_place;
+
+    nom::OpenAL::SoundBuffer music_buffer;
+    nom::OpenAL::Music music_track;
 
     unsigned int turn; // FIXME: player1 = 0, player2 = 1
     /// locks cursor state to board placement

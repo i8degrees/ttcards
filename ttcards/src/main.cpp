@@ -15,6 +15,7 @@
 
 #include <SDL/SDL.h>
 
+#include <nomlib/audio.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
@@ -104,6 +105,15 @@ class App: public nom::SDL_App
       {
         case SDLK_ESCAPE:
         case SDLK_q: this->onQuit(); break;
+        case SDLK_m:
+        {
+          float current_volume = this->listener.getVolume();
+          if ( current_volume >= 100.0 )
+            this->listener.setVolume ( 0.0 );
+          else if ( current_volume <= 0.0 )
+            this->listener.setVolume ( 100.0 );
+        }
+        break;
         case SDLK_BACKSLASH: this->toggleFPS(); break;
         case SDLK_f: this->onResize ( 0, 0 ); break;
         case SDLK_s:
@@ -186,6 +196,8 @@ class App: public nom::SDL_App
     nom::FPS fps;
     /// Input events
     SDL_Event event;
+    nom::OpenAL::AudioDevice dev;
+    nom::OpenAL::Listener listener;
 };
 
 int main ( int argc, char* argv[] )

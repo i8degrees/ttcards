@@ -134,6 +134,36 @@ void Game::onInit ( void )
   this->player_turn ( 0 );
 
   //update.Start();
+
+  this->sound_buffer.loadFromFile ( CURSOR_MOVE );
+  this->cursor_move.setBuffer ( this->sound_buffer );
+
+  this->sound_buffer.loadFromFile ( CURSOR_CANCEL );
+  this->cursor_cancel.setBuffer ( this->sound_buffer );
+
+  this->sound_buffer.loadFromFile ( CURSOR_WRONG );
+  this->cursor_wrong.setBuffer ( this->sound_buffer );
+
+  this->sound_buffer.loadFromFile ( CARD_FLIP );
+  this->card_flip.setBuffer ( this->sound_buffer );
+
+  this->sound_buffer.loadFromFile ( CARD_PLACE );
+  this->card_place.setBuffer ( this->sound_buffer );
+
+  //this->move_buffer.loadFromFile ( CURSOR_MOVE );
+  //this->cursor_move.setBuffer ( this->move_buffer );
+  //this->cancel_buffer.loadFromFile ( CURSOR_CANCEL );
+  //this->cursor_cancel.setBuffer ( this->cancel_buffer );
+  //this->wrong_buffer.loadFromFile ( CURSOR_WRONG );
+  //this->cursor_wrong.setBuffer ( this->wrong_buffer );
+  //this->flip_buffer.loadFromFile ( CARD_FLIP );
+  //this->card_flip.setBuffer ( this->flip_buffer );
+  //this->place_buffer.loadFromFile ( CARD_PLACE );
+  //this->card_place.setBuffer ( this->place_buffer );
+
+  this->music_buffer.loadFromFile ( MUSIC_TRACK );
+  this->music_track.setBuffer ( this->music_buffer );
+  this->music_track.Play();
 }
 
 unsigned int Game::get_turn ( void )
@@ -252,6 +282,8 @@ void Game::unlockSelectedCard ( void )
   this->resetCursor();
 
   this->lockCursor ( false );
+
+  this->cursor_cancel.Play();
 }
 
 // helper method for cursor input selection
@@ -290,12 +322,15 @@ void Game::moveTo ( unsigned int x, unsigned int y )
 
   if ( selected.getID() != 0 )
   {
+    if ( this->board ( x, y ) != 0 )
+      this->cursor_wrong.Play();
 
     if ( this->board ( x, y ) == false )
     {
       this->board.updateStatus ( x, y, this->hand[ player_turn ].getSelectedCard() );
       this->hand[ player_turn ].removeCard ( this->hand[ player_turn ].getSelectedCard() );
 
+      this->card_place.Play();
 
       std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
 
@@ -338,9 +373,8 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
   {
     default: break;
 
-    case SDLK_p: /* Pause State ... */ break;
+    case SDLK_p: this->music_track.togglePause(); /* Pause State ... */ break;
     case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
-
     case SDLK_e: this->endTurn(); break;
     case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
     case SDLK_RIGHTBRACKET: debugListCollection( mod ); break;
@@ -413,6 +447,8 @@ void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 
       // Updates Cursor Position
       this->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
+
+      //this->cursor_move.Play();
 
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
@@ -520,6 +556,7 @@ void Game::moveCursorLeft ( void )
     if ( this->cursor.getX() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->cursor.move ( -( CARD_WIDTH ), 0 );
   }
+  this->cursor_move.Play();
 }
 
 void Game::moveCursorRight ( void )
@@ -529,6 +566,7 @@ void Game::moveCursorRight ( void )
     if ( this->cursor.getX() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->cursor.move ( ( CARD_WIDTH ), 0 );
   }
+  this->cursor_move.Play();
 }
 
 void Game::moveCursorUp ( void )
@@ -551,6 +589,7 @@ void Game::moveCursorUp ( void )
     if ( this->cursor.getY() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->cursor.move ( 0, -( CARD_HEIGHT ) );
   }
+  this->cursor_move.Play();
 }
 
 void Game::moveCursorDown ( void )
@@ -573,6 +612,7 @@ void Game::moveCursorDown ( void )
     if ( this->cursor.getY() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->cursor.move ( 0, ( CARD_HEIGHT ) );
   }
+  this->cursor_move.Play();
 }
 
 void Game::updateCursor ( void )

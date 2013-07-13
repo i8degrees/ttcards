@@ -96,6 +96,16 @@ class CardsMenu: public nom::IState
     /// y coords mapping for cursor -> card position index
     /// minus one (1) padding
     std::pair<int, int> cursor_coords_map[10];
+
+    nom::OpenAL::AudioDevice dev;
+    nom::OpenAL::SoundBuffer sound_buffer;
+    //nom::OpenAL::SoundBuffer move_buffer;
+    //nom::OpenAL::SoundBuffer cancel_buffer;
+    //nom::OpenAL::SoundBuffer place_buffer;
+
+    nom::OpenAL::Sound cursor_move;
+    nom::OpenAL::Sound cursor_cancel;
+    nom::OpenAL::Sound card_place;
 };
 
 #endif // GAMEAPP_CARDS_MENU_HEADERS defined

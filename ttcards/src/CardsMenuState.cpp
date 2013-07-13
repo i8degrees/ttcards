@@ -99,6 +99,24 @@ void CardsMenu::onInit ( void )
     #endif
   }
 
+  this->sound_buffer.loadFromFile ( CURSOR_MOVE );
+  this->cursor_move.setBuffer ( this->sound_buffer );
+
+  this->sound_buffer.loadFromFile ( CURSOR_CANCEL );
+  this->cursor_cancel.setBuffer ( this->sound_buffer );
+
+  this->sound_buffer.loadFromFile ( CARD_PLACE );
+  this->card_place.setBuffer ( this->sound_buffer );
+
+  //this->move_buffer.loadFromFile ( CURSOR_MOVE );
+  //this->cursor_move.setBuffer ( this->move_buffer );
+
+  //this->cancel_buffer.loadFromFile ( CURSOR_CANCEL );
+  //this->cursor_cancel.setBuffer ( this->cancel_buffer );
+
+  //this->place_buffer.loadFromFile ( CARD_PLACE );
+  //this->card_place.setBuffer ( this->place_buffer );
+
   //this->info_text.setPosition ( 20, 20 );
   //nom::Coords glyph = this->info_text.findGlyph ( "Geezard!" );
   //std::cout << "\n" << glyph.x << " " << glyph.y << " " << glyph.width << " " << glyph.height << "\n";
@@ -137,8 +155,8 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_UP: this->moveCursorUp(); break;
     case SDLK_DOWN: this->moveCursorDown(); break;
 
-    case SDLK_d: this->hand.removeCard ( this->selectedCard ); break;
-    case SDLK_SPACE: this->hand.addCard ( this->selectedCard ); break;
+    case SDLK_d: if ( this->hand.removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
+    case SDLK_SPACE: if ( this->hand.addCard ( this->selectedCard ) ) this->card_place.Play(); break;
     case SDLK_RETURN: nom::GameStates::ChangeState  ( std::unique_ptr<Game>
                                                         ( new Game ( this->hand ) )
                                                     ); break;
@@ -162,8 +180,8 @@ void CardsMenu::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
 
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
-    case nom::PSXBUTTON::CIRCLE: this->hand.removeCard ( this->selectedCard ); break;
-    case nom::PSXBUTTON::CROSS: this->hand.addCard ( this->selectedCard ); break;
+    case nom::PSXBUTTON::CIRCLE: if ( this->hand.removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
+    case nom::PSXBUTTON::CROSS: if ( this->hand.addCard ( this->selectedCard ) ) this->card_place.Play(); break;
     case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<Game>( new Game ( this->hand ) ) ); break;
 
     default: break;
@@ -188,6 +206,8 @@ void CardsMenu::onMouseWheel ( bool up, bool down )
       this->moveCursorUp();
     else if ( down )
       this->moveCursorDown();
+
+    this->cursor_move.Play();
   }
 }
 
@@ -377,7 +397,10 @@ void CardsMenu::moveCursorLeft ( void )
     #endif
 
     if ( current_index > 0 )
+    {
       current_index -= per_page;
+      this->cursor_move.Play();
+    }
   }
 }
 
@@ -392,7 +415,10 @@ void CardsMenu::moveCursorRight ( void )
     #endif
 
     if ( current_index < MAX_COLLECTION - per_page )
-        current_index += per_page;
+    {
+      current_index += per_page;
+      this->cursor_move.Play();
+    }
   }
 }
 
@@ -409,6 +435,8 @@ void CardsMenu::moveCursorUp ( void )
       // FIXME: onMouseWheel breaks without the below support code:
       pos = this->current_index + this->getCursorPos();
       this->selectedCard = this->collection.cards[pos];
+
+      this->cursor_move.Play();
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";
@@ -431,6 +459,8 @@ void CardsMenu::moveCursorDown ( void )
       // FIXME: onMouseWheel breaks without the below support code:
       pos = current_index + this->getCursorPos();
       this->selectedCard = this->collection.cards[pos];
+
+      this->cursor_move.Play();
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";

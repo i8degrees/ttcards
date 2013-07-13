@@ -221,6 +221,8 @@ extern const std::string INTERFACE_CURSOR;
 extern const std::string CURSOR_MOVE;
 extern const std::string CURSOR_CANCEL;
 extern const std::string CURSOR_WRONG;
+extern const std::string CARD_FLIP;
+extern const std::string CARD_PLACE;
 extern const std::string MUSIC_TRACK;
 extern const std::string MUSIC_ALT_TRACK;
 extern const std::string MUSIC_WIN_TRACK;
