@@ -63,7 +63,7 @@ class App: public nom::SDL_App
       {
         case SDLK_ESCAPE:
         case SDLK_q: this->onQuit(); break;
-        case SDLK_EQUALS: this->toggleFPS(); break;
+        case SDLK_BACKSLASH: this->toggleFPS(); break;
         case SDLK_f: this->onResize ( 0, 0 ); break;
         case SDLK_s:
         {
@@ -78,7 +78,6 @@ class App: public nom::SDL_App
     // Default resize app event handler
     void onResize ( int32_t width, int32_t height )
     {
-
       if ( this->isFullScreen() )
       {
         this->display.toggleFullScreenWindow ( 0, 0 );
