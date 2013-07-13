@@ -24,13 +24,54 @@
 class App: public nom::SDL_App
 {
   public:
-    App ( void )
+    App ( nom::int32 argc, char* argv[] )
     {
       unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
 #ifdef DEBUG_GAME_OBJ
   std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
 #endif
+
+#ifndef EMSCRIPTEN
+
+// This isn't an absolute guarantee that we can do this reliably; we must use
+// argv[0] as we need to know the *starting* directory of where ttcards resides
+// from, not the current working directory in which it is executed from
+#ifdef TTCARDS_RELEASE
+  WORKING_DIR = "/usr/local/share/ttcards/";
+#else
+  WORKING_DIR = nom::OSXFS::getDirName ( argv[0] );
+#endif
+
+  nom::OSXFS::setWorkingDir ( WORKING_DIR );
+
+#endif // EMSCRIPTEN
+
+  // Command line arguments
+  if ( argc > 1 )
+  {
+    if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
+    {
+      Collection cards;
+
+      if ( cards.ExportJSON ( "cards.json" ) == false )
+      {
+        std::cout << "ERR: " << "Unknown failure to serialize JSON into cards.json" << std::endl;
+        exit ( EXIT_FAILURE );
+      }
+
+      std::cout << "File cards.json successfully saved" << std::endl;
+      exit ( EXIT_SUCCESS );
+    }
+    else if ( strcmp ( argv[1], "-h" ) == 0 || strcmp ( argv[1], "--help" ) == 0 )
+    {
+      std::cout << "\tttcards [ -h | --help ]" << std::endl;
+      std::cout << "\tttcards [ -e | --export ]" << std::endl;
+      exit ( EXIT_SUCCESS );
+    }
+  }
+
+  std::srand ( ( unsigned ) time ( 0 ) );
 
 #ifndef EMSCRIPTEN
   display.setWindowIcon ( APP_ICON );
@@ -147,47 +188,9 @@ class App: public nom::SDL_App
     SDL_Event event;
 };
 
-int main(int argc, char*argv[])
+int main ( int argc, char* argv[] )
 {
-#ifndef EMSCRIPTEN
-  // This isn't an absolute guarantee that we can do this reliably; we must use
-  // argv[0] as we need to know the *starting* directory of where ttcards resides
-  // from, not the current working directory in which it is executed from
-#ifdef TTCARDS_RELEASE
-  WORKING_DIR = "/usr/local/share/ttcards/";
-#else
-  WORKING_DIR = nom::OSXFS::getDirName ( argv[0] );
-#endif
-  nom::OSXFS::setWorkingDir ( WORKING_DIR );
-#endif
-
-  // Command line arguments check
-  if ( argc > 1 )
-  {
-    if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
-    {
-      Collection cards;
-
-      if ( cards.ExportJSON ( "cards.json" ) == false )
-      {
-        std::cout << "ERR: " << "Unknown failure to serialize JSON into cards.json" << std::endl;
-        exit ( EXIT_FAILURE );
-      }
-
-      std::cout << "File cards.json successfully saved" << std::endl;
-      exit ( EXIT_SUCCESS );
-    }
-    else if ( strcmp ( argv[1], "-h" ) == 0 || strcmp ( argv[1], "--help" ) == 0 )
-    {
-      std::cout << "\tttcards [ -h | --help ]" << std::endl;
-      std::cout << "\tttcards [ -e | --export ]" << std::endl;
-      exit ( EXIT_SUCCESS );
-    }
-  }
-
-  std::srand ( ( unsigned ) time ( 0 ) );
-
-  App engine;
+  App engine ( argc, argv );
 
 #ifdef EMSCRIPTEN
   // TODO
@@ -195,5 +198,6 @@ int main(int argc, char*argv[])
   return engine.Run();
 #endif
 
-  // This is past the point of execution; all execution must reside within our App
+  // This is past the point of execution; all execution must reside within our
+  // App class
 }
