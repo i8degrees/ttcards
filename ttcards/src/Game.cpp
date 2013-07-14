@@ -156,6 +156,192 @@ void Game::onInit ( void )
   this->music_track.Play();
 }
 
+void Game::onKeyDown ( int32_t key, int32_t mod )
+{
+  switch ( key )
+  {
+    default: break;
+
+    case SDLK_p: this->music_track.togglePause(); /* Pause State ... */ break;
+    case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
+    case SDLK_e: this->endTurn(); break;
+    case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
+    case SDLK_RIGHTBRACKET: debugListCollection( mod ); break;
+    case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
+
+    case SDLK_i: debugBox(); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
+
+    case SDLK_LEFT:
+    {
+      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      {
+        this->debugModifyCardRank ( true, WEST );
+      }
+      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      {
+        this->debugModifyCardRank ( false, WEST );
+      }
+      else
+        this->moveCursorLeft();
+    }
+    break;
+
+    case SDLK_RIGHT:
+    {
+      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      {
+        this->debugModifyCardRank ( true, EAST );
+      }
+      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      {
+        this->debugModifyCardRank ( false, EAST );
+      }
+      else
+        this->moveCursorRight();
+    }
+    break;
+
+    case SDLK_UP:
+    {
+      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      {
+        this->debugModifyCardRank ( true, NORTH );
+      }
+      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      {
+        this->debugModifyCardRank ( false, NORTH );
+      }
+      else
+        this->moveCursorUp();
+    }
+    break;
+
+    case SDLK_DOWN:
+    {
+      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      {
+        this->debugModifyCardRank ( true, SOUTH );
+      }
+      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      {
+        this->debugModifyCardRank ( false, SOUTH );
+      }
+      else
+        this->moveCursorDown();
+    }
+    break;
+
+    case SDLK_x: this->unlockSelectedCard(); break;
+    case SDLK_SPACE: this->lockSelectedCard(); break;
+
+    // move selected card to grid[0][0]
+    case SDLK_1: this->moveTo ( 0, 0 ); break;
+
+    // move selected card to grid[1][0]
+    case SDLK_2: this->moveTo ( 1, 0 ); break;
+
+    // move selected card to grid[2][0]
+    case SDLK_3: this->moveTo ( 2, 0 ); break;
+
+    // move selected card to grid[0][1]
+    case SDLK_4: this->moveTo ( 0, 1 ); break;
+
+    // move selected card to grid[1][1]
+    case SDLK_5: this->moveTo ( 1, 1 ); break;
+
+    // move selected card to grid[2][1]
+    case SDLK_6: this->moveTo ( 2, 1 ); break;
+
+    // move selected card to grid[0][2]
+    case SDLK_7: this->moveTo ( 0, 2 ); break;
+
+    // move selected card to grid[1][2]
+    case SDLK_8: this->moveTo ( 1, 2 ); break;
+
+    // move selected card to grid[2][2] if possible
+    case SDLK_9: this->moveTo ( 2, 2 ); break;
+  } // end key switch
+}
+
+void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
+{
+  nom::int32 hand_index = 0; // iterator
+  uint32_t player_turn = this->get_turn();
+
+  nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
+  nom::Coords player_coords = player[player_turn].getPosition(); // Player cursor origin coordinates
+
+  // Player hand selection checks
+  for ( hand_index = 0; hand_index < this->hand[ player_turn ].size(); hand_index++ )
+  {
+    if  (
+          x <= ( player_coords.x + CARD_WIDTH ) &&
+          x >= ( player_coords.x ) &&
+          // hand_index+1 because we start the loop iterator at zero; mouse check
+          // calculation is invalid at this number whereas it is not for the
+          // actions that take place if said check yields true
+          y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * ( hand_index + 1 ) ) &&
+          y >= ( player_coords.y )
+        )
+    {
+
+      // Update player's selected card
+      this->hand[ player_turn ].selectCard ( this->hand[ player_turn ].cards[ hand_index ] );
+
+      // Updates Cursor Position
+      this->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
+
+      //this->cursor_move.Play();
+
+      // We must break the loop here upon the end of a matching coords check
+      // in order to prevent a nasty "last card stays permanently selected"
+      // bug from cropping back up!
+      break;
+    }
+  }
+
+  // Board grid coords check; player is attempting to place a card on the board
+  // when the player hand coords check above comes back false
+  coords = this->getCursorBoardPos ( x, y );
+
+  // Attempts to move card onto board; validity checking is performed within
+  // the following method call
+  if ( coords.x != -1 && coords.y != -1 ) // undefined if -1, -1
+    this->moveTo ( coords.x, coords.y );
+}
+
+void Game::onMouseWheel ( bool up, bool down )
+{
+  if ( this->cursor.getState() == 0 )
+  {
+    if ( up )
+      this->moveCursorUp();
+    else if ( down )
+      this->moveCursorDown();
+  }
+}
+
+void Game::onJoyButtonDown ( int32_t which, int32_t button )
+{
+  switch ( button )
+  {
+    // Debug helpers
+    case nom::PSXBUTTON::L1: this->endTurn(); break;
+
+    case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
+    case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;
+    case nom::PSXBUTTON::DOWN: this->moveCursorDown(); break;
+    case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
+
+    case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
+    case nom::PSXBUTTON::CIRCLE: this->unlockSelectedCard(); break;
+    case nom::PSXBUTTON::CROSS: this->lockSelectedCard(); break;
+
+    default: break;
+  }
+}
+
 unsigned int Game::get_turn ( void )
 {
   return this->turn;
@@ -354,137 +540,6 @@ void Game::moveTo ( unsigned int x, unsigned int y )
       }
       this->endTurn();
     }
-  }
-}
-
-void Game::onKeyDown ( int32_t key, int32_t mod )
-{
-  switch ( key )
-  {
-    default: break;
-
-    case SDLK_p: this->music_track.togglePause(); /* Pause State ... */ break;
-    case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
-    case SDLK_e: this->endTurn(); break;
-    case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
-    case SDLK_RIGHTBRACKET: debugListCollection( mod ); break;
-    case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
-
-    case SDLK_i: debugBox(); break;
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
-
-    case SDLK_LEFT: this->moveCursorLeft(); break;
-    case SDLK_RIGHT: this->moveCursorRight(); break;
-    case SDLK_UP: this->moveCursorUp(); break;
-    case SDLK_DOWN: this->moveCursorDown(); break;
-
-    case SDLK_x: this->unlockSelectedCard(); break;
-    case SDLK_SPACE: this->lockSelectedCard(); break;
-
-    // move selected card to grid[0][0]
-    case SDLK_1: this->moveTo ( 0, 0 ); break;
-
-    // move selected card to grid[1][0]
-    case SDLK_2: this->moveTo ( 1, 0 ); break;
-
-    // move selected card to grid[2][0]
-    case SDLK_3: this->moveTo ( 2, 0 ); break;
-
-    // move selected card to grid[0][1]
-    case SDLK_4: this->moveTo ( 0, 1 ); break;
-
-    // move selected card to grid[1][1]
-    case SDLK_5: this->moveTo ( 1, 1 ); break;
-
-    // move selected card to grid[2][1]
-    case SDLK_6: this->moveTo ( 2, 1 ); break;
-
-    // move selected card to grid[0][2]
-    case SDLK_7: this->moveTo ( 0, 2 ); break;
-
-    // move selected card to grid[1][2]
-    case SDLK_8: this->moveTo ( 1, 2 ); break;
-
-    // move selected card to grid[2][2] if possible
-    case SDLK_9: this->moveTo ( 2, 2 ); break;
-  } // end key switch
-}
-
-void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
-{
-  nom::int32 hand_index = 0; // iterator
-  uint32_t player_turn = this->get_turn();
-
-  nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
-  nom::Coords player_coords = player[player_turn].getPosition(); // Player cursor origin coordinates
-
-  // Player hand selection checks
-  for ( hand_index = 0; hand_index < this->hand[ player_turn ].size(); hand_index++ )
-  {
-    if  (
-          x <= ( player_coords.x + CARD_WIDTH ) &&
-          x >= ( player_coords.x ) &&
-          // hand_index+1 because we start the loop iterator at zero; mouse check
-          // calculation is invalid at this number whereas it is not for the
-          // actions that take place if said check yields true
-          y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * ( hand_index + 1 ) ) &&
-          y >= ( player_coords.y )
-        )
-    {
-
-      // Update player's selected card
-      this->hand[ player_turn ].selectCard ( this->hand[ player_turn ].cards[ hand_index ] );
-
-      // Updates Cursor Position
-      this->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
-
-      //this->cursor_move.Play();
-
-      // We must break the loop here upon the end of a matching coords check
-      // in order to prevent a nasty "last card stays permanently selected"
-      // bug from cropping back up!
-      break;
-    }
-  }
-
-  // Board grid coords check; player is attempting to place a card on the board
-  // when the player hand coords check above comes back false
-  coords = this->getCursorBoardPos ( x, y );
-
-  // Attempts to move card onto board; validity checking is performed within
-  // the following method call
-  if ( coords.x != -1 && coords.y != -1 ) // undefined if -1, -1
-    this->moveTo ( coords.x, coords.y );
-}
-
-void Game::onMouseWheel ( bool up, bool down )
-{
-  if ( this->cursor.getState() == 0 )
-  {
-    if ( up )
-      this->moveCursorUp();
-    else if ( down )
-      this->moveCursorDown();
-  }
-}
-
-void Game::onJoyButtonDown ( int32_t which, int32_t button )
-{
-  switch ( button )
-  {
-    // Debug helpers
-    case nom::PSXBUTTON::L1: this->endTurn(); break;
-
-    case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
-    case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;
-    case nom::PSXBUTTON::DOWN: this->moveCursorDown(); break;
-    case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
-
-    case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
-    case nom::PSXBUTTON::CIRCLE: this->unlockSelectedCard(); break;
-    case nom::PSXBUTTON::CROSS: this->lockSelectedCard(); break;
-
-    default: break;
   }
 }
 

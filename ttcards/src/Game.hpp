@@ -61,6 +61,7 @@ class Game: public nom::IState
     void debugCardsSameRuleset ( void );
     void removePlayerCard ( void );
     void debugBox ( void );
+    void debugModifyCardRank ( bool modifier, nom::uint32 direction );
 
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
