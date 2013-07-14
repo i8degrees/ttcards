@@ -13,15 +13,32 @@ TODO: Add configurable board init, such as:
   Board ( unsigned int board_width, unsigned int board_height );
 
 */
+Board::Board ( CardRules& rules )
+{
+  this->rules = rules;
+
+  this->initialize();
+}
+
 Board::Board ( void )
 {
-  nom::int32 x, y = 0; // iterator
+  this->initialize();
+}
 
+Board::~Board ( void )
+{
+  #ifdef DEBUG_BOARD_OBJ
+    std::cout << "Board::~Board (): " << "Goodbye cruel world!" << std::endl << std::endl;
+  #endif
+}
+
+void Board::initialize ( void )
+{
   #ifdef DEBUG_BOARD_OBJ
     std::cout << "Board::Board(): " << "Hello, world!" << std::endl << std::endl;
   #endif
 
-  this->rules = NULL;
+  nom::int32 x, y = 0; // iterator
 
   this->grid.resize ( BOARD_GRID_HEIGHT ); // initialize y coords
 
@@ -36,22 +53,6 @@ Board::Board ( void )
       this->grid[x][y] = Card();
     }
   }
-
-}
-
-void Board::Init ( CardRules *rules )
-{
-  this->rules = rules;
-}
-
-Board::~Board ( void )
-{
-  #ifdef DEBUG_BOARD_OBJ
-    std::cout << "Board::~Board (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
-
-  if ( this->rules != NULL )
-    this->rules = NULL;
 }
 
 std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x, nom::int32 y )
@@ -71,7 +72,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
         {
-          if ( rules->getRules() == 2 )
+          if ( rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getWestRank() == grid[rows - 1][cols].getEastRank() )
             {
@@ -96,7 +97,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
         {
-          if ( rules->getRules() == 2 )
+          if ( rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getSouthRank() == grid[rows][cols + 1].getNorthRank() )
             {
@@ -121,7 +122,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
         {
-          if ( rules->getRules() == 2 )
+          if ( rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getEastRank() == grid[rows + 1][cols].getWestRank() )
             {
@@ -146,7 +147,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
         {
-          if ( rules->getRules() == 2 )
+          if ( rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getNorthRank() == grid[rows][cols - 1].getSouthRank() )
             {

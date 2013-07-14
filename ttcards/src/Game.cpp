@@ -39,7 +39,7 @@ void Game::onInit ( void )
 
   this->collection.LoadJSON ( CARDS_DB );
 
-  this->board.Init ( &this->rules );
+  this->board = Board ( this->rules );
 
   this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 );
 
