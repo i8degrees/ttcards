@@ -79,6 +79,9 @@ include_directories ( ${SDL_INCLUDE_DIR} )
 if ( NOT TTCARDS_NOMLIB_COMPILE )
   find_package ( nomlib REQUIRED )
   include_directories ( "${NOMLIB_INCLUDE_DIR}/nomlib" ) # FIXME
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
+else ()
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "gamelib" )
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
 # FIXME
@@ -90,7 +93,7 @@ endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
 link_libraries (  ${PROJECT_NAME} # makefile target
                   ${SDL_LIBRARY}
                   SDLmain
-                  ${NOMLIB_LIBRARY}
+                  ${REQUIRED_LIBS}
                   #nomjson
                   json_spirit
                 )
