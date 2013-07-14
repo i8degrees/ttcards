@@ -23,7 +23,7 @@ before_install:
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build && cd build
-  - cmake -D TTCARDS_NOMLIB_COMPILE=off -D TTCARDS_JSON_SPIRIT_COMPILE=on -D CMAKE_BUILD_TYPE=Release ..
+  - cmake -D TTCARDS_NOMLIB_COMPILE=off -D TTCARDS_JSON_SPIRIT_COMPILE=on -D BUILD_RELEASE=on ..
 script:
   - make -j4
   - sudo make install
