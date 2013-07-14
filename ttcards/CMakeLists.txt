@@ -75,27 +75,29 @@ set ( TTCARDS_DATA_IMAGES
 
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} "SDLmain" ) # FIXME
 
 if ( NOT TTCARDS_NOMLIB_COMPILE )
   find_package ( nomlib REQUIRED )
   include_directories ( "${NOMLIB_INCLUDE_DIR}/nomlib" ) # FIXME
   set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
 else ()
-  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "gamelib" )
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "gamelib" ) # FIXME
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
 # FIXME
 if ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
   find_library ( json_spirit REQUIRED )
-  include_directories ( /usr/local/include/json_spirit )
+  include_directories ( /usr/local/include/json_spirit ) # FIXME
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${JSON_SPIRIT_LIBRARY} )
+else ()
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "json_spirit" ) # FIXME
 endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
 
 link_libraries (  ${PROJECT_NAME} # makefile target
-                  ${SDL_LIBRARY}
-                  SDLmain
                   ${REQUIRED_LIBS}
                   #nomjson
-                  json_spirit
                 )
 
 add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
