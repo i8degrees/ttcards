@@ -44,35 +44,6 @@ set ( TTCARDS_DATA
       ${TTCARDS_DATA_DIR}/icon.bmp
     )
 
-# Audio assets
-set ( TTCARDS_DATA_AUDIO
-      ${TTCARDS_DATA_AUDIO_DIR}/05_TheWinner.ogg
-      ${TTCARDS_DATA_AUDIO_DIR}/06_ShuffleOrBoogie.ogg
-      ${TTCARDS_DATA_AUDIO_DIR}/15_ShuffleOrBoogie.ogg
-      ${TTCARDS_DATA_AUDIO_DIR}/cursor_cancel.wav
-      ${TTCARDS_DATA_AUDIO_DIR}/cursor_move.wav
-      ${TTCARDS_DATA_AUDIO_DIR}/cursor_wrong.wav
-    )
-
-# Font assets
-set ( TTCARDS_DATA_FONTS
-      ${TTCARDS_DATA_FONTS_DIR}/EnvyCodeRb.ttf
-      ${TTCARDS_DATA_FONTS_DIR}/VIII.png
-      ${TTCARDS_DATA_FONTS_DIR}/VIII_small.png
-      ${TTCARDS_DATA_FONTS_DIR}/VIII_cards.png
-    )
-
-# Image assets
-set ( TTCARDS_DATA_IMAGES
-      ${TTCARDS_DATA_IMAGES_DIR}/backgrounds.png
-      ${TTCARDS_DATA_IMAGES_DIR}/board.png
-      ${TTCARDS_DATA_IMAGES_DIR}/cursors.png
-      ${TTCARDS_DATA_IMAGES_DIR}/elements.png
-      ${TTCARDS_DATA_IMAGES_DIR}/faces.png
-      ${TTCARDS_DATA_IMAGES_DIR}/game-over_background.png
-      ${TTCARDS_DATA_IMAGES_DIR}/menu_elements.png
-    )
-
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
 set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} )
@@ -121,10 +92,10 @@ if ( CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel )
   #     Install game data
   install ( FILES ${TTCARDS_DATA} DESTINATION share/${PROJECT_NAME}/data )
 
-  install ( FILES ${TTCARDS_DATA_AUDIO} DESTINATION share/${PROJECT_NAME}/data/audio )
+  install ( DIRECTORY ${TTCARDS_DATA_AUDIO_DIR} DESTINATION share/${PROJECT_NAME}/data OPTIONAL )
 
-  install ( FILES ${TTCARDS_DATA_FONTS} DESTINATION share/${PROJECT_NAME}/data/fonts )
+  install ( DIRECTORY ${TTCARDS_DATA_FONTS_DIR} DESTINATION share/${PROJECT_NAME}/data )
 
-  install ( FILES ${TTCARDS_DATA_IMAGES} DESTINATION share/${PROJECT_NAME}/data/images )
+  install ( DIRECTORY ${TTCARDS_DATA_IMAGES_DIR} DESTINATION share/${PROJECT_NAME}/data )
 
 endif ( CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel )
