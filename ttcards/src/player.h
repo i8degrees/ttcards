@@ -19,13 +19,14 @@
 #include "card_view.h"
 #include "cfg.h"
 
+void Free_CardHand ( CardHand* player_cards );
+
 class Player
 {
   public:
     Player ( void );
+    Player ( CardHand* player_cards );
     ~Player ( void );
-
-    void Init ( CardHand *player_cards );
 
     nom::int32 getX ( void );
     nom::int32 getY ( void );
@@ -52,8 +53,7 @@ class Player
     /// Card rendering
     CardView card;
     /// pointer reference to player's hand
-    CardHand *hand;
-
+    std::shared_ptr<CardHand> hand;
     /// x, y origin coords
     nom::Coords coords;
     /// unique identifier for tracking each player in game

@@ -7,13 +7,29 @@
 ******************************************************************************/
 #include "player.h"
 
-Player::Player ( void )
+void Free_CardHand ( CardHand* player_cards )
+{
+  // Do nothing custom (smart pointer) deleter
+  //
+  // We cannot free this because we do not own it. We borrow it in order to do
+  // our own updates and rendering in this class.
+}
+
+Player::Player ( void ) : coords ( 0, 0, 0, 0 ), id ( 0 ), state ( 0 ),
+                          score ( 5 ), hand ( nullptr )
+{
+  #ifdef DEBUG_PLAYER_OBJ
+    std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
+  #endif
+}
+
+Player::Player ( CardHand* player_cards )
 {
   #ifdef DEBUG_PLAYER_OBJ
     std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->hand = NULL;
+  this->hand.reset ( player_cards, Free_CardHand );
 
   this->coords = nom::Coords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
   id = 0;
@@ -26,16 +42,6 @@ Player::~Player ( void )
   #ifdef DEBUG_PLAYER_OBJ
     std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
-
-  if ( this->hand != NULL )
-  {
-    this->hand = NULL;
-  }
-}
-
-void Player::Init ( CardHand *player_cards )
-{
-  this->hand = player_cards;
 }
 
 nom::int32 Player::getX ( void )

@@ -60,10 +60,10 @@ void Game::onInit ( void )
 
   //this->music.LoadMusicTrack ( MUSIC_TRACK );
 
-  this->player[0].Init ( &this->hand[0] );
+  this->player[0] = Player ( &this->hand[0] );
   this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
-  this->player[1].Init ( &this->hand[1] );
+  this->player[1] = Player ( &this->hand[1] );
   this->player[1].setPosition ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
   // player1, player2 cursor X, Y coords
