@@ -2,7 +2,8 @@ language: cpp
 compiler:
   - clang
 before_script:
-  - sudo apt-get install libsdl1.2-dev libsdl1.2debian libjson-spirit-dev
+  - sudo apt-get install libsdl1.2-dev libsdl1.2debian
+  - sudo apt-get install libopenal-dev libjson-spirit-dev
   - mkdir build && cd build && cmake -DTTCARDS_NOMLIB_COMPILE=on ..
 before_install:
   - git submodule update --init --recursive
