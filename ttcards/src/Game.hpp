@@ -34,7 +34,7 @@
 class Game: public nom::IState
 {
   public:
-    Game ( CardHand player1_hand );
+    Game ( CardHand& player1_hand );
     ~Game ( void );
 
     bool Init ( void );

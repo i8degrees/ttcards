@@ -7,7 +7,7 @@
 ******************************************************************************/
 #include "Game.hpp"
 
-Game::Game ( CardHand player1_hand )
+Game::Game ( CardHand& player1_hand )
 {
   #ifdef DEBUG_GAME_OBJ
     std::cout << "Game::Game (): " << "Hello, world!" << "\n" << std::endl;
