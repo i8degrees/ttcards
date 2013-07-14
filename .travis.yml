@@ -1,13 +1,15 @@
 language: cpp
 compiler:
-  - clang
+  - gcc
+  #- clang
 before_install:
 # nomlib dependencies (SDL):
   - sudo apt-get install libsdl1.2-dev libsdl1.2debian libsdl-image1.2-dev libsdl-image1.2 libsdl-ttf2.0-dev libsdl-ttf2.0-0
 # nomlib dependencies (Audio):
   - sudo apt-get install libsndfile1-dev libopenal-dev
 # TTcards dependencies
-  - sudo apt-get install libjson-spirit-dev
+  #- sudo apt-get install libjson-spirit-dev
+  - sudo apt-get install libboost-dev
 # nomlib build & installation
   - PROJECT_NAME=gamelib; export PROJECT_NAME
   - git submodule update --init --recursive
