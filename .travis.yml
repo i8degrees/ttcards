@@ -1,0 +1,15 @@
+language: cpp
+compiler:
+  - clang
+before_script:
+  - sudo apt-get install libsdl1.2-dev libsdl1.2debian libjson-spirit-dev
+  - mkdir build && cd build && cmake -DTTCARDS_NOMLIB_COMPILE=on ..
+before_install:
+  - git submodule update --init --recursive
+script:
+  - make -j4
+
+# whitelist
+branches:
+  only:
+    - travis
