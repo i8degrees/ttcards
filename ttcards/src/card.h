@@ -10,13 +10,29 @@
 
 #include <string>
 #include <array>
+#include <algorithm>
 
+#include <nomlib/types.hpp>
 #include "cfg.h"
+
+/// Maximum level a card can contain -- starting at 1
+const nom::int32 MAX_LEVEL = 10;
+
+/// Maximum type a card can contain -- starting at 1
+const nom::int32 MAX_TYPE = 4;
+
+/// Maximum element a card can contain -- starting at 1
+const nom::int32 MAX_ELEMENT = 8;
+
+/// Maximum rank a card can contain -- starting at 1
+const nom::int32 MAX_RANK = 10;
+
+/// Maximum name length a card can contain
+const nom::int32 MAX_NAME = 14;
 
 class Card
 {
   public:
-
     Card ( void );
 
     Card  (   unsigned int id_, unsigned int level_, unsigned int type_,
@@ -38,15 +54,44 @@ class Card
     unsigned int getWestRank ( void );
     std::string getName ( void );
 
+    unsigned int getPlayerID ( void );
+    unsigned int getPlayerOwner ( void );
+
+    /// Clamps value to MAX_COLLECTION
     void setID ( unsigned int id_ );
+
+    /// Clamps value to MAX_LEVEL
     void setLevel ( unsigned int level_ );
+
+    /// Clamps value to MAX_TYPE
     void setType ( unsigned int type_ );
+
+    /// Clamps value to MAX_ELEMENT
     void setElement ( unsigned int element_ );
+
+    /// Clamps array values to MAX_RANK
+    void setRanks ( std::array<nom::int32, 4> ranks );
+
+    /// Clamps value to MAX_RANK
     void setNorthRank ( unsigned int rank );
+
+    /// Clamps value to MAX_RANK
     void setEastRank ( unsigned int rank );
+
+    /// Clamps value to MAX_RANK
     void setSouthRank ( unsigned int rank );
+
+    /// Clamps value to MAX_RANK
     void setWestRank ( unsigned int rank );
+
+    /// Clamps value to MAX_NAME
     void setName ( std::string name_ );
+
+    /// Clamps value to TOTAL_PLAYERS
+    void setPlayerID ( unsigned int player_id_ );
+
+    /// Clamps value to TOTAL_PLAYERS
+    void setPlayerOwner ( unsigned int player_owner_ );
 
     /// card.player_id AKA owner tag
     enum
@@ -55,12 +100,6 @@ class Card
       PLAYER1=1,
       PLAYER2=2
     };
-
-    unsigned int getPlayerID ( void );
-    void setPlayerID ( unsigned int player_id_ );
-
-    unsigned int getPlayerOwner ( void );
-    void setPlayerOwner ( unsigned int player_owner_ );
 
   private:
     unsigned int id;
