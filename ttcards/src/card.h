@@ -8,9 +8,7 @@
 #ifndef GAMEAPP_CARD_HEADERS
 #define GAMEAPP_CARD_HEADERS
 
-#include <iostream>
-#include <fstream>
-#include <vector>
+#include <string>
 #include <array>
 
 #include "cfg.h"

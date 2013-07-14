@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <nomlib/types.hpp>
 

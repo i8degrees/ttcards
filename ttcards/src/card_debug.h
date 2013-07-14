@@ -9,6 +9,8 @@
 #define GAMEAPP_CARD_DEBUG_HEADERS
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "card.h"
 #include "cfg.h"
