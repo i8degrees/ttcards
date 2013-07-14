@@ -33,16 +33,6 @@ void Game::onExit ( void )
   std::cout << "\n" << "Game state onExit" << "\n";
 }
 
-void Game::Pause ( void )
-{
-  std::cout << "\n" << "Game state Paused" << "\n";
-}
-
-void Game::Resume ( void )
-{
-  std::cout << "\n" << "Game state Resumed" << "\n";
-}
-
 void Game::onInit ( void )
 {
   nom::int32 idx = 0; // for loop iterations

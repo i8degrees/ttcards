@@ -42,9 +42,6 @@ class Game: public nom::IState
     void onInit ( void );
     void onExit ( void );
 
-    void Pause ( void );
-    void Resume ( void );
-
     void Update ( float delta_time );
     void Draw ( void* video_buffer );
 
