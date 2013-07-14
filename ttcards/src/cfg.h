@@ -74,8 +74,13 @@ extern const int CURSOR_HEIGHT;
 extern const int MENU_ELEMENT_WIDTH;
 extern const int MENU_ELEMENT_HEIGHT;
 
+/// Maximum number of players -- both human & AI -- in game
 extern const nom::uint32 TOTAL_PLAYERS;
+
+/// Maximum number of cards in cards database -- cards.json
 extern const int MAX_COLLECTION;
+
+/// Maximum number of cards a player can hold in a game round
 extern const nom::int32 MAX_PLAYER_HAND;
 
 extern const nom::int32 BOARD_ORIGIN_X;

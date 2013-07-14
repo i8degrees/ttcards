@@ -2,6 +2,8 @@
 
 ## Categories & Levels
 
+  0. Undefined
+
   1. Monster
     > Level Range 1-5
 
@@ -16,6 +18,7 @@
 
 ## Elements
 
+  0. Undefined
   1. Earth
   2. Fire
   3. Holy

@@ -68,8 +68,10 @@ class Card
     unsigned int id;
     unsigned int level;
     unsigned int type;
-    unsigned int element; /// NONE is no element
-    std::array<int, 4> rank; /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
+    /// NONE is no element
+    unsigned int element;
+    /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
+    std::array<int, 4> rank;
     std::string name;
 
     /// Additional field; used to distinguish card background and also used to

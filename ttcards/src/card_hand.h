@@ -36,10 +36,7 @@ class CardHand
     nom::int32 size ( void );
     nom::int32 pos ( Card& card );
 
-    /// \internal
-    ///
-    /// TODO: declare in private scope
-    /// \endinternal
+    /// \todo Declare in private scope
     std::vector<Card> cards;
 
   private:
