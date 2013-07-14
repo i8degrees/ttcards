@@ -154,6 +154,7 @@ void Game::onInit ( void )
   this->music_buffer.loadFromFile ( MUSIC_TRACK );
   this->music_track.setBuffer ( this->music_buffer );
   this->music_track.Play();
+  this->music_track.Pause();
 }
 
 void Game::onKeyDown ( int32_t key, int32_t mod )
