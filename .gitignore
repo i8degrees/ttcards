@@ -6,7 +6,6 @@ tmp/
 .LSOverride
 
 # Project Files
-
 *.bck
 *.xcf
 *.mp3
@@ -14,10 +13,12 @@ tmp/
 *.wav
 *.o
 *.ttf
-*.plist
 *.bmp
 # ctags
 ttcards/.tags
+
+# bins
+ttcards.app
 
 # Debugging
 *.debug
