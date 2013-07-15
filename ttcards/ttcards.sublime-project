@@ -10,15 +10,14 @@
     {
       "name": "docs",
       "path": "docs",
-      "file_include_patterns": ["*.md", "*.css", "*.html", "doxygen.cfg", "*.txt" ],
-      "folder_exclude_patterns": ["build", "tmp", "docs/public", "docs/man", "ttcards.dSYM", "public", "data", "src" ]
+      "folder_exclude_patterns": ["build", "tmp", "public", "docs/man", "data" ]
     },
 
     {
-      "name": "top-level",
+      "name": "root",
       "path": ".",
-      "file_include_patterns": [ "*.txt", "*.cmake", ".gitignore" ],
-      "folder_include_patterns": [ "cmake", "modules" ]
+      "file_exclude_patterns": [ "ttcards", ".tags*", "ttcards.sublime-*" ],
+      "folder_exclude_patterns": [ "ttcards.dSYM", "public", "tmp", "src", "docs" ]
     },
 
     {} // placeholder
@@ -27,8 +26,8 @@
   "settings":
   {
     "tab_size": 2,
-    "translate_tabs_to_spaces": true
-    //"ctags_command":  "/usr/local/bin/ctags -f .tags ttcards/src"
+    "translate_tabs_to_spaces": true,
+    "ctags_command":  "/usr/local/bin/ctags -R -f .tags src/"
   },
 
   "build_systems":
