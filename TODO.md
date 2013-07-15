@@ -1,8 +1,6 @@
 # TODO
 
 * Resolve data paths issue when installed under /usr/local
-* Fix uninstall script
-
 * Use new preprocessor debugging code methodology from nomlib
 
 * Rename header file extensions to .hpp
@@ -15,6 +13,7 @@
 
 ## Completed
 
+* Fix uninstall script
 * Remove file name from header files
 * GameOverState static background image
 * swap player1, player2 coords (human player AKA blue is on the right side )
