@@ -15,7 +15,7 @@ tmp/
 *.ttf
 *.bmp
 # ctags
-ttcards/.tags
+.tags*
 
 # bins
 ttcards.app
