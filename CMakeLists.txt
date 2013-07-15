@@ -4,9 +4,9 @@ cmake_minimum_required ( VERSION 2.8 )
 set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/" )
 
-
 option ( BUILD_RELEASE "Build Release target; defaults to Debug" off )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
+option ( BUILD_OSXAPP "Build a OSX App Bundle; defaults to off" off )
 
 if ( BUILD_UNIVERSAL_LIB )
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
@@ -15,9 +15,11 @@ endif ( BUILD_UNIVERSAL_LIB )
 
 if ( BUILD_RELEASE ) # ...why do I have to even do this? -_-
   set ( CMAKE_BUILD_TYPE Release )
+  set ( PROJECT_VERSION_TYPE 1 )
   message ( "Release target activated." )
 else ( NOT BUILD_RELEASE )
   set ( CMAKE_BUILD_TYPE Debug )
+  set ( PROJECT_VERSION_TYPE 0 )
   message ( "Debug target activated." )
 endif ( BUILD_RELEASE )
 
@@ -74,23 +76,26 @@ if ( TTCARDS_JSON_SPIRIT_COMPILE )
   message ( "Building dependency json_spirit" )
   add_subdirectory ( json_spirit )
   include_directories ( json_spirit )
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "json_spirit" ) # FIXME
 endif ( TTCARDS_JSON_SPIRIT_COMPILE )
 
 if ( TTCARDS_NOMLIB_COMPILE )
   message ( "Building dependency nomlib" )
   add_subdirectory ( gamelib )
   include_directories ( gamelib/src )
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "gamelib" ) # FIXME
 endif ( TTCARDS_NOMLIB_COMPILE )
 
 if ( NOMJSON_LIBRARY )
   message ( "Building dependency nomJSON" )
   add_subdirectory ( nomJSON )
   include_directories ( nomjson/src )
+  # set ( REQUIRED_LIBS ${REQUIRED_LIBS} "nomjson" )
 endif ( NOMJSON_LIBRARY )
 
 add_subdirectory ( ttcards )
 
-if ( CMAKE_BUILD_TYPE STREQUAL Release )
+if ( BUILD_RELEASE )
 
   #     Uninstall target
 
@@ -105,4 +110,4 @@ if ( CMAKE_BUILD_TYPE STREQUAL Release )
                       ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
                     )
 
-endif ( CMAKE_BUILD_TYPE STREQUAL Release )
+endif ( BUILD_RELEASE )

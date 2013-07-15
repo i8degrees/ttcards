@@ -20,18 +20,30 @@ App::App ( nom::int32 argc, char* argv[] )
   std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
 #endif
 
-#ifndef EMSCRIPTEN
+#if TTCARDS_BUILD_MODE == 1 // Release target
+
+  WORKING_DIR = "/usr/local/share/ttcards/";
+
+#elif TTCARDS_BUILD_MODE == 0 // Debug AKA development target
+
   // This isn't an absolute guarantee that we can do this reliably; we must use
   // argv[0] as we need to know the *starting* directory of where ttcards resides
   // from, not the current working directory in which it is executed from
-#ifdef TTCARDS_RELEASE
-  WORKING_DIR = "/usr/local/share/ttcards/";
-#else
   WORKING_DIR = nom::OSXFS::getDirName ( argv[0] );
-#endif
 
+#elif TTCARDS_BUILD_MODE == 2 // OSX App Bundle
+
+  // WORKING_DIR = GetResourcesPath ...
+  std::cout << "\nWorking Path: " << nom::OSXFS::getWorkingDir() << "\n";
+
+#elif TTCARDS_BUILD_MODE == 3 // EMSCRIPTEN
+
+  // ...
+
+#endif // TTCARDS_BUILD_MODE defined
+
+  // By default, WORKING_DIR is not set -- so we stay wherever we so happen to be!
   nom::OSXFS::setWorkingDir ( WORKING_DIR );
-#endif // EMSCRIPTEN
 
   // Command line arguments
   if ( argc > 1 )

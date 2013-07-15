@@ -20,6 +20,7 @@
 #include <nomlib/system.hpp>
 
 #include "CardsMenuState.h"
+#include "version.hpp" // CMake auto-generated header file
 #include "cfg.h"
 
 class App: public nom::SDL_App // "is-a" relationship

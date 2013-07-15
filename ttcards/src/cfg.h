@@ -11,9 +11,6 @@
 #include <string> // for std::string support
 #include <nomlib/types.hpp> // for portable fixed-types
 
-#define TTCARDS_DEBUG
-//#define TTCARDS_RELEASE
-
 #define DEBUG_GAME
 #define DEBUG_GAME_OBJ
 

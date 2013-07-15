@@ -20,6 +20,9 @@ ttcards/.tags
 # bins
 ttcards.app
 
+# auto-generated
+version.hpp
+
 # Debugging
 *.debug
 ttcards/ttcards
