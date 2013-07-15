@@ -9,7 +9,7 @@
 	<key>CFBundleIconFile</key>
 	<string>ttcards.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>i8degrees.ttcards</string>
+	<string>org.ttcards.TTcards</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
