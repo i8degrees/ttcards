@@ -16,6 +16,8 @@ tmp/
 *.ttf
 *.plist
 *.bmp
+# ctags
+ttcards/.tags
 
 # Debugging
 *.debug
