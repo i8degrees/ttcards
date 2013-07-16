@@ -63,7 +63,13 @@ App::App ( nom::int32 argc, char* argv[] )
     else if ( strcmp ( argv[1], "-h" ) == 0 || strcmp ( argv[1], "--help" ) == 0 )
     {
       std::cout << "\tttcards [ -h | --help ]" << std::endl;
+      std::cout << "\tttcards [ -v | --version ]" << std::endl;
       std::cout << "\tttcards [ -e | --export ]" << std::endl;
+      exit ( EXIT_SUCCESS );
+    }
+    else if ( strcmp ( argv[1], "-v" ) == 0 || strcmp ( argv[1], "--version" ) == 0 )
+    {
+      std::cout << APP_NAME << " version " << TTCARDS_VERSION_MAJOR << "." << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << " by Jeffrey Carpenter" << std::endl;
       exit ( EXIT_SUCCESS );
     }
   }
