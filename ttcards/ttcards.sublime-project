@@ -20,6 +20,13 @@
       "folder_exclude_patterns": [ "ttcards.dSYM", "public", "tmp", "src", "docs" ]
     },
 
+    {
+      "name": "top",
+      "path": "..",
+      "file_exclude_patterns": [ "*.tags", ".LSOverride", "*.md" ],
+      "folder_exclude_patterns": [ "build", "design", "gamelib", "json_spirit", "nomJSON", "tmp", "ttcards" ]
+    },
+
     {} // placeholder
   ],
 
