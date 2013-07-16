@@ -28,6 +28,12 @@ script:
   - make -j4
   - sudo make install
   - sudo make uninstall
+  - make clean && cd .. && rm -rf build && mkdir build && cd build
+  - cmake -D TTCARDS_JSON_SPIRIT_COMPILE=on -D BUILD_OSXAPP=on
+  - make -j4
+  - sudo make install
+# - sudo make uninstall
+
 # whitelist
 branches:
   only:
