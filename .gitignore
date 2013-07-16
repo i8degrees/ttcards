@@ -12,8 +12,6 @@ tmp/
 *.ogg
 *.wav
 *.o
-*.ttf
-*.bmp
 # ctags
 .tags*
 
