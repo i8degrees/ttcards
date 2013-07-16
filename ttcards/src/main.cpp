@@ -33,8 +33,7 @@ App::App ( nom::int32 argc, char* argv[] )
 
 #elif TTCARDS_BUILD_MODE == 2 // OSX App Bundle
 
-  // WORKING_DIR = GetResourcesPath ...
-  std::cout << "\nWorking Path: " << nom::OSXFS::getWorkingDir() << "\n";
+  WORKING_DIR = nom::OSXFS::getResourcesPath();
 
 #elif TTCARDS_BUILD_MODE == 3 // EMSCRIPTEN
 

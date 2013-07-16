@@ -95,7 +95,7 @@ endif ( NOMJSON_LIBRARY )
 
 add_subdirectory ( ttcards )
 
-if ( BUILD_RELEASE )
+if ( BUILD_RELEASE OR BUILD_OSXAPP )
 
   #     Uninstall target
 
@@ -110,4 +110,4 @@ if ( BUILD_RELEASE )
                       ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
                     )
 
-endif ( BUILD_RELEASE )
+endif ( BUILD_RELEASE OR BUILD_OSXAPP )

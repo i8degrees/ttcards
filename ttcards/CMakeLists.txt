@@ -33,7 +33,7 @@ set ( TTCARDS_SOURCE
        ${SRC_DIR}/Game_debug.cpp
        ${SRC_DIR}/GameOverState.cpp
        ${SRC_DIR}/CardsMenuState.cpp
-     )
+    )
 
 #     Required Dependencies:
 find_package ( SDL REQUIRED )
@@ -61,57 +61,92 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
   set ( PROJECT_VERSION_TYPE 2 )
   message ( "Building OSX App Bundle" )
 
-  # ... [Copy Resources from $TTCARDS_DATA_DIR ] ...
-  #
-  # 1. https://github.com/rpavlik/cmake-modules/blob/master/CopyResourcesToBuildTree.cmake
+  # Reset bin path; we are basically in Release mode
+  # (This might change in the future... need to rethink structure of all this)
+  set ( EXECUTABLE_OUTPUT_PATH )
 
-  add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE
-                    ${TTCARDS_SOURCE} ${TTCARDS_RESOURCES}
-                  )
+  add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
+
+  install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
+
+#     Install game data
+  install ( DIRECTORY ${TTCARDS_DATA_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources
+            PATTERN ".*" EXCLUDE # do not include dotfiles
+            PATTERN "audio/*" EXCLUDE
+          )
+
+  #   Install optional audio data
+  install ( DIRECTORY ${TTCARDS_DATA_AUDIO_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources/${TTCARDS_DATA_DIR}
+            OPTIONAL
+            PATTERN ".*" EXCLUDE
+          )
+
+#     Install App bundle icon
+  install ( FILES ${TTCARDS_DATA_DIR}/ttcards.icns DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources
+            OPTIONAL
+          )
 
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           MACOSX_BUNDLE_INFO_PLIST
-                          ${PROJECT_SOURCE_DIR}/${TTCARDS_DATA_DIR}/Info.plist
+                          "${PROJECT_SOURCE_DIR}/cmake/Info.plist.in"
+                          MACOSX_BUNDLE_BUNDLE_NAME
+                          "TTcards" #${PROJECT_NAME}
+                          MACOSX_BUNDLE_ICON_FILE
+                          "ttcards.icns"
+                          MACOSX_BUNDLE_INFO_STRING
+                          "${PROJECT_NAME} (Triple Triad Remake) version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} by Jeffrey Carpenter"
+                          MACOSX_BUNDLE_GUI_IDENTIFIER
+                          "org.dev.${PROJECT_NAME}"
+                          MACOSX_BUNDLE_SHORT_VERSION_STRING
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                          MACOSX_BUNDLE_LONG_VERSION_STRING
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+                          MACOSX_BUNDLE_BUNDLE_VERSION
+                          "${CMAKE_VERSION}"
+                          MACOSX_BUNDLE_COPYRIGHT
+                          "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
                         )
 
-  set_source_files_properties ( ${TTCARDS_RESOURCES} PROPERTIES
-                                MACOSX_PACKAGE_LOCATION Resources
-                              )
+#     Run app target for Sublime Text Editor Custom Build Settings
+  add_custom_target ( run COMMAND open -a "${CMAKE_INSTALL_PREFIX}/bin/ttcards.app" )
 
 else ( NOT BUILD_OSXAPP ) # POSIX Installation
+
   message ( "Building POSIX install" )
+
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
-endif ( BUILD_OSXAPP )
 
-#     Run app target for Sublime Text Editor Custom Build Settings
-add_custom_target ( run
-                    COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/${PROJECT_NAME}
-                  )
+#     Install game data;
+  install ( TARGETS ${PROJECT_NAME} DESTINATION bin
+            CONFIGURATIONS Release
+          )
 
-#     FIXME: doxygen docs generation
-add_custom_target ( ttcards-docs
-                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
-                  )
-
-#     Install game data; do not include dotfiles -- *cough* .DS_Store *cough*
-install ( TARGETS ${PROJECT_NAME} DESTINATION bin
-          CONFIGURATIONS Release
-        )
-
-install ( DIRECTORY ${TTCARDS_DATA_DIR} DESTINATION share/${PROJECT_NAME}
-          CONFIGURATIONS Release
-          PATTERN ".*" EXCLUDE
-          PATTERN "audio/*" EXCLUDE
-        )
+  install ( DIRECTORY ${TTCARDS_DATA_DIR} DESTINATION share/${PROJECT_NAME}
+            CONFIGURATIONS Release
+            PATTERN ".*" EXCLUDE # do not include dotfiles -- *cough* .DS_Store
+            PATTERN "audio/*" EXCLUDE
+          )
 
 #     Install optional audio data
-install ( DIRECTORY ${TTCARDS_DATA_AUDIO_DIR} DESTINATION share/${PROJECT_NAME}/${TTCARDS_DATA_DIR}
-          OPTIONAL
-          CONFIGURATIONS Release
-          PATTERN ".*" EXCLUDE
-        )
+  install ( DIRECTORY ${TTCARDS_DATA_AUDIO_DIR} DESTINATION share/${PROJECT_NAME}/${TTCARDS_DATA_DIR}
+            OPTIONAL
+            CONFIGURATIONS Release
+            PATTERN ".*" EXCLUDE
+          )
+
+#     Run app target for Sublime Text Editor Custom Build Settings
+  add_custom_target ( run
+                      COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/${PROJECT_NAME}
+                    )
+
+endif ( BUILD_OSXAPP )
 
 # TODO: this is for tracking installation paths, versions, etc.
 configure_file  ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.hpp.in"
                   "${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
+
+#     FIXME: doxygen docs generation
+add_custom_target ( ttcards-docs
+                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
+                  )
