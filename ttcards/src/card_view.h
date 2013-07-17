@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include <nomlib/graphics.hpp>
+#include "nomlib/graphics.hpp"
 
 #include "card.h"
 #include "cfg.h"

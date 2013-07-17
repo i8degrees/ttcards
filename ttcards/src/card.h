@@ -12,7 +12,7 @@
 #include <array>
 #include <algorithm>
 
-#include <nomlib/types.hpp>
+#include "nomlib/types.hpp"
 #include "cfg.h"
 
 /// Maximum level a card can contain -- starting at 1

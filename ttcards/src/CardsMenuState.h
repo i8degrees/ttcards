@@ -11,9 +11,9 @@
 #include <iostream>
 #include <string>
 
-#include <nomlib/graphics.hpp>
-#include <nomlib/gui.hpp>
-#include <nomlib/system.hpp>
+#include "nomlib/graphics.hpp"
+#include "nomlib/gui.hpp"
+#include "nomlib/system.hpp"
 
 #include "card.h"
 #include "card_debug.h"

@@ -14,10 +14,10 @@
 
 #include <SDL/SDL.h>
 
-#include <nomlib/audio.hpp>
-#include <nomlib/graphics.hpp>
-#include <nomlib/sdl/utils.hpp>
-#include <nomlib/system.hpp>
+#include "nomlib/audio.hpp"
+#include "nomlib/graphics.hpp"
+#include "nomlib/sdl/utils.hpp"
+#include "nomlib/system.hpp"
 
 #include "CardsMenuState.h"
 #include "version.hpp" // CMake auto-generated header file

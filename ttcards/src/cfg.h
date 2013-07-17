@@ -9,7 +9,7 @@
 #define GAMEAPP_CFG_HEADERS
 
 #include <string> // for std::string support
-#include <nomlib/types.hpp> // for portable fixed-types
+#include "nomlib/types.hpp" // for portable fixed-types
 
 #define DEBUG_GAME
 #define DEBUG_GAME_OBJ

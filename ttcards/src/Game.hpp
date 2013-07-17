@@ -15,10 +15,10 @@
   #include "emscripten.h"
 #endif
 
-#include <nomlib/audio.hpp>
-#include <nomlib/gui.hpp>
-#include <nomlib/graphics.hpp>
-#include <nomlib/system.hpp>
+#include "nomlib/audio.hpp"
+#include "nomlib/gui.hpp"
+#include "nomlib/graphics.hpp"
+#include "nomlib/system.hpp"
 
 #include "board.h"
 #include "player.h"

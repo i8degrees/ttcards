@@ -43,7 +43,7 @@ set ( REQUIRED_LIBS ${REQUIRED_LIBS} "SDLmain" ) # FIXME
 
 if ( NOT TTCARDS_NOMLIB_COMPILE )
   find_package ( nomlib REQUIRED )
-  include_directories ( "${NOMLIB_INCLUDE_DIR}/nomlib" ) # FIXME
+  include_directories ( "${NOMLIB_INCLUDE_DIR}" ) # FIXME
   set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
@@ -68,6 +68,19 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
 
   install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
+
+#     Install dependencies
+#     TODO: when ${NOMLIB_LIBRARY} is a dylib, put it under bin/${PROJECT_NAME}.app/Contents/Libraries
+  if ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
+
+    install ( DIRECTORY ${NOMLIB_LIBRARY} DESTINATION bin/${PROJECT_NAME}.app/Contents/Frameworks
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
+  else ( NOT IS_DIRECTORY ${NOMLIB_LIBRARY} )
+    # FIXME: we need the actual file, not the symbolic link
+    install ( FILES ${NOMLIB_LIBRARY} DESTINATION bin/${PROJECT_NAME}.app/Contents/Frameworks )
+
+  endif ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
 
 #     Install game data
   install ( DIRECTORY ${TTCARDS_DATA_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources

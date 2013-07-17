@@ -82,7 +82,7 @@ endif ( TTCARDS_JSON_SPIRIT_COMPILE )
 if ( TTCARDS_NOMLIB_COMPILE )
   message ( "Building dependency nomlib" )
   add_subdirectory ( gamelib )
-  include_directories ( gamelib/src )
+  include_directories ( gamelib/include )
   set ( REQUIRED_LIBS ${REQUIRED_LIBS} "gamelib" ) # FIXME
 endif ( TTCARDS_NOMLIB_COMPILE )
 
