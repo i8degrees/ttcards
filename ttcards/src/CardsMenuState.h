@@ -35,7 +35,7 @@ class CardsMenu: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( float delta_time );
+    void Update ( nom::uint32 delta_time );
     void Draw ( void *video_buffer );
 
   private:

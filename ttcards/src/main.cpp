@@ -146,7 +146,7 @@ int32_t App::Run ( void )
 {
   unsigned int loops = 0;
   unsigned int next_game_tick = 0;
-  float delta_time = 0; // TODO; this is a stub out
+  nom::uint32 delta_time = 0; // TODO; this is a stub out
 
   this->fps.Start();
 

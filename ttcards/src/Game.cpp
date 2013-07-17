@@ -706,7 +706,7 @@ void Game::drawScore ( void *video_buffer )
   this->score_text.Draw ( video_buffer );
 }
 
-void Game::Update ( float delta_time )
+void Game::Update ( nom::uint32 delta_time )
 {
   this->updateCursor();
 

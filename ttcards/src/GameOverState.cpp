@@ -63,7 +63,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
   }
 }
 
-void GameOver::Update ( float delta_time )
+void GameOver::Update ( nom::uint32 delta_time )
 {
   this->context.Update();
 }

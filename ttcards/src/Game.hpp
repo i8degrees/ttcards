@@ -42,7 +42,7 @@ class Game: public nom::IState
     void onInit ( void );
     void onExit ( void );
 
-    void Update ( float delta_time );
+    void Update ( nom::uint32 delta_time );
     void Draw ( void* video_buffer );
 
     //static void Callback ( void ); // EMCC compiler related

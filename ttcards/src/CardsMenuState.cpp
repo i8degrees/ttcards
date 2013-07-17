@@ -211,7 +211,7 @@ void CardsMenu::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenu::Update ( float delta_time )
+void CardsMenu::Update ( nom::uint32 delta_time )
 {
   this->updateCursor();
 
