@@ -38,8 +38,7 @@ set ( TTCARDS_SOURCE
 #     Required Dependencies:
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
-set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} )
-set ( REQUIRED_LIBS ${REQUIRED_LIBS} "SDLmain" ) # FIXME
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} "SDLmain" )
 
 if ( NOT TTCARDS_NOMLIB_COMPILE )
   find_package ( nomlib REQUIRED )
@@ -55,8 +54,6 @@ endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
 
 #     Linking Dependencies & Packaging / Installation:
 
-link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
-
 if ( BUILD_OSXAPP ) # OSX App Bundle
   set ( PROJECT_VERSION_TYPE 2 )
   message ( "Building OSX App Bundle" )
@@ -66,6 +63,7 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
   set ( EXECUTABLE_OUTPUT_PATH )
 
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
+  target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
 
   install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
 
@@ -85,18 +83,18 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
 #     Install game data
   install ( DIRECTORY ${TTCARDS_DATA_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources
             PATTERN ".*" EXCLUDE # do not include dotfiles
-            PATTERN "audio/*" EXCLUDE
+            PATTERN "audio/*" EXCLUDE # do not include optional features
           )
 
   #   Install optional audio data
   install ( DIRECTORY ${TTCARDS_DATA_AUDIO_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources/${TTCARDS_DATA_DIR}
             OPTIONAL
-            PATTERN ".*" EXCLUDE
+            PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
 #     Install App bundle icon
   install ( FILES ${TTCARDS_DATA_DIR}/ttcards.icns DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources
-            OPTIONAL
+            OPTIONAL # do not include optional features
           )
 
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
@@ -113,7 +111,7 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
                           MACOSX_BUNDLE_SHORT_VERSION_STRING
                           "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                           MACOSX_BUNDLE_LONG_VERSION_STRING
-                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
                           MACOSX_BUNDLE_BUNDLE_VERSION
                           "${CMAKE_VERSION}"
                           MACOSX_BUNDLE_COPYRIGHT
@@ -128,6 +126,7 @@ else ( NOT BUILD_OSXAPP ) # POSIX Installation
   message ( "Building POSIX install" )
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
+  target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
 
 #     Install game data;
   install ( TARGETS ${PROJECT_NAME} DESTINATION bin
