@@ -11,8 +11,11 @@ void Free_CardHand ( CardHand* player_cards )
 {
   // Do nothing custom (smart pointer) deleter
   //
-  // We cannot free this because we do not own it. We borrow it in order to do
-  // our own updates and rendering in this class.
+  // This is a patch / workaround until I get around to replacing all instances
+  // of the CardHand pointer reference with the smart pointer equivalent; we
+  // produce a segmentation fault without this custom deleter right now due to
+  // the fact of custom memory allocation being done before it reaches us, and
+  // we don't own this pointer to begin with, either.
 }
 
 Player::Player ( void ) : coords ( 0, 0, 0, 0 ), id ( 0 ), state ( 0 ),
