@@ -107,8 +107,8 @@ void Game::onInit ( void )
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->debug_box.Init ( 170, 8, 43, 20, msgbox, linear );
-  this->info_box.Init ( 104, 194, 176, 24, msgbox, linear );
+  this->info_box.Init ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y, INFO_BOX_WIDTH, INFO_BOX_HEIGHT, msgbox, linear );
+  this->debug_box.Init ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y, DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT, msgbox, linear );
 
   #ifdef DEBUG_GAME
     this->debugCardsNoRuleset();
@@ -401,7 +401,7 @@ void Game::showCardInfoBox ( void* video_buffer )
 
       this->debug_box.Draw ( video_buffer );
 
-      this->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, 10 );
+      this->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, DEBUG_BOX_TEXT_ORIGIN_Y );
       this->info_text.Update();
       this->info_text.Draw ( video_buffer );
     }
@@ -416,11 +416,11 @@ void Game::showCardInfoBox ( void* video_buffer )
 
     this->info_box.Draw ( video_buffer );
 
-    this->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, 196 );
+    this->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, INFO_BOX_TEXT_ORIGIN_Y );
     this->info_text.Update();
     this->info_text.Draw ( video_buffer );
 
-    this->info_small_text.setPosition ( 108, 194 );
+    this->info_small_text.setPosition ( INFO_BOX_SMALL_TEXT_ORIGIN_X, INFO_BOX_SMALL_TEXT_ORIGIN_Y );
     this->info_small_text.Update();
     this->info_small_text.Draw ( video_buffer );
   }
@@ -712,12 +712,12 @@ void Game::Update ( float delta_time )
 
   if ( this->get_turn() == 0 ) // player1
   {
-    this->player_rect.setPosition ( nom::Coords ( 320, 0, 16, 16 ) );
+    this->player_rect.setPosition ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
     this->player_rect.setColor ( nom::Color ( 188, 203, 236 ) );
   }
   else // player2
   {
-    this->player_rect.setPosition ( nom::Coords ( 40, 0, 16, 16 ) );
+    this->player_rect.setPosition ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
     this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
   }
 
