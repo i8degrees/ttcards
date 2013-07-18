@@ -168,7 +168,7 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_e: this->endTurn(); break;
     case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
     case SDLK_RIGHTBRACKET: debugListCollection( mod ); break;
-    case SDLK_d: if ( mod == KMOD_LMETA ) this->removePlayerCard(); break;
+    case SDLK_d: this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
     case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
