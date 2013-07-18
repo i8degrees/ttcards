@@ -14,6 +14,7 @@
 
 App::App ( nom::int32 argc, char* argv[] )
 {
+  nom::OSXFS dir;
   unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
 #ifdef DEBUG_GAME_OBJ
@@ -29,11 +30,11 @@ App::App ( nom::int32 argc, char* argv[] )
   // This isn't an absolute guarantee that we can do this reliably; we must use
   // argv[0] as we need to know the *starting* directory of where ttcards resides
   // from, not the current working directory in which it is executed from
-  WORKING_DIR = nom::OSXFS::getDirName ( argv[0] );
+  WORKING_DIR = dir.getDirName ( argv[0] );
 
 #elif TTCARDS_BUILD_MODE == 2 // OSX App Bundle
 
-  WORKING_DIR = nom::OSXFS::getResourcesPath();
+  WORKING_DIR = dir.getResourcesPath();
 
 #elif TTCARDS_BUILD_MODE == 3 // EMSCRIPTEN
 
@@ -42,7 +43,7 @@ App::App ( nom::int32 argc, char* argv[] )
 #endif // TTCARDS_BUILD_MODE defined
 
   // By default, WORKING_DIR is not set -- so we stay wherever we so happen to be!
-  nom::OSXFS::setWorkingDir ( WORKING_DIR );
+  dir.setWorkingDir ( WORKING_DIR );
 
   // Command line arguments
   if ( argc > 1 )
