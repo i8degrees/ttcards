@@ -96,7 +96,7 @@ class Game: public nom::IState
     nom::Timer update;
 
     /// Game Over text
-    nom::SDL_Font gameOver_text;
+    nom::Text gameOver_text;
     /// dialog text
     nom::SDL_BitmapFont info_text;
     nom::SDL_BitmapFont info_small_text;

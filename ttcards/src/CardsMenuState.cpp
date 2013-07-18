@@ -78,7 +78,7 @@ void CardsMenu::onInit ( void )
 
   // Initialize card name text so that we can obtain height info early on
   this->info_text.setText ( this->collection.cards[0].getName() );
-  this->info_text_height = this->info_text.getTextHeight();
+  this->info_text_height = this->info_text.getFontHeight();
 
   this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
   this->menu_element.Load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
@@ -280,7 +280,7 @@ void CardsMenu::Draw ( void* video_buffer )
     if ( this->hand.isValid ( this->collection.cards[i] ) )
     {
       this->info_text_gray.setText ( this->collection.cards[i].getName() );
-      this->info_text_gray.setStyle ( nom::Style::Faded, 150 );
+      this->info_text_gray.setFontStyle ( nom::FontStyle::Faded, 150 );
       this->info_text_gray.setPosition ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
       this->info_text_gray.Update();
       this->info_text_gray.Draw ( video_buffer );

@@ -43,11 +43,11 @@ void Game::onInit ( void )
 
   this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 );
 
-  this->score_text.Load ( SCORE_FONTFACE, 32 );
-  this->score_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // white
+  this->score_text.Load ( SCORE_FONTFACE, nom::Color::White, 36 );
+  this->score_text.setColor ( nom::Color::White );
 
   this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
-  this->gameOver_text.setTextColor ( nom::Color ( 255, 255, 255 ) ); // color: red
+  this->gameOver_text.setColor ( nom::Color::White );
 
   this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
@@ -397,7 +397,7 @@ void Game::showCardInfoBox ( void* video_buffer )
     if ( selectedCard.getID() != 0 )
     {
       this->info_text.setText ( std::to_string ( selectedCard.getID() ) );
-      signed int text_width = this->info_text.getTextWidth ();
+      nom::int32 text_width = this->info_text.getFontWidth ();
 
       this->debug_box.Draw ( video_buffer );
 
@@ -411,7 +411,7 @@ void Game::showCardInfoBox ( void* video_buffer )
   if ( selectedCard.getName().length() != 0 || selectedCard.getName() != "\0" )
   {
     this->info_text.setText ( selectedCard.getName() );
-    unsigned int text_width = this->info_text.getTextWidth();
+    nom::int32 text_width = this->info_text.getFontWidth();
     this->info_small_text.setText ( "INFO" );
 
     this->info_box.Draw ( video_buffer );
@@ -759,8 +759,9 @@ void Game::Draw ( void *video_buffer )
     if ( this->player[PLAYER1].getScore() > this->player[PLAYER2].getScore() ) // player 1 wins
     {
       this->gameOver_text.setText ( "Player 1 wins!" );
-      signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.setPosition ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      nom::int32 width = this->gameOver_text.getFontWidth();
+
+      this->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, SCREEN_HEIGHT / 2 ) );
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
@@ -794,8 +795,8 @@ void Game::Draw ( void *video_buffer )
     else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
     {
       this->gameOver_text.setText ( "Player 2 wins!" );
-      signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.setPosition ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      nom::int32 width = this->gameOver_text.getFontWidth();
+      this->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 ) );
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
@@ -829,8 +830,8 @@ void Game::Draw ( void *video_buffer )
     else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
     {
       this->gameOver_text.setText ( "Tie!" );
-      signed int width = this->gameOver_text.getTextWidth ();
-      this->gameOver_text.setPosition ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
+      nom::int32 width = this->gameOver_text.getFontWidth();
+      this->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 ) );
       this->gameOver_text.Update();
       this->gameOver_text.Draw ( video_buffer );
 
