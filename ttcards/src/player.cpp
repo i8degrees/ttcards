@@ -11,11 +11,9 @@ void Free_CardHand ( CardHand* player_cards )
 {
   // Do nothing custom (smart pointer) deleter
   //
-  // This is a patch / workaround until I get around to replacing all instances
-  // of the CardHand pointer reference with the smart pointer equivalent; we
-  // produce a segmentation fault without this custom deleter right now due to
-  // the fact of custom memory allocation being done before it reaches us, and
-  // we don't own this pointer to begin with, either.
+  // We produce a segmentation fault without this custom deleter right now due
+  // to the fact that CardHand is an array (AKA smart pointers call delete, not
+  // delete[].
 }
 
 Player::Player ( void ) : coords ( 0, 0, 0, 0 ), id ( 0 ), state ( 0 ),

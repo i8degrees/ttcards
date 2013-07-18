@@ -38,11 +38,11 @@ set ( TTCARDS_SOURCE
 #     Required Dependencies:
 find_package ( SDL REQUIRED )
 include_directories ( ${SDL_INCLUDE_DIR} )
-set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} "SDLmain" )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} "SDLmain" ) #FIXME
 
 if ( NOT TTCARDS_NOMLIB_COMPILE )
   find_package ( nomlib REQUIRED )
-  include_directories ( "${NOMLIB_INCLUDE_DIR}" ) # FIXME
+  include_directories ( "${NOMLIB_INCLUDE_DIR}" )
   set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
 endif ( NOT TTCARDS_NOMLIB_COMPILE )
 
