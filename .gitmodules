@@ -1,6 +1,6 @@
-[submodule "nomJSON"]
-	path = nomJSON
-  url = git://github.com/i8degrees/nomJSON.git
-[submodule "json_spirit"]
-	path = json_spirit
-	url = git://github.com/i8degrees/json_spirit.git
+[submodule "extlibs/json_spirit"]
+	path = extlibs/json_spirit
+	url = https://github.com/i8degrees/json_spirit.git
+[submodule "extlibs/nomJSON"]
+	path = extlibs/nomJSON
+	url = https://github.com/i8degrees/nomJSON.git

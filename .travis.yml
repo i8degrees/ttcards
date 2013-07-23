@@ -24,6 +24,8 @@ before_install:
   - make -j4
   - sudo make install
   - make clean
+# json_spirit initialization:
+  - git submodule update --init --recursive
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build build-osx && cd build

@@ -1,7 +1,25 @@
 cmake_minimum_required ( VERSION 2.8 )
 
+#     Project configuration
+set ( PROJECT_VERSION_MAJOR 0 )
+set ( PROJECT_VERSION_MINOR 7 )
+set ( PROJECT_VERSION_PATCH 0 )
+
+project ( ttcards ) # $PROJECT_NAME
+
+set ( SRC_DIR "src" ) # ttcards/src
+
+set ( EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR} )
+
+# relative path -- from project source -- to game resources
+set ( TTCARDS_RESOURCES_DIR "Resources" )
+#set ( TTCARDS_RESOURCES ) # TODO: BUILD_OSXAPP
+
+# relative path -- from resources directory -- to audio assets
+set ( TTCARDS_RESOURCES_AUDIO_DIR "${TTCARDS_RESOURCES_DIR}/audio" )
+
 #     CMake Environment
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/" )
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 
 option ( BUILD_RELEASE "Build Release target; defaults to Debug" off )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
@@ -25,18 +43,15 @@ else ( NOT BUILD_RELEASE )
 endif ( BUILD_RELEASE )
 
 if ( CMAKE_GENERATOR STREQUAL Xcode )
+
     message ( "Setting Xcode-specific project settings " )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
+
 endif ( CMAKE_GENERATOR STREQUAL Xcode )
 
 #     Required Dependencies
-#
-# set false to build & install nomlib & json_spirit from external sources;
-# otherwise let us take over and build our own dependencies
-option ( TTCARDS_NOMLIB_COMPILE "Let TTcards compile nomlib" off )
 option ( TTCARDS_JSON_SPIRIT_COMPILE "Let TTcards compile json_spirit" off )
-
 #     Optional Dependencies
 option ( EMCC "EMCC" off )
 option ( NOMJSON_LIBRARY "nomJSON" off )
@@ -59,47 +74,159 @@ else ()
 endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
 
 if ( EMCC )
+
   set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
   set ( EMCC_CFLAGS --jcache )
   set ( EMCC_TARGET libnomlib.bc )
+
 endif ( EMCC )
 
 # global project doxygen defaults
 set ( DOXYGEN_COMMAND doxygen )
 set ( DOXYGEN_CONFIG_FILE doxygen.cfg )
 
-set ( SRC_DIR src ) # project_dir/src
-
-# TTcards dependencies
+#     TTcards dependencies
 if ( TTCARDS_JSON_SPIRIT_COMPILE )
-  message ( "Building dependency json_spirit" )
-  add_subdirectory ( json_spirit )
-  include_directories ( json_spirit )
+  message ( "Building dependency json_spirit." )
+  add_subdirectory ( extlibs/json_spirit )
+  include_directories ( extlibs/json_spirit )
   set ( REQUIRED_LIBS ${REQUIRED_LIBS} "json_spirit" ) # FIXME
 endif ( TTCARDS_JSON_SPIRIT_COMPILE )
 
-if ( TTCARDS_NOMLIB_COMPILE )
-  message ( "Building dependency nomlib" )
-  add_subdirectory ( nomlib )
-  include_directories ( nomlib/include )
-  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "nomlib" ) # FIXME
-endif ( TTCARDS_NOMLIB_COMPILE )
-
 if ( NOMJSON_LIBRARY )
-  message ( "Building dependency nomJSON" )
-  add_subdirectory ( nomJSON )
-  include_directories ( nomjson/src )
-  # set ( REQUIRED_LIBS ${REQUIRED_LIBS} "nomjson" )
+  message ( "Building dependency nomJSON." )
+  add_subdirectory ( extlibs/nomJSON )
+  include_directories ( extlibs/nomJSON/src )
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "nomJSON" )
 endif ( NOMJSON_LIBRARY )
 
-add_subdirectory ( ttcards )
+set ( TTCARDS_SOURCE
+       ${SRC_DIR}/board.cpp
+       ${SRC_DIR}/card.cpp
+       ${SRC_DIR}/card_debug.cpp
+       ${SRC_DIR}/card_view.cpp
+       ${SRC_DIR}/card_collection.cpp
+       ${SRC_DIR}/card_hand.cpp
+       ${SRC_DIR}/card_rules.cpp
+       ${SRC_DIR}/cfg.cpp
+       ${SRC_DIR}/main.cpp
+       ${SRC_DIR}/player.cpp
+       #${SRC_DIR}/cpu_player.cpp
+       ${SRC_DIR}/Game.cpp
+       ${SRC_DIR}/Game_debug.cpp
+       ${SRC_DIR}/GameOverState.cpp
+       ${SRC_DIR}/CardsMenuState.cpp
+    )
+
+#     Required Dependencies:
+find_package ( SDL REQUIRED )
+include_directories ( ${SDL_INCLUDE_DIR} )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} "SDLmain" ) #FIXME
+
+find_package ( nomlib REQUIRED )
+include_directories ( "${NOMLIB_INCLUDE_DIR}" )
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
+
+if ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
+  find_library ( json_spirit REQUIRED )
+  include_directories ( /usr/local/include/json_spirit ) # FIXME
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${JSON_SPIRIT_LIBRARY} )
+endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
+
+#     Linking Dependencies & Packaging / Installation:
+
+if ( BUILD_OSXAPP ) # OSX App Bundle
+  set ( PROJECT_VERSION_TYPE 2 )
+  message ( "Building OSX App Bundle" )
+
+  # Reset bin path; we are basically in Release mode
+  # (This might change in the future... need to rethink structure of all this)
+  set ( EXECUTABLE_OUTPUT_PATH )
+
+  add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
+  target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
+
+  install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
+
+#     Install dependencies
+#     TODO: when ${NOMLIB_LIBRARY} is a dylib, put it under bin/${PROJECT_NAME}.app/Contents/Libraries
+  if ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
+
+    install ( DIRECTORY ${NOMLIB_LIBRARY} DESTINATION bin/${PROJECT_NAME}.app/Contents/Frameworks
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
+  else ( NOT IS_DIRECTORY ${NOMLIB_LIBRARY} )
+    # FIXME: we need the actual file, not the symbolic link
+    install ( FILES ${NOMLIB_LIBRARY} DESTINATION bin/${PROJECT_NAME}.app/Contents/Frameworks )
+
+  endif ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
+
+#     Install game resources
+  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents
+            OPTIONAL
+            PATTERN ".*" EXCLUDE # do not include dotfiles
+          )
+
+#     Install App bundle icon
+  install ( FILES ${TTCARDS_RESOURCES_DIR}/ttcards.icns DESTINATION bin/${PROJECT_NAME}.app/Contents
+            OPTIONAL # do not include optional features
+          )
+
+  set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                          MACOSX_BUNDLE_INFO_PLIST
+                          "${PROJECT_SOURCE_DIR}/cmake/Info.plist.in"
+                          MACOSX_BUNDLE_BUNDLE_NAME
+                          "TTcards" #${PROJECT_NAME}
+                          MACOSX_BUNDLE_ICON_FILE
+                          "ttcards.icns"
+                          MACOSX_BUNDLE_INFO_STRING
+                          "${PROJECT_NAME} (Triple Triad Remake) version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} by Jeffrey Carpenter"
+                          MACOSX_BUNDLE_GUI_IDENTIFIER
+                          "org.dev.${PROJECT_NAME}"
+                          MACOSX_BUNDLE_SHORT_VERSION_STRING
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                          MACOSX_BUNDLE_LONG_VERSION_STRING
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+                          MACOSX_BUNDLE_BUNDLE_VERSION
+                          "${CMAKE_VERSION}"
+                          MACOSX_BUNDLE_COPYRIGHT
+                          "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
+                        )
+
+#     Run app target for Sublime Text Editor Custom Build Settings
+  add_custom_target ( run COMMAND open -a "${CMAKE_INSTALL_PREFIX}/bin/ttcards.app" )
+
+else ( NOT BUILD_OSXAPP ) # POSIX Installation
+
+  message ( "Building POSIX install" )
+
+  add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
+  target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
+
+  install ( TARGETS ${PROJECT_NAME} DESTINATION bin
+            CONFIGURATIONS Release
+          )
+
+#     Install game resources
+  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION share/${PROJECT_NAME}
+            CONFIGURATIONS Release
+            OPTIONAL
+            PATTERN ".*" EXCLUDE # do not include dotfiles -- *cough* .DS_Store
+          )
+
+#     Run app target for Sublime Text Editor Custom Build Settings
+  add_custom_target ( run
+                      COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/${PROJECT_NAME}
+                    )
+
+endif ( BUILD_OSXAPP )
 
 if ( BUILD_RELEASE OR BUILD_OSXAPP )
 
   #     Uninstall target
 
   configure_file  (
-                    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+                    "${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
                     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
                     IMMEDIATE @ONLY
                   )
@@ -110,3 +237,14 @@ if ( BUILD_RELEASE OR BUILD_OSXAPP )
                     )
 
 endif ( BUILD_RELEASE OR BUILD_OSXAPP )
+
+
+# TODO: this is for tracking installation paths, versions, etc.
+configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
+                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
+                )
+
+#     FIXME: doxygen docs generation
+add_custom_target ( ttcards-docs
+                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
+                  )
