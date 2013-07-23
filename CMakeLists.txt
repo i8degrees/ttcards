@@ -61,8 +61,6 @@ if ( EMCC )
   set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
   set ( EMCC_CFLAGS --jcache )
   set ( EMCC_TARGET libgamelib.bc )
-  set ( LLVM_ANALYZER_BIN "$ENV{HOME}/local/checker/scan-build" )
-  set ( LLVM_ANALYZER_ARGS -k --use-c++=/usr/bin/clang++ /usr/bin/clang++ -c )
 endif ( EMCC )
 
 # global project doxygen defaults
