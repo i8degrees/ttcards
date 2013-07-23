@@ -103,8 +103,6 @@ class Game: public nom::IState
 
     nom::SDL_MessageBox info_box;
     nom::SDL_MessageBox debug_box;
-    nom::SDL_Gradient linear;
-    std::vector<nom::Color> msgbox;
 
     /// scoreboard text
     nom::SDL_Font score_text;

@@ -9,6 +9,9 @@
 
 CardsMenu::CardsMenu ( void )
 {
+  nom::SDL_Gradient linear;
+  std::vector<nom::Color> msgbox;
+
   unsigned int pid = 0; // temp var for for loop iteration
 
   #ifdef DEBUG_CARDS_MENU_OBJ
@@ -30,22 +33,27 @@ CardsMenu::CardsMenu ( void )
   for ( pid = 0; pid < this->collection.cards.size(); pid++ )
     this->collection.cards[pid].setPlayerID ( PLAYER1_ID );
 
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
-  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
+  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
 
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
-  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
+  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
 
-  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
+  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
 
-  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
+  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
 
-  this->menu_box.Init ( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y, PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT, msgbox, linear );
+  this->menu_box = nom::SDL_MessageBox  ( PICK_CARDS_MENU_WIDTH,
+                                          PICK_CARDS_MENU_HEIGHT,
+                                          PICK_CARDS_MENU_ORIGIN_X,
+                                          PICK_CARDS_MENU_ORIGIN_Y,
+                                          msgbox, linear
+                                        );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->collection.cards.size() / per_page;

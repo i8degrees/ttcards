@@ -35,6 +35,8 @@ void Game::onExit ( void )
 
 void Game::onInit ( void )
 {
+  nom::SDL_Gradient linear;
+  std::vector<nom::Color> msgbox;
   nom::int32 idx = 0; // for loop iterations
 
   this->collection.LoadJSON ( CARDS_DB );
@@ -88,17 +90,17 @@ void Game::onInit ( void )
 
   this->rules.setRules ( 1 );
 
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
-  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
+  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
 
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
-  this->msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
+  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
 
-  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
+  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
 
-  this->msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
-  this->msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
+  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
+  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
   #ifndef DEBUG_GAME
     this->debug_box.disable ();
@@ -107,8 +109,15 @@ void Game::onInit ( void )
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->info_box.Init ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y, INFO_BOX_WIDTH, INFO_BOX_HEIGHT, msgbox, linear );
-  this->debug_box.Init ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y, DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT, msgbox, linear );
+  this->info_box = nom::SDL_MessageBox  ( INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
+                                          INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+                                          msgbox, linear
+                                        );
+
+  this->debug_box = nom::SDL_MessageBox ( DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
+                                          DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+                                          msgbox, linear
+                                        );
 
   #ifdef DEBUG_GAME
     this->debugCardsNoRuleset();

@@ -69,8 +69,6 @@ class CardsMenu: public nom::IState
     CardDebug debug;
 
     nom::SDL_MessageBox menu_box;
-    nom::SDL_Gradient linear;
-    std::vector<nom::Color> msgbox;
 
     /// card rendering
     CardView card;
