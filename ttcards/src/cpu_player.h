@@ -11,8 +11,6 @@
 #include <iostream>
 #include <string>
 
-#include "gamelib.h"
-
 #include "cfg.h"
 #include "card_debug.h"
 #include "player.h"

@@ -61,7 +61,7 @@ endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
 if ( EMCC )
   set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
   set ( EMCC_CFLAGS --jcache )
-  set ( EMCC_TARGET libgamelib.bc )
+  set ( EMCC_TARGET libnomlib.bc )
 endif ( EMCC )
 
 # global project doxygen defaults
@@ -80,9 +80,9 @@ endif ( TTCARDS_JSON_SPIRIT_COMPILE )
 
 if ( TTCARDS_NOMLIB_COMPILE )
   message ( "Building dependency nomlib" )
-  add_subdirectory ( gamelib )
-  include_directories ( gamelib/include )
-  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "gamelib" ) # FIXME
+  add_subdirectory ( nomlib )
+  include_directories ( nomlib/include )
+  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "nomlib" ) # FIXME
 endif ( TTCARDS_NOMLIB_COMPILE )
 
 if ( NOMJSON_LIBRARY )
