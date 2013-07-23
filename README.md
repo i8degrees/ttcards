@@ -17,7 +17,7 @@ the necessary libraries and build tools installed:
 7. make
 8. cd ../ttcards; ./ttcards
 
-* Without the full data folder package, you won't get very far into execution
+* Without the full resources folder package, you won't get very far into execution
 before a crash occurs!
 
 ## Dependencies

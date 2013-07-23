@@ -33,63 +33,63 @@ const nom::int32 BOARD_GRID_HEIGHT = 3;
 // Resource configuration
 std::string WORKING_DIR;
 
-const std::string APP_ICON =            WORKING_DIR + "data/icon.bmp";
-const std::string CARDS_DB =            WORKING_DIR + "data/cards.json";
+const std::string APP_ICON =            WORKING_DIR + "icon.bmp";
+const std::string CARDS_DB =            WORKING_DIR + "cards.json";
 
-const std::string SCORE_FONTFACE =      WORKING_DIR + "data/fonts/EnvyCodeRb.ttf";
+const std::string SCORE_FONTFACE =      WORKING_DIR + "fonts/EnvyCodeRb.ttf";
 
 #if SCALE_FACTOR == 2 // high resolution (scale me up times two)
 
-  const std::string CARD_FONTFACE =       WORKING_DIR + "data/fonts/hires/2/VIII_cards.png";
-  const std::string INFO_FONTFACE =       WORKING_DIR + "data/fonts/hires/2/VIII.png";
-  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "data/fonts/hires/2/VIII_small.png";
+  const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/hires/2/VIII_cards.png";
+  const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/hires/2/VIII.png";
+  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/hires/2/VIII_small.png";
 
-  const std::string BOARD_BACKGROUND =    WORKING_DIR + "data/images/hires/2/board.png";
-  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "data/images/hires/2/game-over_background.png";
-  const std::string CARD_ELEMENTS =       WORKING_DIR + "data/images/hires/2/elements.png";
-  const std::string CARD_FACES =          WORKING_DIR + "data/images/hires/2/faces.png";
-  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "data/images/hires/2/backgrounds.png";
-  const std::string INTERFACE_CURSOR =    WORKING_DIR + "data/images/hires/2/cursors.png";
-  const std::string MENU_ELEMENTS =       WORKING_DIR + "data/images/hires/2/menu_elements.png";
+  const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/hires/2/board.png";
+  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/hires/2/game-over_background.png";
+  const std::string CARD_ELEMENTS =       WORKING_DIR + "images/hires/2/elements.png";
+  const std::string CARD_FACES =          WORKING_DIR + "images/hires/2/faces.png";
+  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/hires/2/backgrounds.png";
+  const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/hires/2/cursors.png";
+  const std::string MENU_ELEMENTS =       WORKING_DIR + "images/hires/2/menu_elements.png";
 
 #elif SCALE_FACTOR == 3 // high resolution (scale me up times three)
 
-  const std::string CARD_FONTFACE =       WORKING_DIR + "data/fonts/hires/3/VIII_cards.png";
-  const std::string INFO_FONTFACE =       WORKING_DIR + "data/fonts/hires/3/VIII.png";
-  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "data/fonts/hires/3/VIII_small.png";
+  const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/hires/3/VIII_cards.png";
+  const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/hires/3/VIII.png";
+  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/hires/3/VIII_small.png";
 
-  const std::string BOARD_BACKGROUND =    WORKING_DIR + "data/images/hires/3/board.png";
-  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "data/images/hires/3/game-over_background.png";
-  const std::string CARD_ELEMENTS =       WORKING_DIR + "data/images/hires/3/elements.png";
-  const std::string CARD_FACES =          WORKING_DIR + "data/images/hires/3/faces.png";
-  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "data/images/hires/3/backgrounds.png";
-  const std::string INTERFACE_CURSOR =    WORKING_DIR + "data/images/hires/3/cursors.png";
-  const std::string MENU_ELEMENTS =       WORKING_DIR + "data/images/hires/3/menu_elements.png";
+  const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/hires/3/board.png";
+  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/hires/3/game-over_background.png";
+  const std::string CARD_ELEMENTS =       WORKING_DIR + "images/hires/3/elements.png";
+  const std::string CARD_FACES =          WORKING_DIR + "images/hires/3/faces.png";
+  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/hires/3/backgrounds.png";
+  const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/hires/3/cursors.png";
+  const std::string MENU_ELEMENTS =       WORKING_DIR + "images/hires/3/menu_elements.png";
 
 #else // defaults to original scale (low resolution)
 
-  const std::string CARD_FONTFACE =       WORKING_DIR + "data/fonts/VIII_cards.png";
-  const std::string INFO_FONTFACE =       WORKING_DIR + "data/fonts/VIII.png";
-  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "data/fonts/VIII_small.png";
+  const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/VIII_cards.png";
+  const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/VIII.png";
+  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/VIII_small.png";
 
-  const std::string BOARD_BACKGROUND =    WORKING_DIR + "data/images/board.png";
-  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "data/images/game-over_background.png";
-  const std::string CARD_ELEMENTS =       WORKING_DIR + "data/images/elements.png";
-  const std::string CARD_FACES =          WORKING_DIR + "data/images/faces.png";
-  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "data/images/backgrounds.png";
-  const std::string INTERFACE_CURSOR =    WORKING_DIR + "data/images/cursors.png";
-  const std::string MENU_ELEMENTS =       WORKING_DIR + "data/images/menu_elements.png";
+  const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/board.png";
+  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/game-over_background.png";
+  const std::string CARD_ELEMENTS =       WORKING_DIR + "images/elements.png";
+  const std::string CARD_FACES =          WORKING_DIR + "images/faces.png";
+  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/backgrounds.png";
+  const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/cursors.png";
+  const std::string MENU_ELEMENTS =       WORKING_DIR + "images/menu_elements.png";
 
 #endif // SCALE_FACTOR defined
 
-const std::string CURSOR_MOVE =         WORKING_DIR + "data/audio/cursor_move.wav";
-const std::string CURSOR_CANCEL =       WORKING_DIR + "data/audio/cursor_cancel.wav";
-const std::string CURSOR_WRONG =        WORKING_DIR + "data/audio/cursor_wrong.wav";
-const std::string CARD_FLIP =           WORKING_DIR + "data/audio/card_flip.wav";
-const std::string CARD_PLACE =          WORKING_DIR + "data/audio/card_place.wav";
-const std::string MUSIC_TRACK =         WORKING_DIR + "data/audio/15_ShuffleOrBoogie.ogg";
-const std::string MUSIC_ALT_TRACK =     WORKING_DIR + "data/audio/06_ShuffleOrBoogie.ogg";
-const std::string MUSIC_WIN_TRACK =     WORKING_DIR + "data/audio/05_TheWinner.ogg";
+const std::string CURSOR_MOVE =         WORKING_DIR + "audio/cursor_move.wav";
+const std::string CURSOR_CANCEL =       WORKING_DIR + "audio/cursor_cancel.wav";
+const std::string CURSOR_WRONG =        WORKING_DIR + "audio/cursor_wrong.wav";
+const std::string CARD_FLIP =           WORKING_DIR + "audio/card_flip.wav";
+const std::string CARD_PLACE =          WORKING_DIR + "audio/card_place.wav";
+const std::string MUSIC_TRACK =         WORKING_DIR + "audio/15_ShuffleOrBoogie.ogg";
+const std::string MUSIC_ALT_TRACK =     WORKING_DIR + "audio/06_ShuffleOrBoogie.ogg";
+const std::string MUSIC_WIN_TRACK =     WORKING_DIR + "audio/05_TheWinner.ogg";
 
 const int ELEMENT_NONE = 0;
 const int ELEMENT_EARTH = 1;

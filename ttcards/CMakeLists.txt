@@ -10,12 +10,12 @@ set ( SRC_DIR "src" ) # ttcards/src
 
 set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 
-# relative path -- from project source -- to game data
-set ( TTCARDS_DATA_DIR "data" )
+# relative path -- from project source -- to game resources
+set ( TTCARDS_RESOURCES_DIR "Resources" )
 #set ( TTCARDS_RESOURCES ) # TODO: BUILD_OSXAPP
 
-# relative path -- from data dir -- to audio assets
-set ( TTCARDS_DATA_AUDIO_DIR "${TTCARDS_DATA_DIR}/audio" )
+# relative path -- from resources directory -- to audio assets
+set ( TTCARDS_RESOURCES_AUDIO_DIR "${TTCARDS_RESOURCES_DIR}/audio" )
 
 set ( TTCARDS_SOURCE
        ${SRC_DIR}/board.cpp
@@ -80,20 +80,14 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
 
   endif ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
 
-#     Install game data
-  install ( DIRECTORY ${TTCARDS_DATA_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources
-            PATTERN ".*" EXCLUDE # do not include dotfiles
-            PATTERN "audio/*" EXCLUDE # do not include optional features
-          )
-
-  #   Install optional audio data
-  install ( DIRECTORY ${TTCARDS_DATA_AUDIO_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources/${TTCARDS_DATA_DIR}
+#     Install game resources
+  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
 #     Install App bundle icon
-  install ( FILES ${TTCARDS_DATA_DIR}/ttcards.icns DESTINATION bin/${PROJECT_NAME}.app/Contents/Resources
+  install ( FILES ${TTCARDS_RESOURCES_DIR}/ttcards.icns DESTINATION bin/${PROJECT_NAME}.app/Contents
             OPTIONAL # do not include optional features
           )
 
@@ -128,22 +122,15 @@ else ( NOT BUILD_OSXAPP ) # POSIX Installation
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
 
-#     Install game data;
   install ( TARGETS ${PROJECT_NAME} DESTINATION bin
             CONFIGURATIONS Release
           )
 
-  install ( DIRECTORY ${TTCARDS_DATA_DIR} DESTINATION share/${PROJECT_NAME}
+#     Install game resources
+  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION share/${PROJECT_NAME}
             CONFIGURATIONS Release
-            PATTERN ".*" EXCLUDE # do not include dotfiles -- *cough* .DS_Store
-            PATTERN "audio/*" EXCLUDE
-          )
-
-#     Install optional audio data
-  install ( DIRECTORY ${TTCARDS_DATA_AUDIO_DIR} DESTINATION share/${PROJECT_NAME}/${TTCARDS_DATA_DIR}
             OPTIONAL
-            CONFIGURATIONS Release
-            PATTERN ".*" EXCLUDE
+            PATTERN ".*" EXCLUDE # do not include dotfiles -- *cough* .DS_Store
           )
 
 #     Run app target for Sublime Text Editor Custom Build Settings

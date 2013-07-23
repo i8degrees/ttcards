@@ -10,7 +10,7 @@
     {
       "name": "docs",
       "path": "docs",
-      "folder_exclude_patterns": ["build", "tmp", "public", "docs/man", "data" ]
+      "folder_exclude_patterns": ["build", "tmp", "public", "docs/man", "Resources" ]
     },
 
     {

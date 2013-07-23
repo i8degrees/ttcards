@@ -23,14 +23,14 @@ App::App ( nom::int32 argc, char* argv[] )
 
 #if TTCARDS_BUILD_MODE == 1 // Release target
 
-  WORKING_DIR = "/usr/local/share/ttcards/";
+  WORKING_DIR = "/usr/local/share/ttcards/Resources/";
 
 #elif TTCARDS_BUILD_MODE == 0 // Debug AKA development target
 
   // This isn't an absolute guarantee that we can do this reliably; we must use
   // argv[0] as we need to know the *starting* directory of where ttcards resides
   // from, not the current working directory in which it is executed from
-  WORKING_DIR = dir.getDirName ( argv[0] );
+  WORKING_DIR = dir.getDirName ( argv[0] ) + "/Resources/";
 
 #elif TTCARDS_BUILD_MODE == 2 // OSX App Bundle
 

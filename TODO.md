@@ -1,6 +1,6 @@
 # TODO
 
-* Resolve data paths issue when installed under /usr/local
+* Resolve resources paths issue when installed under /usr/local
 * Use new preprocessor debugging code methodology from nomlib
 
 * Rename header file extensions to .hpp
