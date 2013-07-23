@@ -1,7 +1,6 @@
 cmake_minimum_required ( VERSION 2.8 )
 
 #     CMake Environment
-set ( CMAKE_VERBOSE_MAKEFILE true )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/" )
 
 option ( BUILD_RELEASE "Build Release target; defaults to Debug" off )
@@ -13,14 +12,16 @@ if ( BUILD_UNIVERSAL_LIB )
   message ( "Building an OSX Universal Library" )
 endif ( BUILD_UNIVERSAL_LIB )
 
-if ( BUILD_RELEASE ) # ...why do I have to even do this? -_-
+if ( BUILD_RELEASE )
   set ( CMAKE_BUILD_TYPE Release )
+  #set ( CMAKE_VERBOSE_MAKEFILE false )
   set ( PROJECT_VERSION_TYPE 1 )
-  message ( "Release target activated." )
+  message ( "Building Release target." )
 else ( NOT BUILD_RELEASE )
   set ( CMAKE_BUILD_TYPE Debug )
   set ( PROJECT_VERSION_TYPE 0 )
-  message ( "Debug target activated." )
+  #set ( CMAKE_VERBOSE_MAKEFILE true )
+  message ( "Building Debug target." )
 endif ( BUILD_RELEASE )
 
 if ( CMAKE_GENERATOR STREQUAL Xcode )
