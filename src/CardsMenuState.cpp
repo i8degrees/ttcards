@@ -48,10 +48,10 @@ CardsMenu::CardsMenu ( void )
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
 
-  this->menu_box = nom::SDL_MessageBox  ( PICK_CARDS_MENU_WIDTH,
-                                          PICK_CARDS_MENU_HEIGHT,
-                                          PICK_CARDS_MENU_ORIGIN_X,
+  this->menu_box = nom::SDL_MessageBox  ( PICK_CARDS_MENU_ORIGIN_X,
                                           PICK_CARDS_MENU_ORIGIN_Y,
+                                          PICK_CARDS_MENU_WIDTH,
+                                          PICK_CARDS_MENU_HEIGHT,
                                           msgbox, linear
                                         );
 

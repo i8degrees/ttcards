@@ -110,13 +110,13 @@ void Game::onInit ( void )
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::SDL_MessageBox  ( INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                          INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+  this->info_box = nom::SDL_MessageBox  ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+                                          INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
                                           msgbox, linear
                                         );
 
-  this->debug_box = nom::SDL_MessageBox ( DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
-                                          DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+  this->debug_box = nom::SDL_MessageBox ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+                                          DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
                                           msgbox, linear
                                         );
 
