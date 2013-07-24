@@ -12,7 +12,7 @@
 #endif
 
 // Global configuration
-std::string APP_NAME = "TTcards";
+const std::string APP_NAME = "TTcards";
 
 const int SCREEN_WIDTH = 384 * SCALE_FACTOR;
 const int SCREEN_HEIGHT = 224 * SCALE_FACTOR;

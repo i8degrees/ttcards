@@ -35,7 +35,7 @@
 ///
 #define SCALE_FACTOR 2
 
-extern std::string APP_NAME;
+extern const std::string APP_NAME;
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
