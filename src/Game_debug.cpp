@@ -7,8 +7,6 @@
 ******************************************************************************/
 #include "Game.hpp"
 
-using namespace nom;
-
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
 void Game::debugCardsDiscard ( void )
 {
