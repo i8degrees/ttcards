@@ -10,6 +10,8 @@
 
 #include <string>
 #include <iostream>
+#include <chrono>
+#include <random>
 
 #ifdef EMSCRIPTEN
   #include "emscripten.h"

@@ -35,8 +35,12 @@ void Game::onExit ( void )
 
 void Game::onInit ( void )
 {
-  nom::Gradient linear;
+  nom::int32 seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine rand_generator ( seed );
+  std::uniform_int_distribution<nom::int32> distribution ( 1, MAX_COLLECTION );
+
   std::vector<nom::Color> msgbox;
+  nom::Gradient linear;
   nom::OpenAL::SoundBuffer sound_buffer;
   nom::int32 idx = 0; // for loop iterations
 
@@ -120,13 +124,26 @@ void Game::onInit ( void )
                                       msgbox, linear
                                     );
 
-  #ifdef DEBUG_GAME
-    this->debugCardsNoRuleset();
-    //this->debugCardsSameRuleset();
-  #endif
+#ifdef DEBUG_GAME
+  std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
+  //this->debugCardsNoRuleset();
+  //this->debugCardsSameRuleset();
+#endif
+
+  // Cards are picked out using our random number equal distribution generator; this needs to
+  // be a value between 1..MAX_COLLECTION in order to yield an ID in the cards
+  // database.
+  nom::uint32 card_id = 1;
+
+  for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  {
+    card_id = distribution ( rand_generator );
 
   //this->music.PlayMusicTrack ( -1 );
   //this->music.PauseMusic ();
+    if ( this->hand[1].addCard ( this->collection.cards[card_id] ) == false )
+      break;
+  }
 
   this->player[0].setID ( Card::PLAYER1 );
   this->player[1].setID ( Card::PLAYER2 );
