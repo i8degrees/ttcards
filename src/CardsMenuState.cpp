@@ -202,9 +202,10 @@ void CardsMenu::onMouseLeftButtonDown ( int32_t x, int32_t y )
   // TODO
 }
 
-void CardsMenu::onMouseRightButtonDown ( int32_t x, int32_t y )
+void CardsMenu::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 {
-  // TODO
+  if ( this->hand.addCard ( this->selectedCard ) )
+    this->card_place.Play();
 }
 
 void CardsMenu::onMouseWheel ( bool up, bool down )

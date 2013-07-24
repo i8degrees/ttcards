@@ -50,6 +50,7 @@ class Game: public nom::IState
   private:
     void onKeyDown ( int32_t key, int32_t mod );
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
+    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y );
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( int32_t which, int32_t button );
 

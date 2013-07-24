@@ -42,7 +42,7 @@ class CardsMenu: public nom::IState
     void onKeyDown ( int32_t key, int32_t mod );
     void onJoyButtonDown ( int32_t which, int32_t button );
     void onMouseLeftButtonDown ( int32_t x, int32_t y );
-    void onMouseRightButtonDown ( int32_t x, int32_t y );
+    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y );
     void onMouseWheel ( bool up, bool down );
 
     void reloadDebugFile ( void );

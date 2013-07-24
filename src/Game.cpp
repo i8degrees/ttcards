@@ -322,6 +322,11 @@ void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
     this->moveTo ( coords.x, coords.y );
 }
 
+void Game::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
+{
+  this->lockSelectedCard();
+}
+
 void Game::onMouseWheel ( bool up, bool down )
 {
   if ( this->cursor.getState() == 0 )
