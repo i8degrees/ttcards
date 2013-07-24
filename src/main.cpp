@@ -75,8 +75,6 @@ App::App ( nom::int32 argc, char* argv[] )
     }
   }
 
-  std::srand ( ( unsigned ) time ( 0 ) );
-
 #ifndef EMSCRIPTEN
   display.setWindowIcon ( APP_ICON );
 #endif

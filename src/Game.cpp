@@ -65,8 +65,6 @@ void Game::onInit ( void )
   this->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->cursor.setState ( 0 ); // default state; player hand select
 
-  //this->music.LoadMusicTrack ( MUSIC_TRACK );
-
   this->player[0] = Player ( &this->hand[0] );
   this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
@@ -139,8 +137,6 @@ void Game::onInit ( void )
   {
     card_id = distribution ( rand_generator );
 
-  //this->music.PlayMusicTrack ( -1 );
-  //this->music.PauseMusic ();
     if ( this->hand[1].addCard ( this->collection.cards[card_id] ) == false )
       break;
   }
@@ -149,8 +145,6 @@ void Game::onInit ( void )
   this->player[1].setID ( Card::PLAYER2 );
 
   this->player_turn ( 0 );
-
-  //update.Start();
 
   sound_buffer.loadFromFile ( CURSOR_MOVE );
   this->cursor_move.setBuffer ( sound_buffer );
