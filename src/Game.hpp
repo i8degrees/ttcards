@@ -136,7 +136,6 @@ class Game: public nom::IState
     nom::Coords board_coords_map[9];
 
     nom::OpenAL::AudioDevice dev;
-    nom::OpenAL::SoundBuffer sound_buffer;
     //nom::OpenAL::SoundBuffer move_buffer;
     //nom::OpenAL::SoundBuffer cancel_buffer;
     //nom::OpenAL::SoundBuffer wrong_buffer;

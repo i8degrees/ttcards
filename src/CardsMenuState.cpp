@@ -76,6 +76,7 @@ CardsMenu::~CardsMenu ( void )
 
 void CardsMenu::onInit ( void )
 {
+  nom::OpenAL::SoundBuffer sound_buffer;
   unsigned int idx = 0; // iterator for cursor_coords_map
 
   this->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
@@ -107,14 +108,14 @@ void CardsMenu::onInit ( void )
     #endif
   }
 
-  this->sound_buffer.loadFromFile ( CURSOR_MOVE );
-  this->cursor_move.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CURSOR_MOVE );
+  this->cursor_move.setBuffer ( sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CURSOR_CANCEL );
-  this->cursor_cancel.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CURSOR_CANCEL );
+  this->cursor_cancel.setBuffer ( sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CARD_PLACE );
-  this->card_place.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CARD_PLACE );
+  this->card_place.setBuffer ( sound_buffer );
 
   //this->move_buffer.loadFromFile ( CURSOR_MOVE );
   //this->cursor_move.setBuffer ( this->move_buffer );

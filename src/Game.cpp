@@ -37,6 +37,7 @@ void Game::onInit ( void )
 {
   nom::SDL_Gradient linear;
   std::vector<nom::Color> msgbox;
+  nom::OpenAL::SoundBuffer sound_buffer;
   nom::int32 idx = 0; // for loop iterations
 
   this->collection.LoadJSON ( CARDS_DB );
@@ -134,20 +135,20 @@ void Game::onInit ( void )
 
   //update.Start();
 
-  this->sound_buffer.loadFromFile ( CURSOR_MOVE );
-  this->cursor_move.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CURSOR_MOVE );
+  this->cursor_move.setBuffer ( sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CURSOR_CANCEL );
-  this->cursor_cancel.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CURSOR_CANCEL );
+  this->cursor_cancel.setBuffer ( sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CURSOR_WRONG );
-  this->cursor_wrong.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CURSOR_WRONG );
+  this->cursor_wrong.setBuffer ( sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CARD_FLIP );
-  this->card_flip.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CARD_FLIP );
+  this->card_flip.setBuffer ( sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CARD_PLACE );
-  this->card_place.setBuffer ( this->sound_buffer );
+  sound_buffer.loadFromFile ( CARD_PLACE );
+  this->card_place.setBuffer ( sound_buffer );
 
   //this->move_buffer.loadFromFile ( CURSOR_MOVE );
   //this->cursor_move.setBuffer ( this->move_buffer );
