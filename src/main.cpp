@@ -6,6 +6,10 @@
 
 ******************************************************************************/
 
+#include <iostream>
+#include <string>
+#include <cstdlib>
+
 #ifdef EMSCRIPTEN
   #include "emscripten.h"
 #endif
