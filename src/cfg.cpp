@@ -7,7 +7,7 @@
 ******************************************************************************/
 #include "cfg.h"
 
-#ifndef SCALE_FACTOR
+#ifndef SCALE_FACTOR // we ought to already be defined, but just in case ...
   #define SCALE_FACTOR 1
 #endif
 
