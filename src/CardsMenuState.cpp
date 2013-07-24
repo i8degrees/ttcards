@@ -336,7 +336,7 @@ void CardsMenu::Draw ( void* video_buffer )
     }
 
     // Move on to the next card in stack to draw
-     // We calculate height after setting the text buffer for each card name
+    // We calculate height after setting the text buffer for each card name
     y_offset += this->info_text_height;
   }
 
