@@ -9,7 +9,7 @@
 
 CardsMenu::CardsMenu ( void )
 {
-  nom::SDL_Gradient linear;
+  nom::Gradient linear;
   std::vector<nom::Color> msgbox;
 
   unsigned int pid = 0; // temp var for for loop iteration
@@ -48,12 +48,12 @@ CardsMenu::CardsMenu ( void )
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
 
-  this->menu_box = nom::SDL_MessageBox  ( PICK_CARDS_MENU_ORIGIN_X,
-                                          PICK_CARDS_MENU_ORIGIN_Y,
-                                          PICK_CARDS_MENU_WIDTH,
-                                          PICK_CARDS_MENU_HEIGHT,
-                                          msgbox, linear
-                                        );
+  this->menu_box = nom::MessageBox  ( PICK_CARDS_MENU_ORIGIN_X,
+                                      PICK_CARDS_MENU_ORIGIN_Y,
+                                      PICK_CARDS_MENU_WIDTH,
+                                      PICK_CARDS_MENU_HEIGHT,
+                                      msgbox, linear
+                                    );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->collection.cards.size() / per_page;
@@ -93,7 +93,7 @@ void CardsMenu::onInit ( void )
   this->menu_element.Load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
   this->menu_element.setSheetDimensions ( 58, 16, 0, 0 );
 
-  this->cursor = nom::SDL_Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->cursor = nom::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image

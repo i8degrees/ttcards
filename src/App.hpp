@@ -43,7 +43,7 @@ class App: public nom::SDL_App // "is-a" relationship
 
   private:
     /// Display context
-    nom::SDL_Display display;
+    nom::Display display;
     /// Timer for tracking frames per second
     nom::FPS fps;
     /// Input events

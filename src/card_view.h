@@ -29,7 +29,7 @@ class CardView
     nom::Sprite card_face;
     nom::Sprite card_background;
     nom::Sprite card_element;
-    nom::SDL_BitmapFont card_text;
+    nom::BitmapFont card_text;
 };
 
 #endif // GAMEAPP_CARD_VIEW_HEADERS defined

@@ -55,20 +55,20 @@ class CardsMenu: public nom::IState
     void moveCursorDown ( void );
 
     /// our public / visible display context handle
-    nom::SDL_Display context;
+    nom::Display context;
     /// cards database
     Collection collection;
     /// Board background image
-    nom::SDL_Canvas background;
+    nom::Canvas background;
 
-    nom::SDL_BitmapFont info_text;
-    nom::SDL_BitmapFont info_small_text;
-    nom::SDL_BitmapFont info_text_gray;
+    nom::BitmapFont info_text;
+    nom::BitmapFont info_small_text;
+    nom::BitmapFont info_text_gray;
 
     /// debug support for card attributes
     CardDebug debug;
 
-    nom::SDL_MessageBox menu_box;
+    nom::MessageBox menu_box;
 
     /// card rendering
     CardView card;
@@ -78,7 +78,7 @@ class CardsMenu: public nom::IState
     Card selectedCard;
 
     /// interface cursor
-    nom::SDL_Cursor cursor;
+    nom::Cursor cursor;
     /// interface menu elements
     nom::Sprite menu_element;
 

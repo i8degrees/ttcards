@@ -96,7 +96,7 @@ App::~App ( void )
 void App::onEvent ( SDL_Event *event )
 {
   // Take care of our own events
-  SDL_Input::HandleInput ( event );
+  Input::HandleInput ( event );
 
   // Take care of each state's event
   nom::GameStates::onEvent ( event );
@@ -121,7 +121,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_f: this->onResize ( 0, 0 ); break;
     case SDLK_s:
     {
-      nom::SDL_Image image;
+      nom::Image image;
       image.saveToFile ( "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
       break;
     }

@@ -90,23 +90,23 @@ class Game: public nom::IState
     void drawScore ( void* video_buffer );
     //static Game *instance; // EMCC compiler related
     /// our public / visible display context handle
-    nom::SDL_Display context;
+    nom::Display context;
     /// Board background image
-    nom::SDL_Canvas background;
+    nom::Canvas background;
 
     nom::Timer update;
 
     /// Game Over text
     nom::Text gameOver_text;
     /// dialog text
-    nom::SDL_BitmapFont info_text;
-    nom::SDL_BitmapFont info_small_text;
+    nom::BitmapFont info_text;
+    nom::BitmapFont info_small_text;
 
-    nom::SDL_MessageBox info_box;
-    nom::SDL_MessageBox debug_box;
+    nom::MessageBox info_box;
+    nom::MessageBox debug_box;
 
     /// scoreboard text
-    nom::SDL_Font score_text;
+    nom::TrueTypeFont score_text;
     /// game board
     Board board;
 
@@ -125,7 +125,7 @@ class Game: public nom::IState
     Player player[2];
 
     /// interface cursor
-    nom::SDL_Cursor cursor;
+    nom::Cursor cursor;
 
     /// x, y coords mapping for player1, player2 cursor starting position
     nom::Coords player_cursor_coords[2];

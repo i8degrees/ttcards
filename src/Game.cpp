@@ -35,7 +35,7 @@ void Game::onExit ( void )
 
 void Game::onInit ( void )
 {
-  nom::SDL_Gradient linear;
+  nom::Gradient linear;
   std::vector<nom::Color> msgbox;
   nom::OpenAL::SoundBuffer sound_buffer;
   nom::int32 idx = 0; // for loop iterations
@@ -55,7 +55,7 @@ void Game::onInit ( void )
   this->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
   this->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
 
-  this->cursor = nom::SDL_Cursor ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->cursor = nom::Cursor ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
   this->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
   this->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
@@ -110,15 +110,15 @@ void Game::onInit ( void )
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::SDL_MessageBox  ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
-                                          INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                          msgbox, linear
-                                        );
+  this->info_box = nom::MessageBox  ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+                                      INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
+                                      msgbox, linear
+                                    );
 
-  this->debug_box = nom::SDL_MessageBox ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
-                                          DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
-                                          msgbox, linear
-                                        );
+  this->debug_box = nom::MessageBox ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+                                      DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
+                                      msgbox, linear
+                                    );
 
   #ifdef DEBUG_GAME
     this->debugCardsNoRuleset();
