@@ -25,26 +25,27 @@ App::App ( nom::int32 argc, char* argv[] )
   std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
 #endif
 
-#if TTCARDS_BUILD_MODE == 1 // Release target
+#if TTCARDS_BUILD_TYPE == 0 // Local build directory install target
+
+  // We use argv[0] as we need to know the "installed" directory of where
+  // ttcards binary resides at. This allows us to execute the binary from
+  // anywhere in the file system via third-party interface, such as with
+  // Terminal.app -- see CMakeLists.txt make run target for an example.
+  WORKING_DIR = dir.getDirName ( argv[0] ) + "/Resources/";
+
+#elif TTCARDS_BUILD_TYPE == 1 // POSIX Release target
 
   WORKING_DIR = "/usr/local/share/ttcards/Resources/";
 
-#elif TTCARDS_BUILD_MODE == 0 // Debug AKA development target
-
-  // This isn't an absolute guarantee that we can do this reliably; we must use
-  // argv[0] as we need to know the *starting* directory of where ttcards resides
-  // from, not the current working directory in which it is executed from
-  WORKING_DIR = dir.getDirName ( argv[0] ) + "/Resources/";
-
-#elif TTCARDS_BUILD_MODE == 2 // OSX App Bundle
+#elif TTCARDS_BUILD_TYPE == 2 // OSX App Bundle
 
   WORKING_DIR = dir.getResourcesPath();
 
-#elif TTCARDS_BUILD_MODE == 3 // EMSCRIPTEN
+#elif TTCARDS_BUILD_TYPE == 3
 
-  // ...
+  // Reserved for future implementation
 
-#endif // TTCARDS_BUILD_MODE defined
+#endif // TTCARDS_BUILD_TYPE defined
 
   // By default, WORKING_DIR is not set -- so we stay wherever we so happen to be!
   dir.setWorkingDir ( WORKING_DIR );
