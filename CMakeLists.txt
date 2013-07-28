@@ -235,6 +235,12 @@ if ( BUILD_OSXAPP )
                       open -a ${CMAKE_INSTALL_PREFIX}/ttcards.app
                     )
 
+  add_custom_command  ( TARGET ${PROJECT_NAME} POST_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}
+                        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}
+                      )
+
 elseif ( BUILD_RELEASE )
 
 #     Run app target (Sublime Text Editor Integration) -- BUILD_RELEASE variant
