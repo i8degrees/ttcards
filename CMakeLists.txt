@@ -21,9 +21,14 @@ set ( TTCARDS_RESOURCES_AUDIO_DIR "${TTCARDS_RESOURCES_DIR}/audio" )
 #     CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 
+option ( VERBOSE "Verbose build" off )
 option ( BUILD_RELEASE "Build Release target; defaults to Debug" off )
 option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
 option ( BUILD_OSXAPP "Build a OSX App Bundle; defaults to off" off )
+
+if ( VERBOSE )
+  set ( CMAKE_VERBOSE_MAKEFILE true )
+endif ( VERBOSE )
 
 if ( BUILD_UNIVERSAL_LIB )
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
@@ -32,13 +37,11 @@ endif ( BUILD_UNIVERSAL_LIB )
 
 if ( BUILD_RELEASE )
   set ( CMAKE_BUILD_TYPE Release )
-  #set ( CMAKE_VERBOSE_MAKEFILE false )
   set ( PROJECT_VERSION_TYPE 1 )
   message ( "Building Release target." )
 else ( NOT BUILD_RELEASE )
   set ( CMAKE_BUILD_TYPE Debug )
   set ( PROJECT_VERSION_TYPE 0 )
-  #set ( CMAKE_VERBOSE_MAKEFILE true )
   message ( "Building Debug target." )
 endif ( BUILD_RELEASE )
 
