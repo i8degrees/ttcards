@@ -173,11 +173,6 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-#     Install App bundle icon
-  install ( FILES ${TTCARDS_RESOURCES_DIR}/ttcards.icns DESTINATION bin/${PROJECT_NAME}.app/Contents
-            OPTIONAL # do not include optional features
-          )
-
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           MACOSX_BUNDLE_INFO_PLIST
                           "${PROJECT_SOURCE_DIR}/cmake/Info.plist.in"
