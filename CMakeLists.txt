@@ -256,3 +256,46 @@ configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
 add_custom_target ( ttcards-docs
                     COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
                   )
+
+#     CPack configuration
+include ( InstallRequiredSystemLibraries )
+
+set ( CPACK_PACKAGE_NAME "${PROJECT_NAME}" )
+set ( CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}" )
+set ( CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}" )
+set ( CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}" )
+set ( CPACK_PACKAGE_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}" )
+set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}" )
+
+set ( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE.md" )
+set ( CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README.md" )
+set ( CPACK_RESOURCE_FILE_WELCOME "${CPACK_RESOURCE_FILE_README}" )
+
+#     Used for RPM & Debian packages
+set ( CPACK_PACKAGE_VENDOR "org.github-i8degrees" )
+set ( CPACK_PACKAGE_CONTACT "jeffrey.carp@gmail.com" )
+set ( CPACK_PACKAGE_DESCRIPTION "Triple Triad Remake" )
+set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "TTcards - Triple Triad Remake" )
+
+set ( CPACK_STRIP_FILES true )
+
+if ( PLATFORM_OSX )
+
+  set ( CPACK_GENERATOR "DragNDrop" )
+  set ( CPACK_PROJECT_CONFIG_FILE "${PROJECT_SOURCE_DIR}/cmake/cpack/OSXGenerator.cmake" )
+  message ( "CPack Generator is set to: OSX package." )
+
+elseif ( PLATFORM_LINUX )
+
+  set ( CPACK_GENERATOR "DEB" )
+  set ( CPACK_PROJECT_CONFIG_FILE "${PROJECT_SOURCE_DIR}/cmake/cpack/DebGenerator.cmake" )
+  message ( "CPack Generator is set to: Debian package." )
+
+elseif ( PLATFORM_UNKNOWN )
+
+  set ( CPACK_GENERATOR "ZIP" )
+  message ( "CPack Generator is set to: ZIP package." )
+
+endif ( PLATFORM_OSX )
+
+include ( CPack )
