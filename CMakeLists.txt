@@ -13,9 +13,6 @@ set ( SRC_DIR "src" ) # ttcards/src
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 #set ( TTCARDS_RESOURCES ) # TODO: BUILD_OSXAPP
 
-# relative path -- from resources directory -- to audio assets
-set ( TTCARDS_RESOURCES_AUDIO_DIR "${TTCARDS_RESOURCES_DIR}/audio" )
-
 #     CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 
