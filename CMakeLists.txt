@@ -278,6 +278,7 @@ set ( CPACK_PACKAGE_DESCRIPTION "Triple Triad Remake" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "TTcards - Triple Triad Remake" )
 
 set ( CPACK_STRIP_FILES true )
+set ( CPACK_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
 
 if ( PLATFORM_OSX )
 
