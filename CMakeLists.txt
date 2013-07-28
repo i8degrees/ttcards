@@ -9,8 +9,6 @@ project ( ttcards ) # $PROJECT_NAME
 
 set ( SRC_DIR "src" ) # ttcards/src
 
-set ( EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR} )
-
 # relative path -- from project source -- to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 #set ( TTCARDS_RESOURCES ) # TODO: BUILD_OSXAPP
@@ -145,30 +143,32 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
   set ( PROJECT_VERSION_TYPE 2 )
   message ( "Building OSX App Bundle" )
 
-  # Reset bin path; we are basically in Release mode
-  # (This might change in the future... need to rethink structure of all this)
-  set ( EXECUTABLE_OUTPUT_PATH )
+  set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
 
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
 
-  install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
+  # This is where the output executable added is installed to; which should be:
+  #
+  # ${PROJECT_NAME}.app/Contents/MacOS
+  install ( TARGETS ${PROJECT_NAME} DESTINATION . )
 
 #     Install dependencies
 #     TODO: when ${NOMLIB_LIBRARY} is a dylib, put it under bin/${PROJECT_NAME}.app/Contents/Libraries
   if ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
 
-    install ( DIRECTORY ${NOMLIB_LIBRARY} DESTINATION bin/${PROJECT_NAME}.app/Contents/Frameworks
+    install ( DIRECTORY ${NOMLIB_LIBRARY} DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
+
   else ( NOT IS_DIRECTORY ${NOMLIB_LIBRARY} )
     # FIXME: we need the actual file, not the symbolic link
-    install ( FILES ${NOMLIB_LIBRARY} DESTINATION bin/${PROJECT_NAME}.app/Contents/Frameworks )
+    install ( FILES ${NOMLIB_LIBRARY} DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks )
 
   endif ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
 
 #     Install game resources
-  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION bin/${PROJECT_NAME}.app/Contents
+  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION ${PROJECT_NAME}.app/Contents
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
@@ -194,9 +194,6 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
                           "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
                         )
 
-#     Run app target for Sublime Text Editor Custom Build Settings
-  add_custom_target ( run COMMAND open -a "${CMAKE_INSTALL_PREFIX}/bin/ttcards.app" )
-
 else ( NOT BUILD_OSXAPP ) # POSIX Installation
 
   message ( "Building POSIX install" )
@@ -214,11 +211,6 @@ else ( NOT BUILD_OSXAPP ) # POSIX Installation
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles -- *cough* .DS_Store
           )
-
-#     Run app target for Sublime Text Editor Custom Build Settings
-  add_custom_target ( run
-                      COMMAND open --wait-apps --fresh -a "Terminal" ${EXECUTABLE_OUTPUT_PATH}/${PROJECT_NAME}
-                    )
 
 endif ( BUILD_OSXAPP )
 
@@ -239,6 +231,36 @@ if ( BUILD_RELEASE OR BUILD_OSXAPP )
 
 endif ( BUILD_RELEASE OR BUILD_OSXAPP )
 
+if ( BUILD_OSXAPP )
+
+#     Run app target (Sublime Text Editor Integration) -- BUILD_OSXAPP variant
+  add_custom_target ( run COMMAND
+                      open -a ${CMAKE_INSTALL_PREFIX}/ttcards.app
+                    )
+
+elseif ( BUILD_RELEASE )
+
+#     Run app target (Sublime Text Editor Integration) -- BUILD_RELEASE variant
+  add_custom_target ( run COMMAND
+                      open --wait-apps --fresh -a "Terminal"
+                      ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
+                    )
+
+else ( NOT BUILD_RELEASE OR BUILD_OSXAPP )
+
+#     Run app target (Sublime Text Editor Integration) -- debug / development
+  add_custom_target ( run COMMAND
+                      open --wait-apps --fresh -a "Terminal"
+                      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
+                    )
+
+  add_custom_command  ( TARGET ${PROJECT_NAME} POST_BUILD
+                        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}
+                        ${CMAKE_CURRENT_BINARY_DIR}/${TTCARDS_RESOURCES_DIR}
+                      )
+
+endif ( BUILD_OSXAPP )
 
 # TODO: this is for tracking installation paths, versions, etc.
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
