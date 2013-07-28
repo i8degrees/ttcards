@@ -1,13 +1,17 @@
-# TTcards
+TTcards
+=======
 
 Remake (clone) of SquareSoft's Final Fantasy VIII Triple Triad card game.
 
-## Source Build instructions
+Source Build instructions
+-------------------------
 
 This is mostly a stub for the time being, but in theory, provided that you have
 the necessary libraries and build tools installed:
 
-### OSX
+OSX
+---
+
 1. git clone https://github.com/i8degrees/ttcards
 2. cd ttcards
 3. git submodule init
@@ -20,7 +24,8 @@ the necessary libraries and build tools installed:
 * Without the full resources folder package, you won't get very far into execution
 before a crash occurs!
 
-## Dependencies
+Dependencies
+------------
 
 * cmake v2.8.10.2
 * Boost v1.53.0

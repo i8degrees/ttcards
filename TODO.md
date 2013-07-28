@@ -1,4 +1,5 @@
-# TODO
+TODO
+====
 
 * Resolve resources paths issue when installed under /usr/local
 * Use new preprocessor debugging code methodology from nomlib
@@ -11,7 +12,8 @@
 * Relocate cfg.cpp declarations to their applicable class header files
 * Collection::getCards() implementation
 
-## Completed
+Completed
+---------
 
 * Fix uninstall script
 * Remove file name from header files
