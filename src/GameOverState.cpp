@@ -7,17 +7,21 @@
 ******************************************************************************/
 #include "GameOverState.h"
 
-GameOver::GameOver ( std::vector<Card> cards_, unsigned int state )
+GameOver::GameOver ( std::shared_ptr<GameObject> object )
 {
   #ifdef DEBUG_GAMEOVER_OBJ
     std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
   #endif
 
-  this->state = state;
-  this->cards = cards_; // FIXME?
+  this->state = object;
 
-  for ( nom::ulong i = 0; i < cards.size(); i++ )
-    std::cout << cards[i].getID() << " " << cards[i].getName() << " " << cards[i].getPlayerOwner() << " " << std::endl;
+  if ( this->state != nullptr )
+  {
+    std::cout << "Collection: " << std::endl << std::endl;
+    for ( int i = 0; i < this->state->collection.cards.size(); i++ )
+      std::cout << this->state->collection.cards[i].getName() << std::endl;
+    std::cout << std::endl << std::endl;
+  }
 }
 
 GameOver::~GameOver ( void )
@@ -55,7 +59,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
   switch ( key )
   {
     // Reset / New Game State
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu() ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( state ) ) ); break;
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 
@@ -77,6 +81,7 @@ void GameOver::Draw ( void* video_buffer )
   //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT - 128 ) / 2 );
 
   // Active player's card selection(s)
+/*
   for ( nom::ulong cards_index = 0; cards_index < this->cards.size(); cards_index++ ) // TODO: std::get<1>(player_coords)
   {
     if ( this->cards.at ( cards_index ).getPlayerOwner() == Card::PLAYER1 )
@@ -103,4 +108,5 @@ void GameOver::Draw ( void* video_buffer )
     //signed int width = this->gameOver_text.getTextWidth ();
     //this->gameOver_text.Draw ( this->engine, ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 );
   }
+*/
 }

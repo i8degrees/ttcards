@@ -12,6 +12,7 @@
 #include <iostream>
 #include <chrono>
 #include <random>
+#include <memory>
 
 #ifdef EMSCRIPTEN
   #include "emscripten.h"
@@ -31,12 +32,13 @@
 //#include "cpu_player.h"
 #include "CardsMenuState.h"
 #include "GameOverState.h"
+#include "GameObject.hpp"
 #include "cfg.h"
 
 class Game: public nom::IState
 {
   public:
-    Game ( CardHand& player1_hand );
+    Game ( CardHand& player1_hand, std::shared_ptr<GameObject> object );
     ~Game ( void );
 
     bool Init ( void );
@@ -90,7 +92,9 @@ class Game: public nom::IState
 
     void updateScore ( void );
     void drawScore ( void* video_buffer );
-    //static Game *instance; // EMCC compiler related
+
+    std::shared_ptr<GameObject> state;
+
     /// our public / visible display context handle
     nom::Display context;
     /// Board background image

@@ -7,11 +7,21 @@
 ******************************************************************************/
 #include "Game.hpp"
 
-Game::Game ( CardHand& player1_hand )
+Game::Game ( CardHand& player1_hand, std::shared_ptr<GameObject> object )
 {
   #ifdef DEBUG_GAME_OBJ
     std::cout << "Game::Game (): " << "Hello, world!" << "\n" << std::endl;
   #endif
+
+  this->state = object;
+
+  if ( this->state != nullptr )
+  {
+    std::cout << "Collection: " << std::endl << std::endl;
+    for ( int i = 0; i < this->state->collection.cards.size(); i++ )
+      std::cout << this->state->collection.cards[i].getName() << std::endl;
+    std::cout << std::endl << std::endl;
+  }
 
   this->hand[0] = player1_hand;
 
@@ -192,7 +202,7 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_d: this->removePlayerCard(); break;
 
     case SDLK_i: debugBox(); break;
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->state ) ) ); break;
 
     case SDLK_LEFT:
     {
@@ -816,7 +826,7 @@ void Game::Draw ( void *video_buffer )
 
       this->update.Stop();
 
-      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 1 ) ) );
+      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( this->state ) ) );
     }
     else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
     {
@@ -851,7 +861,7 @@ void Game::Draw ( void *video_buffer )
 
       this->update.Stop();
 
-      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 2 ) ) );
+      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver ( this->state ) ) );
     }
     else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
     {
@@ -874,7 +884,7 @@ void Game::Draw ( void *video_buffer )
 
       this->update.Stop();
 
-      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( winning_cards, 3 ) ) );
+      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( this->state ) ) );
     }
     else // Undefined
     {

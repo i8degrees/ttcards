@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <memory>
 
 #include <SDL/SDL.h>
 
@@ -21,6 +22,7 @@
 
 #include "CardsMenuState.h"
 #include "version.hpp" // CMake auto-generated header file
+#include "GameObject.hpp"
 #include "cfg.h"
 
 class App: public nom::SDL_App // "is-a" relationship
@@ -52,6 +54,8 @@ class App: public nom::SDL_App // "is-a" relationship
     nom::OpenAL::AudioDevice dev;
     /// Master volume control
     nom::OpenAL::Listener listener;
+
+    std::shared_ptr<GameObject> state;
 };
 
 

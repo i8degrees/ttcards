@@ -156,7 +156,10 @@ int32_t App::Run ( void )
 
   next_game_tick = getTicks();
 
-  nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu() ) );
+  this->state = std::shared_ptr<GameObject> ( new GameObject );
+  this->state->collection.LoadJSON ( CARDS_DB );
+
+  nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( this->state ) ) );
 
   this->Running(); // ...here we go!
 

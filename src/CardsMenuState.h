@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "nomlib/graphics.hpp"
 #include "nomlib/gui.hpp"
@@ -21,12 +22,13 @@
 #include "card_hand.h"
 #include "card_view.h"
 #include "Game.hpp"
+#include "GameObject.hpp"
 #include "cfg.h"
 
 class CardsMenu: public nom::IState
 {
   public:
-    CardsMenu ( void );
+    CardsMenu ( std::shared_ptr<GameObject> object );
     ~CardsMenu ( void );
 
     void onInit ( void );
@@ -54,6 +56,7 @@ class CardsMenu: public nom::IState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
+    std::shared_ptr<GameObject> state;
     /// our public / visible display context handle
     nom::Display context;
     /// cards database

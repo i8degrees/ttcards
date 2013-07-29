@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "nomlib/graphics.hpp"
 #include "nomlib/system.hpp"
@@ -18,12 +19,13 @@
 #include "card_debug.h"
 #include "card_view.h"
 #include "CardsMenuState.h"
+#include "GameObject.hpp"
 #include "cfg.h"
 
 class GameOver: public nom::IState
 {
   public:
-    GameOver ( std::vector<Card> cards_, unsigned int state );
+    GameOver ( std::shared_ptr<GameObject> object );
     ~GameOver ( void );
 
     void onInit ( void );
@@ -38,6 +40,7 @@ class GameOver: public nom::IState
   private:
     void onKeyDown ( int32_t key, int32_t mod );
 
+    std::shared_ptr<GameObject> state;
     /// our public / visible display context handle
     nom::Display context;
     /// card rendering
@@ -45,9 +48,6 @@ class GameOver: public nom::IState
     /// Board background image
     nom::Canvas background;
     // TrueTypeFont gameOver_text; // dialog text
-    std::vector<Card> cards;
-
-    unsigned int state;
 };
 
 #endif // GAMEAPP_GAMEOVER_HEADERS defined

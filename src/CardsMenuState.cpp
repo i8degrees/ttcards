@@ -7,7 +7,7 @@
 ******************************************************************************/
 #include "CardsMenuState.h"
 
-CardsMenu::CardsMenu ( void )
+CardsMenu::CardsMenu ( std::shared_ptr<GameObject> object )
 {
   nom::Gradient linear;
   std::vector<nom::Color> msgbox;
@@ -17,6 +17,16 @@ CardsMenu::CardsMenu ( void )
   #ifdef DEBUG_CARDS_MENU_OBJ
     std::cout << "CardsMenu::CardsMenu (): Hello, world!" << "\n" << std::endl;
   #endif
+
+  this->state = object;
+
+  if ( this->state != nullptr )
+  {
+    std::cout << "Collection: " << std::endl << std::endl;
+    for ( int i = 0; i < this->state->collection.cards.size(); i++ )
+      std::cout << this->state->collection.cards[i].getName() << std::endl;
+    std::cout << std::endl << std::endl;
+  }
 
   this->collection.clear();
   this->hand.clear ();
@@ -152,7 +162,7 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
   {
     // Reset game
     case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>
-                                              ( new CardsMenu ) ); break;
+                                              ( new CardsMenu ( this->state ) ) ); break;
      // Pause State
     case SDLK_p: /*this->engine->PopState ()*/; break;
 
@@ -167,10 +177,10 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_d: if ( this->hand.removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
     case SDLK_SPACE: if ( this->hand.addCard ( this->selectedCard ) ) this->card_place.Play(); break;
     case SDLK_RETURN: nom::GameStates::ChangeState  ( std::unique_ptr<Game>
-                                                        ( new Game ( this->hand ) )
+                                                        ( new Game ( this->hand, state ) )
                                                     ); break;
 
-     nom::GameStates::ChangeState ( std::unique_ptr<Game>( new Game ( this->hand ) ) ); break;
+     nom::GameStates::ChangeState ( std::unique_ptr<Game>( new Game ( this->hand, state ) ) ); break;
 
     default: break;
   }
@@ -191,7 +201,7 @@ void CardsMenu::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
     case nom::PSXBUTTON::CIRCLE: if ( this->hand.removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
     case nom::PSXBUTTON::CROSS: if ( this->hand.addCard ( this->selectedCard ) ) this->card_place.Play(); break;
-    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<Game>( new Game ( this->hand ) ) ); break;
+    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<Game>( new Game ( this->hand, state ) ) ); break;
 
     default: break;
   }
