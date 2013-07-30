@@ -228,7 +228,7 @@ elseif ( BUILD_RELEASE )
 #     Run app target (Sublime Text Editor Integration) -- BUILD_RELEASE variant
   add_custom_target ( run COMMAND
                       open --wait-apps --fresh -a "Terminal"
-                      ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}
+                      ${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}
                     )
 
 else ( NOT BUILD_RELEASE OR BUILD_OSXAPP )
