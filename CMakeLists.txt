@@ -18,8 +18,8 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/module
 
 option ( VERBOSE "Verbose build" off )
 option ( BUILD_RELEASE "Build Release target; defaults to Debug" off )
-option ( BUILD_UNIVERSAL_LIB "Build as OSX Universal Library; i386 and x86_64" off )
-option ( BUILD_OSXAPP "Build a OSX App Bundle; defaults to off" off )
+option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
+option ( BUILD_OSXAPP "Build a OSX App Bundle; defaults to off" on )
 
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -111,6 +111,18 @@ find_package ( nomlib REQUIRED )
 include_directories ( "${NOMLIB_INCLUDE_DIR}" )
 set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
 
+find_library ( json_spirit REQUIRED )
+
+find_path ( JSON_SPIRIT_INCLUDE_DIR
+            json_spirit.h
+            json_spirit_reader_template.h json_spirit_writer_template.h
+            PATH_SUFFIXES
+            include/json_spirit include
+          )
+
+include_directories ( ${JSON_SPIRIT_INCLUDE_DIR} )
+
+set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${JSON_SPIRIT_LIBRARY} )
 
 #     Linking Dependencies & Packaging / Installation:
 
