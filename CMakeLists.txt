@@ -90,14 +90,17 @@ set ( TTCARDS_SOURCE
        ${SRC_DIR}/GameObject.cpp
     )
 
-#     Required Dependencies:
+# Required Dependencies; we gather up all of the library & header search paths
+# in two separate variables -- EXT_HEADERS & EXTLIBS -- so we can then pass
+# these variables around further with minimal amount of redundancy.
+#
 find_package ( SDL REQUIRED )
-include_directories ( ${SDL_INCLUDE_DIR} )
-set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${SDL_LIBRARY} "SDLmain" ) #FIXME
+set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
+set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} "SDLmain" ) #FIXME
 
 find_package ( nomlib REQUIRED )
-include_directories ( "${NOMLIB_INCLUDE_DIR}" )
-set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
+set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
 
 find_library ( json_spirit REQUIRED )
 
@@ -108,11 +111,14 @@ find_path ( JSON_SPIRIT_INCLUDE_DIR
             include/json_spirit include
           )
 
-include_directories ( ${JSON_SPIRIT_INCLUDE_DIR} )
+set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
+set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
 
-set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${JSON_SPIRIT_LIBRARY} )
+# Now that we have collected all the header file search paths we need, we
+# include them all here
+include_directories ( ${EXT_HEADERS} )
 
-#     Linking Dependencies & Packaging / Installation:
+# Linking Dependencies & Packaging / Installation
 
 if ( BUILD_OSXAPP ) # OSX App Bundle
   set ( PROJECT_BUILD_TYPE 2 )
@@ -125,7 +131,7 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
   #set ( TTCARDS_RESOURCES_INSTALL_DIR ${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR} )
 
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
-  target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
+  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
   # This is where the output executable added is installed to; which should be:
   #
@@ -178,7 +184,7 @@ else ( NOT BUILD_OSXAPP ) # POSIX Installation
   message ( "Building POSIX install" )
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
-  target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
+  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
   install ( TARGETS ${PROJECT_NAME} DESTINATION bin
             CONFIGURATIONS Release
