@@ -10,8 +10,8 @@ before_install:
 # nomlib dependencies (misc):
   - sudo apt-get install libmagic-dev
 # TTcards dependencies:
-  #- sudo apt-get install libjson-spirit-dev
   - sudo apt-get install libboost-dev
+  - sudo apt-get install libjson-spirit-dev
 # virtual X11 framebuffer (not used, yet):
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -29,7 +29,7 @@ before_install:
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build build-osx && cd build
-  - cmake -D TTCARDS_NOMLIB_COMPILE=off -D TTCARDS_JSON_SPIRIT_COMPILE=on -D BUILD_RELEASE=on ..
+  - cmake -D BUILD_RELEASE=on ..
 script:
   - make -j4
   - sudo make install
