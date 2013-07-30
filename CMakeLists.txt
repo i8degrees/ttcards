@@ -32,24 +32,13 @@ endif ( BUILD_UNIVERSAL_LIB )
 
 if ( BUILD_RELEASE )
   set ( CMAKE_BUILD_TYPE Release )
-  set ( PROJECT_VERSION_TYPE 1 )
+  set ( PROJECT_BUILD_TYPE 1 )
   message ( "Building Release target." )
 else ( NOT BUILD_RELEASE )
   set ( CMAKE_BUILD_TYPE Debug )
-  set ( PROJECT_VERSION_TYPE 0 )
+  set ( PROJECT_BUILD_TYPE 0 )
   message ( "Building Debug target." )
 endif ( BUILD_RELEASE )
-
-if ( CMAKE_GENERATOR STREQUAL Xcode )
-
-    message ( "Setting Xcode-specific project settings " )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-
-endif ( CMAKE_GENERATOR STREQUAL Xcode )
-
-#     Optional Dependencies
-option ( EMCC "EMCC" off )
 
 #     Platform specific
 if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS(?) with
@@ -65,19 +54,18 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL Darwin )
 
   set ( CMAKE_EXE_LINKER_FLAGS "-std=c++11 -stdlib=libc++" )
   set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
+
+  if ( CMAKE_GENERATOR STREQUAL "Xcode" )
+    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
+    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
+    message ( STATUS "Setting Xcode-specific project settings " )
+  endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
+
 else ()
 
   set ( PLATFORM_UNKNOWN true )
   message ( "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
 endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
-
-if ( EMCC )
-
-  set ( EMCC_BIN "$ENV{HOME}/local/src/emscripten/emcc" )
-  set ( EMCC_CFLAGS --jcache )
-  set ( EMCC_TARGET libnomlib.bc )
-
-endif ( EMCC )
 
 # global project doxygen defaults
 set ( DOXYGEN_COMMAND doxygen )
@@ -127,10 +115,14 @@ set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${JSON_SPIRIT_LIBRARY} )
 #     Linking Dependencies & Packaging / Installation:
 
 if ( BUILD_OSXAPP ) # OSX App Bundle
-  set ( PROJECT_VERSION_TYPE 2 )
+  set ( PROJECT_BUILD_TYPE 2 )
   message ( "Building OSX App Bundle" )
 
+  # This allows our Resources, or any other not-quite-standard install command
+  # install our data in the right place without further ugliness.
   set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
+
+  #set ( TTCARDS_RESOURCES_INSTALL_DIR ${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR} )
 
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${REQUIRED_LIBS} )
