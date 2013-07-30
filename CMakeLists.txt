@@ -48,11 +48,8 @@ if ( CMAKE_GENERATOR STREQUAL Xcode )
 
 endif ( CMAKE_GENERATOR STREQUAL Xcode )
 
-#     Required Dependencies
-option ( TTCARDS_JSON_SPIRIT_COMPILE "Let TTcards compile json_spirit" off )
 #     Optional Dependencies
 option ( EMCC "EMCC" off )
-option ( NOMJSON_LIBRARY "nomJSON" off )
 
 #     Platform specific
 if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS(?) with
@@ -86,21 +83,6 @@ endif ( EMCC )
 set ( DOXYGEN_COMMAND doxygen )
 set ( DOXYGEN_CONFIG_FILE doxygen.cfg )
 
-#     TTcards dependencies
-if ( TTCARDS_JSON_SPIRIT_COMPILE )
-  message ( "Building dependency json_spirit." )
-  add_subdirectory ( extlibs/json_spirit )
-  include_directories ( extlibs/json_spirit )
-  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "json_spirit" ) # FIXME
-endif ( TTCARDS_JSON_SPIRIT_COMPILE )
-
-if ( NOMJSON_LIBRARY )
-  message ( "Building dependency nomJSON." )
-  add_subdirectory ( extlibs/nomJSON )
-  include_directories ( extlibs/nomJSON/src )
-  set ( REQUIRED_LIBS ${REQUIRED_LIBS} "nomJSON" )
-endif ( NOMJSON_LIBRARY )
-
 set ( TTCARDS_SOURCE
        ${SRC_DIR}/cfg.cpp
        #${SRC_DIR}/cpu_player.cpp
@@ -129,11 +111,6 @@ find_package ( nomlib REQUIRED )
 include_directories ( "${NOMLIB_INCLUDE_DIR}" )
 set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${NOMLIB_LIBRARY} )
 
-if ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
-  find_library ( json_spirit REQUIRED )
-  include_directories ( /usr/local/include/json_spirit ) # FIXME
-  set ( REQUIRED_LIBS ${REQUIRED_LIBS} ${JSON_SPIRIT_LIBRARY} )
-endif ( NOT TTCARDS_JSON_SPIRIT_COMPILE )
 
 #     Linking Dependencies & Packaging / Installation:
 
