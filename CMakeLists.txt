@@ -7,6 +7,9 @@ set ( PROJECT_VERSION_PATCH 0 )
 
 project ( ttcards ) # $PROJECT_NAME
 
+# Platform detection
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
+
 set ( SRC_DIR "src" ) # ttcards/src
 set ( TTCARDS_DOCS_DIR "${PROJECT_SOURCE_DIR}/docs" )
 # Relative path -- from project source -- to game resources
@@ -16,13 +19,15 @@ set ( TTCARDS_RESOURCES_DIR "Resources" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
 
+# Project options
 option ( VERBOSE "Verbose build" off )
-option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
-
-# Distribution / Packaging target options
 option ( BUILD_POSIX "Build POSIX target" off )
-option ( BUILD_OSXAPP "Build an OSX App Bundle" off )
 option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" on )
+
+if ( PLATFORM_OSX )
+  option ( BUILD_OSXAPP "Build an OSX App Bundle" off )
+  option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
+endif ( PLATFORM_OSX )
 
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -78,31 +83,27 @@ if ( NOT DEFINED CMAKE_BUILD_TYPE )
 endif ( NOT DEFINED CMAKE_BUILD_TYPE )
 
 # Platform specific
-if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS
-
-  set ( PLATFORM_LINUX true )
-  message ( "Linux OS detected " )
+if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
 
   set ( CMAKE_CXX_FLAGS -std=c++0x )
-elseif ( CMAKE_SYSTEM_NAME STREQUAL Darwin )
 
-  set ( PLATFORM_OSX true )
-  message ( "Darwin OS (Mac OSX) detected" )
+elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" )
+
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-    message ( STATUS "Setting Xcode-specific project settings " )
+
   endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
 
 else ()
 
-  set ( PLATFORM_UNKNOWN true )
-  message ( "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
-endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
+  # Use whatever CMake gathers for us and hope for the best!
+
+endif ( PLATFORM_LINUX )
 
 set ( TTCARDS_SOURCE
       ${SRC_DIR}/cfg.cpp
