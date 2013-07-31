@@ -130,7 +130,7 @@ include_directories ( ${EXT_HEADERS} )
 if ( BUILD_OSXAPP )
 
   set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
-  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/ttcards.app" )
+  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/ttcards.app/Contents/MacOS/ttcards" )
 
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
@@ -162,7 +162,7 @@ if ( BUILD_OSXAPP )
 
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           MACOSX_BUNDLE_INFO_PLIST
-                          "${CMAKE_TEMPLATES_DIR}/Info.plist.in"
+                          "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
                           MACOSX_BUNDLE_BUNDLE_NAME
                           "TTcards" #${PROJECT_NAME}
                           MACOSX_BUNDLE_ICON_FILE
