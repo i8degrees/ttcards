@@ -97,9 +97,11 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/GameObject.cpp
     )
 
-# Required Dependencies; we gather up all of the library & header search paths
-# in two separate variables -- EXT_HEADERS & EXTLIBS -- so we can then pass
-# these variables around further with minimal amount of redundancy.
+# Required Dependencies
+#
+# We gather up all of the library & header search paths in two separate
+# variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
+# of calls to include_directories & linking of libraries.
 #
 find_package ( SDL REQUIRED )
 set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
@@ -122,7 +124,7 @@ set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
 set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
 
 # Now that we have collected all the header file search paths we need, we
-# include them all here
+# include them all here for the compiler to be made aware of
 include_directories ( ${EXT_HEADERS} )
 
 # Linking Dependencies & Packaging / Installation
