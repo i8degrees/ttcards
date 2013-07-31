@@ -8,21 +8,16 @@ before_install:
 # nomlib dependencies (Audio):
   - sudo apt-get install libsndfile1-dev libopenal-dev
 # nomlib dependencies (misc):
-  - sudo apt-get install libmagic-dev doxygen
+  - sudo apt-get install libmagic-dev doxygen dot
 # TTcards dependencies:
-  - sudo apt-get install libboost-dev
   - sudo apt-get install libjson-spirit-dev
 # virtual X11 framebuffer:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x32"
-# extlibs bootstrap / initialization:
-  #- git submodule update --init --recursive
 # nomlib build & installation:
   - PROJECT_NAME=nomlib; export PROJECT_NAME
-  - git clone https://github.com/i8degrees/nomlib nomlib.git
-# Ensure that we test with the right version branch of nomlib
-  - git checkout $TRAVIS_BRANCH
+  - git clone --branch=$TRAVIS_BRANCH https://github.com/i8degrees/nomlib nomlib.git
   - cd nomlib.git && mkdir -p build && cd build
   - cmake ..
   - make -j4
@@ -35,7 +30,7 @@ before_script:
 script:
   - make -j4
   - sudo make install
-  - ttcards
+  - ttcards --version
   - sudo make uninstall
   - make clean
 # whitelist
