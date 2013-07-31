@@ -8,7 +8,7 @@ before_install:
 # nomlib dependencies (Audio):
   - sudo apt-get install libsndfile1-dev libopenal-dev
 # nomlib dependencies (misc):
-  - sudo apt-get install libmagic-dev
+  - sudo apt-get install libmagic-dev doxygen
 # TTcards dependencies:
   - sudo apt-get install libboost-dev
   - sudo apt-get install libjson-spirit-dev
