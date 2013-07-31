@@ -35,7 +35,7 @@ App::App ( nom::int32 argc, char* argv[] )
 
 #elif TTCARDS_BUILD_TYPE == 1 // POSIX Release target
 
-  WORKING_DIR = "/usr/local/share/ttcards/Resources/";
+  WORKING_DIR = TTCARDS_INSTALL_PREFIX + "/share/ttcards/Resources/";
 
 #elif TTCARDS_BUILD_TYPE == 2 // OSX App Bundle
 
