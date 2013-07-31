@@ -21,6 +21,8 @@ before_install:
 # nomlib build & installation:
   - PROJECT_NAME=nomlib; export PROJECT_NAME
   - git clone https://github.com/i8degrees/nomlib nomlib.git
+# Ensure that we test with the right version branch of nomlib
+  - git checkout $TRAVIS_BRANCH
   - cd nomlib.git && mkdir -p build && cd build
   - cmake ..
   - make -j4
