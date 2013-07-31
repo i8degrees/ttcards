@@ -18,9 +18,8 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/module
 
 option ( VERBOSE "Verbose build" off )
 option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
-option ( BUILD_DEV "Build Development target" off )
 option ( BUILD_POSIX "Build POSIX target" off )
-option ( BUILD_OSXAPP "Build an OSX App Bundle" on )
+option ( BUILD_OSXAPP "Build an OSX App Bundle" off )
 
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -37,7 +36,7 @@ if ( BUILD_POSIX )
 elseif ( BUILD_OSXAPP )
   set ( PROJECT_BUILD_TYPE 2 )
   message ( "Building OSXAPP target." )
-else ( BUILD_DEV )
+else () # default
   set ( PROJECT_BUILD_TYPE 0 )
   message ( "Building Development target." )
 endif ( BUILD_POSIX )
@@ -200,9 +199,7 @@ elseif ( BUILD_POSIX )
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-else ( BUILD_DEV )
-
-  message ( "Building Development install targets" )
+else () # Default
 
   set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
   set ( SUBLIME_RUN_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
@@ -220,13 +217,6 @@ else ( BUILD_DEV )
 
 endif ( BUILD_OSXAPP )
 
-# Install game resources every time a build is done so we can not worry about
-# path issues
-add_custom_command  ( TARGET ${PROJECT_NAME} POST_BUILD
-                      COMMAND ${CMAKE_COMMAND} -E copy_directory
-                      ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}
-                      ${CMAKE_CURRENT_BINARY_DIR}/${TTCARDS_RESOURCES_DIR}
-                    )
 # Run app make target (Sublime Text Editor Integration)
 add_custom_target ( run COMMAND
                     open --wait-apps --fresh -a "Terminal"
