@@ -17,9 +17,10 @@ set ( TTCARDS_RESOURCES_DIR "Resources" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 
 option ( VERBOSE "Verbose build" off )
-option ( BUILD_RELEASE "Build Release target; defaults to Debug" off )
 option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
-option ( BUILD_OSXAPP "Build a OSX App Bundle; defaults to off" on )
+option ( BUILD_DEV "Build Development target" off )
+option ( BUILD_POSIX "Build POSIX target" off )
+option ( BUILD_OSXAPP "Build an OSX App Bundle" on )
 
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -30,15 +31,20 @@ if ( BUILD_UNIVERSAL_LIB )
   message ( "Building an OSX Universal Library" )
 endif ( BUILD_UNIVERSAL_LIB )
 
-if ( BUILD_RELEASE )
-  set ( CMAKE_BUILD_TYPE Release )
+if ( BUILD_POSIX )
   set ( PROJECT_BUILD_TYPE 1 )
-  message ( "Building Release target." )
-else ( NOT BUILD_RELEASE )
-  set ( CMAKE_BUILD_TYPE Debug )
+  message ( "Building POSIX target." )
+elseif ( BUILD_OSXAPP )
+  set ( PROJECT_BUILD_TYPE 2 )
+  message ( "Building OSXAPP target." )
+else ( BUILD_DEV )
   set ( PROJECT_BUILD_TYPE 0 )
-  message ( "Building Debug target." )
-endif ( BUILD_RELEASE )
+  message ( "Building Development target." )
+endif ( BUILD_POSIX )
+
+if ( NOT DEFINED CMAKE_BUILD_TYPE )
+  set ( CMAKE_BUILD_TYPE Debug )
+endif ( NOT DEFINED CMAKE_BUILD_TYPE )
 
 #     Platform specific
 if ( CMAKE_SYSTEM_NAME STREQUAL Linux ) # Tested on Ubuntu v12.04-LTS(?) with
@@ -52,7 +58,7 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL Darwin )
   set ( PLATFORM_OSX true )
   message ( "Darwin OS (Mac OSX) detected" )  # Developed 100% on OSX v10.8.3
 
-  set ( CMAKE_EXE_LINKER_FLAGS "-std=c++11 -stdlib=libc++" )
+  # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" )
@@ -120,9 +126,7 @@ include_directories ( ${EXT_HEADERS} )
 
 # Linking Dependencies & Packaging / Installation
 
-if ( BUILD_OSXAPP ) # OSX App Bundle
-  set ( PROJECT_BUILD_TYPE 2 )
-  message ( "Building OSX App Bundle" )
+if ( BUILD_OSXAPP )
 
   # This allows our Resources, or any other not-quite-standard install command
   # install our data in the right place without further ugliness.
@@ -136,10 +140,10 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
   # This is where the output executable added is installed to; which should be:
   #
   # ${PROJECT_NAME}.app/Contents/MacOS
-  install ( TARGETS ${PROJECT_NAME} DESTINATION . )
+  install ( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
 
-#     Install dependencies
-#     TODO: when ${NOMLIB_LIBRARY} is a dylib, put it under bin/${PROJECT_NAME}.app/Contents/Libraries
+  # Install dependencies
+  # TODO: when ${NOMLIB_LIBRARY} is a dylib, put it under bin/${PROJECT_NAME}.app/Contents/Libraries
   if ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
 
     install ( DIRECTORY ${NOMLIB_LIBRARY} DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks
@@ -152,7 +156,7 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
 
   endif ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
 
-#     Install game resources
+  # Install game resources
   install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION ${PROJECT_NAME}.app/Contents
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
@@ -179,86 +183,80 @@ if ( BUILD_OSXAPP ) # OSX App Bundle
                           "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
                         )
 
-else ( NOT BUILD_OSXAPP ) # POSIX Installation
+  #install ( DIRECTORY /Library/Frameworks/SDL.framework DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks )
 
-  message ( "Building POSIX install" )
+  # Run app target (Sublime Text Editor Integration) -- BUILD_OSXAPP variant
+  add_custom_target ( run COMMAND open -a ${CMAKE_INSTALL_PREFIX}/ttcards.app )
+
+elseif ( BUILD_POSIX )
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
-  install ( TARGETS ${PROJECT_NAME} DESTINATION bin
-            CONFIGURATIONS Release
-          )
+  install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
 
-#     Install game resources
   install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION share/${PROJECT_NAME}
-            CONFIGURATIONS Release
             OPTIONAL
-            PATTERN ".*" EXCLUDE # do not include dotfiles -- *cough* .DS_Store
+            PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-endif ( BUILD_OSXAPP )
-
-if ( BUILD_RELEASE OR BUILD_OSXAPP )
-
-  #     Uninstall target
-
-  configure_file  (
-                    "${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-                    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-                    IMMEDIATE @ONLY
-                  )
-
-  add_custom_target ( uninstall
-                      COMMAND ${CMAKE_COMMAND} -P
-                      ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-                    )
-
-endif ( BUILD_RELEASE OR BUILD_OSXAPP )
-
-if ( BUILD_OSXAPP )
-
-#     Run app target (Sublime Text Editor Integration) -- BUILD_OSXAPP variant
-  add_custom_target ( run COMMAND
-                      open -a ${CMAKE_INSTALL_PREFIX}/ttcards.app
-                    )
-
-  add_custom_command  ( TARGET ${PROJECT_NAME} POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                        ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}
-                        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}
-                      )
-
-elseif ( BUILD_RELEASE )
-
-#     Run app target (Sublime Text Editor Integration) -- BUILD_RELEASE variant
+  # Run app target (Sublime Text Editor Integration) -- POSIX variant
   add_custom_target ( run COMMAND
                       open --wait-apps --fresh -a "Terminal"
                       ${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}
                     )
 
-else ( NOT BUILD_RELEASE OR BUILD_OSXAPP )
+else ( BUILD_DEV )
 
-#     Run app target (Sublime Text Editor Integration) -- debug / development
+  message ( "Building Development install targets" )
+
+  set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
+
+  add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
+  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
+
+  install ( TARGETS ${PROJECT_NAME} DESTINATION . )
+
+  # Install game resources
+  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION .
+            OPTIONAL
+            PATTERN ".*" EXCLUDE # do not include dotfiles
+          )
+
+  # Run app target (Sublime Text Editor Integration) -- BUILD_DEV variant
   add_custom_target ( run COMMAND
                       open --wait-apps --fresh -a "Terminal"
                       ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
                     )
 
-  add_custom_command  ( TARGET ${PROJECT_NAME} POST_BUILD
-                        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                        ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}
-                        ${CMAKE_CURRENT_BINARY_DIR}/${TTCARDS_RESOURCES_DIR}
-                      )
-
 endif ( BUILD_OSXAPP )
 
-# TODO: this is for tracking installation paths, versions, etc.
+# Install game resources every time a build is done so we can not worry about
+# path issues
+add_custom_command  ( TARGET ${PROJECT_NAME} POST_BUILD
+                      COMMAND ${CMAKE_COMMAND} -E copy_directory
+                      ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}
+                      ${CMAKE_CURRENT_BINARY_DIR}/${TTCARDS_RESOURCES_DIR}
+                    )
+
+# Uninstall target support script
+configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+                  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+                  IMMEDIATE @ONLY
+                )
+
+# make uninstall target support
+add_custom_target ( uninstall
+                    COMMAND ${CMAKE_COMMAND} -P
+                    ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+                  )
+
+# Auto-generated compile-time variables related to our build system
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
 
-#     FIXME: doxygen docs generation
+# FIXME: doxygen docs generation
 add_custom_target ( ttcards-docs
                     COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
                   )
