@@ -15,10 +15,10 @@ set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION_MAJ
 # PackageMaker refuses to let us use the Markdown extension (MD) -_-
 #
 # TODO / Generate these text files on the fly from the Markdown sources
-set ( CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/cmake/templates/LICENSE.txt" )
-set ( CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/cmake/templates/README.txt" )
-set ( CPACK_RESOURCE_FILE_WELCOME "${PROJECT_SOURCE_DIR}/cmake/templates/Welcome.txt" )
-set ( CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/cmake/templates/Description.txt" )
+set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_TEMPLATE_PATH}/LICENSE.txt" )
+set ( CPACK_RESOURCE_FILE_README "${CMAKE_TEMPLATE_PATH}/README.txt" )
+set ( CPACK_RESOURCE_FILE_WELCOME "${CMAKE_TEMPLATE_PATH}/Welcome.txt" )
+set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_TEMPLATE_PATH}/Description.txt" )
 
 set ( CPACK_PACKAGE_VENDOR "org.github-i8degrees" )
 set ( CPACK_PACKAGE_CONTACT "jeffrey.carp@gmail.com" )

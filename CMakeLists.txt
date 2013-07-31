@@ -14,6 +14,7 @@ set ( TTCARDS_RESOURCES_DIR "Resources" )
 
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
+set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
 
 option ( VERBOSE "Verbose build" off )
 option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
@@ -161,7 +162,7 @@ if ( BUILD_OSXAPP )
 
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           MACOSX_BUNDLE_INFO_PLIST
-                          "${PROJECT_SOURCE_DIR}/cmake/Info.plist.in"
+                          "${CMAKE_TEMPLATES_DIR}/Info.plist.in"
                           MACOSX_BUNDLE_BUNDLE_NAME
                           "TTcards" #${PROJECT_NAME}
                           MACOSX_BUNDLE_ICON_FILE
@@ -222,7 +223,7 @@ add_custom_target ( run COMMAND
                   )
 
 # Uninstall make target support script
-configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+configure_file  ( "${CMAKE_TEMPLATE_PATH}/cmake_uninstall.cmake.in"
                   "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
                   IMMEDIATE @ONLY
                 )
@@ -234,7 +235,7 @@ add_custom_target ( uninstall
                   )
 
 # Auto-generated compile-time variables related to our build system
-configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/version.hpp.in"
+configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
 
