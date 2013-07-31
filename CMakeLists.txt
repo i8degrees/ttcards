@@ -8,7 +8,7 @@ set ( PROJECT_VERSION_PATCH 0 )
 project ( ttcards ) # $PROJECT_NAME
 
 set ( SRC_DIR "src" ) # ttcards/src
-
+set ( TTCARDS_DOCS_DIR "${PROJECT_SOURCE_DIR}/docs" )
 # Relative path -- from project source -- to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 
@@ -22,6 +22,7 @@ option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
 # Distribution / Packaging target options
 option ( BUILD_POSIX "Build POSIX target" off )
 option ( BUILD_OSXAPP "Build an OSX App Bundle" off )
+option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" on )
 
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
@@ -42,6 +43,35 @@ else () # default
   set ( PROJECT_BUILD_TYPE 0 )
   message ( "Building Development target." )
 endif ( BUILD_POSIX )
+
+if ( BUILD_DOCS )
+
+  find_package ( Doxygen )
+
+  if ( NOT DOXYGEN_FOUND )
+    message ( FATAL_ERROR "Doxygen is needed to build the documentation.")
+  endif ( NOT DOXYGEN_FOUND )
+
+  set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
+  set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
+  set ( DOXY_HTML_INDEX_FILE ${TTCARDS_DOCS_DIR}/public/index.html )
+  #set ( DOXY_EXTRA_FILES "" )
+
+  # Template Doxyfile
+  configure_file  ( ${DOXYFILE_IN} ${DOXYFILE} @ONLY )
+
+  # Generate docs only when dependencies change
+  add_custom_command  ( OUTPUT ${DOXY_HTML_INDEX_FILE}
+                        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE}
+                        MAIN_DEPENDENCY ${DOXYFILE} ${DOXYFILE_IN}
+                        #DEPENDS project_targets ${DOXY_EXTRA_FILES}
+                        COMMENT "Generating HTML documentation"
+                      )
+
+  # Add 'make docs' target
+  add_custom_target ( docs ALL DEPENDS ${DOXY_HTML_INDEX_FILE} )
+
+endif ( BUILD_DOCS )
 
 if ( NOT DEFINED CMAKE_BUILD_TYPE )
   set ( CMAKE_BUILD_TYPE Debug )
@@ -73,10 +103,6 @@ else ()
   set ( PLATFORM_UNKNOWN true )
   message ( "Unsupported build system detected... Hopefully CMake gets it right for you; good luck!" )
 endif ( CMAKE_SYSTEM_NAME STREQUAL Linux )
-
-# global project doxygen defaults
-set ( DOXYGEN_COMMAND doxygen )
-set ( DOXYGEN_CONFIG_FILE doxygen.cfg )
 
 set ( TTCARDS_SOURCE
       ${SRC_DIR}/cfg.cpp
@@ -183,6 +209,16 @@ if ( BUILD_OSXAPP )
                           "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
                         )
 
+  if ( BUILD_DOCS )
+
+    # Install generated documentation files
+    install ( DIRECTORY ${TTCARDS_DOCS_DIR}/public
+              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}/
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
+
+  endif ( BUILD_DOCS )
+
 elseif ( BUILD_POSIX )
 
   set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}" )
@@ -198,6 +234,16 @@ elseif ( BUILD_POSIX )
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
+
+  if ( BUILD_DOCS )
+
+    # Install generated documentation files
+    install ( DIRECTORY ${TTCARDS_DOCS_DIR}/public
+              DESTINATION share/doc/${PROJECT_NAME}
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
+
+  endif ( BUILD_DOCS )
 
 else () # Default
 
@@ -240,11 +286,6 @@ add_custom_target ( uninstall
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
-
-# FIXME: doxygen docs generation
-add_custom_target ( ttcards-docs
-                    COMMAND ${DOXYGEN_COMMAND} ${DOXYGEN_CONFIG_FILE}
-                  )
 
 # CPack configuration
 include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
