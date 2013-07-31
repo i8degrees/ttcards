@@ -133,6 +133,7 @@ if ( BUILD_OSXAPP )
   set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
 
   #set ( TTCARDS_RESOURCES_INSTALL_DIR ${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR} )
+  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/ttcards.app" )
 
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
@@ -185,10 +186,9 @@ if ( BUILD_OSXAPP )
 
   #install ( DIRECTORY /Library/Frameworks/SDL.framework DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks )
 
-  # Run app target (Sublime Text Editor Integration) -- BUILD_OSXAPP variant
-  add_custom_target ( run COMMAND open -a ${CMAKE_INSTALL_PREFIX}/ttcards.app )
-
 elseif ( BUILD_POSIX )
+
+  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}" )
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
@@ -200,17 +200,12 @@ elseif ( BUILD_POSIX )
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-  # Run app target (Sublime Text Editor Integration) -- POSIX variant
-  add_custom_target ( run COMMAND
-                      open --wait-apps --fresh -a "Terminal"
-                      ${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}
-                    )
-
 else ( BUILD_DEV )
 
   message ( "Building Development install targets" )
 
   set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
+  set ( SUBLIME_RUN_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
@@ -223,12 +218,6 @@ else ( BUILD_DEV )
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-  # Run app target (Sublime Text Editor Integration) -- BUILD_DEV variant
-  add_custom_target ( run COMMAND
-                      open --wait-apps --fresh -a "Terminal"
-                      ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}
-                    )
-
 endif ( BUILD_OSXAPP )
 
 # Install game resources every time a build is done so we can not worry about
@@ -238,6 +227,11 @@ add_custom_command  ( TARGET ${PROJECT_NAME} POST_BUILD
                       ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}
                       ${CMAKE_CURRENT_BINARY_DIR}/${TTCARDS_RESOURCES_DIR}
                     )
+# Run app make target (Sublime Text Editor Integration)
+add_custom_target ( run COMMAND
+                    open --wait-apps --fresh -a "Terminal"
+                    ${SUBLIME_RUN_PATH}
+                  )
 
 # Uninstall target support script
 configure_file  ( "${PROJECT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
