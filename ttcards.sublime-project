@@ -32,12 +32,6 @@
 
   "build_systems":
   [
-    {
-      // TODO
-      //"name": "Docs",
-      //"cmd": ["sublime_cmake", "${file_path}", "${project_path}", "${file_base_name}", "ttcards-docs"]
-    },
-
-    {}
+    {} // placeholder
   ]
 }
