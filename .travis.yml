@@ -22,6 +22,7 @@ before_install:
   - cmake ..
   - make -j4
   - sudo make install
+  - sudo ldconfig
   - make clean
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
