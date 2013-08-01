@@ -18,7 +18,7 @@
 
 App::App ( nom::int32 argc, char* argv[] )
 {
-  nom::OSXFS dir;
+  nom::File dir;
   unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
 #ifdef DEBUG_GAME_OBJ
@@ -31,7 +31,7 @@ App::App ( nom::int32 argc, char* argv[] )
   // ttcards binary resides at. This allows us to execute the binary from
   // anywhere in the file system via third-party interface, such as with
   // Terminal.app -- see CMakeLists.txt make run target for an example.
-  WORKING_DIR = dir.getDirName ( argv[0] ) + "/Resources/";
+  WORKING_DIR = dir.path ( argv[0] ) + "/Resources/";
 
 #elif TTCARDS_BUILD_TYPE == 1 // POSIX Release target
 
@@ -39,7 +39,7 @@ App::App ( nom::int32 argc, char* argv[] )
 
 #elif TTCARDS_BUILD_TYPE == 2 // OSX App Bundle
 
-  WORKING_DIR = dir.getResourcesPath();
+  WORKING_DIR = nom::getBundleResourcePath();
 
 #elif TTCARDS_BUILD_TYPE == 3
 
@@ -48,7 +48,7 @@ App::App ( nom::int32 argc, char* argv[] )
 #endif // TTCARDS_BUILD_TYPE defined
 
   // By default, WORKING_DIR is not set -- so we stay wherever we so happen to be!
-  dir.setWorkingDir ( WORKING_DIR );
+  dir.setPath ( WORKING_DIR );
 
   // Command line arguments
   if ( argc > 1 )
