@@ -31,7 +31,3 @@ ttcards
 # EMCC
 public/
 
-# docs
-docs/install.sh
-docs/public/
-docs/man
