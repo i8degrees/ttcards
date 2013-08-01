@@ -17,13 +17,13 @@ before_install:
   - PROJECT_NAME=nomlib; export PROJECT_NAME
   - git clone --branch="${TRAVIS_BRANCH}" https://github.com/i8degrees/nomlib nomlib.git
   - cd nomlib.git && mkdir -p build && cd build
-  - cmake .. && make -j4
+  - cmake -DBUILD_DOCS=off -DBUILD_EXAMPLES=off.. && make -j4
   - sudo make install
   - sudo ldconfig
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build build-osx && cd build
-  - cmake -D BUILD_POSIX=on ..
+  - cmake -DBUILD_POSIX=on -DBUILD_DOCS=on ..
 script:
   - make -j4
   - sudo make install
