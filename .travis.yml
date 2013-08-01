@@ -26,11 +26,11 @@ before_script:
   - cmake -DVERBOSE=on -DBUILD_POSIX=on -DBUILD_DOCS=off ..
 script:
   - make -j4
+  - make package # TODO
   - sudo make install
   - ttcards --version
   #- ttcards --export && cat cards.json
   - sudo make uninstall
-  - make package # TODO
   - make clean
 # whitelist
 branches:
