@@ -4,7 +4,7 @@ compiler:
   #- clang
 before_install:
 # common dependencies:
-  - sudo apt-get install doxygen graphviz libsdl1.2-dev libsdl1.2debian
+  - sudo apt-get install libsdl1.2-dev libsdl1.2debian # doxygen graphviz
 # nomlib dependencies:
   - sudo apt-get install libsdl-image1.2-dev libsdl-image1.2 libsdl-ttf2.0-dev libsdl-ttf2.0-0 libsndfile1-dev libopenal-dev libmagic-dev
 # TTcards dependencies:
@@ -17,18 +17,18 @@ before_install:
   - PROJECT_NAME=nomlib; export PROJECT_NAME
   - git clone --branch=dev https://github.com/i8degrees/nomlib nomlib.git
   - cd nomlib.git && mkdir -p build && cd build
-  - cmake -DBUILD_DOCS=off -DBUILD_EXAMPLES=off .. && make -j4
+  - cmake -DVERBOSE=on -DBUILD_DOCS=off -DBUILD_EXAMPLES=off .. && make -j4
   - sudo make install
   - sudo ldconfig
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build build-osx && cd build
-  - cmake -DBUILD_POSIX=on -DBUILD_DOCS=on ..
+  - cmake -DVERBOSE=on -DBUILD_POSIX=on -DBUILD_DOCS=off ..
 script:
   - make -j4
   - sudo make install
   - ttcards --version
-  - ttcards --export
+  - ttcards --export && cat cards.json
   - sudo make uninstall
   - make clean
 # whitelist
