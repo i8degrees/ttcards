@@ -15,9 +15,9 @@ before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x32"
 # nomlib build & installation:
   - PROJECT_NAME=nomlib; export PROJECT_NAME
-  - git clone --branch="${TRAVIS_BRANCH}" https://github.com/i8degrees/nomlib nomlib.git
+  - git clone --branch=dev https://github.com/i8degrees/nomlib nomlib.git
   - cd nomlib.git && mkdir -p build && cd build
-  - cmake -DBUILD_DOCS=off -DBUILD_EXAMPLES=off.. && make -j4
+  - cmake -DBUILD_DOCS=off -DBUILD_EXAMPLES=off .. && make -j4
   - sudo make install
   - sudo ldconfig
 before_script:
@@ -28,6 +28,7 @@ script:
   - make -j4
   - sudo make install
   - ttcards --version
+  - ttcards --export
   - sudo make uninstall
   - make clean
 # whitelist
