@@ -3,27 +3,23 @@ compiler:
   - gcc
   #- clang
 before_install:
-# nomlib dependencies (SDL):
-  - sudo apt-get install libsdl1.2-dev libsdl1.2debian libsdl-image1.2-dev libsdl-image1.2 libsdl-ttf2.0-dev libsdl-ttf2.0-0
-# nomlib dependencies (Audio):
-  - sudo apt-get install libsndfile1-dev libopenal-dev
-# nomlib dependencies (misc):
-  - sudo apt-get install libmagic-dev doxygen graphviz
+# common dependencies:
+  - sudo apt-get install doxygen graphviz libsdl1.2-dev libsdl1.2debian
+# nomlib dependencies:
+  - sudo apt-get install libsdl-image1.2-dev libsdl-image1.2 libsdl-ttf2.0-dev libsdl-ttf2.0-0 libsndfile1-dev libopenal-dev libmagic-dev
 # TTcards dependencies:
-  - sudo apt-get install libjson-spirit-dev
+  - sudo apt-get install libjson-spirit-dev pulseaudio
 # virtual X11 framebuffer:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x32"
 # nomlib build & installation:
   - PROJECT_NAME=nomlib; export PROJECT_NAME
-  - git clone --branch=$TRAVIS_BRANCH https://github.com/i8degrees/nomlib nomlib.git
+  - git clone --branch="${TRAVIS_BRANCH}" https://github.com/i8degrees/nomlib nomlib.git
   - cd nomlib.git && mkdir -p build && cd build
-  - cmake ..
-  - make -j4
+  - cmake .. && make -j4
   - sudo make install
   - sudo ldconfig
-  - make clean
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build build-osx && cd build
