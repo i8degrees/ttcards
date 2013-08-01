@@ -373,11 +373,17 @@ include ( InstallRequiredSystemLibraries )
 
 # Platform specific generator presets
 if ( PLATFORM_OSX )
+
   set ( CPACK_GENERATOR "DragNDrop" )
+
 elseif ( PLATFORM_LINUX )
+
   set ( CPACK_GENERATOR "DEB" )
+
 elseif ( PLATFORM_UNKNOWN )
+
   set ( CPACK_GENERATOR "ZIP" )
+
 endif ( PLATFORM_OSX )
 
 include ( CPack )
