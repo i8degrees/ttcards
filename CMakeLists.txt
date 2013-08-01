@@ -11,9 +11,10 @@ project ( ttcards ) # $PROJECT_NAME
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
 set ( SRC_DIR "src" ) # ttcards/src
-set ( TTCARDS_DOCS_DIR "${PROJECT_SOURCE_DIR}/docs" )
+
 # Relative path -- from project source -- to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
+set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
 
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
@@ -68,7 +69,8 @@ if ( BUILD_DOCS )
 
   set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
   set ( DOXYFILE ${PROJECT_BINARY_DIR}/Doxyfile )
-  set ( DOXY_HTML_INDEX_FILE ${TTCARDS_DOCS_DIR}/public/index.html )
+  set ( DOXY_HTML_INDEX_FILE ${PROJECT_BINARY_DIR}/docs/html/index.html )
+
   #set ( DOXY_EXTRA_FILES "" )
 
   # Template Doxyfile
@@ -219,11 +221,20 @@ if ( BUILD_OSXAPP )
                           "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
                         )
 
+    # Install software license & general project information
+    install ( FILES
+              ${PROJECT_SOURCE_DIR}/BUGS.md
+              ${PROJECT_SOURCE_DIR}/LICENSE.md
+              ${PROJECT_SOURCE_DIR}/README.md
+              ${PROJECT_SOURCE_DIR}/TODO.md
+              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}/Documentation
+            )
+
   if ( BUILD_DOCS )
 
     # Install generated documentation files
-    install ( DIRECTORY ${TTCARDS_DOCS_DIR}/public
-              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}/
+    install ( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
+              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}/Documentation
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
@@ -243,12 +254,28 @@ elseif ( BUILD_POSIX )
   install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION share/${PROJECT_NAME}
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
+            PATTERN "Help" EXCLUDE # do not include documentation here
           )
+
+    # Install software license & general project information
+    install ( FILES
+              ${PROJECT_SOURCE_DIR}/BUGS.md
+              ${PROJECT_SOURCE_DIR}/LICENSE.md
+              ${PROJECT_SOURCE_DIR}/README.md
+              ${PROJECT_SOURCE_DIR}/TODO.md
+              DESTINATION share/doc/${PROJECT_NAME}
+            )
+
+    # Install general game information -- rules, how to play, etc.
+    install ( DIRECTORY
+              ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/Help
+              DESTINATION share/doc/${PROJECT_NAME}
+            )
 
   if ( BUILD_DOCS )
 
     # Install generated documentation files
-    install ( DIRECTORY ${TTCARDS_DOCS_DIR}/public
+    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
               DESTINATION share/doc/${PROJECT_NAME}
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
