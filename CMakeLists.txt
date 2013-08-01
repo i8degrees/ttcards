@@ -138,12 +138,12 @@ endif ( BUILD_DOCS )
 # Platform specific
 if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
 
-  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++0x )
+  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
 
 elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
-  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++" )
+  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" )
 
