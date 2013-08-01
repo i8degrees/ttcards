@@ -26,7 +26,8 @@ before_script:
   - cmake -DVERBOSE=on -DBUILD_POSIX=on -DBUILD_DOCS=off ..
 script:
   - make -j4
-  - make package # TODO
+  #- make package # TODO
+  #- sudo dpkg --install ttcards_0.7.0.deb
   - sudo make install
   - ttcards --version
   #- ttcards --export && cat cards.json
