@@ -27,8 +27,10 @@ before_script:
 script:
   - make -j4
   - sudo make install
-  - ttcards --version && ttcards --export && cat /usr/local/share/ttcards/cards.json
+  - ttcards --version
+  #- ttcards --export && cat cards.json
   - sudo make uninstall
+  - make package # TODO
   - make clean
 # whitelist
 branches:

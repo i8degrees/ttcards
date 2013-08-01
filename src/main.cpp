@@ -57,7 +57,7 @@ App::App ( nom::int32 argc, char* argv[] )
     {
       Collection cards;
 
-      if ( cards.ExportJSON ( "../cards.json" ) == false )
+      if ( cards.ExportJSON ( "cards.json" ) == false )
       {
         std::cout << "ERR: " << "Unknown failure to serialize JSON into cards.json" << std::endl;
         exit ( EXIT_FAILURE );
