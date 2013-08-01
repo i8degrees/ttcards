@@ -22,6 +22,10 @@ set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
 
 # Project options
 option ( VERBOSE "Verbose build" off )
+option ( DEBUG "Build with all debugging features" off )
+option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
+option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
+
 option ( BUILD_POSIX "Build POSIX target" off )
 option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" on )
 
@@ -33,6 +37,36 @@ endif ( PLATFORM_OSX )
 if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE true )
 endif ( VERBOSE )
+
+if ( DEBUG )
+
+  set ( CMAKE_BUILD_TYPE "Debug" )
+  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DTTCARDS_DEBUG" )
+  message ( STATUS "Building ${PROJECT_NAME} with debugging." )
+
+else () # Build with optimizations for maximum speed and minimal size
+
+  set ( CMAKE_BUILD_TYPE "Release" )
+  message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
+
+endif ( DEBUG )
+
+if ( DEBUG_ASSERT )
+
+  add_definitions ( "-DTTCARDS_DEBUG_ASSERT" )
+  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
+
+endif ( DEBUG_ASSERT )
+
+if ( DEBUG_TRACE )
+
+  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
+  # we can enable this feature in either target mode to maximize debugging
+  # capabilities.
+  add_definitions ( "-DTTCARDS_DEBUG_TRACE" )
+  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
+
+endif ( DEBUG_TRACE )
 
 if ( BUILD_UNIVERSAL_LIB )
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
@@ -89,19 +123,15 @@ if ( BUILD_DOCS )
 
 endif ( BUILD_DOCS )
 
-if ( NOT DEFINED CMAKE_BUILD_TYPE )
-  set ( CMAKE_BUILD_TYPE Debug )
-endif ( NOT DEFINED CMAKE_BUILD_TYPE )
-
 # Platform specific
 if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
 
-  set ( CMAKE_CXX_FLAGS -std=c++0x )
+  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++0x )
 
 elseif ( PLATFORM_OSX )
 
   # libc++ requires OSX v10.7+
-  set ( CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++" )
+  set ( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" )
 
