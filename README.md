@@ -3,7 +3,7 @@ TTcards
 
 Remake (clone) of SquareSoft's Final Fantasy VIII Triple Triad card game.
 
-Building instructions
+Building Instructions
 ---------------------
 
 ### Dependencies ###
