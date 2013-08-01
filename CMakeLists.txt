@@ -27,15 +27,19 @@ option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
 
 option ( BUILD_POSIX "Build POSIX target" off )
-option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" on )
+option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
 if ( PLATFORM_OSX )
+
   option ( BUILD_OSXAPP "Build an OSX App Bundle" off )
   option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
+
 endif ( PLATFORM_OSX )
 
 if ( VERBOSE )
+
   set ( CMAKE_VERBOSE_MAKEFILE true )
+
 endif ( VERBOSE )
 
 if ( DEBUG )
@@ -69,19 +73,27 @@ if ( DEBUG_TRACE )
 endif ( DEBUG_TRACE )
 
 if ( BUILD_UNIVERSAL_LIB )
+
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
   message ( "Building an OSX Universal Library" )
+
 endif ( BUILD_UNIVERSAL_LIB )
 
 if ( BUILD_POSIX )
+
   set ( PROJECT_BUILD_TYPE 1 )
   message ( "Building POSIX target." )
+
 elseif ( BUILD_OSXAPP )
+
   set ( PROJECT_BUILD_TYPE 2 )
   message ( "Building OSXAPP target." )
+
 else () # default
+
   set ( PROJECT_BUILD_TYPE 0 )
   message ( "Building Development target." )
+
 endif ( BUILD_POSIX )
 
 if ( BUILD_DOCS )
