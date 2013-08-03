@@ -6,13 +6,13 @@ set ( PROJECT_VERSION_MINOR 8 )
 set ( PROJECT_VERSION_PATCH 0 )
 
 # Project options -- needs to be done before any kind of project declaration
-option ( VERBOSE "Verbose build" off )
-option ( DEBUG "Build with all debugging features" off )
-option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
-option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
+option ( VERBOSE "Enable verbose makefile" off )
+option ( DEBUG "Enable building with debugging features" off )
+option ( DEBUG_ASSERT "Enable building with run-time assertions" off )
+option ( DEBUG_TRACE "Enable building with logging of every object's construction & destruction" off )
 
-option ( POSIX "Build POSIX target" off )
-option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
+option ( POSIX "Enable POSIX install profile" off )
+option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
 project ( ttcards ) # $PROJECT_NAME
 
@@ -50,64 +50,50 @@ add_custom_target ( uninstall
 
 # Check which options have been set
 if ( PLATFORM_OSX )
-
-  option ( OSXAPP "Build an OSX App Bundle" off )
-  option ( UNIVERSAL "Build as an OSX Universal Library" off )
-
+  option ( OSXAPP "Enable building OS X Application Bundle" off )
+  option ( UNIVERSAL "Enable building OSX Universal Application" off )
 endif ( PLATFORM_OSX )
 
 if ( VERBOSE )
-
   set ( CMAKE_VERBOSE_MAKEFILE true )
-
 endif ( VERBOSE )
 
 if ( DEBUG )
-
   set ( CMAKE_BUILD_TYPE "Debug" )
   set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DTTCARDS_DEBUG" )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
-
 else () # Build with optimizations for maximum speed and minimal size
-
   set ( CMAKE_BUILD_TYPE "Release" )
   message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
-
 endif ( DEBUG )
 
 if ( DEBUG_ASSERT )
-
   add_definitions ( "-DTTCARDS_DEBUG_ASSERT" )
   message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
-
 endif ( DEBUG_ASSERT )
 
 if ( DEBUG_TRACE )
-
   # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
   # we can enable this feature in either target mode to maximize debugging
   # capabilities.
   add_definitions ( "-DTTCARDS_DEBUG_TRACE" )
   message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
-
 endif ( DEBUG_TRACE )
 
 if ( UNIVERSAL )
-
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
-  message ( "Building an OSX Universal Library" )
-
+  message ( STATUS "Enabled building OSX Universal Application." )
 endif ( UNIVERSAL )
 
 if ( POSIX )
-  message ( "Building POSIX target." )
+  message ( STATUS "Enabled POSIX install profile." )
 elseif ( OSXAPP )
-  message ( "Building OSXAPP target." )
-else () # default
-  message ( "Building Development target." )
+  message ( STATUS "Enabled OSXAPP install profile." )
+else ( NOT POSIX OR OSXAPP ) # default
+  message ( STATUS "Enabled development install profile." )
 endif ( POSIX )
 
-if ( DOCS )
+if ( DOCS ) # Generation of documentation via doxygen option
 
   # Control whether or not to see warnings regarding incomplete documentation
   # from doxygen.
@@ -121,7 +107,7 @@ if ( DOCS )
   find_package ( Doxygen )
 
   if ( NOT DOXYGEN_FOUND )
-    message ( FATAL_ERROR "Doxygen is needed to build the documentation.")
+    message ( FATAL_ERROR "Doxygen & graphviz is required to generate the documentation.")
   endif ( NOT DOXYGEN_FOUND )
 
   set ( DOXYFILE_IN ${CMAKE_TEMPLATE_PATH}/Doxyfile.in )
@@ -190,10 +176,8 @@ set ( TTCARDS_SOURCE
 
 # Required Dependencies
 #
-# We gather up all of the library & header search paths in two separate
-# variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
-# of calls to include_directories & linking of libraries.
-#
+# Add libraries & header file inclusion paths to EXT_HEADERS & EXTLIBS as we
+# find them.
 find_package ( SDL REQUIRED )
 find_package ( nomlib REQUIRED )
 find_package ( json_spirit REQUIRED )
@@ -213,8 +197,6 @@ if ( JSON_SPIRIT_FOUND )
   set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
 endif ( JSON_SPIRIT_FOUND )
 
-# Now that we have collected all the header file search paths we need, we
-# include them all here for the compiler to be made aware of
 include_directories ( ${EXT_HEADERS} )
 
 # Linking Dependencies & Packaging / Installation
@@ -256,7 +238,7 @@ if ( OSXAPP )
                           MACOSX_BUNDLE_INFO_PLIST
                           "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
                           MACOSX_BUNDLE_BUNDLE_NAME
-                          "TTcards" #${PROJECT_NAME}
+                          "TTcards"
                           MACOSX_BUNDLE_ICON_FILE
                           "ttcards.icns"
                           MACOSX_BUNDLE_INFO_STRING
@@ -381,17 +363,11 @@ include ( InstallRequiredSystemLibraries )
 
 # Platform specific generator presets
 if ( PLATFORM_OSX )
-
   set ( CPACK_GENERATOR "DragNDrop" )
-
 elseif ( PLATFORM_LINUX )
-
   set ( CPACK_GENERATOR "DEB" )
-
 elseif ( PLATFORM_UNKNOWN )
-
   set ( CPACK_GENERATOR "ZIP" )
-
 endif ( PLATFORM_OSX )
 
 include ( CPack )
