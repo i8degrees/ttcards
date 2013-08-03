@@ -5,6 +5,15 @@ set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 8 )
 set ( PROJECT_VERSION_PATCH 0 )
 
+# Project options -- needs to be done before any kind of project declaration
+option ( VERBOSE "Verbose build" off )
+option ( DEBUG "Build with all debugging features" off )
+option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
+option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
+
+option ( POSIX "Build POSIX target" off )
+option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
+
 project ( ttcards ) # $PROJECT_NAME
 
 # Platform detection
@@ -36,15 +45,7 @@ add_custom_target ( uninstall
                     "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
                   )
 
-# Project options
-option ( VERBOSE "Verbose build" off )
-option ( DEBUG "Build with all debugging features" off )
-option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
-option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
-
-option ( POSIX "Build POSIX target" off )
-option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
-
+# Check which options have been set
 if ( PLATFORM_OSX )
 
   option ( OSXAPP "Build an OSX App Bundle" off )
