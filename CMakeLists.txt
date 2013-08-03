@@ -2,7 +2,7 @@ cmake_minimum_required ( VERSION 2.6 )
 
 # Project configuration
 set ( PROJECT_VERSION_MAJOR 0 )
-set ( PROJECT_VERSION_MINOR 7 )
+set ( PROJECT_VERSION_MINOR 8 )
 set ( PROJECT_VERSION_PATCH 0 )
 
 project ( ttcards ) # $PROJECT_NAME
