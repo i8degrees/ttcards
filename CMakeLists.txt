@@ -16,9 +16,25 @@ set ( SRC_DIR "src" ) # ttcards/src
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
 
+# Assume a local development profile initially -- this likely changes depending
+# on which build profile is chosen.
+set ( SUBLIME_RUN_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
+
+# Uninstall make target support script
+configure_file  ( "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
+                  "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
+                  IMMEDIATE @ONLY
+                )
+
+# Uninstall make target
+add_custom_target ( uninstall
+                    COMMAND ${CMAKE_COMMAND} -P
+                    "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
+                  )
 
 # Project options
 option ( VERBOSE "Verbose build" off )
@@ -326,7 +342,6 @@ elseif ( POSIX )
 else () # Default
 
   set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
-  set ( SUBLIME_RUN_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
   target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
@@ -342,25 +357,24 @@ else () # Default
 
 endif ( OSXAPP )
 
-# Run app make target (Sublime Text Editor Integration)
+# make run target (Sublime Text Editor Integration)
+#
+# Needs to be added *AFTER* all modifications to SUBLIME_RUN_PATH are made.
 add_custom_target ( run COMMAND
                     open --wait-apps --fresh -a "Terminal"
-                    ${SUBLIME_RUN_PATH}
+                    "${SUBLIME_RUN_PATH}"
                   )
 
-# Uninstall make target support script
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/cmake_uninstall.cmake.in"
-                  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-                  IMMEDIATE @ONLY
-                )
-
-# Uninstall make target
-add_custom_target ( uninstall
-                    COMMAND ${CMAKE_COMMAND} -P
-                    ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-                  )
-
-# Auto-generated compile-time variables related to our build system
+# Auto-generated build-time variables result in modification of the built
+# binary's run-time execution.
+#
+# CMake dependency variables (of which control the location of this insert)
+#
+#   a) PROJECT_VERSION_*
+#   b) CMAKE_INSTALL_PREFIX
+#
+# This means that we must include this configured file *AFTER* any and all
+# modifications -- that matter to us -- occur in this build script.
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
