@@ -19,6 +19,9 @@ project ( ttcards ) # $PROJECT_NAME
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
+# Utility macros
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
+
 set ( SRC_DIR "src" ) # ttcards/src
 
 # Relative path -- from project source -- to game resources
