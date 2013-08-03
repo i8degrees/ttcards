@@ -184,24 +184,23 @@ set ( TTCARDS_SOURCE
 # of calls to include_directories & linking of libraries.
 #
 find_package ( SDL REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} "SDLmain" ) #FIXME
-
 find_package ( nomlib REQUIRED )
-set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
+find_package ( json_spirit REQUIRED )
 
-find_library ( json_spirit REQUIRED )
+if ( SDL_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} "SDLmain" ) #FIXME
+endif ( SDL_FOUND )
 
-find_path ( JSON_SPIRIT_INCLUDE_DIR
-            json_spirit.h
-            json_spirit_reader_template.h json_spirit_writer_template.h
-            PATH_SUFFIXES
-            include/json_spirit include
-          )
+if ( NOMLIB_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
+endif ( NOMLIB_FOUND )
 
-set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
-set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
+if ( JSON_SPIRIT_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
+endif ( JSON_SPIRIT_FOUND )
 
 # Now that we have collected all the header file search paths we need, we
 # include them all here for the compiler to be made aware of
