@@ -26,13 +26,13 @@ option ( DEBUG "Build with all debugging features" off )
 option ( DEBUG_ASSERT "Build with run-time assertions enabled" off )
 option ( DEBUG_TRACE "Build with trace logging of object construction & destruction" off )
 
-option ( BUILD_POSIX "Build POSIX target" off )
-option ( BUILD_DOCS "Generate HTML based API documentation -- requires Doxygen" off )
+option ( POSIX "Build POSIX target" off )
+option ( DOCS "Generate HTML based API documentation -- requires Doxygen" off )
 
 if ( PLATFORM_OSX )
 
-  option ( BUILD_OSXAPP "Build an OSX App Bundle" off )
-  option ( BUILD_UNIVERSAL_LIB "Build as an OSX Universal Library" off )
+  option ( OSXAPP "Build an OSX App Bundle" off )
+  option ( UNIVERSAL "Build as an OSX Universal Library" off )
 
 endif ( PLATFORM_OSX )
 
@@ -72,19 +72,19 @@ if ( DEBUG_TRACE )
 
 endif ( DEBUG_TRACE )
 
-if ( BUILD_UNIVERSAL_LIB )
+if ( UNIVERSAL )
 
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
   message ( "Building an OSX Universal Library" )
 
-endif ( BUILD_UNIVERSAL_LIB )
+endif ( UNIVERSAL )
 
-if ( BUILD_POSIX )
+if ( POSIX )
 
   set ( PROJECT_BUILD_TYPE 1 )
   message ( "Building POSIX target." )
 
-elseif ( BUILD_OSXAPP )
+elseif ( OSXAPP )
 
   set ( PROJECT_BUILD_TYPE 2 )
   message ( "Building OSXAPP target." )
@@ -94,9 +94,9 @@ else () # default
   set ( PROJECT_BUILD_TYPE 0 )
   message ( "Building Development target." )
 
-endif ( BUILD_POSIX )
+endif ( POSIX )
 
-if ( BUILD_DOCS )
+if ( DOCS )
 
   # Control whether or not to see warnings regarding incomplete documentation
   # from doxygen.
@@ -133,7 +133,7 @@ if ( BUILD_DOCS )
   # Add 'make docs' target
   add_custom_target ( docs ALL DEPENDS ${DOXY_HTML_INDEX_FILE} )
 
-endif ( BUILD_DOCS )
+endif ( DOCS )
 
 # Platform specific
 if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
@@ -208,7 +208,7 @@ include_directories ( ${EXT_HEADERS} )
 
 # Linking Dependencies & Packaging / Installation
 
-if ( BUILD_OSXAPP )
+if ( OSXAPP )
 
   set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
   set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/ttcards.app/Contents/MacOS/ttcards" )
@@ -271,7 +271,7 @@ if ( BUILD_OSXAPP )
               DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}/Documentation
             )
 
-  if ( BUILD_DOCS )
+  if ( DOCS )
 
     # Install generated documentation files
     install ( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
@@ -279,9 +279,9 @@ if ( BUILD_OSXAPP )
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
-  endif ( BUILD_DOCS )
+  endif ( DOCS )
 
-elseif ( BUILD_POSIX )
+elseif ( POSIX )
 
   set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}" )
 
@@ -313,7 +313,7 @@ elseif ( BUILD_POSIX )
               DESTINATION share/doc/${PROJECT_NAME}
             )
 
-  if ( BUILD_DOCS )
+  if ( DOCS )
 
     # Install generated documentation files
     install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
@@ -321,7 +321,7 @@ elseif ( BUILD_POSIX )
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
-  endif ( BUILD_DOCS )
+  endif ( DOCS )
 
 else () # Default
 
@@ -340,7 +340,7 @@ else () # Default
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-endif ( BUILD_OSXAPP )
+endif ( OSXAPP )
 
 # Run app make target (Sublime Text Editor Integration)
 add_custom_target ( run COMMAND
