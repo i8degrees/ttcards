@@ -63,4 +63,4 @@ before a crash occurs -- this will be fixed in the future.
 
 #### Build Status ####
 
-[![Build Status](https://travis-ci.org/i8degrees/ttcards.png?branch=master)](https://travis-ci.org/i8degrees/ttcards)
+[![Build Status](https://travis-ci.org/i8degrees/ttcards.png?branch=master,dev)](https://travis-ci.org/i8degrees/ttcards)
