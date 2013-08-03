@@ -36,17 +36,7 @@ set ( SUBLIME_RUN_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
 
-# Uninstall make target support script
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/uninstall.cmake.in"
-                  "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
-                  IMMEDIATE @ONLY
-                )
-
-# Uninstall make target
-add_custom_target ( uninstall
-                    COMMAND ${CMAKE_COMMAND} -P
-                    "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
-                  )
+include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
 
 # Check which options have been set
 if ( PLATFORM_OSX )
