@@ -96,20 +96,11 @@ if ( UNIVERSAL )
 endif ( UNIVERSAL )
 
 if ( POSIX )
-
-  set ( PROJECT_BUILD_TYPE 1 )
   message ( "Building POSIX target." )
-
 elseif ( OSXAPP )
-
-  set ( PROJECT_BUILD_TYPE 2 )
   message ( "Building OSXAPP target." )
-
 else () # default
-
-  set ( PROJECT_BUILD_TYPE 0 )
   message ( "Building Development target." )
-
 endif ( POSIX )
 
 if ( DOCS )

@@ -25,7 +25,17 @@ App::App ( nom::int32 argc, char* argv[] )
   std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
 #endif
 
-#if TTCARDS_BUILD_TYPE == 0 // Local build directory install target
+// These potential definitions are influenced at build time with CMake options
+// and serve to help determine the path of game resources
+#if defined ( OSXAPP ) // OSX App Bundle
+
+  WORKING_DIR = nom::getBundleResourcePath();
+
+#elif defined ( POSIX ) // POSIX install location
+
+  WORKING_DIR = TTCARDS_INSTALL_PREFIX + "/share/ttcards/Resources/";
+
+#else // Local development profile; resources assumed in the build directory
 
   // We use argv[0] as we need to know the "installed" directory of where
   // ttcards binary resides at. This allows us to execute the binary from
@@ -33,19 +43,7 @@ App::App ( nom::int32 argc, char* argv[] )
   // Terminal.app -- see CMakeLists.txt make run target for an example.
   WORKING_DIR = dir.path ( argv[0] ) + "/Resources/";
 
-#elif TTCARDS_BUILD_TYPE == 1 // POSIX Release target
-
-  WORKING_DIR = TTCARDS_INSTALL_PREFIX + "/share/ttcards/Resources/";
-
-#elif TTCARDS_BUILD_TYPE == 2 // OSX App Bundle
-
-  WORKING_DIR = nom::getBundleResourcePath();
-
-#elif TTCARDS_BUILD_TYPE == 3
-
-  // Reserved for future implementation
-
-#endif // TTCARDS_BUILD_TYPE defined
+#endif
 
   // By default, WORKING_DIR is not set -- so we stay wherever we so happen to be!
   dir.setPath ( WORKING_DIR );
