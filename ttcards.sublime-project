@@ -6,13 +6,13 @@
       "path": "src",
       "file_include_patterns": ["*.*"]
     },
-
+/*
     {
       "name": "docs",
       "path": "docs",
       "folder_exclude_patterns": ["build", "tmp", "public", "docs/man" ]
     },
-
+*/
     {
       "name": "root",
       "path": ".",
