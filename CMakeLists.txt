@@ -45,9 +45,6 @@ set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 #set ( EXECUTABLE_OUTPUT_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}" )
 
-# Assume a local development profile initially -- this likely changes depending
-# on which build profile is chosen.
-set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}/${PROJECT_NAME}" )
 
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
@@ -62,6 +59,10 @@ include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
 if ( NOT CMAKE_INSTALL_PREFIX )
   set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
 endif ( NOT CMAKE_INSTALL_PREFIX )
+
+# Assume a local development profile initially -- this likely changes depending
+# on which build profile is chosen.
+set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}/${PROJECT_NAME}" )
 
 if ( PLATFORM_OSX )
   option ( OSXAPP "Enable building OS X Application Bundle" off )
