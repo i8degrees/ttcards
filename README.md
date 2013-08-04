@@ -36,7 +36,7 @@ or perhaps hunting down each individual dependency Framework:
 * OSX App Bundle:
 
 ```
-  cmake -DBUILD_OSXAPP=on ..
+  cmake -D OSXAPP=on ..
   make
   make install
   open ttcards.app
@@ -45,7 +45,7 @@ or perhaps hunting down each individual dependency Framework:
 * Binary installed under default CMAKE_INSTALL_PREFIX (/usr or /usr/local):
 
 ```
-  cmake -DBUILD_POSIX=on ..
+  cmake -D OSXAPP=off ..
   make
   make install
   ttcards
