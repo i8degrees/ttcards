@@ -16,18 +16,10 @@ install_options
 .tags*
 hires
 
-# bins
-ttcards.app
-
 # auto-generated
-version.hpp
+src/version.hpp
 
 # Debugging
-*.debug
-ttcards
-*.dSYM
-*.offsets.val
-*.dtps
 
 # EMCC
 public/
