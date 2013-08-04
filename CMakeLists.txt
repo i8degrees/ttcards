@@ -5,13 +5,14 @@ set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 8 )
 set ( PROJECT_VERSION_PATCH 0 )
 
-# Project options -- needs to be done before any kind of project declaration
+# Project options
+option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
+
 option ( VERBOSE "Enable verbose makefile" off )
 option ( DEBUG "Enable building with debugging features" off )
 option ( DEBUG_ASSERT "Enable building with run-time assertions" off )
 option ( DEBUG_TRACE "Enable building with logging of every object's construction & destruction" off )
 
-option ( POSIX "Enable POSIX install profile" off )
 option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
 project ( ttcards ) # $PROJECT_NAME
@@ -28,9 +29,25 @@ set ( SRC_DIR "src" ) # ttcards/src
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
 
+# Installation paths are relative to CMAKE_INSTALL_PREFIX and must be without
+# the closing backslash character.
+#
+# Unless you specify either the option OSXAPP or POSIX, CMAKE_INSTALL_PREFIX is
+# overwritten.
+#
+# All installation profiles must supply these variables; the default assumes
+# that neither POSIX or OSXAPP is defined, thus the local development profile
+# takes effect -- meaning everything is installed into the current build folder.
+set ( INSTALL_APP_PATH "bin" )
+set ( INSTALL_RESOURCES_PATH "share/${PROJECT_NAME}" )
+set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
+set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
+set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
+#set ( EXECUTABLE_OUTPUT_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}" )
+
 # Assume a local development profile initially -- this likely changes depending
 # on which build profile is chosen.
-set ( SUBLIME_RUN_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}/${PROJECT_NAME}" )
 
 # CMake Environment
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
@@ -39,6 +56,13 @@ set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
 include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
 
 # Check which options have been set
+
+# Set the install prefix to the current build folder if this option has not been
+# used.
+if ( NOT CMAKE_INSTALL_PREFIX )
+  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
+endif ( NOT CMAKE_INSTALL_PREFIX )
+
 if ( PLATFORM_OSX )
   option ( OSXAPP "Enable building OS X Application Bundle" off )
   option ( UNIVERSAL "Enable building OSX Universal Application" off )
@@ -75,13 +99,9 @@ if ( UNIVERSAL )
   message ( STATUS "Enabled building OSX Universal Application." )
 endif ( UNIVERSAL )
 
-if ( POSIX )
-  message ( STATUS "Enabled POSIX install profile." )
-elseif ( OSXAPP )
+if ( OSXAPP )
   message ( STATUS "Enabled OSXAPP install profile." )
-else ( NOT POSIX OR OSXAPP ) # default
-  message ( STATUS "Enabled development install profile." )
-endif ( POSIX )
+endif ( OSXAPP )
 
 if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
@@ -98,36 +118,16 @@ elseif ( PLATFORM_OSX )
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
 
   if ( CMAKE_GENERATOR STREQUAL "Xcode" )
-
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
     set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-
   endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
 
-else ()
-
-  # Use whatever CMake gathers for us and hope for the best!
-
+else ( NOT PLATFORM_LINUX OR PLATFORM_OSX )
+  # Use whatever CMake gathers for us and pray for the best!
 endif ( PLATFORM_LINUX )
 
-set ( TTCARDS_SOURCE
-      ${SRC_DIR}/cfg.cpp
-      #${SRC_DIR}/cpu_player.cpp
-      ${SRC_DIR}/CardsMenuState.cpp
-      ${SRC_DIR}/Game.cpp
-      ${SRC_DIR}/GameOverState.cpp
-      ${SRC_DIR}/Game_debug.cpp
-      ${SRC_DIR}/board.cpp
-      ${SRC_DIR}/card.cpp
-      ${SRC_DIR}/card_collection.cpp
-      ${SRC_DIR}/card_debug.cpp
-      ${SRC_DIR}/card_hand.cpp
-      ${SRC_DIR}/card_rules.cpp
-      ${SRC_DIR}/card_view.cpp
-      ${SRC_DIR}/main.cpp
-      ${SRC_DIR}/player.cpp
-      ${SRC_DIR}/GameObject.cpp
-    )
+# List of our source code to be compiled
+include ( "${SRC_DIR}/CMakeLists.txt" )
 
 # Required Dependencies
 #
@@ -139,7 +139,7 @@ find_package ( json_spirit REQUIRED )
 
 if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} "SDLmain" ) #FIXME
+  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} "SDLMain" )
 endif ( SDL_FOUND )
 
 if ( NOMLIB_FOUND )
@@ -154,41 +154,29 @@ endif ( JSON_SPIRIT_FOUND )
 
 include_directories ( ${EXT_HEADERS} )
 
-# Linking Dependencies & Packaging / Installation
-
+# Installation phase
 if ( OSXAPP )
 
-  set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
-  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/ttcards.app/Contents/MacOS/ttcards" )
+  # CMAKE_INSTALL_PREFIX = ttcards.app
+  set ( INSTALL_NAME_PATH "@executable_path/../Frameworks" )
+
+  set ( INSTALL_APP_PATH "${PROJECT_NAME}.app" )
+
+  set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
+
+  set ( INSTALL_RESOURCES_PATH "${INSTALL_ROOT_PATH}" )
+
+  set ( INSTALL_DOCS_PATH "${INSTALL_RESOURCES_PATH}/Resources" )
+  set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
+  set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}/Documentation" )
+
+  # Used for Sublime make run target and fix-up of external frameworks
+  set ( INSTALL_BINARY_PATH "${INSTALL_ROOT_PATH}/MacOS/${PROJECT_NAME}" )
+  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_BINARY_PATH}" )
 
   add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
-  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
-  # Install executables
-  install ( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
-
-  # Install dependencies
-  # TODO: when nomlib is a dylib, put it under TTcards.app/Contents/Libraries
-  if ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
-
-    install ( DIRECTORY ${NOMLIB_LIBRARY} DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
-
-  else ( NOT IS_DIRECTORY ${NOMLIB_LIBRARY} )
-    # FIXME: we need the actual file, not the symbolic link
-    install ( FILES ${NOMLIB_LIBRARY} DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks )
-
-  endif ( IS_DIRECTORY ${NOMLIB_LIBRARY} )
-
-  #install ( DIRECTORY /Library/Frameworks/SDL.framework DESTINATION ${PROJECT_NAME}.app/Contents/Frameworks )
-
-  # Install game resources
-  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION ${PROJECT_NAME}.app/Contents
-            OPTIONAL
-            PATTERN ".*" EXCLUDE # do not include dotfiles
-          )
-
+  # Generate Info.plist for distribution within our soon-to-be application bundle
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           MACOSX_BUNDLE_INFO_PLIST
                           "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
@@ -210,37 +198,36 @@ if ( OSXAPP )
                           "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
                         )
 
-    # Install software license & general project information
-    install ( FILES
-              ${PROJECT_SOURCE_DIR}/BUGS.md
-              ${PROJECT_SOURCE_DIR}/LICENSE.md
-              ${PROJECT_SOURCE_DIR}/README.md
-              ${PROJECT_SOURCE_DIR}/TODO.md
-              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}/Documentation
-            )
+  # Bundle external dependencies within our application bundle for distribution
+  set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
 
-  if ( DOCS )
+  install_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
 
-    # Install generated documentation files
-    install ( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/html
-              DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/${TTCARDS_RESOURCES_DIR}/Documentation
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
+  # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
+  # linkage flag, so we have to sanitize this before hand for use in locating
+  # and bundling this dependency.
+  string ( REPLACE "-framework Cocoa" "" SDL_REAL_LIBRARY ${SDL_LIBRARY} )
 
-  endif ( DOCS )
+  # Install our external dependencies into our application bundle
+  install ( DIRECTORY
+            "${NOMLIB_LIBRARY}" # nomlib.framework
+            "${SDL_REAL_LIBRARY}" # SDL.framework v1.2.15
+            "${JSON_SPIRIT_LIBRARY}" # json_spirit.framework v4.06.1
+            DESTINATION "${INSTALL_FRAMEWORK_PATH}"
+            PATTERN ".*" EXCLUDE # do not include dotfiles
+          )
 
-elseif ( POSIX )
-
-  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}" )
+else ( NOT OSXAPP )
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
-  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
   # Install executables
-  install ( TARGETS ${PROJECT_NAME} DESTINATION bin )
+  install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
+
+endif ( OSXAPP )
 
   # Install game resources
-  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION share/${PROJECT_NAME}
+  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION "${INSTALL_RESOURCES_PATH}"
             OPTIONAL
             PATTERN ".*" EXCLUDE # do not include dotfiles
             PATTERN "Help" EXCLUDE # do not include documentation here
@@ -252,42 +239,26 @@ elseif ( POSIX )
               ${PROJECT_SOURCE_DIR}/LICENSE.md
               ${PROJECT_SOURCE_DIR}/README.md
               ${PROJECT_SOURCE_DIR}/TODO.md
-              DESTINATION share/doc/${PROJECT_NAME}
+              DESTINATION "${INSTALL_DOCS_PATH}"
             )
 
     # Install general game information -- rules, how to play, etc.
     install ( DIRECTORY
               ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/Help
-              DESTINATION share/doc/${PROJECT_NAME}
-            )
-
-  if ( DOCS )
-
-    # Install generated documentation files
-    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-              DESTINATION share/doc/${PROJECT_NAME}
+              DESTINATION "${INSTALL_DOCS_HELP_PATH}"
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
+  if ( DOCS )
+    # Install generated documentation files
+    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+              DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+            )
   endif ( DOCS )
 
-else () # Default
-
-  set ( CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR} )
-
-  add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
-  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
-
-  # Install executables
-  install ( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
-
-  # Install game resources
-  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
-            OPTIONAL
-            PATTERN ".*" EXCLUDE # do not include dotfiles
-          )
-
-endif ( OSXAPP )
+# Linking phase -- issue link with all defined external dependencies
+target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
 
 # make run target (Sublime Text Editor Integration)
 #

@@ -23,7 +23,7 @@ before_install:
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build build-osx && cd build
-  - cmake -DVERBOSE=on -D POSIX=on -D DOCS=off ..
+  - cmake -DVERBOSE=on -D DOCS=off ..
 script:
   - make -j4
   #- make package # TODO
