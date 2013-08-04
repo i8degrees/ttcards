@@ -45,6 +45,7 @@ set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 
 # CMake Environment
+
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
 
@@ -63,7 +64,7 @@ endif ( NOT CMAKE_INSTALL_PREFIX )
 set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}/${PROJECT_NAME}" )
 
 if ( PLATFORM_OSX )
-  option ( OSXAPP "Enable building OS X Application Bundle" off )
+  option ( OSXAPP "Enable building OS X Application Bundle" on )
   option ( UNIVERSAL "Enable building OSX Universal Application" off )
 endif ( PLATFORM_OSX )
 
@@ -99,7 +100,9 @@ if ( UNIVERSAL )
 endif ( UNIVERSAL )
 
 if ( OSXAPP )
-  message ( STATUS "Enabled OSXAPP install profile." )
+  message ( STATUS "Using OSXAPP install profile." )
+else ( NOT OSXAPP )
+  message ( STATUS "Using POSIX install profile." )
 endif ( OSXAPP )
 
 if ( DOCS ) # Generation of documentation via doxygen option
@@ -138,7 +141,7 @@ find_package ( json_spirit REQUIRED )
 
 if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} "SDLMain" )
+  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 endif ( SDL_FOUND )
 
 if ( NOMLIB_FOUND )
@@ -257,7 +260,7 @@ endif ( OSXAPP )
   endif ( DOCS )
 
 # Linking phase -- issue link with all defined external dependencies
-target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} )
+target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} "SDLMain" )
 
 # make run target (Sublime Text Editor Integration)
 #
