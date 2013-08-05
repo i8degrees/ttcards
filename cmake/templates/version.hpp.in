@@ -13,6 +13,5 @@
 
 // Used to determine the strategy of obtaining Resources path
 #cmakedefine OSXAPP
-#cmakedefine POSIX
 
 const std::string TTCARDS_INSTALL_PREFIX =  "@CMAKE_INSTALL_PREFIX@";
