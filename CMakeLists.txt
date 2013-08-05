@@ -6,16 +6,16 @@ set ( CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
 # CMake options
 option ( VERBOSE "Enable verbose makefile" off )
-option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
 
 if ( VERBOSE )
-  set ( CMAKE_VERBOSE_MAKEFILE true )
+  set ( CMAKE_VERBOSE_MAKEFILE on )
 endif ( VERBOSE )
 
 # Set the install prefix to the current build folder if this option has not been
-# set.
+# set; must be set before the project command is issued, or else BAD THINGS will
+# happen.
 if ( NOT CMAKE_INSTALL_PREFIX )
-  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
+  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Install path prefix" )
 endif ( NOT CMAKE_INSTALL_PREFIX )
 
 # Project configuration
@@ -112,6 +112,8 @@ if ( OSXAPP )
 else ( NOT OSXAPP )
   message ( STATUS "Using POSIX install profile." )
 endif ( OSXAPP )
+
+message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
 if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
