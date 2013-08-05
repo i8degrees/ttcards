@@ -1,4 +1,5 @@
 # Project Folders
+build/
 tmp/
 install_options
 
@@ -6,20 +7,19 @@ install_options
 .LSOverride
 
 # Project Files
+*.DS_Store
 *.bck
 *.xcf
 *.mp3
 *.ogg
 *.wav
-*.o
+Resources/audio
 # ctags
 .tags*
 hires
 
 # auto-generated
 src/version.hpp
-
-# Debugging
 
 # EMCC
 public/
