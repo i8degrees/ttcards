@@ -115,10 +115,6 @@ void Game::onInit ( void )
   msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
   msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
-  #ifndef DEBUG_GAME
-    this->debug_box.disable ();
-  #endif
-
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
@@ -131,6 +127,10 @@ void Game::onInit ( void )
                                       DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
                                       msgbox, linear
                                     );
+
+#ifndef DEBUG_GAME
+  this->debug_box.disable ();
+#endif
 
 #ifdef DEBUG_GAME
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
