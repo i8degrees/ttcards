@@ -265,36 +265,35 @@ else ( NOT OSXAPP )
 
 endif ( OSXAPP )
 
-  # Install game resources
-  install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION "${INSTALL_RESOURCES_PATH}"
-            OPTIONAL
+# Install game resources
+install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION "${INSTALL_RESOURCES_PATH}"
+          OPTIONAL
+          PATTERN ".*" EXCLUDE # do not include dotfiles
+          PATTERN "Help" EXCLUDE # do not include documentation here
+        )
+
+# Install software license & general project information
+install ( FILES
+          ${PROJECT_SOURCE_DIR}/BUGS.md
+          ${PROJECT_SOURCE_DIR}/LICENSE.md
+          ${PROJECT_SOURCE_DIR}/README.md
+          ${PROJECT_SOURCE_DIR}/TODO.md
+          DESTINATION "${INSTALL_DOCS_PATH}"
+        )
+
+# Install general game information -- rules, how to play, etc.
+install ( DIRECTORY
+          ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/Help
+          DESTINATION "${INSTALL_DOCS_HELP_PATH}"
+          PATTERN ".*" EXCLUDE # do not include dotfiles
+        )
+if ( DOCS )
+  # Install generated documentation files
+  install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+            DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
             PATTERN ".*" EXCLUDE # do not include dotfiles
-            PATTERN "Help" EXCLUDE # do not include documentation here
           )
-
-    # Install software license & general project information
-    install ( FILES
-              ${PROJECT_SOURCE_DIR}/BUGS.md
-              ${PROJECT_SOURCE_DIR}/LICENSE.md
-              ${PROJECT_SOURCE_DIR}/README.md
-              ${PROJECT_SOURCE_DIR}/TODO.md
-              DESTINATION "${INSTALL_DOCS_PATH}"
-            )
-
-    # Install general game information -- rules, how to play, etc.
-    install ( DIRECTORY
-              ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/Help
-              DESTINATION "${INSTALL_DOCS_HELP_PATH}"
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
-
-    if ( DOCS )
-      # Install generated documentation files
-      install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-                DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
-                PATTERN ".*" EXCLUDE # do not include dotfiles
-              )
-    endif ( DOCS )
+endif ( DOCS )
 
 # Linking phase -- issue link with all defined external dependencies
 target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} "SDLmain" )
