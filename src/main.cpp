@@ -107,7 +107,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     }
     break;
     case SDLK_BACKSLASH: this->toggleFPS(); break;
-    case SDLK_f: this->onResize ( 0, 0 ); break;
+    case SDLK_f: if ( mod == KMOD_LMETA ) this->onResize ( 0, 0 ); break;
     case SDLK_s:
     {
       nom::Image image;
