@@ -1,18 +1,32 @@
 cmake_minimum_required ( VERSION 2.6 )
 
+# CMake Environment
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/" )
+set ( CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
+
+# CMake options
+option ( VERBOSE "Enable verbose makefile" off )
+option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
+
+if ( VERBOSE )
+  set ( CMAKE_VERBOSE_MAKEFILE true )
+endif ( VERBOSE )
+
+# Set the install prefix to the current build folder if this option has not been
+# set.
+if ( NOT CMAKE_INSTALL_PREFIX )
+  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
+endif ( NOT CMAKE_INSTALL_PREFIX )
+
 # Project configuration
 set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 8 )
 set ( PROJECT_VERSION_PATCH 0 )
 
 # Project options
-option ( CMAKE_INSTALL_PREFIX "Install project in a custom location" ${CMAKE_CURRENT_BINARY_DIR} )
-
-option ( VERBOSE "Enable verbose makefile" off )
 option ( DEBUG "Enable building with debugging features" off )
 option ( DEBUG_ASSERT "Enable building with run-time assertions" off )
 option ( DEBUG_TRACE "Enable building with logging of every object's construction & destruction" off )
-
 option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
 project ( ttcards ) # $PROJECT_NAME
@@ -44,20 +58,9 @@ set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 
-# CMake Environment
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/modules/" )
-set ( CMAKE_TEMPLATE_PATH "${PROJECT_SOURCE_DIR}/cmake/templates" )
-
 include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
 
 # Check which options have been set
-
-# Set the install prefix to the current build folder if this option has not been
-# used.
-if ( NOT CMAKE_INSTALL_PREFIX )
-  set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" )
-endif ( NOT CMAKE_INSTALL_PREFIX )
 
 # Assume a local development profile initially -- this likely changes depending
 # on which build profile is chosen.
@@ -67,10 +70,6 @@ if ( PLATFORM_OSX )
   option ( OSXAPP "Enable building OS X Application Bundle" on )
   option ( UNIVERSAL "Enable building OSX Universal Application" off )
 endif ( PLATFORM_OSX )
-
-if ( VERBOSE )
-  set ( CMAKE_VERBOSE_MAKEFILE true )
-endif ( VERBOSE )
 
 if ( DEBUG )
   set ( CMAKE_BUILD_TYPE "Debug" )
