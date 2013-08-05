@@ -150,7 +150,7 @@ find_package ( json_spirit REQUIRED )
 # We need GTK2 for display of dialog message boxes -- we only use the headers
 # since nomlib has already linked to GTK2 libraries
 if ( PLATFORM_LINUX )
-  find_package ( GTK2 )
+  find_package ( GTK2 REQUIRED gtk )
 endif ( PLATFORM_LINUX )
 
 if ( SDL_FOUND )
