@@ -174,6 +174,17 @@ else ( NOT JSON_SPIRIT_FOUND )
   message ( FATAL_ERROR "Required dependency json_spirit missing!" )
 endif ( JSON_SPIRIT_FOUND )
 
+if ( PLATFORM_OSX )
+  # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
+  # linkage flag, so we have to sanitize this before hand if we want to use the
+  # value in anything other than linking -- such as packaging the library into a
+  # bundle.
+  #
+  # From here on out, the burden of linking to the Cocoa framework when need be
+  # is entirely on us. I say good riddance!
+  string ( REPLACE "-framework Cocoa" "" SDL_LIBRARY ${SDL_LIBRARY} )
+endif ( PLATFORM_OSX )
+
 if ( PLATFORM_LINUX )
   if ( GTK2_FOUND )
     set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
@@ -234,15 +245,10 @@ if ( OSXAPP )
 
   install_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
 
-  # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
-  # linkage flag, so we have to sanitize this before hand for use in locating
-  # and bundling this dependency.
-  string ( REPLACE "-framework Cocoa" "" SDL_REAL_LIBRARY ${SDL_LIBRARY} )
-
   # Install our external dependencies into our application bundle
   install ( DIRECTORY
             "${NOMLIB_LIBRARY}" # nomlib.framework
-            "${SDL_REAL_LIBRARY}" # SDL.framework v1.2.15
+            "${SDL_LIBRARY}" # SDL.framework v1.2.15
             "${JSON_SPIRIT_LIBRARY}" # json_spirit.framework v4.06.1
             DESTINATION "${INSTALL_FRAMEWORK_PATH}"
             PATTERN ".*" EXCLUDE # do not include dotfiles
