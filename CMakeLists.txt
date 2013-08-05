@@ -43,6 +43,15 @@ set ( SRC_DIR "src" ) # ttcards/src
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
 
+# Information used in the generation of the packaged Info.plist
+set ( BUNDLE_TEMPLATE_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
+set ( BUNDLE_NAME "TTcards" )
+set ( BUNDLE_DESCRIPTION "Triple Triad Remake" )
+set ( BUNDLE_ICON "ttcards.icns" )
+set ( BUNDLE_IDENTIFIER "org.i8degrees.${PROJECT_NAME}" )
+set ( BUNDLE_COPYRIGHT_YEAR "2013" )
+set ( BUNDLE_COPYRIGHT_NAME "Jeffrey Carpenter" )
+
 # Installation paths are relative to CMAKE_INSTALL_PREFIX and must be without
 # the closing backslash character.
 #
@@ -161,7 +170,7 @@ if ( OSXAPP )
   # CMAKE_INSTALL_PREFIX = ttcards.app
   set ( INSTALL_NAME_PATH "@executable_path/../Frameworks" )
 
-  set ( INSTALL_APP_PATH "${PROJECT_NAME}.app" )
+  set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
 
   set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
 
@@ -180,15 +189,15 @@ if ( OSXAPP )
   # Generate Info.plist for distribution within our soon-to-be application bundle
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
                           MACOSX_BUNDLE_INFO_PLIST
-                          "${CMAKE_TEMPLATE_PATH}/Info.plist.in"
+                          "${BUNDLE_TEMPLATE_PLIST}"
                           MACOSX_BUNDLE_BUNDLE_NAME
-                          "TTcards"
+                          "${BUNDLE_NAME}"
                           MACOSX_BUNDLE_ICON_FILE
-                          "ttcards.icns"
+                          "${BUNDLE_ICON}"
                           MACOSX_BUNDLE_INFO_STRING
-                          "${PROJECT_NAME} (Triple Triad Remake) version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} by Jeffrey Carpenter"
+                          "${BUNDLE_DESCRIPTION} version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} by ${BUNDLE_COPYRIGHT_NAME}"
                           MACOSX_BUNDLE_GUI_IDENTIFIER
-                          "org.dev.${PROJECT_NAME}"
+                          ${BUNDLE_IDENTIFIER}
                           MACOSX_BUNDLE_SHORT_VERSION_STRING
                           "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
                           MACOSX_BUNDLE_LONG_VERSION_STRING
@@ -196,7 +205,7 @@ if ( OSXAPP )
                           MACOSX_BUNDLE_BUNDLE_VERSION
                           "${CMAKE_VERSION}"
                           MACOSX_BUNDLE_COPYRIGHT
-                          "Copyright (c) 2013 Jeffrey Carpenter; All rights reserved."
+                          "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
                         )
 
   # Bundle external dependencies within our application bundle for distribution
