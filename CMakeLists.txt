@@ -147,8 +147,8 @@ find_package ( SDL REQUIRED )
 find_package ( nomlib REQUIRED )
 find_package ( json_spirit REQUIRED )
 
-# We need GTK2 for display of dialog message boxes -- we only use the headers
-# since nomlib has already linked to GTK2 libraries
+# We need GTK2 only for its header files (nomlib links to GTK2 for us)
+# (This will be fixed sometime in the future)
 if ( PLATFORM_LINUX )
   find_package ( GTK2 REQUIRED gtk )
 endif ( PLATFORM_LINUX )
@@ -157,32 +157,32 @@ if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
 else ( NOT SDL_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL missing" )
+  message ( FATAL_ERROR "Required dependency SDL missing!" )
 endif ( SDL_FOUND )
 
 if ( NOMLIB_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
 else ( NOT NOMLIB_FOUND )
-  message ( FATAL_ERROR "Required dependency nomlib missing" )
+  message ( FATAL_ERROR "Required dependency nomlib missing!" )
 endif ( NOMLIB_FOUND )
 
 if ( JSON_SPIRIT_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
 else ( NOT JSON_SPIRIT_FOUND )
-  message ( FATAL_ERROR "Required dependency json_spirit missing" )
+  message ( FATAL_ERROR "Required dependency json_spirit missing!" )
 endif ( JSON_SPIRIT_FOUND )
 
-# FIXME
 if ( PLATFORM_LINUX )
   if ( GTK2_FOUND )
     set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
   else ( NOT GTK2_FOUND )
-    message ( FATAL_ERROR "Required dependency GTK2 (headers) missing" )
+    message ( FATAL_ERROR "Required dependency GTK2 (headers) missing!" )
   endif ( GTK2_FOUND )
 endif ( PLATFORM_LINUX )
 
+# External header files inclusion
 include_directories ( ${EXT_HEADERS} )
 
 # Installation phase
@@ -280,13 +280,13 @@ endif ( OSXAPP )
               PATTERN ".*" EXCLUDE # do not include dotfiles
             )
 
-  if ( DOCS )
-    # Install generated documentation files
-    install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
-              DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-            )
-  endif ( DOCS )
+    if ( DOCS )
+      # Install generated documentation files
+      install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html
+                DESTINATION "${INSTALL_GENERATED_DOCS_PATH}"
+                PATTERN ".*" EXCLUDE # do not include dotfiles
+              )
+    endif ( DOCS )
 
 # Linking phase -- issue link with all defined external dependencies
 target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} "SDLmain" )
