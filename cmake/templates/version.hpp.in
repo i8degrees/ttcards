@@ -15,3 +15,6 @@
 #cmakedefine OSXAPP
 
 const std::string TTCARDS_INSTALL_PREFIX =  "@CMAKE_INSTALL_PREFIX@";
+
+// Data folder for game storage (screenshots, card dumps, ...)
+const std::string TTCARDS_DATA_DIR = "@TTCARDS_DATA_DIR@";

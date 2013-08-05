@@ -41,6 +41,13 @@ set ( SRC_DIR "src" ) # ttcards/src
 
 # Relative path -- from project source -- to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
+
+# Absolute path without closing backslash to game storage path;
+# must be writable by the user.
+if ( NOT TTCARDS_DATA_DIR )
+  set ( TTCARDS_DATA_DIR "$ENV{HOME}/Documents/${PROJECT_NAME}" )
+endif ( NOT TTCARDS_DATA_DIR )
+
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
 
 # Information used in the generation of the packaged Info.plist
@@ -114,6 +121,7 @@ else ( NOT OSXAPP )
 endif ( OSXAPP )
 
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
+message ( STATUS "Data folder: ${TTCARDS_DATA_DIR}" )
 
 if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
@@ -287,6 +295,10 @@ install ( DIRECTORY
           DESTINATION "${INSTALL_DOCS_HELP_PATH}"
           PATTERN ".*" EXCLUDE # do not include dotfiles
         )
+
+# Create the data folder for game storage if it does not exist
+file ( MAKE_DIRECTORY "${TTCARDS_DATA_DIR}" )
+
 if ( DOCS )
   # Install generated documentation files
   install ( DIRECTORY ${PROJECT_BINARY_DIR}/docs/html

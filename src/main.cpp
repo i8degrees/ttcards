@@ -43,7 +43,7 @@ App::App ( nom::int32 argc, char* argv[] )
     {
       Collection cards;
 
-      if ( cards.ExportJSON ( "cards.json" ) == false )
+      if ( cards.ExportJSON ( TTCARDS_DATA_DIR + "/" + "cards.json" ) == false )
       {
         std::cout << "ERR: " << "Unknown failure to serialize JSON into cards.json" << std::endl;
         exit ( EXIT_FAILURE );
@@ -111,7 +111,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_s:
     {
       nom::Image image;
-      image.saveToFile ( "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
+      image.saveToFile ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
       break;
     }
     default: break;
