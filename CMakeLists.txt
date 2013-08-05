@@ -264,10 +264,13 @@ if ( OSXAPP )
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-else ( NOT OSXAPP )
+  # CPack refuses to work with me on anything other than a single, simple dot
+  # as the destination target path when we are building a package.
+  install ( TARGETS ${PROJECT_NAME} DESTINATION . )
+
+else ( NOT OSXAPP ) # POSIX install profile
 
   add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
-
   # Install executables
   install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
 
