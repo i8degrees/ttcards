@@ -260,7 +260,7 @@ endif ( OSXAPP )
   endif ( DOCS )
 
 # Linking phase -- issue link with all defined external dependencies
-target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} "SDLMain" )
+target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} "SDLmain" )
 
 # make run target (Sublime Text Editor Integration)
 #
