@@ -147,6 +147,12 @@ find_package ( SDL REQUIRED )
 find_package ( nomlib REQUIRED )
 find_package ( json_spirit REQUIRED )
 
+# We need GTK2 for display of dialog message boxes -- we only use the headers
+# since nomlib has already linked to GTK2 libraries
+if ( PLATFORM_LINUX )
+  find_package ( GTK2 )
+endif ( PLATFORM_LINUX )
+
 if ( SDL_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
@@ -167,6 +173,15 @@ if ( JSON_SPIRIT_FOUND )
 else ( NOT JSON_SPIRIT_FOUND )
   message ( FATAL_ERROR "Required dependency json_spirit missing" )
 endif ( JSON_SPIRIT_FOUND )
+
+# FIXME
+if ( PLATFORM_LINUX )
+  if ( GTK2_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
+  else ( NOT GTK2_FOUND )
+    message ( FATAL_ERROR "Required dependency GTK2 (headers) missing" )
+  endif ( GTK2_FOUND )
+endif ( PLATFORM_LINUX )
 
 include_directories ( ${EXT_HEADERS} )
 
