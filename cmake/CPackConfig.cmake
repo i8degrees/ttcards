@@ -20,12 +20,13 @@ set ( CPACK_RESOURCE_FILE_README "${CMAKE_TEMPLATE_PATH}/README.txt" )
 set ( CPACK_RESOURCE_FILE_WELCOME "${CMAKE_TEMPLATE_PATH}/Welcome.txt" )
 set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_TEMPLATE_PATH}/Description.txt" )
 
-set ( CPACK_PACKAGE_VENDOR "org.github-i8degrees" )
+set ( CPACK_PACKAGE_VENDOR "org.i8degrees.${PROJECT_NAME}" )
 set ( CPACK_PACKAGE_CONTACT "jeffrey.carp@gmail.com" )
 set ( CPACK_PACKAGE_DESCRIPTION "Triple Triad Remake" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "TTcards - Triple Triad Remake" )
-# TODO / Debian package dependencies
-#set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-dev libmagic-dev libsndfile1-dev libopenal-dev libsdl1.2-dev libsdl1.2debian libsdl-image1.2-dev libsdl-image1.2 libsdl-ttf2.0-dev libsdl-ttf2.0-0" )
+
+# TODO / verify these package dependency names
+set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libsdl1.2 libjson-spirit libgtk2.0" )
 set ( CPACK_DEBIAN_PACKAGE_PRIORITY "optional" )
 set ( CPACK_DEBIAN_PACKAGE_SECTION "games" )
 set ( CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64" )
