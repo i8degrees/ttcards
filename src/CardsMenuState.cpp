@@ -170,7 +170,13 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_DOWN: this->moveCursorDown(); break;
 
     case SDLK_d: if ( this->state->hand[0].removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
-    case SDLK_SPACE: if ( this->state->hand[0].addCard ( this->selectedCard ) ) this->card_place.Play(); break;
+    case SDLK_SPACE:
+    {
+      if ( ! this->state->hand[0].exists ( this->selectedCard ) )
+        if ( this->state->hand[0].addCard ( this->selectedCard ) )
+          this->card_place.Play();
+    }
+    break;
     case SDLK_RETURN: nom::GameStates::ChangeState  ( std::unique_ptr<Game>
                                                       ( new Game ( this->state ) )
                                                     ); break;
