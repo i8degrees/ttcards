@@ -204,8 +204,12 @@ include_directories ( ${EXT_HEADERS} )
 # Installation phase
 if ( OSXAPP )
 
+  add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
+
   # CMAKE_INSTALL_PREFIX = ttcards.app
-  set ( INSTALL_NAME_PATH "@executable_path/../Frameworks" )
+  set ( INSTALL_NAME_PATH
+        "@executable_path/../Frameworks"
+      )
 
   set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
 
@@ -221,7 +225,8 @@ if ( OSXAPP )
   set ( INSTALL_BINARY_PATH "${INSTALL_ROOT_PATH}/MacOS/${PROJECT_NAME}" )
   set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_BINARY_PATH}" )
 
-  add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
+  # Relative path for where to install our external dependencies
+  set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
 
   # Generate Info.plist for distribution within our soon-to-be application bundle
   set_target_properties ( ${PROJECT_NAME} PROPERTIES
@@ -244,9 +249,6 @@ if ( OSXAPP )
                           MACOSX_BUNDLE_COPYRIGHT
                           "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
                         )
-
-  # Bundle external dependencies within our application bundle for distribution
-  set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
 
   install_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
 
