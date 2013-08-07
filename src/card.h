@@ -64,7 +64,7 @@ class Card
 
     ~Card ( void );
 
-    unsigned int getID ( void );
+    unsigned int getID ( void ) const;
     unsigned int getLevel ( void );
     unsigned int getType ( void );
     unsigned int getElement ( void );

@@ -66,7 +66,7 @@ Card::~Card ( void )
   #endif
 }
 
-unsigned int Card::getID ( void )
+unsigned int Card::getID ( void ) const
 {
   return this->id;
 }
