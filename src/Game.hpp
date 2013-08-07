@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <iostream>
-#include <chrono>
-#include <random>
 #include <memory>
 
 #ifdef EMSCRIPTEN
@@ -48,7 +46,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "player.h"
 #include "card.h"
 #include "card_debug.h"
-#include "card_collection.h"
 #include "card_rules.h"
 //#include "cpu_player.h"
 #include "CardsMenuState.h"
@@ -59,7 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Game: public nom::IState
 {
   public:
-    Game ( CardHand& player1_hand, std::shared_ptr<GameObject> object );
+    Game ( std::shared_ptr<GameObject> object );
     ~Game ( void );
 
     bool Init ( void );
@@ -116,43 +113,22 @@ class Game: public nom::IState
 
     std::shared_ptr<GameObject> state;
 
-    /// our public / visible display context handle
-    nom::Display context;
-    /// Board background image
-    nom::Canvas background;
-
     nom::Timer update;
-
-    /// Game Over text
-    nom::Text gameOver_text;
-    /// dialog text
-    nom::BitmapFont info_text;
-    nom::BitmapFont info_small_text;
 
     nom::MessageBox info_box;
     nom::MessageBox debug_box;
 
-    /// scoreboard text
-    nom::TrueTypeFont score_text;
     /// game board
     Board board;
 
     /// debug support for card attributes
     CardDebug debug;
 
-    /// cards database
-    Collection collection;
     /// TODO
     CardRules rules;
-    /// card rendering
-    CardView card;
-    /// player hand
-    CardHand hand[2];
+
     /// players in game
     Player player[2];
-
-    /// interface cursor
-    nom::Cursor cursor;
 
     /// x, y coords mapping for player1, player2 cursor starting position
     nom::Coords player_cursor_coords[2];
@@ -164,11 +140,6 @@ class Game: public nom::IState
     nom::Coords board_coords_map[9];
 
     nom::OpenAL::AudioDevice dev;
-    //nom::OpenAL::SoundBuffer move_buffer;
-    //nom::OpenAL::SoundBuffer cancel_buffer;
-    //nom::OpenAL::SoundBuffer wrong_buffer;
-    //nom::OpenAL::SoundBuffer flip_buffer;
-    //nom::OpenAL::SoundBuffer place_buffer;
 
     nom::OpenAL::Sound cursor_move;
     nom::OpenAL::Sound cursor_cancel;

@@ -39,9 +39,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "card.h"
 #include "card_debug.h"
-#include "card_collection.h"
-#include "card_hand.h"
-#include "card_view.h"
 #include "Game.hpp"
 #include "GameObject.hpp"
 #include "cfg.h"
@@ -78,31 +75,15 @@ class CardsMenu: public nom::IState
     void moveCursorDown ( void );
 
     std::shared_ptr<GameObject> state;
-    /// our public / visible display context handle
-    nom::Display context;
-    /// cards database
-    Collection collection;
-    /// Board background image
-    nom::Canvas background;
-
-    nom::BitmapFont info_text;
-    nom::BitmapFont info_small_text;
-    nom::BitmapFont info_text_gray;
 
     /// debug support for card attributes
     CardDebug debug;
 
     nom::MessageBox menu_box;
 
-    /// card rendering
-    CardView card;
-    /// player1 hand
-    CardHand hand;
     /// CardHand-derived implementation
     Card selectedCard;
 
-    /// interface cursor
-    nom::Cursor cursor;
     /// interface menu elements
     nom::Sprite menu_element;
 
@@ -120,9 +101,6 @@ class CardsMenu: public nom::IState
     std::pair<int, int> cursor_coords_map[10];
 
     nom::OpenAL::AudioDevice dev;
-    //nom::OpenAL::SoundBuffer move_buffer;
-    //nom::OpenAL::SoundBuffer cancel_buffer;
-    //nom::OpenAL::SoundBuffer place_buffer;
 
     nom::OpenAL::Sound cursor_move;
     nom::OpenAL::Sound cursor_cancel;

@@ -50,6 +50,9 @@ CardHand::~CardHand ( void )
 
 bool CardHand::addCard ( Card& card )
 {
+  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
+    return false;
+
   if ( this->size() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
   {
     #ifdef DEBUG_CARD_HAND
@@ -138,7 +141,7 @@ bool CardHand::empty ( void )
   return false;
 }
 
-nom::int32 CardHand::size ( void )
+nom::int32 CardHand::size ( void ) const
 {
   nom::int32 count = 0;
 
@@ -171,4 +174,58 @@ nom::int32 CardHand::pos ( Card& card )
 void CardHand::clear ( void )
 {
   this->cards.clear();
+  this->clearSelectedCard();
+}
+
+bool CardHand::exists ( const Card& card ) const
+{
+  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
+    return false;
+
+  for ( auto idx = 0; idx < this->size(); idx++ )
+  {
+    if ( card.getID() == this->cards[idx].getID() )
+      return true;
+  }
+
+  return false;
+}
+
+void CardHand::randomize ( Collection& db, nom::uint64 seedling )
+{
+  // Cards are picked out using our random number equal distribution generator; this needs to
+  // be a value between 1..MAX_COLLECTION in order to yield an ID in the cards
+  // database.
+  nom::uint32 card_id = 1;
+  nom::int32 num_cards = 0; // iterator
+
+  // Set the seed to the same as the previous game in order to produce the same
+  // results for player2 hand
+  nom::uint64 seed = seedling;
+
+  if ( seed == 0 )
+    seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+  std::default_random_engine rand_generator ( seed );
+
+  std::uniform_int_distribution<nom::int32> distribution ( 1, MAX_COLLECTION );
+
+#ifdef DEBUG_GAME
+  std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
+  //this->debugCardsNoRuleset();
+  //this->debugCardsSameRuleset();
+#endif
+
+  this->clear();
+
+  while ( num_cards < MAX_PLAYER_HAND )
+  {
+    card_id = distribution ( rand_generator );
+
+    if ( this->exists ( db.cards[card_id] ) )
+      continue;
+    else
+      if ( this->addCard ( db.cards[card_id] ) )
+        num_cards++;
+  }
 }

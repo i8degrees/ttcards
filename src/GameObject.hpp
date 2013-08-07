@@ -29,22 +29,47 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_GAMEOBJECT_HPP
 #define GAMEAPP_GAMEOBJECT_HPP
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <memory>
+#include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 
 #include "cfg.h"
-#include "board.h"
-#include "card.h"
-#include "card_debug.h"
 #include "card_hand.h"
 #include "card_view.h"
 #include "card_collection.h"
 
 struct GameObject
 {
+  /// dialog text
+  nom::BitmapFont info_text;
+  nom::BitmapFont info_small_text;
+  nom::BitmapFont info_text_gray;
+
+  /// Game Over text
+  nom::Text gameOver_text;
+
+  /// Scoreboard text
+  nom::TrueTypeFont score_text;
+
+  /// Cards database
   Collection collection;
+
+  /// Player hands
+  CardHand hand[2];
+
+  /// Card rendering
+  CardView card;
+
+  /// Board background image
+  nom::Canvas background;
+
+  /// GameOver background image
+  nom::Canvas gameover_background;
+
+  /// interface cursor
+  nom::Cursor cursor;
+
+  /// our public / visible display context handle
+  nom::Display context;
 };
 
 #endif // include guard defined

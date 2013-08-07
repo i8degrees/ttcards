@@ -35,14 +35,6 @@ GameOver::GameOver ( std::shared_ptr<GameObject> object )
   #endif
 
   this->state = object;
-
-  if ( this->state != nullptr )
-  {
-    std::cout << "Collection: " << std::endl << std::endl;
-    for ( int i = 0; i < this->state->collection.cards.size(); i++ )
-      std::cout << this->state->collection.cards[i].getName() << std::endl;
-    std::cout << std::endl << std::endl;
-  }
 }
 
 GameOver::~GameOver ( void )
@@ -54,10 +46,7 @@ GameOver::~GameOver ( void )
 
 void GameOver::onInit ( void )
 {
-  this->background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 );
-
-  //this->gameOver_text.Load ( SCORE_FONTFACE, 36 ); // temp font
-  //this->gameOver_text.setTextColor ( 255, 255, 255 ); // color: red
+  // TODO
 }
 
 void GameOver::onExit ( void )
@@ -80,7 +69,7 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
   switch ( key )
   {
     // Reset / New Game State
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( state ) ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->state ) ) ); break;
      // Pause State
     //case SDLK_p: this->engine->PopState (); break;
 
@@ -90,12 +79,12 @@ void GameOver::onKeyDown ( int32_t key, int32_t mod )
 
 void GameOver::Update ( nom::uint32 delta_time )
 {
-  this->context.Update();
+  this->state->context.Update();
 }
 
 void GameOver::Draw ( void* video_buffer )
 {
-  this->background.Draw ( video_buffer ); // draw static board background
+  this->state->gameover_background.Draw ( video_buffer ); // draw static board background
 
   //this->gameOver_text.setTextBuffer ( "Game Over" );
   //signed int width = this->gameOver_text.getTextWidth ();

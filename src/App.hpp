@@ -52,6 +52,8 @@ class App: public nom::SDL_App // "is-a" relationship
     App ( nom::int32 argc, char* argv[] );
     ~App ( void );
 
+    bool onInit ( void );
+
     /// Handle app & state events
     void onEvent ( SDL_Event *event );
 
@@ -65,6 +67,7 @@ class App: public nom::SDL_App // "is-a" relationship
     nom::int32 Run ( void );
 
   private:
+    std::shared_ptr<GameObject> state;
     /// Display context
     nom::Display display;
     /// Timer for tracking frames per second
@@ -75,8 +78,6 @@ class App: public nom::SDL_App // "is-a" relationship
     nom::OpenAL::AudioDevice dev;
     /// Master volume control
     nom::OpenAL::Listener listener;
-
-    std::shared_ptr<GameObject> state;
 };
 
 

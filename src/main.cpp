@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 App::App ( nom::int32 argc, char* argv[] )
 {
   nom::File dir;
-  unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
 
 #ifdef DEBUG_GAME_OBJ
   std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
@@ -91,9 +90,7 @@ App::App ( nom::int32 argc, char* argv[] )
   display.setWindowIcon ( APP_ICON );
 #endif
 
-  this->display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
-
-  this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
+  this->onInit();
 }
 
 App::~App ( void )
@@ -101,6 +98,36 @@ App::~App ( void )
 #ifdef DEBUG_GAME_OBJ
   std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
 #endif
+}
+
+bool App::onInit ( void )
+{
+  unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_RESIZABLE | SDL_DOUBLEBUF;
+
+  this->display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+
+  this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
+
+  this->state->context = display;
+
+  this->state = std::shared_ptr<GameObject> ( new GameObject );
+  this->state->collection.LoadJSON ( CARDS_DB );
+
+  this->state->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->state->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->state->info_text_gray.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+
+  this->state->score_text.Load ( SCORE_FONTFACE, nom::Color::White, 36 );
+  this->state->gameOver_text.Load ( SCORE_FONTFACE, 36 );
+
+  this->state->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
+  this->state->gameover_background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
+
+  this->state->cursor = nom::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->state->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
+  this->state->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+
+  return true;
 }
 
 void App::onEvent ( SDL_Event *event )
@@ -162,9 +189,6 @@ int32_t App::Run ( void )
   this->fps.Start();
 
   next_game_tick = getTicks();
-
-  this->state = std::shared_ptr<GameObject> ( new GameObject );
-  this->state->collection.LoadJSON ( CARDS_DB );
 
   nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( this->state ) ) );
 

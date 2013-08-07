@@ -37,25 +37,26 @@ void Free_CardHand ( CardHand* player_cards )
   // delete[].
 }
 
-Player::Player ( void ) : coords ( 0, 0, 0, 0 ), id ( 0 ), state ( 0 ),
-                          score ( 5 ), hand ( nullptr )
+Player::Player ( void ) : coords ( 0, 0, 0, 0 ), id ( 0 ), //state ( 0 ),
+                          score ( 5 ), hand ( nullptr ), state ( nullptr )
 {
   #ifdef DEBUG_PLAYER_OBJ
     std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 }
 
-Player::Player ( CardHand* player_cards )
+Player::Player ( CardHand* player_cards, std::shared_ptr<GameObject> object )
 {
   #ifdef DEBUG_PLAYER_OBJ
     std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->hand.reset ( player_cards, Free_CardHand );
+  this->state = object;
 
   this->coords = nom::Coords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
   id = 0;
-  state = 0;
+  //state = 0;
   score = 5;
 }
 
@@ -114,12 +115,12 @@ void Player::setID ( unsigned int id_ )
 
 unsigned int Player::getState ( void )
 {
-  return this->state;
+  return 0; //return this->state;
 }
 
 void Player::setState ( unsigned int state )
 {
-  this->state = state;
+  return; //this->state = state;
 }
 
 unsigned int Player::getScore ( void )
@@ -143,16 +144,16 @@ void Player::Draw ( void* video_buffer )
       if ( this->getID() == 1 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
-          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->state->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->state->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
       else if ( this->getID() == 2 )
       {
         if ( this->hand->isValid ( this->hand->getSelectedCard() ) && this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
-          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->state->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
         else
-          this->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+          this->state->card.DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       }
     }
   }

@@ -32,10 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <random>
 
 #include <nomlib/types.hpp>
 
 #include "card.h"
+#include "card_collection.h"
 #include "cfg.h"
 
 class CardHand
@@ -55,8 +58,11 @@ class CardHand
 
     void clear ( void );
     bool empty ( void );
-    nom::int32 size ( void );
+    nom::int32 size ( void ) const;
     nom::int32 pos ( Card& card );
+
+    bool exists ( const Card& card ) const;
+    void randomize ( Collection& db, nom::uint64 seedling = 0 );
 
     /// \todo Declare in private scope
     std::vector<Card> cards;
