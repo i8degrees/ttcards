@@ -11,9 +11,8 @@ if ( VERBOSE )
   set ( CMAKE_VERBOSE_MAKEFILE on )
 endif ( VERBOSE )
 
-# Set the install prefix to the current build folder if this option has not been
-# set; must be set before the project command is issued, or else BAD THINGS will
-# happen.
+# Set the install prefix to the current build folder if the user has not chosen
+# their own prefix path.
 if ( NOT CMAKE_INSTALL_PREFIX )
   set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Install path prefix" )
 endif ( NOT CMAKE_INSTALL_PREFIX )
@@ -29,7 +28,7 @@ option ( DEBUG_ASSERT "Enable building with run-time assertions" off )
 option ( DEBUG_TRACE "Enable building with logging of every object's construction & destruction" off )
 option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
-project ( ttcards ) # $PROJECT_NAME
+project ( ttcards ) # Sets PROJECT_NAME variable for us
 
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
@@ -37,9 +36,10 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 # Utility macros
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 
-set ( SRC_DIR "src" ) # ttcards/src
+# Relative path from project root to compiled source files
+set ( SRC_DIR "src" )
 
-# Relative path -- from project source -- to game resources
+# Relative path from the from project root to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 
 # Absolute path without closing backslash to game storage path;
@@ -48,9 +48,10 @@ if ( NOT TTCARDS_DATA_DIR )
   set ( TTCARDS_DATA_DIR "$ENV{HOME}/Documents/${PROJECT_NAME}" )
 endif ( NOT TTCARDS_DATA_DIR )
 
+# Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
 
-# Information used in the generation of the packaged Info.plist
+# OS X application bundle variables used in generating the Info.plist
 set ( BUNDLE_TEMPLATE_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
 set ( BUNDLE_NAME "TTcards" )
 set ( BUNDLE_DESCRIPTION "Triple Triad Remake" )
@@ -59,15 +60,9 @@ set ( BUNDLE_IDENTIFIER "org.i8degrees.${PROJECT_NAME}" )
 set ( BUNDLE_COPYRIGHT_YEAR "2013" )
 set ( BUNDLE_COPYRIGHT_NAME "Jeffrey Carpenter" )
 
-# Installation paths are relative to CMAKE_INSTALL_PREFIX and must be without
-# the closing backslash character.
-#
-# Unless you specify either the option OSXAPP or POSIX, CMAKE_INSTALL_PREFIX is
-# overwritten.
-#
-# All installation profiles must supply these variables; the default assumes
-# that neither POSIX or OSXAPP is defined, thus the local development profile
-# takes effect -- meaning everything is installed into the current build folder.
+# Installation paths; CMAKE_INSTALL_PREFIX will be appended to these.
+# Depending on the install profile, these paths are updated; such as when we
+# are building an OS X application bundle.
 set ( INSTALL_APP_PATH "bin" )
 set ( INSTALL_RESOURCES_PATH "share/${PROJECT_NAME}" )
 set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
@@ -264,8 +259,8 @@ if ( OSXAPP )
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 
-  # CPack refuses to work with me on anything other than a single, simple dot
-  # as the destination target path when we are building a package.
+  # CPack refuses to work with me on anything other than a single dot as the
+  # destination target path when we are building a package.
   install ( TARGETS ${PROJECT_NAME} DESTINATION . )
 
 else ( NOT OSXAPP ) # POSIX install profile
@@ -277,7 +272,8 @@ else ( NOT OSXAPP ) # POSIX install profile
 endif ( OSXAPP )
 
 # Install game resources
-install ( DIRECTORY ${TTCARDS_RESOURCES_DIR} DESTINATION "${INSTALL_RESOURCES_PATH}"
+install ( DIRECTORY ${TTCARDS_RESOURCES_DIR}
+          DESTINATION "${INSTALL_RESOURCES_PATH}"
           OPTIONAL
           PATTERN ".*" EXCLUDE # do not include dotfiles
           PATTERN "Help" EXCLUDE # do not include documentation here
