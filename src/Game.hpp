@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_TTCARDS_HEADERS
-#define GAMEAPP_TTCARDS_HEADERS
+#ifndef GAMEAPP_PLAYSTATE_HEADERS
+#define GAMEAPP_PLAYSTATE_HEADERS
 
 #include <string>
 #include <iostream>
@@ -55,11 +55,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 #include "cfg.hpp"
 
-class Game: public nom::IState
+class PlayState: public nom::IState
 {
   public:
-    Game ( std::shared_ptr<GameObject> object );
-    ~Game ( void );
+    PlayState ( std::shared_ptr<GameObject> object );
+    ~PlayState ( void );
 
     bool Init ( void );
 
@@ -154,4 +154,4 @@ class Game: public nom::IState
     nom::Rectangle player_rect;
 };
 
-#endif // GAMEAPP_TTCARDS_HEADERS defined
+#endif // include guard defined

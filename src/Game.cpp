@@ -28,10 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Game.hpp"
 
-Game::Game ( std::shared_ptr<GameObject> object )
+PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {
   #ifdef DEBUG_GAME_OBJ
-    std::cout << "Game::Game (): " << "Hello, world!" << "\n" << std::endl;
+    std::cout << "PlayState::PlayState (): " << "Hello, world!" << "\n" << std::endl;
   #endif
 
   this->state = object;
@@ -43,29 +43,29 @@ Game::Game ( std::shared_ptr<GameObject> object )
   this->state->hand[1].clear();
 }
 
-Game::~Game ( void )
+PlayState::~PlayState ( void )
 {
   #ifdef DEBUG_GAME_OBJ
-    std::cout << "Game::~Game (): " << "Goodbye cruel world!" << "\n" << std::endl;
+    std::cout << "PlayState::~PlayState (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 }
 
-void Game::onExit ( void )
+void PlayState::onExit ( void )
 {
-  std::cout << "\n" << "Game state onExit" << "\n";
+  std::cout << "\n" << "PlayState onExit" << "\n";
 }
 
-void Game::Pause ( void )
+void PlayState::Pause ( void )
 {
-  std::cout << "\n" << "Game state Paused" << "\n";
+  std::cout << "\n" << "PlayState Paused" << "\n";
 }
 
-void Game::Resume ( void )
+void PlayState::Resume ( void )
 {
-  std::cout << "\n" << "Game state Resumed" << "\n";
+  std::cout << "\n" << "PlayState Resumed" << "\n";
 }
 
-void Game::onInit ( void )
+void PlayState::onInit ( void )
 {
   std::vector<nom::Color> msgbox;
   nom::Gradient linear;
@@ -181,7 +181,7 @@ void Game::onInit ( void )
 */
 }
 
-void Game::onKeyDown ( int32_t key, int32_t mod )
+void PlayState::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
@@ -289,7 +289,7 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
   } // end key switch
 }
 
-void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
+void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 {
   nom::int32 hand_index = 0; // iterator
   uint32_t player_turn = this->get_turn();
@@ -339,12 +339,12 @@ void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
     this->moveTo ( coords.x, coords.y );
 }
 
-void Game::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
+void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 {
   this->lockSelectedCard();
 }
 
-void Game::onMouseWheel ( bool up, bool down )
+void PlayState::onMouseWheel ( bool up, bool down )
 {
   if ( this->state->cursor.getState() == 0 )
   {
@@ -355,7 +355,7 @@ void Game::onMouseWheel ( bool up, bool down )
   }
 }
 
-void Game::onJoyButtonDown ( int32_t which, int32_t button )
+void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {
@@ -375,12 +375,12 @@ void Game::onJoyButtonDown ( int32_t which, int32_t button )
   }
 }
 
-unsigned int Game::get_turn ( void )
+unsigned int PlayState::get_turn ( void )
 {
   return this->turn;
 }
 
-void Game::player_turn ( unsigned int player )
+void PlayState::player_turn ( unsigned int player )
 {
   this->turn = player;
 
@@ -388,7 +388,7 @@ void Game::player_turn ( unsigned int player )
 }
 
 // Helper method for incrementing to next player's turn
-void Game::endTurn ( void )
+void PlayState::endTurn ( void )
 {
   unsigned int player = get_turn();
 
@@ -408,7 +408,7 @@ void Game::endTurn ( void )
 
 // Interface Helper method; shows Card's ID number in a message box for both cursor
 // states; player's hand and placed board cards -- debug handling included
-void Game::showCardInfoBox ( void* video_buffer )
+void PlayState::showCardInfoBox ( void* video_buffer )
 {
   Card selectedCard; // temp container var to hold our card info (ID, name)
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
@@ -462,7 +462,7 @@ void Game::showCardInfoBox ( void* video_buffer )
   }
 }
 
-bool Game::isCursorLocked ( void )
+bool PlayState::isCursorLocked ( void )
 {
   if ( this->cursor_locked == true )
     return true;
@@ -470,13 +470,13 @@ bool Game::isCursorLocked ( void )
     return false;
 }
 
-void Game::lockCursor ( bool lock )
+void PlayState::lockCursor ( bool lock )
 {
   this->cursor_locked = lock;
 }
 
 // Helper method for resetting cursor related input
-void Game::resetCursor ( void )
+void PlayState::resetCursor ( void )
 {
   unsigned int player_turn = get_turn();
 
@@ -488,7 +488,7 @@ void Game::resetCursor ( void )
 }
 
 // helper method for cursor input selection
-void Game::unlockSelectedCard ( void )
+void PlayState::unlockSelectedCard ( void )
 {
   this->state->cursor.setState ( 0 ); // player card select
 
@@ -500,7 +500,7 @@ void Game::unlockSelectedCard ( void )
 }
 
 // helper method for cursor input selection
-void Game::lockSelectedCard ( void )
+void PlayState::lockSelectedCard ( void )
 {
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
 
@@ -526,7 +526,7 @@ void Game::lockSelectedCard ( void )
 }
 
 // Helper method for updating board with player's selected card
-void Game::moveTo ( unsigned int x, unsigned int y )
+void PlayState::moveTo ( unsigned int x, unsigned int y )
 {
   Card selected;
   nom::uint32 player_turn = this->get_turn();
@@ -591,7 +591,7 @@ void Game::moveTo ( unsigned int x, unsigned int y )
 //    0, 2    1, 2    2, 2
 //
 //
-nom::Coords Game::getCursorBoardPos ( nom::int32 x, nom::int32 y )
+nom::Coords PlayState::getCursorBoardPos ( nom::int32 x, nom::int32 y )
 {
   nom::int32 idx = 0; // iterator
   nom::Coords pos ( -1, -1 ); // ...when all else fails, default to undefined
@@ -614,7 +614,7 @@ nom::Coords Game::getCursorBoardPos ( nom::int32 x, nom::int32 y )
 // cursor_coords_map
 //   [ index, y coordinate value ]
 //
-unsigned int Game::getCursorPos ( void )
+unsigned int PlayState::getCursorPos ( void )
 {
   unsigned int pos = 0;
   nom::int32 idx = 0;
@@ -631,7 +631,7 @@ unsigned int Game::getCursorPos ( void )
   return pos;
 }
 
-void Game::moveCursorLeft ( void )
+void PlayState::moveCursorLeft ( void )
 {
   if ( this->state->cursor.getState() == 1 ) // locked cursor to board select mode
   {
@@ -641,7 +641,7 @@ void Game::moveCursorLeft ( void )
   this->cursor_move.Play();
 }
 
-void Game::moveCursorRight ( void )
+void PlayState::moveCursorRight ( void )
 {
   if ( this->state->cursor.getState() == 1 ) // locked cursor to board select mode
   {
@@ -651,7 +651,7 @@ void Game::moveCursorRight ( void )
   this->cursor_move.Play();
 }
 
-void Game::moveCursorUp ( void )
+void PlayState::moveCursorUp ( void )
 {
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
@@ -674,7 +674,7 @@ void Game::moveCursorUp ( void )
   this->cursor_move.Play();
 }
 
-void Game::moveCursorDown ( void )
+void PlayState::moveCursorDown ( void )
 {
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
@@ -697,7 +697,7 @@ void Game::moveCursorDown ( void )
   this->cursor_move.Play();
 }
 
-void Game::updateCursor ( void )
+void PlayState::updateCursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
     this->state->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
@@ -707,13 +707,13 @@ void Game::updateCursor ( void )
   this->state->cursor.Update();
 }
 
-void Game::drawCursor ( void* video_buffer )
+void PlayState::drawCursor ( void* video_buffer )
 {
   this->state->cursor.Draw ( video_buffer );
 }
 
 // Scoring: board_card_count + player_card_count
-void Game::updateScore ( void )
+void PlayState::updateScore ( void )
 {
   unsigned int hand_count = 0; // player hand total count
   unsigned int board_count = 0; // board card total count
@@ -729,7 +729,7 @@ void Game::updateScore ( void )
   }
 }
 
-void Game::drawScore ( void *video_buffer )
+void PlayState::drawScore ( void *video_buffer )
 {
   this->state->score_text.setText ( std::to_string ( this->player[0].getScore() ) );
   this->state->score_text.setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
@@ -742,7 +742,7 @@ void Game::drawScore ( void *video_buffer )
   this->state->score_text.Draw ( video_buffer );
 }
 
-void Game::Update ( nom::uint32 delta_time )
+void PlayState::Update ( nom::uint32 delta_time )
 {
   this->updateCursor();
 
@@ -802,7 +802,7 @@ void Game::Update ( nom::uint32 delta_time )
   this->state->context.Update();
 }
 
-void Game::Draw ( void *video_buffer )
+void PlayState::Draw ( void *video_buffer )
 {
   this->state->background.Draw ( video_buffer );
 

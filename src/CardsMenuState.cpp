@@ -177,8 +177,8 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
           this->card_place.Play();
     }
     break;
-    case SDLK_RETURN: nom::GameStates::ChangeState  ( std::unique_ptr<Game>
-                                                      ( new Game ( this->state ) )
+    case SDLK_RETURN: nom::GameStates::ChangeState  ( std::unique_ptr<PlayState>
+                                                      ( new PlayState ( this->state ) )
                                                     ); break;
 
     default: break;
@@ -200,7 +200,7 @@ void CardsMenu::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
     case nom::PSXBUTTON::CIRCLE: if ( this->state->hand[0].removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
     case nom::PSXBUTTON::CROSS: if ( this->state->hand[0].addCard ( this->selectedCard ) ) this->card_place.Play(); break;
-    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<Game>( new Game ( state ) ) ); break;
+    case nom::PSXBUTTON::START: nom::GameStates::PushState ( std::unique_ptr<PlayState>( new PlayState ( state ) ) ); break;
 
     default: break;
   }

@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Game.hpp"
 
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
-void Game::debugCardsDiscard ( void )
+void PlayState::debugCardsDiscard ( void )
 {
   this->state->hand[0].addCard ( this->state->collection.cards[88] ); // Carbuncle
   this->state->hand[0].addCard ( this->state->collection.cards[24] ); // TriFace
@@ -38,7 +38,7 @@ void Game::debugCardsDiscard ( void )
 }
 
 // Debug player hand set for no and combo rulesets
-void Game::debugCardsNoRuleset ( void )
+void PlayState::debugCardsNoRuleset ( void )
 {
 /*
   this->state->hand[0].addCard ( this->state->collection.cards[89] ); // Diablos
@@ -55,7 +55,7 @@ void Game::debugCardsNoRuleset ( void )
 }
 
 // Debug player hand set for same rulesets
-void Game::debugCardsSameRuleset ( void )
+void PlayState::debugCardsSameRuleset ( void )
 {
   this->state->hand[0].addCard ( this->state->collection.cards[89] ); // Diablos
   this->state->hand[0].addCard ( this->state->collection.cards[109] ); // Squall
@@ -74,7 +74,7 @@ void Game::debugCardsSameRuleset ( void )
 }
 
 // debug helper method
-void Game::removePlayerCard ( void )
+void PlayState::removePlayerCard ( void )
 {
   unsigned int player_turn = get_turn();
 
@@ -86,7 +86,7 @@ void Game::removePlayerCard ( void )
 }
 
 // Debug -- input events helper method
-void Game::debugBox ( void )
+void PlayState::debugBox ( void )
 {
   if ( this->debug_box.isEnabled() == true )
     this->debug_box.disable ();
@@ -95,7 +95,7 @@ void Game::debugBox ( void )
 }
 
 // Debug -- input events helper method
-void Game::debugListCards ( int32_t mod )
+void PlayState::debugListCards ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->state->hand[1].cards );
@@ -104,7 +104,7 @@ void Game::debugListCards ( int32_t mod )
 }
 
 // Debug -- input events helper method
-void Game::debugListCollection ( int32_t mod )
+void PlayState::debugListCollection ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->state->collection.cards );
@@ -112,7 +112,7 @@ void Game::debugListCollection ( int32_t mod )
     this->state->board.List();
 }
 
-void Game::debugModifyCardRank ( bool modifier, nom::uint32 direction )
+void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
 {
   Card selected = Card(); // temporary placeholder card for the update
   std::array<nom::int32, 4> ranks = { 0, 0, 0, 0 }; // card ranks container
