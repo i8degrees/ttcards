@@ -70,12 +70,12 @@ void Game::onInit ( void )
   this->state->cursor.setState ( 0 ); // default state; player hand select
 
   this->state->rules.setRules ( 1 );
-  this->state->board = Board ( this->state->rules, this->state->card );
+  this->state->board = Board ( this->state->rules, &this->state->card );
 
-  this->player[0] = Player ( &this->state->hand[0], this->state );
+  this->player[0] = Player ( &this->state->hand[0], &this->state->card );
   this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
-  this->player[1] = Player ( &this->state->hand[1], this->state );
+  this->player[1] = Player ( &this->state->hand[1], &this->state->card );
   this->player[1].setPosition ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
   // player1, player2 cursor X, Y coords
@@ -138,7 +138,6 @@ void Game::onInit ( void )
   this->player[1].setID ( Card::PLAYER2 );
 
   this->player_turn ( 0 );
-
 /*
   sound_buffer.loadFromFile ( CURSOR_MOVE );
   this->cursor_move.setBuffer ( sound_buffer );
@@ -276,7 +275,7 @@ void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
   uint32_t player_turn = this->get_turn();
 
   nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
-  nom::Coords player_coords = player[player_turn].getPosition(); // Player cursor origin coordinates
+  nom::Coords player_coords = this->player[player_turn].getPosition(); // Player cursor origin coordinates
 
   // Player hand selection checks
   for ( hand_index = 0; hand_index < this->state->hand[ player_turn ].size(); hand_index++ )
@@ -708,12 +707,12 @@ void Game::updateScore ( void )
 
 void Game::drawScore ( void *video_buffer )
 {
-  this->state->score_text.setText ( std::to_string ( player[0].getScore() ) );
+  this->state->score_text.setText ( std::to_string ( this->player[0].getScore() ) );
   this->state->score_text.setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
   this->state->score_text.Update();
   this->state->score_text.Draw ( video_buffer );
 
-  this->state->score_text.setText ( std::to_string ( player[1].getScore() ) );
+  this->state->score_text.setText ( std::to_string ( this->player[1].getScore() ) );
   this->state->score_text.setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
   this->state->score_text.Update();
   this->state->score_text.Draw ( video_buffer );

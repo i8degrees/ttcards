@@ -34,9 +34,9 @@ TODO: Add configurable board init, such as:
   Board ( unsigned int board_width, unsigned int board_height );
 
 */
-Board::Board ( CardRules& rules, CardView& view )
+Board::Board ( CardRules& ruleset, CardView* view )
 {
-  this->rules = rules;
+  this->rules = ruleset;
   this->card = view;
 
   this->initialize();
@@ -94,7 +94,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
         {
-          if ( rules.getRules() == 2 )
+          if ( this->rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getWestRank() == grid[rows - 1][cols].getEastRank() )
             {
@@ -119,7 +119,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
         {
-          if ( rules.getRules() == 2 )
+          if ( this->rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getSouthRank() == grid[rows][cols + 1].getNorthRank() )
             {
@@ -144,7 +144,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
         {
-          if ( rules.getRules() == 2 )
+          if ( this->rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getEastRank() == grid[rows + 1][cols].getWestRank() )
             {
@@ -169,7 +169,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
         {
-          if ( rules.getRules() == 2 )
+          if ( this->rules.getRules() == 2 )
           {
             if ( grid[rows][cols].getNorthRank() == grid[rows][cols - 1].getSouthRank() )
             {
@@ -292,7 +292,7 @@ void Board::Draw ( void* video_buffer )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->card.DrawCard ( video_buffer, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+      this->card->DrawCard ( video_buffer, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
   }
 }

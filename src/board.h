@@ -46,7 +46,7 @@ class Board
 {
   public:
     Board ( void );
-    Board ( CardRules& rules, CardView& view );
+    Board ( CardRules& ruleset, CardView* view );
     ~Board ( void );
 
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
@@ -70,12 +70,12 @@ class Board
 
   private:
     void initialize ( void );
-    /// Card Rendering
-    CardView card;
+    /// Card rule logic
+    CardRules rules;
+    /// Card rendering
+    CardView* card;
     /// Debug support for card attributes
     CardDebug debug;
-    /// Card rules
-    CardRules rules;
     /// 2D vector of Card data containers
     std::vector<std::vector<Card>> grid;
 };

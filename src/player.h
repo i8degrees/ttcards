@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "card_debug.h"
 #include "card_hand.h"
-#include "GameObject.hpp"
+#include "card_view.h"
 #include "cfg.h"
 
 void Free_CardHand ( CardHand* player_cards );
@@ -45,7 +45,7 @@ class Player
 {
   public:
     Player ( void );
-    Player ( CardHand* player_cards, std::shared_ptr<GameObject> object );
+    Player ( CardHand* player_cards, CardView* view );
     ~Player ( void );
 
     nom::int32 getX ( void );
@@ -68,9 +68,10 @@ class Player
     void Draw ( void* video_buffer );
 
   private:
-    std::shared_ptr<GameObject> state;
     /// debug support for card attributes
     CardDebug debug;
+    /// Card rendering
+    CardView* card;
     /// pointer reference to player's hand
     std::shared_ptr<CardHand> hand;
     /// x, y origin coords
