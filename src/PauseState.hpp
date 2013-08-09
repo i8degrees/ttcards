@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "GameObject.hpp"
+#include "version.hpp"
 #include "cfg.hpp"
 
 class PauseState: public nom::IState

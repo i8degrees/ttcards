@@ -42,6 +42,7 @@ void PauseState::onInit ( void )
 {
   std::vector<nom::Color> msgbox;
   nom::Gradient linear;
+  std::string project_info = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
 
   msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
   msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
@@ -63,7 +64,7 @@ void PauseState::onInit ( void )
                                       msgbox, linear
                                     );
 
-  this->state->info_text.setText ( "TTcards v0.8.0" );
+  this->state->info_text.setText ( project_info );
   nom::int32 text_width = this->state->info_text.getFontWidth();
   nom::int32 text_height = this->state->info_text.getFontHeight();
   this->state->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, ( SCREEN_HEIGHT - text_height ) / 2 );
