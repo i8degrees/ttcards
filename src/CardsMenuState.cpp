@@ -159,7 +159,7 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>
                                               ( new CardsMenu ( this->state ) ) ); break;
      // Pause State
-    case SDLK_p: /*this->engine->PopState ()*/; break;
+    case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->state ) ) ); break;
 
     // Debug helpers
     case SDLK_LEFTBRACKET: this->debug.ListCards ( this->state->hand[0].cards ); break;

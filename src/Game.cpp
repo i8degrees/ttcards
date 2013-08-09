@@ -55,6 +55,16 @@ void Game::onExit ( void )
   std::cout << "\n" << "Game state onExit" << "\n";
 }
 
+void Game::Pause ( void )
+{
+  std::cout << "\n" << "Game state Paused" << "\n";
+}
+
+void Game::Resume ( void )
+{
+  std::cout << "\n" << "Game state Resumed" << "\n";
+}
+
 void Game::onInit ( void )
 {
   std::vector<nom::Color> msgbox;
@@ -177,7 +187,7 @@ void Game::onKeyDown ( int32_t key, int32_t mod )
   {
     default: break;
 
-    case SDLK_p: this->music_track.togglePause(); /* Pause State ... */ break;
+    case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->state ) ) ); break;
     case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
     case SDLK_e: this->endTurn(); break;
     case SDLK_LEFTBRACKET: debugListCards ( mod ); break;

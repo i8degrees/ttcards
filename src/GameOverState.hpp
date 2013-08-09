@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "card_debug.hpp"
 #include "CardsMenuState.hpp"
 #include "GameObject.hpp"
+#include "PauseState.hpp"
 #include "cfg.hpp"
 
 class GameOver: public nom::IState

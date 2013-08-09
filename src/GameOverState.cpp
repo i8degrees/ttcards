@@ -103,11 +103,9 @@ void GameOver::onKeyDown ( nom::int32 key, nom::int32 mod )
   {
     default: break;
 
-    // Reset / New Game State
+    case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->state ) ) ); break;
+    // Reset (New Game)
     case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->state ) ) ); break;
-
-    // Pause State
-    //case SDLK_p: this->engine->PopState (); break;
   }
 }
 

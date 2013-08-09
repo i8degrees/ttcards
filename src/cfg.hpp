@@ -271,7 +271,13 @@ extern const nom::int32 DEBUG_BOX_ORIGIN_X;
 extern const nom::int32 DEBUG_BOX_ORIGIN_Y;
 extern const nom::int32 DEBUG_BOX_TEXT_ORIGIN_Y;
 
-extern const nom::int32 PLAYER_INDICATOR_WIDTH ;
+extern const nom::int32 PAUSE_BOX_WIDTH;
+extern const nom::int32 PAUSE_BOX_HEIGHT;
+
+extern const nom::int32 PAUSE_BOX_ORIGIN_X;
+extern const nom::int32 PAUSE_BOX_ORIGIN_Y;
+
+extern const nom::int32 PLAYER_INDICATOR_WIDTH;
 extern const nom::int32 PLAYER_INDICATOR_HEIGHT;
 
 extern const nom::int32 PLAYER1_INDICATOR_ORIGIN_X;

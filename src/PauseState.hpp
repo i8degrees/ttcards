@@ -26,86 +26,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARDS_MENU_HEADERS
-#define GAMEAPP_CARDS_MENU_HEADERS
+#ifndef GAMEAPP_PAUSE_STATE_HEADERS
+#define GAMEAPP_PAUSE_STATE_HEADERS
 
 #include <iostream>
 #include <string>
 #include <memory>
 
-#include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
+#include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-#include "card.hpp"
-#include "card_debug.hpp"
-#include "Game.hpp"
 #include "GameObject.hpp"
-#include "PauseState.hpp"
 #include "cfg.hpp"
 
-class CardsMenu: public nom::IState
+class PauseState: public nom::IState
 {
   public:
-    CardsMenu ( std::shared_ptr<GameObject> object );
-    ~CardsMenu ( void );
-
+    PauseState ( std::shared_ptr<GameObject> object );
+    ~PauseState ( void );
+  private:
     void onInit ( void );
     void onExit ( void );
 
     void Pause ( void );
     void Resume ( void );
 
+    void onKeyDown ( nom::int32 key, nom::int32 mod );
+
     void Update ( nom::uint32 delta_time );
-    void Draw ( void *video_buffer );
-
-  private:
-    void onKeyDown ( int32_t key, int32_t mod );
-    void onJoyButtonDown ( int32_t which, int32_t button );
-    void onMouseLeftButtonDown ( int32_t x, int32_t y );
-    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y );
-    void onMouseWheel ( bool up, bool down );
-
-    void reloadDebugFile ( void );
-    void updateCursor ( void );
-    void drawCursor ( void* video_buffer );
-    unsigned int getCursorPos ( void );
-    void moveCursorLeft ( void );
-    void moveCursorRight ( void );
-    void moveCursorUp ( void );
-    void moveCursorDown ( void );
+    void Draw ( void* video_buffer );
 
     std::shared_ptr<GameObject> state;
-
-    /// debug support for card attributes
-    CardDebug debug;
-
-    nom::MessageBox menu_box;
-
-    /// CardHand-derived implementation
-    Card selectedCard;
-
-    /// interface menu elements
-    nom::Sprite menu_element;
-
-    /// MAX_COLLECTION / per_page
-    unsigned int total_pages;
-    /// number of cards to display per menu page
-    unsigned int per_page;
-    /// current card position
-    unsigned int current_index;
-     /// height of the card name text
-    unsigned int info_text_height;
-
-    /// y coords mapping for cursor -> card position index
-    /// minus one (1) padding
-    std::pair<int, int> cursor_coords_map[10];
-
-    nom::OpenAL::AudioDevice dev;
-
-    nom::OpenAL::Sound cursor_move;
-    nom::OpenAL::Sound cursor_cancel;
-    nom::OpenAL::Sound card_place;
+    nom::Timer update;
+    bool blink_text;
+    nom::MessageBox info_box;
 };
 
-#endif // GAMEAPP_CARDS_MENU_HEADERS defined
+#endif // include guard defined

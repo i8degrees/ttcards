@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/sdl/utils.hpp>
 #include <nomlib/system.hpp>
 
+#include "PauseState.hpp"
 #include "CardsMenuState.hpp"
 #include "version.hpp"
 #include "GameObject.hpp"

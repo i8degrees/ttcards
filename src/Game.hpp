@@ -52,6 +52,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardsMenuState.hpp"
 #include "GameOverState.hpp"
 #include "GameObject.hpp"
+#include "PauseState.hpp"
 #include "cfg.hpp"
 
 class Game: public nom::IState
@@ -64,6 +65,8 @@ class Game: public nom::IState
 
     void onInit ( void );
     void onExit ( void );
+    void Pause ( void );
+    void Resume ( void );
 
     void Update ( nom::uint32 delta_time );
     void Draw ( void* video_buffer );
