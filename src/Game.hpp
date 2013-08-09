@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <chrono>
 #include <random>
+#include <algorithm>
 
 #ifdef EMSCRIPTEN
   #include <emscripten.h>

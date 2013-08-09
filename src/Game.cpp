@@ -147,7 +147,7 @@ void Game::onInit ( void )
 
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
-  this->player_turn ( distribution ( rand_generator ) );
+  this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
 /*
   sound_buffer.loadFromFile ( CURSOR_MOVE );
   this->cursor_move.setBuffer ( sound_buffer );
@@ -283,6 +283,9 @@ void Game::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 {
   nom::int32 hand_index = 0; // iterator
   uint32_t player_turn = this->get_turn();
+
+  if ( this->get_turn() != 0 )
+    return;
 
   nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
   nom::Coords player_coords = this->player[player_turn].getPosition(); // Player cursor origin coordinates
@@ -470,7 +473,8 @@ void Game::resetCursor ( void )
   this->state->hand[turn].selectCard ( this->state->hand[turn].cards.front() );
 
   this->state->cursor.setState ( 0 );
-  this->state->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+  this->state->cursor.setPosition ( this->player_cursor_coords[0].x, this->player_cursor_coords[0].y );
+  //this->state->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
 }
 
 // helper method for cursor input selection
@@ -687,8 +691,8 @@ void Game::updateCursor ( void )
 {
   if ( this->get_turn() == 0 ) // player1
     this->state->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
-  else // player2
-    this->state->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+  //else // player2
+    //this->state->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
 
   this->state->cursor.Update();
 }
@@ -741,6 +745,43 @@ void Game::Update ( nom::uint32 delta_time )
   {
     this->player_rect.setPosition ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
     this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
+
+    nom::Coords board_edges[3];
+
+    board_edges[0].x = 0;
+    board_edges[0].y = 0;
+
+    board_edges[1].x = 2;
+    board_edges[1].y = 0;
+
+    board_edges[2].x = 0;
+    board_edges[2].y = 2;
+
+    board_edges[3].x = 2;
+    board_edges[3].y = 2;
+
+    nom::int32 edge_pick = nom::randomInteger ( 0, 3 );
+
+    nom::uint32 rand_pick = nom::randomInteger ( 0, this->state->hand[1].size() );
+    this->state->hand[1].selectCard ( this->state->hand[1].cards[ rand_pick ] );
+
+    if ( this->state->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
+      this->moveTo ( board_edges[ edge_pick ].x, board_edges[ edge_pick ].y );
+    else if ( this->state->board.getStatus ( board_edges[1].x, board_edges[1].y ) == false )
+      this->moveTo ( board_edges[1].x, board_edges[1].y );
+    else if ( this->state->board.getStatus ( board_edges[2].x, board_edges[2].y ) == false )
+      this->moveTo ( board_edges[2].x, board_edges[2].y );
+    else if ( this->state->board.getStatus ( board_edges[3].x, board_edges[3].y ) == false )
+      this->moveTo ( board_edges[3].x, board_edges[3].y );
+    else
+    {
+      nom::int32 moveX = nom::randomInteger ( 0, 2 );
+      nom::int32 moveY = nom::randomInteger ( 0, 2 );
+      nom::uint32 rand_pick = nom::randomInteger ( 0, this->state->hand[1].size() );
+      this->state->hand[1].selectCard ( this->state->hand[1].cards[ rand_pick ] );
+
+      this->moveTo ( moveX, moveY );
+    }
   }
 
   this->debug_box.Update();
