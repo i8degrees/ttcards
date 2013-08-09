@@ -27,8 +27,9 @@ script:
   #- sudo dpkg --install ttcards_0.7.0.deb
   #- sudo dpkg --remove ttcards
   - sudo make install
+  - du -csh "$(which ttcards)"
   - ttcards --version
-  #- ttcards --export && cat cards.json
+  - ttcards --export && cat $HOME/Documents/ttcards/cards.json
   - sudo make uninstall
   - make clean
 # whitelist
