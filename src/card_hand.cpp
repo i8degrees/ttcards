@@ -174,7 +174,7 @@ bool CardHand::exists ( const Card& card ) const
   return false;
 }
 
-void CardHand::randomize ( Collection& db, nom::uint64 seedling )
+void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, Collection& db, nom::uint64 seedling )
 {
   // Cards are picked out using our random number equal distribution generator; this needs to
   // be a value between 1..MAX_COLLECTION in order to yield an ID in the cards
@@ -206,7 +206,12 @@ void CardHand::randomize ( Collection& db, nom::uint64 seedling )
     if ( this->exists ( db.cards[card_id] ) )
       continue;
     else
-      if ( this->addCard ( db.cards[card_id] ) )
-        num_cards++;
+    {
+      if ( db.cards[card_id].getLevel() <= level_max && db.cards[card_id].getLevel() >= level_min )
+      {
+        if ( this->addCard ( db.cards[card_id] ) )
+          num_cards++;
+      }
+    }
   }
 }

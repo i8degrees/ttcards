@@ -137,7 +137,7 @@ void Game::onInit ( void )
   //this->debugCardsSameRuleset();
 #endif
 
-  this->state->hand[1].randomize ( this->state->collection );
+  this->state->hand[1].randomize ( 1, 10, this->state->collection );
 
   // Initialize player cards to their respective defaults; this lets us know not
   // only whose cards they are originally but also presently -- critical in card
