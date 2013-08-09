@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "Game.hpp"
+#include "PlayState.hpp"
 
 PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {

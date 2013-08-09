@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "card.hpp"
 #include "card_debug.hpp"
-#include "Game.hpp"
+#include "PlayState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
 #include "cfg.hpp"
