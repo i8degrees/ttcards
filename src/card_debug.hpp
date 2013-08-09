@@ -26,62 +26,27 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_PLAYER_HEADERS
-#define GAMEAPP_PLAYER_HEADERS
+#ifndef GAMEAPP_CARD_DEBUG_HEADERS
+#define GAMEAPP_CARD_DEBUG_HEADERS
 
 #include <iostream>
 #include <string>
+#include <vector>
 
-#include <nomlib/math.hpp>
+#include "card.hpp"
+#include "cfg.hpp"
 
-#include "card_debug.h"
-#include "card_hand.h"
-#include "card_view.h"
-#include "cfg.h"
-
-void Free_CardHand ( CardHand* player_cards );
-
-class Player
+class CardDebug
 {
   public:
-    Player ( void );
-    Player ( CardHand* player_cards, CardView* view );
-    ~Player ( void );
+    CardDebug();
+    ~CardDebug();
 
-    nom::int32 getX ( void );
-    nom::int32 getY ( void );
-
-    const nom::Coords getPosition ( void ) const;
-    void setPosition ( nom::int32 x, nom::int32 y );
-
-    unsigned int getID ( void );
-    void setID ( unsigned int id_ );
-
-    unsigned int getState ( void );
-    void setState ( unsigned int state );
-
-    // TODO: Consider branching this into Score class
-    unsigned int getScore ( void );
-    void setScore ( unsigned int score );
-
-    void Update ( void );
-    void Draw ( void* video_buffer );
+    void ListCard ( Card& card );
+    void ListCards ( std::vector<Card>& cards );
 
   private:
-    /// debug support for card attributes
-    CardDebug debug;
-    /// Card rendering
-    CardView* card;
-    /// pointer reference to player's hand
-    std::shared_ptr<CardHand> hand;
-    /// x, y origin coords
-    nom::Coords coords;
-    /// unique identifier for tracking each player in game
-    unsigned int id;
-    /// not implemented
-    //unsigned int state;
-    /// player's scoreboard
-    unsigned int score;
+    // ...
 };
 
-#endif // GAMEAPP_PLAYER_HEADERS defined
+#endif // GAMEAPP_CARD_DEBUG_HEADERS defined

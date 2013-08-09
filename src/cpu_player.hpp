@@ -26,27 +26,36 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_DEBUG_HEADERS
-#define GAMEAPP_CARD_DEBUG_HEADERS
+#ifndef GAMEAPP_CPU_PLAYER_HEADERS
+#define GAMEAPP_CPU_PLAYER_HEADERS
 
 #include <iostream>
 #include <string>
-#include <vector>
 
-#include "card.h"
-#include "cfg.h"
+#include "cfg.hpp"
+#include "card_debug.hpp"
+#include "player.hpp"
+#include "board.hpp"
 
-class CardDebug
+class CPUPlayer
 {
-  public:
-    CardDebug();
-    ~CardDebug();
+public:
+  CPUPlayer ( void );
+  ~CPUPlayer ( void );
 
-    void ListCard ( Card& card );
-    void ListCards ( std::vector<Card>& cards );
+  void Init ( Board *board, CardHand *cards );
 
-  private:
-    // ...
+  void randomMove ( void );
+  bool randomEdgeMove ( void );
+  bool checkBoard ( void );
+  void moveTo ( unsigned int x, unsigned int y );
+
+
+private:
+  Board *board;
+  CardHand *hand;
+  SDL_Rect grid[3][3]; // lookup table
+  unsigned int cpu_difficulty; // easy = 1, hard = 2
 };
 
-#endif // GAMEAPP_CARD_DEBUG_HEADERS defined
+#endif // CPU_PLAYERS_HEADERS defined

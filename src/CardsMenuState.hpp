@@ -26,29 +26,29 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_GAMEOVER_HEADERS
-#define GAMEAPP_GAMEOVER_HEADERS
+#ifndef GAMEAPP_CARDS_MENU_HEADERS
+#define GAMEAPP_CARDS_MENU_HEADERS
 
 #include <iostream>
 #include <string>
 #include <memory>
-#include <vector>
 
 #include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
-#include "card.h"
-#include "card_debug.h"
-#include "CardsMenuState.h"
+#include "card.hpp"
+#include "card_debug.hpp"
+#include "Game.hpp"
 #include "GameObject.hpp"
-#include "cfg.h"
+#include "cfg.hpp"
 
-class GameOver: public nom::IState
+class CardsMenu: public nom::IState
 {
   public:
-    GameOver ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state );
-    ~GameOver ( void );
-  private:
+    CardsMenu ( std::shared_ptr<GameObject> object );
+    ~CardsMenu ( void );
+
     void onInit ( void );
     void onExit ( void );
 
@@ -56,15 +56,55 @@ class GameOver: public nom::IState
     void Resume ( void );
 
     void Update ( nom::uint32 delta_time );
-    void Draw ( void* video_buffer );
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
+    void Draw ( void *video_buffer );
+
+  private:
+    void onKeyDown ( int32_t key, int32_t mod );
+    void onJoyButtonDown ( int32_t which, int32_t button );
+    void onMouseLeftButtonDown ( int32_t x, int32_t y );
+    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y );
+    void onMouseWheel ( bool up, bool down );
+
+    void reloadDebugFile ( void );
+    void updateCursor ( void );
+    void drawCursor ( void* video_buffer );
+    unsigned int getCursorPos ( void );
+    void moveCursorLeft ( void );
+    void moveCursorRight ( void );
+    void moveCursorUp ( void );
+    void moveCursorDown ( void );
 
     std::shared_ptr<GameObject> state;
-    std::vector<Card> player_cards[2];
+
+    /// debug support for card attributes
     CardDebug debug;
-    nom::Timer update;
-    bool show_results;
-    nom::uint32 gameover_state;
+
+    nom::MessageBox menu_box;
+
+    /// CardHand-derived implementation
+    Card selectedCard;
+
+    /// interface menu elements
+    nom::Sprite menu_element;
+
+    /// MAX_COLLECTION / per_page
+    unsigned int total_pages;
+    /// number of cards to display per menu page
+    unsigned int per_page;
+    /// current card position
+    unsigned int current_index;
+     /// height of the card name text
+    unsigned int info_text_height;
+
+    /// y coords mapping for cursor -> card position index
+    /// minus one (1) padding
+    std::pair<int, int> cursor_coords_map[10];
+
+    nom::OpenAL::AudioDevice dev;
+
+    nom::OpenAL::Sound cursor_move;
+    nom::OpenAL::Sound cursor_cancel;
+    nom::OpenAL::Sound card_place;
 };
 
-#endif // GAMEAPP_GAMEOVER_HEADERS defined
+#endif // GAMEAPP_CARDS_MENU_HEADERS defined

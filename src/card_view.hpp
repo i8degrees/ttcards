@@ -26,58 +26,31 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_BOARD_HEADERS
-#define GAMEAPP_BOARD_HEADERS
+#ifndef GAMEAPP_CARD_VIEW_HEADERS
+#define GAMEAPP_CARD_VIEW_HEADERS
 
 #include <iostream>
 #include <string>
-#include <utility>
-#include <memory>
 
-#include <nomlib/types.hpp>
+#include <nomlib/graphics.hpp>
 
-#include "card.h"
-#include "card_debug.h"
-#include "card_rules.h"
-#include "card_view.h"
-#include "cfg.h"
+#include "card.hpp"
+#include "cfg.hpp"
 
-class Board
+class CardView
 {
   public:
-    Board ( void );
-    Board ( CardRules& ruleset, CardView* view );
-    ~Board ( void );
+    CardView ( void );
+    ~CardView ( void );
 
-    std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
-
-    // TODO: Consider branching this into Score class
-    unsigned int getCount ( void );
-    unsigned int getPlayerCount ( unsigned int player_id );
-
-    nom::int32 getStatus ( nom::int32 x, nom::int32 y );
-    void updateStatus ( unsigned int x, unsigned int y, Card &card );
-    unsigned int getPlayerID ( unsigned int x, unsigned int y );
-    void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
-    std::string getName ( unsigned int x, unsigned int y );
-    Card &getCard ( unsigned int x, unsigned int y );
-
-    void Update ( unsigned int x, unsigned int y ); // TODO
-    void Draw ( void* video_buffer );
-    void List ( void );
-
-    const nom::int32 operator() ( const nom::int32 x, const nom::int32 y );
+    bool drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y );
+    bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );
 
   private:
-    void initialize ( void );
-    /// Card rule logic
-    CardRules rules;
-    /// Card rendering
-    CardView* card;
-    /// Debug support for card attributes
-    CardDebug debug;
-    /// 2D vector of Card data containers
-    std::vector<std::vector<Card>> grid;
+    nom::Sprite card_face;
+    nom::Sprite card_background;
+    nom::Sprite card_element;
+    nom::BitmapFont card_text;
 };
 
-#endif // GAMEAPP_BOARD_HEADERS defined
+#endif // GAMEAPP_CARD_VIEW_HEADERS defined

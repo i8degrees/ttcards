@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <algorithm>
 
 #include <nomlib/types.hpp>
-#include "cfg.h"
+#include "cfg.hpp"
 
 /// Maximum level a card can contain -- starting at 1
 const nom::int32 MAX_LEVEL = 10;

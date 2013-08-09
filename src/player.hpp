@@ -26,49 +26,62 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_COLLECTION_HEADERS
-#define GAMEAPP_CARD_COLLECTION_HEADERS
+#ifndef GAMEAPP_PLAYER_HEADERS
+#define GAMEAPP_PLAYER_HEADERS
 
-#include <array>
-#include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
-#include <cassert>
 
-#include <json_spirit_reader_template.h>
-#include <json_spirit_writer_template.h>
+#include <nomlib/math.hpp>
 
-#ifndef JSON_SPIRIT_VALUE_ENABLED
-  #define JSON_SPIRIT_VALUE_ENABLED
-#endif
+#include "card_debug.hpp"
+#include "card_hand.hpp"
+#include "card_view.hpp"
+#include "cfg.hpp"
 
-#include "card.h"
-#include "card_debug.h"
-#include "cfg.h"
+void Free_CardHand ( CardHand* player_cards );
 
-class Collection
+class Player
 {
   public:
-    Collection ( void );
-    ~Collection ( void );
+    Player ( void );
+    Player ( CardHand* player_cards, CardView* view );
+    ~Player ( void );
 
-    bool LoadJSON ( std::string filename );
-    bool LoadASCII ( std::string filename );
+    nom::int32 getX ( void );
+    nom::int32 getY ( void );
 
-    bool ExportASCII ( std::string filename ); // NOT IMPLEMENTED
-    bool ExportJSON ( std::string filename );
+    const nom::Coords getPosition ( void ) const;
+    void setPosition ( nom::int32 x, nom::int32 y );
 
-    // TODO: a) ERR handling; b) reconsider how we pass
-    Card& getCards ( unsigned int idx );
-    std::vector<Card> getCards ( void );
+    unsigned int getID ( void );
+    void setID ( unsigned int id_ );
 
-    void clear ( void );
+    unsigned int getState ( void );
+    void setState ( unsigned int state );
 
-    std::vector<Card> cards; // TODO: redeclare private scope
+    // TODO: Consider branching this into Score class
+    unsigned int getScore ( void );
+    void setScore ( unsigned int score );
+
+    void Update ( void );
+    void Draw ( void* video_buffer );
+
   private:
     /// debug support for card attributes
     CardDebug debug;
+    /// Card rendering
+    CardView* card;
+    /// pointer reference to player's hand
+    std::shared_ptr<CardHand> hand;
+    /// x, y origin coords
+    nom::Coords coords;
+    /// unique identifier for tracking each player in game
+    unsigned int id;
+    /// not implemented
+    //unsigned int state;
+    /// player's scoreboard
+    unsigned int score;
 };
 
-#endif // GAMEAPP_CARD_COLLECTION_HEADERS defined
+#endif // GAMEAPP_PLAYER_HEADERS defined

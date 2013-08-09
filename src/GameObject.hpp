@@ -32,12 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
 
-#include "cfg.h"
-#include "board.h"
-#include "card_collection.h"
-#include "card_hand.h"
-#include "card_view.h"
-#include "card_rules.h"
+#include "cfg.hpp"
+#include "board.hpp"
+#include "card_collection.hpp"
+#include "card_hand.hpp"
+#include "card_view.hpp"
+#include "card_rules.hpp"
 
 struct GameObject
 {

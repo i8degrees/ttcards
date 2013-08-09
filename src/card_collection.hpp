@@ -26,36 +26,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CPU_PLAYER_HEADERS
-#define GAMEAPP_CPU_PLAYER_HEADERS
+#ifndef GAMEAPP_CARD_COLLECTION_HEADERS
+#define GAMEAPP_CARD_COLLECTION_HEADERS
 
+#include <array>
+#include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
+#include <cassert>
 
-#include "cfg.h"
-#include "card_debug.h"
-#include "player.h"
-#include "board.h"
+#include <json_spirit_reader_template.h>
+#include <json_spirit_writer_template.h>
 
-class CPUPlayer
+#ifndef JSON_SPIRIT_VALUE_ENABLED
+  #define JSON_SPIRIT_VALUE_ENABLED
+#endif
+
+#include "card.hpp"
+#include "card_debug.hpp"
+#include "cfg.hpp"
+
+class Collection
 {
-public:
-  CPUPlayer ( void );
-  ~CPUPlayer ( void );
+  public:
+    Collection ( void );
+    ~Collection ( void );
 
-  void Init ( Board *board, CardHand *cards );
+    bool LoadJSON ( std::string filename );
+    bool LoadASCII ( std::string filename );
 
-  void randomMove ( void );
-  bool randomEdgeMove ( void );
-  bool checkBoard ( void );
-  void moveTo ( unsigned int x, unsigned int y );
+    bool ExportASCII ( std::string filename ); // NOT IMPLEMENTED
+    bool ExportJSON ( std::string filename );
 
+    // TODO: a) ERR handling; b) reconsider how we pass
+    Card& getCards ( unsigned int idx );
+    std::vector<Card> getCards ( void );
 
-private:
-  Board *board;
-  CardHand *hand;
-  SDL_Rect grid[3][3]; // lookup table
-  unsigned int cpu_difficulty; // easy = 1, hard = 2
+    void clear ( void );
+
+    std::vector<Card> cards; // TODO: redeclare private scope
+  private:
+    /// debug support for card attributes
+    CardDebug debug;
 };
 
-#endif // CPU_PLAYERS_HEADERS defined
+#endif // GAMEAPP_CARD_COLLECTION_HEADERS defined

@@ -26,42 +26,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_RULES_HEADERS
-#define GAMEAPP_CARD_RULES_HEADERS
+#ifndef GAMEAPP_CARD_HAND_HEADERS
+#define GAMEAPP_CARD_HAND_HEADERS
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <chrono>
+#include <random>
 
-#include "card.h"
+#include <nomlib/types.hpp>
 
-// combo: plus, same, wall
-// elemental
+#include "card.hpp"
+#include "card_collection.hpp"
+#include "cfg.hpp"
 
-class CardRules
+class CardHand
 {
   public:
-    CardRules ( void );
-    ~CardRules ( void );
+    CardHand ( void );
+    ~CardHand ( void );
 
-    unsigned int getRules ( void );
-    void setRules ( unsigned int type );
+    bool addCard ( Card& card );
+    bool removeCard ( Card& card );
 
-    bool compareCards ( unsigned int r1, unsigned int r2 );
+    void clearSelectedCard ( void );
+    Card& getSelectedCard ( void );
+    bool selectCard ( Card& card );
 
-/*
-    enum Rules {
-      NONE = 0x00,
-      COMBO = 0x01,
-      SAME = 0x02,
-      WALL = 0x04,
-      PLUS = 0x08,
-      ELEMENTAL = 0x10,
-      LOSER_WINNER = 0x12
-    };
-*/
+    bool exists ( const Card& card ) const;
+
+    void clear ( void );
+    bool empty ( void );
+    nom::int32 size ( void ) const;
+    nom::int32 pos ( Card& card );
+
+    void randomize ( Collection& db, nom::uint64 seedling = 0 );
+
+    /// \todo Declare in private scope
+    std::vector<Card> cards;
 
   private:
-    unsigned int rules; // stores our card game rules in use
+    /// holds player's selected (think: ready to place) card
+    Card selectedCard;
 };
 
-#endif // GAMEAPP_CARD_RULES_HEADERS defined
+#endif // GAMEAPP_CARD_HAND_HEADERS defined

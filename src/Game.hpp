@@ -44,14 +44,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-#include "player.h"
-#include "card.h"
-#include "card_debug.h"
-//#include "cpu_player.h"
-#include "CardsMenuState.h"
-#include "GameOverState.h"
+#include "player.hpp"
+#include "card.hpp"
+#include "card_debug.hpp"
+//#include "cpu_player.hpp"
+#include "CardsMenuState.hpp"
+#include "GameOverState.hpp"
 #include "GameObject.hpp"
-#include "cfg.h"
+#include "cfg.hpp"
 
 class Game: public nom::IState
 {

@@ -26,7 +26,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "GameOverState.h"
+#include "GameOverState.hpp"
 
 GameOver::GameOver ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state )
 {

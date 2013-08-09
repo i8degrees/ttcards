@@ -26,31 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_VIEW_HEADERS
-#define GAMEAPP_CARD_VIEW_HEADERS
+#ifndef GAMEAPP_CARD_RULES_HEADERS
+#define GAMEAPP_CARD_RULES_HEADERS
 
 #include <iostream>
 #include <string>
 
-#include <nomlib/graphics.hpp>
+#include "card.hpp"
 
-#include "card.h"
-#include "cfg.h"
+// combo: plus, same, wall
+// elemental
 
-class CardView
+class CardRules
 {
   public:
-    CardView ( void );
-    ~CardView ( void );
+    CardRules ( void );
+    ~CardRules ( void );
 
-    bool drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y );
-    bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );
+    unsigned int getRules ( void );
+    void setRules ( unsigned int type );
+
+    bool compareCards ( unsigned int r1, unsigned int r2 );
+
+/*
+    enum Rules {
+      NONE = 0x00,
+      COMBO = 0x01,
+      SAME = 0x02,
+      WALL = 0x04,
+      PLUS = 0x08,
+      ELEMENTAL = 0x10,
+      LOSER_WINNER = 0x12
+    };
+*/
 
   private:
-    nom::Sprite card_face;
-    nom::Sprite card_background;
-    nom::Sprite card_element;
-    nom::BitmapFont card_text;
+    unsigned int rules; // stores our card game rules in use
 };
 
-#endif // GAMEAPP_CARD_VIEW_HEADERS defined
+#endif // GAMEAPP_CARD_RULES_HEADERS defined
