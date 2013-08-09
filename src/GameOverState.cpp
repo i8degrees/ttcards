@@ -30,18 +30,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 GameOver::GameOver ( std::shared_ptr<GameObject> object )
 {
-  #ifdef DEBUG_GAMEOVER_OBJ
-    std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
-  #endif
+#ifdef DEBUG_GAMEOVER_OBJ
+  std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
+#endif
 
   this->state = object;
 }
 
 GameOver::~GameOver ( void )
 {
-  #ifdef DEBUG_GAMEOVER_OBJ
-    std::cout << "GameOver::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+#ifdef DEBUG_GAMEOVER_OBJ
+  std::cout << "GameOver::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
+#endif
 }
 
 void GameOver::onInit ( void )

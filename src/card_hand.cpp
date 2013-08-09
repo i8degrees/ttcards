@@ -30,9 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardHand::CardHand ( void )
 {
-  #ifdef DEBUG_CARD_HAND_OBJ
-    std::cout << "CardHand::CardHand (): Hello, world!" << "\n" << std::endl;
-  #endif
+#ifdef DEBUG_CARD_HAND_OBJ
+  std::cout << "CardHand::CardHand (): Hello, world!" << "\n" << std::endl;
+#endif
 
   this->clear();
 
@@ -41,9 +41,9 @@ CardHand::CardHand ( void )
 
 CardHand::~CardHand ( void )
 {
-  #ifdef DEBUG_CARD_HAND_OBJ
-    std::cout << "CardHand::~CardHand (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+#ifdef DEBUG_CARD_HAND_OBJ
+  std::cout << "CardHand::~CardHand (): " << "Goodbye cruel world!" << "\n" << std::endl;
+#endif
 
   this->clear();
 }
@@ -77,9 +77,9 @@ bool CardHand::removeCard ( Card& card )
 
   if ( position == -1 )
   {
-    #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::removeCard (): " << "Not removing card at pos: " << position << std::endl;
-    #endif
+#ifdef DEBUG_CARD_HAND
+  std::cout << "CardHand::removeCard (): " << "Not removing card at pos: " << position << std::endl;
+#endif
     return false;
   }
 
@@ -88,11 +88,12 @@ bool CardHand::removeCard ( Card& card )
     previous_id = this->cards[position].getID();
     previous_name = this->cards[position].getName();
     this->cards.erase ( this->cards.begin() + position );
-    #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
-    #endif
+#ifdef DEBUG_CARD_HAND
+  std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
+#endif
     return true;
   }
+
   return false;
 }
 
@@ -116,9 +117,9 @@ bool CardHand::selectCard ( Card& card )
 
   return false;
 
-  #ifdef DEBUG_CARD_HAND
-    std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;
-  #endif
+#ifdef DEBUG_CARD_HAND
+  std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;
+#endif
 }
 bool CardHand::isValid ( Card& card )
 {
@@ -162,9 +163,9 @@ nom::int32 CardHand::pos ( Card& card )
       if ( this->cards[idx].getID() == card.getID() && this->cards[idx].getName() == card.getName() )
       {
         pos = idx;
-        #ifdef DEBUG_CARD_HAND
-          std::cout << "CardHand::pos (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << this->cards[idx].getID() << ' ' << this->cards[idx].getName() << std::endl;
-        #endif
+#ifdef DEBUG_CARD_HAND
+  std::cout << "CardHand::pos (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << this->cards[idx].getID() << ' ' << this->cards[idx].getName() << std::endl;
+#endif
       }
     }
   }
@@ -212,8 +213,6 @@ void CardHand::randomize ( Collection& db, nom::uint64 seedling )
 
 #ifdef DEBUG_GAME
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
-  //this->debugCardsNoRuleset();
-  //this->debugCardsSameRuleset();
 #endif
 
   this->clear();
