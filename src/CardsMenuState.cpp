@@ -54,7 +54,7 @@ CardsMenu::CardsMenu ( std::shared_ptr<GameObject> object )
   // anybody knowing the difference.
   //
   for ( pid = 0; pid < this->state->collection.cards.size(); pid++ )
-    this->state->collection.cards[pid].setPlayerID ( PLAYER1_ID );
+    this->state->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
 
   msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
   msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2

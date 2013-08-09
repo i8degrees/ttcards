@@ -135,11 +135,6 @@ const int INTERFACE_MENU_ELEMENT_USED = 1;
 const int INTERFACE_MENU_ELEMENT_PAGE_LEFT = 2;
 const int INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
 
-const int NOPLAYER_ID = 0;
-const int PLAYER1_ID = 1;
-const int PLAYER2_ID = 2;
-const int PLAYER_AI_ID = 4;
-
 const nom::int32 CARD_WIDTH = 64 * SCALE_FACTOR;
 const nom::int32 CARD_HEIGHT = 64 * SCALE_FACTOR;
 
