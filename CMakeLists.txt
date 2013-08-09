@@ -332,6 +332,9 @@ add_custom_target ( run COMMAND
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
+configure_file  ( "${CMAKE_TEMPLATE_PATH}/local.hpp.in"
+                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/local.hpp"
+                )
 
 # CPack configuration
 include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
