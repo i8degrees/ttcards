@@ -134,9 +134,13 @@ void Game::onInit ( void )
 
   this->state->hand[1].randomize ( this->state->collection );
 
+  // Initialize player cards to their respective defaults; this lets us know not
+  // only whose cards they are originally but also presently -- critical in card
+  // flipping, scoreboard keeping and end of game tallying logic.
   this->player[0].setID ( Card::PLAYER1 );
   this->player[1].setID ( Card::PLAYER2 );
 
+  // Set whose turn it is initially
   this->player_turn ( 0 );
 /*
   sound_buffer.loadFromFile ( CURSOR_MOVE );
