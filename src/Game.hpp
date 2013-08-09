@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <iostream>
 #include <memory>
+#include <chrono>
+#include <random>
 
 #ifdef EMSCRIPTEN
   #include <emscripten.h>

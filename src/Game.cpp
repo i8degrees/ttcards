@@ -62,6 +62,11 @@ void Game::onInit ( void )
   nom::OpenAL::SoundBuffer sound_buffer;
   nom::int32 idx = 0; // for loop iterations
 
+  // Random seeding for picking out whose turn it is initially
+  nom::uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine rand_generator ( seed );
+  std::uniform_int_distribution<nom::uint32> distribution ( 0, TOTAL_PLAYERS - 1 );
+
   this->state->score_text.setColor ( nom::Color::White );
   this->state->gameOver_text.setColor ( nom::Color::White );
 
@@ -140,8 +145,9 @@ void Game::onInit ( void )
   this->player[0].setID ( Card::PLAYER1 );
   this->player[1].setID ( Card::PLAYER2 );
 
-  // Set whose turn it is initially
-  this->player_turn ( 0 );
+  // Set whose turn it is initially using a random number generator with equal
+  // odds -- 50/50 chance that you will have the first move!
+  this->player_turn ( distribution ( rand_generator ) );
 /*
   sound_buffer.loadFromFile ( CURSOR_MOVE );
   this->cursor_move.setBuffer ( sound_buffer );
