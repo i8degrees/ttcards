@@ -763,109 +763,34 @@ void Game::Draw ( void *video_buffer )
   //
   // Game Over States
   // game / round is over when board card count >= 9
-  if ( this->state->board.getCount () >= 9 || this->state->hand[PLAYER1].size() == 0 || this->state->hand[PLAYER2].size() == 0 )
+  if ( this->state->board.getCount () >= 9 || this->state->hand[ PLAYER1 ].size() == 0 || this->state->hand[ PLAYER2 ].size() == 0 )
   {
-    std::vector<Card> winning_cards;
-    winning_cards.clear();
+    nom::uint32 gameover_state = 0;
 
-    if ( this->player[PLAYER1].getScore() > this->player[PLAYER2].getScore() ) // player 1 wins
+    if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
-      this->state->gameOver_text.setText ( "Player 1 wins!" );
-      nom::int32 width = this->state->gameOver_text.getFontWidth();
-
-      this->state->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, SCREEN_HEIGHT / 2 ) );
-      this->state->gameOver_text.Update();
-      this->state->gameOver_text.Draw ( video_buffer );
-
-      for ( nom::int32 i = 0; i < this->state->hand[PLAYER2].size(); i++ )
-        winning_cards.push_back ( this->state->hand[PLAYER2].cards[i] );
-
-      for ( int y = 0; y < BOARD_GRID_HEIGHT; y++ )
-      {
-        for ( int x = 0; x < BOARD_GRID_WIDTH; x++ )
-        {
-          Card card = this->state->board.getCard ( x, y );
-
-          if ( card.getPlayerOwner() == Card::PLAYER2 )
-            winning_cards.push_back ( card );
-        }
-      }
-
-      this->state->context.Update();
-
-      this->update.Start();
-
-      while ( this->update.getTicks() < 1000 )
-      {
-        // Do nothing loop for 1 second
-      }
-
-      this->update.Stop();
-
-      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( this->state ) ) );
+      this->state->gameOver_text.setText ( "You win!" );
+      gameover_state = 1;
     }
-    else if ( this->player[PLAYER2].getScore() > this->player[PLAYER1].getScore() ) // player 2 wins
+    else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
-      this->state->gameOver_text.setText ( "Player 2 wins!" );
-      nom::int32 width = this->state->gameOver_text.getFontWidth();
-      this->state->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 ) );
-      this->state->gameOver_text.Update();
-      this->state->gameOver_text.Draw ( video_buffer );
-
-      for ( nom::int32 i = 0; i < this->state->hand[PLAYER1].size(); i++ )
-        winning_cards.push_back ( this->state->hand[PLAYER1].cards[i] );
-
-      for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
-      {
-        for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
-        {
-          Card card = this->state->board.getCard ( x, y );
-
-          if ( card.getPlayerOwner() == Card::PLAYER1 )
-            winning_cards.push_back ( card );
-        }
-      }
-
-      this->state->context.Update();
-
-      this->update.Start();
-
-      while ( this->update.getTicks() < 1000 )
-      {
-        // Do nothing loop for 1 second
-      }
-
-      this->update.Stop();
-
-      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver ( this->state ) ) );
+      this->state->gameOver_text.setText ( "You lose..." );
+      gameover_state = 2;
     }
-    else if ( this->player[PLAYER1].getScore() == this->player[PLAYER2].getScore() )  // player tie
+    else // Assume a tie
     {
       this->state->gameOver_text.setText ( "Tie!" );
-      nom::int32 width = this->state->gameOver_text.getFontWidth();
-      this->state->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT ) / 2 ) );
-      this->state->gameOver_text.Update();
-      this->state->gameOver_text.Draw ( video_buffer );
-
-      winning_cards.clear();
-
-      this->state->context.Update();
-
-      this->update.Start();
-
-      while ( this->update.getTicks() < 1000 )
-      {
-        // Do nothing loop for 1 second
-      }
-
-      this->update.Stop();
-
-      nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( this->state ) ) );
+      //gameover_state = 0;
     }
-    else // Undefined
-    {
-      std::cout << "ERR in isGameOver()" << "\n";
-      exit(1);
-    }
+
+    nom::int32 width = this->state->gameOver_text.getFontWidth();
+    this->state->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, SCREEN_HEIGHT / 2 ) );
+    this->state->gameOver_text.Update();
+    this->state->gameOver_text.Draw ( video_buffer );
+    this->state->context.Update();
+
+    nom::sleep ( 1000 ); // ZzZ for 1 second
+
+    nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( this->state, gameover_state ) ) );
   }
 }

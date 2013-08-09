@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
@@ -45,9 +46,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class GameOver: public nom::IState
 {
   public:
-    GameOver ( std::shared_ptr<GameObject> object );
+    GameOver ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state );
     ~GameOver ( void );
-
+  private:
     void onInit ( void );
     void onExit ( void );
 
@@ -56,11 +57,14 @@ class GameOver: public nom::IState
 
     void Update ( nom::uint32 delta_time );
     void Draw ( void* video_buffer );
-
-  private:
-    void onKeyDown ( int32_t key, int32_t mod );
+    void onKeyDown ( nom::int32 key, nom::int32 mod );
 
     std::shared_ptr<GameObject> state;
+    std::vector<Card> player_cards[2];
+    CardDebug debug;
+    nom::Timer update;
+    bool show_results;
+    nom::uint32 gameover_state;
 };
 
 #endif // GAMEAPP_GAMEOVER_HEADERS defined

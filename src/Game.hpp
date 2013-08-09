@@ -111,15 +111,13 @@ class Game: public nom::IState
 
     std::shared_ptr<GameObject> state;
 
-    nom::Timer update;
-
     nom::MessageBox info_box;
     nom::MessageBox debug_box;
 
     /// debug support for card attributes
     CardDebug debug;
 
-    /// players in game
+    /// In-game players (including AI)
     Player player[2];
 
     /// x, y coords mapping for player1, player2 cursor starting position
