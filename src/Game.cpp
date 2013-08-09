@@ -62,14 +62,15 @@ void Game::onInit ( void )
   nom::OpenAL::SoundBuffer sound_buffer;
   nom::int32 idx = 0; // for loop iterations
 
-  this->board = Board ( this->rules, this->state );
-
   this->state->score_text.setColor ( nom::Color::White );
   this->state->gameOver_text.setColor ( nom::Color::White );
 
   this->state->cursor.setPosition ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   this->state->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->state->cursor.setState ( 0 ); // default state; player hand select
+
+  this->state->rules.setRules ( 1 );
+  this->state->board = Board ( this->state->rules, this->state->card );
 
   this->player[0] = Player ( &this->state->hand[0], this->state );
   this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
@@ -96,8 +97,6 @@ void Game::onInit ( void )
   this->board_coords_map[6] = nom::Coords ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
   this->board_coords_map[7] = nom::Coords ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
   this->board_coords_map[8] = nom::Coords ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-
-  this->rules.setRules ( 1 );
 
   msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
   msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
@@ -400,7 +399,7 @@ void Game::showCardInfoBox ( void* video_buffer )
     coords = getCursorBoardPos ( this->state->cursor.getX(), this->state->cursor.getY() );
 
     if ( coords.x != -1 && coords.y != -1 )
-      selectedCard = this->board.getCard ( coords.x, coords.y );
+      selectedCard = this->state->board.getCard ( coords.x, coords.y );
   }
   // player hand selection state
   else
@@ -513,42 +512,42 @@ void Game::moveTo ( unsigned int x, unsigned int y )
 
   if ( selected.getID() != 0 )
   {
-    if ( this->board ( x, y ) != 0 )
+    if ( this->state->board ( x, y ) != 0 )
       this->cursor_wrong.Play();
 
-    if ( this->board ( x, y ) == false )
+    if ( this->state->board ( x, y ) == false )
     {
-      this->board.updateStatus ( x, y, this->state->hand[ player_turn ].getSelectedCard() );
+      this->state->board.updateStatus ( x, y, this->state->hand[ player_turn ].getSelectedCard() );
       this->state->hand[ player_turn ].removeCard ( this->state->hand[ player_turn ].getSelectedCard() );
 
       this->card_place.Play();
 
-      std::vector<std::pair<int, int>> grid = board.checkBoard ( x, y );
+      std::vector<std::pair<int, int>> grid = this->state->board.checkBoard ( x, y );
 
       if ( grid.empty() == false )
       {
-        if ( rules.getRules() == 0 )
+        if ( this->state->rules.getRules() == 0 )
         {
-          board.flipCard ( grid[0].first, grid[0].second, player_turn + 1 );
+          this->state->board.flipCard ( grid[0].first, grid[0].second, player_turn + 1 );
         }
       }
 
-      if ( rules.getRules() != 0 )
+      if ( this->state->rules.getRules() != 0 )
       {
         for ( nom::ulong g = 0; g < grid.size(); g++ )
         {
-          board.flipCard ( grid[g].first, grid[g].second, player_turn + 1 );
+          this->state->board.flipCard ( grid[g].first, grid[g].second, player_turn + 1 );
 
-          std::vector<std::pair<int, int>> tgrid = board.checkBoard ( grid[g].first, grid[g].second );
+          std::vector<std::pair<int, int>> tgrid = this->state->board.checkBoard ( grid[g].first, grid[g].second );
 
           // temporary workaround until a more proper solution is found
-          if ( rules.getRules() == 2 || rules.getRules() == 4 )
+          if ( this->state->rules.getRules() == 2 || this->state->rules.getRules() == 4 )
             continue;
           else
           {
             for ( nom::ulong tg = 0; tg < tgrid.size(); tg++ )
             {
-              board.flipCard( tgrid[tg].first, tgrid[tg].second, player_turn + 1 );
+              this->state->board.flipCard( tgrid[tg].first, tgrid[tg].second, player_turn + 1 );
             }
           }
         }
@@ -699,7 +698,7 @@ void Game::updateScore ( void )
 
   for ( turn = 0; turn < TOTAL_PLAYERS; turn++ )
   {
-    board_count = this->board.getPlayerCount ( turn + 1 );
+    board_count = this->state->board.getPlayerCount ( turn + 1 );
 
     hand_count = this->state->hand[turn].size();
 
@@ -747,7 +746,7 @@ void Game::Draw ( void *video_buffer )
 {
   this->state->background.Draw ( video_buffer );
 
-  this->board.Draw ( video_buffer );
+  this->state->board.Draw ( video_buffer );
 
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );
@@ -765,7 +764,7 @@ void Game::Draw ( void *video_buffer )
   //
   // Game Over States
   // game / round is over when board card count >= 9
-  if ( this->board.getCount () >= 9 || this->state->hand[PLAYER1].size() == 0 || this->state->hand[PLAYER2].size() == 0 )
+  if ( this->state->board.getCount () >= 9 || this->state->hand[PLAYER1].size() == 0 || this->state->hand[PLAYER2].size() == 0 )
   {
     std::vector<Card> winning_cards;
     winning_cards.clear();
@@ -786,7 +785,7 @@ void Game::Draw ( void *video_buffer )
       {
         for ( int x = 0; x < BOARD_GRID_WIDTH; x++ )
         {
-          Card card = this->board.getCard ( x, y );
+          Card card = this->state->board.getCard ( x, y );
 
           if ( card.getPlayerOwner() == Card::PLAYER2 )
             winning_cards.push_back ( card );
@@ -821,7 +820,7 @@ void Game::Draw ( void *video_buffer )
       {
         for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
         {
-          Card card = this->board.getCard ( x, y );
+          Card card = this->state->board.getCard ( x, y );
 
           if ( card.getPlayerOwner() == Card::PLAYER1 )
             winning_cards.push_back ( card );

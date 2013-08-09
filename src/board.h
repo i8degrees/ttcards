@@ -39,14 +39,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "card.h"
 #include "card_debug.h"
 #include "card_rules.h"
-#include "GameObject.hpp"
+#include "card_view.h"
 #include "cfg.h"
 
 class Board
 {
   public:
     Board ( void );
-    Board ( CardRules& rules, std::shared_ptr<GameObject> object );
+    Board ( CardRules& rules, CardView& view );
     ~Board ( void );
 
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
@@ -70,7 +70,8 @@ class Board
 
   private:
     void initialize ( void );
-    std::shared_ptr<GameObject> state;
+    /// Card Rendering
+    CardView card;
     /// Debug support for card attributes
     CardDebug debug;
     /// Card rules

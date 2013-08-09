@@ -33,9 +33,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/gui.hpp>
 
 #include "cfg.h"
+#include "board.h"
+#include "card_collection.h"
 #include "card_hand.h"
 #include "card_view.h"
-#include "card_collection.h"
+#include "card_rules.h"
 
 struct GameObject
 {
@@ -49,6 +51,12 @@ struct GameObject
 
   /// Scoreboard text
   nom::TrueTypeFont score_text;
+
+  /// Game board
+  Board board;
+
+  /// Rules logic
+  CardRules rules;
 
   /// Cards database
   Collection collection;

@@ -111,6 +111,7 @@ bool App::onInit ( void )
   this->state->context = display;
 
   this->state = std::shared_ptr<GameObject> ( new GameObject );
+
   this->state->collection.LoadJSON ( CARDS_DB );
 
   this->state->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );

@@ -34,10 +34,10 @@ TODO: Add configurable board init, such as:
   Board ( unsigned int board_width, unsigned int board_height );
 
 */
-Board::Board ( CardRules& rules, std::shared_ptr<GameObject> object )
+Board::Board ( CardRules& rules, CardView& view )
 {
   this->rules = rules;
-  this->state = object;
+  this->card = view;
 
   this->initialize();
 }
@@ -292,7 +292,7 @@ void Board::Draw ( void* video_buffer )
   {
     for ( x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->state->card.DrawCard ( video_buffer, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+      this->card.DrawCard ( video_buffer, this->getCard ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
     }
   }
 }

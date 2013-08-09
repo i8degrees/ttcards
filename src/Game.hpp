@@ -42,11 +42,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-#include "board.h"
 #include "player.h"
 #include "card.h"
 #include "card_debug.h"
-#include "card_rules.h"
 //#include "cpu_player.h"
 #include "CardsMenuState.h"
 #include "GameOverState.h"
@@ -118,14 +116,8 @@ class Game: public nom::IState
     nom::MessageBox info_box;
     nom::MessageBox debug_box;
 
-    /// game board
-    Board board;
-
     /// debug support for card attributes
     CardDebug debug;
-
-    /// TODO
-    CardRules rules;
 
     /// players in game
     Player player[2];

@@ -109,7 +109,7 @@ void Game::debugListCollection ( int32_t mod )
   if ( mod == KMOD_LMETA )
     this->debug.ListCards ( this->state->collection.cards );
   else
-    this->board.List();
+    this->state->board.List();
 }
 
 void Game::debugModifyCardRank ( bool modifier, nom::uint32 direction )
