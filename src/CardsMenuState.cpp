@@ -254,8 +254,7 @@ void CardsMenu::Draw ( void* video_buffer )
   // Active player's card selection(s)
   for ( hand_index = 0; hand_index < this->state->hand[0].size(); hand_index++ ) // TODO: std::get<1>(player_coords)
   {
-    if ( this->state->hand[0].isValid ( this->state->hand[0].cards.at ( hand_index) ) == true )
-      this->state->card.DrawCard ( video_buffer, this->state->hand[0].cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+    this->state->card.DrawCard ( video_buffer, this->state->hand[0].cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
   }
 
   this->menu_box.Draw ( video_buffer );
@@ -286,7 +285,7 @@ void CardsMenu::Draw ( void* video_buffer )
     // Draw the card selection helper element
     this->menu_element.setPosition ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
 
-    if ( this->state->hand[0].isValid ( this->state->collection.cards[i] ) )
+    if ( this->state->hand[0].exists ( this->state->collection.cards[i] ) )
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_USED );
     else
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT );
@@ -296,7 +295,7 @@ void CardsMenu::Draw ( void* video_buffer )
 
     // Draw the card's name onto our menu box
     // FIXME ( this->state->info_text_gray )
-    if ( this->state->hand[0].isValid ( this->state->collection.cards[i] ) )
+    if ( this->state->hand[0].exists ( this->state->collection.cards[i] ) )
     {
       this->state->info_text_gray.setText ( this->state->collection.cards[i].getName() );
       this->state->info_text_gray.setFontStyle ( nom::FontStyle::Faded, 150 );
@@ -314,7 +313,7 @@ void CardsMenu::Draw ( void* video_buffer )
 
     // Draw the number of cards in player's possession
     // TODO: Stub
-    if ( this->state->hand[0].isValid ( this->state->collection.cards[i] ) )
+    if ( this->state->hand[0].exists ( this->state->collection.cards[i] ) )
     {
       this->state->info_text_gray.setText ( "0" );
       this->state->info_text_gray.setPosition ( MENU_CARDS_NUM_ORIGIN_X, y_offset );

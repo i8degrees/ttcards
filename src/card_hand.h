@@ -54,14 +54,13 @@ class CardHand
     Card& getSelectedCard ( void );
     bool selectCard ( Card& card );
 
-    bool isValid ( Card& card );
+    bool exists ( const Card& card ) const;
 
     void clear ( void );
     bool empty ( void );
     nom::int32 size ( void ) const;
     nom::int32 pos ( Card& card );
 
-    bool exists ( const Card& card ) const;
     void randomize ( Collection& db, nom::uint64 seedling = 0 );
 
     /// \todo Declare in private scope

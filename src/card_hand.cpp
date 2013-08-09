@@ -103,7 +103,7 @@ Card & CardHand::getSelectedCard ( void )
 
 bool CardHand::selectCard ( Card& card )
 {
-  if ( this->isValid ( card ) )
+  if ( this->exists ( card ) )
   {
     this->selectedCard = card;
     return true;
@@ -114,18 +114,6 @@ bool CardHand::selectCard ( Card& card )
 #ifdef DEBUG_CARD_HAND
   std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;
 #endif
-}
-bool CardHand::isValid ( Card& card )
-{
-  nom::int32 idx = 0;
-
-  for ( idx = 0; idx < this->size(); idx++ )
-  {
-    if ( ( this->cards[idx].getID() == card.getID() ) && ( this->cards[idx].getName() == card.getName() ) )
-      return true;
-  }
-
-  return false;
 }
 
 bool CardHand::empty ( void )
