@@ -54,13 +54,7 @@ bool CardHand::addCard ( Card& card )
     return false;
 
   if ( this->size() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
-  {
-    #ifdef DEBUG_CARD_HAND
-      std::cout << "CardHand::addCard (): " << "Discarding card " << this->cards.back().getID() << ' ' << this->cards.back().getName() << std::endl;
-    #endif
-
-    this->cards.pop_back();
-  }
+    return false;
 
   this->cards.push_back ( card );
 
