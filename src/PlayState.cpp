@@ -67,7 +67,6 @@ void PlayState::Resume ( void )
 
 void PlayState::onInit ( void )
 {
-  std::vector<nom::Color> msgbox;
   nom::Gradient linear;
   nom::int32 idx = 0; // for loop iterations
 
@@ -112,30 +111,18 @@ void PlayState::onInit ( void )
   this->board_coords_map[7] = nom::Coords ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
   this->board_coords_map[8] = nom::Coords ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
 
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
-  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
-
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
-  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
-
-  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
-
-  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
-
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::MessageBox  ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
-                                      INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                      msgbox, linear
-                                    );
+  this->info_box = nom::ui::MessageBox  ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+                                          INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
+                                          nom::ui::FrameStyle::Gray, linear
+                                        );
 
-  this->debug_box = nom::MessageBox ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
-                                      DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
-                                      msgbox, linear
-                                    );
+  this->debug_box = nom::ui::MessageBox ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+                                          DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
+                                          nom::ui::FrameStyle::Gray, linear
+                                        );
 
 #ifndef DEBUG_GAME
   this->debug_box.disable ();

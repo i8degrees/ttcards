@@ -74,7 +74,7 @@ struct GameObject
   nom::Canvas gameover_background;
 
   /// interface cursor
-  nom::Cursor cursor;
+  nom::ui::Cursor cursor;
 
   /// our public / visible display context handle
   nom::Display context;

@@ -117,8 +117,8 @@ class PlayState: public nom::IState
 
     std::shared_ptr<GameObject> state;
 
-    nom::MessageBox info_box;
-    nom::MessageBox debug_box;
+    nom::ui::MessageBox info_box;
+    nom::ui::MessageBox debug_box;
 
     /// debug support for card attributes
     CardDebug debug;

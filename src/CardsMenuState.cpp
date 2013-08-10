@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 CardsMenu::CardsMenu ( std::shared_ptr<GameObject> object )
 {
   nom::Gradient linear;
-  std::vector<nom::Color> msgbox;
 
   unsigned int pid = 0; // temp var for for loop iteration
 
@@ -56,27 +55,15 @@ CardsMenu::CardsMenu ( std::shared_ptr<GameObject> object )
   for ( pid = 0; pid < this->state->collection.cards.size(); pid++ )
     this->state->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
 
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
-  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
-
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
-  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
-
-  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
-
-  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
-
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
 
-  this->menu_box = nom::MessageBox  ( PICK_CARDS_MENU_ORIGIN_X,
-                                      PICK_CARDS_MENU_ORIGIN_Y,
-                                      PICK_CARDS_MENU_WIDTH,
-                                      PICK_CARDS_MENU_HEIGHT,
-                                      msgbox, linear
-                                    );
+  this->menu_box = nom::ui::MessageBox  ( PICK_CARDS_MENU_ORIGIN_X,
+                                          PICK_CARDS_MENU_ORIGIN_Y,
+                                          PICK_CARDS_MENU_WIDTH,
+                                          PICK_CARDS_MENU_HEIGHT,
+                                          nom::ui::FrameStyle::Gray, linear
+                                        );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->state->collection.cards.size() / per_page;

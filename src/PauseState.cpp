@@ -40,29 +40,16 @@ PauseState::~PauseState ( void )
 
 void PauseState::onInit ( void )
 {
-  std::vector<nom::Color> msgbox;
   nom::Gradient linear;
   std::string project_info = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
-
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // top1
-  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // top2
-
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // left1
-  msgbox.push_back ( nom::Color ( 133, 133, 133 ) ); // left2
-
-  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // bottom1
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // bottom2
-
-  msgbox.push_back ( nom::Color ( 57, 57, 57 ) ); // right1
-  msgbox.push_back ( nom::Color ( 41, 41, 41 ) ); // right2
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::MessageBox  ( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y,
-                                      PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT,
-                                      msgbox, linear
-                                    );
+  this->info_box = nom::ui::MessageBox  ( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y,
+                                          PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT,
+                                          nom::ui::FrameStyle::Gray, linear
+                                        );
 
   this->state->info_text.setText ( project_info );
   nom::int32 text_width = this->state->info_text.getFontWidth();

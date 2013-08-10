@@ -80,7 +80,7 @@ class CardsMenu: public nom::IState
     /// debug support for card attributes
     CardDebug debug;
 
-    nom::MessageBox menu_box;
+    nom::ui::MessageBox menu_box;
 
     /// CardHand-derived implementation
     Card selectedCard;

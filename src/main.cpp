@@ -124,7 +124,7 @@ bool App::onInit ( void )
   this->state->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
   this->state->gameover_background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
 
-  this->state->cursor = nom::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->state->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
   this->state->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->state->cursor.setSheetDimensions ( 78, 16, 0, 0 );
 

@@ -61,7 +61,7 @@ class PauseState: public nom::IState
     std::shared_ptr<GameObject> state;
     nom::Timer update;
     bool blink_text;
-    nom::MessageBox info_box;
+    nom::ui::MessageBox info_box;
 };
 
 #endif // include guard defined
