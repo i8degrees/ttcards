@@ -69,7 +69,6 @@ void PlayState::onInit ( void )
 {
   std::vector<nom::Color> msgbox;
   nom::Gradient linear;
-  nom::OpenAL::SoundBuffer sound_buffer;
   nom::int32 idx = 0; // for loop iterations
 
   // Random seeding for picking out whose turn it is initially
@@ -158,27 +157,26 @@ void PlayState::onInit ( void )
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
   this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
-/*
-  sound_buffer.loadFromFile ( CURSOR_MOVE );
-  this->cursor_move.setBuffer ( sound_buffer );
 
-  sound_buffer.loadFromFile ( CURSOR_CANCEL );
-  this->cursor_cancel.setBuffer ( sound_buffer );
+  this->sound_buffer.loadFromFile ( CURSOR_MOVE );
+  this->cursor_move.setBuffer ( this->sound_buffer );
 
-  sound_buffer.loadFromFile ( CURSOR_WRONG );
-  this->cursor_wrong.setBuffer ( sound_buffer );
+  this->sound_buffer.loadFromFile ( CURSOR_CANCEL );
+  this->cursor_cancel.setBuffer ( this->sound_buffer );
 
-  sound_buffer.loadFromFile ( CARD_FLIP );
-  this->card_flip.setBuffer ( sound_buffer );
+  this->sound_buffer.loadFromFile ( CURSOR_WRONG );
+  this->cursor_wrong.setBuffer ( this->sound_buffer );
 
-  sound_buffer.loadFromFile ( CARD_PLACE );
-  this->card_place.setBuffer ( sound_buffer );
+  this->sound_buffer.loadFromFile ( CARD_FLIP );
+  this->card_flip.setBuffer ( this->sound_buffer );
+
+  this->sound_buffer.loadFromFile ( CARD_PLACE );
+  this->card_place.setBuffer ( this->sound_buffer );
 
   this->music_buffer.loadFromFile ( MUSIC_TRACK );
   this->music_track.setBuffer ( this->music_buffer );
   this->music_track.Play();
   this->music_track.Pause();
-*/
 }
 
 void PlayState::onKeyDown ( int32_t key, int32_t mod )
@@ -187,8 +185,12 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
   {
     default: break;
 
-    case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->state ) ) ); break;
-    case SDLK_m: /*this->music.togglePlayingMusic();*/ break;
+    case SDLK_p:
+    {
+      this->music_track.togglePause();
+      nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->state ) ) );
+    }
+    break;
     case SDLK_e: this->endTurn(); break;
     case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
     case SDLK_RIGHTBRACKET: debugListCollection( mod ); break;

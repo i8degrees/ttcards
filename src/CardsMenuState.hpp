@@ -102,6 +102,7 @@ class CardsMenu: public nom::IState
     std::pair<int, int> cursor_coords_map[10];
 
     nom::OpenAL::AudioDevice dev;
+    nom::OpenAL::SoundBuffer sound_buffer;
 
     nom::OpenAL::Sound cursor_move;
     nom::OpenAL::Sound cursor_cancel;

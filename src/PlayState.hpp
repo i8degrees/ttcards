@@ -136,6 +136,8 @@ class PlayState: public nom::IState
     nom::Coords board_coords_map[9];
 
     nom::OpenAL::AudioDevice dev;
+    nom::OpenAL::SoundBuffer sound_buffer;
+    nom::OpenAL::SoundBuffer music_buffer;
 
     nom::OpenAL::Sound cursor_move;
     nom::OpenAL::Sound cursor_cancel;
@@ -143,7 +145,6 @@ class PlayState: public nom::IState
     nom::OpenAL::Sound card_flip;
     nom::OpenAL::Sound card_place;
 
-    nom::OpenAL::SoundBuffer music_buffer;
     nom::OpenAL::Music music_track;
 
     unsigned int turn; // FIXME: player1 = 0, player2 = 1
