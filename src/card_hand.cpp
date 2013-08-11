@@ -35,7 +35,6 @@ CardHand::CardHand ( void )
 #endif
 
   this->clear();
-
   this->selectedCard = Card();
 }
 
@@ -76,18 +75,14 @@ bool CardHand::removeCard ( Card& card )
     return false;
   }
 
-  if ( this->empty() == false )
-  {
-    previous_id = this->cards[position].getID();
-    previous_name = this->cards[position].getName();
-    this->cards.erase ( this->cards.begin() + position );
+  previous_id = this->cards[position].getID();
+  previous_name = this->cards[position].getName();
+  this->cards.erase ( this->cards.begin() + position );
 #ifdef DEBUG_CARD_HAND
   std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
 #endif
-    return true;
-  }
 
-  return false;
+  return true;
 }
 
 void CardHand::clearSelectedCard ( void )
@@ -112,14 +107,6 @@ void CardHand::selectCard ( Card& card )
 #endif
 }
 
-bool CardHand::empty ( void )
-{
-  if ( this->cards.empty() )
-    return true;
-
-  return false;
-}
-
 nom::int32 CardHand::size ( void ) const
 {
   nom::int32 count = 0;
@@ -134,7 +121,7 @@ nom::int32 CardHand::pos ( Card& card )
   nom::int32 idx;
   nom::int32 pos = -1;
 
-  if ( this->empty() == false )
+  if ( this->size() > 0 )
   {
     for ( idx = 0; idx < this->size() && pos == -1; idx++ )
     {
