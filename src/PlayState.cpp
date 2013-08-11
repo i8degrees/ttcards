@@ -515,7 +515,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
     if ( this->game->board ( x, y ) == false )
     {
       this->game->board.updateStatus ( x, y, this->game->hand[ player_turn ].getSelectedCard() );
-      this->game->hand[ player_turn ].removeCard ( this->game->hand[ player_turn ].getSelectedCard() );
+      this->game->hand[ player_turn ].erase ( this->game->hand[ player_turn ].getSelectedCard() );
 
       this->game->card_place.Play();
 

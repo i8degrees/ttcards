@@ -143,10 +143,10 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_UP: this->moveCursorUp(); break;
     case SDLK_DOWN: this->moveCursorDown(); break;
 
-    case SDLK_d: if ( this->game->hand[0].removeCard ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
+    case SDLK_d: if ( this->game->hand[0].erase( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
     case SDLK_SPACE:
     {
-      if ( this->game->hand[0].addCard ( this->selectedCard ) )
+      if ( this->game->hand[0].push_back ( this->selectedCard ) )
         this->game->card_place.Play();
     }
     break;
@@ -173,8 +173,8 @@ void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
 
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
-    case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].removeCard ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
-    case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].addCard ( this->selectedCard ) ) this->game->card_place.Play(); break;
+    case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].erase ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
+    case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].push_back ( this->selectedCard ) ) this->game->card_place.Play(); break;
     case nom::PSXBUTTON::START:
     {
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
@@ -190,7 +190,7 @@ void CardsMenuState::onMouseLeftButtonDown ( int32_t x, int32_t y )
 
 void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 {
-  if ( this->game->hand[0].addCard ( this->selectedCard ) )
+  if ( this->game->hand[0].push_back ( this->selectedCard ) )
     this->game->card_place.Play();
 }
 

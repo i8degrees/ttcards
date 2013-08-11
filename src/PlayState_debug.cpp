@@ -31,46 +31,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
 void PlayState::debugCardsDiscard ( void )
 {
-  this->game->hand[0].addCard ( this->game->collection.cards[88] ); // Carbuncle
-  this->game->hand[0].addCard ( this->game->collection.cards[24] ); // TriFace
+  this->game->hand[0].push_back ( this->game->collection.cards[88] ); // Carbuncle
+  this->game->hand[0].push_back ( this->game->collection.cards[24] ); // TriFace
 
-  this->game->hand[1].addCard ( this->game->collection.cards[88] ); // Carbuncle
+  this->game->hand[1].push_back ( this->game->collection.cards[88] ); // Carbuncle
 }
 
 // Debug player hand set for no and combo rulesets
 void PlayState::debugCardsNoRuleset ( void )
 {
 /*
-  this->game->hand[0].addCard ( this->game->collection.cards[89] ); // Diablos
-  this->game->hand[0].addCard ( this->game->collection.cards[109] ); // Squall
-  this->game->hand[0].addCard ( this->game->collection.cards[99] ); // Ward
-  this->game->hand[0].addCard ( this->game->collection.cards[84] ); // Ifrit [pos 3]
-  this->game->hand[0].addCard ( this->game->collection.cards[16] ); // Thrustaevis
+  this->game->hand[0].push_back ( this->game->collection.cards[89] ); // Diablos
+  this->game->hand[0].push_back ( this->game->collection.cards[109] ); // Squall
+  this->game->hand[0].push_back ( this->game->collection.cards[99] ); // Ward
+  this->game->hand[0].push_back ( this->game->collection.cards[84] ); // Ifrit [pos 3]
+  this->game->hand[0].push_back ( this->game->collection.cards[16] ); // Thrustaevis
 */
-  this->game->hand[1].addCard ( this->game->collection.cards[20] ); // Jelleye
-  this->game->hand[1].addCard ( this->game->collection.cards[88] ); // Carbuncle
-  this->game->hand[1].addCard ( this->game->collection.cards[24] ); // TriFace
-  this->game->hand[1].addCard ( this->game->collection.cards[66] ); // Propagator
-  this->game->hand[1].addCard ( this->game->collection.cards[50] ); // Malboro
+  this->game->hand[1].push_back ( this->game->collection.cards[20] ); // Jelleye
+  this->game->hand[1].push_back ( this->game->collection.cards[88] ); // Carbuncle
+  this->game->hand[1].push_back ( this->game->collection.cards[24] ); // TriFace
+  this->game->hand[1].push_back ( this->game->collection.cards[66] ); // Propagator
+  this->game->hand[1].push_back ( this->game->collection.cards[50] ); // Malboro
 }
 
 // Debug player hand set for same rulesets
 void PlayState::debugCardsSameRuleset ( void )
 {
-  this->game->hand[0].addCard ( this->game->collection.cards[89] ); // Diablos
-  this->game->hand[0].addCard ( this->game->collection.cards[109] ); // Squall
-  this->game->hand[0].addCard ( this->game->collection.cards[99] ); // Ward
-  this->game->hand[0].addCard ( this->game->collection.cards[84] ); // Ifrit [pos 3]
-  //this->game->hand[0].addCard ( this->game->collection.cards[16] ); // Thrustaevis
-  this->game->hand[0].addCard ( this->game->collection.cards[60] ); // Iguion
+  this->game->hand[0].push_back ( this->game->collection.cards[89] ); // Diablos
+  this->game->hand[0].push_back ( this->game->collection.cards[109] ); // Squall
+  this->game->hand[0].push_back ( this->game->collection.cards[99] ); // Ward
+  this->game->hand[0].push_back ( this->game->collection.cards[84] ); // Ifrit [pos 3]
+  //this->game->hand[0].push_back ( this->game->collection.cards[16] ); // Thrustaevis
+  this->game->hand[0].push_back ( this->game->collection.cards[60] ); // Iguion
 
-  this->game->hand[1].addCard ( this->game->collection.cards[20] ); // Jelleye
-  this->game->hand[1].addCard ( this->game->collection.cards[2] ); // Bite Bug
-  //this->game->hand[1].addCard ( this->game->collection.cards[88] ); // Carbuncle
-  this->game->hand[1].addCard ( this->game->collection.cards[5] ); // Gayla
-  this->game->hand[1].addCard ( this->game->collection.cards[63] ); // Oilboyle
-  this->game->hand[1].addCard ( this->game->collection.cards[77] ); // Chubby Chocobo
-  //this->game->hand[1].addCard ( this->game->collection.cards[50] ); // Malboro
+  this->game->hand[1].push_back ( this->game->collection.cards[20] ); // Jelleye
+  this->game->hand[1].push_back ( this->game->collection.cards[2] ); // Bite Bug
+  //this->game->hand[1].push_back ( this->game->collection.cards[88] ); // Carbuncle
+  this->game->hand[1].push_back ( this->game->collection.cards[5] ); // Gayla
+  this->game->hand[1].push_back ( this->game->collection.cards[63] ); // Oilboyle
+  this->game->hand[1].push_back ( this->game->collection.cards[77] ); // Chubby Chocobo
+  //this->game->hand[1].push_back ( this->game->collection.cards[50] ); // Malboro
 }
 
 // debug helper method
@@ -78,7 +78,7 @@ void PlayState::removePlayerCard ( void )
 {
   unsigned int player_turn = get_turn();
 
-  this->game->hand[player_turn].removeCard ( this->game->hand[player_turn].getSelectedCard() );
+  this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
   this->game->hand[player_turn].clearSelectedCard();
   this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
 
@@ -137,8 +137,8 @@ void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
   }
 
   // Update the player hand with our modified card attributes.
-  this->game->hand[ player_turn].removeCard ( selected );
-  this->game->hand[ player_turn].addCard ( selected );
+  this->game->hand[ player_turn].erase ( selected );
+  this->game->hand[ player_turn].push_back ( selected );
 
   // Update the player's selected card (player hand is a LILO type).
   this->game->hand[ player_turn].selectCard ( this->game->hand[ player_turn].cards.back() );

@@ -47,7 +47,7 @@ CardHand::~CardHand ( void )
   this->clear();
 }
 
-bool CardHand::addCard ( Card& card )
+bool CardHand::push_back ( Card& card )
 {
   if ( this->exists( card ) == true )
     return false;
@@ -59,7 +59,7 @@ bool CardHand::addCard ( Card& card )
   return true;
 }
 
-bool CardHand::removeCard ( Card& card )
+bool CardHand::erase ( Card& card )
 {
   signed int position = 0;
   unsigned int previous_id = 0;
@@ -188,7 +188,7 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, Collect
 
     if ( db.cards[card_id].getLevel() <= level_max && db.cards[card_id].getLevel() >= level_min )
     {
-      if ( this->addCard ( db.cards[card_id] ) )
+      if ( this->push_back ( db.cards[card_id] ) )
       {
         num_cards++;
       }

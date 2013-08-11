@@ -67,13 +67,13 @@ void GameOverState::onInit ( void )
       {
         this->player_cards[0].push_back ( card );
         card.setPlayerID( Card::PLAYER1 );
-        this->game->hand[0].addCard ( card );
+        this->game->hand[0].push_back ( card );
       }
       else if ( card.getPlayerOwner() == Card::PLAYER2 )
       {
         this->player_cards[1].push_back ( card );
         card.setPlayerID( Card::PLAYER2 );
-        this->game->hand[1].addCard ( card );
+        this->game->hand[1].push_back ( card );
       }
     }
   }
