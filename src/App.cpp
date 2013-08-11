@@ -108,25 +108,25 @@ bool App::onInit ( void )
 
   this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
 
-  this->state->context = display;
+  this->game->context = display;
 
-  this->state = std::shared_ptr<GameObject> ( new GameObject );
+  this->game = std::shared_ptr<GameObject> ( new GameObject );
 
-  this->state->collection.LoadJSON ( CARDS_DB );
+  this->game->collection.LoadJSON ( CARDS_DB );
 
-  this->state->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
-  this->state->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
-  this->state->info_text_gray.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->game->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->game->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->game->info_text_gray.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
 
-  this->state->score_text.Load ( SCORE_FONTFACE, nom::Color::White, 36 );
-  this->state->gameOver_text.Load ( SCORE_FONTFACE, 36 );
+  this->game->score_text.Load ( SCORE_FONTFACE, nom::Color::White, 36 );
+  this->game->gameOver_text.Load ( SCORE_FONTFACE, 36 );
 
-  this->state->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
-  this->state->gameover_background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
+  this->game->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
+  this->game->gameover_background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
 
-  this->state->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->state->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
-  this->state->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+  this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->game->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
+  this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
 
   return true;
 }
@@ -191,7 +191,7 @@ int32_t App::Run ( void )
 
   next_game_tick = getTicks();
 
-  nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( this->state ) ) );
+  nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( this->game ) ) );
 
   this->Running(); // ...here we go!
 

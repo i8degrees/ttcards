@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PauseState::PauseState ( std::shared_ptr<GameObject> object )
 {
-  this->state = object;
+  this->game = object;
 }
 
 PauseState::~PauseState ( void )
@@ -51,12 +51,12 @@ void PauseState::onInit ( void )
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-  this->state->info_text.setText ( project_info );
-  nom::int32 text_width = this->state->info_text.getFontWidth();
-  nom::int32 text_height = this->state->info_text.getFontHeight();
-  this->state->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, ( SCREEN_HEIGHT - text_height ) / 2 );
+  this->game->info_text.setText ( project_info );
+  nom::int32 text_width = this->game->info_text.getFontWidth();
+  nom::int32 text_height = this->game->info_text.getFontHeight();
+  this->game->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, ( SCREEN_HEIGHT - text_height ) / 2 );
 
-  this->state->info_small_text.setPosition ( PAUSE_BOX_ORIGIN_X + 4, PAUSE_BOX_ORIGIN_Y );
+  this->game->info_small_text.setPosition ( PAUSE_BOX_ORIGIN_X + 4, PAUSE_BOX_ORIGIN_Y );
 
   this->update.Start();
 }
@@ -90,31 +90,31 @@ void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod )
 void PauseState::Update ( nom::uint32 delta_time )
 {
   this->info_box.Update();
-  this->state->info_text.Update();
+  this->game->info_text.Update();
 
-  this->state->info_small_text.setText ( "PAUSE" );
+  this->game->info_small_text.setText ( "PAUSE" );
 
   if ( this->update.getTicks() > 800 )
   {
     this->update.Stop();
-    this->state->info_small_text.setText ( "" );
+    this->game->info_small_text.setText ( "" );
     this->blink_text = true;
   }
-  this->state->info_small_text.Update();
+  this->game->info_small_text.Update();
 
-  this->state->context.Update();
+  this->game->context.Update();
 }
 
 void PauseState::Draw ( void* video_buffer )
 {
   this->info_box.Draw( video_buffer );
-  this->state->info_text.Draw( video_buffer );
+  this->game->info_text.Draw( video_buffer );
 
   if ( this->blink_text )
   {
-    this->state->info_small_text.setText ( "" );
+    this->game->info_small_text.setText ( "" );
     this->update.Start();
     this->blink_text = false;
   }
-  this->state->info_small_text.Draw( video_buffer );
+  this->game->info_small_text.Draw( video_buffer );
 }

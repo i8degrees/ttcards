@@ -60,7 +60,7 @@ class GameOver: public nom::IState
     void Draw ( void* video_buffer );
     void onKeyDown ( nom::int32 key, nom::int32 mod );
 
-    std::shared_ptr<GameObject> state;
+    std::shared_ptr<GameObject> game;
     std::vector<Card> player_cards[2];
     CardDebug debug;
     nom::Timer update;

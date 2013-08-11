@@ -75,7 +75,7 @@ class CardsMenu: public nom::IState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    std::shared_ptr<GameObject> state;
+    std::shared_ptr<GameObject> game;
 
     /// debug support for card attributes
     CardDebug debug;

@@ -115,7 +115,7 @@ class PlayState: public nom::IState
     void updateScore ( void );
     void drawScore ( void* video_buffer );
 
-    std::shared_ptr<GameObject> state;
+    std::shared_ptr<GameObject> game;
 
     nom::ui::MessageBox info_box;
     nom::ui::MessageBox debug_box;

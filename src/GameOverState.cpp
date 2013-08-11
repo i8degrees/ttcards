@@ -34,7 +34,7 @@ GameOver::GameOver ( std::shared_ptr<GameObject> object, nom::uint32 gameover_st
   std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
 #endif
 
-  this->state = object;
+  this->game = object;
   this->show_results = false;
   this->gameover_state = gameover_state;
 }
@@ -61,19 +61,19 @@ void GameOver::onInit ( void )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      Card card = this->state->board.getCard ( x, y );
+      Card card = this->game->board.getCard ( x, y );
 
       if ( card.getPlayerOwner() == Card::PLAYER1 )
       {
         this->player_cards[0].push_back ( card );
         card.setPlayerID( Card::PLAYER1 );
-        this->state->hand[0].addCard ( card );
+        this->game->hand[0].addCard ( card );
       }
       else if ( card.getPlayerOwner() == Card::PLAYER2 )
       {
         this->player_cards[1].push_back ( card );
         card.setPlayerID( Card::PLAYER2 );
-        this->state->hand[1].addCard ( card );
+        this->game->hand[1].addCard ( card );
       }
     }
   }
@@ -103,9 +103,9 @@ void GameOver::onKeyDown ( nom::int32 key, nom::int32 mod )
   {
     default: break;
 
-    case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->state ) ) ); break;
+    case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->game ) ) ); break;
     // Reset (New Game)
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->state ) ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->game ) ) ); break;
   }
 }
 
@@ -117,20 +117,20 @@ void GameOver::Update ( nom::uint32 delta_time )
     this->show_results = true;
   }
 
-  this->state->context.Update();
+  this->game->context.Update();
 }
 
 void GameOver::Draw ( void* video_buffer )
 {
-  this->state->gameover_background.Draw ( video_buffer );
+  this->game->gameover_background.Draw ( video_buffer );
 
   // Show Player 1 starting hand
-  for ( nom::ulong cards_index = 0; cards_index < this->state->hand[0].size(); cards_index++ )
-    this->state->card.DrawCard ( video_buffer, this->state->hand[0].cards.at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+  for ( nom::ulong cards_index = 0; cards_index < this->game->hand[0].size(); cards_index++ )
+    this->game->card.DrawCard ( video_buffer, this->game->hand[0].cards.at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
 
   // Show Player 2 starting hand
-  for ( nom::ulong cards_index = 0; cards_index < this->state->hand[1].size(); cards_index++ )
-    this->state->card.DrawCard ( video_buffer, this->state->hand[1].cards.at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+  for ( nom::ulong cards_index = 0; cards_index < this->game->hand[1].size(); cards_index++ )
+    this->game->card.DrawCard ( video_buffer, this->game->hand[1].cards.at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
 
   // Update both player's hand with the ending game round results when the time
   // is right
@@ -144,14 +144,14 @@ void GameOver::Draw ( void* video_buffer )
       case 2: // Player 1 lost; show what cards they lost
       {
         for ( nom::ulong cards_index = 0; cards_index < this->player_cards[0].size(); cards_index++ )
-          this->state->card.DrawCard ( video_buffer, this->player_cards[0].at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+          this->game->card.DrawCard ( video_buffer, this->player_cards[0].at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
       }
       break;
 
       case 1: // Player 1 won; show what cards they won
       {
         for ( nom::ulong cards_index = 0; cards_index < this->player_cards[1].size(); cards_index++ )
-          this->state->card.DrawCard ( video_buffer, this->player_cards[1].at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+          this->game->card.DrawCard ( video_buffer, this->player_cards[1].at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
       }
       break;
     } // this->gameover_state

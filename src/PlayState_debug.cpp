@@ -31,46 +31,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // These cards should be discarded from player's hand ( MAX_HAND = 5 )
 void PlayState::debugCardsDiscard ( void )
 {
-  this->state->hand[0].addCard ( this->state->collection.cards[88] ); // Carbuncle
-  this->state->hand[0].addCard ( this->state->collection.cards[24] ); // TriFace
+  this->game->hand[0].addCard ( this->game->collection.cards[88] ); // Carbuncle
+  this->game->hand[0].addCard ( this->game->collection.cards[24] ); // TriFace
 
-  this->state->hand[1].addCard ( this->state->collection.cards[88] ); // Carbuncle
+  this->game->hand[1].addCard ( this->game->collection.cards[88] ); // Carbuncle
 }
 
 // Debug player hand set for no and combo rulesets
 void PlayState::debugCardsNoRuleset ( void )
 {
 /*
-  this->state->hand[0].addCard ( this->state->collection.cards[89] ); // Diablos
-  this->state->hand[0].addCard ( this->state->collection.cards[109] ); // Squall
-  this->state->hand[0].addCard ( this->state->collection.cards[99] ); // Ward
-  this->state->hand[0].addCard ( this->state->collection.cards[84] ); // Ifrit [pos 3]
-  this->state->hand[0].addCard ( this->state->collection.cards[16] ); // Thrustaevis
+  this->game->hand[0].addCard ( this->game->collection.cards[89] ); // Diablos
+  this->game->hand[0].addCard ( this->game->collection.cards[109] ); // Squall
+  this->game->hand[0].addCard ( this->game->collection.cards[99] ); // Ward
+  this->game->hand[0].addCard ( this->game->collection.cards[84] ); // Ifrit [pos 3]
+  this->game->hand[0].addCard ( this->game->collection.cards[16] ); // Thrustaevis
 */
-  this->state->hand[1].addCard ( this->state->collection.cards[20] ); // Jelleye
-  this->state->hand[1].addCard ( this->state->collection.cards[88] ); // Carbuncle
-  this->state->hand[1].addCard ( this->state->collection.cards[24] ); // TriFace
-  this->state->hand[1].addCard ( this->state->collection.cards[66] ); // Propagator
-  this->state->hand[1].addCard ( this->state->collection.cards[50] ); // Malboro
+  this->game->hand[1].addCard ( this->game->collection.cards[20] ); // Jelleye
+  this->game->hand[1].addCard ( this->game->collection.cards[88] ); // Carbuncle
+  this->game->hand[1].addCard ( this->game->collection.cards[24] ); // TriFace
+  this->game->hand[1].addCard ( this->game->collection.cards[66] ); // Propagator
+  this->game->hand[1].addCard ( this->game->collection.cards[50] ); // Malboro
 }
 
 // Debug player hand set for same rulesets
 void PlayState::debugCardsSameRuleset ( void )
 {
-  this->state->hand[0].addCard ( this->state->collection.cards[89] ); // Diablos
-  this->state->hand[0].addCard ( this->state->collection.cards[109] ); // Squall
-  this->state->hand[0].addCard ( this->state->collection.cards[99] ); // Ward
-  this->state->hand[0].addCard ( this->state->collection.cards[84] ); // Ifrit [pos 3]
-  //this->state->hand[0].addCard ( this->state->collection.cards[16] ); // Thrustaevis
-  this->state->hand[0].addCard ( this->state->collection.cards[60] ); // Iguion
+  this->game->hand[0].addCard ( this->game->collection.cards[89] ); // Diablos
+  this->game->hand[0].addCard ( this->game->collection.cards[109] ); // Squall
+  this->game->hand[0].addCard ( this->game->collection.cards[99] ); // Ward
+  this->game->hand[0].addCard ( this->game->collection.cards[84] ); // Ifrit [pos 3]
+  //this->game->hand[0].addCard ( this->game->collection.cards[16] ); // Thrustaevis
+  this->game->hand[0].addCard ( this->game->collection.cards[60] ); // Iguion
 
-  this->state->hand[1].addCard ( this->state->collection.cards[20] ); // Jelleye
-  this->state->hand[1].addCard ( this->state->collection.cards[2] ); // Bite Bug
-  //this->state->hand[1].addCard ( this->state->collection.cards[88] ); // Carbuncle
-  this->state->hand[1].addCard ( this->state->collection.cards[5] ); // Gayla
-  this->state->hand[1].addCard ( this->state->collection.cards[63] ); // Oilboyle
-  this->state->hand[1].addCard ( this->state->collection.cards[77] ); // Chubby Chocobo
-  //this->state->hand[1].addCard ( this->state->collection.cards[50] ); // Malboro
+  this->game->hand[1].addCard ( this->game->collection.cards[20] ); // Jelleye
+  this->game->hand[1].addCard ( this->game->collection.cards[2] ); // Bite Bug
+  //this->game->hand[1].addCard ( this->game->collection.cards[88] ); // Carbuncle
+  this->game->hand[1].addCard ( this->game->collection.cards[5] ); // Gayla
+  this->game->hand[1].addCard ( this->game->collection.cards[63] ); // Oilboyle
+  this->game->hand[1].addCard ( this->game->collection.cards[77] ); // Chubby Chocobo
+  //this->game->hand[1].addCard ( this->game->collection.cards[50] ); // Malboro
 }
 
 // debug helper method
@@ -78,11 +78,11 @@ void PlayState::removePlayerCard ( void )
 {
   unsigned int player_turn = get_turn();
 
-  this->state->hand[player_turn].removeCard ( this->state->hand[player_turn].getSelectedCard() );
-  this->state->hand[player_turn].clearSelectedCard();
-  this->state->hand[player_turn].selectCard ( this->state->hand[player_turn].cards.front() );
+  this->game->hand[player_turn].removeCard ( this->game->hand[player_turn].getSelectedCard() );
+  this->game->hand[player_turn].clearSelectedCard();
+  this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
 
-  this->state->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+  this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
 }
 
 // Debug -- input events helper method
@@ -98,18 +98,18 @@ void PlayState::debugBox ( void )
 void PlayState::debugListCards ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
-    this->debug.ListCards ( this->state->hand[1].cards );
+    this->debug.ListCards ( this->game->hand[1].cards );
   else
-    this->debug.ListCards ( this->state->hand[0].cards );
+    this->debug.ListCards ( this->game->hand[0].cards );
 }
 
 // Debug -- input events helper method
 void PlayState::debugListCollection ( int32_t mod )
 {
   if ( mod == KMOD_LMETA )
-    this->debug.ListCards ( this->state->collection.cards );
+    this->debug.ListCards ( this->game->collection.cards );
   else
-    this->state->board.List();
+    this->game->board.List();
 }
 
 void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
@@ -121,7 +121,7 @@ void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
 
   // First, obtain current rank attributes of the selected card; validation is
   // done for us by the Card class.
-  selected = this->state->hand[ player_turn ].getSelectedCard();
+  selected = this->game->hand[ player_turn ].getSelectedCard();
   ranks = selected.getRanks();
 
   if ( modifier ) // increase
@@ -137,17 +137,17 @@ void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
   }
 
   // Update the player hand with our modified card attributes.
-  this->state->hand[ player_turn].removeCard ( selected );
-  this->state->hand[ player_turn].addCard ( selected );
+  this->game->hand[ player_turn].removeCard ( selected );
+  this->game->hand[ player_turn].addCard ( selected );
 
   // Update the player's selected card (player hand is a LILO type).
-  this->state->hand[ player_turn].selectCard ( this->state->hand[ player_turn].cards.back() );
+  this->game->hand[ player_turn].selectCard ( this->game->hand[ player_turn].cards.back() );
 
   // Lastly, calculate the (new) position of our selected card and use
   // this information to update the cursor position to match the selected
   // card.
-  selected = this->state->hand[ player_turn ].getSelectedCard();
-  pos = this->state->hand[ player_turn ].pos(selected);
+  selected = this->game->hand[ player_turn ].getSelectedCard();
+  pos = this->game->hand[ player_turn ].pos(selected);
 
-  this->state->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * pos );
+  this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * pos );
 }

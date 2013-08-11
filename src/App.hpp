@@ -68,7 +68,7 @@ class App: public nom::SDL_App // "is-a" relationship
     nom::int32 Run ( void );
 
   private:
-    std::shared_ptr<GameObject> state;
+    std::shared_ptr<GameObject> game;
     /// Display context
     nom::Display display;
     /// Timer for tracking frames per second

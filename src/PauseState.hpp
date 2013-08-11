@@ -58,7 +58,7 @@ class PauseState: public nom::IState
     void Update ( nom::uint32 delta_time );
     void Draw ( void* video_buffer );
 
-    std::shared_ptr<GameObject> state;
+    std::shared_ptr<GameObject> game;
     nom::Timer update;
     bool blink_text;
     nom::ui::MessageBox info_box;
