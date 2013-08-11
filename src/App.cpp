@@ -85,12 +85,6 @@ App::App ( nom::int32 argc, char* argv[] )
       exit ( EXIT_SUCCESS );
     }
   }
-
-#ifndef EMSCRIPTEN
-  display.setWindowIcon ( APP_ICON );
-#endif
-
-  this->onInit();
 }
 
 App::~App ( void )
@@ -104,13 +98,17 @@ bool App::onInit ( void )
 {
   unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_DOUBLEBUF;
 
-  this->display.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+  this->game = std::shared_ptr<GameObject> ( new GameObject );
+
+#ifndef EMSCRIPTEN
+  this->game->context.setWindowIcon ( APP_ICON );
+#endif
+
+  this->game->context.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
   this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
 
-  this->game->context = display;
 
-  this->game = std::shared_ptr<GameObject> ( new GameObject );
 
   this->game->collection.LoadJSON ( CARDS_DB );
 
@@ -157,6 +155,8 @@ bool App::onInit ( void )
   this->game->music_track.Pause();
 #endif
 
+  this->Running(); // ...here we go!
+
   return true;
 }
 
@@ -196,7 +196,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_s:
     {
       nom::Image image;
-      image.save ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
+      image.save ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", this->game->context.get() );
       break;
     }
   }
@@ -206,12 +206,12 @@ void App::onResize ( int32_t width, int32_t height )
 {
   if ( this->isFullScreen() )
   {
-    this->display.toggleFullScreenWindow ( 0, 0 );
+    this->game->context.toggleFullScreenWindow ( 0, 0 );
     this->setFullScreen ( false );
   }
   else
   {
-    this->display.toggleFullScreenWindow ( 0, 0 );
+    this->game->context.toggleFullScreenWindow ( 0, 0 );
     this->setFullScreen ( true );
   }
 }
@@ -228,8 +228,6 @@ int32_t App::Run ( void )
 
   nom::GameStates::ChangeState( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
 
-  this->Running(); // ...here we go!
-
   while ( this->isRunning() == true )
   {
     loops = 0;
@@ -244,12 +242,16 @@ int32_t App::Run ( void )
       this->fps.Update();
 
       nom::GameStates::Update ( delta_time ); // FIXME; this is a stub out
-      nom::GameStates::Draw ( this->display.get() );
+      nom::GameStates::Draw ( this->game->context.get() );
 
       if ( this->getShowFPS() )
-        this->display.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
+      {
+        this->game->context.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
+      }
       else
-        this->display.setWindowTitle ( APP_NAME );
+      {
+        this->game->context.setWindowTitle ( APP_NAME );
+      }
 
       next_game_tick += SKIP_TICKS;
       loops++;
@@ -257,7 +259,9 @@ int32_t App::Run ( void )
       // FIXME: this is a lazy patch to keep CPU cycles down; on my system,
       // usage drops from 99% to ~22..30%
       if ( this->fps.getFPS() >= TICKS_PER_SECOND )
+      {
         nom::sleep ( 50 );
+      }
     }
   }
 
@@ -267,6 +271,11 @@ int32_t App::Run ( void )
 int main ( int argc, char* argv[] )
 {
   App engine ( argc, argv );
+
+  if ( engine.onInit() == false )
+  {
+    return EXIT_FAILURE;
+  }
 
 #ifdef EMSCRIPTEN
   // TODO
