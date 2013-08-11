@@ -43,6 +43,8 @@ class CardView
     CardView ( void );
     ~CardView ( void );
 
+    bool load ( void );
+
     bool drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y );
     bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );
 

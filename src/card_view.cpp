@@ -30,11 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardView::CardView ( void )
 {
-  #ifdef DEBUG_CARD_VIEW_OBJ
-    std::cout << "CardView::CardView (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
-
-  this->card_text.load ( CARD_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+#ifdef DEBUG_CARD_VIEW_OBJ
+  std::cout << "CardView::CardView (): " << "Hello, world!" << "\n" << std::endl;
+#endif
 
   this->card_face = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -43,17 +41,24 @@ CardView::CardView ( void )
   this->card_face.setSheetDimensions ( 7104, 64, 0, 0 );
   this->card_background.setSheetDimensions ( 256, 64, 0, 0 );
   this->card_element.setSheetDimensions ( 144, 16, 0, 0 );
-
-  this->card_face.load ( CARD_FACES, nom::Color ( 0, 0, 0 ), true );
-  this->card_background.load ( CARD_BACKGROUNDS, nom::Color ( 0, 0, 0 ), true );
-  this->card_element.load ( CARD_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
 }
 
 CardView::~CardView ( void )
 {
-  #ifdef DEBUG_CARD_VIEW_OBJ
-    std::cout << "CardView::~CardView (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+#ifdef DEBUG_CARD_VIEW_OBJ
+  std::cout << "CardView::~CardView (): " << "Goodbye cruel world!" << "\n" << std::endl;
+#endif
+}
+
+bool CardView::load ( void )
+{
+  this->card_text.load ( CARD_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+
+  this->card_face.load ( CARD_FACES, nom::Color ( 0, 0, 0 ), true );
+  this->card_background.load ( CARD_BACKGROUNDS, nom::Color ( 0, 0, 0 ), true );
+  this->card_element.load ( CARD_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
+
+  return true;
 }
 
 // Helper method for drawing cards face down

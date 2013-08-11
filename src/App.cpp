@@ -114,6 +114,8 @@ bool App::onInit ( void )
 
   this->game->collection.LoadJSON ( CARDS_DB );
 
+  this->game->card.load();
+
   this->game->info_text.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
   this->game->info_small_text.load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
   this->game->info_text_gray.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
