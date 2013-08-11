@@ -240,7 +240,7 @@ void CardsMenuState::Draw ( void* video_buffer )
   {
     // Draw the top-left box title
     this->game->info_small_text.setText ( "CARDS" );
-    this->game->info_small_text.setPosition ( MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y );
+    this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y ) );
     this->game->info_small_text.Update();
     this->game->info_small_text.Draw ( video_buffer );
 
@@ -248,19 +248,19 @@ void CardsMenuState::Draw ( void* video_buffer )
     if ( total_pages > 0 )
     {
       this->game->info_small_text.setText ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
-      this->game->info_small_text.setPosition ( MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y );
+      this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y ) );
       this->game->info_small_text.Update();
       this->game->info_small_text.Draw ( video_buffer );
     }
 
     // Draw the top-right box title (number of cards)
     this->game->info_small_text.setText ( "NUM." );
-    this->game->info_small_text.setPosition ( MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y );
+    this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y ) );
     this->game->info_small_text.Update();
     this->game->info_small_text.Draw ( video_buffer );
 
     // Draw the card selection helper element
-    this->menu_element.setPosition ( MENU_CARDS_HELPER_ORIGIN_X, y_offset );
+    this->menu_element.setPosition ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
 
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_USED );
@@ -276,14 +276,14 @@ void CardsMenuState::Draw ( void* video_buffer )
     {
       this->game->info_text_gray.setText ( this->game->collection.cards[i].getName() );
       this->game->info_text_gray.setFontStyle ( nom::FontStyle::Faded, 150 );
-      this->game->info_text_gray.setPosition ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->game->info_text_gray.setPosition ( nom::Coords( MENU_CARDS_NAME_ORIGIN_X, y_offset ) );
       this->game->info_text_gray.Update();
       this->game->info_text_gray.Draw ( video_buffer );
     }
     else
     {
       this->game->info_text.setText ( this->game->collection.cards[i].getName() );
-      this->game->info_text.setPosition ( MENU_CARDS_NAME_ORIGIN_X, y_offset );
+      this->game->info_text.setPosition ( nom::Coords( MENU_CARDS_NAME_ORIGIN_X, y_offset ) );
       this->game->info_text.Update();
       this->game->info_text.Draw ( video_buffer );
     }
@@ -293,14 +293,14 @@ void CardsMenuState::Draw ( void* video_buffer )
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
     {
       this->game->info_text_gray.setText ( "0" );
-      this->game->info_text_gray.setPosition ( MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->game->info_text_gray.setPosition ( nom::Coords( MENU_CARDS_NUM_ORIGIN_X, y_offset ) );
       this->game->info_text_gray.Update();
       this->game->info_text_gray.Draw ( video_buffer );
     }
     else
     {
       this->game->info_text.setText ( "1" );
-      this->game->info_text.setPosition ( MENU_CARDS_NUM_ORIGIN_X, y_offset );
+      this->game->info_text.setPosition ( nom::Coords( MENU_CARDS_NUM_ORIGIN_X, y_offset ) );
       this->game->info_text.Update();
       this->game->info_text.Draw ( video_buffer );
     }
@@ -309,7 +309,7 @@ void CardsMenuState::Draw ( void* video_buffer )
     if ( current_index >= per_page )
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
-      this->menu_element.setPosition ( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y );
+      this->menu_element.setPosition ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
       this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }
@@ -317,7 +317,7 @@ void CardsMenuState::Draw ( void* video_buffer )
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
       this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
-      this->menu_element.setPosition ( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y );
+      this->menu_element.setPosition ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
       this->menu_element.Update();
       this->menu_element.Draw ( video_buffer );
     }

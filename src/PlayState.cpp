@@ -409,7 +409,7 @@ void PlayState::showCardInfoBox ( void* video_buffer )
 
       this->debug_box.Draw ( video_buffer );
 
-      this->game->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, DEBUG_BOX_TEXT_ORIGIN_Y );
+      this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, DEBUG_BOX_TEXT_ORIGIN_Y ) );
       this->game->info_text.Update();
       this->game->info_text.Draw ( video_buffer );
     }
@@ -424,11 +424,11 @@ void PlayState::showCardInfoBox ( void* video_buffer )
 
     this->info_box.Draw ( video_buffer );
 
-    this->game->info_text.setPosition ( ( SCREEN_WIDTH - text_width ) / 2, INFO_BOX_TEXT_ORIGIN_Y );
+    this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, INFO_BOX_TEXT_ORIGIN_Y ) );
     this->game->info_text.Update();
     this->game->info_text.Draw ( video_buffer );
 
-    this->game->info_small_text.setPosition ( INFO_BOX_SMALL_TEXT_ORIGIN_X, INFO_BOX_SMALL_TEXT_ORIGIN_Y );
+    this->game->info_small_text.setPosition ( nom::Coords( INFO_BOX_SMALL_TEXT_ORIGIN_X, INFO_BOX_SMALL_TEXT_ORIGIN_Y ) );
     this->game->info_small_text.Update();
     this->game->info_small_text.Draw ( video_buffer );
   }
@@ -706,12 +706,12 @@ void PlayState::updateScore ( void )
 void PlayState::drawScore ( void *video_buffer )
 {
   this->game->score_text.setText ( std::to_string ( this->player[0].getScore() ) );
-  this->game->score_text.setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->game->score_text.setPosition ( nom::Coords( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y ) );
   this->game->score_text.Update();
   this->game->score_text.Draw ( video_buffer );
 
   this->game->score_text.setText ( std::to_string ( this->player[1].getScore() ) );
-  this->game->score_text.setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->game->score_text.setPosition ( nom::Coords( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y ) );
   this->game->score_text.Update();
   this->game->score_text.Draw ( video_buffer );
 }
