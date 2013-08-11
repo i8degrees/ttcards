@@ -155,4 +155,7 @@ class PlayState: public nom::IState
     nom::Rectangle player_rect;
 };
 
+// Convenience declarations for changing state
+typedef std::unique_ptr<PlayState> PlayStatePtr;
+
 #endif // include guard defined

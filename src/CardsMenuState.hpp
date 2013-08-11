@@ -109,4 +109,7 @@ class CardsMenuState: public nom::IState
     nom::OpenAL::Sound card_place;
 };
 
+// Convenience declarations for changing state
+typedef std::unique_ptr<CardsMenuState> CardsMenuStatePtr;
+
 #endif // GAMEAPP_CARDS_MENU_HEADERS defined

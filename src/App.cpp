@@ -189,9 +189,9 @@ int32_t App::Run ( void )
 
   this->fps.Start();
 
-  next_game_tick = getTicks();
+  next_game_tick = this->getTicks();
 
-  nom::GameStates::ChangeState( std::unique_ptr<CardsMenuState>( new CardsMenuState ( this->game ) ) );
+  nom::GameStates::ChangeState( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
 
   this->Running(); // ...here we go!
 

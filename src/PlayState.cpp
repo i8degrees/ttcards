@@ -175,7 +175,7 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_p:
     {
       this->music_track.togglePause();
-      nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->game ) ) );
+      nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
     }
     break;
     case SDLK_e: this->endTurn(); break;
@@ -184,7 +184,11 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_d: this->removePlayerCard(); break;
     case SDLK_i: debugBox(); break;
 
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenuState>( new CardsMenuState ( this->game ) ) ); break;
+    case SDLK_r:
+    {
+      nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
+    }
+    break;
 
     case SDLK_LEFT:
     {
@@ -841,6 +845,6 @@ void PlayState::Draw ( void *video_buffer )
 
     nom::sleep ( 1000 ); // ZzZ for 1 second
 
-    nom::GameStates::ChangeState ( std::unique_ptr<GameOverState>( new GameOverState( this->game, gameover_state ) ) );
+    nom::GameStates::ChangeState ( GameOverStatePtr( new GameOverState( this->game, gameover_state ) ) );
   }
 }

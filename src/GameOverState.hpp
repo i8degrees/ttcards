@@ -68,4 +68,7 @@ class GameOverState: public nom::IState
     nom::uint32 gameover_state;
 };
 
+// Convenience declarations for changing state
+typedef std::unique_ptr<GameOverState> GameOverStatePtr;
+
 #endif // GAMEAPP_GAMEOVER_HEADERS defined

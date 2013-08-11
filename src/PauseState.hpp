@@ -64,4 +64,7 @@ class PauseState: public nom::IState
     nom::ui::MessageBox info_box;
 };
 
+// Convenience declarations for changing state
+typedef std::unique_ptr<PauseState> PauseStatePtr;
+
 #endif // include guard defined
