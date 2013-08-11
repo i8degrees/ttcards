@@ -75,8 +75,7 @@ class App: public nom::SDL_App // "is-a" relationship
     nom::FPS fps;
     /// Input events
     SDL_Event event;
-    /// Audio subsystem
-    nom::OpenAL::AudioDevice dev;
+
     /// Master volume control
     nom::OpenAL::Listener listener;
 };

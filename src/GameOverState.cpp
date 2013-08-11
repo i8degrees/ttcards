@@ -78,13 +78,24 @@ void GameOverState::onInit ( void )
     }
   }
 
+  if ( this->gameover_state == 1 )
+  {
+    this->game->music_track.Stop();
+    this->game->winning_track.Play();
+    this->game->winning_track.setLooping ( true );
+  }
+
   // Commence the countdown on the showing of results!
   this->update.Start();
 }
 
 void GameOverState::onExit ( void )
 {
+#ifdef TTCARDS_DEBUG
   std::cout << "\n" << "GameOver state onExit" << "\n";
+#endif
+
+  this->game->winning_track.Stop();
 }
 
 void GameOverState::Pause ( void )

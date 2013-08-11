@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
+#include <nomlib/audio.hpp>
 
 #include "cfg.hpp"
 #include "board.hpp"
@@ -41,6 +42,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct GameObject
 {
+  /// Audio subsystem
+  nom::OpenAL::AudioDevice dev;
+
+  /// Buffer for our sounds to be loaded into
+  nom::OpenAL::SoundBuffer sound_buffer;
+
+  /// Buffer for our music track to be loaded into
+  nom::OpenAL::SoundBuffer music_buffer;
+
+  /// Buffer for our win game track to be loaded into
+  nom::OpenAL::SoundBuffer winning_buffer;
+
+  /// Cursor has been moved sound event
+  nom::OpenAL::Sound cursor_move;
+
+  /// Action has been canceled sound event
+  nom::OpenAL::Sound cursor_cancel;
+
+  /// Invalid action sound event
+  nom::OpenAL::Sound cursor_wrong;
+
+  /// Card has been placed sound event
+  nom::OpenAL::Sound card_place;
+
+  /// Card has been flipped sound event
+  nom::OpenAL::Sound card_flip;
+
+  /// Theme song track
+  nom::OpenAL::Music music_track;
+
+  /// Player 1 has won track
+  nom::OpenAL::Music winning_track;
+
   /// dialog text
   nom::BitmapFont info_text;
   nom::BitmapFont info_small_text;

@@ -105,15 +105,6 @@ void CardsMenuState::onInit ( void )
       std::cout << "\nidx:" << std::get<1>(this->cursor_coords_map[idx]) << " " << "y:" << std::get<0>(this->cursor_coords_map[idx]) << "\n";
     #endif
   }
-
-  this->sound_buffer.load ( CURSOR_MOVE );
-  this->cursor_move.setBuffer ( this->sound_buffer );
-
-  this->sound_buffer.load ( CURSOR_CANCEL );
-  this->cursor_cancel.setBuffer ( this->sound_buffer );
-
-  this->sound_buffer.load ( CARD_PLACE );
-  this->card_place.setBuffer ( this->sound_buffer );
 }
 
 void CardsMenuState::onExit ( void )
@@ -135,6 +126,8 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
+    default: break;
+
     // Reset game
     case SDLK_r:
     {
@@ -150,12 +143,12 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_UP: this->moveCursorUp(); break;
     case SDLK_DOWN: this->moveCursorDown(); break;
 
-    case SDLK_d: if ( this->game->hand[0].removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
+    case SDLK_d: if ( this->game->hand[0].removeCard ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
     case SDLK_SPACE:
     {
       if ( ! this->game->hand[0].exists ( this->selectedCard ) )
         if ( this->game->hand[0].addCard ( this->selectedCard ) )
-          this->card_place.Play();
+          this->game->card_place.Play();
     }
     break;
     case SDLK_RETURN:
@@ -163,8 +156,6 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
     }
     break;
-
-    default: break;
   }
 }
 
@@ -172,6 +163,8 @@ void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {
+    default: break;
+
     // Debug helpers
     case nom::PSXBUTTON::L1: this->debug.ListCards ( this->game->hand[0].cards ); break;
 
@@ -181,15 +174,13 @@ void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
 
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
-    case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].removeCard ( this->selectedCard ) ) this->cursor_cancel.Play(); break;
-    case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].addCard ( this->selectedCard ) ) this->card_place.Play(); break;
+    case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].removeCard ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
+    case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].addCard ( this->selectedCard ) ) this->game->card_place.Play(); break;
     case nom::PSXBUTTON::START:
     {
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
     }
     break;
-
-    default: break;
   }
 }
 
@@ -201,7 +192,7 @@ void CardsMenuState::onMouseLeftButtonDown ( int32_t x, int32_t y )
 void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 {
   if ( this->game->hand[0].addCard ( this->selectedCard ) )
-    this->card_place.Play();
+    this->game->card_place.Play();
 }
 
 void CardsMenuState::onMouseWheel ( bool up, bool down )
@@ -213,7 +204,7 @@ void CardsMenuState::onMouseWheel ( bool up, bool down )
     else if ( down )
       this->moveCursorDown();
 
-    this->cursor_move.Play();
+    this->game->cursor_move.Play();
   }
 }
 
@@ -404,7 +395,7 @@ void CardsMenuState::moveCursorLeft ( void )
     if ( current_index > 0 )
     {
       current_index -= per_page;
-      this->cursor_move.Play();
+      this->game->cursor_move.Play();
     }
   }
 }
@@ -422,7 +413,7 @@ void CardsMenuState::moveCursorRight ( void )
     if ( current_index < MAX_COLLECTION - per_page )
     {
       current_index += per_page;
-      this->cursor_move.Play();
+      this->game->cursor_move.Play();
     }
   }
 }
@@ -441,7 +432,7 @@ void CardsMenuState::moveCursorUp ( void )
       pos = this->current_index + this->getCursorPos();
       this->selectedCard = this->game->collection.cards[pos];
 
-      this->cursor_move.Play();
+      this->game->cursor_move.Play();
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";
@@ -465,7 +456,7 @@ void CardsMenuState::moveCursorDown ( void )
       pos = current_index + this->getCursorPos();
       this->selectedCard = this->game->collection.cards[pos];
 
-      this->cursor_move.Play();
+      this->game->cursor_move.Play();
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";

@@ -135,18 +135,6 @@ class PlayState: public nom::IState
     /// x, y coords for selectedCard from cursor to board placement
     nom::Coords board_coords_map[9];
 
-    nom::OpenAL::AudioDevice dev;
-    nom::OpenAL::SoundBuffer sound_buffer;
-    nom::OpenAL::SoundBuffer music_buffer;
-
-    nom::OpenAL::Sound cursor_move;
-    nom::OpenAL::Sound cursor_cancel;
-    nom::OpenAL::Sound cursor_wrong;
-    nom::OpenAL::Sound card_flip;
-    nom::OpenAL::Sound card_place;
-
-    nom::OpenAL::Music music_track;
-
     unsigned int turn; // FIXME: player1 = 0, player2 = 1
     /// locks cursor state to board placement
     bool cursor_locked;

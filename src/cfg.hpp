@@ -117,7 +117,7 @@ extern const std::string CARD_FLIP;
 extern const std::string CARD_PLACE;
 extern const std::string MUSIC_TRACK;
 extern const std::string MUSIC_ALT_TRACK;
-extern const std::string MUSIC_WIN_TRACK;
+extern const std::string MUSIC_WINNING_TRACK;
 
 // Sprite sheet IDs
 extern const int ELEMENT_NONE;

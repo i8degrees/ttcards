@@ -144,26 +144,6 @@ void PlayState::onInit ( void )
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
   this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
-
-  this->sound_buffer.load ( CURSOR_MOVE );
-  this->cursor_move.setBuffer ( this->sound_buffer );
-
-  this->sound_buffer.load ( CURSOR_CANCEL );
-  this->cursor_cancel.setBuffer ( this->sound_buffer );
-
-  this->sound_buffer.load ( CURSOR_WRONG );
-  this->cursor_wrong.setBuffer ( this->sound_buffer );
-
-  this->sound_buffer.load ( CARD_FLIP );
-  this->card_flip.setBuffer ( this->sound_buffer );
-
-  this->sound_buffer.load ( CARD_PLACE );
-  this->card_place.setBuffer ( this->sound_buffer );
-
-  this->music_buffer.load ( MUSIC_TRACK );
-  this->music_track.setBuffer ( this->music_buffer );
-  this->music_track.Play();
-  this->music_track.Pause();
 }
 
 void PlayState::onKeyDown ( int32_t key, int32_t mod )
@@ -174,7 +154,6 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
 
     case SDLK_p:
     {
-      this->music_track.togglePause();
       nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
     }
     break;
@@ -313,7 +292,7 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
       // Updates Cursor Position
       this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
 
-      //this->cursor_move.Play();
+      //this->game->cursor_move.Play();
 
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
@@ -352,6 +331,8 @@ void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {
+    default: break;
+
     // Debug helpers
     case nom::PSXBUTTON::L1: this->endTurn(); break;
 
@@ -363,8 +344,6 @@ void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
     case nom::PSXBUTTON::CIRCLE: this->unlockSelectedCard(); break;
     case nom::PSXBUTTON::CROSS: this->lockSelectedCard(); break;
-
-    default: break;
   }
 }
 
@@ -489,7 +468,7 @@ void PlayState::unlockSelectedCard ( void )
 
   this->lockCursor ( false );
 
-  this->cursor_cancel.Play();
+  this->game->cursor_cancel.Play();
 }
 
 // helper method for cursor input selection
@@ -529,14 +508,16 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
   if ( selected.getID() != 0 )
   {
     if ( this->game->board ( x, y ) != 0 )
-      this->cursor_wrong.Play();
+    {
+      this->game->cursor_wrong.Play();
+    }
 
     if ( this->game->board ( x, y ) == false )
     {
       this->game->board.updateStatus ( x, y, this->game->hand[ player_turn ].getSelectedCard() );
       this->game->hand[ player_turn ].removeCard ( this->game->hand[ player_turn ].getSelectedCard() );
 
-      this->card_place.Play();
+      this->game->card_place.Play();
 
       std::vector<std::pair<int, int>> grid = this->game->board.checkBoard ( x, y );
 
@@ -631,7 +612,7 @@ void PlayState::moveCursorLeft ( void )
     if ( this->game->cursor.getX() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->game->cursor.move ( -( CARD_WIDTH ), 0 );
   }
-  this->cursor_move.Play();
+  this->game->cursor_move.Play();
 }
 
 void PlayState::moveCursorRight ( void )
@@ -641,7 +622,7 @@ void PlayState::moveCursorRight ( void )
     if ( this->game->cursor.getX() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->game->cursor.move ( ( CARD_WIDTH ), 0 );
   }
-  this->cursor_move.Play();
+  this->game->cursor_move.Play();
 }
 
 void PlayState::moveCursorUp ( void )
@@ -664,7 +645,7 @@ void PlayState::moveCursorUp ( void )
     if ( this->game->cursor.getY() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->game->cursor.move ( 0, -( CARD_HEIGHT ) );
   }
-  this->cursor_move.Play();
+  this->game->cursor_move.Play();
 }
 
 void PlayState::moveCursorDown ( void )
@@ -687,7 +668,7 @@ void PlayState::moveCursorDown ( void )
     if ( this->game->cursor.getY() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->game->cursor.move ( 0, ( CARD_HEIGHT ) );
   }
-  this->cursor_move.Play();
+  this->game->cursor_move.Play();
 }
 
 void PlayState::updateCursor ( void )

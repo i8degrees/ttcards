@@ -128,6 +128,33 @@ bool App::onInit ( void )
   this->game->cursor.load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
 
+  this->game->sound_buffer.load ( CURSOR_MOVE );
+  this->game->cursor_move.setBuffer ( this->game->sound_buffer );
+
+  this->game->sound_buffer.load ( CURSOR_CANCEL );
+  this->game->cursor_cancel.setBuffer ( this->game->sound_buffer );
+
+  this->game->sound_buffer.load ( CURSOR_WRONG );
+  this->game->cursor_wrong.setBuffer ( this->game->sound_buffer );
+
+  this->game->sound_buffer.load ( CARD_PLACE );
+  this->game->card_place.setBuffer ( this->game->sound_buffer );
+
+  this->game->sound_buffer.load ( CARD_FLIP );
+  this->game->card_flip.setBuffer ( this->game->sound_buffer );
+
+  this->game->music_buffer.load ( MUSIC_TRACK );
+  this->game->music_track.setBuffer ( this->game->music_buffer );
+
+  this->game->winning_buffer.load ( MUSIC_WINNING_TRACK );
+  this->game->winning_track.setBuffer ( this->game->winning_buffer );
+
+  this->game->music_track.Play();
+
+#ifdef TTCARDS_DEBUG
+  this->game->music_track.Pause();
+#endif
+
   return true;
 }
 
@@ -144,8 +171,15 @@ void App::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
+    default: break;
+
     case SDLK_ESCAPE:
     case SDLK_q: this->onQuit(); break;
+    case SDLK_p:
+    {
+      this->game->music_track.togglePause(); this->game->winning_track.togglePause();
+    }
+    break;
     case SDLK_m:
     {
       float current_volume = this->listener.getVolume();
@@ -163,7 +197,6 @@ void App::onKeyDown ( int32_t key, int32_t mod )
       image.save ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
       break;
     }
-    default: break;
   }
 }
 

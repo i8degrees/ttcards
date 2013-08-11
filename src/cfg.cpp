@@ -110,7 +110,7 @@ const std::string CARD_FLIP =           WORKING_DIR + "audio/card_flip.wav";
 const std::string CARD_PLACE =          WORKING_DIR + "audio/card_place.wav";
 const std::string MUSIC_TRACK =         WORKING_DIR + "audio/15_ShuffleOrBoogie.ogg";
 const std::string MUSIC_ALT_TRACK =     WORKING_DIR + "audio/06_ShuffleOrBoogie.ogg";
-const std::string MUSIC_WIN_TRACK =     WORKING_DIR + "audio/05_TheWinner.ogg";
+const std::string MUSIC_WINNING_TRACK = WORKING_DIR + "audio/05_TheWinner.ogg";
 
 const int ELEMENT_NONE = 0;
 const int ELEMENT_EARTH = 1;
