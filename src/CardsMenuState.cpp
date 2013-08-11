@@ -78,7 +78,7 @@ CardsMenuState::~CardsMenuState ( void )
     std::cout << "CardsMenuState::~CardsMenuState (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
-  //this->selectedCard = Card();
+  this->selectedCard = Card();
 }
 
 void CardsMenuState::onInit ( void )
