@@ -152,6 +152,12 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
     break;
     case SDLK_RETURN:
     {
+#ifdef TTCARDS_DEBUG
+      if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+      {
+        this->game->hand[0].randomize ( 8, 10, this->game->collection );
+      }
+#endif
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
     }
     break;
