@@ -101,15 +101,12 @@ Card & CardHand::getSelectedCard ( void )
   return this->selectedCard;
 }
 
-bool CardHand::selectCard ( Card& card )
+void CardHand::selectCard ( Card& card )
 {
   if ( this->exists ( card ) )
   {
     this->selectedCard = card;
-    return true;
   }
-
-  return false;
 
 #ifdef DEBUG_CARD_HAND
   std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;

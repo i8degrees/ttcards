@@ -52,7 +52,7 @@ class CardHand
 
     void clearSelectedCard ( void );
     Card& getSelectedCard ( void );
-    bool selectCard ( Card& card );
+    void selectCard ( Card& card );
 
     bool exists ( const Card& card ) const;
 
