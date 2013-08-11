@@ -45,6 +45,9 @@ struct GameObject
   /// Audio subsystem
   nom::OpenAL::AudioDevice dev;
 
+  /// Master volume control
+  nom::OpenAL::Listener listener;
+
   /// Buffer for our sounds to be loaded into
   nom::OpenAL::SoundBuffer sound_buffer;
 

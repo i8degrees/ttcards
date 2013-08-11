@@ -184,11 +184,11 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     break;
     case SDLK_m:
     {
-      float current_volume = this->listener.getVolume();
+      float current_volume = this->game->listener.getVolume();
       if ( current_volume >= 100.0 )
-        this->listener.setVolume ( 0.0 );
+        this->game->listener.setVolume ( 0.0 );
       else if ( current_volume <= 0.0 )
-        this->listener.setVolume ( 100.0 );
+        this->game->listener.setVolume ( 100.0 );
     }
     break;
     case SDLK_BACKSLASH: this->toggleFPS(); break;
