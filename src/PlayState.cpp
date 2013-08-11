@@ -313,7 +313,7 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 
 void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 {
-  this->lockSelectedCard();
+  // Stub
 }
 
 void PlayState::onMouseWheel ( bool up, bool down )
