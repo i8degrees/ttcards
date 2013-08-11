@@ -115,7 +115,9 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
     default: break;
 
     case SDLK_p: nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) ); break;
+
     // Start a new game
+    case SDLK_r:
     case SDLK_RETURN: nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) ); break;
   }
 }

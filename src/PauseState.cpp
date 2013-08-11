@@ -82,7 +82,7 @@ void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod )
   {
     default: break;
 
-    // Exit pause state
+    // Exit pause state; resume previous state
     case SDLK_p: nom::GameStates::PopState(); break;
   }
 }
