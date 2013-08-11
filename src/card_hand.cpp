@@ -50,10 +50,9 @@ CardHand::~CardHand ( void )
 
 bool CardHand::addCard ( Card& card )
 {
-  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
+  if ( this->exists( card ) == true )
     return false;
-
-  if ( this->size() > MAX_PLAYER_HAND - 1) // minus one padding because we are counting from zero, not one
+  else if ( this->size() > MAX_PLAYER_HAND - 1 ) // minus one padding because we are counting from zero, not one
     return false;
 
   this->cards.push_back ( card );
@@ -200,14 +199,11 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, Collect
   {
     card_id = distribution ( rand_generator );
 
-    if ( this->exists ( db.cards[card_id] ) )
-      continue;
-    else
+    if ( db.cards[card_id].getLevel() <= level_max && db.cards[card_id].getLevel() >= level_min )
     {
-      if ( db.cards[card_id].getLevel() <= level_max && db.cards[card_id].getLevel() >= level_min )
+      if ( this->addCard ( db.cards[card_id] ) )
       {
-        if ( this->addCard ( db.cards[card_id] ) )
-          num_cards++;
+        num_cards++;
       }
     }
   }

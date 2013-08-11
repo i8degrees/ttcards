@@ -146,9 +146,8 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_d: if ( this->game->hand[0].removeCard ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
     case SDLK_SPACE:
     {
-      if ( ! this->game->hand[0].exists ( this->selectedCard ) )
-        if ( this->game->hand[0].addCard ( this->selectedCard ) )
-          this->game->card_place.Play();
+      if ( this->game->hand[0].addCard ( this->selectedCard ) )
+        this->game->card_place.Play();
     }
     break;
     case SDLK_RETURN:
