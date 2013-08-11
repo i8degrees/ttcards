@@ -96,6 +96,10 @@ App::~App ( void )
 
 bool App::onInit ( void )
 {
+  nom::Rectangle rectangle  ( nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT ),
+                              nom::Color::Gray
+                            );
+
   unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_DOUBLEBUF;
 
   this->game = std::shared_ptr<GameObject> ( new GameObject );
@@ -108,25 +112,42 @@ bool App::onInit ( void )
 
   this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
 
-
-
-  this->game->collection.LoadJSON ( CARDS_DB );
-
-  this->game->card.load();
+  this->game->context.setWindowTitle( LOADING_TEXT );
 
   this->game->info_text.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
   this->game->info_small_text.load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+
+  // Provide a backup in case our pretty background image resource is not found
+  if ( ! this->game->background.load( BOARD_BACKGROUND, nom::Color::Black, true ) )
+  {
+    rectangle.Draw ( this->game->context.get() );
+  }
+  else
+  {
+    this->game->background.Draw( this->game->context.get() );
+  }
+  this->game->context.Update();
+
+  // We are not able to see the screen update of anything we do here unless we
+  // poll for an events afterwards. Oddly enough, this issue only happens when
+  // we are launching from an application bundle under OS X -- normal binaries
+  // do not need this workaround.
+  this->PollEvents( &event ); // Possible bug in SDL for OS X ..?
+
+  this->game->collection.LoadJSON ( CARDS_DB );
+
   this->game->info_text_gray.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
 
   this->game->score_text.load ( SCORE_FONTFACE, nom::Color::White, 36 );
   this->game->gameover_text.load ( SCORE_FONTFACE, 36 );
 
-  this->game->background.load ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
   this->game->gameover_background.load ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
 
   this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
   this->game->cursor.load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+
+  this->game->card.load();
 
   this->game->sound_buffer.load ( CURSOR_MOVE );
   this->game->cursor_move.setBuffer ( this->game->sound_buffer );

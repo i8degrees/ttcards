@@ -286,6 +286,8 @@ extern const nom::int32 PLAYER1_INDICATOR_ORIGIN_Y;
 extern const nom::int32 PLAYER2_INDICATOR_ORIGIN_X;
 extern const nom::int32 PLAYER2_INDICATOR_ORIGIN_Y;
 
+extern const std::string LOADING_TEXT;
+
 /// Card elemental type
 enum {
   NONE=0, // type 0; no element

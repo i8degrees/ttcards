@@ -289,3 +289,5 @@ const nom::int32 PLAYER1_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
 
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_X = 40 * SCALE_FACTOR;
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
+
+const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
