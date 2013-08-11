@@ -15,7 +15,7 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/card_hand.cpp
       ${SRC_DIR}/card_rules.cpp
       ${SRC_DIR}/card_view.cpp
-      ${SRC_DIR}/main.cpp
       ${SRC_DIR}/player.cpp
       ${SRC_DIR}/GameObject.cpp
+      ${SRC_DIR}/App.cpp
     )
