@@ -76,7 +76,7 @@ void PlayState::onInit ( void )
   std::uniform_int_distribution<nom::uint32> distribution ( 0, TOTAL_PLAYERS - 1 );
 
   this->game->score_text.setColor ( nom::Color::White );
-  this->game->gameOver_text.setColor ( nom::Color::White );
+  this->game->gameover_text.setColor ( nom::Color::White );
 
   this->game->cursor.setPosition ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
@@ -145,22 +145,22 @@ void PlayState::onInit ( void )
   // odds -- 50/50 chance that you will have the first move!
   this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
 
-  this->sound_buffer.loadFromFile ( CURSOR_MOVE );
+  this->sound_buffer.load ( CURSOR_MOVE );
   this->cursor_move.setBuffer ( this->sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CURSOR_CANCEL );
+  this->sound_buffer.load ( CURSOR_CANCEL );
   this->cursor_cancel.setBuffer ( this->sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CURSOR_WRONG );
+  this->sound_buffer.load ( CURSOR_WRONG );
   this->cursor_wrong.setBuffer ( this->sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CARD_FLIP );
+  this->sound_buffer.load ( CARD_FLIP );
   this->card_flip.setBuffer ( this->sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CARD_PLACE );
+  this->sound_buffer.load ( CARD_PLACE );
   this->card_place.setBuffer ( this->sound_buffer );
 
-  this->music_buffer.loadFromFile ( MUSIC_TRACK );
+  this->music_buffer.load ( MUSIC_TRACK );
   this->music_track.setBuffer ( this->music_buffer );
   this->music_track.Play();
   this->music_track.Pause();
@@ -819,24 +819,24 @@ void PlayState::Draw ( void *video_buffer )
 
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
-      this->game->gameOver_text.setText ( "You win!" );
+      this->game->gameover_text.setText ( "You win!" );
       gameover_state = 1;
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
-      this->game->gameOver_text.setText ( "You lose..." );
+      this->game->gameover_text.setText ( "You lose..." );
       gameover_state = 2;
     }
     else // Assume a tie
     {
-      this->game->gameOver_text.setText ( "Tie!" );
+      this->game->gameover_text.setText ( "Tie!" );
       //gameover_state = 0;
     }
 
-    nom::int32 width = this->game->gameOver_text.getFontWidth();
-    this->game->gameOver_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, SCREEN_HEIGHT / 2 ) );
-    this->game->gameOver_text.Update();
-    this->game->gameOver_text.Draw ( video_buffer );
+    nom::int32 width = this->game->gameover_text.getFontWidth();
+    this->game->gameover_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, SCREEN_HEIGHT / 2 ) );
+    this->game->gameover_text.Update();
+    this->game->gameover_text.Draw ( video_buffer );
     this->game->context.Update();
 
     nom::sleep ( 1000 ); // ZzZ for 1 second

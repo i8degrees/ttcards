@@ -90,7 +90,7 @@ void CardsMenu::onInit ( void )
   this->info_text_height = this->game->info_text.getFontHeight();
 
   this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->menu_element.Load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
+  this->menu_element.load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
   this->menu_element.setSheetDimensions ( 58, 16, 0, 0 );
 
   this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
@@ -106,13 +106,13 @@ void CardsMenu::onInit ( void )
     #endif
   }
 
-  this->sound_buffer.loadFromFile ( CURSOR_MOVE );
+  this->sound_buffer.load ( CURSOR_MOVE );
   this->cursor_move.setBuffer ( this->sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CURSOR_CANCEL );
+  this->sound_buffer.load ( CURSOR_CANCEL );
   this->cursor_cancel.setBuffer ( this->sound_buffer );
 
-  this->sound_buffer.loadFromFile ( CARD_PLACE );
+  this->sound_buffer.load ( CARD_PLACE );
   this->card_place.setBuffer ( this->sound_buffer );
 }
 

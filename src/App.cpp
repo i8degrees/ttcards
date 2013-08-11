@@ -114,18 +114,18 @@ bool App::onInit ( void )
 
   this->game->collection.LoadJSON ( CARDS_DB );
 
-  this->game->info_text.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
-  this->game->info_small_text.Load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
-  this->game->info_text_gray.Load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->game->info_text.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->game->info_small_text.load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  this->game->info_text_gray.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
 
-  this->game->score_text.Load ( SCORE_FONTFACE, nom::Color::White, 36 );
-  this->game->gameOver_text.Load ( SCORE_FONTFACE, 36 );
+  this->game->score_text.load ( SCORE_FONTFACE, nom::Color::White, 36 );
+  this->game->gameover_text.load ( SCORE_FONTFACE, 36 );
 
-  this->game->background.loadFromImage ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
-  this->game->gameover_background.loadFromImage ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
+  this->game->background.load ( BOARD_BACKGROUND, nom::Color ( nom::Color::Black ), true );
+  this->game->gameover_background.load ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
 
   this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->game->cursor.Load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
+  this->game->cursor.load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
   this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
 
   return true;
@@ -160,7 +160,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_s:
     {
       nom::Image image;
-      image.saveToFile ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
+      image.save ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", display.get() );
       break;
     }
     default: break;
