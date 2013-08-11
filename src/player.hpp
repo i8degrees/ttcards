@@ -35,8 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 
 #include "card_debug.hpp"
-#include "card_hand.hpp"
-#include "card_view.hpp"
+#include "CardHand.hpp"
+#include "CardView.hpp"
 #include "cfg.hpp"
 
 void Free_CardHand ( CardHand* player_cards );
