@@ -65,7 +65,7 @@ bool CardHand::erase ( Card& card )
   unsigned int previous_id = 0;
   std::string previous_name;
 
-  position = this->pos ( card );
+  position = this->at ( card );
 
   if ( position == -1 )
   {
@@ -116,7 +116,7 @@ nom::int32 CardHand::size ( void ) const
   return count;
 }
 
-nom::int32 CardHand::pos ( Card& card )
+nom::int32 CardHand::at ( Card& card )
 {
   nom::int32 idx;
   nom::int32 pos = -1;

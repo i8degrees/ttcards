@@ -147,7 +147,7 @@ void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
   // this information to update the cursor position to match the selected
   // card.
   selected = this->game->hand[ player_turn ].getSelectedCard();
-  pos = this->game->hand[ player_turn ].pos(selected);
+  pos = this->game->hand[ player_turn ].at(selected);
 
   this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * pos );
 }

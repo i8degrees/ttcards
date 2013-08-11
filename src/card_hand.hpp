@@ -58,7 +58,7 @@ class CardHand
 
     void clear ( void );
     nom::int32 size ( void ) const;
-    nom::int32 pos ( Card& card );
+    nom::int32 at ( Card& card );
 
     void randomize ( nom::uint32 level_min, nom::uint32 level_max, Collection& db, nom::uint64 seedling = 0 );
 

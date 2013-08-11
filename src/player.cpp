@@ -141,14 +141,14 @@ void Player::Draw ( void* video_buffer )
   {
     if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER1 )
     {
-      if ( this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
+      if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
         this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       else
         this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
     }
     else if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER2 )
     {
-      if ( this->hand->pos ( this->hand->getSelectedCard() ) == hand_index )
+      if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
         this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
       else
         this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
