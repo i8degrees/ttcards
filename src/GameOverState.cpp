@@ -28,10 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverState.hpp"
 
-GameOver::GameOver ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state )
+GameOverState::GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state )
 {
 #ifdef DEBUG_GAMEOVER_OBJ
-  std::cout << "GameOver::GameOver (): Hello, world!" << "\n" << std::endl;
+  std::cout << "GameOverState::GameOver (): Hello, world!" << "\n" << std::endl;
 #endif
 
   this->game = object;
@@ -39,14 +39,14 @@ GameOver::GameOver ( std::shared_ptr<GameObject> object, nom::uint32 gameover_st
   this->gameover_state = gameover_state;
 }
 
-GameOver::~GameOver ( void )
+GameOverState::~GameOverState ( void )
 {
 #ifdef DEBUG_GAMEOVER_OBJ
-  std::cout << "GameOver::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
+  std::cout << "GameOverState::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
 #endif
 }
 
-void GameOver::onInit ( void )
+void GameOverState::onInit ( void )
 {
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into their respective hand.
@@ -82,22 +82,22 @@ void GameOver::onInit ( void )
   this->update.Start();
 }
 
-void GameOver::onExit ( void )
+void GameOverState::onExit ( void )
 {
   std::cout << "\n" << "GameOver state onExit" << "\n";
 }
 
-void GameOver::Pause ( void )
+void GameOverState::Pause ( void )
 {
   std::cout << "\n" << "GameOver state Paused" << "\n";
 }
 
-void GameOver::Resume ( void )
+void GameOverState::Resume ( void )
 {
   std::cout << "\n" << "GameOver state Resumed" << "\n";
 }
 
-void GameOver::onKeyDown ( nom::int32 key, nom::int32 mod )
+void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
 {
   switch ( key )
   {
@@ -105,11 +105,11 @@ void GameOver::onKeyDown ( nom::int32 key, nom::int32 mod )
 
     case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->game ) ) ); break;
     // Reset (New Game)
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->game ) ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenuState>( new CardsMenuState ( this->game ) ) ); break;
   }
 }
 
-void GameOver::Update ( nom::uint32 delta_time )
+void GameOverState::Update ( nom::uint32 delta_time )
 {
   if ( this->update.getTicks() > 2500 )
   {
@@ -120,7 +120,7 @@ void GameOver::Update ( nom::uint32 delta_time )
   this->game->context.Update();
 }
 
-void GameOver::Draw ( void* video_buffer )
+void GameOverState::Draw ( void* video_buffer )
 {
   this->game->gameover_background.Draw ( video_buffer );
 

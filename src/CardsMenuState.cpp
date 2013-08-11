@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardsMenuState.hpp"
 
-CardsMenu::CardsMenu ( std::shared_ptr<GameObject> object )
+CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 {
   nom::Gradient linear;
 
@@ -72,16 +72,16 @@ CardsMenu::CardsMenu ( std::shared_ptr<GameObject> object )
   this->selectedCard = this->game->collection.cards.front();
 }
 
-CardsMenu::~CardsMenu ( void )
+CardsMenuState::~CardsMenuState ( void )
 {
   #ifdef DEBUG_CARDS_MENU_OBJ
-    std::cout << "CardsMenu::~CardsMenu (): " << "Goodbye cruel world!" << "\n" << std::endl;
+    std::cout << "CardsMenuState::~CardsMenuState (): " << "Goodbye cruel world!" << "\n" << std::endl;
   #endif
 
   //this->selectedCard = Card();
 }
 
-void CardsMenu::onInit ( void )
+void CardsMenuState::onInit ( void )
 {
   unsigned int idx = 0; // iterator for cursor_coords_map
 
@@ -116,28 +116,28 @@ void CardsMenu::onInit ( void )
   this->card_place.setBuffer ( this->sound_buffer );
 }
 
-void CardsMenu::onExit ( void )
+void CardsMenuState::onExit ( void )
 {
   std::cout << "\n" << "CardsMenu state onExit" << "\n";
 }
 
-void CardsMenu::Pause ( void )
+void CardsMenuState::Pause ( void )
 {
   std::cout << "\n" << "CardsMenu state Paused" << "\n";
 }
 
-void CardsMenu::Resume ( void )
+void CardsMenuState::Resume ( void )
 {
   std::cout << "\n" << "CardsMenu state Resumed" << "\n";
 }
 
-void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
+void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
 {
   switch ( key )
   {
     // Reset game
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>
-                                              ( new CardsMenu ( this->game ) ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenuState>
+                                              ( new CardsMenuState ( this->game ) ) ); break;
      // Pause State
     case SDLK_p: nom::GameStates::PushState ( std::unique_ptr<PauseState>( new PauseState ( this->game ) ) ); break;
 
@@ -165,7 +165,7 @@ void CardsMenu::onKeyDown ( int32_t key, int32_t mod )
   }
 }
 
-void CardsMenu::onJoyButtonDown ( int32_t which, int32_t button )
+void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
 {
   switch ( button )
   {
@@ -186,18 +186,18 @@ void CardsMenu::onJoyButtonDown ( int32_t which, int32_t button )
   }
 }
 
-void CardsMenu::onMouseLeftButtonDown ( int32_t x, int32_t y )
+void CardsMenuState::onMouseLeftButtonDown ( int32_t x, int32_t y )
 {
   // TODO
 }
 
-void CardsMenu::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
+void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 {
   if ( this->game->hand[0].addCard ( this->selectedCard ) )
     this->card_place.Play();
 }
 
-void CardsMenu::onMouseWheel ( bool up, bool down )
+void CardsMenuState::onMouseWheel ( bool up, bool down )
 {
   if ( this->game->cursor.getState() == 0 )
   {
@@ -210,7 +210,7 @@ void CardsMenu::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenu::Update ( nom::uint32 delta_time )
+void CardsMenuState::Update ( nom::uint32 delta_time )
 {
   this->updateCursor();
 
@@ -220,7 +220,7 @@ void CardsMenu::Update ( nom::uint32 delta_time )
   this->game->context.Update();
 }
 
-void CardsMenu::Draw ( void* video_buffer )
+void CardsMenuState::Draw ( void* video_buffer )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
   nom::int32 hand_index = 0; // "dummy" card index var
@@ -335,7 +335,7 @@ void CardsMenu::Draw ( void* video_buffer )
   this->game->card.DrawCard ( video_buffer, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
 }
 
-void CardsMenu::updateCursor ( void )
+void CardsMenuState::updateCursor ( void )
 {
   unsigned int pos = 0;
 
@@ -355,7 +355,7 @@ void CardsMenu::updateCursor ( void )
   this->game->cursor.Update();
 }
 
-void CardsMenu::drawCursor ( void* video_buffer )
+void CardsMenuState::drawCursor ( void* video_buffer )
 {
   this->game->cursor.Draw ( video_buffer );
 }
@@ -367,7 +367,7 @@ void CardsMenu::drawCursor ( void* video_buffer )
 // cursor_coords_map
 //   [ index, y coordinate value ]
 //
-unsigned int CardsMenu::getCursorPos ( void )
+unsigned int CardsMenuState::getCursorPos ( void )
 {
   unsigned int pos = 0;
   unsigned int idx = 0;
@@ -386,7 +386,7 @@ unsigned int CardsMenu::getCursorPos ( void )
 
 // Helper method for paging menu backwards
  // TODO: rename method call
-void CardsMenu::moveCursorLeft ( void )
+void CardsMenuState::moveCursorLeft ( void )
 {
   if ( this->game->cursor.getState() == 0 )
   {
@@ -404,7 +404,7 @@ void CardsMenu::moveCursorLeft ( void )
 
 // Helper method for paging menu forwards
 // TODO: rename method call
-void CardsMenu::moveCursorRight ( void )
+void CardsMenuState::moveCursorRight ( void )
 {
   if ( this->game->cursor.getState() == 0 )
   {
@@ -420,7 +420,7 @@ void CardsMenu::moveCursorRight ( void )
   }
 }
 
-void CardsMenu::moveCursorUp ( void )
+void CardsMenuState::moveCursorUp ( void )
 {
   unsigned int pos = 0;
 
@@ -444,7 +444,7 @@ void CardsMenu::moveCursorUp ( void )
   }
 }
 
-void CardsMenu::moveCursorDown ( void )
+void CardsMenuState::moveCursorDown ( void )
 {
   unsigned int pos = 0;
 

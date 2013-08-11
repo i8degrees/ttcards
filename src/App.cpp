@@ -191,7 +191,7 @@ int32_t App::Run ( void )
 
   next_game_tick = getTicks();
 
-  nom::GameStates::ChangeState( std::unique_ptr<CardsMenu>( new CardsMenu ( this->game ) ) );
+  nom::GameStates::ChangeState( std::unique_ptr<CardsMenuState>( new CardsMenuState ( this->game ) ) );
 
   this->Running(); // ...here we go!
 

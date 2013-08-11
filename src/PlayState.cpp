@@ -184,7 +184,7 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_d: this->removePlayerCard(); break;
     case SDLK_i: debugBox(); break;
 
-    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenu>( new CardsMenu ( this->game ) ) ); break;
+    case SDLK_r: nom::GameStates::ChangeState ( std::unique_ptr<CardsMenuState>( new CardsMenuState ( this->game ) ) ); break;
 
     case SDLK_LEFT:
     {
@@ -841,6 +841,6 @@ void PlayState::Draw ( void *video_buffer )
 
     nom::sleep ( 1000 ); // ZzZ for 1 second
 
-    nom::GameStates::ChangeState ( std::unique_ptr<GameOver>( new GameOver( this->game, gameover_state ) ) );
+    nom::GameStates::ChangeState ( std::unique_ptr<GameOverState>( new GameOverState( this->game, gameover_state ) ) );
   }
 }

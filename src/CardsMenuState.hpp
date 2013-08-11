@@ -44,11 +44,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 #include "cfg.hpp"
 
-class CardsMenu: public nom::IState
+class CardsMenuState: public nom::IState
 {
   public:
-    CardsMenu ( std::shared_ptr<GameObject> object );
-    ~CardsMenu ( void );
+    CardsMenuState ( std::shared_ptr<GameObject> object );
+    ~CardsMenuState ( void );
 
     void onInit ( void );
     void onExit ( void );

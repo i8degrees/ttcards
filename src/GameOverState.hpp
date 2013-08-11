@@ -44,11 +44,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 #include "cfg.hpp"
 
-class GameOver: public nom::IState
+class GameOverState: public nom::IState
 {
   public:
-    GameOver ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state );
-    ~GameOver ( void );
+    GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state );
+    ~GameOverState ( void );
   private:
     void onInit ( void );
     void onExit ( void );
