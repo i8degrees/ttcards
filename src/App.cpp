@@ -141,10 +141,10 @@ bool App::onInit ( void )
   this->game->score_text.load ( SCORE_FONTFACE, nom::Color::White, 36 );
   this->game->gameover_text.load ( SCORE_FONTFACE, 36 );
 
-  this->game->gameover_background.load ( GAMEOVER_BACKGROUND, nom::Color ( nom::Color::Black ), true, 0 ); // use no transparency
+  this->game->gameover_background.load ( GAMEOVER_BACKGROUND, nom::Color::Black, true, 0 ); // use no transparency
 
   this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->game->cursor.load ( INTERFACE_CURSOR, nom::Color ( 0, 0, 0 ), true );
+  this->game->cursor.load ( INTERFACE_CURSOR, nom::Color::Black, true );
   this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
 
   this->game->card.load();
