@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #include <emscripten.h>
 #endif
 
-#include "App.hpp"
+#include "Game.hpp"
 
 App::App ( nom::int32 argc, char* argv[] )
 {
