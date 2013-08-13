@@ -152,6 +152,7 @@ bool App::onInit ( void )
   this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
 
   this->game->card.load();
+  this->game->board.clear();
 
   this->game->sound_buffer.load ( CURSOR_MOVE );
   this->game->cursor_move.setBuffer ( this->game->sound_buffer );

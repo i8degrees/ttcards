@@ -49,6 +49,9 @@ class Board
     Board ( CardRules& ruleset, CardView* view );
     ~Board ( void );
 
+    /// Empties board vector
+    void clear ( void );
+
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
 
     // TODO: Consider branching this into Score class

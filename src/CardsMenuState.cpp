@@ -38,8 +38,9 @@ TTCARDS_LOG_CLASSINFO;
 
   this->game = object;
 
-  this->game->hand[0].clear ();
-  // this->game->hand[1] is initialized for us in the Game state
+  this->game->board.clear();
+  this->game->hand[0].clear();
+  this->game->hand[1].clear();
 
   // this->game->collection is initialized for us in the main app loop
 

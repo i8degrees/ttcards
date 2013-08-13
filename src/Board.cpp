@@ -52,6 +52,11 @@ Board::~Board ( void )
 TTCARDS_LOG_CLASSINFO;
 }
 
+void Board::clear ( void )
+{
+  this->initialize();
+}
+
 void Board::initialize ( void )
 {
 TTCARDS_LOG_CLASSINFO;
