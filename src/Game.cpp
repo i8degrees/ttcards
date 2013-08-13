@@ -62,14 +62,14 @@ TTCARDS_LOG_CLASSINFO;
       CardCollection cards;
       if ( cards.size() < 1 )
       {
-        if ( cards.LoadJSON ( CARDS_DB ) == false )
+        if ( cards.load( CARDS_DB ) == false )
         {
           std::cout << "ERR: " << "Unknown failure to load cards database collection." << std::endl;
           exit ( EXIT_FAILURE );
         }
       }
 
-      if ( cards.ExportJSON ( TTCARDS_DATA_DIR + "/" + "cards.json" ) == false )
+      if ( cards.save( TTCARDS_DATA_DIR + "/" + "cards.json" ) == false )
       {
         std::cout << "ERR: " << "Unknown failure to serialize JSON into cards.json" << std::endl;
         exit ( EXIT_FAILURE );
@@ -138,7 +138,7 @@ bool App::onInit ( void )
   // do not need this workaround.
   this->PollEvents( &event ); // Possible bug in SDL for OS X ..?
 
-  this->game->collection.LoadJSON ( CARDS_DB );
+  this->game->collection.load( CARDS_DB );
 
   this->game->info_text_gray.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
 

@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 CardCollection::CardCollection ( void )
 {
 TTCARDS_LOG_CLASSINFO;
-
   this->clear();
 }
 
@@ -40,72 +39,86 @@ CardCollection::~CardCollection ( void )
 TTCARDS_LOG_CLASSINFO;
 }
 
-bool CardCollection::LoadASCII ( std::string filename )
+void CardCollection::clear ( void )
 {
-  int index = 0;
-  unsigned int id, level, type, element = 0;
-  std::array<int, 4> rank = { { 0 } };
-  std::string name = "\0";
-
-  std::ifstream fp;
-  fp.open ( filename );
-
-  if ( ! fp )
-  {
-    #ifdef DEBUG_CARD_COLLECTION
-      std::cout << "ERR in CardCollection::Load () at: " << filename << std::endl;
-    #endif
-    return false;
-  }
-
-  #ifdef DEBUG_CARD_COLLECTION
-    std::cout << filename << " " << "<From CardCollection::Load>" << "\n" << std::endl;
-  #endif
-
-  for ( index = 0; index < ( MAX_COLLECTION ); index++ )
-  {
-    fp >> id;
-    fp >> level;
-    fp >> type;
-    fp >> element;
-    fp >> rank[NORTH];
-    fp >> rank[EAST];
-    fp >> rank[SOUTH];
-    fp >> rank[WEST];
-    fp >> name;
-
-    #ifdef DEBUG_CARD_COLLECTION
-      std::cout << id;
-      std::cout << " ";
-      std::cout << level;
-      std::cout << " ";
-      std::cout << type;
-      std::cout << " ";
-      std::cout << element;
-      std::cout << " ";
-      for ( int rank_index = 0; rank_index < 4; rank_index++ )
-      {
-        std::cout << rank[rank_index];
-        std::cout << " ";
-      }
-      std::cout << name;
-
-      std::cout << std::endl;
-    #endif // defined DEBUG_CARD_COLLECTION
-
-    this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, 0 ) );
-  }
-
-  #ifdef DEBUG_CARD_COLLECTION
-    std::cout << "EOF: " << filename << " " << "<From CardCollection::Load>" << "\n" << std::endl;
-  #endif
-
-  fp.close();
-
-  return true;
+  this->cards.clear();
 }
 
-bool CardCollection::LoadJSON ( std::string filename )
+nom::int32 CardCollection::size ( void ) const
+{
+  nom::int32 count = 0;
+
+  count = this->cards.size();
+
+  return count;
+}
+
+Card& CardCollection::getCards ( unsigned int idx )
+{
+  return this->cards[idx];
+}
+
+std::vector<Card> CardCollection::getCards ( void )
+{
+  unsigned int idx = 0;
+  std::vector<Card> temp_cards; // temp var for return passing
+  temp_cards.clear();
+
+  for ( idx = 0; idx < this->cards.size(); idx++ )
+    temp_cards.push_back ( this->cards[idx] );
+
+  return temp_cards;
+}
+
+bool CardCollection::save( const std::string& filename )
+{
+  std::ofstream fp; // output file stream object
+  unsigned int idx = 0; // iterator
+  json_spirit::Object obj;
+  json_spirit::Array values;
+  json_spirit::Array ranks;
+
+  if ( this->cards.empty() )
+    return false;
+
+  for ( idx = 0; idx < this->cards.size(); idx++ )
+  {
+    obj.push_back ( json_spirit::Pair ( "ID", (int)this->cards[idx].getID() ) );
+    obj.push_back ( json_spirit::Pair ( "Name", this->cards[idx].getName() ) );
+    obj.push_back ( json_spirit::Pair ( "Level", (int)this->cards[idx].getLevel() ) );
+    obj.push_back ( json_spirit::Pair ( "Type", (int)this->cards[idx].getType() ) );
+    obj.push_back ( json_spirit::Pair ( "Element", (int)this->cards[idx].getElement() ) );
+
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getNorthRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getEastRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getSouthRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getWestRank() ) );
+
+    obj.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
+
+    values.push_back ( obj );
+
+    obj.clear();
+    ranks.clear();
+  }
+
+  fp.open ( filename );
+
+  if ( fp.is_open() && fp.good() )
+  {
+    json_spirit::write_stream ( json_spirit::Value ( values ), fp, json_spirit::single_line_arrays );
+    fp.close();
+    return true;
+  }
+  else
+  {
+TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
+    fp.close();
+    return false;
+  }
+}
+
+bool CardCollection::load( const std::string& filename )
 {
   unsigned int rdx = 0; // iterator
   unsigned int id = 0;
@@ -205,90 +218,4 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
 #endif
 
   return true;
-}
-
-bool CardCollection::ExportASCII ( std::string filename )
-{
-  std::cout << std::endl << "// NOT IMPLEMENTED ( Stub )" << std::endl;
-
-  return false;
-}
-
-bool CardCollection::ExportJSON ( std::string filename )
-{
-  std::ofstream fp; // output file stream object
-  unsigned int idx = 0; // iterator
-  json_spirit::Object obj;
-  json_spirit::Array values;
-  json_spirit::Array ranks;
-
-  if ( this->cards.empty() )
-    return false;
-
-  for ( idx = 0; idx < this->cards.size(); idx++ )
-  {
-    obj.push_back ( json_spirit::Pair ( "ID", (int)this->cards[idx].getID() ) );
-    obj.push_back ( json_spirit::Pair ( "Name", this->cards[idx].getName() ) );
-    obj.push_back ( json_spirit::Pair ( "Level", (int)this->cards[idx].getLevel() ) );
-    obj.push_back ( json_spirit::Pair ( "Type", (int)this->cards[idx].getType() ) );
-    obj.push_back ( json_spirit::Pair ( "Element", (int)this->cards[idx].getElement() ) );
-
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getNorthRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getEastRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getSouthRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getWestRank() ) );
-
-    obj.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
-
-    values.push_back ( obj );
-
-    obj.clear();
-    ranks.clear();
-  }
-
-  fp.open ( filename );
-
-  if ( fp.is_open() && fp.good() )
-  {
-    json_spirit::write_stream ( json_spirit::Value ( values ), fp, json_spirit::single_line_arrays );
-    fp.close();
-    return true;
-  }
-  else
-  {
-TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
-    fp.close();
-    return false;
-  }
-}
-
-void CardCollection::clear ( void )
-{
-  this->cards.clear();
-}
-
-nom::int32 CardCollection::size ( void ) const
-{
-  nom::int32 count = 0;
-
-  count = this->cards.size();
-
-  return count;
-}
-
-Card& CardCollection::getCards ( unsigned int idx )
-{
-  return this->cards[idx];
-}
-
-std::vector<Card> CardCollection::getCards ( void )
-{
-  unsigned int idx = 0;
-  std::vector<Card> temp_cards; // temp var for return passing
-  temp_cards.clear();
-
-  for ( idx = 0; idx < this->cards.size(); idx++ )
-    temp_cards.push_back ( this->cards[idx] );
-
-  return temp_cards;
 }

@@ -53,20 +53,18 @@ class CardCollection
     CardCollection ( void );
     ~CardCollection ( void );
 
-    bool LoadJSON ( std::string filename );
-    bool LoadASCII ( std::string filename );
-
-    bool ExportASCII ( std::string filename ); // NOT IMPLEMENTED
-    bool ExportJSON ( std::string filename );
-
-    // TODO: a) ERR handling; b) reconsider how we pass
     Card& getCards ( unsigned int idx );
     std::vector<Card> getCards ( void );
 
     void clear ( void );
     nom::int32 size ( void ) const;
 
-    std::vector<Card> cards; // TODO: redeclare private scope
+    bool save( const std::string& filename );
+    bool load( const std::string& filename );
+
+    /// \todo redeclare private scope
+    std::vector<Card> cards;
+
   private:
     /// debug support for card attributes
     CardDebug debug;
