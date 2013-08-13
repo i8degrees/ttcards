@@ -33,8 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 // Global configuration
-const std::string APP_NAME = "TTcards";
-
 const int SCREEN_WIDTH = 384 * SCALE_FACTOR;
 const int SCREEN_HEIGHT = 224 * SCALE_FACTOR;
 const int SCREEN_BPP = 32;

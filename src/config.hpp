@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/types.hpp> // portable fixed-types
 #include <nomlib/system/clock.hpp>
 
+#include "version.hpp"
+
 #ifdef TTCARDS_DEBUG
 
   // Output info messages if debugging is turned on
@@ -74,8 +76,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// 1. http://scale2x.sourceforge.net/
 ///
 #define SCALE_FACTOR 2
-
-extern const std::string APP_NAME;
 
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;

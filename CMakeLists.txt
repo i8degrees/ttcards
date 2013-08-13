@@ -327,11 +327,14 @@ add_custom_target ( run COMMAND
 #
 # This means that we must include this configured file *AFTER* any and all
 # modifications -- that matter to us -- occur in this build script.
+
+configure_file  (
+                  "${CMAKE_TEMPLATE_PATH}/version.cpp.in"
+                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.cpp"
+                )
+
 configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
-                )
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/local.hpp.in"
-                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/local.hpp"
                 )
 
 # CPack configuration

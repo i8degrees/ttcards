@@ -1,6 +1,7 @@
 # Project source files
 
 set ( TTCARDS_SOURCE
+      ${SRC_DIR}/version.cpp
       ${SRC_DIR}/config.cpp
       #${SRC_DIR}/cpu_player.cpp
       ${SRC_DIR}/PauseState.cpp
