@@ -60,7 +60,7 @@ class CardHand
     nom::int32 size ( void ) const;
     nom::int32 at ( Card& card );
 
-    void randomize ( nom::uint32 level_min, nom::uint32 level_max, Collection& db, nom::uint64 seedling = 0 );
+    void randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCollection& db, nom::uint64 seedling = 0 );
 
     /// \todo Declare in private scope
     std::vector<Card> cards;

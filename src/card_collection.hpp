@@ -47,11 +47,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "card_debug.hpp"
 #include "cfg.hpp"
 
-class Collection
+class CardCollection
 {
   public:
-    Collection ( void );
-    ~Collection ( void );
+    CardCollection ( void );
+    ~CardCollection ( void );
 
     bool LoadJSON ( std::string filename );
     bool LoadASCII ( std::string filename );

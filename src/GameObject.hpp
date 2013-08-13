@@ -96,7 +96,7 @@ struct GameObject
   CardRules rules;
 
   /// Cards database
-  Collection collection;
+  CardCollection collection;
 
   /// Player hands
   CardHand hand[2];

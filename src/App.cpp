@@ -59,7 +59,7 @@ TTCARDS_LOG_CLASSINFO;
   {
     if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
     {
-      Collection cards;
+      CardCollection cards;
       if ( cards.size() < 1 )
       {
         if ( cards.LoadJSON ( CARDS_DB ) == false )

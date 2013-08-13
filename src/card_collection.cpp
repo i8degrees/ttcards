@@ -28,19 +28,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "card_collection.hpp"
 
-Collection::Collection ( void )
+CardCollection::CardCollection ( void )
 {
 TTCARDS_LOG_CLASSINFO;
 
   this->clear();
 }
 
-Collection::~Collection ( void )
+CardCollection::~CardCollection ( void )
 {
 TTCARDS_LOG_CLASSINFO;
 }
 
-bool Collection::LoadASCII ( std::string filename )
+bool CardCollection::LoadASCII ( std::string filename )
 {
   int index = 0;
   unsigned int id, level, type, element = 0;
@@ -53,13 +53,13 @@ bool Collection::LoadASCII ( std::string filename )
   if ( ! fp )
   {
     #ifdef DEBUG_CARD_COLLECTION
-      std::cout << "ERR in Collection::Load () at: " << filename << std::endl;
+      std::cout << "ERR in CardCollection::Load () at: " << filename << std::endl;
     #endif
     return false;
   }
 
   #ifdef DEBUG_CARD_COLLECTION
-    std::cout << filename << " " << "<From Collection::Load>" << "\n" << std::endl;
+    std::cout << filename << " " << "<From CardCollection::Load>" << "\n" << std::endl;
   #endif
 
   for ( index = 0; index < ( MAX_COLLECTION ); index++ )
@@ -97,7 +97,7 @@ bool Collection::LoadASCII ( std::string filename )
   }
 
   #ifdef DEBUG_CARD_COLLECTION
-    std::cout << "EOF: " << filename << " " << "<From Collection::Load>" << "\n" << std::endl;
+    std::cout << "EOF: " << filename << " " << "<From CardCollection::Load>" << "\n" << std::endl;
   #endif
 
   fp.close();
@@ -105,7 +105,7 @@ bool Collection::LoadASCII ( std::string filename )
   return true;
 }
 
-bool Collection::LoadJSON ( std::string filename )
+bool CardCollection::LoadJSON ( std::string filename )
 {
   unsigned int rdx = 0; // iterator
   unsigned int id = 0;
@@ -202,14 +202,14 @@ bool Collection::LoadJSON ( std::string filename )
   return true;
 }
 
-bool Collection::ExportASCII ( std::string filename )
+bool CardCollection::ExportASCII ( std::string filename )
 {
   std::cout << std::endl << "// NOT IMPLEMENTED ( Stub )" << std::endl;
 
   return false;
 }
 
-bool Collection::ExportJSON ( std::string filename )
+bool CardCollection::ExportJSON ( std::string filename )
 {
   std::ofstream fp; // output file stream object
   unsigned int idx = 0; // iterator
@@ -250,12 +250,12 @@ bool Collection::ExportJSON ( std::string filename )
   return true;
 }
 
-void Collection::clear ( void )
+void CardCollection::clear ( void )
 {
   this->cards.clear();
 }
 
-nom::int32 Collection::size ( void ) const
+nom::int32 CardCollection::size ( void ) const
 {
   nom::int32 count = 0;
 
@@ -264,12 +264,12 @@ nom::int32 Collection::size ( void ) const
   return count;
 }
 
-Card &Collection::getCards ( unsigned int idx )
+Card& CardCollection::getCards ( unsigned int idx )
 {
   return this->cards[idx];
 }
 
-std::vector<Card> Collection::getCards ( void )
+std::vector<Card> CardCollection::getCards ( void )
 {
   unsigned int idx = 0;
   std::vector<Card> temp_cards; // temp var for return passing
