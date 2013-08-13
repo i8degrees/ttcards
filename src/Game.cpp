@@ -223,7 +223,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_BACKSLASH: this->toggleFPS(); break;
     case SDLK_f: if ( mod == KMOD_LMETA ) this->onResize ( 0, 0 ); break;
 
-    case SDLK_s:
+    case SDLK_F1:
     {
       nom::Image image;
       image.save ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", this->game->context.get() );
