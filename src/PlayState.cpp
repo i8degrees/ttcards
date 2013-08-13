@@ -153,13 +153,11 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
       nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
     }
     break;
+
+    // Debug helpers
     case SDLK_e: this->endTurn(); break;
-    case SDLK_LEFTBRACKET: debugListCards ( mod ); break;
-    case SDLK_RIGHTBRACKET: debugListCollection( mod ); break;
     case SDLK_d: this->removePlayerCard(); break;
     case SDLK_i: debugBox(); break;
-
-
 
     case SDLK_LEFT:
     {

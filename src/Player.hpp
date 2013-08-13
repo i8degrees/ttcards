@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/math.hpp>
 
-#include "CardDebug.hpp"
 #include "CardHand.hpp"
 #include "CardView.hpp"
 #include "config.hpp"
@@ -68,8 +67,6 @@ class Player
     void Draw ( void* video_buffer );
 
   private:
-    /// debug support for card attributes
-    CardDebug debug;
     /// Card rendering
     CardView* card;
     /// pointer reference to player's hand

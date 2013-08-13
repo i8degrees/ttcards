@@ -47,7 +47,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Player.hpp"
 #include "Card.hpp"
-#include "CardDebug.hpp"
 //#include "cpu_Player.hpp"
 #include "CardsMenuState.hpp"
 #include "GameOverState.hpp"
@@ -80,9 +79,7 @@ class PlayState: public nom::IState
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( int32_t which, int32_t button );
 
-    // Game_debug.cpp
-    void debugListCards ( int32_t mod );
-    void debugListCollection ( int32_t mod );
+    // Playstate_debug.cpp
     void debugCardsDiscard ( void );
     void debugCardsNoRuleset ( void );
     void debugCardsSameRuleset ( void );
@@ -119,9 +116,6 @@ class PlayState: public nom::IState
 
     nom::ui::MessageBox info_box;
     nom::ui::MessageBox debug_box;
-
-    /// debug support for card attributes
-    CardDebug debug;
 
     /// In-game players (including AI)
     Player player[2];

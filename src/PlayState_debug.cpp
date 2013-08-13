@@ -92,24 +92,6 @@ void PlayState::debugBox ( void )
     this->debug_box.enable ();
 }
 
-// Debug -- input events helper method
-void PlayState::debugListCards ( int32_t mod )
-{
-  if ( mod == KMOD_LMETA )
-    this->debug.ListCards ( this->game->hand[1].cards );
-  else
-    this->debug.ListCards ( this->game->hand[0].cards );
-}
-
-// Debug -- input events helper method
-void PlayState::debugListCollection ( int32_t mod )
-{
-  if ( mod == KMOD_LMETA )
-    this->debug.ListCards ( this->game->collection.cards );
-  else
-    this->game->board.List();
-}
-
 void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
 {
   Card selected = Card(); // temporary placeholder card for the update

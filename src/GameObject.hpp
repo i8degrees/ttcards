@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "Board.hpp"
 #include "CardCollection.hpp"
+#include "CardDebug.hpp"
 #include "CardHand.hpp"
 #include "CardView.hpp"
 #include "CardRules.hpp"
@@ -97,6 +98,9 @@ struct GameObject
 
   /// Cards database
   CardCollection collection;
+
+  /// Debug support for card attributes
+  CardDebug debug;
 
   /// Player hands
   CardHand hand[2];

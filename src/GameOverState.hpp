@@ -38,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "Card.hpp"
-#include "CardDebug.hpp"
 #include "CardsMenuState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
@@ -62,7 +61,6 @@ class GameOverState: public nom::IState
 
     std::shared_ptr<GameObject> game;
     std::vector<Card> player_cards[2];
-    CardDebug debug;
     nom::Timer update;
     bool show_results;
     nom::uint32 gameover_state;

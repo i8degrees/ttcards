@@ -125,21 +125,6 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
   {
     default: break;
 
-    // Debug helpers
-    case SDLK_LEFTBRACKET: this->debug.ListCards ( this->game->hand[0].cards ); break;
-
-    case SDLK_LEFT: this->moveCursorLeft(); break;
-    case SDLK_RIGHT: this->moveCursorRight(); break;
-    case SDLK_UP: this->moveCursorUp(); break;
-    case SDLK_DOWN: this->moveCursorDown(); break;
-
-    case SDLK_d: if ( this->game->hand[0].erase( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
-    case SDLK_SPACE:
-    {
-      if ( this->game->hand[0].push_back ( this->selectedCard ) )
-        this->game->card_place.Play();
-    }
-    break;
     case SDLK_RETURN:
     {
 #ifdef TTCARDS_DEBUG
@@ -151,6 +136,20 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
     }
     break;
+
+    case SDLK_LEFT: this->moveCursorLeft(); break;
+    case SDLK_RIGHT: this->moveCursorRight(); break;
+    case SDLK_UP: this->moveCursorUp(); break;
+    case SDLK_DOWN: this->moveCursorDown(); break;
+
+    case SDLK_d: if ( this->game->hand[0].erase( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
+
+    case SDLK_SPACE:
+    {
+      if ( this->game->hand[0].push_back ( this->selectedCard ) )
+        this->game->card_place.Play();
+    }
+    break;
   }
 }
 
@@ -159,9 +158,6 @@ void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
   switch ( button )
   {
     default: break;
-
-    // Debug helpers
-    case nom::PSXBUTTON::L1: this->debug.ListCards ( this->game->hand[0].cards ); break;
 
     case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
     case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;

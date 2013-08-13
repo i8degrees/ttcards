@@ -203,11 +203,13 @@ void App::onKeyDown ( int32_t key, int32_t mod )
 
     case SDLK_ESCAPE:
     case SDLK_q: this->onQuit(); break;
+
     case SDLK_p:
     {
       this->game->music_track.togglePause(); this->game->winning_track.togglePause();
     }
     break;
+
     case SDLK_m:
     {
       float current_volume = this->game->listener.getVolume();
@@ -217,8 +219,10 @@ void App::onKeyDown ( int32_t key, int32_t mod )
         this->game->listener.setVolume ( 100.0 );
     }
     break;
+
     case SDLK_BACKSLASH: this->toggleFPS(); break;
     case SDLK_f: if ( mod == KMOD_LMETA ) this->onResize ( 0, 0 ); break;
+
     case SDLK_s:
     {
       nom::Image image;
@@ -228,6 +232,24 @@ void App::onKeyDown ( int32_t key, int32_t mod )
 
     // Start new game
     case SDLK_r: nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) ); break;
+
+    case SDLK_LEFTBRACKET:
+    {
+      if ( mod == KMOD_LMETA )
+        this->game->board.List();
+      else
+        this->game->debug.ListCards ( this->game->hand[0].cards );
+    }
+    break;
+
+    case SDLK_RIGHTBRACKET:
+    {
+      if ( mod == KMOD_LMETA )
+        this->game->debug.ListCards ( this->game->collection.cards );
+      else
+        this->game->debug.ListCards ( this->game->hand[1].cards );
+    }
+    break;
   }
 }
 

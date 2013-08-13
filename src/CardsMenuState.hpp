@@ -38,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "Card.hpp"
-#include "CardDebug.hpp"
 #include "PlayState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
@@ -76,9 +75,6 @@ class CardsMenuState: public nom::IState
     void moveCursorDown ( void );
 
     std::shared_ptr<GameObject> game;
-
-    /// debug support for card attributes
-    CardDebug debug;
 
     nom::ui::MessageBox menu_box;
 
