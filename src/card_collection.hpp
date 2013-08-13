@@ -64,6 +64,7 @@ class Collection
     std::vector<Card> getCards ( void );
 
     void clear ( void );
+    nom::int32 size ( void ) const;
 
     std::vector<Card> cards; // TODO: redeclare private scope
   private:

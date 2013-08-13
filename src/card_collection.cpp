@@ -261,6 +261,14 @@ void Collection::clear ( void )
   this->cards.clear();
 }
 
+nom::int32 Collection::size ( void ) const
+{
+  nom::int32 count = 0;
+
+  count = this->cards.size();
+
+  return count;
+}
 
 Card &Collection::getCards ( unsigned int idx )
 {

@@ -60,6 +60,14 @@ TTCARDS_LOG_CLASSINFO;
     if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
     {
       Collection cards;
+      if ( cards.size() < 1 )
+      {
+        if ( cards.LoadJSON ( CARDS_DB ) == false )
+        {
+          std::cout << "ERR: " << "Unknown failure to load cards database collection." << std::endl;
+          exit ( EXIT_FAILURE );
+        }
+      }
 
       if ( cards.ExportJSON ( TTCARDS_DATA_DIR + "/" + "cards.json" ) == false )
       {
