@@ -257,6 +257,8 @@ if ( OSXAPP )
             "${SDL_LIBRARY}" # SDL.framework v1.2.15
             DESTINATION "${INSTALL_FRAMEWORK_PATH}"
             PATTERN ".*" EXCLUDE # do not include dotfiles
+            PATTERN "Headers" EXCLUDE # do not include header files
+            PATTERN "CMake" EXCLUDE # do not include CMake config scripts
           )
 
   # CPack refuses to work with me on anything other than a single dot as the
