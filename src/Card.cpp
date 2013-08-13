@@ -36,7 +36,7 @@ Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
 }
 
 Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
-              unsigned int element_, std::array<int, 4> rank_,
+              unsigned int element_, std::array<int, MAX_RANKS> rank_,
               std::string name_, unsigned int player_id_,
               unsigned int player_owner_
             )
@@ -76,7 +76,7 @@ unsigned int Card::getElement ( void )
   return this->element;
 }
 
-std::array<int, 4> Card::getRanks ( void )
+std::array<int, MAX_RANKS> Card::getRanks ( void )
 {
   return this->rank;
 }
@@ -136,7 +136,7 @@ void Card::setElement ( unsigned int element_ )
   this->element = std::min ( element_, static_cast<nom::uint32> ( MAX_ELEMENT ) );
 }
 
-void Card::setRanks ( std::array<nom::int32, 4> ranks )
+void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
 {
   this->setNorthRank ( ranks[NORTH] );
   this->setEastRank ( ranks[EAST] );

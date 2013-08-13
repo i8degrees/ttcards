@@ -49,6 +49,9 @@ const nom::int32 MAX_ELEMENT = 8;
 /// Maximum rank a card can contain -- starting at 1
 const nom::int32 MAX_RANK = 10;
 
+/// Maximum number of rank attributes
+const nom::int32 MAX_RANKS = 4;
+
 /// Maximum name length a card can contain
 const nom::int32 MAX_NAME = 14;
 
@@ -58,7 +61,7 @@ class Card
     Card ( void );
 
     Card  (   unsigned int id_, unsigned int level_, unsigned int type_,
-              unsigned int element_, std::array<int, 4> rank_,
+              unsigned int element_, std::array<int, MAX_RANKS> rank_,
               std::string name_, unsigned int player_id_,
               unsigned int player_owner_ = Card::NOPLAYER
           );
@@ -69,7 +72,7 @@ class Card
     unsigned int getLevel ( void );
     unsigned int getType ( void );
     unsigned int getElement ( void );
-    std::array<int, 4> getRanks ( void );
+    std::array<int, MAX_RANKS> getRanks ( void );
     unsigned int getNorthRank ( void );
     unsigned int getEastRank ( void );
     unsigned int getSouthRank ( void );
@@ -130,7 +133,7 @@ class Card
     /// NONE is no element
     unsigned int element;
     /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
-    std::array<int, 4> rank;
+    std::array<int, MAX_RANKS> rank;
     std::string name;
 
     /// Additional field; used to distinguish card background and also used to
