@@ -154,8 +154,27 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     }
     break;
 
+    case SDLK_s:
+    {
+      this->game->hand[0].save( USER_PLAYER1_FILENAME );
+      this->game->hand[1].save( USER_PLAYER2_FILENAME );
+      this->game->board.save( USER_BOARD_FILENAME );
+    }
+    break;
+
+    case SDLK_l:
+    {
+      this->game->hand[0].load( USER_PLAYER1_FILENAME );
+      this->resetCursor();
+
+      this->game->hand[1].load( USER_PLAYER2_FILENAME );
+      this->game->board.load( USER_BOARD_FILENAME );
+    }
+    break;
+
     // Debug helpers
     case SDLK_e: this->endTurn(); break;
+
     case SDLK_d: this->removePlayerCard(); break;
     case SDLK_i: debugBox(); break;
 

@@ -50,6 +50,7 @@ const nom::int32 BOARD_GRID_WIDTH = 3;
 const nom::int32 BOARD_GRID_HEIGHT = 3;
 
 // Resource configuration
+std::string PATH_SEPERATOR = "/";
 std::string WORKING_DIR;
 
 const std::string APP_ICON =            WORKING_DIR + "icon.bmp";
@@ -109,6 +110,10 @@ const std::string CARD_PLACE =          WORKING_DIR + "audio/card_place.wav";
 const std::string MUSIC_TRACK =         WORKING_DIR + "audio/15_ShuffleOrBoogie.ogg";
 const std::string MUSIC_ALT_TRACK =     WORKING_DIR + "audio/06_ShuffleOrBoogie.ogg";
 const std::string MUSIC_WINNING_TRACK = WORKING_DIR + "audio/05_TheWinner.ogg";
+
+const std::string USER_PLAYER1_FILENAME = TTCARDS_DATA_DIR + PATH_SEPERATOR + "player1.json";
+const std::string USER_PLAYER2_FILENAME = TTCARDS_DATA_DIR + PATH_SEPERATOR + "player2.json";
+const std::string USER_BOARD_FILENAME =   TTCARDS_DATA_DIR + PATH_SEPERATOR + "board.json";
 
 const int ELEMENT_NONE = 0;
 const int ELEMENT_EARTH = 1;

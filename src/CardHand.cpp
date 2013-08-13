@@ -198,3 +198,164 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCol
     }
   }
 }
+
+bool CardHand::save ( const std::string& filename )
+{
+  std::ofstream fp; // output file handle
+  json_spirit::Object node; // current JSON node we are writing
+  json_spirit::Array game; // overall data to be written out
+  json_spirit::Array ranks; // card rank attributes need to be separated
+
+  for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
+  {
+    // Initial card attributes (everything other than ranks)
+    node.push_back ( json_spirit::Pair ( "ID", (int)this->cards[idx].getID() ) );
+    node.push_back ( json_spirit::Pair ( "Name", this->cards[idx].getName() ) );
+    node.push_back ( json_spirit::Pair ( "Level", (int)this->cards[idx].getLevel() ) );
+    node.push_back ( json_spirit::Pair ( "Type", (int)this->cards[idx].getType() ) );
+    node.push_back ( json_spirit::Pair ( "Element", (int)this->cards[idx].getElement() ) );
+
+    // Card rank attributes
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getNorthRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getEastRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getSouthRank() ) );
+    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getWestRank() ) );
+
+    // Push ranks values to our current node
+    node.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
+
+    // Additional card attributes -- initialized in-game
+    node.push_back ( json_spirit::Pair ( "PlayerID", (int)this->cards[idx].getPlayerID() ) );
+    node.push_back ( json_spirit::Pair ( "Owner", (int)this->cards[idx].getPlayerOwner() ) );
+
+    // Push current node to our overall game data to be written
+    game.push_back ( node );
+
+    // Get ready for the next inbound row
+    node.clear();
+    ranks.clear();
+  }
+
+  fp.open ( filename );
+
+  if ( fp.is_open() && fp.good() )
+  {
+TTCARDS_LOG_INFO( "Saving CardHand to " + filename );
+    json_spirit::write_stream ( json_spirit::Value ( game ), fp, json_spirit::single_line_arrays );
+  }
+
+  fp.close();
+  return true;
+}
+
+bool CardHand::load ( const std::string& filename )
+{
+  // Card attributes to load in
+  nom::uint32 id = 0;
+  nom::uint32 level = 0;
+  nom::uint32 type = 0;
+  nom::uint32 element = 0;
+  std::array<nom::int32, MAX_RANKS> rank = { { 0 } };
+  std::string name = "\0";
+  nom::uint32 player_id = 0;
+  nom::uint32 player_owner = 0;
+
+  std::ifstream fp; // input file handle
+  json_spirit::Object node;
+  json_spirit::Value value;
+  json_spirit::Array game;
+
+  // Iterators
+  json_spirit::Array::size_type i;
+  json_spirit::Object::size_type o;
+
+  this->clear(); // otherwise we exceed our limit of cards
+
+  fp.open ( filename );
+
+  if ( fp.is_open() && fp.good() )
+  {
+TTCARDS_LOG_INFO( "Loading CardHand from " + filename );
+    json_spirit::read_stream ( fp, value );
+    fp.close();
+  }
+  else
+  {
+    fp.close();
+    return false;
+  }
+
+  assert ( value.type() == json_spirit::array_type );
+  game = value.get_array();
+
+  for ( i = 0; i != game.size(); i++ )
+  {
+    assert ( game[i].type() == json_spirit::obj_type );
+    node = game[i].get_obj();
+
+    for ( o = 0; o != node.size(); o++ )
+    {
+      const json_spirit::Pair& pair = node[o];
+      const std::string& path = pair.name_;
+      const json_spirit::Value& value = pair.value_;
+
+      if ( path == "ID" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        id = value.get_int();
+      }
+      else if ( path == "Name" )
+      {
+        assert ( value.type() == json_spirit::str_type );
+        name = value.get_str();
+      }
+      else if ( path == "Level" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        level = value.get_int();
+      }
+      else if ( path == "Type" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        type = value.get_int();
+      }
+      else if ( path == "Element" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        element = value.get_int();
+      }
+      else if ( path == "Ranks" )
+      {
+        assert ( value.type() == json_spirit::array_type );
+        const json_spirit::Array &ranks = value.get_array();
+
+        assert ( ranks.size() == 4 );
+        for ( nom::uint32 rdx = 0; rdx < ranks.size(); rdx++ )
+        {
+          rank[NORTH] = ranks[rdx].get_int();
+          rdx++;
+          rank[EAST] = ranks[rdx].get_int();
+          rdx++;
+          rank[SOUTH] = ranks[rdx].get_int();
+          rdx++;
+          rank[WEST] = ranks[rdx].get_int();
+          rdx++;
+        }
+      }
+      else if ( path == "PlayerID" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        player_id = value.get_int();
+      }
+      else if ( path == "Owner" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        player_owner = value.get_int();
+
+        this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, player_id, player_owner ) );
+      }
+    } // end current node loop
+  } // end current array node
+
+  return true;
+}

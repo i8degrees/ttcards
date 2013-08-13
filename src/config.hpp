@@ -106,6 +106,8 @@ extern const nom::int32 MAX_PLAYER_HAND;
 extern const nom::int32 BOARD_GRID_WIDTH;
 extern const nom::int32 BOARD_GRID_HEIGHT;
 
+/// Dependent upon platform
+extern std::string PATH_SEPERATOR;
 // Resources directory is run-time dependent; set in main.cpp
 extern std::string WORKING_DIR;
 
@@ -137,6 +139,11 @@ extern const std::string CARD_PLACE;
 extern const std::string MUSIC_TRACK;
 extern const std::string MUSIC_ALT_TRACK;
 extern const std::string MUSIC_WINNING_TRACK;
+
+/// Default absolute file path of user game data
+extern const std::string USER_PLAYER1_FILENAME;
+extern const std::string USER_PLAYER2_FILENAME;
+extern const std::string USER_BOARD_FILENAME;
 
 // Sprite sheet IDs
 extern const int ELEMENT_NONE;
