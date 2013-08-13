@@ -43,7 +43,6 @@ TTCARDS_LOG_CLASSINFO;
 void PauseState::onInit ( void )
 {
   nom::Gradient linear;
-  std::string project_info = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
@@ -53,7 +52,7 @@ void PauseState::onInit ( void )
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-  this->game->info_text.setText ( project_info );
+  this->game->info_text.setText ( SHORT_VERSION_INFO );
   nom::int32 text_width = this->game->info_text.getFontWidth();
   nom::int32 text_height = this->game->info_text.getFontHeight();
   this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, ( SCREEN_HEIGHT - text_height ) / 2  ) );
