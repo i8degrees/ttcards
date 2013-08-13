@@ -243,7 +243,7 @@ bool CardCollection::ExportJSON ( std::string filename )
 
   fp.open ( filename );
 
-  json_spirit::write_stream ( json_spirit::Value ( values ), fp, json_spirit::pretty_print );
+  json_spirit::write_stream ( json_spirit::Value ( values ), fp, json_spirit::single_line_arrays );
 
   fp.close();
 
