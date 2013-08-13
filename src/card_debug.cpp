@@ -30,16 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardDebug::CardDebug ( void )
 {
-  #ifdef DEBUG_CARD_DEBUG_OBJ
-    std::cout << "CardDebug::CardDebug(): " << "Hello, world!" << "\n" << std::endl;
-  #endif
 }
 
 CardDebug::~CardDebug ( void )
 {
-  #ifdef DEBUG_CARD_DEBUG_OBJ
-    std::cout << "CardDebug::~CardDebug(): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
 }
 
 void CardDebug::ListCard ( Card& card )

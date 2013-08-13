@@ -49,16 +49,12 @@ Board::Board ( void )
 
 Board::~Board ( void )
 {
-  #ifdef DEBUG_BOARD_OBJ
-    std::cout << "Board::~Board (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 void Board::initialize ( void )
 {
-  #ifdef DEBUG_BOARD_OBJ
-    std::cout << "Board::Board(): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   nom::int32 x, y = 0; // iterator
 

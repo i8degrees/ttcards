@@ -30,9 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardView::CardView ( void )
 {
-#ifdef DEBUG_CARD_VIEW_OBJ
-  std::cout << "CardView::CardView (): " << "Hello, world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 
   this->card_face = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -45,9 +43,7 @@ CardView::CardView ( void )
 
 CardView::~CardView ( void )
 {
-#ifdef DEBUG_CARD_VIEW_OBJ
-  std::cout << "CardView::~CardView (): " << "Goodbye cruel world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 bool CardView::load ( void )

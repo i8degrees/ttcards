@@ -30,12 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PauseState::PauseState ( std::shared_ptr<GameObject> object )
 {
+TTCARDS_LOG_CLASSINFO;
+
   this->game = object;
 }
 
 PauseState::~PauseState ( void )
 {
-  // Clean up
+TTCARDS_LOG_CLASSINFO;
 }
 
 void PauseState::onInit ( void )

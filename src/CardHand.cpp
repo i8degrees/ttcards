@@ -30,9 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardHand::CardHand ( void )
 {
-#ifdef DEBUG_CARD_HAND_OBJ
-  std::cout << "CardHand::CardHand (): Hello, world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 
   this->clear();
   this->selectedCard = Card();
@@ -40,9 +38,7 @@ CardHand::CardHand ( void )
 
 CardHand::~CardHand ( void )
 {
-#ifdef DEBUG_CARD_HAND_OBJ
-  std::cout << "CardHand::~CardHand (): " << "Goodbye cruel world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 
   this->clear();
 }

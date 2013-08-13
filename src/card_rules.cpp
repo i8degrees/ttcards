@@ -30,18 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardRules::CardRules ( void )
 {
-  #ifdef DEBUG_CARD_RULES_OBJ
-    std::cout << "CardRules::CardRules (): Hello, world!" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   this->rules = 0;
 }
 
 CardRules::~CardRules ( void )
 {
-  #ifdef DEBUG_CARD_RULES_OBJ
-    std::cout << "CardRules::~CardRules (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   this->rules = 0;
 }

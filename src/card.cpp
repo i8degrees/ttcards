@@ -33,9 +33,6 @@ Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
                       player_id ( Card::NOPLAYER ),
                       player_owner ( Card::NOPLAYER )
 {
-  #ifdef DEBUG_CARD_OBJ
-    std::cout << "Card::Card (): Hello, world!" << "\n" << std::endl;
-  #endif
 }
 
 Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
@@ -44,10 +41,6 @@ Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
               unsigned int player_owner_
             )
 {
-  #ifdef DEBUG_CARD_OBJ
-    std::cout << "Card::Card (): Hello, world!" << "\n" << std::endl;
-  #endif
-
   this->setID ( id_ );
   this->setLevel ( level_ );
   this->setType ( type_ );
@@ -61,9 +54,6 @@ Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
 
 Card::~Card ( void )
 {
-  #ifdef DEBUG_CARD_OBJ
-    std::cout << "Card::~Card(): Goodbye cruel world!" << "\n" << std::endl;
-  #endif
 }
 
 unsigned int Card::getID ( void ) const

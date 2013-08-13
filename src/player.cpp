@@ -40,16 +40,12 @@ void Free_CardHand ( CardHand* player_cards )
 Player::Player ( void ) : coords ( 0, 0, 0, 0 ), id ( 0 ), //state ( 0 ),
                           score ( 5 ), hand ( nullptr ), card ( nullptr )
 {
-#ifdef DEBUG_PLAYER_OBJ
-  std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 Player::Player ( CardHand* player_cards, CardView* view )
 {
-#ifdef DEBUG_PLAYER_OBJ
-  std::cout << "Player::Player (): " << "Hello, world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 
   this->hand.reset ( player_cards, Free_CardHand );
   this->card = view;
@@ -62,9 +58,7 @@ Player::Player ( CardHand* player_cards, CardView* view )
 
 Player::~Player ( void )
 {
-  #ifdef DEBUG_PLAYER_OBJ
-    std::cout << "Player::~Player (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 nom::int32 Player::getX ( void )

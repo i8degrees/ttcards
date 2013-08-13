@@ -30,9 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 GameOverState::GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state )
 {
-#ifdef DEBUG_GAMEOVER_OBJ
-  std::cout << "GameOverState::GameOver (): Hello, world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 
   this->game = object;
   this->show_results = false;
@@ -41,9 +39,7 @@ GameOverState::GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 g
 
 GameOverState::~GameOverState ( void )
 {
-#ifdef DEBUG_GAMEOVER_OBJ
-  std::cout << "GameOverState::~GameOver (): " << "Goodbye cruel world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 void GameOverState::onInit ( void )
@@ -91,9 +87,7 @@ void GameOverState::onInit ( void )
 
 void GameOverState::onExit ( void )
 {
-#ifdef TTCARDS_DEBUG
-  std::cout << "\n" << "GameOver state onExit" << "\n";
-#endif
+TTCARDS_LOG_CLASSINFO;
 
   this->game->winning_track.Stop();
 }

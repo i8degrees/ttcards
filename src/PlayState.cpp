@@ -30,9 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {
-  #ifdef DEBUG_GAME_OBJ
-    std::cout << "PlayState::PlayState (): " << "Hello, world!" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   this->game = object;
 
@@ -45,9 +43,7 @@ PlayState::PlayState ( std::shared_ptr<GameObject> object )
 
 PlayState::~PlayState ( void )
 {
-  #ifdef DEBUG_GAME_OBJ
-    std::cout << "PlayState::~PlayState (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 void PlayState::onExit ( void )

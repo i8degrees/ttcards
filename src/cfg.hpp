@@ -31,8 +31,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <nomlib/types.hpp> // portable fixed-types
+#include <nomlib/system/clock.hpp>
 
-#include "debug.hpp"
+#ifdef TTCARDS_DEBUG_TRACE
+
+  // If trace debugging is turned on, show class construction and destruction
+  #define TTCARDS_LOG_CLASSINFO \
+    ( std::cout << "TTCARDS_LOG_CLASSINFO at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
+
+#else // Do not add any overhead
+  #define TTCARDS_LOG_CLASSINFO
+#endif
 
 /// Scale factor of graphics; only a scaling factor of 1..3 is supported at the
 /// moment. Resource data is not scaled in real-time (yet), so you must also

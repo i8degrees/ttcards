@@ -30,9 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CPUPlayer::CPUPlayer ( void )
 {
-  #ifdef DEBUG_CPU_PLAYER_OBJ
-    std::cout << "CPUPlayer::CPUPlayer (): " << "Hello, world!" << std::endl << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   this->cpu_difficulty = 2; // easy = 1, hard = 2
 
@@ -48,9 +46,7 @@ CPUPlayer::CPUPlayer ( void )
 
 CPUPlayer::~CPUPlayer ( void )
 {
-  #ifdef DEBUG_CPU_PLAYER_OBJ
-    std::cout << "CPUPlayer::~CPUPlayer (): " << "Goodbye cruel world!" << std::endl << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 void CPUPlayer::Init ( Board *board, CardHand *cards )

@@ -34,9 +34,7 @@ CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 
   unsigned int pid = 0; // temp var for for loop iteration
 
-  #ifdef DEBUG_CARDS_MENU_OBJ
-    std::cout << "CardsMenu::CardsMenu (): Hello, world!" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   this->game = object;
 
@@ -74,9 +72,7 @@ CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 
 CardsMenuState::~CardsMenuState ( void )
 {
-  #ifdef DEBUG_CARDS_MENU_OBJ
-    std::cout << "CardsMenuState::~CardsMenuState (): " << "Goodbye cruel world!" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   this->selectedCard = Card();
 }

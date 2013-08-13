@@ -30,20 +30,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Collection::Collection ( void )
 {
-  #ifdef DEBUG_CARD_COLLECTION_OBJ
-    std::cout << "Hello, world! <From Collection::Collection>" << "\n" << std::endl;
-  #endif
+TTCARDS_LOG_CLASSINFO;
 
   this->clear();
 }
 
 Collection::~Collection ( void )
 {
-  #ifdef DEBUG_CARD_COLLECTION_OBJ
-    std::cout << "Goodbye cruel world! <From Collection::~Collection>" << "\n" << std::endl;
-  #endif
-
-  this->clear();
+TTCARDS_LOG_CLASSINFO;
 }
 
 bool Collection::LoadASCII ( std::string filename )

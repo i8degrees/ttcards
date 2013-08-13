@@ -41,9 +41,7 @@ App::App ( nom::int32 argc, char* argv[] )
 {
   nom::File dir;
 
-#ifdef DEBUG_GAME_OBJ
-  std::cout << "main():  " << "Hello, world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 
 // These definitions are influenced at build time with CMake options and serve
 // to help determine the path of game resources
@@ -89,9 +87,7 @@ App::App ( nom::int32 argc, char* argv[] )
 
 App::~App ( void )
 {
-#ifdef DEBUG_GAME_OBJ
-  std::cout << "main():  " << "Goodbye cruel world!" << "\n" << std::endl;
-#endif
+TTCARDS_LOG_CLASSINFO;
 }
 
 bool App::onInit ( void )
