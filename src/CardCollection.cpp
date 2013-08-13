@@ -127,66 +127,7 @@ bool CardCollection::LoadJSON ( std::string filename )
   {
     json_spirit::read_stream ( fp, value );
 
-    assert ( value.type() == json_spirit::array_type );
-    values = value.get_array();
-
-    for ( i = 0; i != values.size(); i++ )
-    {
-      assert ( values[i].type() == json_spirit::obj_type );
-      obj = values[i].get_obj();
-
-      for ( o = 0; o != obj.size(); o++ )
-      {
-        const json_spirit::Pair &pair = obj[o];
-        const std::string &path = pair.name_;
-        const json_spirit::Value &value = pair.value_;
-
-        if ( path == "ID" )
-        {
-          assert ( value.type() == json_spirit::int_type );
-          id = value.get_int();
-        }
-        else if ( path == "Name" )
-        {
-          assert ( value.type() == json_spirit::str_type );
-          name = value.get_str();
-        }
-        else if ( path == "Level" )
-        {
-          assert ( value.type() == json_spirit::int_type );
-          level = value.get_int();
-        }
-        else if ( path == "Type" )
-        {
-          assert ( value.type() == json_spirit::int_type );
-          type = value.get_int();
-        }
-        else if ( path == "Element" )
-        {
-          assert ( value.type() == json_spirit::int_type );
-          element = value.get_int();
-        }
-        else if ( path == "Ranks" )
-        {
-          assert ( value.type() == json_spirit::array_type );
-          const json_spirit::Array &ranks = value.get_array();
-
-          assert ( ranks.size() == 4 );
-          for ( rdx = 0; rdx < ranks.size(); rdx++ )
-          {
-            rank[NORTH] = ranks[rdx].get_int();
-            rdx++;
-            rank[EAST] = ranks[rdx].get_int();
-            rdx++;
-            rank[SOUTH] = ranks[rdx].get_int();
-            rdx++;
-            rank[WEST] = ranks[rdx].get_int();
-            rdx++;
-          }
-        this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, 0 ) );
-        }
-      }
-    }
+    fp.close();
   }
   else
   {
@@ -194,11 +135,71 @@ bool CardCollection::LoadJSON ( std::string filename )
     return false;
   }
 
+  assert ( value.type() == json_spirit::array_type );
+  values = value.get_array();
+
+  for ( i = 0; i != values.size(); i++ )
+  {
+    assert ( values[i].type() == json_spirit::obj_type );
+    obj = values[i].get_obj();
+
+    for ( o = 0; o != obj.size(); o++ )
+    {
+      const json_spirit::Pair &pair = obj[o];
+      const std::string &path = pair.name_;
+      const json_spirit::Value &value = pair.value_;
+
+      if ( path == "ID" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        id = value.get_int();
+      }
+      else if ( path == "Name" )
+      {
+        assert ( value.type() == json_spirit::str_type );
+        name = value.get_str();
+      }
+      else if ( path == "Level" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        level = value.get_int();
+      }
+      else if ( path == "Type" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        type = value.get_int();
+      }
+      else if ( path == "Element" )
+      {
+        assert ( value.type() == json_spirit::int_type );
+        element = value.get_int();
+      }
+      else if ( path == "Ranks" )
+      {
+        assert ( value.type() == json_spirit::array_type );
+        const json_spirit::Array &ranks = value.get_array();
+
+        assert ( ranks.size() == 4 );
+        for ( rdx = 0; rdx < ranks.size(); rdx++ )
+        {
+          rank[NORTH] = ranks[rdx].get_int();
+          rdx++;
+          rank[EAST] = ranks[rdx].get_int();
+          rdx++;
+          rank[SOUTH] = ranks[rdx].get_int();
+          rdx++;
+          rank[WEST] = ranks[rdx].get_int();
+          rdx++;
+        }
+        this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, 0 ) );
+      }
+    }
+  }
+
 #ifdef DEBUG_CARD_COLLECTION
   debug.ListCards ( this->cards );
 #endif
 
-  fp.close();
   return true;
 }
 
