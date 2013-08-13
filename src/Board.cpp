@@ -357,14 +357,13 @@ bool Board::save ( const std::string& filename )
 
   if ( fp.is_open() && fp.good() )
   {
-TTCARDS_LOG_INFO( "Saving Board to " + filename );
     json_spirit::write_stream ( json_spirit::Value ( game ), fp, json_spirit::single_line_arrays );
-
     fp.close();
     return true;
   }
   else
   {
+TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
     fp.close();
     return false;
   }
@@ -396,8 +395,12 @@ bool Board::load ( const std::string& filename )
 
   if ( fp.is_open() && fp.good() )
   {
-TTCARDS_LOG_INFO( "Loading Board from " + filename );
-    json_spirit::read_stream ( fp, value );
+    if ( json_spirit::read_stream ( fp, value ) == false )
+    {
+TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+      fp.close();
+      return false;
+    }
     fp.close();
   }
   else
