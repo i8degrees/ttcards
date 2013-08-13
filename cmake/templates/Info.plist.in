@@ -28,5 +28,7 @@
 	<string>????</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>${MACOSX_BUNDLE_COPYRIGHT}</string>
+	<key>CFBundleDocumentsType</key>
+	<string>text/plain</string>
 </dict>
 </plist>
