@@ -224,6 +224,9 @@ void App::onKeyDown ( int32_t key, int32_t mod )
       image.save ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", this->game->context.get() );
       break;
     }
+
+    // Start new game
+    case SDLK_r: nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) ); break;
   }
 }
 

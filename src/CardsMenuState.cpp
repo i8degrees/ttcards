@@ -124,13 +124,6 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
   {
     default: break;
 
-    // Reset game
-    case SDLK_r:
-    {
-      nom::GameStates::ChangeState ( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
-    }
-    break;
-
     // Debug helpers
     case SDLK_LEFTBRACKET: this->debug.ListCards ( this->game->hand[0].cards ); break;
 

@@ -159,11 +159,7 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_d: this->removePlayerCard(); break;
     case SDLK_i: debugBox(); break;
 
-    case SDLK_r:
-    {
-      nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
-    }
-    break;
+
 
     case SDLK_LEFT:
     {
