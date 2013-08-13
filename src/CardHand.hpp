@@ -56,6 +56,8 @@ class CardHand
 
     bool exists ( const Card& card ) const;
 
+    /// Make selected card the first element in stack
+    void front ( void );
     void clear ( void );
     nom::int32 size ( void ) const;
     nom::int32 at ( Card& card );

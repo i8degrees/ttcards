@@ -79,8 +79,6 @@ void PlayState::removePlayerCard ( void )
   unsigned int player_turn = get_turn();
 
   this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
-  this->game->hand[player_turn].clearSelectedCard();
-  this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
 
   this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
 }

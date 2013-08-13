@@ -78,6 +78,8 @@ bool CardHand::erase ( Card& card )
   std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
 #endif
 
+  this->front();
+
   return true;
 }
 
@@ -131,6 +133,11 @@ nom::int32 CardHand::at ( Card& card )
     }
   }
   return pos;
+}
+
+void CardHand::front ( void )
+{
+  selectCard ( this->cards.front() );
 }
 
 void CardHand::clear ( void )
