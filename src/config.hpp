@@ -30,19 +30,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GAMEAPP_CFG_HEADERS
 
 #include <string>
+#include <cassert>
+
 #include <nomlib/types.hpp> // portable fixed-types
 #include <nomlib/system/clock.hpp>
 
 #include "version.hpp"
 
+// Pretty print macros
+#define TTCARDS_DUMP_VAR(var) \
+  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
+
+// Debugging macros
 #ifdef TTCARDS_DEBUG
 
   // Output info messages if debugging is turned on
   #define TTCARDS_LOG_INFO(message) \
     ( std::cout << "TTCARDS_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
 
+  #define TTCARDS_LOG_ERR(message) \
+    ( std::cout << "TTCARDS_LOG_ERR at " << nom::getCurrentTime() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
+
 #else // Do not add any overhead
   #define TTCARDS_LOG_INFO(message)
+  #define TTCARDS_LOG_ERR(message)
+#endif
+
+#ifdef TTCARDS_DEBUG_ASSERT
+
+  #define TTCARDS_ASSERT(expression) \
+    ( assert (expression) )
+
+#else // Do not add any overhead
+  #define TTCARDS_ASSERT(expression)
 #endif
 
 #ifdef TTCARDS_DEBUG_TRACE
