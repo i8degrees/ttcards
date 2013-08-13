@@ -123,87 +123,83 @@ bool Collection::LoadJSON ( std::string filename )
 
   fp.open ( filename );
 
-  if ( fp.is_open() )
+  if ( fp.is_open() && fp.good() )
   {
-    if ( fp.good() )
+    json_spirit::read_stream ( fp, value );
+
+    assert ( value.type() == json_spirit::array_type );
+    values = value.get_array();
+
+    for ( i = 0; i != values.size(); i++ )
     {
-      json_spirit::read_stream ( fp, value );
+      assert ( values[i].type() == json_spirit::obj_type );
+      obj = values[i].get_obj();
 
-      assert ( value.type() == json_spirit::array_type );
-      values = value.get_array();
-
-      for ( i = 0; i != values.size(); i++ )
+      for ( o = 0; o != obj.size(); o++ )
       {
-        assert ( values[i].type() == json_spirit::obj_type );
-        obj = values[i].get_obj();
+        const json_spirit::Pair &pair = obj[o];
+        const std::string &path = pair.name_;
+        const json_spirit::Value &value = pair.value_;
 
-        for ( o = 0; o != obj.size(); o++ )
+        if ( path == "ID" )
         {
-          const json_spirit::Pair &pair = obj[o];
-          const std::string &path = pair.name_;
-          const json_spirit::Value &value = pair.value_;
+          assert ( value.type() == json_spirit::int_type );
+          id = value.get_int();
+        }
+        else if ( path == "Name" )
+        {
+          assert ( value.type() == json_spirit::str_type );
+          name = value.get_str();
+        }
+        else if ( path == "Level" )
+        {
+          assert ( value.type() == json_spirit::int_type );
+          level = value.get_int();
+        }
+        else if ( path == "Type" )
+        {
+          assert ( value.type() == json_spirit::int_type );
+          type = value.get_int();
+        }
+        else if ( path == "Element" )
+        {
+          assert ( value.type() == json_spirit::int_type );
+          element = value.get_int();
+        }
+        else if ( path == "Ranks" )
+        {
+          assert ( value.type() == json_spirit::array_type );
+          const json_spirit::Array &ranks = value.get_array();
 
-          if ( path == "ID" )
+          assert ( ranks.size() == 4 );
+          for ( rdx = 0; rdx < ranks.size(); rdx++ )
           {
-            assert ( value.type() == json_spirit::int_type );
-            id = value.get_int();
+            rank[NORTH] = ranks[rdx].get_int();
+            rdx++;
+            rank[EAST] = ranks[rdx].get_int();
+            rdx++;
+            rank[SOUTH] = ranks[rdx].get_int();
+            rdx++;
+            rank[WEST] = ranks[rdx].get_int();
+            rdx++;
           }
-          else if ( path == "Name" )
-          {
-            assert ( value.type() == json_spirit::str_type );
-            name = value.get_str();
-          }
-          else if ( path == "Level" )
-          {
-            assert ( value.type() == json_spirit::int_type );
-            level = value.get_int();
-          }
-          else if ( path == "Type" )
-          {
-            assert ( value.type() == json_spirit::int_type );
-            type = value.get_int();
-          }
-          else if ( path == "Element" )
-          {
-            assert ( value.type() == json_spirit::int_type );
-            element = value.get_int();
-          }
-          else if ( path == "Ranks" )
-          {
-            assert ( value.type() == json_spirit::array_type );
-            const json_spirit::Array &ranks = value.get_array();
-
-            assert ( ranks.size() == 4 );
-            for ( rdx = 0; rdx < ranks.size(); rdx++ )
-            {
-              rank[NORTH] = ranks[rdx].get_int();
-              rdx++;
-              rank[EAST] = ranks[rdx].get_int();
-              rdx++;
-              rank[SOUTH] = ranks[rdx].get_int();
-              rdx++;
-              rank[WEST] = ranks[rdx].get_int();
-              rdx++;
-            }
-          }
-          else
-          {
-            std::cout << "Undefined ERR while reading " << filename << std::endl;
-            return false;
-          }
-        } // end iterator object values loop
         this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, 0 ) );
+        }
       }
     }
   }
+  else
+  {
+    fp.close();
+    return false;
+  }
 
-  #ifdef DEBUG_CARD_COLLECTION
-    debug.ListCards ( this->cards );
-  #endif
+#ifdef DEBUG_CARD_COLLECTION
+  debug.ListCards ( this->cards );
+#endif
 
   fp.close();
-
-  return false;
+  return true;
 }
 
 bool Collection::ExportASCII ( std::string filename )
@@ -222,8 +218,6 @@ bool Collection::ExportJSON ( std::string filename )
   json_spirit::Array ranks;
 
   if ( this->cards.empty() )
-    this->LoadJSON ( CARDS_DB );
-  else
     return false;
 
   for ( idx = 0; idx < this->cards.size(); idx++ )
