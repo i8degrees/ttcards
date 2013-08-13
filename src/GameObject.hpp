@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "cfg.hpp"
 #include "board.hpp"
-#include "card_collection.hpp"
+#include "CardCollection.hpp"
 #include "CardHand.hpp"
 #include "CardView.hpp"
 #include "card_rules.hpp"

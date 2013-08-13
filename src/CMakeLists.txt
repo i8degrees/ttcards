@@ -10,7 +10,7 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/PlayState_debug.cpp
       ${SRC_DIR}/board.cpp
       ${SRC_DIR}/card.cpp
-      ${SRC_DIR}/card_collection.cpp
+      ${SRC_DIR}/CardCollection.cpp
       ${SRC_DIR}/card_debug.cpp
       ${SRC_DIR}/CardHand.cpp
       ${SRC_DIR}/card_rules.cpp
