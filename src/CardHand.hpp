@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/types.hpp>
 
-#include "card.hpp"
+#include "Card.hpp"
 #include "CardCollection.hpp"
 #include "config.hpp"
 

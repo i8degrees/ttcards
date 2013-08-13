@@ -37,8 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
-#include "card.hpp"
-#include "card_debug.hpp"
+#include "Card.hpp"
+#include "CardDebug.hpp"
 #include "PlayState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"

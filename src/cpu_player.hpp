@@ -33,9 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 #include "config.hpp"
-#include "card_debug.hpp"
-#include "player.hpp"
-#include "board.hpp"
+#include "CardDebug.hpp"
+#include "Player.hpp"
+#include "Board.hpp"
 
 class CPUPlayer
 {

@@ -34,11 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/audio.hpp>
 
 #include "config.hpp"
-#include "board.hpp"
+#include "Board.hpp"
 #include "CardCollection.hpp"
 #include "CardHand.hpp"
 #include "CardView.hpp"
-#include "card_rules.hpp"
+#include "CardRules.hpp"
 
 struct GameObject
 {

@@ -45,10 +45,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
-#include "player.hpp"
-#include "card.hpp"
-#include "card_debug.hpp"
-//#include "cpu_player.hpp"
+#include "Player.hpp"
+#include "Card.hpp"
+#include "CardDebug.hpp"
+//#include "cpu_Player.hpp"
 #include "CardsMenuState.hpp"
 #include "GameOverState.hpp"
 #include "GameObject.hpp"

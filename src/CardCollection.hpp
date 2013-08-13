@@ -43,8 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   #define JSON_SPIRIT_VALUE_ENABLED
 #endif
 
-#include "card.hpp"
-#include "card_debug.hpp"
+#include "Card.hpp"
+#include "CardDebug.hpp"
 #include "config.hpp"
 
 class CardCollection

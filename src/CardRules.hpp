@@ -26,62 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_PLAYER_HEADERS
-#define GAMEAPP_PLAYER_HEADERS
+#ifndef GAMEAPP_CARD_RULES_HEADERS
+#define GAMEAPP_CARD_RULES_HEADERS
 
 #include <iostream>
 #include <string>
 
-#include <nomlib/math.hpp>
+#include "Card.hpp"
 
-#include "card_debug.hpp"
-#include "CardHand.hpp"
-#include "CardView.hpp"
-#include "config.hpp"
+// combo: plus, same, wall
+// elemental
 
-void Free_CardHand ( CardHand* player_cards );
-
-class Player
+class CardRules
 {
   public:
-    Player ( void );
-    Player ( CardHand* player_cards, CardView* view );
-    ~Player ( void );
+    CardRules ( void );
+    ~CardRules ( void );
 
-    nom::int32 getX ( void );
-    nom::int32 getY ( void );
+    unsigned int getRules ( void );
+    void setRules ( unsigned int type );
 
-    const nom::Coords getPosition ( void ) const;
-    void setPosition ( nom::int32 x, nom::int32 y );
+    bool compareCards ( unsigned int r1, unsigned int r2 );
 
-    unsigned int getID ( void );
-    void setID ( unsigned int id_ );
-
-    unsigned int getState ( void );
-    void setState ( unsigned int state );
-
-    // TODO: Consider branching this into Score class
-    unsigned int getScore ( void );
-    void setScore ( unsigned int score );
-
-    void Update ( void );
-    void Draw ( void* video_buffer );
+/*
+    enum Rules {
+      NONE = 0x00,
+      COMBO = 0x01,
+      SAME = 0x02,
+      WALL = 0x04,
+      PLUS = 0x08,
+      ELEMENTAL = 0x10,
+      LOSER_WINNER = 0x12
+    };
+*/
 
   private:
-    /// debug support for card attributes
-    CardDebug debug;
-    /// Card rendering
-    CardView* card;
-    /// pointer reference to player's hand
-    std::shared_ptr<CardHand> hand;
-    /// x, y origin coords
-    nom::Coords coords;
-    /// unique identifier for tracking each player in game
-    unsigned int id;
-    /// not implemented
-    //unsigned int state;
-    /// player's scoreboard
-    unsigned int score;
+    unsigned int rules; // stores our card game rules in use
 };
 
-#endif // GAMEAPP_PLAYER_HEADERS defined
+#endif // GAMEAPP_CARD_RULES_HEADERS defined

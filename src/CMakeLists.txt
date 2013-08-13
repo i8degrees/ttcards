@@ -8,13 +8,13 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/PlayState.cpp
       ${SRC_DIR}/GameOverState.cpp
       ${SRC_DIR}/PlayState_debug.cpp
-      ${SRC_DIR}/board.cpp
-      ${SRC_DIR}/card.cpp
+      ${SRC_DIR}/Board.cpp
+      ${SRC_DIR}/Card.cpp
       ${SRC_DIR}/CardCollection.cpp
-      ${SRC_DIR}/card_debug.cpp
+      ${SRC_DIR}/CardDebug.cpp
       ${SRC_DIR}/CardHand.cpp
-      ${SRC_DIR}/card_rules.cpp
+      ${SRC_DIR}/CardRules.cpp
       ${SRC_DIR}/CardView.cpp
-      ${SRC_DIR}/player.cpp
+      ${SRC_DIR}/Player.cpp
       ${SRC_DIR}/App.cpp
     )
