@@ -39,6 +39,10 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 # Relative path from project root to compiled source files
 set ( SRC_DIR "src" )
 
+# Relative path from project root to header files
+set ( HEADERS_DIR "include" )
+set ( HEADERS_JSON_SPIRIT_DIR "${HEADERS_DIR}/json_spirit" )
+
 # Relative path from the from project root to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 
@@ -150,7 +154,6 @@ include ( "${SRC_DIR}/CMakeLists.txt" )
 # find them.
 find_package ( SDL REQUIRED )
 find_package ( nomlib REQUIRED )
-find_package ( json_spirit REQUIRED )
 
 # We need GTK2 only for its header files (nomlib links to GTK2 for us)
 # (This will be fixed sometime in the future)
@@ -172,11 +175,20 @@ else ( NOT NOMLIB_FOUND )
   message ( FATAL_ERROR "Required dependency nomlib missing!" )
 endif ( NOMLIB_FOUND )
 
-if ( JSON_SPIRIT_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
-else ( NOT JSON_SPIRIT_FOUND )
-  message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
-endif ( JSON_SPIRIT_FOUND )
+# First, try finding our packaged header files for json_spirit;
+# ...if this fails, attempt to find the headers directory of a system install of
+# json_spirit
+if ( IS_DIRECTORY "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
+  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
+elseif ( NOT IS_DIRECTORY "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
+  find_package ( json_spirit REQUIRED )
+
+  if ( JSON_SPIRIT_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
+  else ( NOT JSON_SPIRIT_FOUND )
+    message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
+  endif ( JSON_SPIRIT_FOUND )
+endif ( IS_DIRECTORY "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
 
 if ( PLATFORM_OSX )
   # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
