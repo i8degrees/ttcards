@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameObject.hpp"
 #include "version.hpp"
 #include "local.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class App: public nom::SDL_App // "is-a" relationship
 {

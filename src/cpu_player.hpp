@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
-#include "cfg.hpp"
+#include "config.hpp"
 #include "card_debug.hpp"
 #include "player.hpp"
 #include "board.hpp"

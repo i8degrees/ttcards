@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "card.hpp"
 #include "card_debug.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class CardCollection
 {

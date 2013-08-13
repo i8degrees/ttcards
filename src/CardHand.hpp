@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "card.hpp"
 #include "CardCollection.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class CardHand
 {

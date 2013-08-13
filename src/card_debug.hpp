@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include "card.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class CardDebug
 {

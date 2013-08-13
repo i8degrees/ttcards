@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "GameObject.hpp"
 #include "version.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class PauseState: public nom::IState
 {

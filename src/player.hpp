@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "card_debug.hpp"
 #include "CardHand.hpp"
 #include "CardView.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 void Free_CardHand ( CardHand* player_cards );
 

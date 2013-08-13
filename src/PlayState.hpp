@@ -53,7 +53,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameOverState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class PlayState: public nom::IState
 {

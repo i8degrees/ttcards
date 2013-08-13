@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 
 #include "card.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class CardView
 {

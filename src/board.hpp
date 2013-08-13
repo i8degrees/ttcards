@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "card_debug.hpp"
 #include "card_rules.hpp"
 #include "CardView.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class Board
 {

@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/gui.hpp>
 #include <nomlib/audio.hpp>
 
-#include "cfg.hpp"
+#include "config.hpp"
 #include "board.hpp"
 #include "CardCollection.hpp"
 #include "CardHand.hpp"

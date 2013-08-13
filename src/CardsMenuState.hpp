@@ -42,7 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlayState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
-#include "cfg.hpp"
+#include "config.hpp"
 
 class CardsMenuState: public nom::IState
 {
