@@ -33,6 +33,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/types.hpp> // portable fixed-types
 #include <nomlib/system/clock.hpp>
 
+#ifdef TTCARDS_DEBUG
+
+  // Output info messages if debugging is turned on
+  #define TTCARDS_LOG_INFO(message) \
+    ( std::cout << "TTCARDS_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
+
+#else // Do not add any overhead
+  #define TTCARDS_LOG_INFO(message)
+#endif
+
 #ifdef TTCARDS_DEBUG_TRACE
 
   // If trace debugging is turned on, show class construction and destruction
