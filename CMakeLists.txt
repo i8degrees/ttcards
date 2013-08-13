@@ -261,7 +261,7 @@ if ( OSXAPP )
                           "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
                         )
 
-  install_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
+  add_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
 
   # Install our external dependencies into our application bundle
   install ( DIRECTORY
