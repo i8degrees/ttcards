@@ -174,9 +174,8 @@ endif ( NOMLIB_FOUND )
 
 if ( JSON_SPIRIT_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${JSON_SPIRIT_LIBRARY} )
 else ( NOT JSON_SPIRIT_FOUND )
-  message ( FATAL_ERROR "Required dependency json_spirit missing!" )
+  message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
 endif ( JSON_SPIRIT_FOUND )
 
 if ( PLATFORM_OSX )
@@ -256,7 +255,6 @@ if ( OSXAPP )
   install ( DIRECTORY
             "${NOMLIB_LIBRARY}" # nomlib.framework
             "${SDL_LIBRARY}" # SDL.framework v1.2.15
-            "${JSON_SPIRIT_LIBRARY}" # json_spirit.framework v4.06.1
             DESTINATION "${INSTALL_FRAMEWORK_PATH}"
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
