@@ -60,8 +60,6 @@ class PlayState: public nom::IState
     PlayState ( std::shared_ptr<GameObject> object );
     ~PlayState ( void );
 
-    bool Init ( void );
-
     void onInit ( void );
     void onExit ( void );
     void Pause ( void );
@@ -69,9 +67,6 @@ class PlayState: public nom::IState
 
     void Update ( nom::uint32 delta_time );
     void Draw ( void* video_buffer );
-
-    //static void Callback ( void ); // EMCC compiler related
-    //void Start ( void ); // EMCC compiler related
   private:
     void onKeyDown ( int32_t key, int32_t mod );
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
