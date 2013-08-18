@@ -94,7 +94,6 @@ class PlayState: public nom::IState
     void lockSelectedCard ( void );
     void moveTo ( unsigned int x, unsigned int y );
 
-    nom::Coords getCursorBoardPos ( nom::int32 x, nom::int32 y );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );
@@ -120,9 +119,6 @@ class PlayState: public nom::IState
 
     /// y coords mapping for cursor -> card position index
     nom::Coords cursor_coords_map[5];
-
-    /// x, y coords for selectedCard from cursor to board placement
-    nom::Coords board_coords_map[9];
 
     unsigned int turn; // FIXME: player1 = 0, player2 = 1
     /// locks cursor state to board placement

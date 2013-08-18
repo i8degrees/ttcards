@@ -41,6 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "json_spirit_reader_template.h"
 
 #include <nomlib/types.hpp>
+#include <nomlib/math.hpp>
 
 #include "Card.hpp"
 #include "CardDebug.hpp"
@@ -57,6 +58,17 @@ class Board
 
     /// Empties board vector
     void clear ( void );
+
+    /// Translates local board coordinates into global positioning coordinates.
+    ///
+    /// Returns a positioning coordinate between 0, 0 and 2,2 on success.
+    /// Returns -1, -1 when undefined.
+    ///
+    /// Each board position -- such as 0, 0 (top-left) needs to be able to be
+    /// translated (think: mapped) into global screen coordinates that the
+    /// underlying subsystems can use to make decisions according to player
+    /// actions made. The input subsystem is a prime example of these needs.
+    nom::Coords getGlobalBounds ( nom::int32 x, nom::int32 y );
 
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
 
@@ -101,6 +113,9 @@ class Board
     CardDebug debug;
     /// 2D vector of Card data containers
     std::vector<std::vector<Card>> grid;
+
+    /// X, Y translation coordinates for local board positions
+    nom::Coords board_map[9];
 };
 
 #endif // GAMEAPP_BOARD_HEADERS defined

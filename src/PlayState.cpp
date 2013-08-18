@@ -94,19 +94,6 @@ void PlayState::onInit ( void )
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
 
-  // Cursor X, Y coords mapping for placing cards on board
-  this->board_coords_map[0] = nom::Coords ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_coords_map[1] = nom::Coords ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_coords_map[2] = nom::Coords ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-
-  this->board_coords_map[3] = nom::Coords ( 0, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_coords_map[4] = nom::Coords ( 1, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_coords_map[5] = nom::Coords ( 2, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-
-  this->board_coords_map[6] = nom::Coords ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_coords_map[7] = nom::Coords ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_coords_map[8] = nom::Coords ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
@@ -312,7 +299,7 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 
   // Board grid coords check; player is attempting to place a card on the board
   // when the player hand coords check above comes back false
-  coords = this->getCursorBoardPos ( x, y );
+  coords = this->game->board.getGlobalBounds ( x, y );
 
   // Attempts to move card onto board; validity checking is performed within
   // the following method call
@@ -398,7 +385,7 @@ void PlayState::showCardInfoBox ( void* video_buffer )
   // board selection state
   if ( this->isCursorLocked() == true )
   {
-    coords = getCursorBoardPos ( this->game->cursor.getX(), this->game->cursor.getY() );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
 
     if ( coords.x != -1 && coords.y != -1 )
       selectedCard = this->game->board.getCard ( coords.x, coords.y );
@@ -497,7 +484,7 @@ void PlayState::lockSelectedCard ( void )
   }
   else
   {
-    coords = getCursorBoardPos ( this->game->cursor.getX(), this->game->cursor.getY() );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
     if ( coords.x != -1 && coords.y != -1 )
       this->moveTo ( coords.x, coords.y );
 
@@ -563,31 +550,6 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
       this->endTurn();
     }
   }
-}
-
-// Default return value is -1, -1 AKA undefined
-//
-// Translates global bounds coordinates onto local board grid bounds coords
-//
-// TODO / STUB:
-//
-//    0, 0    0, 1    0, 2
-//    0, 1    1, 1    2, 1
-//    0, 2    1, 2    2, 2
-//
-//
-nom::Coords PlayState::getCursorBoardPos ( nom::int32 x, nom::int32 y )
-{
-  nom::int32 idx = 0; // iterator
-  nom::Coords pos ( -1, -1 ); // ...when all else fails, default to undefined
-
-  for ( idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
-  {
-    if ( x <= this->board_coords_map[idx].width && x >= BOARD_ORIGIN_X && y <= this->board_coords_map[idx].height && y >= BOARD_ORIGIN_Y )
-      return this->board_coords_map[idx];
-  }
-
-  return pos;
 }
 
 // Helper method for obtaining card hand index position based off given origin
