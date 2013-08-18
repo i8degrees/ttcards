@@ -13,14 +13,14 @@ before_install:
   - PROJECT_NAME=nomlib; export PROJECT_NAME
   - git clone --branch=dev https://github.com/i8degrees/nomlib nomlib.git
   - cd nomlib.git && mkdir -p build && cd build
-  - cmake -D VERBOSE=on -D CMAKE_INSTALL_PREFIX=/usr/local ..
+  - cmake -D CMAKE_VERBOSE_MAKEFILE=on -D CMAKE_INSTALL_PREFIX=/usr/local ..
   - make -j4
   - sudo make install
   - sudo ldconfig
 before_script:
   - PROJECT_NAME=ttcards; export PROJECT_NAME
   - cd $HOME/build/i8degrees/${PROJECT_NAME} && mkdir -p build build-osx && cd build
-  - cmake -D VERBOSE=on -D CMAKE_INSTALL_PREFIX=/usr/local ..
+  - cmake -D CMAKE_VERBOSE_MAKEFILE=on -D CMAKE_INSTALL_PREFIX=/usr/local ..
 script:
   - make -j4
   #- make package # TODO
