@@ -104,9 +104,9 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
 
     for ( o = 0; o != node.size(); o++ )
     {
-      const json_spirit::Pair& pair = node[o];
-      const std::string& path = pair.name_;
-      const json_spirit::Value& value = pair.value_;
+      //const json_spirit::Pair& pair = node[o];
+      //const std::string& path = pair.name_;
+      //const json_spirit::Value& value = pair.value_;
 
       // ...
 

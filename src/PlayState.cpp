@@ -371,18 +371,17 @@ void PlayState::player_turn ( unsigned int player )
 // Helper method for incrementing to next player's turn
 void PlayState::endTurn ( void )
 {
-  unsigned int player = get_turn();
-
   this->unlockSelectedCard();
+
+  this->game->hand[PLAYER1].clearSelectedCard();
+  this->game->hand[PLAYER2].clearSelectedCard();
 
   if ( this->get_turn() == 0 )
   {
-    this->game->hand[PLAYER1].clearSelectedCard();
     this->player_turn ( 1 );
   }
   else if ( this->get_turn() == 1 )
   {
-    this->game->hand[PLAYER2].clearSelectedCard();
     this->player_turn ( 0 );
   }
 }
@@ -461,7 +460,7 @@ void PlayState::resetCursor ( void )
 {
   unsigned int player_turn = get_turn();
 
-  this->game->hand[turn].selectCard ( this->game->hand[turn].cards.front() );
+  this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
 
   this->game->cursor.setState ( 0 );
   this->game->cursor.setPosition ( this->player_cursor_coords[0].x, this->player_cursor_coords[0].y );

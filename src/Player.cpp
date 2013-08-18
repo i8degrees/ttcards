@@ -37,8 +37,9 @@ void Free_CardHand ( CardHand* player_cards )
   // delete[].
 }
 
-Player::Player ( void ) : coords ( 0, 0, 0, 0 ), id ( 0 ), //state ( 0 ),
-                          score ( 5 ), hand ( nullptr ), card ( nullptr )
+Player::Player ( void ) : card ( nullptr ), hand ( nullptr ),
+                          coords ( 0, 0, 0, 0 ), id ( 0 ), score ( 5 )
+                          //state ( 0 )
 {
 TTCARDS_LOG_CLASSINFO;
 }
