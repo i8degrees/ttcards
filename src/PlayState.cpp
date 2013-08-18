@@ -301,7 +301,7 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
       // Updates Cursor Position
       this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
 
-      //this->game->cursor_move.Play();
+      this->game->cursor_move.Play();
 
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
@@ -516,7 +516,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
 
   if ( selected.getID() != 0 )
   {
-    if ( this->game->board ( x, y ) != 0 )
+    if ( player_turn == PLAYER1 && this->game->board ( x, y ) != 0 )
     {
       this->game->cursor_wrong.Play();
     }
@@ -535,6 +535,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
         if ( this->game->rules.getRules() == 0 )
         {
           this->game->board.flipCard ( grid[0].first, grid[0].second, player_turn + 1 );
+          this->game->card_flip.Play();
         }
       }
 
@@ -543,6 +544,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
         for ( nom::ulong g = 0; g < grid.size(); g++ )
         {
           this->game->board.flipCard ( grid[g].first, grid[g].second, player_turn + 1 );
+          this->game->card_flip.Play();
 
           std::vector<std::pair<int, int>> tgrid = this->game->board.checkBoard ( grid[g].first, grid[g].second );
 
@@ -554,6 +556,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
             for ( nom::ulong tg = 0; tg < tgrid.size(); tg++ )
             {
               this->game->board.flipCard( tgrid[tg].first, tgrid[tg].second, player_turn + 1 );
+              this->game->card_flip.Play();
             }
           }
         }

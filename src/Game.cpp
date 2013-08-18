@@ -154,20 +154,20 @@ bool App::onInit ( void )
   this->game->card.load();
   this->game->board.clear();
 
-  this->game->sound_buffer.load ( CURSOR_MOVE );
-  this->game->cursor_move.setBuffer ( this->game->sound_buffer );
+  this->game->cursor_move_buffer.load ( CURSOR_MOVE );
+  this->game->cursor_move.setBuffer ( this->game->cursor_move_buffer );
 
-  this->game->sound_buffer.load ( CURSOR_CANCEL );
-  this->game->cursor_cancel.setBuffer ( this->game->sound_buffer );
+  this->game->cursor_cancel_buffer.load ( CURSOR_CANCEL );
+  this->game->cursor_cancel.setBuffer ( this->game->cursor_cancel_buffer );
 
-  this->game->sound_buffer.load ( CURSOR_WRONG );
-  this->game->cursor_wrong.setBuffer ( this->game->sound_buffer );
+  this->game->cursor_wrong_buffer.load ( CURSOR_WRONG );
+  this->game->cursor_wrong.setBuffer ( this->game->cursor_wrong_buffer );
 
-  this->game->sound_buffer.load ( CARD_PLACE );
-  this->game->card_place.setBuffer ( this->game->sound_buffer );
+  this->game->card_place_buffer.load ( CARD_PLACE );
+  this->game->card_place.setBuffer ( this->game->card_place_buffer );
 
-  this->game->sound_buffer.load ( CARD_FLIP );
-  this->game->card_flip.setBuffer ( this->game->sound_buffer );
+  this->game->card_flip_buffer.load ( CARD_FLIP );
+  this->game->card_flip.setBuffer ( this->game->card_flip_buffer );
 
   this->game->music_buffer.load ( MUSIC_TRACK );
   this->game->music_track.setBuffer ( this->game->music_buffer );
