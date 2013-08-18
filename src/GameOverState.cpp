@@ -78,7 +78,6 @@ void GameOverState::onInit ( void )
   {
     this->game->music_track.Stop();
     this->game->winning_track.Play();
-    this->game->winning_track.setLooping ( true );
   }
 
   // Commence the countdown on the showing of results!
