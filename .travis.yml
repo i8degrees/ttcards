@@ -28,6 +28,8 @@ script:
   #- sudo dpkg --remove ttcards
   - sudo make install
   - du -csh "$(which ttcards)"
+  - du -csh "/usr/local/share/ttcards/Resources"
+  - du -csh "/usr/local/share/doc/ttcards/"
   - ttcards --version
   - ttcards --export && cat $HOME/Documents/ttcards/cards.json
   - sudo make uninstall
