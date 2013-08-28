@@ -135,7 +135,7 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
   {
     default: break;
 
-    case SDLK_p:
+    case SDLK_p: // Pause game
     {
       nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
     }

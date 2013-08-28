@@ -150,7 +150,7 @@ extern const std::string CARD_BACKGROUNDS;
 extern const std::string INTERFACE_CURSOR;
 extern const std::string MENU_ELEMENTS;
 
-// Audio
+// Audio Resources
 extern const std::string CURSOR_MOVE;
 extern const std::string CURSOR_CANCEL;
 extern const std::string CURSOR_WRONG;
