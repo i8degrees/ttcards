@@ -48,7 +48,7 @@ TTCARDS_LOG_CLASSINFO;
 #if defined ( OSXAPP ) // OSX Application Bundle
   WORKING_DIR = nom::getBundleResourcePath();
 #else // Potentially customized layout (POSIX hierarchy by default)
-  WORKING_DIR = TTCARDS_INSTALL_PREFIX + "/share/ttcards/Resources/";
+  WORKING_DIR = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
 #endif
 
   // Change the working directory to whatever WORKING_DIR has been set to

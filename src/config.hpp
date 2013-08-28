@@ -32,9 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <cassert>
 
-#include <nomlib/types.hpp> // portable fixed-types
-#include <nomlib/system/clock.hpp>
-
+/// Cross-platform support files
+#include <nomlib/types.hpp> // data types
+#include <nomlib/system/clock.hpp> // date & time
+#include <nomlib/system/Path.hpp> // pathnames
 #include "version.hpp"
 
 // Pretty print macros
@@ -126,9 +127,9 @@ extern const nom::int32 MAX_PLAYER_HAND;
 extern const nom::int32 BOARD_GRID_WIDTH;
 extern const nom::int32 BOARD_GRID_HEIGHT;
 
-/// Dependent upon platform
-extern std::string PATH_SEPERATOR;
-// Resources directory is run-time dependent; set in main.cpp
+/// Platform-independent interface for obtaining native pathnames
+extern const nom::Path path;
+/// Resources directory is run-time dependent; set in main.cpp
 extern std::string WORKING_DIR;
 
 // App data

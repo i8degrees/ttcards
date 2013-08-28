@@ -50,7 +50,7 @@ const nom::int32 BOARD_GRID_WIDTH = 3;
 const nom::int32 BOARD_GRID_HEIGHT = 3;
 
 // Resource configuration
-std::string PATH_SEPERATOR = "/";
+const nom::Path path;
 std::string WORKING_DIR;
 
 const std::string APP_ICON =            WORKING_DIR + "icon.bmp";
@@ -102,19 +102,19 @@ const std::string SCORE_FONTFACE =      WORKING_DIR + "fonts/EnvyCodeRb.ttf";
 
 #endif // SCALE_FACTOR defined
 
-const std::string CURSOR_MOVE =         WORKING_DIR + "audio" + PATH_SEPERATOR + "cursor_move.wav";
-const std::string CURSOR_CANCEL =       WORKING_DIR + "audio" + PATH_SEPERATOR + "cursor_cancel.wav";
-const std::string CURSOR_WRONG =        WORKING_DIR + "audio" + PATH_SEPERATOR + "cursor_wrong.wav";
-const std::string CARD_FLIP =           WORKING_DIR + "audio" + PATH_SEPERATOR + "card_flip.wav";
-const std::string CARD_PLACE =          WORKING_DIR + "audio" + PATH_SEPERATOR + "card_place.wav";
-const std::string SFX_LOAD_GAME =       WORKING_DIR + "audio" + PATH_SEPERATOR + "load_game.wav";
-const std::string SFX_SAVE_GAME =       WORKING_DIR + "audio" + PATH_SEPERATOR + "save_game.wav";
-const std::string MUSIC_TRACK =         WORKING_DIR + "audio" + PATH_SEPERATOR + "ShuffleOrBoogie.ogg";
-const std::string MUSIC_WINNING_TRACK = WORKING_DIR + "audio" + PATH_SEPERATOR + "TheWinner.ogg";
+const std::string CURSOR_MOVE =         WORKING_DIR + "audio" + path.native() + "cursor_move.wav";
+const std::string CURSOR_CANCEL =       WORKING_DIR + "audio" + path.native() + "cursor_cancel.wav";
+const std::string CURSOR_WRONG =        WORKING_DIR + "audio" + path.native() + "cursor_wrong.wav";
+const std::string CARD_FLIP =           WORKING_DIR + "audio" + path.native() + "card_flip.wav";
+const std::string CARD_PLACE =          WORKING_DIR + "audio" + path.native() + "card_place.wav";
+const std::string SFX_LOAD_GAME =       WORKING_DIR + "audio" + path.native() + "load_game.wav";
+const std::string SFX_SAVE_GAME =       WORKING_DIR + "audio" + path.native() + "save_game.wav";
+const std::string MUSIC_TRACK =         WORKING_DIR + "audio" + path.native() + "ShuffleOrBoogie.ogg";
+const std::string MUSIC_WINNING_TRACK = WORKING_DIR + "audio" + path.native() + "TheWinner.ogg";
 
-const std::string USER_PLAYER1_FILENAME = TTCARDS_DATA_DIR + PATH_SEPERATOR + "player1.json";
-const std::string USER_PLAYER2_FILENAME = TTCARDS_DATA_DIR + PATH_SEPERATOR + "player2.json";
-const std::string USER_BOARD_FILENAME =   TTCARDS_DATA_DIR + PATH_SEPERATOR + "board.json";
+const std::string USER_PLAYER1_FILENAME = TTCARDS_DATA_DIR + path.native() + "player1.json";
+const std::string USER_PLAYER2_FILENAME = TTCARDS_DATA_DIR + path.native() + "player2.json";
+const std::string USER_BOARD_FILENAME =   TTCARDS_DATA_DIR + path.native() + "board.json";
 
 const int ELEMENT_NONE = 0;
 const int ELEMENT_EARTH = 1;
