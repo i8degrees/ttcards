@@ -1,20 +1,29 @@
 TODO
 ====
 
-* Resolve resources paths issue when installed under /usr/local
-* Use new preprocessor debugging code methodology from nomlib
+  - Card class
+    * get/set XY && width/height ?
 
-* Rename header file extensions to .hpp
-* Card class: get/set XY && width/height ?
-* PauseState ( msgbox w/ blinking Pause text )
-* break CardView class up further? ...drawElement, drawBackground, drawRanks, etc.
+  - CardView class
+    * break up further? ...drawElement, drawBackground, drawRanks, etc.
+
+  - CardCollection class
+    * getCards method implementation
+
+* Relocate cfg.cpp declarations to their applicable class header files?
+
+In Progress
+-----------
+
+* Use new preprocessor debugging code methodology from nomlib
 * Re-enable AI control
-* Relocate cfg.cpp declarations to their applicable class header files
-* Collection::getCards() implementation
 
 Completed
 ---------
 
+* Resolve resources paths issue when installed under /usr/local
+* Rename header file extensions to .hpp
+* PauseState ( msgbox w/ blinking Pause text )
 * Fix uninstall script
 * Remove file name from header files
 * GameOverState static background image
