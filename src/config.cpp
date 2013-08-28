@@ -102,11 +102,11 @@ const std::string SCORE_FONTFACE =      WORKING_DIR + "fonts/EnvyCodeRb.ttf";
 
 #endif // SCALE_FACTOR defined
 
-const std::string CURSOR_MOVE =         WORKING_DIR + "audio/cursor_move.wav";
-const std::string CURSOR_CANCEL =       WORKING_DIR + "audio/cursor_cancel.wav";
-const std::string CURSOR_WRONG =        WORKING_DIR + "audio/cursor_wrong.wav";
-const std::string CARD_FLIP =           WORKING_DIR + "audio/card_flip.wav";
-const std::string CARD_PLACE =          WORKING_DIR + "audio/card_place.wav";
+const std::string CURSOR_MOVE =         WORKING_DIR + "audio" + PATH_SEPERATOR + "cursor_move.wav";
+const std::string CURSOR_CANCEL =       WORKING_DIR + "audio" + PATH_SEPERATOR + "cursor_cancel.wav";
+const std::string CURSOR_WRONG =        WORKING_DIR + "audio" + PATH_SEPERATOR + "cursor_wrong.wav";
+const std::string CARD_FLIP =           WORKING_DIR + "audio" + PATH_SEPERATOR + "card_flip.wav";
+const std::string CARD_PLACE =          WORKING_DIR + "audio" + PATH_SEPERATOR + "card_place.wav";
 const std::string SFX_LOAD_GAME =       WORKING_DIR + "audio" + PATH_SEPERATOR + "load_game.wav";
 const std::string SFX_SAVE_GAME =       WORKING_DIR + "audio" + PATH_SEPERATOR + "save_game.wav";
 const std::string MUSIC_TRACK =         WORKING_DIR + "audio" + PATH_SEPERATOR + "ShuffleOrBoogie.ogg";
