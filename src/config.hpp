@@ -36,6 +36,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/types.hpp> // data types
 #include <nomlib/system/clock.hpp> // date & time
 #include <nomlib/system/Path.hpp> // pathnames
+
+/// Site-specific constants -- this is likely specific to your own local system
+/// setup; auto-generated at compile-time and therefore must recompile to modify
+/// said constants.
 #include "version.hpp"
 
 // Pretty print macros

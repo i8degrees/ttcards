@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "config.hpp"
 
-#ifndef SCALE_FACTOR // we ought to already be defined, but just in case ...
+#ifndef SCALE_FACTOR // we ought to already be defined, but just in case!
   #define SCALE_FACTOR 1
 #endif
 
