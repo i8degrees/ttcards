@@ -12,8 +12,8 @@ install_options
 *.xcf
 *.mp3
 *.ogg
-*.wav
-Resources/audio
+#*.wav
+#Resources/audio
 # ctags
 .tags*
 hires
