@@ -69,6 +69,14 @@ struct GameObject
   nom::OpenAL::SoundBuffer card_flip_buffer;
   nom::OpenAL::Sound card_flip;
 
+  /// Load saved game sound event
+  nom::OpenAL::SoundBuffer load_game_buffer;
+  nom::OpenAL::Sound load_game;
+
+  /// Save game sound event
+  nom::OpenAL::SoundBuffer save_game_buffer;
+  nom::OpenAL::Sound save_game;
+
   /// Theme song track
   nom::OpenAL::SoundBuffer music_buffer;
   nom::OpenAL::Music music_track;

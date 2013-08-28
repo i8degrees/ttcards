@@ -141,21 +141,58 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     }
     break;
 
-    case SDLK_s:
+    case SDLK_s: // Save current game
     {
-      this->game->hand[0].save( USER_PLAYER1_FILENAME );
-      this->game->hand[1].save( USER_PLAYER2_FILENAME );
-      this->game->board.save( USER_BOARD_FILENAME );
+      if ( this->game->hand[0].save( USER_PLAYER1_FILENAME ) == false )
+      {
+TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_PLAYER1_FILENAME );
+        this->game->cursor_wrong.Play();
+        break;
+      }
+
+      if ( this->game->hand[1].save( USER_PLAYER2_FILENAME ) == false )
+      {
+TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_PLAYER2_FILENAME );
+        this->game->cursor_wrong.Play();
+        break;
+      }
+
+      if ( this->game->board.save( USER_BOARD_FILENAME ) == false )
+      {
+TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_BOARD_FILENAME );
+        this->game->cursor_wrong.Play();
+        break;
+      }
+
+      this->game->save_game.Play(); // Successful saved game!
     }
     break;
 
-    case SDLK_l:
+    case SDLK_l: // Load saved game
     {
-      this->game->hand[0].load( USER_PLAYER1_FILENAME );
-      this->resetCursor();
+      if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
+      {
+TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER1_FILENAME );
+        this->game->cursor_wrong.Play();
+        break;
+      }
 
-      this->game->hand[1].load( USER_PLAYER2_FILENAME );
-      this->game->board.load( USER_BOARD_FILENAME );
+      if ( this->game->hand[1].load( USER_PLAYER2_FILENAME ) == false )
+      {
+TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER2_FILENAME );
+        this->game->cursor_wrong.Play();
+        break;
+      }
+
+      if ( this->game->board.load( USER_BOARD_FILENAME ) == false )
+      {
+TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
+        this->game->cursor_wrong.Play();
+        break;
+      }
+
+      this->resetCursor();
+      this->game->load_game.Play(); // Successful load of saved game!
     }
     break;
 

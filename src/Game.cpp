@@ -169,6 +169,12 @@ bool App::onInit ( void )
   this->game->card_flip_buffer.load ( CARD_FLIP );
   this->game->card_flip.setBuffer ( this->game->card_flip_buffer );
 
+  this->game->load_game_buffer.load ( SFX_LOAD_GAME );
+  this->game->load_game.setBuffer ( this->game->load_game_buffer );
+
+  this->game->save_game_buffer.load ( SFX_SAVE_GAME );
+  this->game->save_game.setBuffer ( this->game->save_game_buffer );
+
   this->game->music_buffer.load ( MUSIC_TRACK );
   this->game->music_track.setBuffer ( this->game->music_buffer );
 

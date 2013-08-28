@@ -156,8 +156,9 @@ extern const std::string CURSOR_CANCEL;
 extern const std::string CURSOR_WRONG;
 extern const std::string CARD_FLIP;
 extern const std::string CARD_PLACE;
+extern const std::string SFX_LOAD_GAME;
+extern const std::string SFX_SAVE_GAME;
 extern const std::string MUSIC_TRACK;
-extern const std::string MUSIC_ALT_TRACK;
 extern const std::string MUSIC_WINNING_TRACK;
 
 /// Default absolute file path of user game data

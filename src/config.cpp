@@ -107,8 +107,9 @@ const std::string CURSOR_CANCEL =       WORKING_DIR + "audio/cursor_cancel.wav";
 const std::string CURSOR_WRONG =        WORKING_DIR + "audio/cursor_wrong.wav";
 const std::string CARD_FLIP =           WORKING_DIR + "audio/card_flip.wav";
 const std::string CARD_PLACE =          WORKING_DIR + "audio/card_place.wav";
+const std::string SFX_LOAD_GAME =       WORKING_DIR + "audio" + PATH_SEPERATOR + "load_game.wav";
+const std::string SFX_SAVE_GAME =       WORKING_DIR + "audio" + PATH_SEPERATOR + "save_game.wav";
 const std::string MUSIC_TRACK =         WORKING_DIR + "audio/15_ShuffleOrBoogie.ogg";
-const std::string MUSIC_ALT_TRACK =     WORKING_DIR + "audio/06_ShuffleOrBoogie.ogg";
 const std::string MUSIC_WINNING_TRACK = WORKING_DIR + "audio/05_TheWinner.ogg";
 
 const std::string USER_PLAYER1_FILENAME = TTCARDS_DATA_DIR + PATH_SEPERATOR + "player1.json";
