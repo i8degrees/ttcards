@@ -45,6 +45,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
+#include "config.hpp"
+#include "resources.hpp"
 #include "Player.hpp"
 #include "Card.hpp"
 //#include "cpu_Player.hpp"
@@ -52,7 +54,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameOverState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
-#include "config.hpp"
 
 class PlayState: public nom::IState
 {

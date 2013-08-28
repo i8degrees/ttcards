@@ -43,11 +43,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/types.hpp>
 #include <nomlib/math.hpp>
 
+#include "config.hpp"
+#include "resources.hpp"
 #include "Card.hpp"
 #include "CardDebug.hpp"
 #include "CardRules.hpp"
 #include "CardView.hpp"
-#include "config.hpp"
 
 class Board
 {

@@ -41,10 +41,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/sdl/utils.hpp>
 #include <nomlib/system.hpp>
 
+#include "config.hpp"
+#include "version.hpp"
+#include "resources.hpp"
 #include "CardsMenuState.hpp"
 #include "GameObject.hpp"
-#include "version.hpp"
-#include "config.hpp"
 
 class App: public nom::SDL_App // "is-a" relationship
 {

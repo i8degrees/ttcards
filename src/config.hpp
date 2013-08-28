@@ -29,18 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_CFG_HEADERS
 #define GAMEAPP_CFG_HEADERS
 
-#include <string>
 #include <cassert>
 
 /// Cross-platform support files
 #include <nomlib/types.hpp> // data types
 #include <nomlib/system/clock.hpp> // date & time
-#include <nomlib/system/Path.hpp> // pathnames
-
-/// Site-specific constants -- this is likely specific to your own local system
-/// setup; auto-generated at compile-time and therefore must recompile to modify
-/// said constants.
-#include "version.hpp"
 
 // Pretty print macros
 #define TTCARDS_DUMP_VAR(var) \
@@ -102,244 +95,214 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 #define SCALE_FACTOR 2
 
-extern const int SCREEN_WIDTH;
-extern const int SCREEN_HEIGHT;
-extern const int SCREEN_BPP;
+// Global configuration
+constexpr nom::int32 SCREEN_WIDTH = 384 * SCALE_FACTOR;
+constexpr nom::int32 SCREEN_HEIGHT = 224 * SCALE_FACTOR;
+constexpr nom::int32 SCREEN_BPP = 32;
 
 /// As per PSX_SCUS Final Fantasy VIII
-extern const nom::uint32 TICKS_PER_SECOND;
+constexpr nom::uint32 TICKS_PER_SECOND = 15;
 
 /// Calculation used to determine how many ticks to wait between updating
-extern const nom::uint32 SKIP_TICKS;
+constexpr nom::uint32 SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 
 /// Max amount of frames we can skip when the frame-rate is unstable / variable
-extern const nom::uint32 MAX_FRAMESKIP;
+constexpr nom::uint32 MAX_FRAMESKIP = 5;
 
 /// \todo Not implemented; this is what TICKS_PER_SECOND is set at
-extern const nom::uint32 FRAMES_PER_SECOND;
+constexpr nom::uint32 FRAMES_PER_SECOND = 15;
 
 /// Maximum number of players -- both human & AI
-extern const nom::uint32 TOTAL_PLAYERS;
+constexpr nom::uint32 TOTAL_PLAYERS = 2; // +1 padding
 
 /// Maximum number of cards in cards database; see cards.json
-extern const int MAX_COLLECTION;
+constexpr nom::int32 MAX_COLLECTION = 110;
 
 /// Maximum number of cards a player can hold in a game round
-extern const nom::int32 MAX_PLAYER_HAND;
+constexpr nom::int32 MAX_PLAYER_HAND = 5;
 
 // Board grid is a dynamically generated 2D array
-extern const nom::int32 BOARD_GRID_WIDTH;
-extern const nom::int32 BOARD_GRID_HEIGHT;
-
-/// Platform-independent interface for obtaining native pathnames
-extern const nom::Path path;
-/// Resources directory is run-time dependent; set in main.cpp
-extern std::string WORKING_DIR;
-
-// App data
-extern const std::string APP_ICON;
-extern const std::string CARDS_DB;
-
-// Fonts
-extern const std::string SCORE_FONTFACE;
-extern const std::string CARD_FONTFACE;
-extern const std::string INFO_FONTFACE;
-extern const std::string INFO_SMALL_FONTFACE;
-
-// Static backgrounds & sprites
-extern const std::string BOARD_BACKGROUND;
-extern const std::string GAMEOVER_BACKGROUND;
-extern const std::string CARD_ELEMENTS;
-extern const std::string CARD_FACES;
-extern const std::string CARD_BACKGROUNDS;
-extern const std::string INTERFACE_CURSOR;
-extern const std::string MENU_ELEMENTS;
-
-// Audio Resources
-extern const std::string CURSOR_MOVE;
-extern const std::string CURSOR_CANCEL;
-extern const std::string CURSOR_WRONG;
-extern const std::string CARD_FLIP;
-extern const std::string CARD_PLACE;
-extern const std::string SFX_LOAD_GAME;
-extern const std::string SFX_SAVE_GAME;
-extern const std::string MUSIC_TRACK;
-extern const std::string MUSIC_WINNING_TRACK;
-
-/// Default absolute file path of user game data
-extern const std::string USER_PLAYER1_FILENAME;
-extern const std::string USER_PLAYER2_FILENAME;
-extern const std::string USER_BOARD_FILENAME;
+constexpr nom::int32 BOARD_GRID_WIDTH = 3;
+constexpr nom::int32 BOARD_GRID_HEIGHT = 3;
 
 // Sprite sheet IDs
-extern const int ELEMENT_NONE;
-extern const int ELEMENT_EARTH;
-extern const int ELEMENT_FIRE;
-extern const int ELEMENT_HOLY;
-extern const int ELEMENT_ICE;
-extern const int ELEMENT_POISON;
-extern const int ELEMENT_THUNDER;
-extern const int ELEMENT_WATER;
-extern const int ELEMENT_WIND;
+constexpr nom::int32 ELEMENT_NONE = 0;
+constexpr nom::int32 ELEMENT_EARTH = 1;
+constexpr nom::int32 ELEMENT_FIRE = 2;
+constexpr nom::int32 ELEMENT_HOLY = 3;
+constexpr nom::int32 ELEMENT_ICE = 4;
+constexpr nom::int32 ELEMENT_POISON = 5;
+constexpr nom::int32 ELEMENT_THUNDER = 6;
+constexpr nom::int32 ELEMENT_WATER = 7;
+constexpr nom::int32 ELEMENT_WIND = 8;
 
-extern const int NOFACE_ID;
-extern const int NOPLAYER_BACKGROUND_ID;
-extern const int PLAYER1_BACKGROUND_ID;
-extern const int PLAYER2_BACKGROUND_ID;
-
-extern const int INTERFACE_CURSOR_NONE;
-extern const int INTERFACE_CURSOR_LEFT;
-extern const int INTERFACE_CURSOR_RIGHT;
-
-extern const int INTERFACE_MENU_ELEMENT;
-extern const int INTERFACE_MENU_ELEMENT_USED;
-extern const int INTERFACE_MENU_ELEMENT_PAGE_LEFT;
-extern const int INTERFACE_MENU_ELEMENT_PAGE_RIGHT;
-
-extern const int NOPLAYER_ID;
-extern const int PLAYER1_ID;
-extern const int PLAYER2_ID;
-extern const int PLAYER_AI_ID;
+constexpr nom::int32 NOFACE_ID = 0;
+constexpr nom::int32 NOPLAYER_BACKGROUND_ID = 1;
+constexpr nom::int32 PLAYER1_BACKGROUND_ID = 2;
+constexpr nom::int32 PLAYER2_BACKGROUND_ID = 3;
+constexpr nom::int32 INTERFACE_CURSOR_NONE = 0;
+constexpr nom::int32 INTERFACE_CURSOR_LEFT = 1;
+constexpr nom::int32 INTERFACE_CURSOR_RIGHT = 2;
+constexpr nom::int32 INTERFACE_MENU_ELEMENT = 0;
+constexpr nom::int32 INTERFACE_MENU_ELEMENT_USED = 1;
+constexpr nom::int32 INTERFACE_MENU_ELEMENT_PAGE_LEFT = 2;
+constexpr nom::int32 INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
 
 /// Additional resource data; width, height, origin coordinates
-extern const nom::int32 CARD_WIDTH;
-extern const nom::int32 CARD_HEIGHT;
-extern const int BACKGROUND_WIDTH;
-extern const int BACKGROUND_HEIGHT;
-extern const int ELEMENT_WIDTH;
-extern const int ELEMENT_HEIGHT;
-extern const int CURSOR_WIDTH;
-extern const int CURSOR_HEIGHT;
-extern const int MENU_ELEMENT_WIDTH;
-extern const int MENU_ELEMENT_HEIGHT;
+constexpr nom::int32 CARD_WIDTH = 64 * SCALE_FACTOR;
+constexpr nom::int32 CARD_HEIGHT = 64 * SCALE_FACTOR;
 
-extern const nom::int32 BOARD_ORIGIN_X;
-extern const nom::int32 BOARD_ORIGIN_Y;
+constexpr nom::int32 BACKGROUND_WIDTH = CARD_WIDTH;
+constexpr nom::int32 BACKGROUND_HEIGHT = CARD_HEIGHT;
 
-extern const int PLAYER1_ORIGIN_X;
-extern const int PLAYER1_ORIGIN_Y;
+constexpr nom::int32 ELEMENT_WIDTH = 16 * SCALE_FACTOR;
+constexpr nom::int32 ELEMENT_HEIGHT = 16 * SCALE_FACTOR;
 
-extern const int PLAYER2_ORIGIN_X;
-extern const int PLAYER2_ORIGIN_Y;
+constexpr nom::int32 CURSOR_WIDTH = 26 * SCALE_FACTOR;
+constexpr nom::int32 CURSOR_HEIGHT = 16 * SCALE_FACTOR;
 
-extern const int CURSOR_ORIGIN_X;
-extern const int CURSOR_ORIGIN_Y;
+constexpr nom::int32 MENU_ELEMENT_WIDTH = 16 * SCALE_FACTOR;
+constexpr nom::int32 MENU_ELEMENT_HEIGHT = 16 * SCALE_FACTOR;
 
-extern const nom::int32 PLAYER1_CURSOR_ORIGIN_X;
-extern const nom::int32 PLAYER1_CURSOR_ORIGIN_Y;
+// top-left of board grid
+constexpr nom::int32 BOARD_ORIGIN_X = 96 * SCALE_FACTOR;
+constexpr nom::int32 BOARD_ORIGIN_Y = 16 * SCALE_FACTOR;
 
-extern const int PLAYER2_CURSOR_ORIGIN_X;
-extern const int PLAYER2_CURSOR_ORIGIN_Y;
+constexpr nom::int32 PLAYER2_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ); // 16
+constexpr nom::int32 PLAYER2_ORIGIN_Y = BOARD_ORIGIN_Y; // 16
 
-extern const int PLAYER1_SCORE_ORIGIN_X;
-extern const int PLAYER1_SCORE_ORIGIN_Y;
+constexpr nom::int32 PLAYER1_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ) + BOARD_ORIGIN_X + ( CARD_WIDTH * 3 );
+constexpr nom::int32 PLAYER1_ORIGIN_Y = BOARD_ORIGIN_Y;
 
-extern const int PLAYER2_SCORE_ORIGIN_X;
-extern const int PLAYER2_SCORE_ORIGIN_Y;
+constexpr nom::int32 CURSOR_ORIGIN_X = ( SCREEN_WIDTH - CURSOR_WIDTH ) / 2 ;
+constexpr nom::int32 CURSOR_ORIGIN_Y = ( SCREEN_HEIGHT - CURSOR_HEIGHT ) / 2;
 
-extern const int PLAYER1_GAMEOVER_ORIGIN_X;
-extern const int PLAYER1_GAMEOVER_ORIGIN_Y;
+constexpr nom::int32 PLAYER2_CURSOR_ORIGIN_X = BOARD_ORIGIN_X - PLAYER2_ORIGIN_X; // 80
+constexpr nom::int32 PLAYER2_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
 
-extern const int PLAYER2_GAMEOVER_ORIGIN_X;
-extern const int PLAYER2_GAMEOVER_ORIGIN_Y;
+constexpr nom::int32 PLAYER1_CURSOR_ORIGIN_X = BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) - ( CURSOR_WIDTH / 2 ); // 275
+constexpr nom::int32 PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
 
-extern const int CARD_ORIGIN_X;
-extern const int CARD_ORIGIN_Y;
+// TODO (player scores):
+//
+// SCREEN_HEIGHT - 48
+// 64 * 5
+constexpr nom::int32 PLAYER1_SCORE_ORIGIN_X = 320 * SCALE_FACTOR;
+constexpr nom::int32 PLAYER1_SCORE_ORIGIN_Y = 176 * SCALE_FACTOR;
 
-extern const int CARD_FACE_ORIGIN_X;
-extern const int CARD_FACE_ORIGIN_Y;
+constexpr nom::int32 PLAYER2_SCORE_ORIGIN_X = 32 * SCALE_FACTOR;
+constexpr nom::int32 PLAYER2_SCORE_ORIGIN_Y = 176 * SCALE_FACTOR;
 
-extern const int BACKGROUND_ORIGIN_X;
-extern const int BACKGROUND_ORIGIN_Y;
+// TODO: relocate
+constexpr nom::int32 PLAYER1_GAMEOVER_ORIGIN_X = BOARD_ORIGIN_X - ( CARD_WIDTH );
+constexpr nom::int32 PLAYER1_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 3 );
 
-extern const int ELEMENT_ORIGIN_X;
-extern const int ELEMENT_ORIGIN_Y;
+constexpr nom::int32 PLAYER2_GAMEOVER_ORIGIN_X = BOARD_ORIGIN_X - ( CARD_WIDTH );
+constexpr nom::int32 PLAYER2_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT ) + ( CARD_HEIGHT / 2 ) + ( CARD_HEIGHT / 4 );
 
-extern const int RANK_NORTH_ORIGIN_X;
-extern const int RANK_NORTH_ORIGIN_Y;
+constexpr nom::int32 CARD_ORIGIN_X = 0;
+constexpr nom::int32 CARD_ORIGIN_Y = 0;
 
-extern const int RANK_EAST_ORIGIN_X;
-extern const int RANK_EAST_ORIGIN_Y;
+constexpr nom::int32 CARD_FACE_ORIGIN_X = CARD_ORIGIN_X;
+constexpr nom::int32 CARD_FACE_ORIGIN_Y = CARD_ORIGIN_Y;
 
-extern const int RANK_SOUTH_ORIGIN_X;
-extern const int RANK_SOUTH_ORIGIN_Y;
+constexpr nom::int32 BACKGROUND_ORIGIN_X = CARD_ORIGIN_X;
+constexpr nom::int32 BACKGROUND_ORIGIN_Y = CARD_ORIGIN_Y;
 
-extern const int RANK_WEST_ORIGIN_X;
-extern const int RANK_WEST_ORIGIN_Y;
+constexpr nom::int32 ELEMENT_ORIGIN_X = ( CARD_ORIGIN_X + 42 ) * SCALE_FACTOR;
+constexpr nom::int32 ELEMENT_ORIGIN_Y = ( CARD_ORIGIN_Y + 5 ) * SCALE_FACTOR;
 
-extern const int CARD_ID_ORIGIN_X;
-extern const int CARD_ID_ORIGIN_Y;
+constexpr nom::int32 RANK_NORTH_ORIGIN_X = 8 * SCALE_FACTOR;
+constexpr nom::int32 RANK_NORTH_ORIGIN_Y = 3 * SCALE_FACTOR;
 
-extern const int PICK_CARDS_MENU_ORIGIN_X;
-extern const int PICK_CARDS_MENU_ORIGIN_Y;
+constexpr nom::int32 RANK_EAST_ORIGIN_X = 12 * SCALE_FACTOR;
+constexpr nom::int32 RANK_EAST_ORIGIN_Y = 11 * SCALE_FACTOR;
 
-extern const nom::int32 PICK_CARDS_MENU_WIDTH;
-extern const nom::int32 PICK_CARDS_MENU_HEIGHT;
+constexpr nom::int32 RANK_SOUTH_ORIGIN_X = RANK_NORTH_ORIGIN_X;
+constexpr nom::int32 RANK_SOUTH_ORIGIN_Y = 20 * SCALE_FACTOR;
 
-extern const nom::int32 MENU_CARDS_CURSOR_ORIGIN_X;
-extern const nom::int32 MENU_CARDS_CURSOR_ORIGIN_Y;
+constexpr nom::int32 RANK_WEST_ORIGIN_X = 4 * SCALE_FACTOR;
+constexpr nom::int32 RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
 
-extern const int MENU_CARDS_TITLE_ORIGIN_X;
-extern const int MENU_CARDS_TITLE_ORIGIN_Y;
+constexpr nom::int32 CARD_ID_ORIGIN_X = 26 * SCALE_FACTOR;
+constexpr nom::int32 CARD_ID_ORIGIN_Y = 4 * SCALE_FACTOR;
 
-extern const int MENU_CARDS_TITLE_PAGE_ORIGIN_X;
-extern const int MENU_CARDS_TITLE_PAGE_ORIGIN_Y;
+// interface_pickOutCards() Menu
+constexpr nom::int32 PICK_CARDS_MENU_ORIGIN_X = 60 * SCALE_FACTOR;
+constexpr nom::int32 PICK_CARDS_MENU_ORIGIN_Y = 25 * SCALE_FACTOR;
 
-extern const int MENU_CARDS_TITLE_NUM_ORIGIN_X;
-extern const int MENU_CARDS_TITLE_NUM_ORIGIN_Y;
+constexpr nom::int32 PICK_CARDS_MENU_WIDTH = 164 * SCALE_FACTOR;
+constexpr nom::int32 PICK_CARDS_MENU_HEIGHT = 196 * SCALE_FACTOR;
 
-extern const int MENU_CARDS_FIELD_ORIGIN_X;
-extern const int MENU_CARDS_FIELD_ORIGIN_Y;
+// Starting cursor positioning
+constexpr nom::int32 MENU_CARDS_CURSOR_ORIGIN_X = 40 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_CURSOR_ORIGIN_Y = 34 * SCALE_FACTOR;
 
-extern const int MENU_CARDS_HELPER_ORIGIN_X;
-extern const int MENU_CARDS_HELPER_ORIGIN_Y;
+// "Cards" Title Text
+constexpr nom::int32 MENU_CARDS_TITLE_ORIGIN_X = 64 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_TITLE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
 
-extern const int MENU_CARDS_NAME_ORIGIN_X;
-extern const int MENU_CARDS_NAME_ORIGIN_Y;
+// "P" (page) number header text
+constexpr nom::int32 MENU_CARDS_TITLE_PAGE_ORIGIN_X = 119 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_TITLE_PAGE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
 
-extern const int MENU_CARDS_NUM_ORIGIN_X;
-extern const int MENU_CARDS_NUM_ORIGIN_Y;
+// "Num" header text
+constexpr nom::int32 MENU_CARDS_TITLE_NUM_ORIGIN_X = 184 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_TITLE_NUM_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
 
-extern const int MENU_CARDS_PAGE_LEFT_ORIGIN_X;
-extern const int MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
+// Field elements
+constexpr nom::int32 MENU_CARDS_FIELD_ORIGIN_X = 64 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_FIELD_ORIGIN_Y = 30 * SCALE_FACTOR;
 
-extern const int MENU_CARDS_PAGE_RIGHT_ORIGIN_X;
-extern const int MENU_CARDS_PAGE_RIGHT_ORIGIN_Y;
+// Card selection helper element
+constexpr nom::int32 MENU_CARDS_HELPER_ORIGIN_X = MENU_CARDS_FIELD_ORIGIN_X;
+constexpr nom::int32 MENU_CARDS_HELPER_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
 
-extern const nom::int32 INFO_BOX_WIDTH;
-extern const nom::int32 INFO_BOX_HEIGHT;
+// Card name text
+constexpr nom::int32 MENU_CARDS_NAME_ORIGIN_X = 80 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_NAME_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
 
-extern const nom::int32 INFO_BOX_ORIGIN_X;
-extern const nom::int32 INFO_BOX_ORIGIN_Y;
-extern const nom::int32 INFO_BOX_TEXT_ORIGIN_Y;
+// Number of cards text
+constexpr nom::int32 MENU_CARDS_NUM_ORIGIN_X = 210 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_NUM_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
 
-extern const nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_X;
-extern const nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_Y;
+constexpr nom::int32 MENU_CARDS_PAGE_LEFT_ORIGIN_X = 58 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_PAGE_LEFT_ORIGIN_Y = 208 * SCALE_FACTOR;
 
-extern const nom::int32 DEBUG_BOX_WIDTH;
-extern const nom::int32 DEBUG_BOX_HEIGHT;
+constexpr nom::int32 MENU_CARDS_PAGE_RIGHT_ORIGIN_X = 210 * SCALE_FACTOR;
+constexpr nom::int32 MENU_CARDS_PAGE_RIGHT_ORIGIN_Y = MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
 
-extern const nom::int32 DEBUG_BOX_ORIGIN_X;
-extern const nom::int32 DEBUG_BOX_ORIGIN_Y;
-extern const nom::int32 DEBUG_BOX_TEXT_ORIGIN_Y;
+constexpr nom::int32 INFO_BOX_WIDTH = 176 * SCALE_FACTOR;
+constexpr nom::int32 INFO_BOX_HEIGHT = 24 * SCALE_FACTOR;
 
-extern const nom::int32 PAUSE_BOX_WIDTH;
-extern const nom::int32 PAUSE_BOX_HEIGHT;
+constexpr nom::int32 INFO_BOX_ORIGIN_X = 104 * SCALE_FACTOR;
+constexpr nom::int32 INFO_BOX_ORIGIN_Y = 194 * SCALE_FACTOR;
+constexpr nom::int32 INFO_BOX_TEXT_ORIGIN_Y = 196 * SCALE_FACTOR;
 
-extern const nom::int32 PAUSE_BOX_ORIGIN_X;
-extern const nom::int32 PAUSE_BOX_ORIGIN_Y;
+constexpr nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_X = 108 * SCALE_FACTOR;
+constexpr nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_Y = 194 * SCALE_FACTOR;
 
-extern const nom::int32 PLAYER_INDICATOR_WIDTH;
-extern const nom::int32 PLAYER_INDICATOR_HEIGHT;
+constexpr nom::int32 DEBUG_BOX_WIDTH = 43 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_HEIGHT = 20 * SCALE_FACTOR;
 
-extern const nom::int32 PLAYER1_INDICATOR_ORIGIN_X;
-extern const nom::int32 PLAYER1_INDICATOR_ORIGIN_Y;
+constexpr nom::int32 DEBUG_BOX_ORIGIN_X = 170 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_ORIGIN_Y = 8 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_TEXT_ORIGIN_Y = 10 * SCALE_FACTOR;
 
-extern const nom::int32 PLAYER2_INDICATOR_ORIGIN_X;
-extern const nom::int32 PLAYER2_INDICATOR_ORIGIN_Y;
+constexpr nom::int32 PAUSE_BOX_WIDTH = 176 * SCALE_FACTOR;
+constexpr nom::int32 PAUSE_BOX_HEIGHT = 24 * SCALE_FACTOR;
 
-extern const std::string LOADING_TEXT;
-extern const std::string SHORT_VERSION_INFO;
+constexpr nom::int32 PAUSE_BOX_ORIGIN_X = ( SCREEN_WIDTH - PAUSE_BOX_WIDTH ) / 2;
+constexpr nom::int32 PAUSE_BOX_ORIGIN_Y = ( SCREEN_HEIGHT - PAUSE_BOX_HEIGHT ) / 2;
+
+constexpr nom::int32 PLAYER_INDICATOR_WIDTH = 16 * SCALE_FACTOR;
+constexpr nom::int32 PLAYER_INDICATOR_HEIGHT = 16 * SCALE_FACTOR;
+
+constexpr nom::int32 PLAYER1_INDICATOR_ORIGIN_X = 320 * SCALE_FACTOR;
+constexpr nom::int32 PLAYER1_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
+
+constexpr nom::int32 PLAYER2_INDICATOR_ORIGIN_X = 40 * SCALE_FACTOR;
+constexpr nom::int32 PLAYER2_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
 
 /// Card elemental type
 enum {

@@ -37,11 +37,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
+#include "config.hpp"
+#include "resources.hpp"
 #include "Card.hpp"
 #include "CardsMenuState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
-#include "config.hpp"
 
 class GameOverState: public nom::IState
 {

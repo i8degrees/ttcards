@@ -38,22 +38,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 
 /// Maximum level a card can contain -- starting at 1
-const nom::int32 MAX_LEVEL = 10;
+constexpr nom::int32 MAX_LEVEL = 10;
 
 /// Maximum type a card can contain -- starting at 1
-const nom::int32 MAX_TYPE = 4;
+constexpr nom::int32 MAX_TYPE = 4;
 
 /// Maximum element a card can contain -- starting at 1
-const nom::int32 MAX_ELEMENT = 8;
+constexpr nom::int32 MAX_ELEMENT = 8;
 
 /// Maximum rank a card can contain -- starting at 1
-const nom::int32 MAX_RANK = 10;
+constexpr nom::int32 MAX_RANK = 10;
 
 /// Maximum number of rank attributes
-const nom::int32 MAX_RANKS = 4;
+constexpr nom::int32 MAX_RANKS = 4;
 
 /// Maximum name length a card can contain
-const nom::int32 MAX_NAME = 14;
+constexpr nom::int32 MAX_NAME = 14;
 
 class Card
 {
