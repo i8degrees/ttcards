@@ -118,67 +118,165 @@ bool App::onInit ( void )
 
   this->game->context.setWindowTitle( LOADING_TEXT );
 
-  this->game->info_text.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
-  this->game->info_small_text.load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  // Commence the initialization of game objects
+  this->game->menu_elements = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
+  this->game->menu_elements.setSheetDimensions ( 58, 16, 0, 0 );
 
-  // Provide a backup in case our pretty background image resource is not found
-  if ( ! this->game->background.load( BOARD_BACKGROUND, nom::Color::Black, true ) )
+  this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+
+  // Commence the loading of game resources
+  if ( this->game->info_text.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true ) == false )
   {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + INFO_FONTFACE );
+    return false;
+  }
+
+  if ( this->game->info_text_gray.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + INFO_FONTFACE );
+    return false;
+  }
+
+  if ( this->game->info_small_text.load ( INFO_SMALL_FONTFACE, nom::Color ( 110, 144, 190 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + INFO_FONTFACE );
+    return false;
+  }
+
+  if ( this->game->menu_elements.load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + MENU_ELEMENTS );
+    return false;
+  }
+
+  if ( this->game->background.load( BOARD_BACKGROUND, nom::Color::Black, true ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + BOARD_BACKGROUND );
     rectangle.Draw ( this->game->context.get() );
   }
   else
   {
+    this->game->background.scale2x();
     this->game->background.Draw( this->game->context.get() );
   }
+
   this->game->context.Update();
 
+  // Possible bug in SDL for OS X
+  //
   // We are not able to see the screen update of anything we do here unless we
   // poll for an events afterwards. Oddly enough, this issue only happens when
   // we are launching from an application bundle under OS X -- normal binaries
   // do not need this workaround.
-  this->PollEvents( &event ); // Possible bug in SDL for OS X ..?
+  this->PollEvents( &event );
 
-  this->game->collection.load( CARDS_DB );
+  if ( this->game->score_text.load ( SCORE_FONTFACE, nom::Color::White ) == true )
+  {
+    this->game->score_text.setColor ( nom::Color::White );
+    this->game->score_text.setFontSize ( 36 );
+  }
+  else
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + SCORE_FONTFACE );
+    return false;
+  }
 
-  this->game->info_text_gray.load ( INFO_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  if ( this->game->gameover_text.load ( GAMEOVER_FONTFACE, false ) == true )
+  {
+    this->game->gameover_text.setFontSize ( 36 );
+  }
+  else
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + GAMEOVER_FONTFACE );
+    return false;
+  }
 
-  this->game->score_text.load ( SCORE_FONTFACE, nom::Color::White, 36 );
-  this->game->gameover_text.load ( SCORE_FONTFACE, 36 );
+  if ( this->game->gameover_background.load ( GAMEOVER_BACKGROUND, nom::Color::Black, true, 0 ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + GAMEOVER_BACKGROUND );
+    return false;
+  }
 
-  this->game->gameover_background.load ( GAMEOVER_BACKGROUND, nom::Color::Black, true, 0 ); // use no transparency
+  if ( this->game->cursor.load ( INTERFACE_CURSOR, nom::Color::Black, true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + INTERFACE_CURSOR );
+    return false;
+  }
 
-  this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->game->cursor.load ( INTERFACE_CURSOR, nom::Color::Black, true );
-  this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+  if ( this->game->collection.load( CARDS_DB ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + CARDS_DB );
+    return false;
+  }
 
-  this->game->card.load();
-  this->game->board.clear();
+  if ( this->game->card.load() == false )
+  {
+    return false;
+  }
 
-  this->game->cursor_move_buffer.load ( CURSOR_MOVE );
+  // Rescale our game resources if necessary.
+  this->game->info_text.scale2x();
+  this->game->info_small_text.scale2x();
+  this->game->menu_elements.scale2x();
+  this->game->info_text_gray.scale2x();
+  this->game->gameover_background.scale2x();
+  this->game->cursor.scale2x();
+
+  // Load optional audio resources
+  if ( this->game->cursor_move_buffer.load ( CURSOR_MOVE ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + CURSOR_MOVE );
+  }
+
+  if ( this->game->cursor_cancel_buffer.load ( CURSOR_CANCEL ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + CURSOR_CANCEL );
+  }
+
+  if ( this->game->cursor_wrong_buffer.load ( CURSOR_WRONG ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + CURSOR_WRONG );
+  }
+
+  if ( this->game->card_place_buffer.load ( CARD_PLACE ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + CARD_PLACE );
+  }
+
+  if ( this->game->card_flip_buffer.load ( CARD_FLIP ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + CARD_FLIP );
+  }
+
+  if ( this->game->load_game_buffer.load ( SFX_LOAD_GAME ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + SFX_LOAD_GAME );
+  }
+
+  if ( this->game->save_game_buffer.load ( SFX_SAVE_GAME ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + SFX_SAVE_GAME );
+  }
+
+  if ( this->game->music_buffer.load ( MUSIC_TRACK ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + MUSIC_TRACK );
+  }
+
+  if ( this->game->winning_buffer.load ( MUSIC_WINNING_TRACK ) == false )
+  {
+TTCARDS_LOG_INFO ( "Could not load resource file: " + MUSIC_WINNING_TRACK );
+  }
+
   this->game->cursor_move.setBuffer ( this->game->cursor_move_buffer );
-
-  this->game->cursor_cancel_buffer.load ( CURSOR_CANCEL );
   this->game->cursor_cancel.setBuffer ( this->game->cursor_cancel_buffer );
-
-  this->game->cursor_wrong_buffer.load ( CURSOR_WRONG );
   this->game->cursor_wrong.setBuffer ( this->game->cursor_wrong_buffer );
-
-  this->game->card_place_buffer.load ( CARD_PLACE );
   this->game->card_place.setBuffer ( this->game->card_place_buffer );
-
-  this->game->card_flip_buffer.load ( CARD_FLIP );
   this->game->card_flip.setBuffer ( this->game->card_flip_buffer );
-
-  this->game->load_game_buffer.load ( SFX_LOAD_GAME );
   this->game->load_game.setBuffer ( this->game->load_game_buffer );
-
-  this->game->save_game_buffer.load ( SFX_SAVE_GAME );
   this->game->save_game.setBuffer ( this->game->save_game_buffer );
-
-  this->game->music_buffer.load ( MUSIC_TRACK );
   this->game->music_track.setBuffer ( this->game->music_buffer );
-
-  this->game->winning_buffer.load ( MUSIC_WINNING_TRACK );
   this->game->winning_track.setBuffer ( this->game->winning_buffer );
 
   this->game->music_track.Play();
@@ -331,6 +429,7 @@ int main ( int argc, char* argv[] )
 
   if ( engine.onInit() == false )
   {
+TTCARDS_LOG_ERR ( "Could not initialize game." );
     return EXIT_FAILURE;
   }
 

@@ -86,10 +86,6 @@ void CardsMenuState::onInit ( void )
   this->game->info_text.setText ( this->game->collection.cards[0].getName() );
   this->info_text_height = this->game->info_text.getFontHeight();
 
-  this->menu_element = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->menu_element.load ( MENU_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
-  this->menu_element.setSheetDimensions ( 58, 16, 0, 0 );
-
   this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
   this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image
   this->game->cursor.setState ( 0 ); // default state for navigating card menu
@@ -204,7 +200,7 @@ void CardsMenuState::Update ( nom::uint32 delta_time )
   this->updateCursor();
 
   this->menu_box.Update();
-  //this->menu_element.Update();
+  //this->game->menu_elements.Update();
 
   this->game->context.Update();
 }
@@ -252,15 +248,15 @@ void CardsMenuState::Draw ( void* video_buffer )
     this->game->info_small_text.Draw ( video_buffer );
 
     // Draw the card selection helper element
-    this->menu_element.setPosition ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
+    this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
 
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
-      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_USED );
+      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_USED );
     else
-      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT );
+      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT );
 
-    this->menu_element.Update();
-    this->menu_element.Draw ( video_buffer );
+    this->game->menu_elements.Update();
+    this->game->menu_elements.Draw ( video_buffer );
 
     // Draw the card's name onto our menu box
     // FIXME ( this->game->info_text_gray )
@@ -300,18 +296,18 @@ void CardsMenuState::Draw ( void* video_buffer )
     // Lastly, check to see which page indicators we need to draw
     if ( current_index >= per_page )
     {
-      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
-      this->menu_element.setPosition ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
-      this->menu_element.Update();
-      this->menu_element.Draw ( video_buffer );
+      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
+      this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
+      this->game->menu_elements.Update();
+      this->game->menu_elements.Draw ( video_buffer );
     }
 
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
-      this->menu_element.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
-      this->menu_element.setPosition ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
-      this->menu_element.Update();
-      this->menu_element.Draw ( video_buffer );
+      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
+      this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
+      this->game->menu_elements.Update();
+      this->game->menu_elements.Draw ( video_buffer );
     }
 
     // Move on to the next card in stack to draw

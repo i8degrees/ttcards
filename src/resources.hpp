@@ -48,6 +48,7 @@ extern std::string WORKING_DIR;
 
 // Fonts
 extern const std::string SCORE_FONTFACE;
+extern const std::string GAMEOVER_FONTFACE;
 extern const std::string CARD_FONTFACE;
 extern const std::string INFO_FONTFACE;
 extern const std::string INFO_SMALL_FONTFACE;

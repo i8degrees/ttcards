@@ -48,11 +48,35 @@ TTCARDS_LOG_CLASSINFO;
 
 bool CardView::load ( void )
 {
-  this->card_text.load ( CARD_FONTFACE, nom::Color ( 110, 144, 190 ), true );
+  if ( this->card_text.load ( CARD_FONTFACE, nom::Color ( 110, 144, 190 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_FONTFACE );
+    return false;
+  }
 
-  this->card_face.load ( CARD_FACES, nom::Color ( 0, 0, 0 ), true );
-  this->card_background.load ( CARD_BACKGROUNDS, nom::Color ( 0, 0, 0 ), true );
-  this->card_element.load ( CARD_ELEMENTS, nom::Color ( 0, 0, 0 ), true );
+  if ( this->card_face.load ( CARD_FACES, nom::Color ( 0, 0, 0 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_FACES );
+    return false;
+  }
+
+  if ( this->card_background.load ( CARD_BACKGROUNDS, nom::Color ( 0, 0, 0 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_BACKGROUNDS );
+    return false;
+  }
+
+  if ( this->card_element.load ( CARD_ELEMENTS, nom::Color ( 0, 0, 0 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_ELEMENTS );
+    return false;
+  }
+
+  // Rescale our game resources if necessary.
+  this->card_text.scale2x();
+  this->card_face.scale2x();
+  this->card_background.scale2x();
+  this->card_element.scale2x();
 
   return true;
 }

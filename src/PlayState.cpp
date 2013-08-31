@@ -71,9 +71,6 @@ void PlayState::onInit ( void )
   std::default_random_engine rand_generator ( seed );
   std::uniform_int_distribution<nom::uint32> distribution ( 0, TOTAL_PLAYERS - 1 );
 
-  this->game->score_text.setColor ( nom::Color::White );
-  this->game->gameover_text.setColor ( nom::Color::White );
-
   this->game->cursor.setPosition ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->game->cursor.setState ( 0 ); // default state; player hand select
@@ -814,16 +811,19 @@ void PlayState::Draw ( void *video_buffer )
 
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
+      this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "You win!" );
       gameover_state = 1;
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
+      this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "You lose..." );
       gameover_state = 2;
     }
     else // Assume a tie
     {
+      this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "Tie!" );
       //gameover_state = 0;
     }

@@ -28,59 +28,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "resources.hpp"
 
-#ifndef SCALE_FACTOR // we ought to already be defined, but just in case!
-  #define SCALE_FACTOR 1
-#endif
-
 // Resource configuration
 const nom::Path path;
 std::string WORKING_DIR;
 
 const std::string SCORE_FONTFACE =      WORKING_DIR + "fonts/EnvyCodeRb.ttf";
+const std::string GAMEOVER_FONTFACE =   WORKING_DIR + "fonts/EnvyCodeRb.ttf";
+const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/VIII_cards.png";
+const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/VIII.png";
+const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/VIII_small.png";
 
-#if SCALE_FACTOR == 2 // high resolution (scale me up times two)
-
-  const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/hires/2/VIII_cards.png";
-  const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/hires/2/VIII.png";
-  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/hires/2/VIII_small.png";
-
-  const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/hires/2/board.png";
-  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/hires/2/game-over_background.png";
-  const std::string CARD_ELEMENTS =       WORKING_DIR + "images/hires/2/elements.png";
-  const std::string CARD_FACES =          WORKING_DIR + "images/hires/2/faces.png";
-  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/hires/2/backgrounds.png";
-  const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/hires/2/cursors.png";
-  const std::string MENU_ELEMENTS =       WORKING_DIR + "images/hires/2/menu_elements.png";
-
-#elif SCALE_FACTOR == 3 // high resolution (scale me up times three)
-
-  const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/hires/3/VIII_cards.png";
-  const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/hires/3/VIII.png";
-  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/hires/3/VIII_small.png";
-
-  const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/hires/3/board.png";
-  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/hires/3/game-over_background.png";
-  const std::string CARD_ELEMENTS =       WORKING_DIR + "images/hires/3/elements.png";
-  const std::string CARD_FACES =          WORKING_DIR + "images/hires/3/faces.png";
-  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/hires/3/backgrounds.png";
-  const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/hires/3/cursors.png";
-  const std::string MENU_ELEMENTS =       WORKING_DIR + "images/hires/3/menu_elements.png";
-
-#else // defaults to original scale (low resolution)
-
-  const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/VIII_cards.png";
-  const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/VIII.png";
-  const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/VIII_small.png";
-
-  const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/board.png";
-  const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/game-over_background.png";
-  const std::string CARD_ELEMENTS =       WORKING_DIR + "images/elements.png";
-  const std::string CARD_FACES =          WORKING_DIR + "images/faces.png";
-  const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/backgrounds.png";
-  const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/cursors.png";
-  const std::string MENU_ELEMENTS =       WORKING_DIR + "images/menu_elements.png";
-
-#endif // SCALE_FACTOR defined
+const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/board.png";
+const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/game-over_background.png";
+const std::string CARD_ELEMENTS =       WORKING_DIR + "images/elements.png";
+const std::string CARD_FACES =          WORKING_DIR + "images/faces.png";
+const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/backgrounds.png";
+const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/cursors.png";
+const std::string MENU_ELEMENTS =       WORKING_DIR + "images/menu_elements.png";
 
 const std::string CURSOR_MOVE =         WORKING_DIR + "audio" + path.native() + "cursor_move.wav";
 const std::string CURSOR_CANCEL =       WORKING_DIR + "audio" + path.native() + "cursor_cancel.wav";

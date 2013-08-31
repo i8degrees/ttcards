@@ -41,19 +41,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardView
 {
   public:
+    /// Default constructor
     CardView ( void );
+
+    /// Default destructor
     ~CardView ( void );
 
+    /// Load the resources used in rendering a card
+    ///
+    /// The failure of any of these resources results in failure
     bool load ( void );
 
     bool drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y );
     bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );
 
   private:
+    nom::BitmapFont card_text;
     nom::Sprite card_face;
     nom::Sprite card_background;
     nom::Sprite card_element;
-    nom::BitmapFont card_text;
 };
 
 #endif // GAMEAPP_CARD_VIEW_HEADERS defined
