@@ -177,11 +177,25 @@ TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_BOARD_FILENAME );
 
     case SDLK_l: // Load saved game
     {
-      if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
+      if ( mod == KMOD_LMETA ) // Special game load (player1 always wins!)
       {
+        if ( this->game->hand[0].load ( TTCARDS_DATA_DIR + path.native() + "player1_always-win.json" ) == false )
+        {
+// FIXME
+//TTCARDS_LOG_ERR ( "Unable to load game data at: " + "player1_always-win.json" );
+TTCARDS_LOG_ERR ( "Unable to load game data at: player1_always-win.json" );
+          this->game->cursor_wrong.Play();
+          break;
+        }
+      }
+      else // Normal game load for player1
+      {
+        if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
+        {
 TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER1_FILENAME );
-        this->game->cursor_wrong.Play();
-        break;
+          this->game->cursor_wrong.Play();
+          break;
+        }
       }
 
       if ( this->game->hand[1].load( USER_PLAYER2_FILENAME ) == false )
@@ -198,8 +212,10 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
         break;
       }
 
+      // Successful load of saved game!
+      this->updateScore();
       this->resetCursor();
-      this->game->load_game.Play(); // Successful load of saved game!
+      this->game->load_game.Play();
     }
     break;
 
