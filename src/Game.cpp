@@ -171,10 +171,21 @@ TTCARDS_LOG_INFO ( "Could not load resource file: " + BOARD_BACKGROUND );
   // do not need this workaround.
   this->PollEvents( &event );
 
-  if ( this->game->score_text.load ( SCORE_FONTFACE, nom::Color::White ) == true )
+  if ( this->game->score_text[0].load ( SCORE_FONTFACE, nom::Color::White ) == true )
   {
-    this->game->score_text.setColor ( nom::Color::White );
-    this->game->score_text.setFontSize ( 36 );
+    this->game->score_text[0].setColor ( nom::Color::White );
+    this->game->score_text[0].setFontSize ( 36 );
+  }
+  else
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + SCORE_FONTFACE );
+    return false;
+  }
+
+  if ( this->game->score_text[1].load ( SCORE_FONTFACE, nom::Color::White ) == true )
+  {
+    this->game->score_text[1].setColor ( nom::Color::White );
+    this->game->score_text[1].setFontSize ( 36 );
   }
   else
   {

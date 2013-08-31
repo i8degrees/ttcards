@@ -104,8 +104,8 @@ class PlayState: public nom::IState
     void updateCursor ( void );
     void drawCursor ( void* video_buffer );
 
+    /// Update each player's scoreboard
     void updateScore ( void );
-    void drawScore ( void* video_buffer );
 
     std::shared_ptr<GameObject> game;
 
@@ -117,6 +117,9 @@ class PlayState: public nom::IState
 
     /// x, y coords mapping for player1, player2 cursor starting position
     nom::Coords player_cursor_coords[2];
+
+    /// x, y coords mapping for player1, player2 scoreboard positions
+    nom::Coords player_scoreboard[2];
 
     /// y coords mapping for cursor -> card position index
     nom::Coords cursor_coords_map[5];

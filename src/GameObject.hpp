@@ -94,7 +94,7 @@ struct GameObject
   nom::Text gameover_text;
 
   /// Scoreboard text
-  nom::TrueTypeFont score_text;
+  nom::TrueTypeFont score_text[2];
 
   /// Menu elements
   nom::Sprite menu_elements;

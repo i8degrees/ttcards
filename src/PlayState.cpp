@@ -88,8 +88,18 @@ void PlayState::onInit ( void )
   this->player_cursor_coords[0] = nom::Coords ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   this->player_cursor_coords[1] = nom::Coords ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
 
+  // Compute the player's scoreboard X, Y coordinate positions
+  this->player_scoreboard[0].setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->player_scoreboard[1].setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
+
+  this->game->score_text[0].setText ( this->player[0].getScoreAsString() );
+  this->game->score_text[0].Update();
+
+  this->game->score_text[1].setText ( this->player[1].getScoreAsString() );
+  this->game->score_text[1].Update();
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
@@ -392,6 +402,8 @@ void PlayState::player_turn ( unsigned int player )
 // Helper method for incrementing to next player's turn
 void PlayState::endTurn ( void )
 {
+  this->updateScore();
+
   this->unlockSelectedCard();
 
   this->game->hand[PLAYER1].clearSelectedCard();
@@ -693,34 +705,23 @@ void PlayState::drawCursor ( void* video_buffer )
   this->game->cursor.Draw ( video_buffer );
 }
 
-// Scoring: board_card_count + player_card_count
 void PlayState::updateScore ( void )
 {
-  unsigned int hand_count = 0; // player hand total count
-  unsigned int board_count = 0; // board card total count
-  unsigned int turn = 0;
-
-  for ( turn = 0; turn < TOTAL_PLAYERS; turn++ )
+  for ( nom::uint32 players = 0; players < TOTAL_PLAYERS; players++ )
   {
-    board_count = this->game->board.getPlayerCount ( turn + 1 );
+    // Number of cards player owns on the board
+    nom::uint32 board_count = this->game->board.getPlayerCount ( players + 1 );
 
-    hand_count = this->game->hand[turn].size();
+    // Number of cards player has remaining
+    nom::uint32 hand_count = this->game->hand[players].size();
 
-    this->player[turn].setScore ( board_count + hand_count );
+    this->player[players].setScore ( board_count + hand_count );
+
+    // Update the font responsible for rendering the score
+    this->game->score_text[players].setText ( this->player[players].getScoreAsString() );
+    this->game->score_text[players].setPosition ( nom::Coords ( this->player_scoreboard[players].x, this->player_scoreboard[players].y ) );
+    this->game->score_text[players].Update();
   }
-}
-
-void PlayState::drawScore ( void *video_buffer )
-{
-  this->game->score_text.setText ( std::to_string ( this->player[0].getScore() ) );
-  this->game->score_text.setPosition ( nom::Coords( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y ) );
-  this->game->score_text.Update();
-  this->game->score_text.Draw ( video_buffer );
-
-  this->game->score_text.setText ( std::to_string ( this->player[1].getScore() ) );
-  this->game->score_text.setPosition ( nom::Coords( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y ) );
-  this->game->score_text.Update();
-  this->game->score_text.Draw ( video_buffer );
 }
 
 void PlayState::Update ( nom::uint32 delta_time )
@@ -778,8 +779,6 @@ void PlayState::Update ( nom::uint32 delta_time )
   this->debug_box.Update();
   this->info_box.Update();
 
-  this->updateScore();
-
   this->game->context.Update();
 }
 
@@ -798,7 +797,9 @@ void PlayState::Draw ( void *video_buffer )
 
   this->showCardInfoBox ( video_buffer );
 
-  this->drawScore ( video_buffer );
+  // Draw each player's scoreboard
+  this->game->score_text[0].Draw ( video_buffer );
+  this->game->score_text[1].Draw ( video_buffer );
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
