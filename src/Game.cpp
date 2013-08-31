@@ -132,15 +132,6 @@ TTCARDS_LOG_CLASSINFO;
 
 bool App::onInit ( void )
 {
-  // Obtain a list of available video modes so we can determine how to render
-  // the game (scale factors, positioning, etc.).
-  nom::VideoModeList modes = this->game->context.getVideoModes();
-
-  for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
-  {
-    modes[idx].pp();
-  }
-
   nom::Rectangle rectangle  ( nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT ),
                               nom::Color::Gray
                             );
@@ -161,18 +152,20 @@ bool App::onInit ( void )
   this->game->context.setWindowIcon ( this->game->config.getString("APP_ICON") );
 #endif
 
-  this->game->context.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
-
-  this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
-
-  this->game->context.setWindowTitle( LOADING_TEXT );
-
+  // Obtain a list of available video modes so we can determine how to render
+  // the game (scale factors, positioning, etc.).
   nom::VideoModeList modes = this->game->context.getVideoModes();
 
   for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
   {
     modes[idx].pp();
   }
+
+  this->game->context.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+
+  this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
+
+  this->game->context.setWindowTitle( LOADING_TEXT );
 
   // Commence the initialization of game objects
   this->game->menu_elements = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
@@ -540,15 +533,6 @@ int32_t App::Run ( void )
 
 int main ( int argc, char* argv[] )
 {
-  nom::Display testme;
-  nom::VideoModeList modes = testme.getVideoModes();
-
-  for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
-  {
-    modes[idx].pp();
-  }
-  //exit ( 0 );
-
   App engine ( argc, argv );
 
   if ( engine.onInit() == false )
