@@ -1,11 +1,15 @@
-TTcards
-=======
+BUGS
+====
 
-Known Bugs
+Unresolved
 ----------
 
-Squashed Bugs
--------------
+* Text alignment issues with info_text object; this is likely due to the shared
+nature of the object between states and its potential leftover values with the
+font size and or text buffer (the calculations require the current text string).
+
+Resolved
+--------
 
 * Consistent crashes upon PopStateThenChangeState method call *only* when using
 while loop within SDLInput::Input with SDL_PollEvent
