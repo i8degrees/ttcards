@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "resources.hpp"
+#include "GameConfig.hpp"
 #include "Card.hpp"
 
 class CardView
@@ -50,7 +51,7 @@ class CardView
     /// Load the resources used in rendering a card
     ///
     /// The failure of any of these resources results in failure
-    bool load ( void );
+    bool load ( GameConfig* config );
 
     bool drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y );
     bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );

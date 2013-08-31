@@ -28,40 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "resources.hpp"
 
-// Resource configuration
+// Platform-dependent paths
+
 const nom::Path path;
-std::string WORKING_DIR;
-
-const std::string SCORE_FONTFACE =      WORKING_DIR + "fonts/EnvyCodeRb.ttf";
-const std::string GAMEOVER_FONTFACE =   WORKING_DIR + "fonts/EnvyCodeRb.ttf";
-const std::string CARD_FONTFACE =       WORKING_DIR + "fonts/VIII_cards.png";
-const std::string INFO_FONTFACE =       WORKING_DIR + "fonts/VIII.png";
-const std::string INFO_SMALL_FONTFACE = WORKING_DIR + "fonts/VIII_small.png";
-
-const std::string BOARD_BACKGROUND =    WORKING_DIR + "images/board.png";
-const std::string GAMEOVER_BACKGROUND = WORKING_DIR + "images/game-over_background.png";
-const std::string CARD_ELEMENTS =       WORKING_DIR + "images/elements.png";
-const std::string CARD_FACES =          WORKING_DIR + "images/faces.png";
-const std::string CARD_BACKGROUNDS =    WORKING_DIR + "images/backgrounds.png";
-const std::string INTERFACE_CURSOR =    WORKING_DIR + "images/cursors.png";
-const std::string MENU_ELEMENTS =       WORKING_DIR + "images/menu_elements.png";
-
-const std::string CURSOR_MOVE =         WORKING_DIR + "audio" + path.native() + "cursor_move.wav";
-const std::string CURSOR_CANCEL =       WORKING_DIR + "audio" + path.native() + "cursor_cancel.wav";
-const std::string CURSOR_WRONG =        WORKING_DIR + "audio" + path.native() + "cursor_wrong.wav";
-const std::string CARD_FLIP =           WORKING_DIR + "audio" + path.native() + "card_flip.wav";
-const std::string CARD_PLACE =          WORKING_DIR + "audio" + path.native() + "card_place.wav";
-const std::string SFX_LOAD_GAME =       WORKING_DIR + "audio" + path.native() + "load_game.wav";
-const std::string SFX_SAVE_GAME =       WORKING_DIR + "audio" + path.native() + "save_game.wav";
-const std::string MUSIC_TRACK =         WORKING_DIR + "audio" + path.native() + "ShuffleOrBoogie.ogg";
-const std::string MUSIC_WINNING_TRACK = WORKING_DIR + "audio" + path.native() + "TheWinner.ogg";
-
-const std::string APP_ICON =            WORKING_DIR + "icon.bmp";
-const std::string CARDS_DB =            WORKING_DIR + "cards.json";
-
 const std::string USER_PLAYER1_FILENAME = TTCARDS_DATA_DIR + path.native() + "player1.json";
 const std::string USER_PLAYER2_FILENAME = TTCARDS_DATA_DIR + path.native() + "player2.json";
 const std::string USER_BOARD_FILENAME =   TTCARDS_DATA_DIR + path.native() + "board.json";
+
+// Localization strings
 
 const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
 

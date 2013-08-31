@@ -46,37 +46,52 @@ CardView::~CardView ( void )
 TTCARDS_LOG_CLASSINFO;
 }
 
-bool CardView::load ( void )
+bool CardView::load ( GameConfig* config )
 {
-  if ( this->card_text.load ( CARD_FONTFACE, nom::Color ( 110, 144, 190 ), true ) == false )
+  if ( config == nullptr )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_FONTFACE );
     return false;
   }
 
-  if ( this->card_face.load ( CARD_FACES, nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_text.load ( config->getString("CARD_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_FACES );
+TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_FONTFACE") );
     return false;
   }
 
-  if ( this->card_background.load ( CARD_BACKGROUNDS, nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_face.load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_BACKGROUNDS );
+TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if ( this->card_element.load ( CARD_ELEMENTS, nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_background.load ( config->getString("CARD_BACKGROUNDS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + CARD_ELEMENTS );
+TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_BACKGROUNDS") );
+    return false;
+  }
+
+  if ( this->card_element.load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
+  {
+TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
   }
 
   // Rescale our game resources if necessary.
-  this->card_text.scale2x();
-  this->card_face.scale2x();
-  this->card_background.scale2x();
-  this->card_element.scale2x();
+  if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
+  {
+    this->card_text.scale2x();
+    this->card_face.scale2x();
+    this->card_background.scale2x();
+    this->card_element.scale2x();
+  }
+  else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
+  {
+    this->card_text.hq2x();
+    this->card_face.hq2x();
+    this->card_background.hq2x();
+    this->card_element.hq2x();
+  }
 
   return true;
 }

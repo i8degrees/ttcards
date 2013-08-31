@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardHand.hpp"
 #include "CardView.hpp"
 #include "CardRules.hpp"
+#include "GameConfig.hpp"
 
 struct GameObject
 {
@@ -128,6 +129,10 @@ struct GameObject
 
   /// our public / visible display context handle
   nom::Display context;
+
+  /// Variable set configuration properties
+  GameConfig config;
 };
+
 
 #endif // include guard defined

@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <map>
 
 #include "json_spirit_writer_template.h"
 #include "json_spirit_reader_template.h"
@@ -46,10 +47,22 @@ class GameConfig
     GameConfig( void );
     ~GameConfig( void );
 
-    bool save( const std::string& filename );
-    bool load( const std::string& filename );
+    const std::string getString ( const std::string& node ) const;
+    const int getInteger ( const std::string& node ) const;
+
+    const json_spirit::Value setProperty ( const std::string& node, const json_spirit::Value& value );
+
+    /// Save the current board grid data to a file as a series of RFC 4627
+    /// compliant JSON objects.
+    bool save ( const std::string& filename );
+
+    /// Load saved board grid data from a file encoded as RFC 4627 compliant
+    /// JSON objects.
+    bool load ( const std::string& filename );
+
   private:
-    // ...
+    std::map<std::string, json_spirit::Value> config;
 };
+
 
 #endif // include guard defined

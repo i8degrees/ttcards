@@ -35,6 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/types.hpp> // data types
 #include <nomlib/system/clock.hpp> // date & time
 
+/// Site-specific constants -- this is likely specific to your own local system
+/// setup; auto-generated at compile-time and therefore must recompile to modify
+/// said constants.
+#include "version.hpp"
+
 // Pretty print macros
 #define TTCARDS_DUMP_VAR(var) \
   ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
@@ -80,7 +85,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Scale factor is used in computing width, height and origin positioning for
 /// applicable resources at compile-time.
 ///
-/// Resources are scaled up using the scale2x [1] algorithm.
+/// Resources are scaled up using either the scale2x [1] or hq2x [2] algorithm.
 ///
 /// If left undefined or if set to one (1), this will trigger the default of
 /// the original scaling of resource data (low resolution).
@@ -93,6 +98,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 /// 1. http://scale2x.sourceforge.net/
 ///
+/// Note that our current implementation of the hq2x algorithm is far less
+/// efficient than the scale2x one and therefore expect to see a considerable
+/// difference in load times in addition to memory usage.
+///
+/// On my system -- mid 2011 MacBook Air -- hq2x requires ~65MB more than
+/// scale2x and requires roughly 2..3 seconds compared to scale2x being almost
+/// instant (~1s or less) for the initial scaling computations and caching
+/// to complete.
+///
+/// To be fair, I am rescaling several of the images well beyond the recommended
+/// 256x256 guidelines and do not know how the algorithms compare on equal
+/// ground.
 #define SCALE_FACTOR 2
 
 // Global configuration
