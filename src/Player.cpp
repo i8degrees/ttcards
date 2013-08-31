@@ -118,9 +118,14 @@ void Player::setState ( unsigned int state )
   return; //this->state = state;
 }
 
-unsigned int Player::getScore ( void )
+nom::uint32 Player::getScore ( void ) const
 {
   return this->score;
+}
+
+const std::string Player::getScoreAsString ( void ) const
+{
+  return std::to_string ( this->score );
 }
 
 void Player::setScore ( unsigned int score )

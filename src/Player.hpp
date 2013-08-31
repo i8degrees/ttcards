@@ -60,7 +60,9 @@ class Player
     void setState ( unsigned int state );
 
     // TODO: Consider branching this into Score class
-    unsigned int getScore ( void );
+    nom::uint32 getScore ( void ) const;
+    const std::string getScoreAsString ( void ) const;
+
     void setScore ( unsigned int score );
 
     void Update ( void );
