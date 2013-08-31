@@ -330,7 +330,15 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     case SDLK_F1:
     {
       nom::Image image;
-      image.save ( TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp", this->game->context.get() );
+
+       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp";
+
+      if ( image.save ( screenshot_filename, this->game->context.get() ) == false )
+      {
+TTCARDS_LOG_ERR ( "Could not save screenshot file:" + screenshot_filename );
+        break;
+      }
+TTCARDS_LOG_INFO ( "Saved screenshot: " + screenshot_filename );
     }
     break;
 
