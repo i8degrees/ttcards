@@ -23,6 +23,29 @@ option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
 project ( ttcards ) # Sets PROJECT_NAME variable for us
 
+if ( DEBUG )
+  set ( CMAKE_BUILD_TYPE "Debug" )
+  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DTTCARDS_DEBUG -Wall -Wunused" )
+  set ( CMAKE_VERBOSE_MAKEFILE on )
+  message ( STATUS "Building ${PROJECT_NAME} with debugging." )
+else () # Build with optimizations for maximum speed and minimal size
+  set ( CMAKE_BUILD_TYPE "Release" )
+  message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
+endif ( DEBUG )
+
+if ( DEBUG_ASSERT )
+  add_definitions ( "-DTTCARDS_DEBUG_ASSERT" )
+  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
+endif ( DEBUG_ASSERT )
+
+if ( DEBUG_TRACE )
+  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
+  # we can enable this feature in either target mode to maximize debugging
+  # capabilities.
+  add_definitions ( "-DTTCARDS_DEBUG_TRACE" )
+  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
+endif ( DEBUG_TRACE )
+
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
@@ -78,29 +101,6 @@ if ( PLATFORM_OSX )
   option ( OSXAPP "Enable building OS X Application Bundle" on )
   option ( UNIVERSAL "Enable building OSX Universal Application" off )
 endif ( PLATFORM_OSX )
-
-if ( DEBUG )
-  set ( CMAKE_BUILD_TYPE "Debug" )
-  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DTTCARDS_DEBUG -Wall -Wunused" )
-  set ( CMAKE_VERBOSE_MAKEFILE on )
-  message ( STATUS "Building ${PROJECT_NAME} with debugging." )
-else () # Build with optimizations for maximum speed and minimal size
-  set ( CMAKE_BUILD_TYPE "Release" )
-  message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
-endif ( DEBUG )
-
-if ( DEBUG_ASSERT )
-  add_definitions ( "-DTTCARDS_DEBUG_ASSERT" )
-  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
-endif ( DEBUG_ASSERT )
-
-if ( DEBUG_TRACE )
-  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
-  # we can enable this feature in either target mode to maximize debugging
-  # capabilities.
-  add_definitions ( "-DTTCARDS_DEBUG_TRACE" )
-  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
-endif ( DEBUG_TRACE )
 
 if ( UNIVERSAL )
   set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
