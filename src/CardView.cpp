@@ -80,17 +80,17 @@ TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_ELE
   // Rescale our game resources if necessary.
   if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    this->card_text.scale2x();
-    this->card_face.scale2x();
-    this->card_background.scale2x();
-    this->card_element.scale2x();
+    this->card_text.resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_face.resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_background.resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_element.resize ( nom::ResizeAlgorithm::scale2x );
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
-    this->card_text.hq2x();
-    this->card_face.hq2x();
-    this->card_background.hq2x();
-    this->card_element.hq2x();
+    this->card_text.resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_face.resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_background.resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_element.resize ( nom::ResizeAlgorithm::hq2x );
   }
 
   return true;
