@@ -118,11 +118,6 @@ void PlayState::onInit ( void )
   this->debug_box.disable ();
 #endif
 
-#ifdef DEBUG_GAME
-  //this->debugCardsNoRuleset();
-  //this->debugCardsSameRuleset();
-#endif
-
   this->game->hand[1].randomize ( 1, 10, this->game->collection );
 
   // Initialize player cards to their respective defaults; this lets us know not

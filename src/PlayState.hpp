@@ -76,9 +76,6 @@ class PlayState: public nom::IState
     void onJoyButtonDown ( int32_t which, int32_t button );
 
     // Playstate_debug.cpp
-    void debugCardsDiscard ( void );
-    void debugCardsNoRuleset ( void );
-    void debugCardsSameRuleset ( void );
     void removePlayerCard ( void );
     void debugBox ( void );
     void debugModifyCardRank ( bool modifier, nom::uint32 direction );
