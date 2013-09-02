@@ -174,11 +174,11 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LMETA ) // Special game load (player1 always wins!)
       {
-        if ( this->game->hand[0].load ( TTCARDS_DATA_DIR + path.native() + "player1_always-win.json" ) == false )
+        if ( this->game->hand[0].load ( "Debug" + path.native() + "player1_unbeatable.json" ) == false )
         {
 // FIXME
-//NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + "player1_always-win.json" );
-NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: player1_always-win.json" );
+//NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + "player1_unbeatable.json" );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: player1_unbeatable.json" );
           this->game->cursor_wrong.Play();
           break;
         }
