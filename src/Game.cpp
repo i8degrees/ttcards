@@ -173,11 +173,9 @@ bool App::onInit ( void )
 
   this->game = std::shared_ptr<GameObject> ( new GameObject );
 
-  if ( this->game->config.load( TTCARDS_DATA_DIR + "/config.json" ) == false )
+  if ( this->game->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
   {
-    NOM_LOG_ERR ( TTCARDS, "Could not load configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
-
-    nom::DialogMessageBox ( "Critical Error", "Could not load configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
+    nom::DialogMessageBox ( "Critical Error", "Could not load configuration file at: " + TTCARDS_CONFIG_FILENAME );
     exit ( EXIT_FAILURE );
   }
 
@@ -459,9 +457,9 @@ NOM_LOG_INFO ( TTCARDS, "Saved screenshot: " + screenshot_filename );
 
     case SDLK_r: // Start a new game
     {
-      if ( this->game->config.load ( TTCARDS_DATA_DIR + "/config.json" ) == false )
+      if ( this->game->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
       {
-NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
+NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONFIG_FILENAME );
         break;
       }
       nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
