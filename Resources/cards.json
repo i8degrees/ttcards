@@ -1,4 +1,5 @@
 [
+    // Cards collection (complete deck of 110 cards) for TTcards
     {
         "ID" : 1,
         "Name" : "Geezard",
