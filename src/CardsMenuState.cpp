@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 {
-NOM_DUMP_VAR ( scale_factor.get() );
   nom::Gradient linear;
 
   unsigned int pid = 0; // temp var for for loop iteration
