@@ -404,8 +404,11 @@ void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
   {
     default: break;
 
-    // Debug helpers
-    case nom::PSXBUTTON::L1: this->endTurn(); break;
+    case nom::PSXBUTTON::START:
+    {
+      nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
+    }
+    break;
 
     case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
     case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;
