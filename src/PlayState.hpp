@@ -75,9 +75,7 @@ class PlayState: public nom::IState
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( int32_t which, int32_t button );
 
-    // Playstate_debug.cpp
-    void debugModifyCardRank ( bool modifier, nom::uint32 direction );
-
+    void modifyCardRank ( bool modifier, nom::uint32 direction );
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
     void endTurn ( void );

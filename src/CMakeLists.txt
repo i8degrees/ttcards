@@ -9,7 +9,6 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/CardsMenuState.cpp
       ${SRC_DIR}/PlayState.cpp
       ${SRC_DIR}/GameOverState.cpp
-      ${SRC_DIR}/PlayState_debug.cpp
       ${SRC_DIR}/Board.cpp
       ${SRC_DIR}/Card.cpp
       ${SRC_DIR}/CardCollection.cpp
