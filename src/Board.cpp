@@ -341,32 +341,18 @@ void Board::List ( void )
 
 bool Board::save ( const std::string& filename )
 {
-  std::ofstream fp; // output file handle
-  json_spirit::Object node; // current JSON node we are writing
-  json_spirit::Array game; // overall data to be written out
-  json_spirit::Array ranks; // card rank attributes need to be separated
+  nom::JSON::FileWriter fp; // json_spirit wrapper for file output
+  json_spirit::Array game; // Overall container; this is the parent
+  json_spirit::Object node; // JSON object record; the child
 
   for ( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; y++ )
   {
     for ( nom::int32 x = 0; x != BOARD_GRID_WIDTH; x++ )
     {
-      // Initial card attributes (everything other than ranks)
-      node.push_back ( json_spirit::Pair ( "ID", this->grid[x][y].getID() ) );
-      node.push_back ( json_spirit::Pair ( "Name", this->grid[x][y].getName() ) );
-      node.push_back ( json_spirit::Pair ( "Level", this->grid[x][y].getLevel() ) );
-      node.push_back ( json_spirit::Pair ( "Type", this->grid[x][y].getType() ) );
-      node.push_back ( json_spirit::Pair ( "Element", this->grid[x][y].getElement() ) );
+      // Primary card attributes
+      node = this->grid[x][y].serialize();
 
-      // Card rank attributes
-      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getNorthRank() ) );
-      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getEastRank() ) );
-      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getSouthRank() ) );
-      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getWestRank() ) );
-
-      // Push ranks values to our current node
-      node.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
-
-      // Additional card attributes -- initialized in-game
+      // Additional card attributes to append onto
       node.push_back ( json_spirit::Pair ( "PlayerID", this->grid[x][y].getPlayerID() ) );
       node.push_back ( json_spirit::Pair ( "Owner", this->grid[x][y].getPlayerOwner() ) );
 
@@ -375,72 +361,45 @@ bool Board::save ( const std::string& filename )
 
       // Get ready for the next inbound row
       node.clear();
-      ranks.clear();
     }
   }
 
-  fp.open ( filename );
-
-  if ( fp.is_open() && fp.good() )
-  {
-    json_spirit::write_stream ( json_spirit::Value ( game ), fp, json_spirit::single_line_arrays );
-    fp.close();
-    return true;
-  }
-  else
+  if ( fp.save ( filename, game, nom::JSON::CompactArrays ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
-    fp.close();
     return false;
   }
+
+  return true;
 }
 
 bool Board::load ( const std::string& filename )
 {
-  // Card attributes to load in
-  nom::uint32 id = 0;
-  nom::uint32 level = 0;
-  nom::uint32 type = 0;
-  nom::uint32 element = 0;
-  std::array<nom::int32, MAX_RANKS> rank = {{ 0 }};
-  std::string name = "\0";
-  nom::uint32 player_id = 0;
-  nom::uint32 player_owner = 0;
-
-  std::ifstream fp; // input file handle
-  std::vector<Card> cards;
+  nom::JSON::FileReader fp; // json_spirit wrapper for file input
   json_spirit::Object node;
   json_spirit::Value value;
   json_spirit::Array game;
-
   // Iterators
   json_spirit::Array::size_type i;
   json_spirit::Object::size_type o;
 
-  fp.open ( filename );
+  // The card attributes we are loading in will be stored in here temporarily.
+  // This will become the data to load onto the board if all goes well..!
+  Card card;
+  std::vector<Card> input_cards;
 
-  if ( fp.is_open() && fp.good() )
+  if ( fp.load ( filename, value ) == false )
   {
-    if ( json_spirit::read_stream ( fp, value ) == false )
-    {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
-      fp.close();
-      return false;
-    }
-    fp.close();
-  }
-  else
-  {
-    fp.close();
     return false;
   }
 
-  assert ( value.type() == json_spirit::array_type );
+NOM_ASSERT ( value.type() == json_spirit::array_type );
   game = value.get_array();
 
   for ( i = 0; i != game.size(); i++ )
   {
-    assert ( game[i].type() == json_spirit::obj_type );
+NOM_ASSERT ( game[i].type() == json_spirit::obj_type );
     node = game[i].get_obj();
 
     for ( o = 0; o != node.size(); o++ )
@@ -451,74 +410,78 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
 
       if ( path == "ID" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        id = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setID ( value.get_int() );
       }
       else if ( path == "Name" )
       {
-        assert ( value.type() == json_spirit::str_type );
-        name = value.get_str();
+NOM_ASSERT ( value.type() == json_spirit::str_type );
+        card.setName ( value.get_str() );
       }
       else if ( path == "Level" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        level = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setLevel ( value.get_int() );
       }
       else if ( path == "Type" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        type = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setType ( value.get_int() );
       }
       else if ( path == "Element" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        element = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setElement ( value.get_int() );
       }
       else if ( path == "Ranks" )
       {
-        assert ( value.type() == json_spirit::array_type );
+NOM_ASSERT ( value.type() == json_spirit::array_type );
         const json_spirit::Array &ranks = value.get_array();
 
-        assert ( ranks.size() == 4 );
-        for ( nom::uint32 rdx = 0; rdx < ranks.size(); rdx++ )
-        {
-          rank[NORTH] = ranks[rdx].get_int();
-          rdx++;
-          rank[EAST] = ranks[rdx].get_int();
-          rdx++;
-          rank[SOUTH] = ranks[rdx].get_int();
-          rdx++;
-          rank[WEST] = ranks[rdx].get_int();
-          rdx++;
-        }
+NOM_ASSERT ( ranks.size() == 4 );
+        card.setNorthRank ( ranks[NORTH].get_int() );
+        card.setEastRank ( ranks[EAST].get_int() );
+        card.setSouthRank ( ranks[SOUTH].get_int() );
+        card.setWestRank ( ranks[WEST].get_int() );
       }
       else if ( path == "PlayerID" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        player_id = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setPlayerID ( value.get_int() );
       }
       else if ( path == "Owner" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        player_owner = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setPlayerOwner ( value.get_int() );
 
-        cards.push_back ( Card ( id, level, type, element, rank, name, player_id, player_owner ) );
+        // The next line *MUST* be at the end of the current node object being
+        // read in -- or else epic failure will result!
+        input_cards.push_back ( card );
       }
     } // end current node loop
   } // end current array node
 
-  // Load each card object into the board grid at the proper X, Y coordinates
-  this->grid[0][0] = cards[0];
-  this->grid[1][0] = cards[1];
-  this->grid[2][0] = cards[2];
+  // Sanity check
+  if ( input_cards.size() < 8 ) // + 1 padding; we start at zero, not one
+  {
+NOM_LOG_ERR ( TTCARDS, "Board data is invalid at file: " + filename );
+    return false;
+  }
 
-  this->grid[0][1] = cards[3];
-  this->grid[1][1] = cards[4];
-  this->grid[2][1] = cards[5];
+  // All is well, let us make our freshly loaded data permanent;
+  //
+  // Load each card object onto the board grid at the proper X, Y coordinates.
+  this->grid[0][0] = input_cards[0];
+  this->grid[1][0] = input_cards[1];
+  this->grid[2][0] = input_cards[2];
 
-  this->grid[0][2] = cards[6];
-  this->grid[1][2] = cards[7];
-  this->grid[2][2] = cards[8];
+  this->grid[0][1] = input_cards[3];
+  this->grid[1][1] = input_cards[4];
+  this->grid[2][1] = input_cards[5];
+
+  this->grid[0][2] = input_cards[6];
+  this->grid[1][2] = input_cards[7];
+  this->grid[2][2] = input_cards[8];
 
   return true;
 }

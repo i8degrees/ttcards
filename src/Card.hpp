@@ -33,7 +33,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <array>
 #include <algorithm>
 
+#include "json_spirit_value.h"
+
+#ifndef JSON_SPIRIT_VALUE_ENABLED
+  #define JSON_SPIRIT_VALUE_ENABLED
+#endif
+
 #include <nomlib/types.hpp>
+#include <nomlib/json.hpp>
 
 #include "config.hpp"
 
@@ -125,6 +132,8 @@ class Card
       PLAYER1=1,
       PLAYER2=2
     };
+
+    const json_spirit::Object serialize ( void );
 
   private:
     nom::int32 id;

@@ -171,3 +171,27 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
 {
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
+
+const json_spirit::Object Card::serialize ( void )
+{
+  json_spirit::Object node; // JSON object record we are writing
+  json_spirit::Array ranks; // JSON object child of node
+
+  // Basic card attributes
+  node.push_back ( json_spirit::Pair ( "ID", this->getID() ) );
+  node.push_back ( json_spirit::Pair ( "Name", this->getName() ) );
+  node.push_back ( json_spirit::Pair ( "Level", this->getLevel() ) );
+  node.push_back ( json_spirit::Pair ( "Type", this->getType() ) );
+  node.push_back ( json_spirit::Pair ( "Element", this->getElement() ) );
+
+  // Card rank attributes
+  ranks.push_back ( json_spirit::Value ( this->getNorthRank() ) );
+  ranks.push_back ( json_spirit::Value ( this->getEastRank() ) );
+  ranks.push_back ( json_spirit::Value ( this->getSouthRank() ) );
+  ranks.push_back ( json_spirit::Value ( this->getWestRank() ) );
+
+  // Push ranks values to our current node
+  node.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
+
+  return node;
+}

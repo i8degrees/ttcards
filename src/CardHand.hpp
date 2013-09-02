@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "json_spirit_reader_template.h"
 
 #include <nomlib/types.hpp>
+#include <nomlib/json.hpp>
 
 #include "Card.hpp"
 #include "CardCollection.hpp"
