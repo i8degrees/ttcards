@@ -28,26 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PlayState.hpp"
 
-
-// debug helper method
-void PlayState::removePlayerCard ( void )
-{
-  unsigned int player_turn = get_turn();
-
-  this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
-
-  this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
-}
-
-// Debug -- input events helper method
-void PlayState::debugBox ( void )
-{
-  if ( this->debug_box.isEnabled() == true )
-    this->debug_box.disable ();
-  else
-    this->debug_box.enable ();
-}
-
 void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
 {
   Card selected = Card(); // temporary placeholder card for the update

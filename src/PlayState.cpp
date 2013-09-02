@@ -217,8 +217,28 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
     // Debug helpers
     case SDLK_e: this->endTurn(); break;
 
-    case SDLK_d: this->removePlayerCard(); break;
-    case SDLK_i: debugBox(); break;
+    case SDLK_d:
+    {
+      nom::uint32 player_turn = get_turn();
+
+      this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
+
+      this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+    }
+    break;
+
+    case SDLK_i:
+    {
+      if ( this->debug_box.isEnabled() == true )
+      {
+        this->debug_box.disable();
+      }
+      else
+      {
+        this->debug_box.enable();
+      }
+    }
+    break;
 
     case SDLK_LEFT:
     {
