@@ -30,9 +30,9 @@ script:
   - du -csh "$(which ttcards)"
   - du -csh "/usr/local/share/ttcards/Resources/"
   - du -csh "/usr/local/share/doc/ttcards/"
-  - ttcards --help
   - ttcards --version
-  - ttcards --export new_cards.json /usr/local/share/ttcards/Resources/cards.json && cat $HOME/Documents/ttcards/new_cards.json
+  - ttcards --export /usr/local/share/ttcards/Resources/cards.json $HOME/my_cards.json && cat $HOME/my_cards.json
+  - ttcards --config $HOME/my_config.json && cat $HOME/my_config.json
   - sudo make uninstall
   - make clean
 # whitelist

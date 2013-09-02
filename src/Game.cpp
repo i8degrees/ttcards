@@ -48,99 +48,98 @@ NOM_LOG_TRACE ( TTCARDS );
   // Command line arguments
   if ( argc > 1 )
   {
-    if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
+    for ( nom::int32 opt = 1; opt < argc; opt++ )
     {
-      CardCollection cards;
-
-      // Load cards collection from an existing file path
-      if ( argv[3] == nullptr )
-      {
-NOM_LOG_ERR ( TTCARDS, "Missing parameter <input_filename>." );
-        exit ( EXIT_FAILURE );
-      }
-      else if ( dir.exists ( argv[3] ) == false )
-      {
-// FIXME
-//NOM_LOG_ERR ( TTCARDS, "File path does not exist: " + argv[3] );
-NOM_LOG_ERR ( TTCARDS, "File path does not exist." );
-        exit ( EXIT_FAILURE );
-      }
-
-      if ( cards.load( argv[3] ) == false )
-      {
-NOM_LOG_ERR ( TTCARDS, "Could not load the cards collection." );
-        exit ( EXIT_FAILURE );
-      }
-
       // Save cards collection at user defined path
-      if ( argv[2] == nullptr )
+      if ( std::string(argv[opt]) == "--export" )
       {
-NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename>." );
-        exit ( EXIT_FAILURE );
-      }
+        CardCollection cards;
 
-      if ( dir.exists ( argv[2] ) == true )
-      {
-// FIXME
-//NOM_LOG_ERR ( TTCARDS, "File path already exists: " + argv[2] );
-NOM_LOG_ERR ( TTCARDS, "File path already exists." );
-        exit ( EXIT_FAILURE );
-      }
+        if ( argv[opt + 1] == nullptr )
+        {
+NOM_LOG_ERR ( TTCARDS, "Missing parameter <input_filename> for export argument." );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( dir.exists ( argv[opt + 1] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "File path for <input_filename> does not exist at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( cards.load( argv[opt + 1] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "Could not load game cards collection at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
 
-      if ( cards.save( TTCARDS_DATA_DIR + "/" + argv[2] ) == false )
+        if ( argv[opt + 2] == nullptr )
+        {
+NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for export argument." );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( dir.exists ( argv[opt + 2] ) == true )
+        {
+NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 2]) );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( cards.save( argv[opt + 2] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "Could not save the game cards collection at: " + std::string(argv[opt + 2]) );
+          exit ( EXIT_FAILURE );
+        }
+        else
+        {
+NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[opt + 2]) );
+          exit ( EXIT_SUCCESS );
+        }
+      } // end export cards option
+      else if ( std::string(argv[opt]) == "--config" ) // Save configuration opt
       {
-// FIXME
-//NOM_LOG_ERR ( TTCARDS, "Could not serialize data in file: " + TTCARDS_DATA_DIR + path.native() + argv[2] );
-NOM_LOG_ERR ( TTCARDS, "Could not serialize cards collection." );
-        exit ( EXIT_FAILURE );
-      }
-// FIXME
-//NOM_LOG_INFO ( TTCARDS, "File " + argv[2] + " successfully saved" );
-NOM_LOG_INFO ( TTCARDS, "File export successful." );
-    } // end  export option
-    else if ( std::string(argv[1]) == "--config" ) // Save configuration
-    {
-      if ( argv[2] == nullptr )
-      {
-NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename>." );
-        exit ( EXIT_FAILURE );
-      }
+        if ( argv[opt + 1] == nullptr )
+        {
+NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( dir.exists ( argv[opt + 1] ) == true )
+        {
+NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
 
-      if ( dir.exists ( argv[2] ) == true )
-      {
-NOM_LOG_ERR ( TTCARDS, "File path already exists at: " + std::string(argv[2]) );
-        exit ( EXIT_FAILURE );
-      }
-
-      GameConfig cfg;
-      if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
-      {
+        GameConfig cfg;
+        if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
+        {
 NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
-        exit ( EXIT_FAILURE );
-      }
+          exit ( EXIT_FAILURE );
+        }
 
-      if ( cfg.save ( argv[2] ) == false )
+        if ( cfg.save ( argv[opt + 1] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
+        else
+        {
+NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_SUCCESS );
+        }
+      } // end save config option
+      else if ( std::string(argv[opt]) == "-v" || std::string(argv[opt]) == "--version" )
       {
-NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[2]) );
-        exit ( EXIT_FAILURE );
-      }
-NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[2]) );
-    }
-    else if ( strcmp ( argv[1], "-h" ) == 0 || strcmp ( argv[1], "--help" ) == 0 )
-    {
-      std::cout << "\tttcards [ -h | --help ]" << std::endl;
-      std::cout << "\tttcards [ -v | --version ]" << std::endl;
-      std::cout << "\tttcards [ -e | --export <output_filename> <input_filename> ]" << std::endl;
-      std::cout << "\tttcards [ --config <output_filename> ]" << std::endl;
-    } // end help option
-    else if ( strcmp ( argv[1], "-v" ) == 0 || strcmp ( argv[1], "--version" ) == 0 )
-    {
-      std::cout << APP_NAME << " version " << TTCARDS_VERSION_MAJOR << "." << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << " by Jeffrey Carpenter" << std::endl;
-    } // end version option
+        std::cout << APP_NAME << " version " << TTCARDS_VERSION_MAJOR << "." << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << " by Jeffrey Carpenter" << std::endl;
+      } // end version option
+      else // -h, --help
+      {
+        std::cout << APP_NAME << " usage options:" << std::endl;
+        std::cout << "[ --export <input_filename> <output_filename> ]" << std::endl;
+        std::cout << "[ --config <output_filename> ]" << std::endl;
+        std::cout << "[ -h, --help ]" << std::endl;
+        std::cout << "[ -v, --version ]" << std::endl;
+      } // end help option
+    } // end for argv[opt] loop
 
     // If we have got this far, we assume command execution was successful
     exit ( EXIT_SUCCESS );
-  } // end argument & parameter checks
+  } // end argc > 1
 
 // These definitions are influenced at build time with CMake options and serve
 // to help determine the path of game resources
