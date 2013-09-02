@@ -38,7 +38,7 @@ void Free_CardHand ( CardHand* player_cards )
 }
 
 Player::Player ( void ) : card ( nullptr ), hand ( nullptr ),
-                          coords ( 0, 0, 0, 0 ), id ( 0 ), score ( 5 )
+                          coords ( 0, 0, 0, 0 ), id ( 0 ), score ( 0 )
                           //state ( 0 )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -54,7 +54,7 @@ NOM_LOG_TRACE ( TTCARDS );
   this->coords = nom::Coords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
   this->id = 0;
   //this->state = 0;
-  this->score = 5;
+  this->score = 0;
 }
 
 Player::~Player ( void )

@@ -95,11 +95,6 @@ void PlayState::onInit ( void )
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
 
-  this->game->score_text[0].setText ( this->player[0].getScoreAsString() );
-  this->game->score_text[0].Update();
-
-  this->game->score_text[1].setText ( this->player[1].getScoreAsString() );
-  this->game->score_text[1].Update();
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
@@ -125,6 +120,13 @@ void PlayState::onInit ( void )
   // flipping, scoreboard keeping and end of game tallying logic.
   this->player[0].setID ( Card::PLAYER1 );
   this->player[1].setID ( Card::PLAYER2 );
+
+  // Update both player scores now that we have the player scoreboard X, Y
+  // origins calculated for rendering.
+  //
+  // Assuming a player hand of five, this should always assign a starting score
+  // value of 5 for each player initially.
+  this->updateScore();
 
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
