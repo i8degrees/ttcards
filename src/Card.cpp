@@ -35,9 +35,9 @@ Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
 {}
 
 Card::Card  (
-              nom::uint32 id, nom::uint32 level, nom::uint32 type,
-              nom::uint32 element, std::array<nom::int32, MAX_RANKS> rank,
-              std::string name, nom::uint32 player_id, nom::uint32 player_owner
+              nom::int32 id, nom::int32 level, nom::int32 type,
+              nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
+              std::string name, nom::int32 player_id, nom::int32 player_owner
             )
             : id ( id ), level ( level ), type ( type ), element ( element ),
             rank { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } },
@@ -46,22 +46,22 @@ Card::Card  (
 
 Card::~Card ( void ) {}
 
-unsigned int Card::getID ( void ) const
+nom::int32 Card::getID ( void ) const
 {
   return this->id;
 }
 
-unsigned int Card::getLevel ( void )
+nom::int32 Card::getLevel ( void )
 {
   return this->level;
 }
 
-unsigned int Card::getType ( void )
+nom::int32 Card::getType ( void )
 {
   return this->type;
 }
 
-unsigned int Card::getElement ( void )
+nom::int32 Card::getElement ( void )
 {
   return this->element;
 }
@@ -96,34 +96,34 @@ std::string Card::getName ( void )
   return this->name;
 }
 
-unsigned int Card::getPlayerID ( void )
+nom::int32 Card::getPlayerID ( void )
 {
   return this->player_id;
 }
 
-unsigned int Card::getPlayerOwner ( void )
+nom::int32 Card::getPlayerOwner ( void )
 {
   return this->player_owner;
 }
 
-void Card::setID ( unsigned int id_ )
+void Card::setID ( nom::int32 id_ )
 {
-  this->id = std::min ( id_, static_cast<nom::uint32> ( MAX_COLLECTION ) );
+  this->id = std::min ( id_, MAX_COLLECTION );
 }
 
-void Card::setLevel ( unsigned int level_ )
+void Card::setLevel ( nom::int32 level_ )
 {
-  this->level = std::min ( level_, static_cast<nom::uint32> ( MAX_LEVEL ) );
+  this->level = std::min ( level_, MAX_LEVEL );
 }
 
-void Card::setType ( unsigned int type_ )
+void Card::setType ( nom::int32 type_ )
 {
-  this->type = std::min ( type_, static_cast<nom::uint32> ( MAX_TYPE ) );
+  this->type = std::min ( type_, MAX_TYPE );
 }
 
-void Card::setElement ( unsigned int element_ )
+void Card::setElement ( nom::int32 element_ )
 {
-  this->element = std::min ( element_, static_cast<nom::uint32> ( MAX_ELEMENT ) );
+  this->element = std::min ( element_, MAX_ELEMENT );
 }
 
 void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
@@ -162,12 +162,12 @@ void Card::setName ( std::string name_ )
   this->name = name_;
 }
 
-void Card::setPlayerID ( unsigned int player_id_ )
+void Card::setPlayerID ( nom::int32 player_id_ )
 {
   this->player_id = std::min ( player_id_, TOTAL_PLAYERS );
 }
 
-void Card::setPlayerOwner ( unsigned int player_owner_ )
+void Card::setPlayerOwner ( nom::int32 player_owner_ )
 {
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }

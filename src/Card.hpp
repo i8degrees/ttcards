@@ -61,17 +61,17 @@ class Card
     Card ( void );
 
     Card  (
-            nom::uint32 id, nom::uint32 level, nom::uint32 type,
-            nom::uint32 element, std::array<nom::int32, MAX_RANKS> rank,
-            std::string name, nom::uint32 player_id, nom::uint32 player_owner
+            nom::int32 id, nom::int32 level, nom::int32 type,
+            nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
+            std::string name, nom::int32 player_id, nom::int32 player_owner
           );
 
     ~Card ( void );
 
-    unsigned int getID ( void ) const;
-    unsigned int getLevel ( void );
-    unsigned int getType ( void );
-    unsigned int getElement ( void );
+    nom::int32 getID ( void ) const;
+    nom::int32 getLevel ( void );
+    nom::int32 getType ( void );
+    nom::int32 getElement ( void );
     std::array<nom::int32, MAX_RANKS> getRanks ( void );
     nom::int32 getNorthRank ( void );
     nom::int32 getEastRank ( void );
@@ -79,20 +79,20 @@ class Card
     nom::int32 getWestRank ( void );
     std::string getName ( void );
 
-    unsigned int getPlayerID ( void );
-    unsigned int getPlayerOwner ( void );
+    nom::int32 getPlayerID ( void );
+    nom::int32 getPlayerOwner ( void );
 
     /// Clamps value to MAX_COLLECTION
-    void setID ( unsigned int id_ );
+    void setID ( nom::int32 id_ );
 
     /// Clamps value to MAX_LEVEL
-    void setLevel ( unsigned int level_ );
+    void setLevel ( nom::int32 level_ );
 
     /// Clamps value to MAX_TYPE
-    void setType ( unsigned int type_ );
+    void setType ( nom::int32 type_ );
 
     /// Clamps value to MAX_ELEMENT
-    void setElement ( unsigned int element_ );
+    void setElement ( nom::int32 element_ );
 
     /// Clamps array values to MAX_RANK
     void setRanks ( std::array<nom::int32, MAX_RANKS> ranks );
@@ -113,10 +113,10 @@ class Card
     void setName ( std::string name_ );
 
     /// Clamps value to TOTAL_PLAYERS
-    void setPlayerID ( unsigned int player_id_ );
+    void setPlayerID ( nom::int32 player_id_ );
 
     /// Clamps value to TOTAL_PLAYERS
-    void setPlayerOwner ( unsigned int player_owner_ );
+    void setPlayerOwner ( nom::int32 player_owner_ );
 
     /// card.player_id AKA owner tag
     enum
@@ -127,11 +127,11 @@ class Card
     };
 
   private:
-    unsigned int id;
-    unsigned int level;
-    unsigned int type;
+    nom::int32 id;
+    nom::int32 level;
+    nom::int32 type;
     /// NONE is no element
-    unsigned int element;
+    nom::int32 element;
     /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
     std::array<nom::int32, MAX_RANKS> rank;
     std::string name;
@@ -139,10 +139,10 @@ class Card
     /// Additional field; used to distinguish card background and also used to
     // track player in board in order to do card flipping, among other things
     // like score tallying
-    unsigned int player_id;
+    nom::int32 player_id;
 
     /// Additional field; original owner of the card
-    unsigned int player_owner;
+    nom::int32 player_owner;
 };
 
 #endif // GAMEAPP_CARD_HEADERS defined

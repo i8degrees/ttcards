@@ -83,16 +83,16 @@ bool CardCollection::save( const std::string& filename )
 
   for ( idx = 0; idx < this->cards.size(); idx++ )
   {
-    obj.push_back ( json_spirit::Pair ( "ID", (int)this->cards[idx].getID() ) );
+    obj.push_back ( json_spirit::Pair ( "ID", this->cards[idx].getID() ) );
     obj.push_back ( json_spirit::Pair ( "Name", this->cards[idx].getName() ) );
-    obj.push_back ( json_spirit::Pair ( "Level", (int)this->cards[idx].getLevel() ) );
-    obj.push_back ( json_spirit::Pair ( "Type", (int)this->cards[idx].getType() ) );
-    obj.push_back ( json_spirit::Pair ( "Element", (int)this->cards[idx].getElement() ) );
+    obj.push_back ( json_spirit::Pair ( "Level", this->cards[idx].getLevel() ) );
+    obj.push_back ( json_spirit::Pair ( "Type", this->cards[idx].getType() ) );
+    obj.push_back ( json_spirit::Pair ( "Element", this->cards[idx].getElement() ) );
 
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getNorthRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getEastRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getSouthRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getWestRank() ) );
+    ranks.push_back ( json_spirit::Value ( this->cards[idx].getNorthRank() ) );
+    ranks.push_back ( json_spirit::Value ( this->cards[idx].getEastRank() ) );
+    ranks.push_back ( json_spirit::Value ( this->cards[idx].getSouthRank() ) );
+    ranks.push_back ( json_spirit::Value ( this->cards[idx].getWestRank() ) );
 
     obj.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
 

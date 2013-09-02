@@ -351,24 +351,24 @@ bool Board::save ( const std::string& filename )
     for ( nom::int32 x = 0; x != BOARD_GRID_WIDTH; x++ )
     {
       // Initial card attributes (everything other than ranks)
-      node.push_back ( json_spirit::Pair ( "ID", (int)this->grid[x][y].getID() ) );
+      node.push_back ( json_spirit::Pair ( "ID", this->grid[x][y].getID() ) );
       node.push_back ( json_spirit::Pair ( "Name", this->grid[x][y].getName() ) );
-      node.push_back ( json_spirit::Pair ( "Level", (int)this->grid[x][y].getLevel() ) );
-      node.push_back ( json_spirit::Pair ( "Type", (int)this->grid[x][y].getType() ) );
-      node.push_back ( json_spirit::Pair ( "Element", (int)this->grid[x][y].getElement() ) );
+      node.push_back ( json_spirit::Pair ( "Level", this->grid[x][y].getLevel() ) );
+      node.push_back ( json_spirit::Pair ( "Type", this->grid[x][y].getType() ) );
+      node.push_back ( json_spirit::Pair ( "Element", this->grid[x][y].getElement() ) );
 
       // Card rank attributes
-      ranks.push_back ( json_spirit::Value ( (int)this->grid[x][y].getNorthRank() ) );
-      ranks.push_back ( json_spirit::Value ( (int)this->grid[x][y].getEastRank() ) );
-      ranks.push_back ( json_spirit::Value ( (int)this->grid[x][y].getSouthRank() ) );
-      ranks.push_back ( json_spirit::Value ( (int)this->grid[x][y].getWestRank() ) );
+      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getNorthRank() ) );
+      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getEastRank() ) );
+      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getSouthRank() ) );
+      ranks.push_back ( json_spirit::Value ( this->grid[x][y].getWestRank() ) );
 
       // Push ranks values to our current node
       node.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
 
       // Additional card attributes -- initialized in-game
-      node.push_back ( json_spirit::Pair ( "PlayerID", (int)this->grid[x][y].getPlayerID() ) );
-      node.push_back ( json_spirit::Pair ( "Owner", (int)this->grid[x][y].getPlayerOwner() ) );
+      node.push_back ( json_spirit::Pair ( "PlayerID", this->grid[x][y].getPlayerID() ) );
+      node.push_back ( json_spirit::Pair ( "Owner", this->grid[x][y].getPlayerOwner() ) );
 
       // Push current node to our overall game data to be written
       game.push_back ( node );

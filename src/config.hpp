@@ -94,7 +94,7 @@ constexpr nom::uint32 MAX_FRAMESKIP = 5;
 constexpr nom::uint32 FRAMES_PER_SECOND = 15;
 
 /// Maximum number of players -- both human & AI
-constexpr nom::uint32 TOTAL_PLAYERS = 2; // +1 padding
+constexpr nom::int32 TOTAL_PLAYERS = 2; // +1 padding
 
 /// Maximum number of cards in cards database; see cards.json
 constexpr nom::int32 MAX_COLLECTION = 110;
