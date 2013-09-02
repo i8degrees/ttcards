@@ -57,7 +57,9 @@ set ( SRC_DIR "src" )
 
 # Relative path from project root to header files
 set ( HEADERS_DIR "include" )
-set ( HEADERS_JSON_SPIRIT_DIR "${HEADERS_DIR}/json_spirit" )
+
+# Absolute path to the json_spirit header files
+set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${HEADERS_DIR}/json_spirit" )
 
 # Relative path from the from project root to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
@@ -172,17 +174,22 @@ endif ( NOMLIB_FOUND )
 # First, try finding our packaged header files for json_spirit;
 # ...if this fails, attempt to find the headers directory of a system install of
 # json_spirit
-if ( IS_DIRECTORY "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
-  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
-elseif ( NOT IS_DIRECTORY "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
+if ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+
+  set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
+  message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
+elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
+
   find_package ( json_spirit REQUIRED )
 
   if ( JSON_SPIRIT_FOUND )
     set ( EXT_HEADERS ${EXT_HEADERS} ${JSON_SPIRIT_INCLUDE_DIR} )
+    message ( WARNING "Found json_spirit: ${JSON_SPIRIT_INCLUDE_DIR}" )
   else ( NOT JSON_SPIRIT_FOUND )
     message ( FATAL_ERROR "Required dependency json_spirit (headers only) missing!" )
   endif ( JSON_SPIRIT_FOUND )
-endif ( IS_DIRECTORY "${PROJECT_SOURCE_DIR}/${HEADERS_JSON_SPIRIT_DIR}" )
+
+endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 
 if ( PLATFORM_OSX )
   # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
