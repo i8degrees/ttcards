@@ -39,22 +39,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 App::App ( nom::int32 argc, char* argv[] )
 {
-  // destination directory we descend into to locate game resources
+  // Destination directory we descend into to locate game resources
   std::string working_directory;
   nom::File dir;
 
 NOM_LOG_TRACE ( TTCARDS );
-
-// These definitions are influenced at build time with CMake options and serve
-// to help determine the path of game resources
-#if defined ( OSXAPP ) // OSX Application Bundle
-  working_directory = nom::getBundleResourcePath();
-#else // Potentially customized layout (POSIX hierarchy by default)
-  working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
-#endif
-
-  // Change the working directory to whatever WORKING_DIR has been set to
-  dir.setPath ( working_directory );
 
   // Command line arguments
   if ( argc > 1 )
@@ -123,6 +112,21 @@ NOM_LOG_INFO ( TTCARDS, "File export successful." );
     // If we have got this far, we assume command execution was successful
     exit ( EXIT_SUCCESS );
   } // end argument & parameter checks
+
+// These definitions are influenced at build time with CMake options and serve
+// to help determine the path of game resources
+#if defined ( OSXAPP ) // OSX Application Bundle
+  working_directory = nom::getBundleResourcePath();
+#else // Potentially customized layout (POSIX hierarchy by default)
+  working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
+#endif
+
+  // Change the working directory to whatever working_directory has been set to
+  //
+  // Note that it is important that we do not mess with the working directory
+  // path until after our command line arguments have been processed, so that we
+  // do not unintentionally mess up relative paths!
+  dir.setPath ( working_directory );
 }
 
 App::~App ( void )
