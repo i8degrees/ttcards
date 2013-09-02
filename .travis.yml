@@ -32,7 +32,7 @@ script:
   - du -csh "/usr/local/share/doc/ttcards/"
   - ttcards --version
   - ttcards --export /usr/local/share/ttcards/Resources/cards.json $HOME/my_cards.json && cat $HOME/my_cards.json
-  - ttcards --config $HOME/my_config.json && cat $HOME/my_config.json
+  #- ttcards --config $HOME/my_config.json && cat $HOME/my_config.json
   - sudo make uninstall
   - make clean
 # whitelist
