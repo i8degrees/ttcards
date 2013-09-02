@@ -158,7 +158,7 @@ bool App::onInit ( void )
 
   for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
   {
-    modes[idx].pp();
+    std::cout << modes[idx] << std::endl;
   }
 
   this->game->context.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
