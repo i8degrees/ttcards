@@ -98,11 +98,40 @@ NOM_LOG_ERR ( TTCARDS, "Could not serialize cards collection." );
 //NOM_LOG_INFO ( TTCARDS, "File " + argv[2] + " successfully saved" );
 NOM_LOG_INFO ( TTCARDS, "File export successful." );
     } // end  export option
+    else if ( std::string(argv[1]) == "--config" ) // Save configuration
+    {
+      if ( argv[2] == nullptr )
+      {
+NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename>." );
+        exit ( EXIT_FAILURE );
+      }
+
+      if ( dir.exists ( argv[2] ) == true )
+      {
+NOM_LOG_ERR ( TTCARDS, "File path already exists at: " + std::string(argv[2]) );
+        exit ( EXIT_FAILURE );
+      }
+
+      GameConfig cfg;
+      if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
+      {
+NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
+        exit ( EXIT_FAILURE );
+      }
+
+      if ( cfg.save ( argv[2] ) == false )
+      {
+NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[2]) );
+        exit ( EXIT_FAILURE );
+      }
+NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[2]) );
+    }
     else if ( strcmp ( argv[1], "-h" ) == 0 || strcmp ( argv[1], "--help" ) == 0 )
     {
       std::cout << "\tttcards [ -h | --help ]" << std::endl;
       std::cout << "\tttcards [ -v | --version ]" << std::endl;
       std::cout << "\tttcards [ -e | --export <output_filename> <input_filename> ]" << std::endl;
+      std::cout << "\tttcards [ --config <output_filename> ]" << std::endl;
     } // end help option
     else if ( strcmp ( argv[1], "-v" ) == 0 || strcmp ( argv[1], "--version" ) == 0 )
     {
