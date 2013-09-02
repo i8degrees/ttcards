@@ -402,7 +402,7 @@ bool Board::load ( const std::string& filename )
   nom::uint32 level = 0;
   nom::uint32 type = 0;
   nom::uint32 element = 0;
-  std::array<nom::int32, MAX_RANKS> rank = { { 0 } };
+  std::array<nom::int32, MAX_RANKS> rank = {{ 0 }};
   std::string name = "\0";
   nom::uint32 player_id = 0;
   nom::uint32 player_owner = 0;
@@ -502,7 +502,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
         assert ( value.type() == json_spirit::int_type );
         player_owner = value.get_int();
 
-        cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, player_id, player_owner ) );
+        cards.push_back ( Card ( id, level, type, element, rank, name, player_id, player_owner ) );
       }
     } // end current node loop
   } // end current array node

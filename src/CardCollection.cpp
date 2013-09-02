@@ -125,7 +125,7 @@ bool CardCollection::load( const std::string& filename )
   unsigned int level = 0;
   unsigned int type = 0;
   unsigned int element = 0;
-  std::array<int, 4> rank = { { 0 } };
+  std::array<nom::int32, MAX_RANKS> rank = {{ 0 }};
   std::string name = "\0";
   std::ifstream fp; // input file stream object
   json_spirit::Object obj;
@@ -208,7 +208,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
           rank[WEST] = ranks[rdx].get_int();
           rdx++;
         }
-        this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, 0 ) );
+        this->cards.push_back ( Card ( id, level, type, element, rank, name, Card::NOPLAYER, Card::NOPLAYER ) );
       }
     }
   }

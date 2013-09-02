@@ -95,7 +95,7 @@ void PlayState::debugBox ( void )
 void PlayState::debugModifyCardRank ( bool modifier, nom::uint32 direction )
 {
   Card selected = Card(); // temporary placeholder card for the update
-  std::array<nom::int32, 4> ranks = { {  0, 0, 0, 0 } }; // card ranks container
+  std::array<nom::int32, MAX_RANKS> ranks = {{ 0 }}; // card ranks container
   nom::int32 pos = 0; // position in player hand
   nom::uint32 player_turn = this->get_turn(); // current player turn
 

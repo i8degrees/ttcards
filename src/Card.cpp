@@ -29,32 +29,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 
 Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
-                      rank( { { 0, 0, 0, 0 } } ), name ( "\0" ),
+                      rank( { { 0 } } ), name ( "\0" ),
                       player_id ( Card::NOPLAYER ),
                       player_owner ( Card::NOPLAYER )
-{
-}
+{}
 
-Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
-              unsigned int element_, std::array<int, MAX_RANKS> rank_,
-              std::string name_, unsigned int player_id_,
-              unsigned int player_owner_
+Card::Card  (
+              nom::uint32 id, nom::uint32 level, nom::uint32 type,
+              nom::uint32 element, std::array<nom::int32, MAX_RANKS> rank,
+              std::string name, nom::uint32 player_id, nom::uint32 player_owner
             )
-{
-  this->setID ( id_ );
-  this->setLevel ( level_ );
-  this->setType ( type_ );
-  this->setElement ( element_ );
-  this->setRanks ( rank_ );
-  this->setName ( name_ );
+            : id ( id ), level ( level ), type ( type ), element ( element ),
+            rank { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } },
+            name ( name ), player_id ( player_id ), player_owner ( player_owner )
+{}
 
-  this->setPlayerID ( player_id_ );
-  this->setPlayerOwner ( player_owner_ );
-}
-
-Card::~Card ( void )
-{
-}
+Card::~Card ( void ) {}
 
 unsigned int Card::getID ( void ) const
 {
@@ -76,27 +66,27 @@ unsigned int Card::getElement ( void )
   return this->element;
 }
 
-std::array<int, MAX_RANKS> Card::getRanks ( void )
+std::array<nom::int32, MAX_RANKS> Card::getRanks ( void )
 {
   return this->rank;
 }
 
-unsigned int Card::getNorthRank ( void )
+nom::int32 Card::getNorthRank ( void )
 {
   return this->rank[NORTH];
 }
 
-unsigned int Card::getEastRank ( void )
+nom::int32 Card::getEastRank ( void )
 {
   return this->rank[EAST];
 }
 
-unsigned int Card::getSouthRank ( void )
+nom::int32 Card::getSouthRank ( void )
 {
   return this->rank[SOUTH];
 }
 
-unsigned int Card::getWestRank ( void )
+nom::int32 Card::getWestRank ( void )
 {
   return this->rank[WEST];
 }
@@ -144,24 +134,24 @@ void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
   this->setWestRank ( ranks[WEST] );
 }
 
-void Card::setNorthRank ( unsigned int rank )
+void Card::setNorthRank ( nom::int32 rank )
 {
-  this->rank[NORTH] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[NORTH] = std::min ( rank, MAX_RANK );
 }
 
-void Card::setEastRank ( unsigned int rank )
+void Card::setEastRank ( nom::int32 rank )
 {
-  this->rank[EAST] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[EAST] = std::min ( rank, MAX_RANK );
 }
 
-void Card::setSouthRank ( unsigned int rank )
+void Card::setSouthRank ( nom::int32 rank )
 {
-  this->rank[SOUTH] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[SOUTH] = std::min ( rank, MAX_RANK );
 }
 
-void Card::setWestRank ( unsigned int rank )
+void Card::setWestRank ( nom::int32 rank )
 {
-  this->rank[WEST] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[WEST] = std::min ( rank, MAX_RANK );
 }
 
 void Card::setName ( std::string name_ )

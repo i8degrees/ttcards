@@ -52,18 +52,18 @@ constexpr nom::int32 MAX_RANK = 10;
 /// Maximum number of rank attributes
 constexpr nom::int32 MAX_RANKS = 4;
 
-/// Maximum name length a card can contain
-constexpr nom::int32 MAX_NAME = 14;
+/// Maximum name length a card can contain -- "Chubby Chocobo" (without quotes)
+constexpr nom::int32 MAX_NAME = 14; // +1 padding
 
 class Card
 {
   public:
     Card ( void );
 
-    Card  (   unsigned int id_, unsigned int level_, unsigned int type_,
-              unsigned int element_, std::array<int, MAX_RANKS> rank_,
-              std::string name_, unsigned int player_id_,
-              unsigned int player_owner_ = Card::NOPLAYER
+    Card  (
+            nom::uint32 id, nom::uint32 level, nom::uint32 type,
+            nom::uint32 element, std::array<nom::int32, MAX_RANKS> rank,
+            std::string name, nom::uint32 player_id, nom::uint32 player_owner
           );
 
     ~Card ( void );
@@ -72,11 +72,11 @@ class Card
     unsigned int getLevel ( void );
     unsigned int getType ( void );
     unsigned int getElement ( void );
-    std::array<int, MAX_RANKS> getRanks ( void );
-    unsigned int getNorthRank ( void );
-    unsigned int getEastRank ( void );
-    unsigned int getSouthRank ( void );
-    unsigned int getWestRank ( void );
+    std::array<nom::int32, MAX_RANKS> getRanks ( void );
+    nom::int32 getNorthRank ( void );
+    nom::int32 getEastRank ( void );
+    nom::int32 getSouthRank ( void );
+    nom::int32 getWestRank ( void );
     std::string getName ( void );
 
     unsigned int getPlayerID ( void );
@@ -95,19 +95,19 @@ class Card
     void setElement ( unsigned int element_ );
 
     /// Clamps array values to MAX_RANK
-    void setRanks ( std::array<nom::int32, 4> ranks );
+    void setRanks ( std::array<nom::int32, MAX_RANKS> ranks );
 
     /// Clamps value to MAX_RANK
-    void setNorthRank ( unsigned int rank );
+    void setNorthRank ( nom::int32 rank );
 
     /// Clamps value to MAX_RANK
-    void setEastRank ( unsigned int rank );
+    void setEastRank ( nom::int32 rank );
 
     /// Clamps value to MAX_RANK
-    void setSouthRank ( unsigned int rank );
+    void setSouthRank ( nom::int32 rank );
 
     /// Clamps value to MAX_RANK
-    void setWestRank ( unsigned int rank );
+    void setWestRank ( nom::int32 rank );
 
     /// Clamps value to MAX_NAME
     void setName ( std::string name_ );
@@ -133,7 +133,7 @@ class Card
     /// NONE is no element
     unsigned int element;
     /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
-    std::array<int, MAX_RANKS> rank;
+    std::array<nom::int32, MAX_RANKS> rank;
     std::string name;
 
     /// Additional field; used to distinguish card background and also used to
