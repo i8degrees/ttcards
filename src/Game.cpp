@@ -426,22 +426,12 @@ NOM_LOG_INFO ( TTCARDS, "Saved screenshot: " + screenshot_filename );
 
     case SDLK_r: // Start a new game
     {
-      if ( mod == KMOD_LMETA ) // Reload configuration
+      if ( this->game->config.load ( TTCARDS_DATA_DIR + "/config.json" ) == false )
       {
-        if ( this->game->config.load( TTCARDS_DATA_DIR + "/config.json" ) == true )
-        {
-NOM_LOG_INFO ( TTCARDS, "Reloaded configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
-        }
-        else
-        {
 NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
-        }
         break;
       }
-      else
-      {
-        nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
-      }
+      nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
     }
     break;
 
