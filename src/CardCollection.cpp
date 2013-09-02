@@ -30,13 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardCollection::CardCollection ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
   this->clear();
 }
 
 CardCollection::~CardCollection ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 void CardCollection::clear ( void )
@@ -112,7 +112,7 @@ bool CardCollection::save( const std::string& filename )
   }
   else
   {
-TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     fp.close();
     return false;
   }
@@ -140,7 +140,7 @@ bool CardCollection::load( const std::string& filename )
   {
     if ( json_spirit::read_stream ( fp, value ) == false )
     {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
       fp.close();
       return false;
     }

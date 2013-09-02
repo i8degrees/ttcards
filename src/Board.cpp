@@ -49,7 +49,7 @@ Board::Board ( void )
 
 Board::~Board ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 void Board::clear ( void )
@@ -59,7 +59,7 @@ void Board::clear ( void )
 
 void Board::initialize ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   nom::int32 x, y = 0; // iterator
 
@@ -389,7 +389,7 @@ bool Board::save ( const std::string& filename )
   }
   else
   {
-TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     fp.close();
     return false;
   }
@@ -423,7 +423,7 @@ bool Board::load ( const std::string& filename )
   {
     if ( json_spirit::read_stream ( fp, value ) == false )
     {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
       fp.close();
       return false;
     }

@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardHand::CardHand ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->clear();
   this->selectedCard = Card();
@@ -38,7 +38,7 @@ TTCARDS_LOG_CLASSINFO;
 
 CardHand::~CardHand ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->clear();
 }
@@ -246,7 +246,7 @@ bool CardHand::save ( const std::string& filename )
   }
   else
   {
-TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     fp.close();
     return false;
   }
@@ -281,7 +281,7 @@ bool CardHand::load ( const std::string& filename )
   {
     if ( json_spirit::read_stream ( fp, value ) == false )
     {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
       fp.close();
       return false;
     }

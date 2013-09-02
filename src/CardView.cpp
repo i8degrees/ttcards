@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardView::CardView ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->card_face = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
   this->card_background = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
@@ -43,7 +43,7 @@ TTCARDS_LOG_CLASSINFO;
 
 CardView::~CardView ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 bool CardView::load ( GameConfig* config )
@@ -55,25 +55,25 @@ bool CardView::load ( GameConfig* config )
 
   if ( this->card_text.load ( config->getString("CARD_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FONTFACE") );
     return false;
   }
 
   if ( this->card_face.load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_FACES") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
   if ( this->card_background.load ( config->getString("CARD_BACKGROUNDS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_BACKGROUNDS") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_BACKGROUNDS") );
     return false;
   }
 
   if ( this->card_element.load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
   }
 

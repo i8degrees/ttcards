@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 GameOverState::GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->game = object;
   this->show_results = false;
@@ -39,7 +39,7 @@ TTCARDS_LOG_CLASSINFO;
 
 GameOverState::~GameOverState ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 void GameOverState::onInit ( void )
@@ -86,7 +86,7 @@ void GameOverState::onInit ( void )
 
 void GameOverState::onExit ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->game->winning_track.Stop();
 }

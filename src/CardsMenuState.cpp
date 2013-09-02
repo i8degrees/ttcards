@@ -30,11 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 {
+NOM_DUMP_VAR ( scale_factor.get() );
   nom::Gradient linear;
 
   unsigned int pid = 0; // temp var for for loop iteration
 
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->game = object;
 
@@ -73,7 +74,7 @@ TTCARDS_LOG_CLASSINFO;
 
 CardsMenuState::~CardsMenuState ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->selectedCard = Card();
 }
@@ -123,7 +124,7 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
 
     case SDLK_RETURN:
     {
-#ifdef TTCARDS_DEBUG
+#ifdef DEBUG
       if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
       {
         this->game->hand[0].randomize ( 8, 10, this->game->collection );

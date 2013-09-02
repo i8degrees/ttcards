@@ -41,12 +41,12 @@ Player::Player ( void ) : card ( nullptr ), hand ( nullptr ),
                           coords ( 0, 0, 0, 0 ), id ( 0 ), score ( 5 )
                           //state ( 0 )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 Player::Player ( CardHand* player_cards, CardView* view )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->hand.reset ( player_cards, Free_CardHand );
   this->card = view;
@@ -59,7 +59,7 @@ TTCARDS_LOG_CLASSINFO;
 
 Player::~Player ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 nom::int32 Player::getX ( void )

@@ -29,54 +29,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_CFG_HEADERS
 #define GAMEAPP_CFG_HEADERS
 
-#include <cassert>
+#include <string>
+
+// We borrow several C macros from here for conditional debug logging
+#include <nomlib/config.hpp>
 
 /// Cross-platform support files
 #include <nomlib/types.hpp> // data types
-#include <nomlib/system/clock.hpp> // date & time
 
 /// Site-specific constants -- this is likely specific to your own local system
 /// setup; auto-generated at compile-time and therefore must recompile to modify
 /// said constants.
 #include "version.hpp"
-
-// Pretty print macros
-#define TTCARDS_DUMP_VAR(var) \
-  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
-
-// Debugging macros
-#ifdef TTCARDS_DEBUG
-
-  // Output info messages if debugging is turned on
-  #define TTCARDS_LOG_INFO(message) \
-    ( std::cout << "TTCARDS_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
-
-  #define TTCARDS_LOG_ERR(message) \
-    ( std::cout << "TTCARDS_LOG_ERR at " << nom::getCurrentTime() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
-
-#else // Do not add any overhead
-  #define TTCARDS_LOG_INFO(message)
-  #define TTCARDS_LOG_ERR(message)
-#endif
-
-#ifdef TTCARDS_DEBUG_ASSERT
-
-  #define TTCARDS_ASSERT(expression) \
-    ( assert (expression) )
-
-#else // Do not add any overhead
-  #define TTCARDS_ASSERT(expression)
-#endif
-
-#ifdef TTCARDS_DEBUG_TRACE
-
-  // If trace debugging is turned on, show class construction and destruction
-  #define TTCARDS_LOG_CLASSINFO \
-    ( std::cout << "TTCARDS_LOG_CLASSINFO at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
-
-#else // Do not add any overhead
-  #define TTCARDS_LOG_CLASSINFO
-#endif
 
 /// Scale factor of graphics; only a scaling factor of 1..3 is supported at the
 /// moment. Resource data is not scaled in real-time (yet), so you must also

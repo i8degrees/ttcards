@@ -30,12 +30,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 GameConfig::GameConfig( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 GameConfig::~GameConfig( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 const std::string GameConfig::getString ( const std::string& node ) const
@@ -70,7 +70,7 @@ const json_spirit::Value GameConfig::setProperty ( const std::string& node, cons
 {
   auto res = config.insert ( std::pair<std::string, json_spirit::Value> ( node, value ) ).first;
 
-TTCARDS_LOG_INFO ( "GameConfig: " + node + " has been added to the cache." );
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + " has been added to the cache." );
 
   return res->second;
 }
@@ -134,7 +134,7 @@ bool GameConfig::save( const std::string& filename )
   }
   else
   {
-TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     fp.close();
     return false;
   }
@@ -157,7 +157,7 @@ bool GameConfig::load( const std::string& filename )
   {
     if ( json_spirit::read_stream ( fp, value ) == false )
     {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
       fp.close();
       return false;
     }
@@ -171,7 +171,7 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
 
   if ( ! value.type() == json_spirit::array_type )
   {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
@@ -181,7 +181,7 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
   {
     if ( ! game[i].type() == json_spirit::obj_type )
     {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
       return false;
     }
 

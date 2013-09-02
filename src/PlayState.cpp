@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->game = object;
 
@@ -43,7 +43,7 @@ TTCARDS_LOG_CLASSINFO;
 
 PlayState::~PlayState ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 void PlayState::onExit ( void )
@@ -152,21 +152,21 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     {
       if ( this->game->hand[0].save( USER_PLAYER1_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_PLAYER1_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER1_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
 
       if ( this->game->hand[1].save( USER_PLAYER2_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_PLAYER2_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER2_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
 
       if ( this->game->board.save( USER_BOARD_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_BOARD_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
@@ -182,8 +182,8 @@ TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_BOARD_FILENAME );
         if ( this->game->hand[0].load ( TTCARDS_DATA_DIR + path.native() + "player1_always-win.json" ) == false )
         {
 // FIXME
-//TTCARDS_LOG_ERR ( "Unable to load game data at: " + "player1_always-win.json" );
-TTCARDS_LOG_ERR ( "Unable to load game data at: player1_always-win.json" );
+//NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + "player1_always-win.json" );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: player1_always-win.json" );
           this->game->cursor_wrong.Play();
           break;
         }
@@ -192,7 +192,7 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: player1_always-win.json" );
       {
         if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
         {
-TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER1_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_PLAYER1_FILENAME );
           this->game->cursor_wrong.Play();
           break;
         }
@@ -200,14 +200,14 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER1_FILENAME );
 
       if ( this->game->hand[1].load( USER_PLAYER2_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER2_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_PLAYER2_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
 
       if ( this->game->board.load( USER_BOARD_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }

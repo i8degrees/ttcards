@@ -49,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "resources.hpp"
 #include "Player.hpp"
 #include "Card.hpp"
-//#include "cpu_Player.hpp"
+//#include "cpu_player.hpp"
 #include "CardsMenuState.hpp"
 #include "GameOverState.hpp"
 #include "GameObject.hpp"
