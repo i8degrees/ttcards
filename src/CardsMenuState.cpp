@@ -37,8 +37,6 @@ CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 NOM_LOG_TRACE ( TTCARDS );
 
   this->game = object;
-
-  this->game->board.clear();
   this->game->hand[0].clear();
   this->game->hand[1].clear();
 
