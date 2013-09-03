@@ -57,7 +57,7 @@ void GameOverState::onInit ( void )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      Card card = this->game->board.getCard ( x, y );
+      Card card = this->game->board.get ( x, y );
 
       if ( card.getPlayerOwner() == Card::PLAYER1 )
       {

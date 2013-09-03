@@ -468,7 +468,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
     case SDLK_LEFTBRACKET:
     {
       if ( mod == KMOD_LMETA )
-        this->game->board.List();
+        this->game->board.list();
       else
         this->game->debug.ListCards ( this->game->hand[0].cards );
     }

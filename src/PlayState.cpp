@@ -478,7 +478,9 @@ void PlayState::showCardInfoBox ( void* video_buffer )
     coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
 
     if ( coords.x != -1 && coords.y != -1 )
-      selectedCard = this->game->board.getCard ( coords.x, coords.y );
+    {
+      selectedCard = this->game->board.get ( coords.x, coords.y );
+    }
   }
   // player hand selection state
   else
@@ -599,6 +601,14 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
   nom::uint32 player_turn = this->get_turn();
 
   selected = this->game->hand[ player_turn ].getSelectedCard();
+
+  if ( player_turn == PLAYER1 )
+  {
+    std::vector<Card> adjacent_cards = this->game->board.find_adjacent ( x, y );
+
+    // Dump returned list of cards
+    this->game->debug.ListCards ( adjacent_cards );
+  }
 
   if ( selected.getID() != 0 )
   {

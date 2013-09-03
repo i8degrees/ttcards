@@ -50,6 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "resources.hpp"
+#include "BoardTile.hpp"
 #include "Card.hpp"
 #include "CardDebug.hpp"
 #include "CardRules.hpp"
@@ -65,33 +66,60 @@ class Board
     /// Empties board vector
     void clear ( void );
 
-    /// Translates local board coordinates into global positioning coordinates.
+    /// Translates local board coordinates into positioning coordinates used by
+    /// display rendering (units are naturally in pixels) -- usefulness ranges
+    /// from collision inputs detection to interface cursor navigation.
     ///
-    /// Returns a positioning coordinate between 0, 0 and 2,2 on success.
+    /// Input x, y arguments is in local board grid coordinates:
+    ///
+    ///   0, 0    1, 0    2, 0
+    ///   0, 1    1, 1    2, 1
+    ///   0, 2    1, 2    2, 2
+    ///
+    /// Returns a nom::Coords filled with the global coordinate values; the
+    /// width and height member values are the bounding boxes of each local grid
+    /// coordinate. The x & y member values are the input grid coordinates.
+    ///
     /// Returns -1, -1 when undefined.
-    ///
-    /// Each board position -- such as 0, 0 (top-left) needs to be able to be
-    /// translated (think: mapped) into global screen coordinates that the
-    /// underlying subsystems can use to make decisions according to player
-    /// actions made. The input subsystem is a prime example of these needs.
-    nom::Coords getGlobalBounds ( nom::int32 x, nom::int32 y );
+    const nom::Coords getGlobalBounds ( nom::int32 x, nom::int32 y ) const;
 
+    const std::vector<Card> find_adjacent ( nom::int32 x, nom::int32 y ) const;
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
 
-    // TODO: Consider branching this into Score class
-    unsigned int getCount ( void );
-    unsigned int getPlayerCount ( unsigned int player_id );
+    /// Getter helper method for obtaining total count of placed cards on board
+    nom::uint32 getCount ( void );
 
-    nom::int32 getStatus ( nom::int32 x, nom::int32 y );
-    void updateStatus ( unsigned int x, unsigned int y, Card &card );
-    unsigned int getPlayerID ( unsigned int x, unsigned int y );
-    void flipCard ( unsigned int x, unsigned int y, unsigned int player_id );
-    std::string getName ( unsigned int x, unsigned int y );
-    Card &getCard ( unsigned int x, unsigned int y );
+    /// get card count by player's cards on board
+    nom::uint32 getPlayerCount ( nom::int32 player_id );
 
-    void Update ( unsigned int x, unsigned int y ); // TODO
-    void Draw ( void* video_buffer );
-    void List ( void );
+    /// Getter helper method for obtaining card ID at x, y coords
+    const nom::int32 getStatus ( nom::int32 x, nom::int32 y ) const;
+
+    /// Setter helper method for placing a card on the board at x, y coords
+    void updateStatus ( nom::int32 x, nom::int32 y, const Card& card );
+
+    /// Getter helper method for obtaining player owner tag / ID on a card at x, y
+    /// coords
+    const nom::int32 getPlayerID ( nom::int32 x, nom::int32 y ) const;
+
+    /// Setter helper method for swapping player owner tags / IDs on a card at x, y
+    /// coords
+    void flipCard ( nom::int32 x, nom::int32 y, nom::int32 player_id );
+
+    /// Getter helper method for obtaining card name at x, y coords
+    const std::string getName ( nom::int32 x, nom::int32 y ) const;
+
+    /// (Private) Getter helper method for obtaining card placed at x, y coords;
+    /// Used within Board::Draw(), Game::showCardInfoBox() method calls
+    const Card& get ( nom::int32 x, nom::int32 y ) const;
+
+    void update ( nom::int32 x, nom::int32 y ); // TODO
+
+    /// Draws our active board grid based on their values (card IDs)
+    void draw ( void* video_buffer );
+
+    /// Pretty print the current board tiles
+    void list ( void );
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
@@ -111,16 +139,21 @@ class Board
 
   private:
     void initialize ( void );
+
     /// Card rule logic
     CardRules rules;
+
     /// Card rendering
     CardView* card;
+
     /// Debug support for card attributes
     CardDebug debug;
-    /// 2D vector of Card data containers
-    std::vector<std::vector<Card>> grid;
 
-    /// X, Y translation coordinates for local board positions
+    /// 2D vector of BoardTiles
+    std::vector<std::vector<BoardTile>> grid;
+
+    /// X, Y translation coordinates for mapping local to global positions on
+    /// the board
     nom::Coords board_map[9];
 };
 
