@@ -53,8 +53,8 @@ class CardView
     /// The failure of any of these resources results in failure
     bool load ( GameConfig* config );
 
-    bool drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y );
-    bool DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y );
+    bool drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y );
+    bool DrawCard ( void* video_buffer, const Card& card, nom::int32 x, nom::int32 y );
 
   private:
     nom::BitmapFont card_text;

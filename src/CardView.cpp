@@ -97,7 +97,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 }
 
 // Helper method for drawing cards face down
-bool CardView::drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y )
+bool CardView::drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y )
 {
   this->card_background.setSheetID ( NOFACE_ID );
   this->card_background.setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
@@ -107,10 +107,9 @@ bool CardView::drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y
   return true;
 }
 
-bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y )
+bool CardView::DrawCard ( void* video_buffer, const Card& card, nom::int32 x, nom::int32 y )
 {
-  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
-    return false;
+  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION ) return false;
 
   switch ( card.getPlayerID() )
   {
