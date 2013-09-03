@@ -50,7 +50,9 @@ NOM_LOG_TRACE ( TTCARDS );
   // anybody knowing the difference.
   //
   for ( pid = 0; pid < this->game->collection.cards.size(); pid++ )
+  {
     this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
+  }
 
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
@@ -193,7 +195,7 @@ void CardsMenuState::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenuState::Update ( nom::uint32 delta_time )
+void CardsMenuState::Update ( float delta_time )
 {
   this->updateCursor();
 

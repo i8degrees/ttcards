@@ -88,7 +88,7 @@ void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod )
   }
 }
 
-void PauseState::Update ( nom::uint32 delta_time )
+void PauseState::Update ( float delta_time )
 {
   this->info_box.Update();
   this->game->info_text.Update();

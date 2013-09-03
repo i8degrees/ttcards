@@ -66,7 +66,7 @@ class PlayState: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( nom::uint32 delta_time );
+    void Update ( float delta_time );
     void Draw ( void* video_buffer );
   private:
     void onKeyDown ( int32_t key, int32_t mod );

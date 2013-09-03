@@ -115,7 +115,7 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
   }
 }
 
-void GameOverState::Update ( nom::uint32 delta_time )
+void GameOverState::Update ( float delta_time )
 {
   if ( this->update.getTicks() > 2500 )
   {

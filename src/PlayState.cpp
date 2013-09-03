@@ -788,7 +788,7 @@ void PlayState::updateScore ( void )
   }
 }
 
-void PlayState::Update ( nom::uint32 delta_time )
+void PlayState::Update ( float delta_time )
 {
   this->updateCursor();
 
