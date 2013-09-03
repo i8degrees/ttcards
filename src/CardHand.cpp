@@ -369,3 +369,21 @@ void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )
   // Update the player's selected card
   this->selectCard ( selected );
 }
+
+const Card CardHand::strongest ( void )
+{
+  std::vector<Card> strongest_cards ( this->cards );
+
+  std::sort ( strongest_cards.begin(), strongest_cards.end(), std::greater<Card>() );
+
+  return strongest_cards.front();
+}
+
+const Card CardHand::weakest ( void )
+{
+  std::vector<Card> weakest_cards ( this->cards );
+
+  std::sort ( weakest_cards.begin(), weakest_cards.end(), std::less<Card>() );
+
+  return weakest_cards.front();
+}

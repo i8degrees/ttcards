@@ -138,6 +138,13 @@ class Card
     void decreaseSouthRank ( void );
     void decreaseWestRank ( void );
 
+    /// The total strength value of any given card is determined by adding the
+    /// sum of all the card rank values together.
+    ///
+    /// Note that this does not take into account game rules that may be in
+    /// effect!
+    nom::int32 strength ( void );
+
     /// card.player_id AKA owner tag
     enum
     {

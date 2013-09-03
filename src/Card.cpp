@@ -239,6 +239,19 @@ void Card::decreaseWestRank ( void )
   nom::int32 modified_rank = std::max ( this->getWestRank() - 1, MIN_RANK );
   this->setWestRank ( modified_rank );
 }
+
+nom::int32 Card::strength (void )
+{
+  nom::int32 total_strength_value = 0;
+
+  total_strength_value += this->getNorthRank();
+  total_strength_value += this->getEastRank();
+  total_strength_value += this->getWestRank();
+  total_strength_value += this->getSouthRank();
+
+  return total_strength_value;
+}
+
 std::ostream& operator << ( std::ostream& os, const Card& rhs )
 {
   os  << rhs.getName()

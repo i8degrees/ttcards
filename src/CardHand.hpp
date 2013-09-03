@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <chrono>
 #include <random>
+#include <algorithm>
 
 #include "json_spirit_writer_template.h"
 #include "json_spirit_reader_template.h"
@@ -86,7 +87,20 @@ class CardHand
     /// to match precisely.
     bool load ( const std::string& filename );
 
+    /// Modify card rank values.
     void modifyCardRank ( bool modifier, nom::uint32 direction );
+
+    /// Getter for obtaining the strongest card in the player's hand.
+    ///
+    /// Note that this does not take into account game rules that may be in
+    /// effect!
+    const Card strongest ( void );
+
+    /// Getter for obtaining the weakest card in the player's hand.
+    ///
+    /// Note that this does not take into account game rules that may be in
+    /// effect!
+    const Card weakest ( void );
 
     /// \todo Declare in private scope
     std::vector<Card> cards;
