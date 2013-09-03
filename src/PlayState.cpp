@@ -36,6 +36,7 @@ NOM_LOG_TRACE ( TTCARDS );
 
   this->turn = 0;
   this->cursor_locked = false;
+  this->skip_turn = false;
 
   // this->game->hand[0] is initialized for us in the CardsMenu state
   this->game->hand[1].clear();
@@ -131,6 +132,13 @@ void PlayState::onInit ( void )
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
   this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
+
+  // Initialize our animation state timers
+  this->player_timer.Start();
+  this->player_animation = false;
+
+  this->cursor_blink.Start();
+  this->blink_cursor = false;
 }
 
 void PlayState::onKeyDown ( int32_t key, int32_t mod )
@@ -218,9 +226,22 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
     }
     break;
 
-    // Debug helpers
-    case SDLK_e: this->endTurn(); break;
-
+#if defined ( DEBUG )
+    case SDLK_e: // Full control over the other player's move
+    {
+      if ( mod == KMOD_LMETA ) // Return control over to the other player
+      {
+        this->skip_turn = false;
+        this->endTurn();
+      }
+      else
+      {
+        this->skip_turn = true;
+        this->endTurn();
+      }
+    }
+    break;
+#endif
     case SDLK_d:
     {
       this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
@@ -314,31 +335,31 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
     case SDLK_SPACE: this->lockSelectedCard(); break;
 
     // move selected card to grid[0][0]
-    case SDLK_1: this->moveTo ( 0, 0 ); break;
+    case SDLK_1: if ( player_turn != PLAYER2 ) this->moveTo ( 0, 0 ); break;
 
     // move selected card to grid[1][0]
-    case SDLK_2: this->moveTo ( 1, 0 ); break;
+    case SDLK_2: if ( player_turn != PLAYER2 ) this->moveTo ( 1, 0 ); break;
 
     // move selected card to grid[2][0]
-    case SDLK_3: this->moveTo ( 2, 0 ); break;
+    case SDLK_3: if ( player_turn != PLAYER2 ) this->moveTo ( 2, 0 ); break;
 
     // move selected card to grid[0][1]
-    case SDLK_4: this->moveTo ( 0, 1 ); break;
+    case SDLK_4: if ( player_turn != PLAYER2 ) this->moveTo ( 0, 1 ); break;
 
     // move selected card to grid[1][1]
-    case SDLK_5: this->moveTo ( 1, 1 ); break;
+    case SDLK_5: if ( player_turn != PLAYER2 ) this->moveTo ( 1, 1 ); break;
 
     // move selected card to grid[2][1]
-    case SDLK_6: this->moveTo ( 2, 1 ); break;
+    case SDLK_6: if ( player_turn != PLAYER2 ) this->moveTo ( 2, 1 ); break;
 
     // move selected card to grid[0][2]
-    case SDLK_7: this->moveTo ( 0, 2 ); break;
+    case SDLK_7: if ( player_turn != PLAYER2 ) this->moveTo ( 0, 2 ); break;
 
     // move selected card to grid[1][2]
-    case SDLK_8: this->moveTo ( 1, 2 ); break;
+    case SDLK_8: if ( player_turn != PLAYER2 ) this->moveTo ( 1, 2 ); break;
 
     // move selected card to grid[2][2] if possible
-    case SDLK_9: this->moveTo ( 2, 2 ); break;
+    case SDLK_9: if ( player_turn != PLAYER2 ) this->moveTo ( 2, 2 ); break;
   } // end key switch
 }
 
@@ -347,8 +368,11 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
   nom::int32 hand_index = 0; // iterator
   uint32_t player_turn = this->get_turn();
 
-  if ( this->get_turn() != 0 )
-    return;
+  // Disable mouse input if we are not controlling the other player
+  if ( this->skip_turn == false )
+  {
+    if ( this->get_turn() != 0 ) return;
+  }
 
   nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
   nom::Coords player_coords = this->player[player_turn].getPosition(); // Player cursor origin coordinates
@@ -453,13 +477,13 @@ void PlayState::endTurn ( void )
   this->game->hand[PLAYER1].clearSelectedCard();
   this->game->hand[PLAYER2].clearSelectedCard();
 
-  if ( this->get_turn() == 0 )
+  if ( this->get_turn() == PLAYER1 )
   {
-    this->player_turn ( 1 );
+    this->player_turn ( PLAYER2 );
   }
-  else if ( this->get_turn() == 1 )
+  else if ( this->get_turn() == PLAYER2 )
   {
-    this->player_turn ( 0 );
+    this->player_turn ( PLAYER1 );
   }
 }
 
@@ -553,7 +577,13 @@ void PlayState::resetCursor ( void )
 
   this->game->cursor.setState ( 0 );
   this->game->cursor.setPosition ( this->player_cursor_coords[0].x, this->player_cursor_coords[0].y );
-  //this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+
+  // Only set the position of the game interface cursor for player2 when we are
+  // controlling him
+  if ( this->skip_turn == true )
+  {
+    this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+  }
 }
 
 // helper method for cursor input selection
@@ -756,10 +786,25 @@ void PlayState::moveCursorDown ( void )
 
 void PlayState::updateCursor ( void )
 {
-  if ( this->get_turn() == 0 ) // player1
+  if ( this->game->cursor.getState() == 1 )
+  {
+    if ( this->cursor_blink.getTicks() > 192 ) // Blinky blink!
+    {
+      this->cursor_blink.Stop();
+      this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE );
+      this->blink_cursor = true;
+    }
+  }
+
+  if ( this->get_turn() == PLAYER1 && this->blink_cursor == false ) // player1
+  {
     this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
-  //else // player2
-    //this->game->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+  }
+  // Only show interface cursor for player2 when we are controlling him
+  else if ( this->skip_turn == true && this->get_turn() == PLAYER2 && this->blink_cursor == false )
+  {
+    this->game->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+  }
 
   this->game->cursor.Update();
 }
@@ -767,6 +812,13 @@ void PlayState::updateCursor ( void )
 void PlayState::drawCursor ( void* video_buffer )
 {
   this->game->cursor.Draw ( video_buffer );
+
+  if ( this->blink_cursor )
+  {
+    this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+    this->cursor_blink.Start();
+    this->blink_cursor = false;
+  }
 }
 
 void PlayState::updateScore ( void )
@@ -802,43 +854,61 @@ void PlayState::Update ( float delta_time )
     this->player_rect.setPosition ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
     this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
 
-    nom::Coords board_edges[3];
-
-    board_edges[0].x = 0;
-    board_edges[0].y = 0;
-
-    board_edges[1].x = 2;
-    board_edges[1].y = 0;
-
-    board_edges[2].x = 0;
-    board_edges[2].y = 2;
-
-    board_edges[3].x = 2;
-    board_edges[3].y = 2;
-
-    nom::int32 edge_pick = nom::randomInteger ( 0, 3 );
-
-    nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
-    this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
-
-    if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
-      this->moveTo ( board_edges[ edge_pick ].x, board_edges[ edge_pick ].y );
-    else if ( this->game->board.getStatus ( board_edges[1].x, board_edges[1].y ) == false )
-      this->moveTo ( board_edges[1].x, board_edges[1].y );
-    else if ( this->game->board.getStatus ( board_edges[2].x, board_edges[2].y ) == false )
-      this->moveTo ( board_edges[2].x, board_edges[2].y );
-    else if ( this->game->board.getStatus ( board_edges[3].x, board_edges[3].y ) == false )
-      this->moveTo ( board_edges[3].x, board_edges[3].y );
-    else
+    // Only show player2 animation when we are not controlling him
+    if ( this->player_timer.getTicks() > 250 && this->skip_turn == false )
     {
-      nom::int32 moveX = nom::randomInteger ( 0, 2 );
-      nom::int32 moveY = nom::randomInteger ( 0, 2 );
+      this->player_timer.Stop();
+      this->player_animation = true;
+    }
+
+    // Skipping a turn like this is only available in debug versions
+    if ( this->skip_turn == false )
+    {
+      nom::Coords board_edges[3];
+
+      board_edges[0].x = 0;
+      board_edges[0].y = 0;
+
+      board_edges[1].x = 2;
+      board_edges[1].y = 0;
+
+      board_edges[2].x = 0;
+      board_edges[2].y = 2;
+
+      board_edges[3].x = 2;
+      board_edges[3].y = 2;
+
+      nom::int32 edge_pick = nom::randomInteger ( 0, 3 );
       nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
 
-      this->moveTo ( moveX, moveY );
-    }
-  }
+      if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
+      {
+        this->moveTo ( board_edges[ edge_pick ].x, board_edges[ edge_pick ].y );
+      }
+      else if ( this->game->board.getStatus ( board_edges[1].x, board_edges[1].y ) == false )
+      {
+        this->moveTo ( board_edges[1].x, board_edges[1].y );
+      }
+      else if ( this->game->board.getStatus ( board_edges[2].x, board_edges[2].y ) == false )
+      {
+        this->moveTo ( board_edges[2].x, board_edges[2].y );
+      }
+      else if ( this->game->board.getStatus ( board_edges[3].x, board_edges[3].y ) == false )
+      {
+        this->moveTo ( board_edges[3].x, board_edges[3].y );
+      }
+      else
+      {
+        nom::int32 moveX = nom::randomInteger ( 0, 2 );
+        nom::int32 moveY = nom::randomInteger ( 0, 2 );
+        nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
+        this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
+
+        this->moveTo ( moveX, moveY );
+      } // end board_edges choice
+    } // player2
+  } // end player1
 
   this->debug_box.Update();
   this->info_box.Update();
@@ -851,6 +921,15 @@ void PlayState::Draw ( void *video_buffer )
   this->game->background.Draw ( video_buffer );
 
   this->game->board.draw ( video_buffer );
+
+  // Only show player2 animation when we are not controlling him
+  if ( this->player_animation == true && this->skip_turn == false )
+  {
+    nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[PLAYER2].size() );
+    this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
+    this->player_timer.Start();
+    //this->player_animation = false;
+  }
 
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );

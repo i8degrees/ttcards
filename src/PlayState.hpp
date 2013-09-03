@@ -46,6 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "version.hpp"
 #include "resources.hpp"
 #include "Player.hpp"
 #include "Card.hpp"
@@ -116,12 +117,26 @@ class PlayState: public nom::IState
     /// y coords mapping for cursor -> card position index
     nom::Coords cursor_coords_map[5];
 
-    unsigned int turn; // FIXME: player1 = 0, player2 = 1
+    nom::uint32 turn; // FIXME: player1 = 0, player2 = 1
+
     /// locks cursor state to board placement
     bool cursor_locked;
 
     /// visual indication of which player's turn it is
     nom::Rectangle player_rect;
+
+    /// Animation "blink" timer for visual notification when interface cursor
+    /// is locked on a card (board drop mode).
+    nom::Timer cursor_blink;
+    bool blink_cursor;
+
+    /// Simulate an AI player taking their time in thought about the next move
+    nom::Timer player_timer;
+    bool player_animation;
+
+    /// Debug option -- when toggled on, we are able to control both players.
+    bool skip_turn;
+
 };
 
 // Convenience declarations for changing state

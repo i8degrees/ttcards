@@ -236,7 +236,6 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   }
   else
   {
-
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
       this->game->background.resize ( nom::ResizeAlgorithm::scale2x );
