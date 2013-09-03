@@ -53,7 +53,10 @@ constexpr nom::int32 MAX_TYPE = 4;
 /// Maximum element a card can contain -- starting at 1
 constexpr nom::int32 MAX_ELEMENT = 8;
 
-/// Maximum rank a card can contain -- starting at 1
+/// Minimum rank a card can contain
+constexpr nom::int32 MIN_RANK = 1;
+
+/// Maximum rank a card can contain
 constexpr nom::int32 MAX_RANK = 10;
 
 /// Maximum number of rank attributes
@@ -124,6 +127,16 @@ class Card
 
     /// Clamps value to TOTAL_PLAYERS
     void setPlayerOwner ( nom::int32 player_owner_ );
+
+    void increaseNorthRank ( void );
+    void increaseEastRank ( void );
+    void increaseSouthRank ( void );
+    void increaseWestRank ( void );
+
+    void decreaseNorthRank ( void );
+    void decreaseEastRank ( void );
+    void decreaseSouthRank ( void );
+    void decreaseWestRank ( void );
 
     /// card.player_id AKA owner tag
     enum

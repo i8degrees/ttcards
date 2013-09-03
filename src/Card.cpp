@@ -195,3 +195,47 @@ const json_spirit::Object Card::serialize ( void ) const
 
   return node;
 }
+
+void Card::increaseNorthRank ( void )
+{
+  this->setNorthRank ( this->getNorthRank() + 1 );
+}
+
+void Card::increaseEastRank ( void )
+{
+  this->setEastRank ( this->getEastRank() + 1 );
+}
+
+void Card::increaseSouthRank ( void )
+{
+  this->setSouthRank ( this->getSouthRank() + 1 );
+}
+
+void Card::increaseWestRank ( void )
+{
+  this->setWestRank ( this->getWestRank() + 1 );
+}
+
+void Card::decreaseNorthRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getNorthRank() - 1, MIN_RANK );
+  this->setNorthRank ( modified_rank );
+}
+
+void Card::decreaseEastRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getEastRank() - 1, MIN_RANK );
+  this->setEastRank ( modified_rank );
+}
+
+void Card::decreaseSouthRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getSouthRank() - 1, MIN_RANK );
+  this->setSouthRank ( modified_rank );
+}
+
+void Card::decreaseWestRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getWestRank() - 1, MIN_RANK );
+  this->setWestRank ( modified_rank );
+}
