@@ -110,4 +110,8 @@ class CardHand
     Card selectedCard;
 };
 
+/// Pretty print the the card attributes.
+///
+std::ostream& operator << ( std::ostream& os, const CardHand& rhs );
+
 #endif // GAMEAPP_CARD_HAND_HEADERS defined

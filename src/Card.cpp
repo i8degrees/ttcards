@@ -240,7 +240,7 @@ void Card::decreaseWestRank ( void )
   this->setWestRank ( modified_rank );
 }
 
-nom::int32 Card::strength (void )
+nom::int32 Card::strength ( void )
 {
   nom::int32 total_strength_value = 0;
 
@@ -255,17 +255,25 @@ nom::int32 Card::strength (void )
 std::ostream& operator << ( std::ostream& os, const Card& rhs )
 {
   os  << rhs.getName()
-      << ", "
+      << card_delimiter
       << rhs.getID()
-      << ", "
+      << card_delimiter
       << rhs.getLevel()
-      << ", "
+      << card_delimiter
       << rhs.getType()
-      << ", "
+      << card_delimiter
       << rhs.getElement()
-      << ", "
+      << card_delimiter
+      << rhs.getNorthRank()
+      << card_delimiter
+      << rhs.getEastRank()
+      << card_delimiter
+      << rhs.getSouthRank()
+      << card_delimiter
+      << rhs.getWestRank()
+      << card_delimiter
       << rhs.getPlayerID()
-      << ", "
+      << card_delimiter
       << rhs.getPlayerOwner();
 
   return os;

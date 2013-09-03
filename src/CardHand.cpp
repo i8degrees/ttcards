@@ -387,3 +387,33 @@ const Card CardHand::weakest ( void )
 
   return weakest_cards.front();
 }
+
+std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
+{
+  for ( auto idx = 0; idx < rhs.cards.size(); idx++ )
+  {
+    os  << rhs.cards[idx].getName()
+        << card_delimiter
+        << rhs.cards[idx].getID()
+        << card_delimiter
+        << rhs.cards[idx].getLevel()
+        << card_delimiter
+        << rhs.cards[idx].getType()
+        << card_delimiter
+        << rhs.cards[idx].getElement()
+        << card_delimiter
+        << rhs.cards[idx].getNorthRank()
+        << card_delimiter
+        << rhs.cards[idx].getEastRank()
+        << card_delimiter
+        << rhs.cards[idx].getSouthRank()
+        << card_delimiter
+        << rhs.cards[idx].getWestRank()
+        << card_delimiter
+        << rhs.cards[idx].getPlayerID()
+        << card_delimiter
+        << rhs.cards[idx].getPlayerOwner();
+  }
+
+  return os;
+}

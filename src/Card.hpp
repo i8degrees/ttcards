@@ -44,6 +44,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+/// Used with pretty printing the card attributes when using << operator
+const std::string card_delimiter = " ";
+
 /// Maximum level a card can contain -- starting at 1
 constexpr nom::int32 MAX_LEVEL = 10;
 
@@ -176,7 +179,7 @@ class Card
 
 /// Pretty print the the card attributes.
 ///
-std::ostream& operator << ( std::ostream& os, const Card& mode );
+std::ostream& operator << ( std::ostream& os, const Card& rhs );
 
 /// Compare two cards for equality
 bool operator == ( const Card& lhs, const Card& rhs );
