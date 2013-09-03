@@ -28,46 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardDebug.hpp"
 
-CardDebug::CardDebug ( void )
-{
-}
+CardDebug::CardDebug ( void ) {}
 
-CardDebug::~CardDebug ( void )
-{
-}
-
-void CardDebug::ListCard ( Card& card )
-{
-  std::array<int, 4> ranks = { { 0, 0, 0, 0 } };
-
-  if ( card.getID() == 0 )
-  {
-    #ifdef DEBUG_CARD_DEBUG
-      std::cout << "CardDebug::ListCard(): " << "Card is empty." << "\n" << std::endl;
-    #endif
-  }
-
-  std::cout << card.getID();
-  std::cout << " ";
-  std::cout << card.getLevel();
-  std::cout << " ";
-  std::cout << card.getType();
-  std::cout << " ";
-  std::cout << card.getElement();
-  std::cout << " ";
-
-  for ( nom::ulong rank = 0; rank < ranks.size(); rank++ )
-  {
-    std::cout << ranks[rank];
-    std::cout << " ";
-  }
-
-  std::cout << card.getName();
-  std::cout << " ";
-  std::cout << card.getPlayerID();
-
-  std::cout << std::endl;
-}
+CardDebug::~CardDebug ( void ) {}
 
 void CardDebug::ListCards ( std::vector<Card>& cards )
 {
@@ -111,6 +74,8 @@ void CardDebug::ListCards ( std::vector<Card>& cards )
     std::cout << cards[i].getName();
     std::cout << " ";
     std::cout << cards[i].getPlayerID();
+    std::cout << " ";
+    std::cout << cards[i].getPlayerOwner();
 
     std::cout << std::endl;
   }
