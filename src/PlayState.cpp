@@ -482,7 +482,13 @@ void PlayState::showCardInfoBox ( void* video_buffer )
   }
   // player hand selection state
   else
+  {
+#if defined (DEBUG) // Allow watching both players make their card selections
     selectedCard = this->game->hand[player_turn].getSelectedCard();
+#else // Do not show the actions of other players
+    selectedCard = this->game->hand[PLAYER1].getSelectedCard();
+#endif
+  }
 
   // Debug helping info MessageBox display
   if ( this->debug_box.isEnabled() == true )
@@ -522,9 +528,13 @@ void PlayState::showCardInfoBox ( void* video_buffer )
 bool PlayState::isCursorLocked ( void )
 {
   if ( this->cursor_locked == true )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
 void PlayState::lockCursor ( bool lock )
@@ -830,7 +840,7 @@ void PlayState::Draw ( void *video_buffer )
 {
   this->game->background.Draw ( video_buffer );
 
-  this->game->board.Draw ( video_buffer );
+  this->game->board.draw ( video_buffer );
 
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );

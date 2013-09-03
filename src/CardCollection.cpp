@@ -176,12 +176,14 @@ NOM_ASSERT ( ranks.size() == 4 );
     }
   }
 
-  // Sanity check
-  if ( input_cards.size() < 1 )
+// Do a sanity check if we are not a debug version
+#ifndef DEBUG
+  if ( input_cards.size() < 10 ) // Sanity check
   {
 NOM_LOG_ERR ( TTCARDS, "Cards collection data is invalid at file: " + filename );
     return false;
   }
+#endif
 
   // All is well, let us make our freshly loaded data permanent
   this->cards = input_cards;
