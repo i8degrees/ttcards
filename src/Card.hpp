@@ -167,4 +167,26 @@ class Card
     nom::int32 player_owner;
 };
 
+/// Pretty print the the card attributes.
+///
+std::ostream& operator << ( std::ostream& os, const Card& mode );
+
+/// Compare two cards for equality
+bool operator == ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for in-equality
+bool operator != ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for less-than equality
+bool operator < ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for greater-than equality
+bool operator > ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for less-than or equal to equality
+bool operator <= ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for greater-than or equal to equality
+bool operator >= ( const Card& lhs, const Card& rhs );
+
 #endif // GAMEAPP_CARD_HEADERS defined

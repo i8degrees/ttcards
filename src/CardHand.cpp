@@ -153,7 +153,7 @@ bool CardHand::exists ( const Card& card ) const
 
   for ( auto idx = 0; idx < this->size(); idx++ )
   {
-    if ( card.getID() == this->cards[idx].getID() )
+    if ( card == this->cards[idx] )
       return true;
   }
 

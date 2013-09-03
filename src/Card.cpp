@@ -239,3 +239,92 @@ void Card::decreaseWestRank ( void )
   nom::int32 modified_rank = std::max ( this->getWestRank() - 1, MIN_RANK );
   this->setWestRank ( modified_rank );
 }
+std::ostream& operator << ( std::ostream& os, const Card& rhs )
+{
+  os  << rhs.getName()
+      << ", "
+      << rhs.getID()
+      << ", "
+      << rhs.getLevel()
+      << ", "
+      << rhs.getType()
+      << ", "
+      << rhs.getElement()
+      << ", "
+      << rhs.getPlayerID()
+      << ", "
+      << rhs.getPlayerOwner();
+
+  return os;
+}
+
+bool operator == ( const Card& lhs, const Card& rhs )
+{
+  return  ( lhs.getID() == rhs.getID() )                      &&
+          ( lhs.getLevel() == rhs.getLevel() )                &&
+          ( lhs.getType() == rhs.getType() )                  &&
+          ( lhs.getElement() == rhs.getElement() )            &&
+          ( lhs.getNorthRank() == rhs.getNorthRank() )        &&
+          ( lhs.getEastRank() == rhs.getEastRank() )          &&
+          ( lhs.getSouthRank() == rhs.getSouthRank() )        &&
+          ( lhs.getWestRank() == rhs.getWestRank() )          &&
+          ( lhs.getName() == rhs.getName() );
+}
+
+bool operator != ( const Card& lhs, const Card& rhs )
+{
+  return ! ( lhs == rhs );
+}
+
+bool operator <= ( const Card& lhs, const Card& rhs )
+{
+  return ! (rhs < lhs );
+}
+
+bool operator >= ( const Card& lhs, const Card& rhs )
+{
+  return ! ( lhs < rhs );
+}
+
+bool operator < ( const Card& lhs, const Card& rhs )
+{
+  nom::uint32 lhs_total_strengths = 0;
+  nom::uint32 rhs_total_strengths = 0;
+
+  lhs_total_strengths += lhs.getNorthRank();
+  lhs_total_strengths += lhs.getEastRank();
+  lhs_total_strengths += lhs.getWestRank();
+  lhs_total_strengths += lhs.getSouthRank();
+
+  rhs_total_strengths += rhs.getNorthRank();
+  rhs_total_strengths += rhs.getEastRank();
+  rhs_total_strengths += rhs.getWestRank();
+  rhs_total_strengths += rhs.getSouthRank();
+
+  if ( lhs_total_strengths == rhs_total_strengths )
+  {
+    return lhs_total_strengths < rhs_total_strengths;
+  }
+  else
+  {
+    return lhs_total_strengths < rhs_total_strengths;
+  }
+}
+
+bool operator > ( const Card& lhs, const Card& rhs )
+{
+  nom::uint32 lhs_total_strengths = 0;
+  nom::uint32 rhs_total_strengths = 0;
+
+  lhs_total_strengths += lhs.getNorthRank();
+  lhs_total_strengths += lhs.getEastRank();
+  lhs_total_strengths += lhs.getWestRank();
+  lhs_total_strengths += lhs.getSouthRank();
+
+  rhs_total_strengths += rhs.getNorthRank();
+  rhs_total_strengths += rhs.getEastRank();
+  rhs_total_strengths += rhs.getWestRank();
+  rhs_total_strengths += rhs.getSouthRank();
+
+  return rhs_total_strengths < lhs_total_strengths;
+}
