@@ -107,6 +107,58 @@ bool CardView::drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y )
   return true;
 }
 
+bool CardView::drawElement  (
+                              void* video_buffer, nom::int32 element_id,
+                              nom::int32 x, nom::int32 y
+                            )
+{
+  switch ( element_id )
+  {
+    //default:
+    case NONE:
+      this->card_element.setSheetID ( ELEMENT_NONE );
+    break;
+
+    case EARTH:
+      this->card_element.setSheetID ( ELEMENT_EARTH );
+    break;
+
+    case FIRE:
+      this->card_element.setSheetID ( ELEMENT_FIRE );
+    break;
+
+    case HOLY:
+      this->card_element.setSheetID ( ELEMENT_HOLY );
+    break;
+
+    case ICE:
+      this->card_element.setSheetID ( ELEMENT_ICE );
+    break;
+
+    case POISON:
+      this->card_element.setSheetID ( ELEMENT_POISON );
+    break;
+
+    case THUNDER:
+      this->card_element.setSheetID ( ELEMENT_THUNDER );
+    break;
+
+    case WATER:
+      this->card_element.setSheetID ( ELEMENT_WATER );
+    break;
+
+    case WIND:
+      this->card_element.setSheetID ( ELEMENT_WIND );
+    break;
+  }
+
+  this->card_element.setPosition ( nom::Coords( x, y ) );
+  this->card_element.Update();
+  this->card_element.Draw ( video_buffer );
+
+  return true;
+}
+
 bool CardView::DrawCard ( void* video_buffer, const Card& card, nom::int32 x, nom::int32 y )
 {
   if ( card.getID() < 1 || card.getID() > MAX_COLLECTION ) return false;
@@ -135,40 +187,7 @@ bool CardView::DrawCard ( void* video_buffer, const Card& card, nom::int32 x, no
 
   this->card_face.Draw ( video_buffer );
 
-  switch ( card.getElement() )
-  {
-    case NONE:
-      this->card_element.setSheetID ( ELEMENT_NONE );
-      break;
-    case EARTH:
-      this->card_element.setSheetID ( ELEMENT_EARTH );
-      break;
-    case FIRE:
-      this->card_element.setSheetID ( ELEMENT_FIRE );
-      break;
-    case HOLY:
-      this->card_element.setSheetID ( ELEMENT_HOLY );
-      break;
-    case ICE:
-      this->card_element.setSheetID ( ELEMENT_ICE );
-      break;
-    case POISON:
-      this->card_element.setSheetID ( ELEMENT_POISON );
-      break;
-    case THUNDER:
-      this->card_element.setSheetID ( ELEMENT_THUNDER );
-      break;
-    case WATER:
-      this->card_element.setSheetID ( ELEMENT_WATER );
-      break;
-    case WIND:
-      this->card_element.setSheetID ( ELEMENT_WIND );
-      break;
-  }
-
-  card_element.setPosition ( nom::Coords( ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y ) );
-  card_element.Update();
-  card_element.Draw ( video_buffer );
+  this->drawElement ( video_buffer, card.getElement(), ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y );
 
   if ( card.getNorthRank() == 10 )
     this->card_text.setText ( "A" );

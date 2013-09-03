@@ -54,6 +54,12 @@ class CardView
     bool load ( GameConfig* config );
 
     bool drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y );
+
+    bool drawElement  (
+                        void* video_buffer, nom::int32 element_id,
+                        nom::int32 x, nom::int32 y
+                      );
+
     bool DrawCard ( void* video_buffer, const Card& card, nom::int32 x, nom::int32 y );
 
   private:
