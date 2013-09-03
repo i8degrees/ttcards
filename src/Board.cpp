@@ -313,6 +313,22 @@ const nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y ) const
 void Board::updateStatus ( nom::int32 x, nom::int32 y, const Card& card )
 {
   this->grid[x][y].update ( nom::Coords ( x, y ), card );
+/*
+  if ( this->grid[x][y].element() != 0 )
+  {
+    this->grid[x][y].tile_card.increaseNorthRank();
+    this->grid[x][y].tile_card.increaseEastRank();
+    this->grid[x][y].tile_card.increaseSouthRank();
+    this->grid[x][y].tile_card.increaseWestRank();
+  }
+  else
+  {
+    this->grid[x][y].tile_card.decreaseNorthRank();
+    this->grid[x][y].tile_card.decreaseEastRank();
+    this->grid[x][y].tile_card.decreaseSouthRank();
+    this->grid[x][y].tile_card.decreaseWestRank();
+  }
+*/
 }
 
 const nom::int32 Board::getPlayerID ( nom::int32 x, nom::int32 y ) const
@@ -345,8 +361,14 @@ void Board::draw ( void* video_buffer )
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
       this->card->DrawCard ( video_buffer, this->get ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
-    }
-  }
+/*
+      if ( this->grid[x][y].element() != 0 )
+      {
+        this->card->drawElement ( video_buffer, this->grid[x][y].element(), BOARD_ORIGIN_X + ( CARD_WIDTH * x ) + ELEMENT_WIDTH, BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) + ELEMENT_HEIGHT );
+      }
+*/
+    } // end for loop rows
+  } // end for loop cols
 }
 
 bool Board::save ( const std::string& filename )
