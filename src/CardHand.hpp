@@ -86,6 +86,8 @@ class CardHand
     /// to match precisely.
     bool load ( const std::string& filename );
 
+    void modifyCardRank ( bool modifier, nom::uint32 direction );
+
     /// \todo Declare in private scope
     std::vector<Card> cards;
 

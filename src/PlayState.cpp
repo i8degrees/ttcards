@@ -135,6 +135,8 @@ void PlayState::onInit ( void )
 
 void PlayState::onKeyDown ( int32_t key, int32_t mod )
 {
+  nom::uint32 player_turn = get_turn();
+
   switch ( key )
   {
     default: break;
@@ -221,8 +223,6 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
 
     case SDLK_d:
     {
-      nom::uint32 player_turn = get_turn();
-
       this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
 
       this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
@@ -246,14 +246,16 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->modifyCardRank ( true, WEST );
+        this->game->hand[ player_turn ].modifyCardRank ( true, WEST );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->modifyCardRank ( false, WEST );
+        this->game->hand[ player_turn ].modifyCardRank ( false, WEST );
       }
       else
+      {
         this->moveCursorLeft();
+      }
     }
     break;
 
@@ -261,14 +263,16 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->modifyCardRank ( true, EAST );
+        this->game->hand[ player_turn ].modifyCardRank ( true, EAST );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->modifyCardRank ( false, EAST );
+        this->game->hand[ player_turn ].modifyCardRank ( false, EAST );
       }
       else
+      {
         this->moveCursorRight();
+      }
     }
     break;
 
@@ -276,14 +280,16 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->modifyCardRank ( true, NORTH );
+        this->game->hand[ player_turn ].modifyCardRank ( true, NORTH );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->modifyCardRank ( false, NORTH );
+        this->game->hand[ player_turn ].modifyCardRank ( false, NORTH );
       }
       else
+      {
         this->moveCursorUp();
+      }
     }
     break;
 
@@ -291,14 +297,16 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->modifyCardRank ( true, SOUTH );
+        this->game->hand[ player_turn ].modifyCardRank ( true, SOUTH );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->modifyCardRank ( false, SOUTH );
+        this->game->hand[ player_turn ].modifyCardRank ( false, SOUTH );
       }
       else
+      {
         this->moveCursorDown();
+      }
     }
     break;
 
@@ -421,46 +429,6 @@ void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::CIRCLE: this->unlockSelectedCard(); break;
     case nom::PSXBUTTON::CROSS: this->lockSelectedCard(); break;
   }
-}
-
-void PlayState::modifyCardRank ( bool modifier, nom::uint32 direction )
-{
-  Card selected = Card(); // temporary placeholder card for the update
-  std::array<nom::int32, MAX_RANKS> ranks = {{ 0 }}; // card ranks container
-  nom::int32 pos = 0; // position in player hand
-  nom::uint32 player_turn = this->get_turn(); // current player turn
-
-  // First, obtain current rank attributes of the selected card; validation is
-  // done for us by the Card class.
-  selected = this->game->hand[ player_turn ].getSelectedCard();
-  ranks = selected.getRanks();
-
-  if ( modifier ) // increase
-  {
-    ranks [ direction ] = ranks [ direction ] + 1;
-    selected.setRanks ( ranks );
-  }
-  else // assume a decrease
-  {
-    // This clamps the decreased attribute to not falling below one (1).
-    ranks [ direction ] = std::max ( ranks [ direction ] - 1, 1 );
-    selected.setRanks ( ranks );
-  }
-
-  // Update the player hand with our modified card attributes.
-  this->game->hand[ player_turn].erase ( selected );
-  this->game->hand[ player_turn].push_back ( selected );
-
-  // Update the player's selected card (player hand is a LILO type).
-  this->game->hand[ player_turn].selectCard ( this->game->hand[ player_turn].cards.back() );
-
-  // Lastly, calculate the (new) position of our selected card and use
-  // this information to update the cursor position to match the selected
-  // card.
-  selected = this->game->hand[ player_turn ].getSelectedCard();
-  pos = this->game->hand[ player_turn ].at(selected);
-
-  this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * pos );
 }
 
 unsigned int PlayState::get_turn ( void )

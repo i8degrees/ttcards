@@ -334,3 +334,38 @@ NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid at file: " + filename );
 
   return true;
 }
+
+void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )
+{
+  Card selected = this->getSelectedCard();
+  std::array<nom::int32, MAX_RANKS> ranks = {{ 0 }}; // card ranks container
+  std::vector<Card>::iterator pos = this->cards.begin();
+
+  // First, obtain current rank attributes of the selected card; validation is
+  // done for us by the Card class.
+  ranks = selected.getRanks();
+
+  if ( modifier ) // increase
+  {
+    ranks [ direction ] = ranks [ direction ] + 1;
+    selected.setRanks ( ranks );
+  }
+  else // assume a decrease
+  {
+    // This clamps the decreased attribute to not falling below one (1).
+    ranks [ direction ] = std::max ( ranks [ direction ] - 1, 1 );
+    selected.setRanks ( ranks );
+  }
+
+  // Get the position of the selected card before we erase it so we can
+  // reposition the new card at the same index.
+  pos = pos + this->at ( selected );
+
+  this->erase ( selected );
+
+  // Update the player hand with our modified card attributes
+  this->cards.insert ( pos, selected );
+
+  // Update the player's selected card
+  this->selectCard ( selected );
+}
