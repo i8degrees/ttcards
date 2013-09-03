@@ -46,62 +46,62 @@ Card::Card  (
 
 Card::~Card ( void ) {}
 
-nom::int32 Card::getID ( void ) const
+const nom::int32 Card::getID ( void ) const
 {
   return this->id;
 }
 
-nom::int32 Card::getLevel ( void )
+const nom::int32 Card::getLevel ( void ) const
 {
   return this->level;
 }
 
-nom::int32 Card::getType ( void )
+const nom::int32 Card::getType ( void ) const
 {
   return this->type;
 }
 
-nom::int32 Card::getElement ( void )
+const nom::int32 Card::getElement ( void ) const
 {
   return this->element;
 }
 
-std::array<nom::int32, MAX_RANKS> Card::getRanks ( void )
+const std::array<nom::int32, MAX_RANKS> Card::getRanks ( void ) const
 {
   return this->rank;
 }
 
-nom::int32 Card::getNorthRank ( void )
+const nom::int32 Card::getNorthRank ( void ) const
 {
   return this->rank[NORTH];
 }
 
-nom::int32 Card::getEastRank ( void )
+const nom::int32 Card::getEastRank ( void ) const
 {
   return this->rank[EAST];
 }
 
-nom::int32 Card::getSouthRank ( void )
+const nom::int32 Card::getSouthRank ( void ) const
 {
   return this->rank[SOUTH];
 }
 
-nom::int32 Card::getWestRank ( void )
+const nom::int32 Card::getWestRank ( void ) const
 {
   return this->rank[WEST];
 }
 
-std::string Card::getName ( void )
+const std::string Card::getName ( void ) const
 {
   return this->name;
 }
 
-nom::int32 Card::getPlayerID ( void )
+const nom::int32 Card::getPlayerID ( void ) const
 {
   return this->player_id;
 }
 
-nom::int32 Card::getPlayerOwner ( void )
+const nom::int32 Card::getPlayerOwner ( void ) const
 {
   return this->player_owner;
 }
@@ -172,7 +172,7 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
 
-const json_spirit::Object Card::serialize ( void )
+const json_spirit::Object Card::serialize ( void ) const
 {
   json_spirit::Object node; // JSON object record we are writing
   json_spirit::Array ranks; // JSON object child of node

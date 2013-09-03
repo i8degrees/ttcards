@@ -75,19 +75,19 @@ class Card
 
     ~Card ( void );
 
-    nom::int32 getID ( void ) const;
-    nom::int32 getLevel ( void );
-    nom::int32 getType ( void );
-    nom::int32 getElement ( void );
-    std::array<nom::int32, MAX_RANKS> getRanks ( void );
-    nom::int32 getNorthRank ( void );
-    nom::int32 getEastRank ( void );
-    nom::int32 getSouthRank ( void );
-    nom::int32 getWestRank ( void );
-    std::string getName ( void );
+    const nom::int32 getID ( void ) const;
+    const nom::int32 getLevel ( void ) const;
+    const nom::int32 getType ( void ) const;
+    const nom::int32 getElement ( void ) const;
+    const std::array<nom::int32, MAX_RANKS> getRanks ( void ) const;
+    const nom::int32 getNorthRank ( void ) const;
+    const nom::int32 getEastRank ( void ) const;
+    const nom::int32 getSouthRank ( void ) const;
+    const nom::int32 getWestRank ( void ) const;
+    const std::string getName ( void ) const;
 
-    nom::int32 getPlayerID ( void );
-    nom::int32 getPlayerOwner ( void );
+    const nom::int32 getPlayerID ( void ) const;
+    const nom::int32 getPlayerOwner ( void ) const;
 
     /// Clamps value to MAX_COLLECTION
     void setID ( nom::int32 id_ );
@@ -133,7 +133,7 @@ class Card
       PLAYER2=2
     };
 
-    const json_spirit::Object serialize ( void );
+    const json_spirit::Object serialize ( void ) const;
 
   private:
     nom::int32 id;
