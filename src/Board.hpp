@@ -56,6 +56,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardRules.hpp"
 #include "CardView.hpp"
 
+enum BoardPosition
+{
+  TopLeft = 0,
+  TopCenter,
+  TopRight,
+  CenterLeft,
+  Center,
+  CenterRight,
+  BottomLeft,
+  BottomCenter,
+  BottomRight
+};
+
 class Board
 {
   public:
