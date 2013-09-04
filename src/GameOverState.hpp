@@ -43,25 +43,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardsMenuState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
+#include "CardRules.hpp"
 
 class GameOverState: public nom::IState
 {
   public:
     GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state );
     ~GameOverState ( void );
+
   private:
     void onInit ( void );
     void onExit ( void );
-
-    void Pause ( void );
-    void Resume ( void );
+    void onKeyDown ( nom::int32 key, nom::int32 mod );
 
     void Update ( float delta_time );
     void Draw ( void* video_buffer );
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
 
     std::shared_ptr<GameObject> game;
-    std::vector<Card> player_cards[2];
+
     nom::Timer update;
     bool show_results;
     nom::uint32 gameover_state;

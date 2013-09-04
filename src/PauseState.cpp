@@ -55,6 +55,7 @@ void PauseState::onInit ( void )
   this->game->info_text.setText ( SHORT_VERSION_INFO );
   nom::int32 text_width = this->game->info_text.getFontWidth();
   nom::int32 text_height = this->game->info_text.getFontHeight();
+
   this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, ( SCREEN_HEIGHT - text_height ) / 2  ) );
 
   this->game->info_small_text.setPosition ( nom::Coords( PAUSE_BOX_ORIGIN_X + 4, PAUSE_BOX_ORIGIN_Y ) );

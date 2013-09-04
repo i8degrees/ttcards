@@ -49,7 +49,6 @@ void GameOverState::onInit ( void )
   //
   // 1. Make a a copy of each player's hand as it existed (on the board).
   // 2. Reset each player card found back to their original color.
-  // 3. Add the cards found on the board back onto the respective player's hand.
   //
   // * Now we have two distinct copies made -- the original hand and the results
   // of the end game -- so we can deduce and display who wins and loses what.
@@ -61,20 +60,18 @@ void GameOverState::onInit ( void )
 
       if ( card.getPlayerOwner() == Card::PLAYER1 )
       {
-        this->player_cards[0].push_back ( card );
         card.setPlayerID( Card::PLAYER1 );
         this->game->hand[0].push_back ( card );
       }
       else if ( card.getPlayerOwner() == Card::PLAYER2 )
       {
-        this->player_cards[1].push_back ( card );
         card.setPlayerID( Card::PLAYER2 );
         this->game->hand[1].push_back ( card );
       }
     }
   }
 
-  if ( this->gameover_state == 1 )
+  if ( this->gameover_state == 1 ) // You won!
   {
     this->game->music_track.Stop();
     this->game->winning_track.Play();
@@ -89,16 +86,6 @@ void GameOverState::onExit ( void )
 NOM_LOG_TRACE ( TTCARDS );
 
   this->game->winning_track.Stop();
-}
-
-void GameOverState::Pause ( void )
-{
-  std::cout << "\n" << "GameOver state Paused" << "\n";
-}
-
-void GameOverState::Resume ( void )
-{
-  std::cout << "\n" << "GameOver state Resumed" << "\n";
 }
 
 void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
@@ -117,7 +104,7 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
 
 void GameOverState::Update ( float delta_time )
 {
-  if ( this->update.getTicks() > 2500 )
+  if ( this->update.getTicks() > 1500 )
   {
     this->update.Stop();
     this->show_results = true;
@@ -130,36 +117,30 @@ void GameOverState::Draw ( void* video_buffer )
 {
   this->game->gameover_background.Draw ( video_buffer );
 
-  // Show Player 1 starting hand
-  for ( nom::ulong cards_index = 0; cards_index < this->game->hand[0].size(); cards_index++ )
-    this->game->card.DrawCard ( video_buffer, this->game->hand[0].cards.at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
-
-  // Show Player 2 starting hand
+  // Show Player 2 hand on the top
   for ( nom::ulong cards_index = 0; cards_index < this->game->hand[1].size(); cards_index++ )
-    this->game->card.DrawCard ( video_buffer, this->game->hand[1].cards.at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
-
-  // Update both player's hand with the ending game round results when the time
-  // is right
-  if ( this->show_results == true )
   {
-    switch ( this->gameover_state )
-    {
-      case 0:
-      default: /* Do nothing, it's a tie */ break;
+    this->game->card.DrawCard ( video_buffer, this->game->hand[1].cards.at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+  }
 
-      case 2: // Player 1 lost; show what cards they lost
-      {
-        for ( nom::ulong cards_index = 0; cards_index < this->player_cards[0].size(); cards_index++ )
-          this->game->card.DrawCard ( video_buffer, this->player_cards[0].at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
-      }
-      break;
+  // Show Player 1 hand on the bottom
+  for ( nom::ulong cards_index = 0; cards_index < this->game->hand[0].size(); cards_index++ )
+  {
+    this->game->card.DrawCard ( video_buffer, this->game->hand[0].cards.at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+  }
 
-      case 1: // Player 1 won; show what cards they won
-      {
-        for ( nom::ulong cards_index = 0; cards_index < this->player_cards[1].size(); cards_index++ )
-          this->game->card.DrawCard ( video_buffer, this->player_cards[1].at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
-      }
-      break;
-    } // this->gameover_state
-  } // this->show_results
+  if ( this->update.getTicks() > 1500 )
+  {
+    //nom::int32 rand_pick = nom::randomInteger ( 0, this->game->hand[0].size() );
+
+    //Card lost_card = this->game->hand[0].getSelectedCard();
+//NOM_LOG_INFO ( TTCARDS, lost_card.getName() + "Card lost" );
+
+    //nom::sleep ( 1000 );
+
+    // Restart game
+    //nom::GameStates::ChangeState( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
+    this->update.Stop();
+    this->show_results = true;
+  } // end if update
 }

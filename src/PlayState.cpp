@@ -135,7 +135,7 @@ void PlayState::onInit ( void )
 
   // Initialize our animation state timers
   this->player_timer.Start();
-  this->player_animation = false;
+  this->player_animation = true;
 
   this->cursor_blink.Start();
   this->blink_cursor = false;
@@ -855,7 +855,7 @@ void PlayState::Update ( float delta_time )
     this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
 
     // Only show player2 animation when we are not controlling him
-    if ( this->player_timer.getTicks() > 250 && this->skip_turn == false )
+    if ( this->player_timer.getTicks() < 250 && this->skip_turn == false )
     {
       this->player_timer.Stop();
       this->player_animation = true;
@@ -879,6 +879,7 @@ void PlayState::Update ( float delta_time )
       board_edges[3].y = 2;
 
       nom::int32 edge_pick = nom::randomInteger ( 0, 3 );
+
       nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
 
