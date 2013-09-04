@@ -48,17 +48,33 @@ class CardRules
 
     bool compareCards ( unsigned int r1, unsigned int r2 );
 
-/*
-    enum Rules {
-      NONE = 0x00,
-      COMBO = 0x01,
-      SAME = 0x02,
-      WALL = 0x04,
-      PLUS = 0x08,
-      ELEMENTAL = 0x10,
-      LOSER_WINNER = 0x12
+    /// Combo ruleset applies automatically when Same, SameWall or Plus or
+    /// has been triggered.
+    enum Rulesets
+    {
+      NoRuleset = 0, // default
+      Open,
+      Elemental,
+      SameWall,
+      Plus,
+      Combo,
+      SuddenDeath,
+      LoserWinner,
+      Random // Random choice from this list
     };
-*/
+
+    enum TradeRules
+    {
+
+      One=1, // Winner takes any one of the opponent's cards!
+      // Winner takes as many cards as there is a difference between yours
+      // and theirs (of flipped cards).
+      Diff,
+      // Winner takes cards that are their color at the end of the game
+      Direct,
+
+      All // Winner takes all..!
+    };
 
   private:
     unsigned int rules; // stores our card game rules in use
