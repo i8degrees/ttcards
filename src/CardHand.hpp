@@ -66,11 +66,41 @@ class CardHand
     bool exists ( const Card& card ) const;
 
     /// Make selected card the first element in stack
+    ///
+    /// The current card position is reset to zero.
     void front ( void );
+
+    /// Obtain the current position we are at in the cards vector
+    ///
+    /// Returns a number between zero and the maximum card element in the
+    /// vector.
+    nom::int32 position ( void );
+
+    /// Increment the position we are at in the cards vector by one.
+    ///
+    /// If we are at the end of the vector of cards, we reset the position to
+    /// zero.
+    ///
+    /// We always update the selected card to this calculated position.
+    void next ( void );
+
+    /// Decrement the position we are at in the cards vector by one.
+    ///
+    /// If we are at the beginning or the end of the vector of cards, we reset
+    /// the position to zero.
+    ///
+    /// We always update the selected card to this calculated position.
+    void previous ( void );
+
     void clear ( void );
     nom::int32 size ( void ) const;
     nom::int32 at ( Card& card );
 
+    /// Creates a randomized player hand with the preferred minimum & maximum
+    /// level ranges in mind, with no duplicate cards present.
+    ///
+    /// Do not forget to set the proper player ID on your new card objects
+    /// before heading off into battle!
     void randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCollection& db, nom::uint64 seedling = 0 );
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
@@ -106,6 +136,12 @@ class CardHand
     std::vector<Card> cards;
 
   private:
+    /// Sets the position we are at in the cards vector
+    void set_position ( nom::int32 pos );
+
+    /// Track the current position we are at in the cards vector
+    nom::int32 card_position;
+
     /// Player's active card
     Card selectedCard;
 };

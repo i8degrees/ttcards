@@ -32,6 +32,7 @@ CardHand::CardHand ( void )
 {
 NOM_LOG_TRACE ( TTCARDS );
 
+  this->set_position ( 0 );
   this->clear();
   this->selectedCard = Card();
 }
@@ -137,7 +138,51 @@ nom::int32 CardHand::at ( Card& card )
 
 void CardHand::front ( void )
 {
-  selectCard ( this->cards.front() );
+  this->set_position ( 0 );
+  this->selectCard ( this->cards.front() );
+}
+
+nom::int32 CardHand::position ( void )
+{
+  return this->card_position;
+}
+
+void CardHand::next ( void )
+{
+  nom::int32 pos = this->position();
+  std::vector<Card>::iterator itr;
+
+  if ( itr == this->cards.end() )
+  {
+    this->set_position ( 0 );
+  }
+  else
+  {
+    pos = pos + 1;
+    this->set_position ( pos );
+  }
+
+  itr = this->cards.begin()+pos;
+  this->selectedCard = *itr;
+}
+
+void CardHand::previous ( void )
+{
+  nom::int32 pos = this->position();
+  std::vector<Card>::iterator itr;
+
+  if ( itr == this->cards.end() || itr == this->cards.begin() )
+  {
+    this->set_position ( 0 );
+  }
+  else
+  {
+    pos = pos - 1;
+    this->set_position ( pos );
+  }
+
+  itr = this->cards.begin()+pos;
+  this->selectedCard = *itr;
 }
 
 void CardHand::clear ( void )
@@ -386,6 +431,11 @@ const Card CardHand::weakest ( void )
   std::sort ( weakest_cards.begin(), weakest_cards.end(), std::less<Card>() );
 
   return weakest_cards.front();
+}
+
+void CardHand::set_position ( nom::int32 pos )
+{
+  this->card_position = pos;
 }
 
 std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
