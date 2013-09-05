@@ -412,8 +412,10 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 
   // Attempts to move card onto board; validity checking is performed within
   // the following method call
-  if ( coords.x != -1 && coords.y != -1 ) // undefined if -1, -1
+  if ( coords != nom::Coords::null ) // undefined if -1, -1
+  {
     this->moveTo ( coords.x, coords.y );
+  }
 }
 
 void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
@@ -501,7 +503,7 @@ void PlayState::showCardInfoBox ( void* video_buffer )
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
 
-    if ( coords.x != -1 && coords.y != -1 )
+    if ( coords != nom::Coords::null )
     {
       selectedCard = this->game->board.get ( coords.x, coords.y );
     }
@@ -617,8 +619,11 @@ void PlayState::lockSelectedCard ( void )
   else
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
-    if ( coords.x != -1 && coords.y != -1 )
+
+    if ( coords != nom::Coords::null )
+    {
       this->moveTo ( coords.x, coords.y );
+    }
 
     this->unlockSelectedCard();
   }
