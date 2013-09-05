@@ -40,7 +40,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardRules
 {
   public:
+
+    /// Default constructor (no game rule-set)
     CardRules ( void );
+
+    /// Destructor
     ~CardRules ( void );
 
     unsigned int getRules ( void );
@@ -50,11 +54,12 @@ class CardRules
 
     /// Combo ruleset applies automatically when Same, SameWall or Plus or
     /// has been triggered.
-    enum Rulesets
+    enum
     {
-      NoRuleset = 0, // default
+      NoRules = 0, // default
       Open,
       Elemental,
+      Same,
       SameWall,
       Plus,
       Combo,
