@@ -60,7 +60,10 @@ class CardView
                         nom::int32 x, nom::int32 y
                       );
 
-    bool DrawCard ( void* video_buffer, const Card& card, nom::int32 x, nom::int32 y );
+    bool DrawCard (
+                    void* video_buffer, const Card& card,
+                    nom::int32 x, nom::int32 y, bool face_down = false
+                  );
 
   private:
     nom::BitmapFont card_text;

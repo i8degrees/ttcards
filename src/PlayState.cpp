@@ -80,10 +80,10 @@ void PlayState::onInit ( void )
   this->game->rules.setRules ( 1 );
   this->game->board = Board ( this->game->rules, &this->game->card );
 
-  this->player[0] = Player ( &this->game->hand[0], &this->game->card );
+  this->player[0] = Player ( &this->game->hand[0], &this->game->card, this->game->rules );
   this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
-  this->player[1] = Player ( &this->game->hand[1], &this->game->card );
+  this->player[1] = Player ( &this->game->hand[1], &this->game->card, this->game->rules );
   this->player[1].setPosition ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
   // player1, player2 cursor X, Y coords
@@ -233,16 +233,19 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
       if ( mod == KMOD_LMETA ) // Return control over to the other player
       {
         this->skip_turn = false;
+        this->player[1].set_state ( PlayerState::Reserved );
         this->endTurn();
       }
       else
       {
         this->skip_turn = true;
+        this->player[1].set_state ( PlayerState::Debug );
         this->endTurn();
       }
     }
     break;
 #endif
+
     case SDLK_d:
     {
       this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );

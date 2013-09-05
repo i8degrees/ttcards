@@ -38,22 +38,23 @@ void Free_CardHand ( CardHand* player_cards )
 }
 
 Player::Player ( void ) : card ( nullptr ), hand ( nullptr ),
-                          coords ( 0, 0, 0, 0 ), id ( 0 ), score ( 0 )
-                          //state ( 0 )
+                          id ( 0 ), score ( 0 ),
+                          player_state ( PlayerState::Reserved )
 {
 NOM_LOG_TRACE ( TTCARDS );
 }
 
-Player::Player ( CardHand* player_cards, CardView* view )
+Player::Player ( CardHand* player_cards, CardView* view, const CardRules& ruleset )
 {
 NOM_LOG_TRACE ( TTCARDS );
 
   this->hand.reset ( player_cards, Free_CardHand );
+  this->ruleset = ruleset;
   this->card = view;
 
   this->coords = nom::Coords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
   this->id = 0;
-  //this->state = 0;
+  this->set_state ( PlayerState::Reserved );
   this->score = 0;
 }
 
@@ -108,14 +109,18 @@ void Player::setID ( unsigned int id_ )
   }
 }
 
-unsigned int Player::getState ( void )
+enum PlayerState Player::state ( void )
 {
-  return 0; //return this->state;
+  return this->player_state;
 }
 
-void Player::setState ( unsigned int state )
+void Player::set_state ( enum PlayerState state )
 {
-  return; //this->state = state;
+#if ! defined ( DEBUG )
+  if ( state == PlayerState::Debug ) return;
+#endif
+
+  this->player_state = state;
 }
 
 nom::uint32 Player::getScore ( void ) const
@@ -135,23 +140,43 @@ void Player::setScore ( unsigned int score )
 
 void Player::Draw ( void* video_buffer )
 {
-  nom::int32 hand_index = 0; // iterator
+  bool face_down = false;
+/*
+  if ( this->ruleset.getRules() != CardRules::Open )
+  {
+    face_down = true;
+#if defined ( DEBUG )
+    if ( this->state() == PlayerState::Debug )
+    {
+      face_down = false;
+    }
+#endif
+  }
+*/
 
-  for ( hand_index = 0; hand_index < this->hand->size(); hand_index++ )
+  for ( nom::int32 hand_index = 0; hand_index < this->hand->size(); hand_index++ )
   {
     if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER1 )
     {
       if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
+      {
         this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+      }
       else
+      {
         this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+      }
     }
     else if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER2 )
     {
       if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+      {
+        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index, face_down );
+      }
       else
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+      {
+        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index, face_down );
+      }
     }
   }
 }

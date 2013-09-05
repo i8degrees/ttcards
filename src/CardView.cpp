@@ -165,8 +165,20 @@ bool CardView::drawElement  (
   return true;
 }
 
-bool CardView::DrawCard ( void* video_buffer, const Card& card, nom::int32 x, nom::int32 y )
+bool CardView::DrawCard (
+                          void* video_buffer, const Card& card,
+                          nom::int32 x, nom::int32 y, bool face_down
+                        )
 {
+  if ( face_down == true )
+  {
+    if ( drawFaceDown ( video_buffer, x, y ) == false )
+    {
+      return false;
+    }
+    return false;
+  }
+
   if ( card.getID() < 1 || card.getID() > MAX_COLLECTION ) return false;
 
   switch ( card.getPlayerID() )
