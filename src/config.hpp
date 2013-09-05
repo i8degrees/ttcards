@@ -320,4 +320,12 @@ enum {
   PLAYER2=1
 };
 
+enum GameOverType
+{
+  NotOver = 0,
+  Tie,
+  Won,
+  Lost
+};
+
 #endif // GAMEAPP_CFG_HEADERS defined

@@ -48,7 +48,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class GameOverState: public nom::IState
 {
   public:
-    GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state );
+    GameOverState (
+                    std::shared_ptr<GameObject> object,
+                    enum GameOverType gameover_state
+                  );
     ~GameOverState ( void );
 
   private:
@@ -63,7 +66,7 @@ class GameOverState: public nom::IState
 
     nom::Timer update;
     bool show_results;
-    nom::uint32 gameover_state;
+    enum GameOverType gameover_state;
 };
 
 // Convenience declarations for changing state

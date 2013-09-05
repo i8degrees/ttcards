@@ -37,6 +37,7 @@ NOM_LOG_TRACE ( TTCARDS );
   this->turn = 0;
   this->cursor_locked = false;
   this->skip_turn = false;
+  this->gameover_state = GameOverType::NotOver;
 
   // this->game->hand[0] is initialized for us in the CardsMenu state
   this->game->hand[1].clear();
@@ -961,25 +962,23 @@ void PlayState::Draw ( void *video_buffer )
   // game / round is over when board card count >= 9
   if ( this->game->board.getCount () >= 9 || this->game->hand[ PLAYER1 ].size() == 0 || this->game->hand[ PLAYER2 ].size() == 0 )
   {
-    nom::uint32 gameover_state = 0;
-
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
+      this->gameover_state = GameOverType::Won;
       this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "You win!" );
-      gameover_state = 1;
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
+      this->gameover_state = GameOverType::Lost;
       this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "You lose..." );
-      gameover_state = 2;
     }
-    else // Assume a tie
+    else // Assume a draw
     {
+      this->gameover_state = GameOverType::Tie;
       this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "Tie!" );
-      //gameover_state = 0;
     }
 
     nom::int32 width = this->game->gameover_text.getFontWidth();
@@ -988,8 +987,15 @@ void PlayState::Draw ( void *video_buffer )
     this->game->gameover_text.Draw ( video_buffer );
     this->game->context.Update();
 
-    nom::sleep ( 1000 ); // ZzZ for 1 second
+    nom::sleep ( 1000 ); // Chill for a second
 
-    nom::GameStates::ChangeState ( GameOverStatePtr( new GameOverState( this->game, gameover_state ) ) );
+    if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
+    {
+      nom::GameStates::ChangeState ( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
+    }
+    else
+    {
+      nom::GameStates::ChangeState ( GameOverStatePtr( new GameOverState( this->game, this->gameover_state ) ) );
+    }
   }
 }

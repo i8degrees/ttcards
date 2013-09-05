@@ -28,7 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverState.hpp"
 
-GameOverState::GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state )
+GameOverState::GameOverState  ( std::shared_ptr<GameObject> object,
+                                enum GameOverType gameover_state
+                              )
 {
 NOM_LOG_TRACE ( TTCARDS );
 

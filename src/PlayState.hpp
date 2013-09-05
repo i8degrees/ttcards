@@ -137,6 +137,7 @@ class PlayState: public nom::IState
     /// Debug option -- when toggled on, we are able to control both players.
     bool skip_turn;
 
+    enum GameOverType gameover_state;
 };
 
 // Convenience declarations for changing state
