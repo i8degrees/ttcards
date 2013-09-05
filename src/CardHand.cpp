@@ -467,3 +467,8 @@ std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
 
   return os;
 }
+
+void Free_CardHand ( CardHand* ptr )
+{
+  // Do nothing custom (smart pointer) deleter
+}

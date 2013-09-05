@@ -150,4 +150,6 @@ class CardHand
 ///
 std::ostream& operator << ( std::ostream& os, const CardHand& rhs );
 
+void Free_CardHand ( CardHand* ptr );
+
 #endif // GAMEAPP_CARD_HAND_HEADERS defined

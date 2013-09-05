@@ -34,12 +34,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/math.hpp>
 
+#include "config.hpp"
 #include "CardHand.hpp"
 #include "CardRules.hpp"
 #include "CardView.hpp"
-#include "config.hpp"
-
-void Free_CardHand ( CardHand* player_cards );
 
 enum PlayerState
 {

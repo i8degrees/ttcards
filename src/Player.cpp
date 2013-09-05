@@ -28,15 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Player.hpp"
 
-void Free_CardHand ( CardHand* player_cards )
-{
-  // Do nothing custom (smart pointer) deleter
-  //
-  // We produce a segmentation fault without this custom deleter right now due
-  // to the fact that CardHand is an array (AKA smart pointers call delete, not
-  // delete[].
-}
-
 Player::Player ( void ) : card ( nullptr ), hand ( nullptr ),
                           id ( 0 ), score ( 0 ),
                           player_state ( PlayerState::Reserved )
