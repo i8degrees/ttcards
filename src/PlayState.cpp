@@ -425,12 +425,16 @@ void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 
 void PlayState::onMouseWheel ( bool up, bool down )
 {
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.getState() == 0 ) // Player's hand mode
   {
     if ( up )
+    {
       this->moveCursorUp();
+    }
     else if ( down )
+    {
       this->moveCursorDown();
+    }
   }
 }
 
@@ -811,12 +815,12 @@ void PlayState::updateCursor ( void )
     this->game->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
   }
 
-  this->game->cursor.Update();
+  this->game->cursor.update();
 }
 
 void PlayState::drawCursor ( void* video_buffer )
 {
-  this->game->cursor.Draw ( video_buffer );
+  this->game->cursor.draw ( video_buffer );
 
   if ( this->blink_cursor )
   {

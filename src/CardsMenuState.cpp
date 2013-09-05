@@ -337,12 +337,12 @@ void CardsMenuState::updateCursor ( void )
     #endif
   }
 
-  this->game->cursor.Update();
+  this->game->cursor.update();
 }
 
 void CardsMenuState::drawCursor ( void* video_buffer )
 {
-  this->game->cursor.Draw ( video_buffer );
+  this->game->cursor.draw ( video_buffer );
 }
 
 // Helper method for obtaining card hand index position based off given origin
