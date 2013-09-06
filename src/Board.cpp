@@ -102,9 +102,9 @@ const nom::Coords Board::getGlobalBounds ( nom::int32 x, nom::int32 y ) const
   return nom::Coords::null;
 }
 
-const std::vector<Card> Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
+const Cards Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
 {
-  std::vector<Card> adjacent_cards;
+  Cards adjacent_cards;
 
   nom::int32 cols = y;
   nom::int32 rows = x;
@@ -433,7 +433,7 @@ bool Board::load ( const std::string& filename )
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
-  std::vector<Card> input_cards;
+  Cards input_cards;
 
   if ( fp.load ( filename, value ) == false )
   {

@@ -96,7 +96,7 @@ class Board
     /// Returns -1, -1 when undefined.
     const nom::Coords getGlobalBounds ( nom::int32 x, nom::int32 y ) const;
 
-    const std::vector<Card> find_adjacent ( nom::int32 x, nom::int32 y ) const;
+    const Cards find_adjacent ( nom::int32 x, nom::int32 y ) const;
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
 
     /// Getter helper method for obtaining total count of placed cards on board

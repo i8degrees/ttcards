@@ -42,7 +42,7 @@ class CardDebug
     CardDebug();
     ~CardDebug();
 
-    void ListCards ( std::vector<Card>& cards );
+    void ListCards ( Cards& cards );
 
   private:
     // ...

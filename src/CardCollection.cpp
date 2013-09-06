@@ -58,10 +58,10 @@ Card& CardCollection::getCards ( unsigned int idx )
   return this->cards[idx];
 }
 
-std::vector<Card> CardCollection::getCards ( void )
+Cards CardCollection::getCards ( void )
 {
   unsigned int idx = 0;
-  std::vector<Card> temp_cards; // temp var for return passing
+  Cards temp_cards; // temp var for return passing
   temp_cards.clear();
 
   for ( idx = 0; idx < this->cards.size(); idx++ )
@@ -109,7 +109,7 @@ bool CardCollection::load( const std::string& filename )
   // card has filled its buffer, we push it into its final resting place ...
   // CardCollection's Card vector.
   Card card;
-  std::vector<Card> input_cards;
+  Cards input_cards;
 
   if ( fp.load ( filename, value ) == false )
   {

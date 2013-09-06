@@ -56,7 +56,7 @@ class CardCollection
     ~CardCollection ( void );
 
     Card& getCards ( unsigned int idx );
-    std::vector<Card> getCards ( void );
+    Cards getCards ( void );
 
     void clear ( void );
     nom::int32 size ( void ) const;
@@ -65,7 +65,7 @@ class CardCollection
     bool load( const std::string& filename );
 
     /// \todo redeclare private scope
-    std::vector<Card> cards;
+    Cards cards;
 
   private:
     /// debug support for card attributes

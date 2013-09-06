@@ -150,7 +150,7 @@ nom::int32 CardHand::position ( void )
 void CardHand::next ( void )
 {
   nom::int32 pos = this->position();
-  std::vector<Card>::iterator itr;
+  CardsIterator itr;
 
   if ( itr == this->cards.end() )
   {
@@ -169,7 +169,7 @@ void CardHand::next ( void )
 void CardHand::previous ( void )
 {
   nom::int32 pos = this->position();
-  std::vector<Card>::iterator itr;
+  CardsIterator itr;
 
   if ( itr == this->cards.end() || itr == this->cards.begin() )
   {
@@ -288,7 +288,7 @@ bool CardHand::load ( const std::string& filename )
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
-  std::vector<Card> input_cards;
+  Cards input_cards;
 
   if ( fp.load ( filename, value ) == false )
   {
@@ -384,7 +384,7 @@ void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )
 {
   Card selected = this->getSelectedCard();
   std::array<nom::int32, MAX_RANKS> ranks = {{ 0 }}; // card ranks container
-  std::vector<Card>::iterator pos = this->cards.begin();
+  CardsIterator pos = this->cards.begin();
 
   // First, obtain current rank attributes of the selected card; validation is
   // done for us by the Card class.
@@ -417,7 +417,7 @@ void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )
 
 const Card CardHand::strongest ( void )
 {
-  std::vector<Card> strongest_cards ( this->cards );
+  Cards strongest_cards ( this->cards );
 
   std::sort ( strongest_cards.begin(), strongest_cards.end(), std::greater<Card>() );
 
@@ -426,7 +426,7 @@ const Card CardHand::strongest ( void )
 
 const Card CardHand::weakest ( void )
 {
-  std::vector<Card> weakest_cards ( this->cards );
+  Cards weakest_cards ( this->cards );
 
   std::sort ( weakest_cards.begin(), weakest_cards.end(), std::less<Card>() );
 

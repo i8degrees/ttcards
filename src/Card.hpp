@@ -177,6 +177,9 @@ class Card
     nom::int32 player_owner;
 };
 
+typedef std::vector<Card> Cards;
+typedef std::vector<Card>::iterator CardsIterator;
+
 /// Pretty print the the card attributes.
 ///
 std::ostream& operator << ( std::ostream& os, const Card& rhs );

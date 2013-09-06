@@ -53,6 +53,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardHand
 {
   public:
+    typedef std::shared_ptr<CardHand> SharedPtr;
+
     CardHand ( void );
     ~CardHand ( void );
 
@@ -133,7 +135,7 @@ class CardHand
     const Card weakest ( void );
 
     /// \todo Declare in private scope
-    std::vector<Card> cards;
+    Cards cards;
 
   private:
     /// Sets the position we are at in the cards vector

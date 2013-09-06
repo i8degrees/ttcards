@@ -84,7 +84,7 @@ class Player
     CardRules ruleset;
 
     /// pointer reference to player's hand
-    std::shared_ptr<CardHand> hand;
+    CardHand::SharedPtr hand;
 
     /// x, y origin coords
     nom::Coords coords;

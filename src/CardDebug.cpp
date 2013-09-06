@@ -32,7 +32,7 @@ CardDebug::CardDebug ( void ) {}
 
 CardDebug::~CardDebug ( void ) {}
 
-void CardDebug::ListCards ( std::vector<Card>& cards )
+void CardDebug::ListCards ( Cards& cards )
 {
   #ifdef DEBUG_CARD_DEBUG
     if ( cards.empty() == true )

@@ -647,7 +647,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
 
   if ( player_turn == PLAYER1 )
   {
-    std::vector<Card> adjacent_cards = this->game->board.find_adjacent ( x, y );
+    Cards adjacent_cards = this->game->board.find_adjacent ( x, y );
 
     // Dump returned list of cards
     this->game->debug.ListCards ( adjacent_cards );
