@@ -110,6 +110,37 @@ bool CardView::drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y )
   return true;
 }
 
+void CardView::draw_background ( void* video_buffer, nom::int32 player_id, nom::int32 x, nom::int32 y )
+{
+  switch ( player_id )
+  {
+    case Card::PLAYER1:
+      this->card_background.setSheetID ( PLAYER1_BACKGROUND_ID ); break;
+
+    case Card::PLAYER2:
+      this->card_background.setSheetID ( PLAYER2_BACKGROUND_ID ); break;
+
+    case Card::NOPLAYER:
+    default:
+      this->card_background.setSheetID ( NOPLAYER_BACKGROUND_ID ); break;
+  }
+
+  this->card_background.setPosition ( nom::Coords ( x, y ) );
+  this->card_background.Update();
+  this->card_background.Draw ( video_buffer );
+}
+
+void CardView::draw_face  (
+                            void* video_buffer, nom::int32 face_id,
+                            nom::int32 x, nom::int32 y
+                          )
+{
+  this->card_face.setSheetID ( face_id );
+  this->card_face.setPosition ( nom::Coords ( x, y ) );
+  this->card_face.Update();
+  this->card_face.Draw ( video_buffer );
+}
+
 bool CardView::drawElement  (
                               void* video_buffer, nom::int32 element_id,
                               nom::int32 x, nom::int32 y
@@ -136,6 +167,25 @@ bool CardView::drawElement  (
   return true;
 }
 
+void CardView::draw_text  (
+                            void* video_buffer, nom::int32 rank,
+                            nom::int32 x, nom::int32 y
+                          )
+{
+  if ( rank == 10 )
+  {
+    this->card_text.setText ( "A" );
+  }
+  else
+  {
+    this->card_text.setText ( std::to_string ( rank ) );
+  }
+
+  this->card_text.setPosition ( nom::Coords ( x, y ) );
+  this->card_text.Update();
+  this->card_text.Draw ( video_buffer );
+}
+
 bool CardView::DrawCard (
                           void* video_buffer, const Card& card,
                           nom::int32 x, nom::int32 y, bool face_down
@@ -150,87 +200,40 @@ bool CardView::DrawCard (
 
   if ( card.getID() < 1 || card.getID() > MAX_COLLECTION ) return false;
 
-  switch ( card.getPlayerID() )
-  {
-    case Card::PLAYER1:
-      this->card_background.setSheetID ( PLAYER1_BACKGROUND_ID ); break;
+  this->draw_background (
+                          video_buffer, card.getPlayerID(),
+                          BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y
+                        );
 
-    case Card::PLAYER2:
-      this->card_background.setSheetID ( PLAYER2_BACKGROUND_ID ); break;
+  this->draw_face (
+                    video_buffer, card.getID(),
+                    CARD_FACE_ORIGIN_X + x, CARD_FACE_ORIGIN_Y + y
+                  );
 
-    case Card::NOPLAYER:
-    default:
-      this->card_background.setSheetID ( NOPLAYER_BACKGROUND_ID ); break;
-  }
+  this->drawElement (
+                      video_buffer, card.getElement(),
+                      ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y
+                    );
 
-  this->card_background.setPosition ( nom::Coords( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y ) );
-  this->card_background.Update();
-  this->card_background.Draw ( video_buffer );
+  this->draw_text (
+                    video_buffer, card.getNorthRank(),
+                    RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y
+                  );
 
-  this->card_face.setSheetID ( card.getID() );
-  this->card_face.setPosition ( nom::Coords( CARD_FACE_ORIGIN_X + x, CARD_FACE_ORIGIN_Y + y ) );
-  this->card_face.Update();
+  this->draw_text (
+                    video_buffer, card.getEastRank(),
+                    RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y
+                  );
 
-  this->card_face.Draw ( video_buffer );
+  this->draw_text (
+                    video_buffer, card.getWestRank(),
+                    RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y
+                  );
 
-  this->drawElement ( video_buffer, card.getElement(), ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y );
-
-  if ( card.getNorthRank() == 10 )
-  {
-    this->card_text.setText ( "A" );
-  }
-  else
-  {
-    this->card_text.setText ( std::to_string ( card.getNorthRank() ) );
-  }
-
-  nom::Coords north_rank ( RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y );
-  nom::Coords east_rank ( RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y );
-  nom::Coords west_rank ( RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y );
-  nom::Coords south_rank ( RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y );
-
-  this->card_text.setPosition ( north_rank );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
-
-  if ( card.getEastRank() == 10 )
-  {
-    this->card_text.setText ( "A" );
-  }
-  else
-  {
-    this->card_text.setText ( std::to_string ( card.getEastRank() ) );
-  }
-
-  this->card_text.setPosition ( east_rank );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
-
-  if ( card.getWestRank() == 10 )
-  {
-    this->card_text.setText ( "A" );
-  }
-  else
-  {
-    this->card_text.setText ( std::to_string ( card.getWestRank() ) );
-  }
-
-  this->card_text.setPosition ( west_rank );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
-
-  if ( card.getSouthRank() == 10 )
-  {
-    this->card_text.setText ( "A" );
-  }
-  else
-  {
-    this->card_text.setText ( std::to_string ( card.getSouthRank() ) );
-  }
-
-  this->card_text.setPosition ( south_rank );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
+  this->draw_text (
+                    video_buffer, card.getSouthRank(),
+                    RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y
+                  );
 
   return true;
 }

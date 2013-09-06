@@ -55,10 +55,25 @@ class CardView
 
     bool drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y );
 
+    void draw_background  (
+                            void* video_buffer, nom::int32 player_id,
+                            nom::int32 x, nom::int32 y
+                          );
+
+    void draw_face  (
+                      void* video_buffer, nom::int32 face_id,
+                      nom::int32 x, nom::int32 y
+                    );
+
     bool drawElement  (
                         void* video_buffer, nom::int32 element_id,
                         nom::int32 x, nom::int32 y
                       );
+
+    void draw_text  (
+                      void* video_buffer, nom::int32 rank,
+                      nom::int32 x, nom::int32 y
+                    );
 
     bool DrawCard (
                     void* video_buffer, const Card& card,
