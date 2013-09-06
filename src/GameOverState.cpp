@@ -120,15 +120,35 @@ void GameOverState::Draw ( void* video_buffer )
   this->game->gameover_background.Draw ( video_buffer );
 
   // Show Player 2 hand on the top
-  for ( nom::ulong cards_index = 0; cards_index < this->game->hand[1].size(); cards_index++ )
+  for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
   {
-    this->game->card.DrawCard ( video_buffer, this->game->hand[1].cards.at( cards_index ), PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER2_GAMEOVER_ORIGIN_Y );
+    this->player2_pos = nom::Coords (
+                                      PLAYER2_GAMEOVER_ORIGIN_X +
+                                      ( CARD_WIDTH * idx ),
+                                      PLAYER2_GAMEOVER_ORIGIN_Y
+                                    );
+
+    this->game->card.draw (
+                            video_buffer,
+                            this->game->hand[1].cards.at( idx ),
+                            this->player2_pos.x, this->player2_pos.y
+                          );
   }
 
   // Show Player 1 hand on the bottom
-  for ( nom::ulong cards_index = 0; cards_index < this->game->hand[0].size(); cards_index++ )
+  for ( nom::int32 idx = 0; idx < this->game->hand[0].size(); idx++ )
   {
-    this->game->card.DrawCard ( video_buffer, this->game->hand[0].cards.at( cards_index ), PLAYER1_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * cards_index, PLAYER1_GAMEOVER_ORIGIN_Y );
+    this->player1_pos = nom::Coords (
+                                      PLAYER1_GAMEOVER_ORIGIN_X +
+                                      ( CARD_WIDTH * idx ),
+                                      PLAYER1_GAMEOVER_ORIGIN_Y
+                                    );
+
+    this->game->card.draw (
+                            video_buffer,
+                            this->game->hand[0].cards.at( idx ),
+                            this->player1_pos.x, this->player1_pos.y
+                          );
   }
 
   if ( this->update.getTicks() > 1500 )

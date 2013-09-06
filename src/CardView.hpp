@@ -53,7 +53,12 @@ class CardView
     /// The failure of any of these resources results in failure
     bool load ( GameConfig* config );
 
-    void drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y );
+    void draw (
+                void* video_buffer, const Card& card,
+                nom::int32 x, nom::int32 y, bool face_down = false
+              );
+
+    void draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y );
 
     void draw_background  (
                             void* video_buffer, nom::int32 player_id,
@@ -65,7 +70,7 @@ class CardView
                       nom::int32 x, nom::int32 y
                     );
 
-    void drawElement  (
+    void draw_element (
                         void* video_buffer, nom::int32 element_id,
                         nom::int32 x, nom::int32 y
                       );
@@ -74,11 +79,6 @@ class CardView
                       void* video_buffer, nom::int32 rank,
                       nom::int32 x, nom::int32 y
                     );
-
-    void DrawCard (
-                    void* video_buffer, const Card& card,
-                    nom::int32 x, nom::int32 y, bool face_down = false
-                  );
 
   private:
     nom::BitmapFont card_text;

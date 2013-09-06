@@ -100,7 +100,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 }
 
 // Helper method for drawing cards face down
-void CardView::drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y )
+void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y )
 {
   this->card_background.setSheetID ( NOFACE_ID );
   this->card_background.setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
@@ -108,7 +108,10 @@ void CardView::drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y )
   this->card_background.Draw ( video_buffer );
 }
 
-void CardView::draw_background ( void* video_buffer, nom::int32 player_id, nom::int32 x, nom::int32 y )
+void CardView::draw_background  (
+                                  void* video_buffer, nom::int32 player_id,
+                                  nom::int32 x, nom::int32 y
+                                )
 {
   switch ( player_id )
   {
@@ -139,7 +142,7 @@ void CardView::draw_face  (
   this->card_face.Draw ( video_buffer );
 }
 
-void CardView::drawElement  (
+void CardView::draw_element (
                               void* video_buffer, nom::int32 element_id,
                               nom::int32 x, nom::int32 y
                             )
@@ -182,20 +185,21 @@ void CardView::draw_text  (
   this->card_text.Draw ( video_buffer );
 }
 
-void CardView::DrawCard (
-                          void* video_buffer, const Card& card,
-                          nom::int32 x, nom::int32 y, bool face_down
-                        )
+void CardView::draw (
+                      void* video_buffer, const Card& card,
+                      nom::int32 x, nom::int32 y, bool face_down
+                    )
 {
+  // FIXME; this shouldn't be showing me an err message when uncommented
   if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
+//NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
     return;
   }
 
   if ( face_down == true )
   {
-    this->drawFaceDown ( video_buffer, x, y );
+    this->draw_face_down ( video_buffer, x, y );
     return;
   }
 
@@ -209,10 +213,10 @@ NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
                     CARD_FACE_ORIGIN_X + x, CARD_FACE_ORIGIN_Y + y
                   );
 
-  this->drawElement (
-                      video_buffer, card.getElement(),
-                      ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y
-                    );
+  this->draw_element  (
+                        video_buffer, card.getElement(),
+                        ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y
+                      );
 
   this->draw_text (
                     video_buffer, card.getNorthRank(),

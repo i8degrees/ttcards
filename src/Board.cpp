@@ -358,11 +358,28 @@ void Board::draw ( void* video_buffer )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      this->card->DrawCard ( video_buffer, this->get ( x, y ), BOARD_ORIGIN_X + ( CARD_WIDTH * x ), BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) );
+      // Positions of the cards on the game board
+      nom::Coords board_pos (
+                              BOARD_ORIGIN_X + ( CARD_WIDTH * x ),
+                              BOARD_ORIGIN_Y + ( CARD_HEIGHT * y )
+                            );
+
+      this->card->draw  (
+                          video_buffer, this->get ( x, y ),
+                          board_pos.x, board_pos.y
+                        );
 /*
       if ( this->grid[x][y].element() != 0 )
       {
-        this->card->drawElement ( video_buffer, this->grid[x][y].element(), BOARD_ORIGIN_X + ( CARD_WIDTH * x ) + ELEMENT_WIDTH, BOARD_ORIGIN_Y + ( CARD_HEIGHT * y ) + ELEMENT_HEIGHT );
+        nom::Coords element_pos (
+                                  board_pos.x + ELEMENT_WIDTH,
+                                  board_pos.y + ELEMENT_HEIGHT
+                                );
+
+        this->card->draw_element  (
+                                    video_buffer, this->grid[x][y].element(),
+                                    element_pos.x, element_pos.y
+                                  );
       }
 */
     } // end for loop rows

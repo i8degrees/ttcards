@@ -97,6 +97,14 @@ class CardsMenuState: public nom::IState
     /// y coords mapping for cursor -> card position index
     /// minus one (1) padding
     std::pair<int, int> cursor_coords_map[10];
+    /// Position of the player's hand (player 1)
+    nom::Coords player1_pos;
+
+    /// Position of the opponent's hand (player 2)
+    nom::Coords player2_pos;
+
+    /// Position of the card selection from the menu list
+    nom::Coords card_pos;
 };
 
 // Convenience declarations for changing state

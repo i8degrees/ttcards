@@ -69,6 +69,14 @@ NOM_LOG_TRACE ( TTCARDS );
   this->current_index = 0; // current card position
 
   this->selectedCard = this->game->collection.cards.front();
+
+  this->card_pos = nom::Coords  (
+                                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ),
+                                  BOARD_ORIGIN_Y +
+                                  (
+                                    ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1
+                                  ) - 8
+                                );
 }
 
 CardsMenuState::~CardsMenuState ( void )
@@ -208,18 +216,37 @@ void CardsMenuState::Update ( float delta_time )
 void CardsMenuState::Draw ( void* video_buffer )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
-  nom::int32 hand_index = 0; // "dummy" card index var
 
   this->game->background.Draw ( video_buffer );
 
   // static player2 hand background
-  for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)
-    this->game->card.drawFaceDown ( video_buffer, PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+  for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ ) // TODO: std::get<1>(player_coords)
+  {
+    this->player2_pos = nom::Coords (
+                                      PLAYER2_ORIGIN_X,
+                                      PLAYER2_ORIGIN_Y +
+                                      ( CARD_HEIGHT / 2 ) * idx
+                                    );
+
+    this->game->card.draw_face_down (
+                                      video_buffer, this->player2_pos.x,
+                                      this->player2_pos.y
+                                    );
+  }
 
   // Active player's card selection(s)
-  for ( hand_index = 0; hand_index < this->game->hand[0].size(); hand_index++ ) // TODO: std::get<1>(player_coords)
+  for ( nom::int32 idx = 0; idx < this->game->hand[0].size(); idx++ ) // TODO: std::get<1>(player_coords)
   {
-    this->game->card.DrawCard ( video_buffer, this->game->hand[0].cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+    this->player1_pos = nom::Coords (
+                                      PLAYER1_ORIGIN_X,
+                                      PLAYER1_ORIGIN_Y +
+                                      ( CARD_HEIGHT / 2 ) * idx
+                                    );
+
+    this->game->card.draw (
+                            video_buffer, this->game->hand[0].cards.at ( idx ),
+                            this->player1_pos.x, this->player1_pos.y
+                          );
   }
 
   this->menu_box.Draw ( video_buffer );
@@ -317,7 +344,11 @@ void CardsMenuState::Draw ( void* video_buffer )
 
   this->drawCursor ( video_buffer );
 
-  this->game->card.DrawCard ( video_buffer, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
+  // Draw the current card selection from the list
+  this->game->card.draw (
+                          video_buffer, this->selectedCard,
+                          this->card_pos.x, this->card_pos.y
+                        );
 }
 
 void CardsMenuState::updateCursor ( void )

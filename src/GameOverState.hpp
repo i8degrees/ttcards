@@ -67,6 +67,11 @@ class GameOverState: public nom::IState
     nom::Timer update;
     bool show_results;
     enum GameOverType gameover_state;
+    /// Position of player 1 hand
+    nom::Coords player1_pos;
+
+    /// Position of player 2 hand
+    nom::Coords player2_pos;
 };
 
 // Convenience declarations for changing state

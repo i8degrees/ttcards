@@ -97,6 +97,9 @@ class Player
 
     /// Player state
     enum PlayerState player_state;
+
+    /// Position of player's hand
+    nom::Coords player_pos;
 };
 
 #endif // GAMEAPP_PLAYER_HEADERS defined

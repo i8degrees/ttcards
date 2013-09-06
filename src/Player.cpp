@@ -145,31 +145,42 @@ void Player::Draw ( void* video_buffer )
   }
 */
 
-  for ( nom::int32 hand_index = 0; hand_index < this->hand->size(); hand_index++ )
+  for ( nom::int32 idx = 0; idx < this->hand->size(); idx++ )
   {
-    if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER1 )
+    this->player_pos = nom::Coords  (
+                                      this->getX(),
+                                      this->getY() + ( CARD_HEIGHT / 2 ) * idx
+                                    );
+
+    nom::int32 player_id = this->hand->cards.at( idx ).getPlayerID();
+    Card selected_card = this->hand->getSelectedCard();
+    nom::int32 hand_pos = this->hand->at ( selected_card );
+
+    if ( player_id == Card::PLAYER2 && hand_pos == idx )
     {
-      if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
-      {
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
-      else
-      {
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
-      }
+      this->card->draw  (
+                          video_buffer, this->hand->cards.at ( idx ),
+                          this->player_pos.x + 16, this->player_pos.y,
+                          face_down
+                        );
     }
-    else if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER2 )
+    else if ( player_id == Card::PLAYER1 && hand_pos == idx )
     {
-      if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
-      {
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index, face_down );
-      }
-      else
-      {
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index, face_down );
-      }
+      this->card->draw  (
+                          video_buffer, this->hand->cards.at ( idx ),
+                          this->player_pos.x - 16, this->player_pos.y,
+                          face_down
+                        );
     }
-  }
+    else
+    {
+      this->card->draw  (
+                          video_buffer, this->hand->cards.at ( idx ),
+                          this->player_pos.x, this->player_pos.y,
+                          face_down
+                        );
+    }
+  } // end for this->hand loop
 }
 
 void Player::Update ( void )
