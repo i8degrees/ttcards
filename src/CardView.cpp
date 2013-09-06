@@ -100,14 +100,12 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 }
 
 // Helper method for drawing cards face down
-bool CardView::drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y )
+void CardView::drawFaceDown ( void* video_buffer, nom::int32 x, nom::int32 y )
 {
   this->card_background.setSheetID ( NOFACE_ID );
   this->card_background.setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
   this->card_background.Update();
   this->card_background.Draw ( video_buffer );
-
-  return true;
 }
 
 void CardView::draw_background ( void* video_buffer, nom::int32 player_id, nom::int32 x, nom::int32 y )
@@ -141,7 +139,7 @@ void CardView::draw_face  (
   this->card_face.Draw ( video_buffer );
 }
 
-bool CardView::drawElement  (
+void CardView::drawElement  (
                               void* video_buffer, nom::int32 element_id,
                               nom::int32 x, nom::int32 y
                             )
@@ -163,8 +161,6 @@ bool CardView::drawElement  (
   this->card_element.setPosition ( nom::Coords( x, y ) );
   this->card_element.Update();
   this->card_element.Draw ( video_buffer );
-
-  return true;
 }
 
 void CardView::draw_text  (
@@ -186,19 +182,22 @@ void CardView::draw_text  (
   this->card_text.Draw ( video_buffer );
 }
 
-bool CardView::DrawCard (
+void CardView::DrawCard (
                           void* video_buffer, const Card& card,
                           nom::int32 x, nom::int32 y, bool face_down
                         )
 {
-  if ( face_down == true )
+  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
   {
-    if ( drawFaceDown ( video_buffer, x, y ) == false ) return false;
-
-    return true;
+NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
+    return;
   }
 
-  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION ) return false;
+  if ( face_down == true )
+  {
+    this->drawFaceDown ( video_buffer, x, y );
+    return;
+  }
 
   this->draw_background (
                           video_buffer, card.getPlayerID(),
@@ -234,6 +233,4 @@ bool CardView::DrawCard (
                     video_buffer, card.getSouthRank(),
                     RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y
                   );
-
-  return true;
 }
