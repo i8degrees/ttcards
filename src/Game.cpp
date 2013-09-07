@@ -280,7 +280,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), false ) == true )
+  if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->gameover_text.setFontSize ( 36 );
   }
@@ -322,9 +322,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     this->game->cursor.resize ( nom::ResizeAlgorithm::scale2x );
     this->game->menu_elements.resize ( nom::ResizeAlgorithm::scale2x );
     this->game->gameover_background.resize ( nom::ResizeAlgorithm::scale2x );
-
-    // We only need to reset bitmap font spacing for when we are rescaling surfaces
-    this->game->info_text.setSpacing(18);
   }
   else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
   {
@@ -334,9 +331,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     this->game->cursor.resize ( nom::ResizeAlgorithm::hq2x );
     this->game->menu_elements.resize ( nom::ResizeAlgorithm::hq2x );
     this->game->gameover_background.resize ( nom::ResizeAlgorithm::hq2x );
-
-    // We only need to reset bitmap font spacing for when we are rescaling surfaces
-    this->game->info_text.setSpacing(18);
   }
 
   // Load optional audio resources

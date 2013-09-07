@@ -81,9 +81,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
     this->card_face.resize ( nom::ResizeAlgorithm::scale2x );
     this->card_background.resize ( nom::ResizeAlgorithm::scale2x );
     this->card_element.resize ( nom::ResizeAlgorithm::scale2x );
-
-    // We only need to reset bitmap font spacing for when we are rescaling surfaces
-    this->card_text.setSpacing(18);
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
@@ -91,9 +88,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
     this->card_face.resize ( nom::ResizeAlgorithm::hq2x );
     this->card_background.resize ( nom::ResizeAlgorithm::hq2x );
     this->card_element.resize ( nom::ResizeAlgorithm::hq2x );
-
-    // We only need to reset bitmap font spacing for when we are rescaling surfaces
-    this->card_text.setSpacing(18);
   }
 
   return true;
