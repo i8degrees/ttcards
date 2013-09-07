@@ -47,18 +47,17 @@ void PauseState::onInit ( void )
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::ui::MessageBox  ( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y,
+  this->info_box = nom::ui::MessageBox  (
+                                          PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y,
                                           PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT,
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-  this->game->info_text.setText ( SHORT_VERSION_INFO );
-  nom::int32 text_width = this->game->info_text.getFontWidth();
-  nom::int32 text_height = this->game->info_text.getFontHeight();
 
-  this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, ( SCREEN_HEIGHT - text_height ) / 2  ) );
-
-  this->game->info_small_text.setPosition ( nom::Coords( PAUSE_BOX_ORIGIN_X + 4, PAUSE_BOX_ORIGIN_Y ) );
+  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
+  this->info_box.setLabelFont ( &this->game->info_text );
+  this->info_box.setLabel ( SHORT_VERSION_INFO );
+  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
 
   this->update.Start();
 }
@@ -92,17 +91,15 @@ void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod )
 void PauseState::Update ( float delta_time )
 {
   this->info_box.Update();
-  this->game->info_text.Update();
 
-  this->game->info_small_text.setText ( "PAUSE" );
+  this->info_box.setWindowTitle ( "PAUSE" );
 
   if ( this->update.getTicks() > 800 )
   {
     this->update.Stop();
-    this->game->info_small_text.setText ( "" );
+    this->info_box.setWindowTitle ( "" );
     this->blink_text = true;
   }
-  this->game->info_small_text.Update();
 
   this->game->context.Update();
 }
@@ -110,13 +107,11 @@ void PauseState::Update ( float delta_time )
 void PauseState::Draw ( void* video_buffer )
 {
   this->info_box.Draw( video_buffer );
-  this->game->info_text.Draw( video_buffer );
 
   if ( this->blink_text )
   {
-    this->game->info_small_text.setText ( "" );
+    this->info_box.setWindowTitle ( "" );
     this->update.Start();
     this->blink_text = false;
   }
-  this->game->info_small_text.Draw( video_buffer );
 }

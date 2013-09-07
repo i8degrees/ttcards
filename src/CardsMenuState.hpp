@@ -91,7 +91,8 @@ class CardsMenuState: public nom::IState
     unsigned int per_page;
     /// current card position
     unsigned int current_index;
-     /// height of the card name text
+
+    /// height of the card name text
     unsigned int info_text_height;
 
     /// y coords mapping for cursor -> card position index

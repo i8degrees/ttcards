@@ -80,7 +80,6 @@ class PlayState: public nom::IState
     void player_turn ( unsigned int player );
     void endTurn ( void );
 
-    void showCardInfoBox ( void *video_buffer );
     bool isCursorLocked ( void );
     void lockCursor ( bool lock );
     void resetCursor ( void );
@@ -94,6 +93,10 @@ class PlayState: public nom::IState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
+    /// Interface Helper method; shows Card's ID number in a message box for
+    /// both cursor states; player's hand and placed board cards -- debug
+    /// handling included.
+    void updateMessageBoxes ( void );
     void updateCursor ( void );
     void drawCursor ( void* video_buffer );
 

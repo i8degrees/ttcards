@@ -66,7 +66,6 @@ void PlayState::Resume ( void )
 void PlayState::onInit ( void )
 {
   nom::Gradient linear;
-  nom::int32 idx = 0; // for loop iterations
 
   // Random seeding for picking out whose turn it is initially
   nom::uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -94,27 +93,36 @@ void PlayState::onInit ( void )
   this->player_scoreboard[0].setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
   this->player_scoreboard[1].setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 
-  for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::ui::MessageBox  ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+  this->info_box = nom::ui::MessageBox  (
+                                          INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
                                           INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-  this->debug_box = nom::ui::MessageBox ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+  this->debug_box = nom::ui::MessageBox (
+                                          DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
                                           DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-#ifndef DEBUG_GAME
-  this->debug_box.disable ();
+  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
+  this->info_box.setLabelFont ( &this->game->info_text );
+  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+
+  this->debug_box.setWindowTitleFont ( &this->game->info_small_text );
+  this->debug_box.setLabelFont ( &this->game->info_text );
+  this->debug_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+
+#if ! defined ( DEBUG )
+  this->debug_box.disable();
 #endif
 
   this->game->hand[1].randomize ( 1, 10, this->game->collection );
@@ -494,67 +502,40 @@ void PlayState::endTurn ( void )
   }
 }
 
-// Interface Helper method; shows Card's ID number in a message box for both cursor
-// states; player's hand and placed board cards -- debug handling included
-void PlayState::showCardInfoBox ( void* video_buffer )
+void PlayState::updateMessageBoxes ( void )
 {
-  Card selectedCard; // temp container var to hold our card info (ID, name)
+  nom::uint32 player_turn = get_turn();
+  Card selected_card; // temp container var to hold our card info (ID, name)
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
-
-  unsigned int player_turn = get_turn();
 
   // board selection state
   if ( this->isCursorLocked() == true )
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
-
     if ( coords != nom::Coords::null )
     {
-      selectedCard = this->game->board.get ( coords.x, coords.y );
+      selected_card = this->game->board.get ( coords.x, coords.y );
     }
   }
-  // player hand selection state
-  else
+  else // player hand selection state
   {
 #if defined (DEBUG) // Allow watching both players make their card selections
-    selectedCard = this->game->hand[player_turn].getSelectedCard();
+    selected_card = this->game->hand[player_turn].getSelectedCard();
 #else // Do not show the actions of other players
-    selectedCard = this->game->hand[PLAYER1].getSelectedCard();
+    selected_card = this->game->hand[PLAYER1].getSelectedCard();
 #endif
   }
 
   // Debug helping info MessageBox display
-  if ( this->debug_box.isEnabled() == true )
+  if ( selected_card.getID() != 0 )
   {
-    if ( selectedCard.getID() != 0 )
-    {
-      this->game->info_text.setText ( std::to_string ( selectedCard.getID() ) );
-      nom::int32 text_width = this->game->info_text.getFontWidth ();
-
-      this->debug_box.Draw ( video_buffer );
-
-      this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, DEBUG_BOX_TEXT_ORIGIN_Y ) );
-      this->game->info_text.Update();
-      this->game->info_text.Draw ( video_buffer );
-    }
+    this->debug_box.setLabel ( std::to_string ( selected_card.getID() ) );
   }
 
   // (Southern) informational MessageBox display (selected / active card's name)
-  if ( selectedCard.getName().length() != 0 || selectedCard.getName() != "\0" )
+  if ( selected_card.getName().length() != 0 )
   {
-    this->game->info_text.setText ( selectedCard.getName() );
-    nom::int32 text_width = this->game->info_text.getFontWidth();
-    this->game->info_small_text.setText ( "INFO" );
-
-    this->info_box.Draw ( video_buffer );
-
-    this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, INFO_BOX_TEXT_ORIGIN_Y ) );
-    this->game->info_text.Update();
-    this->game->info_text.Draw ( video_buffer );
-
-    this->game->info_small_text.setPosition ( nom::Coords( INFO_BOX_SMALL_TEXT_ORIGIN_X, INFO_BOX_SMALL_TEXT_ORIGIN_Y ) );
-    this->game->info_small_text.Update();
-    this->game->info_small_text.Draw ( video_buffer );
+    this->info_box.setLabel ( selected_card.getName() );
   }
 }
 
@@ -854,6 +835,11 @@ void PlayState::Update ( float delta_time )
 {
   this->updateCursor();
 
+  this->updateMessageBoxes();
+
+  this->info_box.Update();
+  this->debug_box.Update();
+
   if ( this->get_turn() == 0 ) // player1
   {
     this->player_rect.setPosition ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
@@ -921,9 +907,6 @@ void PlayState::Update ( float delta_time )
     } // player2
   } // end player1
 
-  this->debug_box.Update();
-  this->info_box.Update();
-
   this->game->context.Update();
 }
 
@@ -949,7 +932,8 @@ void PlayState::Draw ( void *video_buffer )
 
   this->drawCursor ( video_buffer );
 
-  this->showCardInfoBox ( video_buffer );
+  this->info_box.Draw ( video_buffer );
+  this->debug_box.Draw ( video_buffer );
 
   // Draw each player's scoreboard
   this->game->score_text[0].Draw ( video_buffer );
