@@ -61,9 +61,9 @@ enum BoardPosition
   TopLeft = 0,
   TopCenter,
   TopRight,
-  CenterLeft,
-  Center,
-  CenterRight,
+  MiddleLeft,
+  MiddleCenter,
+  MiddleRight,
   BottomLeft,
   BottomCenter,
   BottomRight
