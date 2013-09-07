@@ -4,7 +4,9 @@ set ( TTCARDS_SOURCE
       ${SRC_DIR}/version.cpp
       ${SRC_DIR}/resources.cpp
       ${SRC_DIR}/GameConfig.cpp
+      ${SRC_DIR}/ContinueMenuStateCursor.cpp
       ${SRC_DIR}/GameOverStateCursor.cpp
+      ${SRC_DIR}/ContinueMenuState.cpp
       ${SRC_DIR}/Board.cpp
       ${SRC_DIR}/BoardTile.cpp
       #${SRC_DIR}/cpu_player.cpp

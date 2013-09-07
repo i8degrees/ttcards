@@ -418,7 +418,14 @@ void App::onKeyDown ( int32_t key, int32_t mod )
 #if defined ( DEBUG )
     case SDLK_0:
     {
+      if ( mod == KMOD_LMETA )
+      {
+        nom::GameStates::ChangeState ( ContinueMenuStatePtr ( new ContinueMenuState ( this->game ) ) );
+      }
+      else
+      {
         nom::GameStates::ChangeState ( GameOverStatePtr ( new GameOverState ( this->game, GameOverType::Won ) ) );
+      }
     }
     break;
 #endif
