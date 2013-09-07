@@ -194,7 +194,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   //this->selected_card = this->game->hand[1].getSelectedCard();
 
   // Commence the countdown on the showing of results!
-  this->update.Start();
+  this->update.start();
 }
 
 void GameOverState::onExit ( void )
@@ -223,7 +223,6 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
       // ...
     }
     break;
-
   }
 }
 
@@ -292,9 +291,9 @@ void GameOverState::Update ( float delta_time )
   this->card_info_box.Update();
   this->cursor.update();
 
-  if ( this->update.getTicks() > 1500 )
+  if ( this->update.ticks() > 1500 )
   {
-    this->update.Stop();
+    this->update.stop();
     this->show_results = true;
   }
 
@@ -350,7 +349,7 @@ void GameOverState::Draw ( void* video_buffer )
 
     // Restart game
     //nom::GameStates::ChangeState( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
-    this->update.Stop();
+    this->update.stop();
     this->show_results = true;
   } // end if update
 }

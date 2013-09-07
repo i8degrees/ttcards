@@ -59,7 +59,7 @@ void PauseState::onInit ( void )
   this->info_box.setLabel ( SHORT_VERSION_INFO );
   this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
 
-  this->update.Start();
+  this->update.start();
 }
 
 void PauseState::onExit ( void )
@@ -94,9 +94,9 @@ void PauseState::Update ( float delta_time )
 
   this->info_box.setWindowTitle ( "PAUSE" );
 
-  if ( this->update.getTicks() > 800 )
+  if ( this->update.ticks() > 800 )
   {
-    this->update.Stop();
+    this->update.stop();
     this->info_box.setWindowTitle ( "" );
     this->blink_text = true;
   }
@@ -111,7 +111,7 @@ void PauseState::Draw ( void* video_buffer )
   if ( this->blink_text )
   {
     this->info_box.setWindowTitle ( "" );
-    this->update.Start();
+    this->update.start();
     this->blink_text = false;
   }
 }

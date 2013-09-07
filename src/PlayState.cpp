@@ -145,10 +145,10 @@ void PlayState::onInit ( void )
   this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
 
   // Initialize our animation state timers
-  this->player_timer.Start();
   this->player_animation = true;
+  this->player_timer.start();
 
-  this->cursor_blink.Start();
+  this->cursor_blink.start();
   this->blink_cursor = false;
 }
 
@@ -779,9 +779,9 @@ void PlayState::updateCursor ( void )
 {
   if ( this->game->cursor.getState() == 1 )
   {
-    if ( this->cursor_blink.getTicks() > 192 ) // Blinky blink!
+    if ( this->cursor_blink.ticks() > 192 ) // Blinky blink!
     {
-      this->cursor_blink.Stop();
+      this->cursor_blink.stop();
       this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE );
       this->blink_cursor = true;
     }
@@ -807,7 +807,7 @@ void PlayState::drawCursor ( void* video_buffer )
   if ( this->blink_cursor )
   {
     this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
-    this->cursor_blink.Start();
+    this->cursor_blink.start();
     this->blink_cursor = false;
   }
 }

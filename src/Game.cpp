@@ -457,7 +457,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     {
       nom::Image image;
 
-       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp";
+       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".bmp";
 
       if ( image.save ( screenshot_filename, this->game->context.get() ) == false )
       {
@@ -517,11 +517,11 @@ int32_t App::Run ( void )
 {
   unsigned int loops = 0;
   unsigned int next_game_tick = 0;
-  nom::uint32 delta_time = 0; // TODO; this is a stub out
+  nom::uint32 delta_time = this->ticks();
 
-  this->fps.Start();
+  this->fps.start();
 
-  next_game_tick = this->getTicks();
+  next_game_tick = this->ticks();
 
   nom::GameStates::ChangeState( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
 
@@ -529,21 +529,21 @@ int32_t App::Run ( void )
   {
     loops = 0;
 
-    while ( this->getTicks() > next_game_tick && loops <= MAX_FRAMESKIP )
+    while ( this->ticks() > next_game_tick && loops <= MAX_FRAMESKIP )
     {
       while ( this->PollEvents ( &event ) )
       {
         this->onEvent ( &event );
       }
 
-      this->fps.Update();
+      this->fps.update();
 
-      nom::GameStates::Update ( delta_time ); // FIXME; this is a stub out
+      nom::GameStates::Update ( delta_time );
       nom::GameStates::Draw ( this->game->context.get() );
 
       if ( this->getShowFPS() )
       {
-        this->game->context.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
+        this->game->context.setWindowTitle ( APP_NAME + " " + "-" + " " + ( this->fps.fpsAsString() ) + " " + "fps" );
       }
       else
       {
@@ -555,7 +555,7 @@ int32_t App::Run ( void )
 
       // FIXME: this is a lazy patch to keep CPU cycles down; on my system,
       // usage drops from 99% to ~22..30%
-      if ( this->fps.getFPS() >= TICKS_PER_SECOND )
+      if ( this->fps.fps() >= TICKS_PER_SECOND )
       {
         nom::sleep ( 50 );
       }
