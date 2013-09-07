@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlayState.hpp"
 #include "GameObject.hpp"
 #include "PauseState.hpp"
+#include "CardsMenuStateCursor.hpp"
 
 class CardsMenuState: public nom::IState
 {
@@ -98,6 +99,9 @@ class CardsMenuState: public nom::IState
     /// y coords mapping for cursor -> card position index
     /// minus one (1) padding
     std::pair<int, int> cursor_coords_map[10];
+
+    CardsMenuStateCursor cursor;
+
     /// Position of the player's hand (player 1)
     nom::Coords player1_pos;
 
