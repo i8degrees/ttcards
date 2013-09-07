@@ -46,14 +46,111 @@ NOM_LOG_TRACE ( TTCARDS );
 
 void GameOverState::onInit ( void )
 {
+  nom::Gradient linear;
+
+  // Initialize interface cursor
+  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color::Black, true ) == true )
+  {
+    if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
+    {
+      this->cursor.resize ( nom::ResizeAlgorithm::scale2x );
+    }
+    else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
+    {
+      this->cursor.resize ( nom::ResizeAlgorithm::hq2x );
+    }
+
+    this->cursor.set_position_map ( &this->game->hand[1] );
+    this->cursor.setSize ( CURSOR_WIDTH, CURSOR_HEIGHT );
+    this->cursor.setPosition  (
+                                PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
+                                PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
+                              );
+    this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+    this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+  }
+  else // EPIC FAIL
+  {
+#if defined ( DEBUG )
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
+#else
+    nom::DailogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
+#endif
+    exit ( EXIT_FAILURE );
+  }
+
+/*
+  if ( this->gameover_state == 0 ) // Draw
+  {
+  }
+  else if ( this->gameover_state == 1 ) // Player 1 won
+  {
+*/
+
+
+  //} // end gameover_state == 1
+/*
+  else if ( this->gameover_state == 2 ) // Player 2 won
+  {
+    this->cursor.setPosition  (
+                                PLAYER1_GAMEOVER_ORIGIN_X,
+                                PLAYER1_GAMEOVER_ORIGIN_Y * 2
+                              );
+
+    this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+  }
+*/
+// REMOVE ME
+this->game->hand[0].randomize ( 8, 10, this->game->collection );
+this->game->hand[1].randomize ( 1, 7, this->game->collection );
+// REMOVE ME
+for ( auto idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+{
+this->game->hand[0].cards[idx].setPlayerID(Card::PLAYER1);
+this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
+}
+  // Reset the player's hand back to the front, so our cursor tracking is
+  // always accurate.
+  //
+  // POSSIBLE BUG; if we try to do this before we initialize the game cursor,
+  // we crash for some strange reason! I think it may have something to do
+  // with the order of initialization?
+  this->game->hand[1].front();
+
+  // Initialize our message box background containers (linear gradient)
+  linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
+  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+
+  // Top display message box; "description" info box
+  this->info_box = nom::ui::MessageBox  (
+                                          INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+                                          INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
+                                          nom::ui::FrameStyle::Gray, linear
+                                        );
+
+  // Bottom display message box; card info (card name)
+  this->card_info_box = nom::ui::MessageBox (
+                                              INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+                                              INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
+                                              nom::ui::FrameStyle::Gray, linear
+                                            );
+
+  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
+  this->info_box.setLabelFont ( &this->game->info_text );
+  this->info_box.setLabel ( "Select 1 card(s) you want" );
+  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+
+  this->card_info_box.setWindowTitleFont ( &this->game->info_small_text );
+  this->card_info_box.setLabelFont ( &this->game->info_text );
+  this->card_info_box.setLabel ( this->game->hand[1].getSelectedCard().getName() );
+  this->card_info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+
   // Fully reconstruct the player's hand by adding the cards placed on the board
-  // back into their respective hand.
+  // back into each player's respective hand.
   //
   // 1. Make a a copy of each player's hand as it existed (on the board).
   // 2. Reset each player card found back to their original color.
   //
-  // * Now we have two distinct copies made -- the original hand and the results
-  // of the end game -- so we can deduce and display who wins and loses what.
   for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
@@ -72,12 +169,29 @@ void GameOverState::onInit ( void )
       }
     }
   }
-
-  if ( this->gameover_state == 1 ) // You won!
+/*
+  if ( this->gameover_state == 0 ) // Draw
   {
-    this->game->music_track.Stop();
-    this->game->winning_track.Play();
+    // Do stuff related to game tie
   }
+  else if ( this->gameover_state == 1 ) // You won!
+  {
+*/
+    // Play "You won!" music track
+    this->game->music_track.Stop();
+#if ! defined ( DEBUG )
+    this->game->winning_track.Play();
+#endif
+
+  //}
+/*
+  else if ( this->gameover_state == 2 ) // You lost
+  {
+    //nom::int32 rand_pick = nom::randomInteger ( 0, this->game->hand[0].size() );
+    this->game->hand[0].front();
+  }
+*/
+  //this->selected_card = this->game->hand[1].getSelectedCard();
 
   // Commence the countdown on the showing of results!
   this->update.Start();
@@ -101,11 +215,83 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
 
     // Pause game
     case SDLK_p: nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) ); break;
+
+    case SDLK_LEFT: this->cursor.moveCursorLeft(); break;
+    case SDLK_RIGHT: this->cursor.moveCursorRight(); break;
+    case SDLK_SPACE:
+    {
+      // ...
+    }
+    break;
+
+  }
+}
+
+void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
+{
+  nom::Coords coords ( x, y ); // mouse input coordinates
+
+  // Player hand selection checks
+  for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
+  {
+    this->player2_pos = nom::Coords (
+                                      PLAYER2_GAMEOVER_ORIGIN_X,
+                                      PLAYER2_GAMEOVER_ORIGIN_Y,
+                                      ( CARD_WIDTH ) * ( idx + 1 ), CARD_WIDTH
+                                    );
+
+    if ( player2_pos.intersects ( coords ) )
+    {
+      // 1. Update player's selected card
+      // 2. Update the card info message box
+      // 3. Update cursor position
+      // 4. Play sound event
+
+      this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
+      Card selected_card = this->game->hand[1].getSelectedCard();
+
+      this->card_info_box.setLabel ( selected_card.getName() );
+
+      this->cursor.setPosition ( PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.getY() );
+
+      this->game->cursor_move.Play();
+
+      // We must break the loop here upon the end of a matching coords check
+      // in order to prevent a nasty "last card stays permanently selected"
+      // bug from cropping back up!
+      break;
+    }
+  }
+}
+
+void GameOverState::onMouseWheel ( bool up, bool down )
+{
+  if ( up )
+  {
+    this->cursor.moveCursorLeft();
+  }
+  else if ( down )
+  {
+    this->cursor.moveCursorRight();
+  }
+}
+
+void GameOverState::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
+{
+  if ( code == 666 && type == SDL_USEREVENT )
+  {
+    Card selected_card = this->game->hand[1].getSelectedCard();
+    this->card_info_box.setLabel ( selected_card.getName() );
   }
 }
 
 void GameOverState::Update ( float delta_time )
 {
+  this->info_box.Update();
+
+  this->card_info_box.Update();
+  this->cursor.update();
+
   if ( this->update.getTicks() > 1500 )
   {
     this->update.Stop();
@@ -151,10 +337,12 @@ void GameOverState::Draw ( void* video_buffer )
                           );
   }
 
-  if ( this->update.getTicks() > 1500 )
-  {
-    //nom::int32 rand_pick = nom::randomInteger ( 0, this->game->hand[0].size() );
+  this->info_box.Draw( video_buffer );
+  this->card_info_box.Draw( video_buffer );
 
+  this->cursor.draw ( video_buffer );
+  if ( this->show_results == true )
+  {
     //Card lost_card = this->game->hand[0].getSelectedCard();
 //NOM_LOG_INFO ( TTCARDS, lost_card.getName() + "Card lost" );
 

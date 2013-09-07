@@ -26,55 +26,53 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAME_APP_HEADERS
-#define GAME_APP_HEADERS
+#ifndef GAMEAPP_GAMEOVER_STATE_CURSOR_HPP
+#define GAMEAPP_GAMEOVER_STATE_CURSOR_HPP
 
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <memory>
 
-#include <SDL/SDL.h>
-
-#include <nomlib/audio.hpp>
 #include <nomlib/graphics.hpp>
-#include <nomlib/sdl/utils.hpp>
-#include <nomlib/system.hpp>
+#include <nomlib/math.hpp>
+#include <nomlib/gui.hpp>
 
 #include "config.hpp"
-#include "version.hpp"
-#include "resources.hpp"
-#include "CardCollection.hpp"
-#include "CardsMenuState.hpp"
-#include "GameObject.hpp"
+#include "CardHand.hpp"
 
-class App: public nom::SDL_App // "is-a" relationship
+class GameOverStateCursor: public nom::ui::Cursor
 {
   public:
-    App ( nom::int32 argc, char* argv[] );
-    ~App ( void );
+    GameOverStateCursor ( void );
 
-    bool onInit ( void );
+    GameOverStateCursor (
+                          CardHand* position,
+                          nom::int32 x, nom::int32 y,
+                          nom::int32 width, nom::int32 height
+                        );
 
-    /// Handle app & state events
-    void onEvent ( SDL_Event *event );
+    ~GameOverStateCursor ( void );
 
-    /// Handle key events
-    void onKeyDown ( int32_t key, int32_t mod );
+    /// Set a new positioning object for this instance to use
+    void set_position_map ( CardHand* position );
 
-    /// Event handler for resize app request
-    void onResize ( int32_t width, int32_t height );
+    /// Obtain the current position we are at in the player's hand.
+    nom::int32 position ( void );
 
-    /// Run app loop
-    nom::int32 Run ( void );
+    /// Move the cursor to the left.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    nom::int32 moveCursorLeft ( void );
+
+    /// Move the cursor to the right.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    nom::int32 moveCursorRight ( void );
 
   private:
-    std::shared_ptr<GameObject> game;
-    /// Timer for tracking frames per second
-    nom::FPS fps;
-    /// Input events
-    SDL_Event event;
+    void next ( void );
+    void previous ( void );
+    CardHand::SharedPtr card_position;
 };
 
-
-#endif // GAME_APP_HEADERS defined
+#endif // include guard defined

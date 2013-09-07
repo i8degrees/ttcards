@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameObject.hpp"
 #include "PauseState.hpp"
 #include "CardRules.hpp"
+#include "GameOverStateCursor.hpp"
 
 class GameOverState: public nom::IState
 {
@@ -57,7 +58,11 @@ class GameOverState: public nom::IState
   private:
     void onInit ( void );
     void onExit ( void );
+
     void onKeyDown ( nom::int32 key, nom::int32 mod );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
+    void onMouseWheel ( bool up, bool down );
+    void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
 
     void Update ( float delta_time );
     void Draw ( void* video_buffer );
@@ -67,6 +72,15 @@ class GameOverState: public nom::IState
     nom::Timer update;
     bool show_results;
     enum GameOverType gameover_state;
+
+    /// Interface cursor
+    GameOverStateCursor cursor;
+
+    //Card selected_card;
+
+    nom::ui::MessageBox info_box;
+    nom::ui::MessageBox card_info_box;
+
     /// Position of player 1 hand
     nom::Coords player1_pos;
 

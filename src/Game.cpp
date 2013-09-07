@@ -415,6 +415,14 @@ void App::onKeyDown ( int32_t key, int32_t mod )
   {
     default: break;
 
+#if defined ( DEBUG )
+    case SDLK_0:
+    {
+        nom::GameStates::ChangeState ( GameOverStatePtr ( new GameOverState ( this->game, GameOverType::Won ) ) );
+    }
+    break;
+#endif
+
     case SDLK_ESCAPE:
     case SDLK_q: this->onQuit(); break;
 
