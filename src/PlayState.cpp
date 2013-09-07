@@ -95,7 +95,9 @@ void PlayState::onInit ( void )
   this->player_scoreboard[1].setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  {
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
+  }
 
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
@@ -369,8 +371,9 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
 
 void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 {
-  nom::int32 hand_index = 0; // iterator
-  uint32_t player_turn = this->get_turn();
+  nom::uint32 player_turn = this->get_turn();
+  nom::Coords coords ( x, y ); // mouse input coordinates
+  nom::Coords player_coords = this->player[player_turn].getPosition(); // Player cursor origin coordinates
 
   // Disable mouse input if we are not controlling the other player
   if ( this->skip_turn == false )
@@ -378,28 +381,22 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
     if ( this->get_turn() != 0 ) return;
   }
 
-  nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
-  nom::Coords player_coords = this->player[player_turn].getPosition(); // Player cursor origin coordinates
-
   // Player hand selection checks
-  for ( hand_index = 0; hand_index < this->game->hand[ player_turn ].size(); hand_index++ )
+  for ( nom::int32 idx = 0; idx < this->game->hand[ player_turn ].size(); idx++ )
   {
-    if  (
-          x <= ( player_coords.x + CARD_WIDTH ) &&
-          x >= ( player_coords.x ) &&
-          // hand_index+1 because we start the loop iterator at zero; mouse check
-          // calculation is invalid at this number whereas it is not for the
-          // actions that take place if said check yields true
-          y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * ( hand_index + 1 ) ) &&
-          y >= ( player_coords.y )
-        )
+    player_coords = nom::Coords (
+                                  player_coords.x, player_coords.y,
+                                  CARD_WIDTH, ( CARD_HEIGHT / 2  ) * ( idx + 1 )
+                                );
+
+    if ( player_coords.intersects ( coords ) )
     {
+      // 1. Update player's selected card
+      // 2. Update cursor position
+      // 3. Play sound event
+      this->game->hand[ player_turn ].selectCard ( this->game->hand[ player_turn ].cards[ idx ] );
 
-      // Update player's selected card
-      this->game->hand[ player_turn ].selectCard ( this->game->hand[ player_turn ].cards[ hand_index ] );
-
-      // Updates Cursor Position
-      this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
+      this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx );
 
       this->game->cursor_move.Play();
 
