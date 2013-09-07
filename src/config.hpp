@@ -259,19 +259,14 @@ constexpr nom::int32 MENU_CARDS_PAGE_RIGHT_ORIGIN_Y = MENU_CARDS_PAGE_LEFT_ORIGI
 constexpr nom::int32 INFO_BOX_WIDTH = 176 * SCALE_FACTOR;
 constexpr nom::int32 INFO_BOX_HEIGHT = 24 * SCALE_FACTOR;
 
-constexpr nom::int32 INFO_BOX_ORIGIN_X = 104 * SCALE_FACTOR;
+constexpr nom::int32 INFO_BOX_ORIGIN_X = ( SCREEN_WIDTH - INFO_BOX_WIDTH ) / 2;
 constexpr nom::int32 INFO_BOX_ORIGIN_Y = 194 * SCALE_FACTOR;
-constexpr nom::int32 INFO_BOX_TEXT_ORIGIN_Y = 196 * SCALE_FACTOR;
 
-constexpr nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_X = 108 * SCALE_FACTOR;
-constexpr nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_Y = 194 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_WIDTH = 88 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_HEIGHT = 24 * SCALE_FACTOR;
 
-constexpr nom::int32 DEBUG_BOX_WIDTH = 43 * SCALE_FACTOR;
-constexpr nom::int32 DEBUG_BOX_HEIGHT = 20 * SCALE_FACTOR;
-
-constexpr nom::int32 DEBUG_BOX_ORIGIN_X = 170 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_ORIGIN_X = ( SCREEN_WIDTH - DEBUG_BOX_WIDTH ) / 2;
 constexpr nom::int32 DEBUG_BOX_ORIGIN_Y = 8 * SCALE_FACTOR;
-constexpr nom::int32 DEBUG_BOX_TEXT_ORIGIN_Y = 14 * SCALE_FACTOR;
 
 constexpr nom::int32 PAUSE_BOX_WIDTH = 176 * SCALE_FACTOR;
 constexpr nom::int32 PAUSE_BOX_HEIGHT = 24 * SCALE_FACTOR;
