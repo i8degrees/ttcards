@@ -94,6 +94,9 @@ class CardHand
     /// We always update the selected card to this calculated position.
     void previous ( void );
 
+    /// Sets the position we are at in the cards vector
+    void set_position ( nom::int32 pos );
+
     void clear ( void );
     nom::int32 size ( void ) const;
     nom::int32 at ( Card& card );
@@ -138,9 +141,6 @@ class CardHand
     Cards cards;
 
   private:
-    /// Sets the position we are at in the cards vector
-    void set_position ( nom::int32 pos );
-
     /// Track the current position we are at in the cards vector
     nom::int32 card_position;
 
