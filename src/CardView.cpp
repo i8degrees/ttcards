@@ -32,13 +32,19 @@ CardView::CardView ( void )
 {
 NOM_LOG_TRACE ( TTCARDS );
 
-  this->card_face = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  this->card_background = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  this->card_element = nom::Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+  this->card_background = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT ) );
+  this->card_face = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT ) );
+  this->card_element = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT ) );
+  this->card_text = std::shared_ptr<nom::BitmapFont> ( new nom::BitmapFont() );
 
-  this->card_face.setSheetDimensions ( 7104, 64, 0, 0 );
-  this->card_background.setSheetDimensions ( 256, 64, 0, 0 );
-  this->card_element.setSheetDimensions ( 144, 16, 0, 0 );
+  this->card_background->setSheetDimensions ( 256, 64, 0, 0 );
+  this->card_face->setSheetDimensions ( 7104, 64, 0, 0 );
+  this->card_element->setSheetDimensions ( 144, 16, 0, 0 );
+
+  card.push_back ( this->card_background );
+  card.push_back ( this->card_face );
+  card.push_back ( this->card_element );
+  card.push_back ( this->card_text );
 }
 
 CardView::~CardView ( void )
@@ -50,25 +56,25 @@ bool CardView::load ( GameConfig* config )
 {
   if ( config == nullptr ) return false;
 
-  if ( this->card_text.load ( config->getString("CARD_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
+  if ( this->card_text->load ( config->getString("CARD_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FONTFACE") );
     return false;
   }
 
-  if ( this->card_face.load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_face->load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if ( this->card_background.load ( config->getString("CARD_BACKGROUNDS"), nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_background->load ( config->getString("CARD_BACKGROUNDS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_BACKGROUNDS") );
     return false;
   }
 
-  if ( this->card_element.load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
@@ -77,17 +83,17 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   // Rescale our game resources if necessary.
   if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    this->card_text.resize ( nom::ResizeAlgorithm::scale2x );
-    this->card_face.resize ( nom::ResizeAlgorithm::scale2x );
-    this->card_background.resize ( nom::ResizeAlgorithm::scale2x );
-    this->card_element.resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_text->resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_face->resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_background->resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_element->resize ( nom::ResizeAlgorithm::scale2x );
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
-    this->card_text.resize ( nom::ResizeAlgorithm::hq2x );
-    this->card_face.resize ( nom::ResizeAlgorithm::hq2x );
-    this->card_background.resize ( nom::ResizeAlgorithm::hq2x );
-    this->card_element.resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_text->resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_face->resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_background->resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_element->resize ( nom::ResizeAlgorithm::hq2x );
   }
 
   return true;
@@ -96,10 +102,10 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 // Helper method for drawing cards face down
 void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y )
 {
-  this->card_background.setSheetID ( NOFACE_ID );
-  this->card_background.setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
-  this->card_background.Update();
-  this->card_background.Draw ( video_buffer );
+  this->card_background->setSheetID ( NOFACE_ID );
+  this->card_background->setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
+  this->card_background->Update();
+  this->card_background->Draw ( video_buffer );
 }
 
 void CardView::draw_background  (
@@ -110,19 +116,19 @@ void CardView::draw_background  (
   switch ( player_id )
   {
     case Card::PLAYER1:
-      this->card_background.setSheetID ( PLAYER1_BACKGROUND_ID ); break;
+      this->card_background->setSheetID ( PLAYER1_BACKGROUND_ID ); break;
 
     case Card::PLAYER2:
-      this->card_background.setSheetID ( PLAYER2_BACKGROUND_ID ); break;
+      this->card_background->setSheetID ( PLAYER2_BACKGROUND_ID ); break;
 
     case Card::NOPLAYER:
     default:
-      this->card_background.setSheetID ( NOPLAYER_BACKGROUND_ID ); break;
+      this->card_background->setSheetID ( NOPLAYER_BACKGROUND_ID ); break;
   }
 
-  this->card_background.setPosition ( nom::Coords ( x, y ) );
-  this->card_background.Update();
-  this->card_background.Draw ( video_buffer );
+  this->card_background->setPosition ( nom::Coords ( x, y ) );
+  this->card_background->Update();
+  this->card_background->Draw ( video_buffer );
 }
 
 void CardView::draw_face  (
@@ -130,10 +136,10 @@ void CardView::draw_face  (
                             nom::int32 x, nom::int32 y
                           )
 {
-  this->card_face.setSheetID ( face_id );
-  this->card_face.setPosition ( nom::Coords ( x, y ) );
-  this->card_face.Update();
-  this->card_face.Draw ( video_buffer );
+  this->card_face->setSheetID ( face_id );
+  this->card_face->setPosition ( nom::Coords ( x, y ) );
+  this->card_face->Update();
+  this->card_face->Draw ( video_buffer );
 }
 
 void CardView::draw_element (
@@ -144,20 +150,20 @@ void CardView::draw_element (
   switch ( element_id )
   {
     default:
-    case NONE: this->card_element.setSheetID ( ELEMENT_NONE ); break;
-    case EARTH: this->card_element.setSheetID ( ELEMENT_EARTH ); break;
-    case FIRE: this->card_element.setSheetID ( ELEMENT_FIRE ); break;
-    case HOLY: this->card_element.setSheetID ( ELEMENT_HOLY ); break;
-    case ICE: this->card_element.setSheetID ( ELEMENT_ICE ); break;
-    case POISON: this->card_element.setSheetID ( ELEMENT_POISON ); break;
-    case THUNDER: this->card_element.setSheetID ( ELEMENT_THUNDER ); break;
-    case WATER: this->card_element.setSheetID ( ELEMENT_WATER ); break;
-    case WIND: this->card_element.setSheetID ( ELEMENT_WIND ); break;
+    case NONE: this->card_element->setSheetID ( ELEMENT_NONE ); break;
+    case EARTH: this->card_element->setSheetID ( ELEMENT_EARTH ); break;
+    case FIRE: this->card_element->setSheetID ( ELEMENT_FIRE ); break;
+    case HOLY: this->card_element->setSheetID ( ELEMENT_HOLY ); break;
+    case ICE: this->card_element->setSheetID ( ELEMENT_ICE ); break;
+    case POISON: this->card_element->setSheetID ( ELEMENT_POISON ); break;
+    case THUNDER: this->card_element->setSheetID ( ELEMENT_THUNDER ); break;
+    case WATER: this->card_element->setSheetID ( ELEMENT_WATER ); break;
+    case WIND: this->card_element->setSheetID ( ELEMENT_WIND ); break;
   }
 
-  this->card_element.setPosition ( nom::Coords( x, y ) );
-  this->card_element.Update();
-  this->card_element.Draw ( video_buffer );
+  this->card_element->setPosition ( nom::Coords( x, y ) );
+  this->card_element->Update();
+  this->card_element->Draw ( video_buffer );
 }
 
 void CardView::draw_text  (
@@ -167,16 +173,16 @@ void CardView::draw_text  (
 {
   if ( rank == 10 )
   {
-    this->card_text.setText ( "A" );
+    this->card_text->setText ( "A" );
   }
   else
   {
-    this->card_text.setText ( std::to_string ( rank ) );
+    this->card_text->setText ( std::to_string ( rank ) );
   }
 
-  this->card_text.setPosition ( nom::Coords ( x, y ) );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
+  this->card_text->setPosition ( nom::Coords ( x, y ) );
+  this->card_text->Update();
+  this->card_text->Draw ( video_buffer );
 }
 
 void CardView::draw (
@@ -230,4 +236,38 @@ NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
                     video_buffer, card.getSouthRank(),
                     RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y
                   );
+
+}
+
+void CardView::setViewCard ( const Card& card )
+{
+  this->render_card = card;
+}
+
+void CardView::reposition ( const nom::Coords& coords )
+{
+  this->position = coords;
+}
+
+void CardView::Update ( void )
+{
+  //this->card_background->setPosition ( this->position );
+  //this->card_face->setPosition ( this->position );
+  //this->card_element->setPosition ( this->position );
+  //this->card_text->setPosition ( this->position );
+
+  for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
+  {
+    std::shared_ptr<nom::IDrawable> obj = *it;
+    obj->Update();
+  }
+}
+
+void CardView::Draw ( void* video_buffer ) const
+{
+  for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
+  {
+    std::shared_ptr<nom::IDrawable> obj = *it;
+    obj->Draw ( video_buffer );
+  }
 }

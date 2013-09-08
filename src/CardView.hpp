@@ -39,9 +39,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameConfig.hpp"
 #include "Card.hpp"
 
-class CardView
+class CardView: public nom::IDrawable
 {
   public:
+    typedef std::vector<std::shared_ptr<IDrawable>> DrawableList;
     /// Default constructor
     CardView ( void );
 
@@ -80,11 +81,22 @@ class CardView
                       nom::int32 x, nom::int32 y
                     );
 
+    void setViewCard ( const Card& card );
+    void reposition ( const nom::Coords& coords );
+
+    void Update ( void );
+    void Draw ( void* ) const;
+
   private:
-    nom::BitmapFont card_text;
-    nom::Sprite card_face;
-    nom::Sprite card_background;
-    nom::Sprite card_element;
+    nom::Coords position;
+    Card render_card;
+
+    std::shared_ptr<nom::BitmapFont> card_text;
+    std::shared_ptr<nom::Sprite> card_face;
+    std::shared_ptr<nom::Sprite> card_background;
+    std::shared_ptr<nom::Sprite> card_element;
+
+    DrawableList card;
 };
 
 #endif // GAMEAPP_CARD_VIEW_HEADERS defined
