@@ -48,10 +48,7 @@ PlayState::~PlayState ( void )
 NOM_LOG_TRACE ( TTCARDS );
 }
 
-void PlayState::onExit ( void )
-{
-  std::cout << "\n" << "PlayState onExit" << "\n";
-}
+void PlayState::onExit ( void ) {}
 
 void PlayState::Pause ( void )
 {
@@ -145,9 +142,7 @@ void PlayState::onInit ( void )
   this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
 
   // Initialize our animation state timers
-  this->player_animation = true;
-  this->player_timer.start();
-
+  this->player_timer[1].setFrameRate ( 320 ); // 250 is also nice, I think!
   this->cursor_blink.start();
   this->blink_cursor = false;
 }
@@ -840,6 +835,23 @@ void PlayState::Update ( float delta_time )
   this->info_box.Update();
   this->debug_box.Update();
 
+  // Player two animation effect
+  if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > SDL_GetTicks() )
+  {
+    // return
+  }
+  else
+  {
+    this->player_timer[1].start();
+
+    // Only show player2 animation when we are not controlling him
+    if ( this->skip_turn == false )
+    {
+      nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[PLAYER2].size() );
+      this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
+    }
+  }
+
   if ( this->get_turn() == 0 ) // player1
   {
     this->player_rect.setPosition ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
@@ -849,13 +861,6 @@ void PlayState::Update ( float delta_time )
   {
     this->player_rect.setPosition ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
     this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
-
-    // Only show player2 animation when we are not controlling him
-    if ( this->player_timer.ticks() < 250 && this->skip_turn == false )
-    {
-      this->player_timer.stop();
-      this->player_animation = true;
-    }
 
     // Skipping a turn like this is only available in debug versions
     if ( this->skip_turn == false )
@@ -915,15 +920,6 @@ void PlayState::Draw ( void *video_buffer )
   this->game->background.Draw ( video_buffer );
 
   this->game->board.draw ( video_buffer );
-
-  // Only show player2 animation when we are not controlling him
-  if ( this->player_animation == true && this->skip_turn == false )
-  {
-    nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[PLAYER2].size() );
-    this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
-    this->player_timer.start();
-    //this->player_animation = false;
-  }
 
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );
