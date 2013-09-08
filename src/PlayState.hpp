@@ -134,8 +134,7 @@ class PlayState: public nom::IState
     bool blink_cursor;
 
     /// Simulate an AI player taking their time in thought about the next move
-    nom::Timer player_timer;
-    bool player_animation;
+    nom::AnimationTimer player_timer[2];
 
     /// Debug option -- when toggled on, we are able to control both players.
     bool skip_turn;
