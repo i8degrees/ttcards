@@ -28,18 +28,76 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuStateCursor.hpp"
 
-ContinueMenuStateCursor::ContinueMenuStateCursor ( void ) {}
-
-ContinueMenuStateCursor::~ContinueMenuStateCursor ( void ) {}
-/*
-nom::int32 ContinueMenuStateCursor::moveCursorLeft ( void )
+ContinueMenuStateCursor::ContinueMenuStateCursor ( void )
 {
-  if ( this->getState() == 0 )
-  {
-    if ( this->current_index > 0 )
-    {
-      this->current_index -= this->per_page;
-    }
-  }
+NOM_LOG_TRACE( TTCARDS );
 }
-*/
+
+ContinueMenuStateCursor::ContinueMenuStateCursor  (
+                                                    const nom::Coords& position_map,
+                                                    nom::int32 x, nom::int32 y,
+                                                    nom::int32 width, nom::int32 height
+                                                  )
+{
+NOM_LOG_TRACE( TTCARDS );
+
+  this->initialize ( x, y, width, height );
+  this->option_position = position_map;
+  this->cursor_position = 0;
+}
+
+ContinueMenuStateCursor::~ContinueMenuStateCursor ( void )
+{
+NOM_LOG_TRACE( TTCARDS );
+}
+
+void ContinueMenuStateCursor::set_position_map ( const nom::Coords& position_map )
+{
+  this->option_position = position_map;
+  this->cursor_position = 0;
+}
+
+nom::int32 ContinueMenuStateCursor::position ( void )
+{
+  return this->cursor_position;
+}
+
+nom::int32 ContinueMenuStateCursor::moveCursorUp ( void )
+{
+  if ( this->getY() > this->option_position.x )
+  {
+    this->cursor.move ( 0, -(16) );
+    this->previous();
+  }
+
+NOM_DUMP_VAR ( this->getY() );
+  return this->getY();
+}
+
+nom::int32 ContinueMenuStateCursor::moveCursorDown ( void )
+{
+  if ( this->getY() < 240 )
+  {
+    this->cursor.move ( 0, 16 );
+    this->next();
+  }
+
+NOM_DUMP_VAR ( this->getY() );
+  return this->getY();
+}
+
+void ContinueMenuStateCursor::next ( void )
+{
+  this->cursor_position++;
+NOM_DUMP_VAR(this->cursor_position);
+
+  this->cursor_event.dispatch ( nom::UserEvent::UI );
+}
+
+void ContinueMenuStateCursor::previous ( void )
+{
+  this->cursor_position--;
+NOM_DUMP_VAR(this->cursor_position);
+
+  this->cursor_event.dispatch ( nom::UserEvent::UI );
+}

@@ -204,6 +204,14 @@ NOM_LOG_TRACE ( TTCARDS );
   this->game->winning_track.Stop();
 }
 
+void GameOverState::Resume ( nom::int32 response )
+{
+  if ( response == 0 )
+  {
+    event.dispatch ( nom::UserEvent::Animation );
+  }
+}
+
 void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
 {
   switch ( key )
@@ -220,7 +228,9 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
     case SDLK_RIGHT: this->cursor.moveCursorRight(); break;
     case SDLK_SPACE:
     {
-      // ...
+      this->selected_card = this->game->hand[1].getSelectedCard();
+
+      nom::GameStates::PushState ( ContinueMenuStatePtr ( new ContinueMenuState ( this->game ) ) );
     }
     break;
   }
@@ -277,12 +287,33 @@ void GameOverState::onMouseWheel ( bool up, bool down )
 
 void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
 {
-  if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::UserEvent::UI ) )
+  if ( type != SDL_USEREVENT ) return;
+
+  if ( code == static_cast<nom::int32> ( nom::UserEvent::UI ) )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_info_box.setLabel ( selected_card.getName() );
 
     this->game->cursor_move.Play();
+  }
+  else if ( code == static_cast<nom::int32> ( nom::UserEvent::Animation ) )
+  {
+    this->card_info_box.disable();
+
+    nom::int32 card_pos = this->game->hand[1].at ( selected_card );
+    if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
+    {
+      // FIXME; should have no spacing on card printout
+      this->info_box.setLabel ( this->selected_card.getName() + " card acquired" );
+      this->game->hand[1].cards[card_pos].setPlayerID(Card::PLAYER1);
+
+      this->game->card_flip.Play();
+    }
+    else
+    {
+      //this->info_box.diable();
+      this->game->cursor_wrong.Play();
+    }
   }
 }
 

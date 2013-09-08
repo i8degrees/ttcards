@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "ContinueMenuStateCursor.hpp"
+#include "CardsMenuState.hpp"
 #include "GameObject.hpp"
 
 class ContinueMenuState: public nom::IState
@@ -49,14 +50,21 @@ class ContinueMenuState: public nom::IState
   private:
     void onInit ( void );
     void onExit ( void );
+
     void onKeyDown ( nom::int32 key, nom::int32 mod );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
+    void onMouseWheel ( bool up, bool down );
+    void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
 
     void Update ( float delta_time );
     void Draw ( void* video_buffer );
 
     std::shared_ptr<GameObject> game;
+
     nom::ui::MessageBox info_box;
     ContinueMenuStateCursor cursor;
+
+    nom::Coords position_map;
 };
 
 // Convenience declarations for changing state

@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 #include "CardRules.hpp"
 #include "GameOverStateCursor.hpp"
+#include "ContinueMenuState.hpp"
 
 class GameOverState: public nom::IState
 {
@@ -59,6 +60,8 @@ class GameOverState: public nom::IState
   private:
     void onInit ( void );
     void onExit ( void );
+
+    void Resume ( nom::int32 response );
 
     void onKeyDown ( nom::int32 key, nom::int32 mod );
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
@@ -77,7 +80,7 @@ class GameOverState: public nom::IState
     /// Interface cursor
     GameOverStateCursor cursor;
 
-    //Card selected_card;
+    Card selected_card;
 
     nom::ui::MessageBox info_box;
     nom::ui::MessageBox card_info_box;
@@ -87,6 +90,8 @@ class GameOverState: public nom::IState
 
     /// Position of player 2 hand
     nom::Coords player2_pos;
+
+    nom::EventDispatcher event;
 };
 
 // Convenience declarations for changing state

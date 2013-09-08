@@ -31,9 +31,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include <nomlib/graphics.hpp>
+#include <nomlib/math.hpp>
 #include <nomlib/gui.hpp>
+#include <nomlib/system.hpp>
 
 #include "config.hpp"
 
@@ -41,16 +44,37 @@ class ContinueMenuStateCursor: public nom::ui::Cursor
 {
   public:
     ContinueMenuStateCursor ( void );
+
+    ContinueMenuStateCursor (
+                              const nom::Coords& position_map,
+                              nom::int32 x, nom::int32 y,
+                              nom::int32 width, nom::int32 height
+                            );
+
     ~ContinueMenuStateCursor ( void );
-/*
-    const nom::Coords getCursorPos ( void );
-    nom::int32 moveCursorLeft ( void );
-    nom::int32 moveCursorRight ( void );
+
+    /// Set a new positioning object for this instance to use
+    void set_position_map ( const nom::Coords& position_map );
+
+    /// Obtain the current position we are at in the player's hand.
+    nom::int32 position ( void );
+
+    /// Move the cursor to the left.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
     nom::int32 moveCursorUp ( void );
+
+    /// Move the cursor to the right.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
     nom::int32 moveCursorDown ( void );
-*/
+
   private:
-    // ...
+    void next ( void );
+    void previous ( void );
+    nom::Coords option_position;
+    nom::int32 cursor_position;
+    nom::EventDispatcher cursor_event;
 };
 
 #endif // include guard defined
