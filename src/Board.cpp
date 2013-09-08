@@ -358,6 +358,8 @@ void Board::draw ( void* video_buffer )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
+      if ( this->get ( x, y ).getID() == 0 ) continue;
+
       // Positions of the cards on the game board
       nom::Coords board_pos (
                               BOARD_ORIGIN_X + ( CARD_WIDTH * x ),

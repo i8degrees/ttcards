@@ -184,10 +184,9 @@ void CardView::draw (
                       nom::int32 x, nom::int32 y, bool face_down
                     )
 {
-  // FIXME; this shouldn't be showing me an err message when uncommented
   if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
   {
-//NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
+NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
     return;
   }
 
