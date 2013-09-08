@@ -828,6 +828,8 @@ void PlayState::updateScore ( void )
 
 void PlayState::Update ( float delta_time )
 {
+  this->game->board.update();
+
   this->updateCursor();
 
   this->updateMessageBoxes();

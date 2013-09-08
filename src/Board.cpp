@@ -351,6 +351,10 @@ const Card& Board::get ( nom::int32 x, nom::int32 y ) const
 }
 
 void Board::update ( nom::int32 x, nom::int32 y ) {}
+void Board::update ( void )
+{
+  this->card->Update();
+}
 
 void Board::draw ( void* video_buffer )
 {
@@ -366,10 +370,12 @@ void Board::draw ( void* video_buffer )
                               BOARD_ORIGIN_Y + ( CARD_HEIGHT * y )
                             );
 
-      this->card->draw  (
-                          video_buffer, this->get ( x, y ),
-                          board_pos.x, board_pos.y
-                        );
+      this->card->reposition ( board_pos );
+
+      this->card->setViewCard ( this->grid[x][y].tile() );
+
+      this->card->Draw ( video_buffer );
+
 /*
       if ( this->grid[x][y].element() != 0 )
       {

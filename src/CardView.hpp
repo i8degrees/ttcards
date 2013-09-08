@@ -42,9 +42,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardView: public nom::IDrawable
 {
   public:
-    typedef std::vector<std::shared_ptr<IDrawable>> DrawableList;
+    typedef std::vector<std::shared_ptr<nom::IDrawable>> DrawableList;
     /// Default constructor
     CardView ( void );
+
+    CardView ( const nom::Coords& coords );
 
     /// Default destructor
     ~CardView ( void );
@@ -57,29 +59,29 @@ class CardView: public nom::IDrawable
     void draw (
                 void* video_buffer, const Card& card,
                 nom::int32 x, nom::int32 y, bool face_down = false
-              );
+              ) const;
 
-    void draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y );
+    void draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const;
 
     void draw_background  (
                             void* video_buffer, nom::int32 player_id,
                             nom::int32 x, nom::int32 y
-                          );
+                          ) const;
 
     void draw_face  (
                       void* video_buffer, nom::int32 face_id,
                       nom::int32 x, nom::int32 y
-                    );
+                    ) const;
 
     void draw_element (
                         void* video_buffer, nom::int32 element_id,
                         nom::int32 x, nom::int32 y
-                      );
+                      ) const;
 
     void draw_text  (
                       void* video_buffer, nom::int32 rank,
                       nom::int32 x, nom::int32 y
-                    );
+                    ) const;
 
     void setViewCard ( const Card& card );
     void reposition ( const nom::Coords& coords );

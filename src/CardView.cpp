@@ -47,6 +47,11 @@ NOM_LOG_TRACE ( TTCARDS );
   card.push_back ( this->card_text );
 }
 
+CardView::CardView ( const nom::Coords& coords )
+{
+  // Stub
+}
+
 CardView::~CardView ( void )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -100,7 +105,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 }
 
 // Helper method for drawing cards face down
-void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y )
+void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const
 {
   this->card_background->setSheetID ( NOFACE_ID );
   this->card_background->setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
@@ -111,7 +116,7 @@ void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y )
 void CardView::draw_background  (
                                   void* video_buffer, nom::int32 player_id,
                                   nom::int32 x, nom::int32 y
-                                )
+                                ) const
 {
   switch ( player_id )
   {
@@ -126,6 +131,7 @@ void CardView::draw_background  (
       this->card_background->setSheetID ( NOPLAYER_BACKGROUND_ID ); break;
   }
 
+  //this->card_background->setPosition ( this->position );
   this->card_background->setPosition ( nom::Coords ( x, y ) );
   this->card_background->Update();
   this->card_background->Draw ( video_buffer );
@@ -134,9 +140,10 @@ void CardView::draw_background  (
 void CardView::draw_face  (
                             void* video_buffer, nom::int32 face_id,
                             nom::int32 x, nom::int32 y
-                          )
+                          ) const
 {
   this->card_face->setSheetID ( face_id );
+  //this->card_face->setPosition ( this->position );
   this->card_face->setPosition ( nom::Coords ( x, y ) );
   this->card_face->Update();
   this->card_face->Draw ( video_buffer );
@@ -145,7 +152,7 @@ void CardView::draw_face  (
 void CardView::draw_element (
                               void* video_buffer, nom::int32 element_id,
                               nom::int32 x, nom::int32 y
-                            )
+                            ) const
 {
   switch ( element_id )
   {
@@ -161,6 +168,7 @@ void CardView::draw_element (
     case WIND: this->card_element->setSheetID ( ELEMENT_WIND ); break;
   }
 
+  //this->card_element->setPosition ( this->position.x, this->position.y );
   this->card_element->setPosition ( nom::Coords( x, y ) );
   this->card_element->Update();
   this->card_element->Draw ( video_buffer );
@@ -169,7 +177,7 @@ void CardView::draw_element (
 void CardView::draw_text  (
                             void* video_buffer, nom::int32 rank,
                             nom::int32 x, nom::int32 y
-                          )
+                          ) const
 {
   if ( rank == 10 )
   {
@@ -180,6 +188,7 @@ void CardView::draw_text  (
     this->card_text->setText ( std::to_string ( rank ) );
   }
 
+  //this->card_text->setPosition ( this->position );
   this->card_text->setPosition ( nom::Coords ( x, y ) );
   this->card_text->Update();
   this->card_text->Draw ( video_buffer );
@@ -188,7 +197,7 @@ void CardView::draw_text  (
 void CardView::draw (
                       void* video_buffer, const Card& card,
                       nom::int32 x, nom::int32 y, bool face_down
-                    )
+                    ) const
 {
   if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
   {
@@ -268,6 +277,10 @@ void CardView::Draw ( void* video_buffer ) const
   for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   {
     std::shared_ptr<nom::IDrawable> obj = *it;
+    //this->draw_background ( video_buffer, render_card.getPlayerID(), this->position.x, this->position.y );
+    //this->draw_face ( video_buffer, render_card.getID(), this->position.x, this->position.y );
+    //this->draw_element ( video_buffer, render_card.getID(), this->position.x, this->position.y );
+    this->draw ( video_buffer, render_card, this->position.x, this->position.y );
     obj->Draw ( video_buffer );
   }
 }

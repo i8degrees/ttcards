@@ -206,6 +206,8 @@ void CardsMenuState::onMouseWheel ( bool up, bool down )
 
 void CardsMenuState::Update ( float delta_time )
 {
+  this->game->card.Update();
+
   this->updateCursor();
 
   this->menu_box.Update();
@@ -229,10 +231,14 @@ void CardsMenuState::Draw ( void* video_buffer )
                                       ( CARD_HEIGHT / 2 ) * idx
                                     );
 
+    //this->game->card.reposition ( this->player2_pos );
+
     this->game->card.draw_face_down (
                                       video_buffer, this->player2_pos.x,
                                       this->player2_pos.y
                                     );
+
+    //this->game->card.Draw ( video_buffer );
   }
 
   // Active player's card selection(s)
@@ -244,10 +250,9 @@ void CardsMenuState::Draw ( void* video_buffer )
                                       ( CARD_HEIGHT / 2 ) * idx
                                     );
 
-    this->game->card.draw (
-                            video_buffer, this->game->hand[0].cards.at ( idx ),
-                            this->player1_pos.x, this->player1_pos.y
-                          );
+    this->game->card.reposition ( this->player1_pos );
+    this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );
+    this->game->card.Draw ( video_buffer );
   }
 
   this->menu_box.Draw ( video_buffer );
@@ -345,11 +350,9 @@ void CardsMenuState::Draw ( void* video_buffer )
 
   this->drawCursor ( video_buffer );
 
-  // Draw the current card selection from the list
-  this->game->card.draw (
-                          video_buffer, this->selectedCard,
-                          this->card_pos.x, this->card_pos.y
-                        );
+  this->game->card.setViewCard ( this->selectedCard );
+  this->game->card.reposition ( this->card_pos );
+  this->game->card.Draw ( video_buffer );
 }
 
 void CardsMenuState::updateCursor ( void )
