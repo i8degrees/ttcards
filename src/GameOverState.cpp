@@ -241,20 +241,20 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 
     if ( player2_pos.intersects ( coords ) )
     {
-      // 1. Update player's selected card
-      // 2. Update the card info message box
-      // 3. Update cursor position
+      // 1. Update cursor position
+      // 2. Update player's selected card
+      // 3. Update the card info message box
       // 4. Play sound event
+
+      this->game->hand[1].set_position ( idx );
+      this->cursor.setPosition ( PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.getY() );
 
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();
 
       this->card_info_box.setLabel ( selected_card.getName() );
 
-      this->cursor.setPosition ( PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.getY() );
-
       this->game->cursor_move.Play();
-
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
       // bug from cropping back up!
@@ -275,12 +275,14 @@ void GameOverState::onMouseWheel ( bool up, bool down )
   }
 }
 
-void GameOverState::onUserEvent ( uint8_t type, int32_t code, void* data1, void* data2 )
+void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
 {
-  if ( code == 666 && type == SDL_USEREVENT )
+  if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::UserEvent::UI ) )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_info_box.setLabel ( selected_card.getName() );
+
+    this->game->cursor_move.Play();
   }
 }
 

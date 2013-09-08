@@ -53,6 +53,7 @@ class GameOverState: public nom::IState
                     std::shared_ptr<GameObject> object,
                     enum GameOverType gameover_state
                   );
+
     ~GameOverState ( void );
 
   private:

@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 #include <nomlib/math.hpp>
 #include <nomlib/gui.hpp>
+#include <nomlib/system.hpp>
 
 #include "config.hpp"
 #include "CardHand.hpp"
@@ -73,6 +74,7 @@ class GameOverStateCursor: public nom::ui::Cursor
     void next ( void );
     void previous ( void );
     CardHand::SharedPtr card_position;
+    nom::EventDispatcher cursor_event;
 };
 
 #endif // include guard defined

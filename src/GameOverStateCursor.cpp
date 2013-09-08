@@ -72,10 +72,6 @@ nom::int32 GameOverStateCursor::moveCursorLeft ( void )
   if ( this->getX() > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
   {
     this->cursor.move ( -(CARD_WIDTH), 0 );
-  }
-
-  if ( this->position() > 0 )
-  {
     this->previous();
   }
 
@@ -87,10 +83,6 @@ nom::int32 GameOverStateCursor::moveCursorRight ( void )
   if ( this->getX() < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
   {
     this->cursor.move ( (CARD_WIDTH), 0 );
-
-  }
-  if ( this->position() < ( this->card_position->size() - 1 ) )
-  {
     this->next();
   }
 
@@ -103,16 +95,7 @@ void GameOverStateCursor::next ( void )
   {
     this->card_position->next();
 
-    SDL_Event event;
-    SDL_UserEvent user_event;
-
-    user_event.type = SDL_USEREVENT;
-    user_event.code = 666;
-    user_event.data1 = nullptr;
-    user_event.data2 = nullptr;
-    event.type = SDL_USEREVENT;
-    event.user = user_event;
-    SDL_PushEvent ( &event );
+    this->cursor_event.dispatch ( nom::UserEvent::UI );
   }
 }
 
@@ -122,15 +105,6 @@ void GameOverStateCursor::previous ( void )
   {
     this->card_position->previous();
 
-    SDL_Event event;
-    SDL_UserEvent user_event;
-
-    user_event.type = SDL_USEREVENT;
-    user_event.code = 666;
-    user_event.data1 = nullptr;
-    user_event.data2 = nullptr;
-    event.type = SDL_USEREVENT;
-    event.user = user_event;
-    SDL_PushEvent ( &event );
+    this->cursor_event.dispatch ( nom::UserEvent::UI );
   }
 }
