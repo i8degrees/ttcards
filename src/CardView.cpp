@@ -32,6 +32,9 @@ CardView::CardView ( void )
 {
 NOM_LOG_TRACE ( TTCARDS );
 
+  this->card_face_down = false;
+  this->render_card = Card();
+
   this->card_background = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT ) );
   this->card_face = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT ) );
   this->card_element = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT ) );
@@ -199,13 +202,7 @@ void CardView::draw (
                       nom::int32 x, nom::int32 y, bool face_down
                     ) const
 {
-  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not render card: invalid card ID." );
-    return;
-  }
-
-  if ( face_down == true )
+  if ( this->card_face_down == true )
   {
     this->draw_face_down ( video_buffer, x, y );
     return;
@@ -258,18 +255,23 @@ void CardView::reposition ( const nom::Coords& coords )
   this->position = coords;
 }
 
+void CardView::face ( bool up )
+{
+  this->card_face_down = up;
+}
+
 void CardView::Update ( void )
 {
+  this->card_face_down = false;
   //this->card_background->setPosition ( this->position );
   //this->card_face->setPosition ( this->position );
   //this->card_element->setPosition ( this->position );
   //this->card_text->setPosition ( this->position );
-
-  for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
-  {
-    std::shared_ptr<nom::IDrawable> obj = *it;
-    obj->Update();
-  }
+  //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
+  //{
+    //std::shared_ptr<nom::IDrawable> obj = *it;
+    //obj->Update();
+  //}
 }
 
 void CardView::Draw ( void* video_buffer ) const
@@ -280,7 +282,7 @@ void CardView::Draw ( void* video_buffer ) const
     //this->draw_background ( video_buffer, render_card.getPlayerID(), this->position.x, this->position.y );
     //this->draw_face ( video_buffer, render_card.getID(), this->position.x, this->position.y );
     //this->draw_element ( video_buffer, render_card.getID(), this->position.x, this->position.y );
-    this->draw ( video_buffer, render_card, this->position.x, this->position.y );
-    obj->Draw ( video_buffer );
+    this->draw ( video_buffer, render_card, this->position.x, this->position.y, this->card_face_down );
+    //obj->Draw ( video_buffer );
   }
 }

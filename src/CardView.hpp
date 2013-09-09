@@ -39,7 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameConfig.hpp"
 #include "Card.hpp"
 
-class CardView: public nom::IDrawable
+class CardView:
+                public nom::IDrawable
 {
   public:
     typedef std::vector<std::shared_ptr<nom::IDrawable>> DrawableList;
@@ -85,6 +86,7 @@ class CardView: public nom::IDrawable
 
     void setViewCard ( const Card& card );
     void reposition ( const nom::Coords& coords );
+    void face ( bool up = false );
 
     void Update ( void );
     void Draw ( void* ) const;
@@ -92,6 +94,7 @@ class CardView: public nom::IDrawable
   private:
     nom::Coords position;
     Card render_card;
+    bool card_face_down;
 
     std::shared_ptr<nom::BitmapFont> card_text;
     std::shared_ptr<nom::Sprite> card_face;
