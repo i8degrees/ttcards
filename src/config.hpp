@@ -332,4 +332,17 @@ enum GameOverType
   Lost
 };
 
+enum class BoardPosition: nom::int32
+{
+  TopLeft = 0,
+  TopCenter,
+  TopRight,
+  MiddleLeft,
+  MiddleCenter,
+  MiddleRight,
+  BottomLeft,
+  BottomCenter,
+  BottomRight
+};
+
 #endif // GAMEAPP_CFG_HEADERS defined

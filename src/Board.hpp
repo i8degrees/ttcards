@@ -56,19 +56,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardRules.hpp"
 #include "CardView.hpp"
 
-enum BoardPosition
-{
-  TopLeft = 0,
-  TopCenter,
-  TopRight,
-  MiddleLeft,
-  MiddleCenter,
-  MiddleRight,
-  BottomLeft,
-  BottomCenter,
-  BottomRight
-};
-
 class Board
 {
   public:
@@ -96,7 +83,8 @@ class Board
     /// Returns -1, -1 when undefined.
     const nom::Coords getGlobalBounds ( nom::int32 x, nom::int32 y ) const;
 
-    const Cards find_adjacent ( nom::int32 x, nom::int32 y ) const;
+    const std::vector<BoardTile> find_adjacent ( nom::int32 x, nom::int32 y ) const;
+
     std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
 
     /// Getter helper method for obtaining total count of placed cards on board
@@ -126,7 +114,9 @@ class Board
     /// Used within Board::Draw(), Game::showCardInfoBox() method calls
     const Card& get ( nom::int32 x, nom::int32 y ) const;
 
-    void update ( nom::int32 x, nom::int32 y ); // TODO
+    const BoardTile& tile ( nom::int32 x, nom::int32 y ) const;
+
+    void update ( void );
 
     /// Draws our active board grid based on their values (card IDs)
     void draw ( void* video_buffer );

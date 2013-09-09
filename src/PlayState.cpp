@@ -620,11 +620,55 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
 
   if ( player_turn == PLAYER1 )
   {
-    Cards adjacent_cards = this->game->board.find_adjacent ( x, y );
+    std::vector<BoardTile> adj = this->game->board.find_adjacent ( x, y );
 
     // Dump returned list of cards
-    this->game->debug.ListCards ( adjacent_cards );
+    nom::uint32 line_number = 1;
+    for ( nom::int32 idx = 0; idx < adj.size(); idx++ )
+    {
+      Card tile = adj[idx].tile();
+
+      if ( tile.getPlayerID() != Card::PLAYER1 )
+      {
+        nom::Coords pos = adj[idx].bounds();
+        nom::uint32 element = adj[idx].element();
+
+        std::cout << line_number
+                  << ". "
+                  << tile.getName()
+                  << " is at pos "
+                  << pos.x
+                  << ", "
+                  << pos.y
+                  << " ("
+                  << pos.width
+                  << "x"
+                  << pos.height
+                  << ") "
+                  << " with an element ID of "
+                  << element
+                  << "."
+                  << "\n";
+
+        line_number++;
+      }
+    }
+
+    /*
+        for ( nom::int32 cols = y; cols < BOARD_GRID_HEIGHT; cols++ )
+        {
+          for ( nom::int32 rows = x; rows < BOARD_GRID_WIDTH; rows++ )
+          {
+            if ( rows != 0 )
+            {
+
+            }
+          }
+        }
+        */
   }
+
+  //std::cout << "\n";
 
   if ( selected.getID() != 0 )
   {

@@ -102,9 +102,9 @@ const nom::Coords Board::getGlobalBounds ( nom::int32 x, nom::int32 y ) const
   return nom::Coords::null;
 }
 
-const Cards Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
+const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
 {
-  Cards adjacent_cards;
+  std::vector<BoardTile> adjacent_cards;
 
   nom::int32 cols = y;
   nom::int32 rows = x;
@@ -114,7 +114,7 @@ const Cards Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
   {
     if ( this->getStatus ( rows - 1, cols ) != 0 )
     {
-      adjacent_cards.push_back ( this->get ( rows - 1, cols ) );
+      adjacent_cards.push_back ( this->tile ( rows - 1, cols ) );
     }
   }
 
@@ -123,7 +123,7 @@ const Cards Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
   {
     if ( this->getStatus ( rows + 1, cols ) != 0 )
     {
-      adjacent_cards.push_back ( this->get ( rows + 1, cols ) );
+      adjacent_cards.push_back ( this->tile ( rows + 1, cols ) );
     }
   }
 
@@ -132,7 +132,7 @@ const Cards Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
   {
     if ( this->getStatus ( rows, cols - 1 ) != 0 )
     {
-      adjacent_cards.push_back ( this->get ( rows, cols - 1 ) );
+      adjacent_cards.push_back ( this->tile ( rows, cols - 1 ) );
     }
   }
 
@@ -141,7 +141,7 @@ const Cards Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
   {
     if ( this->getStatus ( rows, cols + 1 ) != 0 )
     {
-      adjacent_cards.push_back ( this->get ( rows, cols + 1 ) );
+      adjacent_cards.push_back ( this->tile ( rows, cols + 1 ) );
     }
   }
 
@@ -350,7 +350,11 @@ const Card& Board::get ( nom::int32 x, nom::int32 y ) const
   return this->grid[x][y].tile();
 }
 
-void Board::update ( nom::int32 x, nom::int32 y ) {}
+const BoardTile& Board::tile ( nom::int32 x, nom::int32 y ) const
+{
+  return this->grid[x][y];
+}
+
 void Board::update ( void )
 {
   this->card->Update();

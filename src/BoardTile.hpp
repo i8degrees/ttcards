@@ -68,6 +68,7 @@ class BoardTile
     Card tile_card;
     nom::Coords tile_pos;
     nom::uint32 tile_element;
+    enum BoardPosition board_tile;
 };
 
 #endif // include guard defined
