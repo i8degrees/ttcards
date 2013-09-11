@@ -1,5 +1,5 @@
 [
-    /* This has been removed since our last auto-generation of the sprite sheet
+    // This has been removed since our last auto-generation of the sprite sheet
     {
         "ID" : 0,
         "x" : 0,
@@ -7,7 +7,6 @@
         "width" : 64,
         "height" : 64
     },
-    */
     {
         "ID" : 1,
         "x" : 64,
