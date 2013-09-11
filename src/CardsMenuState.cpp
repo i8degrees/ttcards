@@ -222,6 +222,9 @@ void CardsMenuState::Draw ( void* video_buffer )
 
   this->game->background.Draw ( video_buffer );
 
+  // FIXME / This is a lazy patch until I get around to fixing this :-)
+  this->game->card.face ( true ); // Turn drawing of faces down on
+
   // static player2 hand background
   for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
@@ -232,15 +235,11 @@ void CardsMenuState::Draw ( void* video_buffer )
                                     );
 
     this->game->card.reposition ( this->player2_pos );
-    this->game->card.face ( true );
     this->game->card.Draw ( video_buffer );
-    //this->game->Draw
-                                      //video_buffer, this->player2_pos.x,
-                                      //this->player2_pos.y
-                                    //);
-
-    //this->game->card.Draw ( video_buffer );
   }
+
+  // FIXME / This is a lazy patch until I get around to fixing this :-)
+  this->game->card.face ( false ); // Turn drawing of faces down back off
 
   // Active player's card selection(s)
   for ( nom::int32 idx = 0; idx < this->game->hand[0].size(); idx++ )
@@ -253,7 +252,6 @@ void CardsMenuState::Draw ( void* video_buffer )
 
     this->game->card.reposition ( this->player1_pos );
     this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );
-    this->game->card.face ( false );
     this->game->card.Draw ( video_buffer );
   }
 
