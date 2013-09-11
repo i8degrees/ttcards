@@ -197,12 +197,13 @@ bool App::onInit ( void )
 
   this->game->context.setWindowTitle( LOADING_TEXT );
 
-  // Commence the initialization of game objects
-  this->game->menu_elements = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->game->menu_elements.setSheetDimensions ( 58, 16, 0, 0 );
+  nom::SpriteSheet menu_elements_sheet ( "images/menu_elements.json" );
+  nom::SpriteSheet cursors_sheet ( "images/cursors.json" );
 
-  this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+  // Commence the initialization of game objects
+  this->game->menu_elements = nom::Sprite ( &menu_elements_sheet );
+  this->game->cursor = nom::ui::Cursor ( &cursors_sheet );
+  this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
 
   // Commence the loading of game resources
   if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )

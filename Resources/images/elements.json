@@ -1,0 +1,75 @@
+[
+    {
+        "ID" : 0,
+        "x" : 0,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 1,
+        "x" : 16,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 2,
+        "x" : 32,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 3,
+        "x" : 48,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 4,
+        "x" : 64,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 5,
+        "x" : 80,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 6,
+        "x" : 96,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 7,
+        "x" : 112,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "ID" : 8,
+        "x" : 128,
+        "y" : 0,
+        "width" : 16,
+        "height" : 16
+    },
+    {
+        "sheet_filename" : "elements.png",
+        "sheet_sprites" : 9,
+        "sheet_spacing" : 0,
+        "sheet_padding" : 0,
+        "sheet_width" : 144,
+        "sheet_height" : 16,
+        "sheet_version" : "0.1.0",
+        "Last Modified" : "Tue Sep 10 16:13:06 2013\n"
+    }
+]

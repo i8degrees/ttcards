@@ -35,14 +35,14 @@ NOM_LOG_TRACE ( TTCARDS );
   this->card_face_down = false;
   this->render_card = Card();
 
-  this->card_background = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT ) );
-  this->card_face = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( CARD_WIDTH, CARD_HEIGHT ) );
-  this->card_element = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT ) );
-  this->card_text = std::shared_ptr<nom::BitmapFont> ( new nom::BitmapFont() );
+  nom::SpriteSheet card_background_sheet ( "images/backgrounds.json" );
+  nom::SpriteSheet card_elements_sheet ( "images/elements.json" );
+  nom::SpriteSheet card_faces_sheet ( "images/faces.json" );
 
-  this->card_background->setSheetDimensions ( 256, 64, 0, 0 );
-  this->card_face->setSheetDimensions ( 7104, 64, 0, 0 );
-  this->card_element->setSheetDimensions ( 144, 16, 0, 0 );
+  this->card_background = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( &card_background_sheet ) );
+  this->card_face = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( &card_faces_sheet ) );
+  this->card_element = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( &card_elements_sheet ) );
+  this->card_text = std::shared_ptr<nom::BitmapFont> ( new nom::BitmapFont() );
 
   card.push_back ( this->card_background );
   card.push_back ( this->card_face );
@@ -109,10 +109,10 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 
 void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const
 {
-  this->card_background->setSheetID ( NOFACE_ID );
-  this->card_background->setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
-  this->card_background->Update();
-  this->card_background->Draw ( video_buffer );
+  this->card_face->setSheetID ( NOFACE_ID );
+  this->card_face->setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
+  this->card_face->Update();
+  this->card_face->Draw ( video_buffer );
 }
 
 void CardView::draw_background  (
@@ -144,7 +144,9 @@ void CardView::draw_face  (
                             nom::int32 x, nom::int32 y
                           ) const
 {
-  this->card_face->setSheetID ( face_id );
+  // Our sprite sheets start at ID of zero now, not one
+  this->card_face->setSheetID ( face_id - 1 );
+
   //this->card_face->setPosition ( this->position );
   this->card_face->setPosition ( nom::Coords ( x, y ) );
   this->card_face->Update();

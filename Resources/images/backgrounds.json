@@ -1,0 +1,42 @@
+[
+    /* This has been removed since our last auto-generation of the sprite sheet
+    {
+        "ID" : 0,
+        "x" : 0,
+        "y" : 0,
+        "width" : 64,
+        "height" : 64
+    },
+    */
+    {
+        "ID" : 1,
+        "x" : 64,
+        "y" : 0,
+        "width" : 64,
+        "height" : 64
+    },
+    {
+        "ID" : 2,
+        "x" : 128,
+        "y" : 0,
+        "width" : 64,
+        "height" : 64
+    },
+    {
+        "ID" : 3,
+        "x" : 192,
+        "y" : 0,
+        "width" : 64,
+        "height" : 64
+    },
+    {
+        "sheet_filename" : "backgrounds.png",
+        "sheet_sprites" : 4,
+        "sheet_spacing" : 0,
+        "sheet_padding" : 0,
+        "sheet_width" : 256,
+        "sheet_height" : 64,
+        "sheet_version" : "0.1.0",
+        "Last Modified" : "Tue Sep 10 15:45:03 2013\n"
+    }
+]

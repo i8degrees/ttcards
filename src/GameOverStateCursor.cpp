@@ -34,6 +34,12 @@ NOM_LOG_TRACE( TTCARDS );
 }
 
 GameOverStateCursor::GameOverStateCursor  (
+                                            const nom::SpriteSheet* sheet
+                                          ) : Cursor ( sheet )
+{
+NOM_LOG_TRACE( TTCARDS );
+}
+
 GameOverStateCursor::GameOverStateCursor  (
                                             CardHand* position,
                                             nom::int32 x, nom::int32 y,

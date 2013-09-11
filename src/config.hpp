@@ -106,7 +106,7 @@ constexpr nom::int32 MAX_PLAYER_HAND = 5;
 constexpr nom::int32 BOARD_GRID_WIDTH = 3;
 constexpr nom::int32 BOARD_GRID_HEIGHT = 3;
 
-// Sprite sheet IDs
+/// Sprite sheet: elements.json
 constexpr nom::int32 ELEMENT_NONE = 0;
 constexpr nom::int32 ELEMENT_EARTH = 1;
 constexpr nom::int32 ELEMENT_FIRE = 2;
@@ -117,13 +117,20 @@ constexpr nom::int32 ELEMENT_THUNDER = 6;
 constexpr nom::int32 ELEMENT_WATER = 7;
 constexpr nom::int32 ELEMENT_WIND = 8;
 
-constexpr nom::int32 NOFACE_ID = 0;
+/// Sprite sheet: faces.json
+constexpr nom::int32 NOFACE_ID = 110;
+
+/// Sprite sheet: backgrounds.json
 constexpr nom::int32 NOPLAYER_BACKGROUND_ID = 1;
 constexpr nom::int32 PLAYER1_BACKGROUND_ID = 2;
 constexpr nom::int32 PLAYER2_BACKGROUND_ID = 3;
+
+/// Sprite sheet: cursors.json
 constexpr nom::int32 INTERFACE_CURSOR_NONE = 0;
 constexpr nom::int32 INTERFACE_CURSOR_LEFT = 1;
 constexpr nom::int32 INTERFACE_CURSOR_RIGHT = 2;
+
+/// Sprite sheet: menu_elements.json
 constexpr nom::int32 INTERFACE_MENU_ELEMENT = 0;
 constexpr nom::int32 INTERFACE_MENU_ELEMENT_USED = 1;
 constexpr nom::int32 INTERFACE_MENU_ELEMENT_PAGE_LEFT = 2;

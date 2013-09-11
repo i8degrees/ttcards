@@ -47,6 +47,9 @@ class GameOverStateCursor: public nom::ui::Cursor
     GameOverStateCursor ( void );
 
     GameOverStateCursor (
+                          const nom::SpriteSheet* sheet
+                        );
+
     GameOverStateCursor (
                           CardHand* position,
                           nom::int32 x, nom::int32 y,

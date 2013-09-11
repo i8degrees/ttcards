@@ -67,6 +67,9 @@ void ContinueMenuState::onInit ( void )
 //NOM_DUMP_VAR ( this->game->info_text.getNewline() );
 
   // Initialize interface cursor
+  nom::SpriteSheet cursors_sheet ( "images/cursors.json" );
+  this->cursor = ContinueMenuStateCursor ( &cursors_sheet );
+
   if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color::Black, true ) == true )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
@@ -95,7 +98,6 @@ NOM_DUMP_VAR(this->game->info_text.getFontHeight() );
                                 ( OPTION_BOX_ORIGIN_Y ) + ( OPTION_BOX_HEIGHT / 2 )
                               );
 
-    this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
     this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
   }
   else // EPIC FAIL

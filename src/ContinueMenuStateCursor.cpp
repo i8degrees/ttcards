@@ -34,6 +34,13 @@ NOM_LOG_TRACE( TTCARDS );
   this->cursor_position = 0;
 }
 
+ContinueMenuStateCursor::ContinueMenuStateCursor  (
+                                                    const nom::SpriteSheet* sheet
+                                                  ) : Cursor ( sheet )
+{
+NOM_LOG_TRACE( TTCARDS );
+
+  this->cursor_position = 0;
 }
 
 ContinueMenuStateCursor::ContinueMenuStateCursor  (

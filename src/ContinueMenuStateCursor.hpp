@@ -46,6 +46,9 @@ class ContinueMenuStateCursor: public nom::ui::Cursor
     ContinueMenuStateCursor ( void );
 
     ContinueMenuStateCursor (
+                              const nom::SpriteSheet* sheet
+                            );
+
     ContinueMenuStateCursor (
                               const nom::Coords& position_map,
                               nom::int32 x, nom::int32 y,

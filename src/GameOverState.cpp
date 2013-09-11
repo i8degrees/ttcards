@@ -49,6 +49,9 @@ void GameOverState::onInit ( void )
   nom::Gradient linear;
 
   // Initialize interface cursor
+  nom::SpriteSheet cursors_sheet ( "images/cursors.json" );
+  this->cursor = GameOverStateCursor ( &cursors_sheet );
+
   if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color::Black, true ) == true )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
@@ -66,7 +69,6 @@ void GameOverState::onInit ( void )
                                 PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
                                 PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
                               );
-    this->cursor.setSheetDimensions ( 78, 16, 0, 0 );
     this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
   }
   else // EPIC FAIL

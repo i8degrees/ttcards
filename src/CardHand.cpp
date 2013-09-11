@@ -222,7 +222,7 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCol
 
   std::default_random_engine rand_generator ( seed );
 
-  std::uniform_int_distribution<nom::int32> distribution ( 1, MAX_COLLECTION );
+  std::uniform_int_distribution<nom::int32> distribution ( 0, MAX_COLLECTION-1 );
 
 #ifdef DEBUG_GAME
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
