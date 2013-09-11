@@ -158,33 +158,45 @@ void Player::Draw ( void* video_buffer )
 
     if ( player_id == Card::PLAYER2 && hand_pos == idx )
     {
-      this->card->draw  (
-                          video_buffer, this->hand->cards.at ( idx ),
-                          this->player_pos.x + 16, this->player_pos.y,
-                          face_down
-                        );
+      this->player_pos.x += 16;
+      this->card->reposition ( this->player_pos );
+      this->card->setViewCard ( this->hand->cards.at ( idx ) );
+      this->card->face ( face_down );
+      this->card->Draw ( video_buffer );
     }
     else if ( player_id == Card::PLAYER1 && hand_pos == idx )
     {
-      this->card->draw  (
-                          video_buffer, this->hand->cards.at ( idx ),
-                          this->player_pos.x - 16, this->player_pos.y,
-                          face_down
-                        );
+      this->player_pos.x -= 16;
+
+      this->card->reposition ( this->player_pos );
+      this->card->setViewCard ( this->hand->cards.at ( idx ) );
+      this->card->face ( false );
+      this->card->Draw ( video_buffer );
     }
     else
     {
-      this->card->draw  (
-                          video_buffer, this->hand->cards.at ( idx ),
-                          this->player_pos.x, this->player_pos.y,
-                          face_down
-                        );
+      this->card->reposition ( this->player_pos );
+      this->card->setViewCard ( this->hand->cards[idx] );
+
+      if ( player_id == Card::PLAYER1 )
+      {
+        this->card->face ( false );
+      }
+      else if ( player_id == Card::PLAYER2 )
+      {
+        this->card->face ( face_down );
+      }
+
+      this->card->Draw ( video_buffer );
     }
   } // end for this->hand loop
+
+  // This is a lazy patch until I get around to fixing this :-)
+  this->card->face ( false ); // Turns drawing card faces down off
 }
 
 void Player::Update ( void )
 {
-  // TODO
+  this->card->Update();
 }
 

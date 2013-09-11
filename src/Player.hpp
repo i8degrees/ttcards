@@ -98,7 +98,7 @@ class Player
     /// Player state
     enum PlayerState player_state;
 
-    /// Position of player's hand
+    /// Position of Player's cards in their hand
     nom::Coords player_pos;
 };
 

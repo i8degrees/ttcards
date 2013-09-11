@@ -881,6 +881,9 @@ void PlayState::Update ( float delta_time )
   this->info_box.Update();
   this->debug_box.Update();
 
+  this->player[0].Update();
+  this->player[1].Update();
+
   // Player two animation effect
   if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > SDL_GetTicks() )
   {

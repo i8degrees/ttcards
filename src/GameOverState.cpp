@@ -319,8 +319,9 @@ void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1,
 
 void GameOverState::Update ( float delta_time )
 {
-  this->info_box.Update();
+  this->game->card.Update();
 
+  this->info_box.Update();
   this->card_info_box.Update();
   this->cursor.update();
 
@@ -346,11 +347,9 @@ void GameOverState::Draw ( void* video_buffer )
                                       PLAYER2_GAMEOVER_ORIGIN_Y
                                     );
 
-    this->game->card.draw (
-                            video_buffer,
-                            this->game->hand[1].cards.at( idx ),
-                            this->player2_pos.x, this->player2_pos.y
-                          );
+    this->game->card.reposition ( this->player2_pos );
+    this->game->card.setViewCard ( this->game->hand[1].cards.at( idx ) );
+    this->game->card.Draw ( video_buffer );
   }
 
   // Show Player 1 hand on the bottom
@@ -362,11 +361,9 @@ void GameOverState::Draw ( void* video_buffer )
                                       PLAYER1_GAMEOVER_ORIGIN_Y
                                     );
 
-    this->game->card.draw (
-                            video_buffer,
-                            this->game->hand[0].cards.at( idx ),
-                            this->player1_pos.x, this->player1_pos.y
-                          );
+    this->game->card.reposition ( this->player1_pos );
+    this->game->card.setViewCard ( this->game->hand[0].cards.at( idx ) );
+    this->game->card.Draw ( video_buffer );
   }
 
   this->info_box.Draw( video_buffer );
