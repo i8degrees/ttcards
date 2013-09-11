@@ -34,14 +34,14 @@ NOM_LOG_TRACE( TTCARDS );
 }
 
 GameOverStateCursor::GameOverStateCursor  (
+GameOverStateCursor::GameOverStateCursor  (
                                             CardHand* position,
                                             nom::int32 x, nom::int32 y,
                                             nom::int32 width, nom::int32 height
-                                          )
+                                          ) : Cursor ( x, y, width, height )
 {
 NOM_LOG_TRACE( TTCARDS );
 
-  this->initialize ( x, y, width, height );
   this->card_position.reset ( position, Free_CardHand );
 }
 
@@ -71,7 +71,7 @@ nom::int32 GameOverStateCursor::moveCursorLeft ( void )
 {
   if ( this->getX() > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
   {
-    this->cursor.move ( -(CARD_WIDTH), 0 );
+    this->move ( -(CARD_WIDTH), 0 );
     this->previous();
   }
 
@@ -82,7 +82,7 @@ nom::int32 GameOverStateCursor::moveCursorRight ( void )
 {
   if ( this->getX() < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
   {
-    this->cursor.move ( (CARD_WIDTH), 0 );
+    this->move ( (CARD_WIDTH), 0 );
     this->next();
   }
 

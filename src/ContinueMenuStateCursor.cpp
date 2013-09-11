@@ -31,17 +31,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ContinueMenuStateCursor::ContinueMenuStateCursor ( void )
 {
 NOM_LOG_TRACE( TTCARDS );
+  this->cursor_position = 0;
+}
+
 }
 
 ContinueMenuStateCursor::ContinueMenuStateCursor  (
                                                     const nom::Coords& position_map,
                                                     nom::int32 x, nom::int32 y,
                                                     nom::int32 width, nom::int32 height
-                                                  )
+                                                  ) : Cursor ( x, y, width, height )
 {
 NOM_LOG_TRACE( TTCARDS );
 
-  this->initialize ( x, y, width, height );
   this->option_position = position_map;
   this->cursor_position = 0;
 }
@@ -66,7 +68,7 @@ nom::int32 ContinueMenuStateCursor::moveCursorUp ( void )
 {
   if ( this->getY() > this->option_position.x )
   {
-    this->cursor.move ( 0, -(16) );
+    this->move ( 0, -(16) );
     this->previous();
   }
 
@@ -78,7 +80,7 @@ nom::int32 ContinueMenuStateCursor::moveCursorDown ( void )
 {
   if ( this->getY() < 240 )
   {
-    this->cursor.move ( 0, 16 );
+    this->move ( 0, 16 );
     this->next();
   }
 

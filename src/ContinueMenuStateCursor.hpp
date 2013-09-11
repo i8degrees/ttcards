@@ -46,6 +46,7 @@ class ContinueMenuStateCursor: public nom::ui::Cursor
     ContinueMenuStateCursor ( void );
 
     ContinueMenuStateCursor (
+    ContinueMenuStateCursor (
                               const nom::Coords& position_map,
                               nom::int32 x, nom::int32 y,
                               nom::int32 width, nom::int32 height
