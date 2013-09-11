@@ -57,38 +57,53 @@ class CardView:
     /// The failure of any of these resources results in failure
     bool load ( GameConfig* config );
 
+    /// Render the complete card -- its background, face, element and text.
     void draw (
                 void* video_buffer, const Card& card,
                 nom::int32 x, nom::int32 y, bool face_down = false
               ) const;
 
+    /// Render the card's face turned away from the player (face down)
     void draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const;
 
+    /// Render the card's background color
     void draw_background  (
                             void* video_buffer, nom::int32 player_id,
                             nom::int32 x, nom::int32 y
                           ) const;
 
+    /// Render the card's face
     void draw_face  (
                       void* video_buffer, nom::int32 face_id,
                       nom::int32 x, nom::int32 y
                     ) const;
 
+    /// Render the card's element
     void draw_element (
                         void* video_buffer, nom::int32 element_id,
                         nom::int32 x, nom::int32 y
                       ) const;
 
+    /// Render the card's ranks (North, East, South, West)
     void draw_text  (
                       void* video_buffer, nom::int32 rank,
                       nom::int32 x, nom::int32 y
                     ) const;
 
+    /// Set a new card up for rendering
     void setViewCard ( const Card& card );
+
+    /// Set new rendering coordinates for the card
     void reposition ( const nom::Coords& coords );
+
+    /// Render the face of the card either shown to the player or not
     void face ( bool up = false );
 
+    /// Refresh the renderer (this should be done anytime after you set new
+    /// values within this object's instance.
     void Update ( void );
+
+    /// Render the card.
     void Draw ( void* ) const;
 
   private:
@@ -96,12 +111,11 @@ class CardView:
     Card render_card;
     bool card_face_down;
 
+    DrawableList card;
     std::shared_ptr<nom::BitmapFont> card_text;
     std::shared_ptr<nom::Sprite> card_face;
     std::shared_ptr<nom::Sprite> card_background;
     std::shared_ptr<nom::Sprite> card_element;
-
-    DrawableList card;
 };
 
 #endif // GAMEAPP_CARD_VIEW_HEADERS defined

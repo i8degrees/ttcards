@@ -107,7 +107,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   return true;
 }
 
-// Helper method for drawing cards face down
 void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const
 {
   this->card_background->setSheetID ( NOFACE_ID );
@@ -262,11 +261,11 @@ void CardView::face ( bool up )
 
 void CardView::Update ( void )
 {
-  this->card_face_down = false;
   //this->card_background->setPosition ( this->position );
   //this->card_face->setPosition ( this->position );
   //this->card_element->setPosition ( this->position );
   //this->card_text->setPosition ( this->position );
+
   //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   //{
     //std::shared_ptr<nom::IDrawable> obj = *it;
