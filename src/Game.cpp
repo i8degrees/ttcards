@@ -259,7 +259,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   if ( this->game->score_text[0].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->score_text[0].setColor ( nom::Color::White );
-    this->game->score_text[0].setFontSize ( 36 );
+    this->game->score_text[0].setFontSize ( 36 * SCALE_FACTOR );
   }
   else
   {
@@ -270,7 +270,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   if ( this->game->score_text[1].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->score_text[1].setColor ( nom::Color::White );
-    this->game->score_text[1].setFontSize ( 36 );
+    this->game->score_text[1].setFontSize ( 36 * SCALE_FACTOR );
   }
   else
   {
@@ -280,7 +280,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
 
   if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), nom::Color::White ) == true )
   {
-    this->game->gameover_text.setFontSize ( 36 );
+    this->game->gameover_text.setFontSize ( 36 * SCALE_FACTOR );
   }
   else
   {
