@@ -128,7 +128,9 @@ constexpr nom::int32 PLAYER2_BACKGROUND_ID = 3;
 /// Sprite sheet: cursors.json
 constexpr nom::int32 INTERFACE_CURSOR_NONE = 0;
 constexpr nom::int32 INTERFACE_CURSOR_LEFT = 1;
-constexpr nom::int32 INTERFACE_CURSOR_RIGHT = 2;
+constexpr nom::int32 INTERFACE_CURSOR_LEFT_BLINK = 2;
+constexpr nom::int32 INTERFACE_CURSOR_RIGHT = 3;
+constexpr nom::int32 INTERFACE_CURSOR_RIGHT_BLINK = 4;
 
 /// Sprite sheet: menu_elements.json
 constexpr nom::int32 INTERFACE_MENU_ELEMENT = 0;
