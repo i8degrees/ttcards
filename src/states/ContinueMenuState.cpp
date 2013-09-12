@@ -46,6 +46,7 @@ void ContinueMenuState::onInit ( void )
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setFillDirection ( nom::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
                                           OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y,

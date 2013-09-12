@@ -120,11 +120,6 @@ constexpr nom::int32 ELEMENT_WIND = 8;
 /// Sprite sheet: faces.json
 constexpr nom::int32 NOFACE_ID = 110;
 
-/// Sprite sheet: backgrounds.json
-constexpr nom::int32 NOPLAYER_BACKGROUND_ID = 1;
-constexpr nom::int32 PLAYER1_BACKGROUND_ID = 2;
-constexpr nom::int32 PLAYER2_BACKGROUND_ID = 3;
-
 /// Sprite sheet: cursors.json
 constexpr nom::int32 INTERFACE_CURSOR_NONE = 0;
 constexpr nom::int32 INTERFACE_CURSOR_LEFT = 1;

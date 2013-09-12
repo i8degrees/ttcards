@@ -125,6 +125,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   // Initialize our message box background containers (linear gradient)
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setFillDirection ( nom::FillDirection::Left );
 
   // Top display message box; "description" info box
   this->info_box = nom::ui::MessageBox  (

@@ -45,6 +45,7 @@ class CardView:
 {
   public:
     typedef std::vector<std::shared_ptr<nom::IDrawable>> DrawableList;
+
     /// Default constructor
     CardView ( void );
 
@@ -115,8 +116,8 @@ class CardView:
     DrawableList card;
     std::shared_ptr<nom::BitmapFont> card_text;
     std::shared_ptr<nom::SpriteBatch> card_face;
-    std::shared_ptr<nom::SpriteBatch> card_background;
     std::shared_ptr<nom::SpriteBatch> card_element;
+    std::shared_ptr<nom::Gradient> card_background;
 };
 
 #endif // GAMEAPP_CARD_VIEW_HEADERS defined

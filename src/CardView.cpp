@@ -35,7 +35,7 @@ NOM_LOG_TRACE ( TTCARDS );
   this->card_face_down = false;
   this->render_card = Card();
 
-  this->card_background = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/backgrounds.json" ) );
+  this->card_background = std::shared_ptr<nom::Gradient> ( new nom::Gradient() );
   this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
   this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
   this->card_text = std::shared_ptr<nom::BitmapFont> ( new nom::BitmapFont() );
@@ -44,6 +44,10 @@ NOM_LOG_TRACE ( TTCARDS );
   card.push_back ( this->card_face );
   card.push_back ( this->card_element );
   card.push_back ( this->card_text );
+
+  this->card_background->setSize ( CARD_WIDTH - 4, CARD_HEIGHT - 4 );
+  this->card_background->setMargins ( 4, 4 );
+  this->card_background->setFillDirection ( nom::FillDirection::Top );
 }
 
 CardView::CardView ( const nom::Coords& coords )
@@ -72,12 +76,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
     return false;
   }
 
-  if ( this->card_background->load ( config->getString("CARD_BACKGROUNDS"), nom::Color ( 0, 0, 0 ), true ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_BACKGROUNDS") );
-    return false;
-  }
-
   if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
@@ -89,14 +87,14 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   {
     this->card_text->resize ( nom::ResizeAlgorithm::scale2x );
     this->card_face->resize ( nom::ResizeAlgorithm::scale2x );
-    this->card_background->resize ( nom::ResizeAlgorithm::scale2x );
+    //this->card_background->resize ( nom::ResizeAlgorithm::scale2x );
     this->card_element->resize ( nom::ResizeAlgorithm::scale2x );
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
     this->card_text->resize ( nom::ResizeAlgorithm::hq2x );
     this->card_face->resize ( nom::ResizeAlgorithm::hq2x );
-    this->card_background->resize ( nom::ResizeAlgorithm::hq2x );
+    //this->card_background->resize ( nom::ResizeAlgorithm::hq2x );
     this->card_element->resize ( nom::ResizeAlgorithm::hq2x );
   }
 
@@ -116,21 +114,35 @@ void CardView::draw_background  (
                                   nom::int32 x, nom::int32 y
                                 ) const
 {
+
   switch ( player_id )
   {
     case Card::PLAYER1:
-      this->card_background->setSheetID ( PLAYER1_BACKGROUND_ID ); break;
+    {
+      this->card_background->setStartColor ( nom::Color ( 50, 59, 114 ) );
+      this->card_background->setEndColor ( nom::Color ( 188, 203, 236 ) );
+    }
+    break;
 
     case Card::PLAYER2:
-      this->card_background->setSheetID ( PLAYER2_BACKGROUND_ID ); break;
+    {
+      this->card_background->setStartColor ( nom::Color ( 114, 66, 66 ) );
+      this->card_background->setEndColor ( nom::Color ( 222, 196, 205 ) );
+    }
+    break;
 
     case Card::NOPLAYER:
     default:
-      this->card_background->setSheetID ( NOPLAYER_BACKGROUND_ID ); break;
+    {
+      this->card_background->setStartColor ( nom::Color ( 84, 84, 84 ) );
+      this->card_background->setEndColor ( nom::Color ( 197, 197, 197 ) );
+    }
+    break;
   }
 
+
   //this->card_background->setPosition ( this->position );
-  this->card_background->setPosition ( nom::Coords ( x, y ) );
+  this->card_background->setPosition ( x, y );
   this->card_background->Update();
   this->card_background->Draw ( video_buffer );
 }
@@ -205,10 +217,7 @@ void CardView::draw (
     return;
   }
 
-  this->draw_background (
-                          video_buffer, card.getPlayerID(),
-                          BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y
-                        );
+  this->draw_background ( video_buffer, card.getPlayerID(), x, y );
 
   this->draw_face ( video_buffer, card.getID(), x, y );
 
