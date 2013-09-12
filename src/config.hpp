@@ -142,9 +142,6 @@ constexpr nom::int32 INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
 constexpr nom::int32 CARD_WIDTH = 64 * SCALE_FACTOR;
 constexpr nom::int32 CARD_HEIGHT = 64 * SCALE_FACTOR;
 
-constexpr nom::int32 BACKGROUND_WIDTH = CARD_WIDTH;
-constexpr nom::int32 BACKGROUND_HEIGHT = CARD_HEIGHT;
-
 constexpr nom::int32 ELEMENT_WIDTH = 16 * SCALE_FACTOR;
 constexpr nom::int32 ELEMENT_HEIGHT = 16 * SCALE_FACTOR;
 
@@ -193,17 +190,8 @@ constexpr nom::int32 PLAYER2_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT 
 constexpr nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_X = PLAYER2_GAMEOVER_ORIGIN_X;
 constexpr nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y = PLAYER2_GAMEOVER_ORIGIN_Y * 2;
 
-constexpr nom::int32 CARD_ORIGIN_X = 0;
-constexpr nom::int32 CARD_ORIGIN_Y = 0;
-
-constexpr nom::int32 CARD_FACE_ORIGIN_X = CARD_ORIGIN_X;
-constexpr nom::int32 CARD_FACE_ORIGIN_Y = CARD_ORIGIN_Y;
-
-constexpr nom::int32 BACKGROUND_ORIGIN_X = CARD_ORIGIN_X;
-constexpr nom::int32 BACKGROUND_ORIGIN_Y = CARD_ORIGIN_Y;
-
-constexpr nom::int32 ELEMENT_ORIGIN_X = ( CARD_ORIGIN_X + 42 ) * SCALE_FACTOR;
-constexpr nom::int32 ELEMENT_ORIGIN_Y = ( CARD_ORIGIN_Y + 5 ) * SCALE_FACTOR;
+constexpr nom::int32 ELEMENT_ORIGIN_X = 42 * SCALE_FACTOR;
+constexpr nom::int32 ELEMENT_ORIGIN_Y = 5 * SCALE_FACTOR;
 
 constexpr nom::int32 RANK_NORTH_ORIGIN_X = 8 * SCALE_FACTOR;
 constexpr nom::int32 RANK_NORTH_ORIGIN_Y = 3 * SCALE_FACTOR;
@@ -216,9 +204,6 @@ constexpr nom::int32 RANK_SOUTH_ORIGIN_Y = 20 * SCALE_FACTOR;
 
 constexpr nom::int32 RANK_WEST_ORIGIN_X = 4 * SCALE_FACTOR;
 constexpr nom::int32 RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
-
-constexpr nom::int32 CARD_ID_ORIGIN_X = 26 * SCALE_FACTOR;
-constexpr nom::int32 CARD_ID_ORIGIN_Y = 4 * SCALE_FACTOR;
 
 // interface_pickOutCards() Menu
 constexpr nom::int32 PICK_CARDS_MENU_ORIGIN_X = 60 * SCALE_FACTOR;

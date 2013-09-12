@@ -106,7 +106,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const
 {
   this->card_face->setSheetID ( NOFACE_ID );
-  this->card_face->setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
+  this->card_face->setPosition ( x, y );
   this->card_face->Update();
   this->card_face->Draw ( video_buffer );
 }
@@ -210,10 +210,7 @@ void CardView::draw (
                           BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y
                         );
 
-  this->draw_face (
-                    video_buffer, card.getID(),
-                    CARD_FACE_ORIGIN_X + x, CARD_FACE_ORIGIN_Y + y
-                  );
+  this->draw_face ( video_buffer, card.getID(), x, y );
 
   this->draw_element  (
                         video_buffer, card.getElement(),
