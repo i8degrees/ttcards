@@ -119,27 +119,26 @@ void CardView::draw_background  (
   {
     case Card::PLAYER1:
     {
-      this->card_background->setStartColor ( nom::Color ( 50, 59, 114 ) );
-      this->card_background->setEndColor ( nom::Color ( 188, 203, 236 ) );
+      this->card_background->setStartColor ( nom::Color ( 208, 223, 255 ) );
+      this->card_background->setEndColor ( nom::Color ( 50, 59, 114 ) );
     }
     break;
 
     case Card::PLAYER2:
     {
-      this->card_background->setStartColor ( nom::Color ( 114, 66, 66 ) );
-      this->card_background->setEndColor ( nom::Color ( 222, 196, 205 ) );
+      this->card_background->setStartColor ( nom::Color ( 251, 222, 232 ) );
+      this->card_background->setEndColor ( nom::Color ( 114, 66, 66 ) );
     }
     break;
 
     case Card::NOPLAYER:
     default:
     {
-      this->card_background->setStartColor ( nom::Color ( 84, 84, 84 ) );
-      this->card_background->setEndColor ( nom::Color ( 197, 197, 197 ) );
+      this->card_background->setStartColor ( nom::Color ( 197, 197, 197 ) );
+      this->card_background->setEndColor ( nom::Color ( 84, 84, 84 ) );
     }
     break;
   }
-
 
   //this->card_background->setPosition ( this->position );
   this->card_background->setPosition ( x, y );
