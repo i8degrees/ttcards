@@ -49,8 +49,7 @@ void GameOverState::onInit ( void )
   nom::Gradient linear;
 
   // Initialize interface cursor
-  nom::SpriteSheet cursors_sheet ( "images/cursors.json" );
-  this->cursor = GameOverStateCursor ( &cursors_sheet );
+  this->cursor = GameOverStateCursor ( "images/cursors.json" );
 
   if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color::Black, true ) == true )
   {

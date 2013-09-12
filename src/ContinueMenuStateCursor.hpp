@@ -46,13 +46,11 @@ class ContinueMenuStateCursor: public nom::ui::Cursor
     ContinueMenuStateCursor ( void );
 
     ContinueMenuStateCursor (
-                              const nom::SpriteSheet* sheet
+                              const nom::SpriteSheet& sheet
                             );
 
     ContinueMenuStateCursor (
-                              const nom::Coords& position_map,
-                              nom::int32 x, nom::int32 y,
-                              nom::int32 width, nom::int32 height
+                              const std::string& filename
                             );
 
     ~ContinueMenuStateCursor ( void );

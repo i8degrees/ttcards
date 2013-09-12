@@ -35,7 +35,7 @@ NOM_LOG_TRACE( TTCARDS );
 }
 
 ContinueMenuStateCursor::ContinueMenuStateCursor  (
-                                                    const nom::SpriteSheet* sheet
+                                                    const nom::SpriteSheet& sheet
                                                   ) : Cursor ( sheet )
 {
 NOM_LOG_TRACE( TTCARDS );
@@ -44,14 +44,11 @@ NOM_LOG_TRACE( TTCARDS );
 }
 
 ContinueMenuStateCursor::ContinueMenuStateCursor  (
-                                                    const nom::Coords& position_map,
-                                                    nom::int32 x, nom::int32 y,
-                                                    nom::int32 width, nom::int32 height
-                                                  ) : Cursor ( x, y, width, height )
+                                                    const std::string& filename
+                                                  ) : Cursor ( filename )
 {
 NOM_LOG_TRACE( TTCARDS );
 
-  this->option_position = position_map;
   this->cursor_position = 0;
 }
 

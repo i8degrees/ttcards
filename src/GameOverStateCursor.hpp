@@ -47,13 +47,11 @@ class GameOverStateCursor: public nom::ui::Cursor
     GameOverStateCursor ( void );
 
     GameOverStateCursor (
-                          const nom::SpriteSheet* sheet
+                          const nom::SpriteSheet& sheet
                         );
 
     GameOverStateCursor (
-                          CardHand* position,
-                          nom::int32 x, nom::int32 y,
-                          nom::int32 width, nom::int32 height
+                          const std::string& filename
                         );
 
     ~GameOverStateCursor ( void );

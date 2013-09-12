@@ -35,13 +35,9 @@ NOM_LOG_TRACE ( TTCARDS );
   this->card_face_down = false;
   this->render_card = Card();
 
-  nom::SpriteSheet card_background_sheet ( "images/backgrounds.json" );
-  nom::SpriteSheet card_elements_sheet ( "images/elements.json" );
-  nom::SpriteSheet card_faces_sheet ( "images/faces.json" );
-
-  this->card_background = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( &card_background_sheet ) );
-  this->card_face = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( &card_faces_sheet ) );
-  this->card_element = std::shared_ptr<nom::Sprite> ( new nom::Sprite ( &card_elements_sheet ) );
+  this->card_background = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/backgrounds.json" ) );
+  this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
+  this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
   this->card_text = std::shared_ptr<nom::BitmapFont> ( new nom::BitmapFont() );
 
   card.push_back ( this->card_background );

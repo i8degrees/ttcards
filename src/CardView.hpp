@@ -114,9 +114,9 @@ class CardView:
 
     DrawableList card;
     std::shared_ptr<nom::BitmapFont> card_text;
-    std::shared_ptr<nom::Sprite> card_face;
-    std::shared_ptr<nom::Sprite> card_background;
-    std::shared_ptr<nom::Sprite> card_element;
+    std::shared_ptr<nom::SpriteBatch> card_face;
+    std::shared_ptr<nom::SpriteBatch> card_background;
+    std::shared_ptr<nom::SpriteBatch> card_element;
 };
 
 #endif // GAMEAPP_CARD_VIEW_HEADERS defined

@@ -197,12 +197,9 @@ bool App::onInit ( void )
 
   this->game->context.setWindowTitle( LOADING_TEXT );
 
-  nom::SpriteSheet menu_elements_sheet ( "images/menu_elements.json" );
-  nom::SpriteSheet cursors_sheet ( "images/cursors.json" );
-
   // Commence the initialization of game objects
-  this->game->menu_elements = nom::Sprite ( &menu_elements_sheet );
-  this->game->cursor = nom::ui::Cursor ( &cursors_sheet );
+  this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
+  this->game->cursor = nom::ui::Cursor ( "images/cursors.json" );
   this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
 
   // Commence the loading of game resources

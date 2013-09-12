@@ -67,8 +67,7 @@ void ContinueMenuState::onInit ( void )
 //NOM_DUMP_VAR ( this->game->info_text.getNewline() );
 
   // Initialize interface cursor
-  nom::SpriteSheet cursors_sheet ( "images/cursors.json" );
-  this->cursor = ContinueMenuStateCursor ( &cursors_sheet );
+  this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
 
   if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color::Black, true ) == true )
   {
