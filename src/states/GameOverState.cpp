@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverState.hpp"
 
+#include "PauseState.hpp"
+#include "CardsMenuState.hpp"
+#include "ContinueMenuState.hpp"
+
 GameOverState::GameOverState  ( std::shared_ptr<GameObject> object,
                                 enum GameOverType gameover_state
                               )

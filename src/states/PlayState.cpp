@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PlayState.hpp"
 
+#include "CardsMenuState.hpp"
+#include "GameOverState.hpp"
+#include "PauseState.hpp"
+
 PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {
 NOM_LOG_TRACE ( TTCARDS );

@@ -51,10 +51,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Player.hpp"
 #include "Card.hpp"
 //#include "cpu_player.hpp"
-#include "CardsMenuState.hpp"
-#include "GameOverState.hpp"
 #include "GameObject.hpp"
-#include "PauseState.hpp"
 
 class PlayState: public nom::IState
 {

@@ -40,9 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "resources.hpp"
 #include "Card.hpp"
-#include "PlayState.hpp"
 #include "GameObject.hpp"
-#include "PauseState.hpp"
 #include "CardsMenuStateCursor.hpp"
 
 class CardsMenuState: public nom::IState

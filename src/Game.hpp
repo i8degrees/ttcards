@@ -45,9 +45,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "version.hpp"
 #include "resources.hpp"
 #include "CardCollection.hpp"
-#include "CardsMenuState.hpp"
 #include "GameObject.hpp"
-#include "ContinueMenuState.hpp"
+
+#include "states/GameOverState.hpp"
+#include "states/CardsMenuState.hpp"
+#include "states/ContinueMenuState.hpp"
 
 class App: public nom::SDL_App // "is-a" relationship
 {

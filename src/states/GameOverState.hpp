@@ -40,12 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "resources.hpp"
 #include "Card.hpp"
-#include "CardsMenuState.hpp"
 #include "GameObject.hpp"
-#include "PauseState.hpp"
 #include "CardRules.hpp"
 #include "GameOverStateCursor.hpp"
-#include "ContinueMenuState.hpp"
 
 class GameOverState: public nom::IState
 {
