@@ -277,13 +277,13 @@ void CardView::Update ( void )
 
 void CardView::Draw ( void* video_buffer ) const
 {
-  for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
-  {
-    std::shared_ptr<nom::IDrawable> obj = *it;
+  //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
+  //{
+    //std::shared_ptr<nom::IDrawable> obj = *it;
     //this->draw_background ( video_buffer, render_card.getPlayerID(), this->position.x, this->position.y );
     //this->draw_face ( video_buffer, render_card.getID(), this->position.x, this->position.y );
     //this->draw_element ( video_buffer, render_card.getID(), this->position.x, this->position.y );
     this->draw ( video_buffer, render_card, this->position.x, this->position.y, this->card_face_down );
     //obj->Draw ( video_buffer );
-  }
+  //}
 }
