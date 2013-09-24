@@ -33,9 +33,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <array>
 #include <algorithm>
 
+#include "json_spirit_value.h"
+
+#ifndef JSON_SPIRIT_VALUE_ENABLED
+  #define JSON_SPIRIT_VALUE_ENABLED
+#endif
+
 #include <nomlib/types.hpp>
+#include <nomlib/json.hpp>
 
 #include "config.hpp"
+
+/// Used with pretty printing the card attributes when using << operator
+const std::string card_delimiter = " ";
 
 /// Maximum level a card can contain -- starting at 1
 constexpr nom::int32 MAX_LEVEL = 10;
@@ -46,77 +56,97 @@ constexpr nom::int32 MAX_TYPE = 4;
 /// Maximum element a card can contain -- starting at 1
 constexpr nom::int32 MAX_ELEMENT = 8;
 
-/// Maximum rank a card can contain -- starting at 1
+/// Minimum rank a card can contain
+constexpr nom::int32 MIN_RANK = 1;
+
+/// Maximum rank a card can contain
 constexpr nom::int32 MAX_RANK = 10;
 
 /// Maximum number of rank attributes
 constexpr nom::int32 MAX_RANKS = 4;
 
-/// Maximum name length a card can contain
-constexpr nom::int32 MAX_NAME = 14;
+/// Maximum name length a card can contain -- "Chubby Chocobo" (without quotes)
+constexpr nom::int32 MAX_NAME = 14; // +1 padding
 
 class Card
 {
   public:
     Card ( void );
 
-    Card  (   unsigned int id_, unsigned int level_, unsigned int type_,
-              unsigned int element_, std::array<int, MAX_RANKS> rank_,
-              std::string name_, unsigned int player_id_,
-              unsigned int player_owner_ = Card::NOPLAYER
+    Card  (
+            nom::int32 id, nom::int32 level, nom::int32 type,
+            nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
+            std::string name, nom::int32 player_id, nom::int32 player_owner
           );
 
     ~Card ( void );
 
-    unsigned int getID ( void ) const;
-    unsigned int getLevel ( void );
-    unsigned int getType ( void );
-    unsigned int getElement ( void );
-    std::array<int, MAX_RANKS> getRanks ( void );
-    unsigned int getNorthRank ( void );
-    unsigned int getEastRank ( void );
-    unsigned int getSouthRank ( void );
-    unsigned int getWestRank ( void );
-    std::string getName ( void );
+    const nom::int32 getID ( void ) const;
+    const nom::int32 getLevel ( void ) const;
+    const nom::int32 getType ( void ) const;
+    const nom::int32 getElement ( void ) const;
+    const std::array<nom::int32, MAX_RANKS> getRanks ( void ) const;
+    const nom::int32 getNorthRank ( void ) const;
+    const nom::int32 getEastRank ( void ) const;
+    const nom::int32 getSouthRank ( void ) const;
+    const nom::int32 getWestRank ( void ) const;
+    const std::string getName ( void ) const;
 
-    unsigned int getPlayerID ( void );
-    unsigned int getPlayerOwner ( void );
+    const nom::int32 getPlayerID ( void ) const;
+    const nom::int32 getPlayerOwner ( void ) const;
 
     /// Clamps value to MAX_COLLECTION
-    void setID ( unsigned int id_ );
+    void setID ( nom::int32 id_ );
 
     /// Clamps value to MAX_LEVEL
-    void setLevel ( unsigned int level_ );
+    void setLevel ( nom::int32 level_ );
 
     /// Clamps value to MAX_TYPE
-    void setType ( unsigned int type_ );
+    void setType ( nom::int32 type_ );
 
     /// Clamps value to MAX_ELEMENT
-    void setElement ( unsigned int element_ );
+    void setElement ( nom::int32 element_ );
 
     /// Clamps array values to MAX_RANK
-    void setRanks ( std::array<nom::int32, 4> ranks );
+    void setRanks ( std::array<nom::int32, MAX_RANKS> ranks );
 
     /// Clamps value to MAX_RANK
-    void setNorthRank ( unsigned int rank );
+    void setNorthRank ( nom::int32 rank );
 
     /// Clamps value to MAX_RANK
-    void setEastRank ( unsigned int rank );
+    void setEastRank ( nom::int32 rank );
 
     /// Clamps value to MAX_RANK
-    void setSouthRank ( unsigned int rank );
+    void setSouthRank ( nom::int32 rank );
 
     /// Clamps value to MAX_RANK
-    void setWestRank ( unsigned int rank );
+    void setWestRank ( nom::int32 rank );
 
     /// Clamps value to MAX_NAME
     void setName ( std::string name_ );
 
     /// Clamps value to TOTAL_PLAYERS
-    void setPlayerID ( unsigned int player_id_ );
+    void setPlayerID ( nom::int32 player_id_ );
 
     /// Clamps value to TOTAL_PLAYERS
-    void setPlayerOwner ( unsigned int player_owner_ );
+    void setPlayerOwner ( nom::int32 player_owner_ );
+
+    void increaseNorthRank ( void );
+    void increaseEastRank ( void );
+    void increaseSouthRank ( void );
+    void increaseWestRank ( void );
+
+    void decreaseNorthRank ( void );
+    void decreaseEastRank ( void );
+    void decreaseSouthRank ( void );
+    void decreaseWestRank ( void );
+
+    /// The total strength value of any given card is determined by adding the
+    /// sum of all the card rank values together.
+    ///
+    /// Note that this does not take into account game rules that may be in
+    /// effect!
+    nom::int32 strength ( void );
 
     /// card.player_id AKA owner tag
     enum
@@ -126,23 +156,50 @@ class Card
       PLAYER2=2
     };
 
+    const json_spirit::Object serialize ( void ) const;
+
   private:
-    unsigned int id;
-    unsigned int level;
-    unsigned int type;
+    nom::int32 id;
+    nom::int32 level;
+    nom::int32 type;
     /// NONE is no element
-    unsigned int element;
+    nom::int32 element;
     /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
-    std::array<int, MAX_RANKS> rank;
+    std::array<nom::int32, MAX_RANKS> rank;
     std::string name;
 
     /// Additional field; used to distinguish card background and also used to
     // track player in board in order to do card flipping, among other things
     // like score tallying
-    unsigned int player_id;
+    nom::int32 player_id;
 
     /// Additional field; original owner of the card
-    unsigned int player_owner;
+    nom::int32 player_owner;
 };
+
+typedef std::vector<Card> Cards;
+typedef std::vector<Card>::iterator CardsIterator;
+
+/// Pretty print the the card attributes.
+///
+std::ostream& operator << ( std::ostream& os, const Card& rhs );
+
+/// Compare two cards for equality
+bool operator == ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for in-equality
+bool operator != ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for less-than equality
+bool operator < ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for greater-than equality
+bool operator > ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for less-than or equal to equality
+bool operator <= ( const Card& lhs, const Card& rhs );
+
+/// Compare two cards for greater-than or equal to equality
+bool operator >= ( const Card& lhs, const Card& rhs );
 
 #endif // GAMEAPP_CARD_HEADERS defined

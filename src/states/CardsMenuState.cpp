@@ -28,17 +28,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardsMenuState.hpp"
 
+#include "PauseState.hpp"
+#include "PlayState.hpp"
+
 CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 {
   nom::Gradient linear;
 
   unsigned int pid = 0; // temp var for for loop iteration
 
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->game = object;
-
-  this->game->board.clear();
   this->game->hand[0].clear();
   this->game->hand[1].clear();
 
@@ -52,12 +53,16 @@ TTCARDS_LOG_CLASSINFO;
   // anybody knowing the difference.
   //
   for ( pid = 0; pid < this->game->collection.cards.size(); pid++ )
+  {
     this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
+  }
 
-  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
+  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setFillDirection ( nom::FillDirection::Left );
 
-  this->menu_box = nom::ui::MessageBox  ( PICK_CARDS_MENU_ORIGIN_X,
+  this->menu_box = nom::ui::MessageBox  (
+                                          PICK_CARDS_MENU_ORIGIN_X,
                                           PICK_CARDS_MENU_ORIGIN_Y,
                                           PICK_CARDS_MENU_WIDTH,
                                           PICK_CARDS_MENU_HEIGHT,
@@ -69,11 +74,19 @@ TTCARDS_LOG_CLASSINFO;
   this->current_index = 0; // current card position
 
   this->selectedCard = this->game->collection.cards.front();
+
+  this->card_pos = nom::Coords  (
+                                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ),
+                                  BOARD_ORIGIN_Y +
+                                  (
+                                    ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1
+                                  ) - 8
+                                );
 }
 
 CardsMenuState::~CardsMenuState ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->selectedCard = Card();
 }
@@ -123,7 +136,7 @@ void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
 
     case SDLK_RETURN:
     {
-#ifdef TTCARDS_DEBUG
+#ifdef DEBUG
       if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
       {
         this->game->hand[0].randomize ( 8, 10, this->game->collection );
@@ -195,8 +208,10 @@ void CardsMenuState::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenuState::Update ( nom::uint32 delta_time )
+void CardsMenuState::Update ( float delta_time )
 {
+  this->game->card.Update();
+
   this->updateCursor();
 
   this->menu_box.Update();
@@ -208,18 +223,40 @@ void CardsMenuState::Update ( nom::uint32 delta_time )
 void CardsMenuState::Draw ( void* video_buffer )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
-  nom::int32 hand_index = 0; // "dummy" card index var
 
   this->game->background.Draw ( video_buffer );
 
+  // FIXME / This is a lazy patch until I get around to fixing this :-)
+  this->game->card.face ( true ); // Turn drawing of faces down on
+
   // static player2 hand background
-  for ( hand_index = 0; hand_index < MAX_PLAYER_HAND; hand_index++ ) // TODO: std::get<1>(player_coords)
-    this->game->card.drawFaceDown ( video_buffer, PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+  for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  {
+    this->player2_pos = nom::Coords (
+                                      PLAYER2_ORIGIN_X,
+                                      PLAYER2_ORIGIN_Y +
+                                      ( CARD_HEIGHT / 2 ) * idx
+                                    );
+
+    this->game->card.reposition ( this->player2_pos );
+    this->game->card.Draw ( video_buffer );
+  }
+
+  // FIXME / This is a lazy patch until I get around to fixing this :-)
+  this->game->card.face ( false ); // Turn drawing of faces down back off
 
   // Active player's card selection(s)
-  for ( hand_index = 0; hand_index < this->game->hand[0].size(); hand_index++ ) // TODO: std::get<1>(player_coords)
+  for ( nom::int32 idx = 0; idx < this->game->hand[0].size(); idx++ )
   {
-    this->game->card.DrawCard ( video_buffer, this->game->hand[0].cards.at ( hand_index ), PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y + ( CARD_HEIGHT / 2 ) * hand_index );
+    this->player1_pos = nom::Coords (
+                                      PLAYER1_ORIGIN_X,
+                                      PLAYER1_ORIGIN_Y +
+                                      ( CARD_HEIGHT / 2 ) * idx
+                                    );
+
+    this->game->card.reposition ( this->player1_pos );
+    this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );
+    this->game->card.Draw ( video_buffer );
   }
 
   this->menu_box.Draw ( video_buffer );
@@ -317,7 +354,9 @@ void CardsMenuState::Draw ( void* video_buffer )
 
   this->drawCursor ( video_buffer );
 
-  this->game->card.DrawCard ( video_buffer, this->selectedCard, BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ), BOARD_ORIGIN_Y + ( ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1 ) - 8 );
+  this->game->card.setViewCard ( this->selectedCard );
+  this->game->card.reposition ( this->card_pos );
+  this->game->card.Draw ( video_buffer );
 }
 
 void CardsMenuState::updateCursor ( void )
@@ -337,12 +376,12 @@ void CardsMenuState::updateCursor ( void )
     #endif
   }
 
-  this->game->cursor.Update();
+  this->game->cursor.update();
 }
 
 void CardsMenuState::drawCursor ( void* video_buffer )
 {
-  this->game->cursor.Draw ( video_buffer );
+  this->game->cursor.draw ( video_buffer );
 }
 
 // Helper method for obtaining card hand index position based off given origin

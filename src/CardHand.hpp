@@ -34,11 +34,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <chrono>
 #include <random>
+#include <algorithm>
 
 #include "json_spirit_writer_template.h"
 #include "json_spirit_reader_template.h"
 
+#ifndef JSON_SPIRIT_VALUE_ENABLED
+  #define JSON_SPIRIT_VALUE_ENABLED
+#endif
+
 #include <nomlib/types.hpp>
+#include <nomlib/json.hpp>
 
 #include "Card.hpp"
 #include "CardCollection.hpp"
@@ -47,6 +53,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardHand
 {
   public:
+    typedef std::shared_ptr<CardHand> SharedPtr;
+
     CardHand ( void );
     ~CardHand ( void );
 
@@ -60,11 +68,44 @@ class CardHand
     bool exists ( const Card& card ) const;
 
     /// Make selected card the first element in stack
+    ///
+    /// The current card position is reset to zero.
     void front ( void );
+
+    /// Obtain the current position we are at in the cards vector
+    ///
+    /// Returns a number between zero and the maximum card element in the
+    /// vector.
+    nom::int32 position ( void );
+
+    /// Increment the position we are at in the cards vector by one.
+    ///
+    /// If we are at the end of the vector of cards, we reset the position to
+    /// zero.
+    ///
+    /// We always update the selected card to this calculated position.
+    void next ( void );
+
+    /// Decrement the position we are at in the cards vector by one.
+    ///
+    /// If we are at the beginning or the end of the vector of cards, we reset
+    /// the position to zero.
+    ///
+    /// We always update the selected card to this calculated position.
+    void previous ( void );
+
+    /// Sets the position we are at in the cards vector
+    void set_position ( nom::int32 pos );
+
     void clear ( void );
     nom::int32 size ( void ) const;
     nom::int32 at ( Card& card );
 
+    /// Creates a randomized player hand with the preferred minimum & maximum
+    /// level ranges in mind, with no duplicate cards present.
+    ///
+    /// Do not forget to set the proper player ID on your new card objects
+    /// before heading off into battle!
     void randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCollection& db, nom::uint64 seedling = 0 );
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
@@ -81,12 +122,36 @@ class CardHand
     /// to match precisely.
     bool load ( const std::string& filename );
 
+    /// Modify card rank values.
+    void modifyCardRank ( bool modifier, nom::uint32 direction );
+
+    /// Getter for obtaining the strongest card in the player's hand.
+    ///
+    /// Note that this does not take into account game rules that may be in
+    /// effect!
+    const Card strongest ( void );
+
+    /// Getter for obtaining the weakest card in the player's hand.
+    ///
+    /// Note that this does not take into account game rules that may be in
+    /// effect!
+    const Card weakest ( void );
+
     /// \todo Declare in private scope
-    std::vector<Card> cards;
+    Cards cards;
 
   private:
+    /// Track the current position we are at in the cards vector
+    nom::int32 card_position;
+
     /// Player's active card
     Card selectedCard;
 };
+
+/// Pretty print the the card attributes.
+///
+std::ostream& operator << ( std::ostream& os, const CardHand& rhs );
+
+void Free_CardHand ( CardHand* ptr );
 
 #endif // GAMEAPP_CARD_HAND_HEADERS defined

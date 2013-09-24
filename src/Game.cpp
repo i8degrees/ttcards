@@ -26,7 +26,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -39,11 +38,107 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 App::App ( nom::int32 argc, char* argv[] )
 {
-  // destination directory we descend into to locate game resources
+  // Destination directory we descend into to locate game resources
   std::string working_directory;
   nom::File dir;
 
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
+
+  // Command line arguments
+  if ( argc > 1 )
+  {
+    for ( nom::int32 opt = 1; opt < argc; opt++ )
+    {
+      // Save cards collection at user defined path
+      if ( std::string(argv[opt]) == "--export" )
+      {
+        CardCollection cards;
+
+        if ( argv[opt + 1] == nullptr )
+        {
+NOM_LOG_ERR ( TTCARDS, "Missing parameter <input_filename> for export argument." );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( dir.exists ( argv[opt + 1] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "File path for <input_filename> does not exist at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( cards.load( argv[opt + 1] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "Could not load game cards collection at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
+
+        if ( argv[opt + 2] == nullptr )
+        {
+NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for export argument." );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( dir.exists ( argv[opt + 2] ) == true )
+        {
+NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 2]) );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( cards.save( argv[opt + 2] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "Could not save the game cards collection at: " + std::string(argv[opt + 2]) );
+          exit ( EXIT_FAILURE );
+        }
+        else
+        {
+NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[opt + 2]) );
+          exit ( EXIT_SUCCESS );
+        }
+      } // end export cards option
+      else if ( std::string(argv[opt]) == "--config" ) // Save configuration opt
+      {
+        if ( argv[opt + 1] == nullptr )
+        {
+NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
+          exit ( EXIT_FAILURE );
+        }
+        else if ( dir.exists ( argv[opt + 1] ) == true )
+        {
+NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
+
+        GameConfig cfg;
+        if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
+          exit ( EXIT_FAILURE );
+        }
+
+        if ( cfg.save ( argv[opt + 1] ) == false )
+        {
+NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_FAILURE );
+        }
+        else
+        {
+NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
+          exit ( EXIT_SUCCESS );
+        }
+      } // end save config option
+      else if ( std::string(argv[opt]) == "-v" || std::string(argv[opt]) == "--version" )
+      {
+        std::cout << APP_NAME << " version " << TTCARDS_VERSION_MAJOR << "." << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << " by Jeffrey Carpenter" << std::endl;
+      } // end version option
+      else // -h, --help
+      {
+        std::cout << APP_NAME << " usage options:" << std::endl;
+        std::cout << "[ --export <input_filename> <output_filename> ]" << std::endl;
+        std::cout << "[ --config <output_filename> ]" << std::endl;
+        std::cout << "[ -h, --help ]" << std::endl;
+        std::cout << "[ -v, --version ]" << std::endl;
+      } // end help option
+    } // end for argv[opt] loop
+
+    // If we have got this far, we assume command execution was successful
+    exit ( EXIT_SUCCESS );
+  } // end argc > 1
 
 // These definitions are influenced at build time with CMake options and serve
 // to help determine the path of game resources
@@ -53,81 +148,17 @@ TTCARDS_LOG_CLASSINFO;
   working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
 #endif
 
-  // Change the working directory to whatever WORKING_DIR has been set to
+  // Change the working directory to whatever working_directory has been set to
+  //
+  // Note that it is important that we do not mess with the working directory
+  // path until after our command line arguments have been processed, so that we
+  // do not unintentionally mess up relative paths!
   dir.setPath ( working_directory );
-
-  // Command line arguments
-  if ( argc > 1 )
-  {
-    if ( strcmp ( argv[1], "-e" ) == 0 || strcmp ( argv[1], "--export" ) == 0 )
-    {
-      CardCollection cards;
-
-      // Load cards collection from an existing file path
-      if ( argv[3] == nullptr )
-      {
-TTCARDS_LOG_ERR ( "Missing parameter <input_filename>." );
-        exit ( EXIT_FAILURE );
-      }
-      else if ( dir.exists ( argv[3] ) == false )
-      {
-// FIXME
-//TTCARDS_LOG_ERR ( "File path does not exist: " + argv[3] );
-TTCARDS_LOG_ERR ( "File path does not exist." );
-        exit ( EXIT_FAILURE );
-      }
-
-      if ( cards.load( argv[3] ) == false )
-      {
-TTCARDS_LOG_ERR ( "Could not load the cards collection." );
-        exit ( EXIT_FAILURE );
-      }
-
-      // Save cards collection at user defined path
-      if ( argv[2] == nullptr )
-      {
-TTCARDS_LOG_ERR ( "Missing parameter <output_filename>." );
-        exit ( EXIT_FAILURE );
-      }
-
-      if ( dir.exists ( argv[2] ) == true )
-      {
-// FIXME
-//TTCARDS_LOG_ERR ( "File path already exists: " + argv[2] );
-TTCARDS_LOG_ERR ( "File path already exists." );
-        exit ( EXIT_FAILURE );
-      }
-
-      if ( cards.save( TTCARDS_DATA_DIR + "/" + argv[2] ) == false )
-      {
-// FIXME
-//TTCARDS_LOG_ERR ( "Could not serialize data in file: " + TTCARDS_DATA_DIR + path.native() + argv[2] );
-TTCARDS_LOG_ERR ( "Could not serialize cards collection." );
-        exit ( EXIT_FAILURE );
-      }
-// FIXME
-//TTCARDS_LOG_INFO ( "File " + argv[2] + " successfully saved" );
-TTCARDS_LOG_INFO ( "File export successful." );
-    } // end  export option
-    else if ( strcmp ( argv[1], "-h" ) == 0 || strcmp ( argv[1], "--help" ) == 0 )
-    {
-      std::cout << "\tttcards [ -h | --help ]" << std::endl;
-      std::cout << "\tttcards [ -v | --version ]" << std::endl;
-      std::cout << "\tttcards [ -e | --export <output_filename> <input_filename> ]" << std::endl;
-    } // end help option
-    else if ( strcmp ( argv[1], "-v" ) == 0 || strcmp ( argv[1], "--version" ) == 0 )
-    {
-      std::cout << APP_NAME << " version " << TTCARDS_VERSION_MAJOR << "." << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << " by Jeffrey Carpenter" << std::endl;
-    } // end version option
-
-    // If we have got this far, we assume command execution was successful
-    exit ( EXIT_SUCCESS );
-  } // end argument & parameter checks
 }
 
 App::~App ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 bool App::onInit ( void )
@@ -140,11 +171,9 @@ bool App::onInit ( void )
 
   this->game = std::shared_ptr<GameObject> ( new GameObject );
 
-  if ( this->game->config.load( TTCARDS_DATA_DIR + "/config.json" ) == false )
+  if ( this->game->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
   {
-    TTCARDS_LOG_ERR ( "Could not load configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
-
-    nom::DialogMessageBox ( "Critical Error", "Could not load configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
+    nom::DialogMessageBox ( "Critical Error", "Could not load configuration file at: " + TTCARDS_CONFIG_FILENAME );
     exit ( EXIT_FAILURE );
   }
 
@@ -158,7 +187,7 @@ bool App::onInit ( void )
 
   for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
   {
-    modes[idx].pp();
+    std::cout << modes[idx] << std::endl;
   }
 
   this->game->context.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
@@ -168,52 +197,49 @@ bool App::onInit ( void )
   this->game->context.setWindowTitle( LOADING_TEXT );
 
   // Commence the initialization of game objects
-  this->game->menu_elements = nom::Sprite ( MENU_ELEMENT_WIDTH, MENU_ELEMENT_HEIGHT );
-  this->game->menu_elements.setSheetDimensions ( 58, 16, 0, 0 );
-
-  this->game->cursor = nom::ui::Cursor ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y, CURSOR_WIDTH, CURSOR_HEIGHT );
-  this->game->cursor.setSheetDimensions ( 78, 16, 0, 0 );
+  this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
+  this->game->cursor = nom::ui::Cursor ( "images/cursors.json" );
+  this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
 
   // Commence the loading of game resources
   if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
     return false;
   }
 
   if ( this->game->info_text_gray.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
     return false;
   }
 
   if ( this->game->info_small_text.load ( this->game->config.getString("INFO_SMALL_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
     return false;
   }
 
   if ( this->game->menu_elements.load ( this->game->config.getString("MENU_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("MENU_ELEMENTS") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MENU_ELEMENTS") );
     return false;
   }
 
   if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), nom::Color::Black, true ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
     rectangle.Draw ( this->game->context.get() );
   }
   else
   {
-
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
-      this->game->background.scale2x();
+      this->game->background.resize ( nom::ResizeAlgorithm::scale2x );
     }
     else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
     {
-      this->game->background.hq2x();
+      this->game->background.resize ( nom::ResizeAlgorithm::hq2x );
     }
 
     this->game->background.Draw( this->game->context.get() );
@@ -232,50 +258,50 @@ TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getStri
   if ( this->game->score_text[0].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->score_text[0].setColor ( nom::Color::White );
-    this->game->score_text[0].setFontSize ( 36 );
+    this->game->score_text[0].setFontSize ( 36 * SCALE_FACTOR );
   }
   else
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("SCORE_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SCORE_FONTFACE") );
     return false;
   }
 
   if ( this->game->score_text[1].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->score_text[1].setColor ( nom::Color::White );
-    this->game->score_text[1].setFontSize ( 36 );
+    this->game->score_text[1].setFontSize ( 36 * SCALE_FACTOR );
   }
   else
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("SCORE_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SCORE_FONTFACE") );
     return false;
   }
 
-  if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), false ) == true )
+  if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), nom::Color::White ) == true )
   {
-    this->game->gameover_text.setFontSize ( 36 );
+    this->game->gameover_text.setFontSize ( 36 * SCALE_FACTOR );
   }
   else
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("GAMEOVER_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("GAMEOVER_FONTFACE") );
     return false;
   }
 
   if ( this->game->gameover_background.load ( this->game->config.getString("GAMEOVER_BACKGROUND"), nom::Color::Black, true, 0 ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("GAMEOVER_BACKGROUND") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("GAMEOVER_BACKGROUND") );
     return false;
   }
 
   if ( this->game->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color::Black, true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
     return false;
   }
 
   if ( this->game->collection.load( this->game->config.getString("CARDS_DB") ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getString("CARDS_DB") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARDS_DB") );
     return false;
   }
 
@@ -287,67 +313,67 @@ TTCARDS_LOG_ERR ( "Could not load resource file: " + this->game->config.getStrin
   // Rescale our game resources if necessary.
   if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    this->game->info_text.scale2x();
-    this->game->info_text_gray.scale2x();
-    this->game->info_small_text.scale2x();
-    this->game->cursor.scale2x();
-    this->game->menu_elements.scale2x();
-    this->game->gameover_background.scale2x();
+    this->game->info_text.resize ( nom::ResizeAlgorithm::scale2x );
+    this->game->info_text_gray.resize ( nom::ResizeAlgorithm::scale2x );
+    this->game->info_small_text.resize ( nom::ResizeAlgorithm::scale2x );
+    this->game->cursor.resize ( nom::ResizeAlgorithm::scale2x );
+    this->game->menu_elements.resize ( nom::ResizeAlgorithm::scale2x );
+    this->game->gameover_background.resize ( nom::ResizeAlgorithm::scale2x );
   }
   else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
   {
-    this->game->info_text.hq2x();
-    this->game->info_text_gray.hq2x();
-    this->game->info_small_text.hq2x();
-    this->game->cursor.hq2x();
-    this->game->menu_elements.hq2x();
-    this->game->gameover_background.hq2x();
+    this->game->info_text.resize ( nom::ResizeAlgorithm::hq2x );
+    this->game->info_text_gray.resize ( nom::ResizeAlgorithm::hq2x );
+    this->game->info_small_text.resize ( nom::ResizeAlgorithm::hq2x );
+    this->game->cursor.resize ( nom::ResizeAlgorithm::hq2x );
+    this->game->menu_elements.resize ( nom::ResizeAlgorithm::hq2x );
+    this->game->gameover_background.resize ( nom::ResizeAlgorithm::hq2x );
   }
 
   // Load optional audio resources
   if ( this->game->cursor_move_buffer.load ( this->game->config.getString("CURSOR_MOVE") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("CURSOR_MOVE") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_MOVE") );
   }
 
   if ( this->game->cursor_cancel_buffer.load ( this->game->config.getString("CURSOR_CANCEL") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("CURSOR_CANCEL") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_CANCEL") );
   }
 
   if ( this->game->cursor_wrong_buffer.load ( this->game->config.getString("CURSOR_WRONG") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("CURSOR_WRONG") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_WRONG") );
   }
 
   if ( this->game->card_place_buffer.load ( this->game->config.getString("CARD_PLACE") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("CARD_PLACE") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARD_PLACE") );
   }
 
   if ( this->game->card_flip_buffer.load ( this->game->config.getString("CARD_FLIP") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("CARD_FLIP") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARD_FLIP") );
   }
 
   if ( this->game->load_game_buffer.load ( this->game->config.getString("SFX_LOAD_GAME") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("SFX_LOAD_GAME") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SFX_LOAD_GAME") );
   }
 
   if ( this->game->save_game_buffer.load ( this->game->config.getString("SFX_SAVE_GAME") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("SFX_SAVE_GAME") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SFX_SAVE_GAME") );
   }
 
   if ( this->game->music_buffer.load ( this->game->config.getString("MUSIC_TRACK") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("MUSIC_TRACK") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MUSIC_TRACK") );
   }
 
   if ( this->game->winning_buffer.load ( this->game->config.getString("MUSIC_WIN_TRACK") ) == false )
   {
-TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getString("MUSIC_WIN_TRACK") );
+NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MUSIC_WIN_TRACK") );
   }
 
   this->game->cursor_move.setBuffer ( this->game->cursor_move_buffer );
@@ -362,7 +388,7 @@ TTCARDS_LOG_INFO ( "Could not load resource file: " + this->game->config.getStri
 
   this->game->music_track.Play();
 
-#ifdef TTCARDS_DEBUG
+#ifdef NOM_DEBUG
   this->game->music_track.Pause();
 #endif
 
@@ -385,6 +411,21 @@ void App::onKeyDown ( int32_t key, int32_t mod )
   switch ( key )
   {
     default: break;
+
+#if defined ( DEBUG )
+    case SDLK_0:
+    {
+      if ( mod == KMOD_LMETA )
+      {
+        nom::GameStates::ChangeState ( ContinueMenuStatePtr ( new ContinueMenuState ( this->game ) ) );
+      }
+      else
+      {
+        nom::GameStates::ChangeState ( GameOverStatePtr ( new GameOverState ( this->game, GameOverType::Won ) ) );
+      }
+    }
+    break;
+#endif
 
     case SDLK_ESCAPE:
     case SDLK_q: this->onQuit(); break;
@@ -413,42 +454,32 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     {
       nom::Image image;
 
-       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( getTicks() ) + ".bmp";
+       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".bmp";
 
       if ( image.save ( screenshot_filename, this->game->context.get() ) == false )
       {
-TTCARDS_LOG_ERR ( "Could not save screenshot file:" + screenshot_filename );
+NOM_LOG_ERR ( TTCARDS, "Could not save screenshot file:" + screenshot_filename );
         break;
       }
-TTCARDS_LOG_INFO ( "Saved screenshot: " + screenshot_filename );
+NOM_LOG_INFO ( TTCARDS, "Saved screenshot: " + screenshot_filename );
     }
     break;
 
     case SDLK_r: // Start a new game
     {
-      if ( mod == KMOD_LMETA ) // Reload configuration
+      if ( this->game->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
       {
-        if ( this->game->config.load( TTCARDS_DATA_DIR + "/config.json" ) == true )
-        {
-TTCARDS_LOG_INFO ( "Reloaded configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
-        }
-        else
-        {
-TTCARDS_LOG_ERR ( "Could not reload configuration file: " + TTCARDS_DATA_DIR + "/config.json" );
-        }
+NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONFIG_FILENAME );
         break;
       }
-      else
-      {
-        nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
-      }
+      nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
     }
     break;
 
     case SDLK_LEFTBRACKET:
     {
       if ( mod == KMOD_LMETA )
-        this->game->board.List();
+        this->game->board.list();
       else
         this->game->debug.ListCards ( this->game->hand[0].cards );
     }
@@ -483,11 +514,11 @@ int32_t App::Run ( void )
 {
   unsigned int loops = 0;
   unsigned int next_game_tick = 0;
-  nom::uint32 delta_time = 0; // TODO; this is a stub out
+  nom::uint32 delta_time = this->ticks();
 
-  this->fps.Start();
+  this->fps.start();
 
-  next_game_tick = this->getTicks();
+  next_game_tick = this->ticks();
 
   nom::GameStates::ChangeState( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
 
@@ -495,21 +526,21 @@ int32_t App::Run ( void )
   {
     loops = 0;
 
-    while ( this->getTicks() > next_game_tick && loops <= MAX_FRAMESKIP )
+    while ( this->ticks() > next_game_tick && loops <= MAX_FRAMESKIP )
     {
       while ( this->PollEvents ( &event ) )
       {
         this->onEvent ( &event );
       }
 
-      this->fps.Update();
+      this->fps.update();
 
-      nom::GameStates::Update ( delta_time ); // FIXME; this is a stub out
+      nom::GameStates::Update ( delta_time );
       nom::GameStates::Draw ( this->game->context.get() );
 
       if ( this->getShowFPS() )
       {
-        this->game->context.setWindowTitle ( APP_NAME + " " + "-" + " " + std::to_string ( this->fps.getFPS() ) + " " + "fps" );
+        this->game->context.setWindowTitle ( APP_NAME + " " + "-" + " " + ( this->fps.fpsAsString() ) + " " + "fps" );
       }
       else
       {
@@ -521,7 +552,7 @@ int32_t App::Run ( void )
 
       // FIXME: this is a lazy patch to keep CPU cycles down; on my system,
       // usage drops from 99% to ~22..30%
-      if ( this->fps.getFPS() >= TICKS_PER_SECOND )
+      if ( this->fps.fps() >= TICKS_PER_SECOND )
       {
         nom::sleep ( 50 );
       }
@@ -537,7 +568,7 @@ int main ( int argc, char* argv[] )
 
   if ( engine.onInit() == false )
   {
-TTCARDS_LOG_ERR ( "Could not initialize game." );
+NOM_LOG_ERR ( TTCARDS, "Could not initialize game." );
     return EXIT_FAILURE;
   }
 

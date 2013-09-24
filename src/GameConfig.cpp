@@ -28,15 +28,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameConfig.hpp"
 
-GameConfig::GameConfig( void )
+GameConfig::GameConfig ( void ) {}
+
+GameConfig::GameConfig ( const std::string& filename )
 {
-TTCARDS_LOG_CLASSINFO;
+  if ( this->load ( filename ) == false )
+  {
+NOM_LOG_ERR ( TTCARDS, "Could not parse input file: " + filename );
+  }
 }
 
-GameConfig::~GameConfig( void )
-{
-TTCARDS_LOG_CLASSINFO;
-}
+GameConfig::~GameConfig ( void ) {}
 
 const std::string GameConfig::getString ( const std::string& node ) const
 {
@@ -52,7 +54,7 @@ const std::string GameConfig::getString ( const std::string& node ) const
   }
 }
 
-const int GameConfig::getInteger ( const std::string& node ) const
+const nom::int32 GameConfig::getInteger ( const std::string& node ) const
 {
   auto itr = config.find ( node );
 
@@ -65,12 +67,28 @@ const int GameConfig::getInteger ( const std::string& node ) const
     return itr->second.get_int();
   }
 }
-
+/*
+void GameConfig::insert ( const std::string& node, nom::uint32 flags )
+{
+  this->nodes.push_back ( std::make_pair ( node, flags ) );
+}
+*/
 const json_spirit::Value GameConfig::setProperty ( const std::string& node, const json_spirit::Value& value )
 {
   auto res = config.insert ( std::pair<std::string, json_spirit::Value> ( node, value ) ).first;
 
-TTCARDS_LOG_INFO ( "GameConfig: " + node + " has been added to the cache." );
+  if ( value.type() == json_spirit::str_type )
+  {
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.get_str() + "\"" + " has been added to the cache." );
+  }
+  else if ( value.type() == json_spirit::int_type )
+  {
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
+  }
+  else
+  {
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + " has been added to the cache." );
+  }
 
   return res->second;
 }
@@ -80,6 +98,24 @@ bool GameConfig::save( const std::string& filename )
   std::ofstream fp; // output file handle
   json_spirit::Object node; // current JSON node we are writing
   json_spirit::Array game; // overall data to be written out
+
+  for ( auto it = this->config.begin(); it != this->config.end(); ++it )
+  {
+    std::cout << it->first << ": ";
+    if ( it->second.type() == json_spirit::str_type )
+    {
+      std::cout << it->second.get_str();
+    }
+    else if ( it->second.type() == json_spirit::int_type )
+    {
+      std::cout << it->second.get_int();
+    }
+    else
+    {
+      std::cout << "null";
+    }
+    std::cout << std::endl;
+  }
 
   // Order in which we save node paths does not matter
   node.push_back ( json_spirit::Pair ( "SCALE_ALGORITHM", this->getString("SCALE_ALGORITHM") ) );
@@ -134,10 +170,11 @@ bool GameConfig::save( const std::string& filename )
   }
   else
   {
-TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     fp.close();
     return false;
   }
+
 }
 
 bool GameConfig::load( const std::string& filename )
@@ -151,13 +188,17 @@ bool GameConfig::load( const std::string& filename )
   json_spirit::Array::size_type i;
   json_spirit::Object::size_type o;
 
+  // Storage buffer for our configuration we are loading in; if everything is
+  // successful, we will overwrite the existing configuration map with this one.
+  GameConfig cfg;
+
   fp.open ( filename );
 
   if ( fp.is_open() && fp.good() )
   {
     if ( json_spirit::read_stream ( fp, value ) == false )
     {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
       fp.close();
       return false;
     }
@@ -169,9 +210,9 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  if ( ! value.type() == json_spirit::array_type )
+  if ( value.type() != json_spirit::array_type )
   {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
@@ -179,9 +220,9 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
 
   for ( i = 0; i != game.size(); i++ )
   {
-    if ( ! game[i].type() == json_spirit::obj_type )
+    if ( game[i].type() != json_spirit::obj_type )
     {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
       return false;
     }
 
@@ -193,198 +234,49 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
       const std::string& path = pair.name_;
       const json_spirit::Value& value = pair.value_;
 
-      // Order in which we save node paths does not matter
-      if ( path == "APP_ICON" )
+      if ( path.length() > 0 )
       {
         if ( value.type() == json_spirit::str_type )
         {
-          this->setProperty ( path, value.get_str() );
+          cfg.setProperty ( path, value.get_str() );
         }
-      }
-      else if ( path == "BOARD_BACKGROUND" )
-      {
-        if ( value.type() == json_spirit::str_type )
+        else if ( value.type() == json_spirit::int_type )
         {
-          this->setProperty ( path, value.get_str() );
+          cfg.setProperty ( path, value.get_int() );
         }
-      }
-      else if ( path == "CARDS_DB" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CARD_BACKGROUNDS" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CARD_ELEMENTS" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CARD_FACES" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CARD_FLIP" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CARD_FONTFACE" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CARD_PLACE" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CURSOR_CANCEL" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CURSOR_MOVE" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "CURSOR_WRONG" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "GAMEOVER_BACKGROUND" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "GAMEOVER_FONTFACE" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "INFO_FONTFACE" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "INFO_SMALL_FONTFACE" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "INTERFACE_CURSOR" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "MENU_ELEMENTS" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "MUSIC_TRACK" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "MUSIC_WIN_TRACK" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "SCALE_ALGORITHM" )
-      {
-        if ( value.get_str() == "scale2x" || value.get_str() == "hqx" )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "SCORE_FONTFACE" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "SFX_LOAD_GAME" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "SFX_SAVE_GAME" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "USER_BOARD_FILENAME" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "USER_PLAYER1_FILENAME" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
-      else if ( path == "USER_PLAYER2_FILENAME" )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          this->setProperty ( path, value.get_str() );
-        }
-      }
+      } // end node variable name
     } // end current node loop
   } // end current array node
 
+  // If we have made it this far, go ahead and overwrite our new configuration
+  // onto the existing configuration map store!
+  this->config = cfg.config;
+
   return true;
 }
+/*
+    for ( o = 0; o != node.size(); o++ )
+    {
+      const json_spirit::Pair& pair = node[o];
+      const std::string& path = pair.name_;
+      const json_spirit::Value& value = pair.value_;
+
+      for ( nom::int32 idx = 0; idx != this->nodes.size(); idx++ )
+      {
+        if ( this->nodes[idx].first == path )
+        {
+          if ( value.type() == json_spirit::str_type )
+          {
+            cfg.setProperty ( path, value.get_str() );
+          }
+          else if ( value.type() == json_spirit::int_type )
+          {
+            if ( this->nodes[idx].second == 1 )
+            {
+              cfg.setProperty ( path, value.get_int() * 2 );
+            }
+          }
+        }
+      }
+    } // end current node loop
+*/

@@ -40,16 +40,50 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/types.hpp>
 
 #include "config.hpp"
+/*
+template <typename T>
+class ConfigValue
+{
+  public:
+    ConfigValue ( T value ) { this->set ( value ); }
+    ~ConfigValue ( void ) {}
 
+    T get ( void ) { return this->value; }
+
+    void set ( T value ) { this->value = value; }
+
+  private:
+    T value;
+};
+
+typedef ConfigValue<nom::int32> ConfigIntegerValue;
+typedef ConfigValue<std::string> ConfigStringValue;
+*/
 class GameConfig
 {
   public:
     GameConfig( void );
+    GameConfig ( const std::string& filename );
     ~GameConfig( void );
 
     const std::string getString ( const std::string& node ) const;
-    const int getInteger ( const std::string& node ) const;
+    const nom::int32 getInteger ( const std::string& node ) const;
 
+    void init ( const std::string& node, const json_spirit::Value& value )
+    {
+      if ( value.type() == json_spirit::str_type )
+      {
+        this->config.at(node) = value.get_str();
+      }
+      else if ( value.type() == json_spirit::int_type )
+      {
+        this->config.at(node) = value.get_int();
+      }
+    }
+
+    //void insert ( const std::string& node, nom::uint32 flags = 0 );
+
+    //const T setProperty ( const std::string& node, const json_spirit::Value& value );
     const json_spirit::Value setProperty ( const std::string& node, const json_spirit::Value& value );
 
     /// Save the current board grid data to a file as a series of RFC 4627
@@ -58,10 +92,14 @@ class GameConfig
 
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.
+    ///
+    /// \todo Restore the current configuration if we fail to parse config and
+    /// have cleared the
     bool load ( const std::string& filename );
 
   private:
     std::map<std::string, json_spirit::Value> config;
+    //std::vector<std::pair<std::string, nom::uint32>> nodes;
 };
 
 

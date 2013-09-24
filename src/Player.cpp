@@ -28,38 +28,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Player.hpp"
 
-void Free_CardHand ( CardHand* player_cards )
-{
-  // Do nothing custom (smart pointer) deleter
-  //
-  // We produce a segmentation fault without this custom deleter right now due
-  // to the fact that CardHand is an array (AKA smart pointers call delete, not
-  // delete[].
-}
-
 Player::Player ( void ) : card ( nullptr ), hand ( nullptr ),
-                          coords ( 0, 0, 0, 0 ), id ( 0 ), score ( 5 )
-                          //state ( 0 )
+                          id ( 0 ), score ( 0 ),
+                          player_state ( PlayerState::Reserved )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
-Player::Player ( CardHand* player_cards, CardView* view )
+Player::Player ( CardHand* player_cards, CardView* view, const CardRules& ruleset )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->hand.reset ( player_cards, Free_CardHand );
+  this->ruleset = ruleset;
   this->card = view;
 
   this->coords = nom::Coords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
   this->id = 0;
-  //this->state = 0;
-  this->score = 5;
+  this->set_state ( PlayerState::Reserved );
+  this->score = 0;
 }
 
 Player::~Player ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 nom::int32 Player::getX ( void )
@@ -108,14 +100,18 @@ void Player::setID ( unsigned int id_ )
   }
 }
 
-unsigned int Player::getState ( void )
+enum PlayerState Player::state ( void )
 {
-  return 0; //return this->state;
+  return this->player_state;
 }
 
-void Player::setState ( unsigned int state )
+void Player::set_state ( enum PlayerState state )
 {
-  return; //this->state = state;
+#if ! defined ( DEBUG )
+  if ( state == PlayerState::Debug ) return;
+#endif
+
+  this->player_state = state;
 }
 
 nom::uint32 Player::getScore ( void ) const
@@ -135,29 +131,72 @@ void Player::setScore ( unsigned int score )
 
 void Player::Draw ( void* video_buffer )
 {
-  nom::int32 hand_index = 0; // iterator
-
-  for ( hand_index = 0; hand_index < this->hand->size(); hand_index++ )
+  bool face_down = false;
+/*
+  if ( this->ruleset.getRules() != CardRules::Open )
   {
-    if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER1 )
+    face_down = true;
+#if defined ( DEBUG )
+    if ( this->state() == PlayerState::Debug )
     {
-      if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() - 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
-      else
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
+      face_down = false;
     }
-    else if ( this->hand->cards.at( hand_index ).getPlayerID() == Card::PLAYER2 )
-    {
-      if ( this->hand->at ( this->hand->getSelectedCard() ) == hand_index )
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX() + 16, this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
-      else
-        this->card->DrawCard ( video_buffer, this->hand->cards.at ( hand_index ), this->getX(), this->getY() + ( CARD_HEIGHT / 2 ) * hand_index );
-    }
+#endif
   }
+*/
+
+  for ( nom::int32 idx = 0; idx < this->hand->size(); idx++ )
+  {
+    this->player_pos = nom::Coords  (
+                                      this->getX(),
+                                      this->getY() + ( CARD_HEIGHT / 2 ) * idx
+                                    );
+
+    nom::int32 player_id = this->hand->cards.at( idx ).getPlayerID();
+    Card selected_card = this->hand->getSelectedCard();
+    nom::int32 hand_pos = this->hand->at ( selected_card );
+
+    if ( player_id == Card::PLAYER2 && hand_pos == idx )
+    {
+      this->player_pos.x += 16;
+      this->card->reposition ( this->player_pos );
+      this->card->setViewCard ( this->hand->cards.at ( idx ) );
+      this->card->face ( face_down );
+      this->card->Draw ( video_buffer );
+    }
+    else if ( player_id == Card::PLAYER1 && hand_pos == idx )
+    {
+      this->player_pos.x -= 16;
+
+      this->card->reposition ( this->player_pos );
+      this->card->setViewCard ( this->hand->cards.at ( idx ) );
+      this->card->face ( false );
+      this->card->Draw ( video_buffer );
+    }
+    else
+    {
+      this->card->reposition ( this->player_pos );
+      this->card->setViewCard ( this->hand->cards[idx] );
+
+      if ( player_id == Card::PLAYER1 )
+      {
+        this->card->face ( false );
+      }
+      else if ( player_id == Card::PLAYER2 )
+      {
+        this->card->face ( face_down );
+      }
+
+      this->card->Draw ( video_buffer );
+    }
+  } // end for this->hand loop
+
+  // This is a lazy patch until I get around to fixing this :-)
+  this->card->face ( false ); // Turns drawing card faces down off
 }
 
 void Player::Update ( void )
 {
-  // TODO
+  this->card->Update();
 }
 

@@ -26,46 +26,31 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_PAUSE_STATE_HEADERS
-#define GAMEAPP_PAUSE_STATE_HEADERS
+#ifndef GAMEAPP_CARDS_MENU_STATE_CURSOR_HPP
+#define GAMEAPP_CARDS_MENU_STATE_CURSOR_HPP
 
 #include <iostream>
 #include <string>
-#include <memory>
 
-#include <nomlib/gui.hpp>
 #include <nomlib/graphics.hpp>
-#include <nomlib/system.hpp>
+#include <nomlib/gui.hpp>
 
 #include "config.hpp"
-#include "version.hpp"
-#include "resources.hpp"
-#include "GameObject.hpp"
 
-class PauseState: public nom::IState
+class CardsMenuStateCursor: public nom::ui::Cursor
 {
   public:
-    PauseState ( std::shared_ptr<GameObject> object );
-    ~PauseState ( void );
+    CardsMenuStateCursor ( void );
+    ~CardsMenuStateCursor ( void );
+
+      //nom::int32 moveCursorLeft ( void );
+
   private:
-    void onInit ( void );
-    void onExit ( void );
+    /// number of cards to display per menu page
+      //nom::int32 per_page;
 
-    void Pause ( void );
-    void Resume ( void );
-
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
-
-    void Update ( nom::uint32 delta_time );
-    void Draw ( void* video_buffer );
-
-    std::shared_ptr<GameObject> game;
-    nom::Timer update;
-    bool blink_text;
-    nom::ui::MessageBox info_box;
+    /// current card position
+      //nom::int32 current_index;
 };
-
-// Convenience declarations for changing state
-typedef std::unique_ptr<PauseState> PauseStatePtr;
 
 #endif // include guard defined

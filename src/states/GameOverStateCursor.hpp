@@ -26,22 +26,57 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "resources.hpp"
+#ifndef GAMEAPP_GAMEOVER_STATE_CURSOR_HPP
+#define GAMEAPP_GAMEOVER_STATE_CURSOR_HPP
 
-// Platform-dependent paths
+#include <iostream>
+#include <string>
+#include <memory>
 
-const nom::Path path;
-const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
-const std::string USER_PLAYER2_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player2.json";
-const std::string USER_BOARD_FILENAME =     TTCARDS_DATA_DIR + path.native() + "board.json";
-const std::string TTCARDS_CONFIG_FILENAME = TTCARDS_DATA_DIR + path.native() + "config.json";
+#include <nomlib/graphics.hpp>
+#include <nomlib/math.hpp>
+#include <nomlib/gui.hpp>
+#include <nomlib/system.hpp>
 
-// Localization strings
+#include "config.hpp"
+#include "CardHand.hpp"
 
-const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
+class GameOverStateCursor: public nom::ui::Cursor
+{
+  public:
+    GameOverStateCursor ( void );
 
-#ifdef DEBUG
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH ) + "-Debug";
-#else
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
-#endif
+    GameOverStateCursor (
+                          const nom::SpriteSheet& sheet
+                        );
+
+    GameOverStateCursor (
+                          const std::string& filename
+                        );
+
+    ~GameOverStateCursor ( void );
+
+    /// Set a new positioning object for this instance to use
+    void set_position_map ( CardHand* position );
+
+    /// Obtain the current position we are at in the player's hand.
+    nom::int32 position ( void );
+
+    /// Move the cursor to the left.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    nom::int32 moveCursorLeft ( void );
+
+    /// Move the cursor to the right.
+    ///
+    /// Returns the X coordinate position of the cursor after it has been moved.
+    nom::int32 moveCursorRight ( void );
+
+  private:
+    void next ( void );
+    void previous ( void );
+    CardHand::SharedPtr card_position;
+    nom::EventDispatcher cursor_event;
+};
+
+#endif // include guard defined

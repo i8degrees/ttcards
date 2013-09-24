@@ -26,22 +26,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
+#ifndef GAMEAPP_PAUSE_STATE_HEADERS
+#define GAMEAPP_PAUSE_STATE_HEADERS
+
+#include <iostream>
+#include <string>
+#include <memory>
+
+#include <nomlib/gui.hpp>
+#include <nomlib/graphics.hpp>
+#include <nomlib/system.hpp>
+
+#include "config.hpp"
+#include "version.hpp"
 #include "resources.hpp"
+#include "GameObject.hpp"
 
-// Platform-dependent paths
+class PauseState: public nom::IState
+{
+  public:
+    PauseState ( std::shared_ptr<GameObject> object );
+    ~PauseState ( void );
+  private:
+    void onInit ( void );
+    void onExit ( void );
 
-const nom::Path path;
-const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
-const std::string USER_PLAYER2_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player2.json";
-const std::string USER_BOARD_FILENAME =     TTCARDS_DATA_DIR + path.native() + "board.json";
-const std::string TTCARDS_CONFIG_FILENAME = TTCARDS_DATA_DIR + path.native() + "config.json";
+    void Pause ( void );
+    void Resume ( void );
 
-// Localization strings
+    void onKeyDown ( nom::int32 key, nom::int32 mod );
 
-const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
+    void Update ( float delta_time );
+    void Draw ( void* video_buffer );
 
-#ifdef DEBUG
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH ) + "-Debug";
-#else
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
-#endif
+    std::shared_ptr<GameObject> game;
+    nom::Timer update;
+    bool blink_text;
+    nom::ui::MessageBox info_box;
+};
+
+// Convenience declarations for changing state
+typedef std::unique_ptr<PauseState> PauseStatePtr;
+
+#endif // include guard defined

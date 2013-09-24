@@ -26,22 +26,42 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "resources.hpp"
+#include "BoardTile.hpp"
 
-// Platform-dependent paths
+BoardTile::BoardTile ( void ) : tile_element ( 0 )
+{
+NOM_LOG_TRACE ( TTCARDS );
+}
 
-const nom::Path path;
-const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
-const std::string USER_PLAYER2_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player2.json";
-const std::string USER_BOARD_FILENAME =     TTCARDS_DATA_DIR + path.native() + "board.json";
-const std::string TTCARDS_CONFIG_FILENAME = TTCARDS_DATA_DIR + path.native() + "config.json";
+BoardTile::BoardTile  (
+                        const Card& card, const nom::Coords& pos, nom::uint32 element
+                      )
+                      : tile_card ( card ), tile_pos ( pos ),
+                        tile_element ( element )
+{}
 
-// Localization strings
+BoardTile::~BoardTile ( void )
+{
+NOM_LOG_TRACE ( TTCARDS );
+}
 
-const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
+const Card& BoardTile::tile ( void ) const
+{
+  return this->tile_card;
+}
 
-#ifdef DEBUG
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH ) + "-Debug";
-#else
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
-#endif
+const nom::Coords& BoardTile::bounds ( void ) const
+{
+  return this->tile_pos;
+}
+
+const nom::uint32 BoardTile::element ( void ) const
+{
+  return this->tile_element;
+}
+
+void BoardTile::update ( const nom::Coords& pos, const Card& card )
+{
+  this->tile_card = card;
+  //this->tile_pos = pos;
+}

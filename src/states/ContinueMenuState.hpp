@@ -26,22 +26,48 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "resources.hpp"
+#ifndef GAMEAPP_CONTINUE_MENU_STATE_HEADERS
+#define GAMEAPP_CONTINUE_MENU_STATE_HEADERS
 
-// Platform-dependent paths
+#include <iostream>
+#include <string>
+#include <memory>
 
-const nom::Path path;
-const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
-const std::string USER_PLAYER2_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player2.json";
-const std::string USER_BOARD_FILENAME =     TTCARDS_DATA_DIR + path.native() + "board.json";
-const std::string TTCARDS_CONFIG_FILENAME = TTCARDS_DATA_DIR + path.native() + "config.json";
+#include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 
-// Localization strings
+#include "config.hpp"
+#include "ContinueMenuStateCursor.hpp"
+#include "CardsMenuState.hpp"
+#include "GameObject.hpp"
 
-const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
+class ContinueMenuState: public nom::IState
+{
+  public:
+    ContinueMenuState ( std::shared_ptr<GameObject> object );
+    ~ContinueMenuState ( void );
 
-#ifdef DEBUG
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH ) + "-Debug";
-#else
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
-#endif
+  private:
+    void onInit ( void );
+    void onExit ( void );
+
+    void onKeyDown ( nom::int32 key, nom::int32 mod );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
+    void onMouseWheel ( bool up, bool down );
+    void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
+
+    void Update ( float delta_time );
+    void Draw ( void* video_buffer );
+
+    std::shared_ptr<GameObject> game;
+
+    nom::ui::MessageBox info_box;
+    ContinueMenuStateCursor cursor;
+
+    nom::Coords position_map;
+};
+
+// Convenience declarations for changing state
+typedef std::unique_ptr<ContinueMenuState> ContinueMenuStatePtr;
+
+#endif // include guard defined

@@ -44,6 +44,7 @@ extern const nom::Path path;
 extern const std::string USER_PLAYER1_FILENAME;
 extern const std::string USER_PLAYER2_FILENAME;
 extern const std::string USER_BOARD_FILENAME;
+extern const std::string TTCARDS_CONFIG_FILENAME;
 
 /// Localization strings
 extern const std::string LOADING_TEXT;

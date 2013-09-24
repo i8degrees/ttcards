@@ -34,17 +34,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/math.hpp>
 
-#include "CardHand.hpp"
-#include "CardView.hpp"
 #include "config.hpp"
+#include "CardHand.hpp"
+#include "CardRules.hpp"
+#include "CardView.hpp"
 
-void Free_CardHand ( CardHand* player_cards );
+enum PlayerState
+{
+  Debug = 0,
+  Reserved
+};
 
 class Player
 {
   public:
     Player ( void );
-    Player ( CardHand* player_cards, CardView* view );
+    Player ( CardHand* player_cards, CardView* view, const CardRules& ruleset );
     ~Player ( void );
 
     nom::int32 getX ( void );
@@ -56,8 +61,11 @@ class Player
     unsigned int getID ( void );
     void setID ( unsigned int id_ );
 
-    unsigned int getState ( void );
-    void setState ( unsigned int state );
+    /// Obtain the player's current state
+    enum PlayerState state ( void );
+
+    /// Set the player's state.
+    void set_state ( enum PlayerState state );
 
     // TODO: Consider branching this into Score class
     nom::uint32 getScore ( void ) const;
@@ -71,16 +79,27 @@ class Player
   private:
     /// Card rendering
     CardView* card;
+
+    /// Ruleset in use
+    CardRules ruleset;
+
     /// pointer reference to player's hand
-    std::shared_ptr<CardHand> hand;
+    CardHand::SharedPtr hand;
+
     /// x, y origin coords
     nom::Coords coords;
+
     /// unique identifier for tracking each player in game
     unsigned int id;
-    /// not implemented
-    //unsigned int state;
+
     /// player's scoreboard
     unsigned int score;
+
+    /// Player state
+    enum PlayerState player_state;
+
+    /// Position of Player's cards in their hand
+    nom::Coords player_pos;
 };
 
 #endif // GAMEAPP_PLAYER_HEADERS defined

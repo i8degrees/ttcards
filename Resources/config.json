@@ -1,8 +1,9 @@
 [
+    // Default configuration values for TTcards
     {
         "SCALE_ALGORITHM" : "scale2x",
-        "SCORE_FONTFACE" : "fonts/EnvyCodeRb.ttf",
-        "GAMEOVER_FONTFACE" : "fonts/EnvyCodeRb.ttf",
+        "SCORE_FONTFACE" : "fonts/TimesNewRoman.ttf",
+        "GAMEOVER_FONTFACE" : "fonts/TimesNewRoman.ttf",
         "CARD_FONTFACE" : "fonts/VIII_cards.png",
         "INFO_FONTFACE" : "fonts/VIII.png",
         "INFO_SMALL_FONTFACE" : "fonts/VIII_small.png",
@@ -23,6 +24,10 @@
         "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
         "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
         "APP_ICON" : "icon.bmp",
-        "CARDS_DB" : "cards.json"
+        "CARDS_DB" : "cards.json",
+        "PLAYER1_SCORE_ORIGIN_X": 320,
+        "PLAYER1_SCORE_ORIGIN_Y": 176,
+        "PLAYER2_SCORE_ORIGIN_X": 32,
+        "PLAYER2_SCORE_ORIGIN_Y": 176
     }
 ]

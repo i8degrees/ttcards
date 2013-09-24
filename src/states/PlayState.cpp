@@ -28,14 +28,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PlayState.hpp"
 
+#include "CardsMenuState.hpp"
+#include "GameOverState.hpp"
+#include "PauseState.hpp"
+
 PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->game = object;
 
   this->turn = 0;
   this->cursor_locked = false;
+  this->skip_turn = false;
+  this->gameover_state = GameOverType::NotOver;
 
   // this->game->hand[0] is initialized for us in the CardsMenu state
   this->game->hand[1].clear();
@@ -43,13 +49,10 @@ TTCARDS_LOG_CLASSINFO;
 
 PlayState::~PlayState ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
-void PlayState::onExit ( void )
-{
-  std::cout << "\n" << "PlayState onExit" << "\n";
-}
+void PlayState::onExit ( void ) {}
 
 void PlayState::Pause ( void )
 {
@@ -64,7 +67,6 @@ void PlayState::Resume ( void )
 void PlayState::onInit ( void )
 {
   nom::Gradient linear;
-  nom::int32 idx = 0; // for loop iterations
 
   // Random seeding for picking out whose turn it is initially
   nom::uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -78,10 +80,10 @@ void PlayState::onInit ( void )
   this->game->rules.setRules ( 1 );
   this->game->board = Board ( this->game->rules, &this->game->card );
 
-  this->player[0] = Player ( &this->game->hand[0], &this->game->card );
+  this->player[0] = Player ( &this->game->hand[0], &this->game->card, this->game->rules );
   this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
 
-  this->player[1] = Player ( &this->game->hand[1], &this->game->card );
+  this->player[1] = Player ( &this->game->hand[1], &this->game->card, this->game->rules );
   this->player[1].setPosition ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
 
   // player1, player2 cursor X, Y coords
@@ -92,35 +94,37 @@ void PlayState::onInit ( void )
   this->player_scoreboard[0].setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
   this->player_scoreboard[1].setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 
-  for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  {
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
-
-  this->game->score_text[0].setText ( this->player[0].getScoreAsString() );
-  this->game->score_text[0].Update();
-
-  this->game->score_text[1].setText ( this->player[1].getScoreAsString() );
-  this->game->score_text[1].Update();
+  }
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setFillDirection ( nom::FillDirection::Left );
 
-  this->info_box = nom::ui::MessageBox  ( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
+  this->info_box = nom::ui::MessageBox  (
+                                          INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
                                           INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-  this->debug_box = nom::ui::MessageBox ( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
+  this->debug_box = nom::ui::MessageBox (
+                                          DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
                                           DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-#ifndef DEBUG_GAME
-  this->debug_box.disable ();
-#endif
+  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
+  this->info_box.setLabelFont ( &this->game->info_text );
+  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
 
-#ifdef DEBUG_GAME
-  //this->debugCardsNoRuleset();
-  //this->debugCardsSameRuleset();
+  this->debug_box.setWindowTitleFont ( &this->game->info_small_text );
+  this->debug_box.setLabelFont ( &this->game->info_text );
+  this->debug_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+
+#if ! defined ( DEBUG )
+  this->debug_box.disable();
 #endif
 
   this->game->hand[1].randomize ( 1, 10, this->game->collection );
@@ -131,13 +135,27 @@ void PlayState::onInit ( void )
   this->player[0].setID ( Card::PLAYER1 );
   this->player[1].setID ( Card::PLAYER2 );
 
+  // Update both player scores now that we have the player scoreboard X, Y
+  // origins calculated for rendering.
+  //
+  // Assuming a player hand of five, this should always assign a starting score
+  // value of 5 for each player initially.
+  this->updateScore();
+
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
-  this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
+  this->player_turn ( nom::rand ( 0, TOTAL_PLAYERS - 1 ) );
+
+  // Initialize our animation state timers
+  this->player_timer[1].setFrameRate ( 320 ); // 250 is also nice, I think!
+  this->cursor_blink.start();
+  this->blink_cursor = false;
 }
 
 void PlayState::onKeyDown ( int32_t key, int32_t mod )
 {
+  nom::uint32 player_turn = get_turn();
+
   switch ( key )
   {
     default: break;
@@ -152,21 +170,21 @@ void PlayState::onKeyDown ( int32_t key, int32_t mod )
     {
       if ( this->game->hand[0].save( USER_PLAYER1_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_PLAYER1_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER1_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
 
       if ( this->game->hand[1].save( USER_PLAYER2_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_PLAYER2_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER2_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
 
       if ( this->game->board.save( USER_BOARD_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_BOARD_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
@@ -179,11 +197,11 @@ TTCARDS_LOG_ERR ( "Unable to save game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LMETA ) // Special game load (player1 always wins!)
       {
-        if ( this->game->hand[0].load ( TTCARDS_DATA_DIR + path.native() + "player1_always-win.json" ) == false )
+        if ( this->game->hand[0].load ( "Debug" + path.native() + "player1_unbeatable.json" ) == false )
         {
 // FIXME
-//TTCARDS_LOG_ERR ( "Unable to load game data at: " + "player1_always-win.json" );
-TTCARDS_LOG_ERR ( "Unable to load game data at: player1_always-win.json" );
+//NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + "player1_unbeatable.json" );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: player1_unbeatable.json" );
           this->game->cursor_wrong.Play();
           break;
         }
@@ -192,7 +210,7 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: player1_always-win.json" );
       {
         if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
         {
-TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER1_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_PLAYER1_FILENAME );
           this->game->cursor_wrong.Play();
           break;
         }
@@ -200,14 +218,14 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER1_FILENAME );
 
       if ( this->game->hand[1].load( USER_PLAYER2_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_PLAYER2_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_PLAYER2_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
 
       if ( this->game->board.load( USER_BOARD_FILENAME ) == false )
       {
-TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
+NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
@@ -219,24 +237,60 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
     }
     break;
 
-    // Debug helpers
-    case SDLK_e: this->endTurn(); break;
+#if defined ( DEBUG )
+    case SDLK_e: // Full control over the other player's move
+    {
+      if ( mod == KMOD_LMETA ) // Return control over to the other player
+      {
+        this->skip_turn = false;
+        this->player[1].set_state ( PlayerState::Reserved );
+        this->endTurn();
+      }
+      else
+      {
+        this->skip_turn = true;
+        this->player[1].set_state ( PlayerState::Debug );
+        this->endTurn();
+      }
+    }
+    break;
+#endif
 
-    case SDLK_d: this->removePlayerCard(); break;
-    case SDLK_i: debugBox(); break;
+    case SDLK_d:
+    {
+      this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
+
+      this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+    }
+    break;
+
+    case SDLK_i:
+    {
+      if ( this->debug_box.isEnabled() == true )
+      {
+        this->debug_box.disable();
+      }
+      else
+      {
+        this->debug_box.enable();
+      }
+    }
+    break;
 
     case SDLK_LEFT:
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->debugModifyCardRank ( true, WEST );
+        this->game->hand[ player_turn ].modifyCardRank ( true, WEST );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->debugModifyCardRank ( false, WEST );
+        this->game->hand[ player_turn ].modifyCardRank ( false, WEST );
       }
       else
+      {
         this->moveCursorLeft();
+      }
     }
     break;
 
@@ -244,14 +298,16 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->debugModifyCardRank ( true, EAST );
+        this->game->hand[ player_turn ].modifyCardRank ( true, EAST );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->debugModifyCardRank ( false, EAST );
+        this->game->hand[ player_turn ].modifyCardRank ( false, EAST );
       }
       else
+      {
         this->moveCursorRight();
+      }
     }
     break;
 
@@ -259,14 +315,16 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->debugModifyCardRank ( true, NORTH );
+        this->game->hand[ player_turn ].modifyCardRank ( true, NORTH );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->debugModifyCardRank ( false, NORTH );
+        this->game->hand[ player_turn ].modifyCardRank ( false, NORTH );
       }
       else
+      {
         this->moveCursorUp();
+      }
     }
     break;
 
@@ -274,14 +332,16 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
     {
       if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
-        this->debugModifyCardRank ( true, SOUTH );
+        this->game->hand[ player_turn ].modifyCardRank ( true, SOUTH );
       }
       else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
-        this->debugModifyCardRank ( false, SOUTH );
+        this->game->hand[ player_turn ].modifyCardRank ( false, SOUTH );
       }
       else
+      {
         this->moveCursorDown();
+      }
     }
     break;
 
@@ -289,64 +349,62 @@ TTCARDS_LOG_ERR ( "Unable to load game data at: " + USER_BOARD_FILENAME );
     case SDLK_SPACE: this->lockSelectedCard(); break;
 
     // move selected card to grid[0][0]
-    case SDLK_1: this->moveTo ( 0, 0 ); break;
+    case SDLK_1: if ( player_turn != PLAYER2 ) this->moveTo ( 0, 0 ); break;
 
     // move selected card to grid[1][0]
-    case SDLK_2: this->moveTo ( 1, 0 ); break;
+    case SDLK_2: if ( player_turn != PLAYER2 ) this->moveTo ( 1, 0 ); break;
 
     // move selected card to grid[2][0]
-    case SDLK_3: this->moveTo ( 2, 0 ); break;
+    case SDLK_3: if ( player_turn != PLAYER2 ) this->moveTo ( 2, 0 ); break;
 
     // move selected card to grid[0][1]
-    case SDLK_4: this->moveTo ( 0, 1 ); break;
+    case SDLK_4: if ( player_turn != PLAYER2 ) this->moveTo ( 0, 1 ); break;
 
     // move selected card to grid[1][1]
-    case SDLK_5: this->moveTo ( 1, 1 ); break;
+    case SDLK_5: if ( player_turn != PLAYER2 ) this->moveTo ( 1, 1 ); break;
 
     // move selected card to grid[2][1]
-    case SDLK_6: this->moveTo ( 2, 1 ); break;
+    case SDLK_6: if ( player_turn != PLAYER2 ) this->moveTo ( 2, 1 ); break;
 
     // move selected card to grid[0][2]
-    case SDLK_7: this->moveTo ( 0, 2 ); break;
+    case SDLK_7: if ( player_turn != PLAYER2 ) this->moveTo ( 0, 2 ); break;
 
     // move selected card to grid[1][2]
-    case SDLK_8: this->moveTo ( 1, 2 ); break;
+    case SDLK_8: if ( player_turn != PLAYER2 ) this->moveTo ( 1, 2 ); break;
 
     // move selected card to grid[2][2] if possible
-    case SDLK_9: this->moveTo ( 2, 2 ); break;
+    case SDLK_9: if ( player_turn != PLAYER2 ) this->moveTo ( 2, 2 ); break;
   } // end key switch
 }
 
 void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 {
-  nom::int32 hand_index = 0; // iterator
-  uint32_t player_turn = this->get_turn();
-
-  if ( this->get_turn() != 0 )
-    return;
-
-  nom::Coords coords ( x, y ); // temp container var to hold mouse mapping coords
+  nom::uint32 player_turn = this->get_turn();
+  nom::Coords coords ( x, y ); // mouse input coordinates
   nom::Coords player_coords = this->player[player_turn].getPosition(); // Player cursor origin coordinates
 
-  // Player hand selection checks
-  for ( hand_index = 0; hand_index < this->game->hand[ player_turn ].size(); hand_index++ )
+  // Disable mouse input if we are not controlling the other player
+  if ( this->skip_turn == false )
   {
-    if  (
-          x <= ( player_coords.x + CARD_WIDTH ) &&
-          x >= ( player_coords.x ) &&
-          // hand_index+1 because we start the loop iterator at zero; mouse check
-          // calculation is invalid at this number whereas it is not for the
-          // actions that take place if said check yields true
-          y <= ( player_coords.y + ( CARD_HEIGHT / 2 ) * ( hand_index + 1 ) ) &&
-          y >= ( player_coords.y )
-        )
+    if ( this->get_turn() != 0 ) return;
+  }
+
+  // Player hand selection checks
+  for ( nom::int32 idx = 0; idx < this->game->hand[ player_turn ].size(); idx++ )
+  {
+    player_coords = nom::Coords (
+                                  player_coords.x, player_coords.y,
+                                  CARD_WIDTH, ( CARD_HEIGHT / 2  ) * ( idx + 1 )
+                                );
+
+    if ( player_coords.intersects ( coords ) )
     {
+      // 1. Update player's selected card
+      // 2. Update cursor position
+      // 3. Play sound event
+      this->game->hand[ player_turn ].selectCard ( this->game->hand[ player_turn ].cards[ idx ] );
 
-      // Update player's selected card
-      this->game->hand[ player_turn ].selectCard ( this->game->hand[ player_turn ].cards[ hand_index ] );
-
-      // Updates Cursor Position
-      this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * hand_index );
+      this->game->cursor.setPosition ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx );
 
       this->game->cursor_move.Play();
 
@@ -363,8 +421,10 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
 
   // Attempts to move card onto board; validity checking is performed within
   // the following method call
-  if ( coords.x != -1 && coords.y != -1 ) // undefined if -1, -1
+  if ( coords != nom::Coords::null ) // undefined if -1, -1
+  {
     this->moveTo ( coords.x, coords.y );
+  }
 }
 
 void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
@@ -374,12 +434,16 @@ void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
 
 void PlayState::onMouseWheel ( bool up, bool down )
 {
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.getState() == 0 ) // Player's hand mode
   {
     if ( up )
+    {
       this->moveCursorUp();
+    }
     else if ( down )
+    {
       this->moveCursorDown();
+    }
   }
 }
 
@@ -389,8 +453,11 @@ void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
   {
     default: break;
 
-    // Debug helpers
-    case nom::PSXBUTTON::L1: this->endTurn(); break;
+    case nom::PSXBUTTON::START:
+    {
+      nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
+    }
+    break;
 
     case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
     case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;
@@ -425,78 +492,63 @@ void PlayState::endTurn ( void )
   this->game->hand[PLAYER1].clearSelectedCard();
   this->game->hand[PLAYER2].clearSelectedCard();
 
-  if ( this->get_turn() == 0 )
+  if ( this->get_turn() == PLAYER1 )
   {
-    this->player_turn ( 1 );
+    this->player_turn ( PLAYER2 );
   }
-  else if ( this->get_turn() == 1 )
+  else if ( this->get_turn() == PLAYER2 )
   {
-    this->player_turn ( 0 );
+    this->player_turn ( PLAYER1 );
   }
 }
 
-// Interface Helper method; shows Card's ID number in a message box for both cursor
-// states; player's hand and placed board cards -- debug handling included
-void PlayState::showCardInfoBox ( void* video_buffer )
+void PlayState::updateMessageBoxes ( void )
 {
-  Card selectedCard; // temp container var to hold our card info (ID, name)
+  nom::uint32 player_turn = get_turn();
+  Card selected_card; // temp container var to hold our card info (ID, name)
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
-
-  unsigned int player_turn = get_turn();
 
   // board selection state
   if ( this->isCursorLocked() == true )
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
-
-    if ( coords.x != -1 && coords.y != -1 )
-      selectedCard = this->game->board.getCard ( coords.x, coords.y );
+    if ( coords != nom::Coords::null )
+    {
+      selected_card = this->game->board.get ( coords.x, coords.y );
+    }
   }
-  // player hand selection state
-  else
-    selectedCard = this->game->hand[player_turn].getSelectedCard();
+  else // player hand selection state
+  {
+#if defined (DEBUG) // Allow watching both players make their card selections
+    selected_card = this->game->hand[player_turn].getSelectedCard();
+#else // Do not show the actions of other players
+    selected_card = this->game->hand[PLAYER1].getSelectedCard();
+#endif
+  }
 
   // Debug helping info MessageBox display
-  if ( this->debug_box.isEnabled() == true )
+  if ( selected_card.getID() != 0 )
   {
-    if ( selectedCard.getID() != 0 )
-    {
-      this->game->info_text.setText ( std::to_string ( selectedCard.getID() ) );
-      nom::int32 text_width = this->game->info_text.getFontWidth ();
-
-      this->debug_box.Draw ( video_buffer );
-
-      this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, DEBUG_BOX_TEXT_ORIGIN_Y ) );
-      this->game->info_text.Update();
-      this->game->info_text.Draw ( video_buffer );
-    }
+    this->debug_box.setLabel ( std::to_string ( selected_card.getID() ) );
   }
 
   // (Southern) informational MessageBox display (selected / active card's name)
-  if ( selectedCard.getName().length() != 0 || selectedCard.getName() != "\0" )
+  if ( selected_card.getName().length() != 0 )
   {
-    this->game->info_text.setText ( selectedCard.getName() );
-    nom::int32 text_width = this->game->info_text.getFontWidth();
-    this->game->info_small_text.setText ( "INFO" );
-
-    this->info_box.Draw ( video_buffer );
-
-    this->game->info_text.setPosition ( nom::Coords( ( SCREEN_WIDTH - text_width ) / 2, INFO_BOX_TEXT_ORIGIN_Y ) );
-    this->game->info_text.Update();
-    this->game->info_text.Draw ( video_buffer );
-
-    this->game->info_small_text.setPosition ( nom::Coords( INFO_BOX_SMALL_TEXT_ORIGIN_X, INFO_BOX_SMALL_TEXT_ORIGIN_Y ) );
-    this->game->info_small_text.Update();
-    this->game->info_small_text.Draw ( video_buffer );
+    this->info_box.setLabel ( selected_card.getName() );
   }
 }
 
 bool PlayState::isCursorLocked ( void )
 {
   if ( this->cursor_locked == true )
+  {
     return true;
+  }
   else
+  {
     return false;
+  }
 }
 
 void PlayState::lockCursor ( bool lock )
@@ -513,7 +565,13 @@ void PlayState::resetCursor ( void )
 
   this->game->cursor.setState ( 0 );
   this->game->cursor.setPosition ( this->player_cursor_coords[0].x, this->player_cursor_coords[0].y );
-  //this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+
+  // Only set the position of the game interface cursor for player2 when we are
+  // controlling him
+  if ( this->skip_turn == true )
+  {
+    this->game->cursor.setPosition ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+  }
 }
 
 // helper method for cursor input selection
@@ -538,17 +596,24 @@ void PlayState::lockSelectedCard ( void )
   if ( this->isCursorLocked() == false )
   {
     if ( get_turn() == 0 )
+    {
       this->game->cursor.setPosition ( CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y ); // FIXME
+    }
     else if ( get_turn() == 1 )
+    {
       this->game->cursor.setPosition ( CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y ); // FIXME
+    }
 
     this->lockCursor ( true );
   }
   else
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
-    if ( coords.x != -1 && coords.y != -1 )
+
+    if ( coords != nom::Coords::null )
+    {
       this->moveTo ( coords.x, coords.y );
+    }
 
     this->unlockSelectedCard();
   }
@@ -561,6 +626,58 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
   nom::uint32 player_turn = this->get_turn();
 
   selected = this->game->hand[ player_turn ].getSelectedCard();
+
+  if ( player_turn == PLAYER1 )
+  {
+    std::vector<BoardTile> adj = this->game->board.find_adjacent ( x, y );
+
+    // Dump returned list of cards
+    nom::uint32 line_number = 1;
+    for ( nom::int32 idx = 0; idx < adj.size(); idx++ )
+    {
+      Card tile = adj[idx].tile();
+
+      if ( tile.getPlayerID() != Card::PLAYER1 )
+      {
+        nom::Coords pos = adj[idx].bounds();
+        nom::uint32 element = adj[idx].element();
+
+        std::cout << line_number
+                  << ". "
+                  << tile.getName()
+                  << " is at pos "
+                  << pos.x
+                  << ", "
+                  << pos.y
+                  << " ("
+                  << pos.width
+                  << "x"
+                  << pos.height
+                  << ") "
+                  << " with an element ID of "
+                  << element
+                  << "."
+                  << "\n";
+
+        line_number++;
+      }
+    }
+
+    /*
+        for ( nom::int32 cols = y; cols < BOARD_GRID_HEIGHT; cols++ )
+        {
+          for ( nom::int32 rows = x; rows < BOARD_GRID_WIDTH; rows++ )
+          {
+            if ( rows != 0 )
+            {
+
+            }
+          }
+        }
+        */
+  }
+
+  //std::cout << "\n";
 
   if ( selected.getID() != 0 )
   {
@@ -708,17 +825,39 @@ void PlayState::moveCursorDown ( void )
 
 void PlayState::updateCursor ( void )
 {
-  if ( this->get_turn() == 0 ) // player1
-    this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
-  //else // player2
-    //this->game->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+  if ( this->game->cursor.getState() == 1 )
+  {
+    if ( this->cursor_blink.ticks() > 192 ) // Blinky blink!
+    {
+      this->cursor_blink.stop();
+      this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE );
+      this->blink_cursor = true;
+    }
+  }
 
-  this->game->cursor.Update();
+  if ( this->get_turn() == PLAYER1 && this->blink_cursor == false ) // player1
+  {
+    this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+  }
+  // Only show interface cursor for player2 when we are controlling him
+  else if ( this->skip_turn == true && this->get_turn() == PLAYER2 && this->blink_cursor == false )
+  {
+    this->game->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+  }
+
+  this->game->cursor.update();
 }
 
 void PlayState::drawCursor ( void* video_buffer )
 {
-  this->game->cursor.Draw ( video_buffer );
+  this->game->cursor.draw ( video_buffer );
+
+  if ( this->blink_cursor )
+  {
+    this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+    this->cursor_blink.start();
+    this->blink_cursor = false;
+  }
 }
 
 void PlayState::updateScore ( void )
@@ -740,60 +879,94 @@ void PlayState::updateScore ( void )
   }
 }
 
-void PlayState::Update ( nom::uint32 delta_time )
+void PlayState::Update ( float delta_time )
 {
+  this->game->board.update();
+
   this->updateCursor();
 
-  if ( this->get_turn() == 0 ) // player1
+  this->updateMessageBoxes();
+
+  this->info_box.Update();
+  this->debug_box.Update();
+
+  this->player[0].Update();
+  this->player[1].Update();
+
+  // Player two animation effect
+  if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > SDL_GetTicks() )
   {
-    this->player_rect.setPosition ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
-    this->player_rect.setColor ( nom::Color ( 188, 203, 236 ) );
+    // return
   }
-  else // player2
+  else
   {
-    this->player_rect.setPosition ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ) );
-    this->player_rect.setColor ( nom::Color ( 222, 196, 205 ) );
+    this->player_timer[1].start();
 
-    nom::Coords board_edges[3];
-
-    board_edges[0].x = 0;
-    board_edges[0].y = 0;
-
-    board_edges[1].x = 2;
-    board_edges[1].y = 0;
-
-    board_edges[2].x = 0;
-    board_edges[2].y = 2;
-
-    board_edges[3].x = 2;
-    board_edges[3].y = 2;
-
-    nom::int32 edge_pick = nom::randomInteger ( 0, 3 );
-
-    nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
-    this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
-
-    if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
-      this->moveTo ( board_edges[ edge_pick ].x, board_edges[ edge_pick ].y );
-    else if ( this->game->board.getStatus ( board_edges[1].x, board_edges[1].y ) == false )
-      this->moveTo ( board_edges[1].x, board_edges[1].y );
-    else if ( this->game->board.getStatus ( board_edges[2].x, board_edges[2].y ) == false )
-      this->moveTo ( board_edges[2].x, board_edges[2].y );
-    else if ( this->game->board.getStatus ( board_edges[3].x, board_edges[3].y ) == false )
-      this->moveTo ( board_edges[3].x, board_edges[3].y );
-    else
+    // Only show player2 animation when we are not controlling him
+    if ( this->skip_turn == false )
     {
-      nom::int32 moveX = nom::randomInteger ( 0, 2 );
-      nom::int32 moveY = nom::randomInteger ( 0, 2 );
-      nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
-      this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
-
-      this->moveTo ( moveX, moveY );
+      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[PLAYER2].size() );
+      this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
     }
   }
 
-  this->debug_box.Update();
-  this->info_box.Update();
+  if ( this->get_turn() == 0 ) // player1
+  {
+    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color ( 188, 203, 236 ) );
+  }
+  else // player2
+  {
+    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color ( 222, 196, 205 ) );
+
+    // Skipping a turn like this is only available in debug versions
+    if ( this->skip_turn == false )
+    {
+      nom::Coords board_edges[3];
+
+      board_edges[0].x = 0;
+      board_edges[0].y = 0;
+
+      board_edges[1].x = 2;
+      board_edges[1].y = 0;
+
+      board_edges[2].x = 0;
+      board_edges[2].y = 2;
+
+      board_edges[3].x = 2;
+      board_edges[3].y = 2;
+
+      nom::int32 edge_pick = nom::rand ( 0, 3 );
+
+      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() );
+      this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
+
+      if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
+      {
+        this->moveTo ( board_edges[ edge_pick ].x, board_edges[ edge_pick ].y );
+      }
+      else if ( this->game->board.getStatus ( board_edges[1].x, board_edges[1].y ) == false )
+      {
+        this->moveTo ( board_edges[1].x, board_edges[1].y );
+      }
+      else if ( this->game->board.getStatus ( board_edges[2].x, board_edges[2].y ) == false )
+      {
+        this->moveTo ( board_edges[2].x, board_edges[2].y );
+      }
+      else if ( this->game->board.getStatus ( board_edges[3].x, board_edges[3].y ) == false )
+      {
+        this->moveTo ( board_edges[3].x, board_edges[3].y );
+      }
+      else
+      {
+        nom::int32 moveX = nom::rand ( 0, 2 );
+        nom::int32 moveY = nom::rand ( 0, 2 );
+        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() );
+        this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
+
+        this->moveTo ( moveX, moveY );
+      } // end board_edges choice
+    } // player2
+  } // end player1
 
   this->game->context.Update();
 }
@@ -802,7 +975,7 @@ void PlayState::Draw ( void *video_buffer )
 {
   this->game->background.Draw ( video_buffer );
 
-  this->game->board.Draw ( video_buffer );
+  this->game->board.draw ( video_buffer );
 
   this->player[0].Draw ( video_buffer );
   this->player[1].Draw ( video_buffer );
@@ -811,7 +984,8 @@ void PlayState::Draw ( void *video_buffer )
 
   this->drawCursor ( video_buffer );
 
-  this->showCardInfoBox ( video_buffer );
+  this->info_box.Draw ( video_buffer );
+  this->debug_box.Draw ( video_buffer );
 
   // Draw each player's scoreboard
   this->game->score_text[0].Draw ( video_buffer );
@@ -824,25 +998,23 @@ void PlayState::Draw ( void *video_buffer )
   // game / round is over when board card count >= 9
   if ( this->game->board.getCount () >= 9 || this->game->hand[ PLAYER1 ].size() == 0 || this->game->hand[ PLAYER2 ].size() == 0 )
   {
-    nom::uint32 gameover_state = 0;
-
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
+      this->gameover_state = GameOverType::Won;
       this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "You win!" );
-      gameover_state = 1;
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
+      this->gameover_state = GameOverType::Lost;
       this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "You lose..." );
-      gameover_state = 2;
     }
-    else // Assume a tie
+    else // Assume a draw
     {
+      this->gameover_state = GameOverType::Tie;
       this->game->gameover_text.setColor ( nom::Color::White );
       this->game->gameover_text.setText ( "Tie!" );
-      //gameover_state = 0;
     }
 
     nom::int32 width = this->game->gameover_text.getFontWidth();
@@ -851,8 +1023,15 @@ void PlayState::Draw ( void *video_buffer )
     this->game->gameover_text.Draw ( video_buffer );
     this->game->context.Update();
 
-    nom::sleep ( 1000 ); // ZzZ for 1 second
+    nom::sleep ( 1000 ); // Chill for a second
 
-    nom::GameStates::ChangeState ( GameOverStatePtr( new GameOverState( this->game, gameover_state ) ) );
+    if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
+    {
+      nom::GameStates::ChangeState ( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
+    }
+    else
+    {
+      nom::GameStates::ChangeState ( GameOverStatePtr( new GameOverState( this->game, this->gameover_state ) ) );
+    }
   }
 }

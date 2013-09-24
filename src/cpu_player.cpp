@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CPUPlayer::CPUPlayer ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->cpu_difficulty = 2; // easy = 1, hard = 2
 
@@ -46,7 +46,7 @@ TTCARDS_LOG_CLASSINFO;
 
 CPUPlayer::~CPUPlayer ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 void CPUPlayer::Init ( Board *board, CardHand *cards )

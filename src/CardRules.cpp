@@ -28,18 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardRules.hpp"
 
-CardRules::CardRules ( void )
+CardRules::CardRules ( void ) : rules ( 0 )
 {
-TTCARDS_LOG_CLASSINFO;
-
-  this->rules = 0;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 CardRules::~CardRules ( void )
 {
-TTCARDS_LOG_CLASSINFO;
-
-  this->rules = 0;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 unsigned int CardRules::getRules ( void )

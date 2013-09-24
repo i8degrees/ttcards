@@ -30,182 +30,261 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardView::CardView ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
-  this->card_face = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  this->card_background = nom::Sprite ( CARD_WIDTH, CARD_HEIGHT );
-  this->card_element = nom::Sprite ( ELEMENT_WIDTH, ELEMENT_HEIGHT );
+  this->card_face_down = false;
+  this->render_card = Card();
 
-  this->card_face.setSheetDimensions ( 7104, 64, 0, 0 );
-  this->card_background.setSheetDimensions ( 256, 64, 0, 0 );
-  this->card_element.setSheetDimensions ( 144, 16, 0, 0 );
+  this->card_background = std::shared_ptr<nom::Gradient> ( new nom::Gradient() );
+  this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
+  this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
+  this->card_text = std::shared_ptr<nom::BitmapFont> ( new nom::BitmapFont() );
+
+  card.push_back ( this->card_background );
+  card.push_back ( this->card_face );
+  card.push_back ( this->card_element );
+  card.push_back ( this->card_text );
+
+  this->card_background->setSize ( CARD_WIDTH - 4, CARD_HEIGHT - 4 );
+  this->card_background->setMargins ( 4, 4 );
+  this->card_background->setFillDirection ( nom::FillDirection::Top );
+}
+
+CardView::CardView ( const nom::Coords& coords )
+{
+  // Stub
 }
 
 CardView::~CardView ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 }
 
 bool CardView::load ( GameConfig* config )
 {
-  if ( config == nullptr )
+  if ( config == nullptr ) return false;
+
+  if ( this->card_text->load ( config->getString("CARD_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
   {
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FONTFACE") );
     return false;
   }
 
-  if ( this->card_text.load ( config->getString("CARD_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
+  if ( this->card_face->load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if ( this->card_face.load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
   {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_FACES") );
-    return false;
-  }
-
-  if ( this->card_background.load ( config->getString("CARD_BACKGROUNDS"), nom::Color ( 0, 0, 0 ), true ) == false )
-  {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_BACKGROUNDS") );
-    return false;
-  }
-
-  if ( this->card_element.load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
-  {
-TTCARDS_LOG_ERR ( "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
   }
 
   // Rescale our game resources if necessary.
   if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    this->card_text.scale2x();
-    this->card_face.scale2x();
-    this->card_background.scale2x();
-    this->card_element.scale2x();
+    this->card_text->resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_face->resize ( nom::ResizeAlgorithm::scale2x );
+    //this->card_background->resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_element->resize ( nom::ResizeAlgorithm::scale2x );
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
-    this->card_text.hq2x();
-    this->card_face.hq2x();
-    this->card_background.hq2x();
-    this->card_element.hq2x();
+    this->card_text->resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_face->resize ( nom::ResizeAlgorithm::hq2x );
+    //this->card_background->resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_element->resize ( nom::ResizeAlgorithm::hq2x );
   }
 
   return true;
 }
 
-// Helper method for drawing cards face down
-bool CardView::drawFaceDown ( void* video_buffer, unsigned int x, unsigned int y )
+void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const
 {
-  this->card_background.setSheetID ( NOFACE_ID );
-  this->card_background.setPosition ( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y );
-  this->card_background.Update();
-  this->card_background.Draw ( video_buffer );
-
-  return true;
+  this->card_face->setSheetID ( NOFACE_ID );
+  this->card_face->setPosition ( x, y );
+  this->card_face->Update();
+  this->card_face->Draw ( video_buffer );
 }
 
-bool CardView::DrawCard ( void* video_buffer, Card &card, unsigned int x, unsigned int y )
+void CardView::draw_background  (
+                                  void* video_buffer, nom::int32 player_id,
+                                  nom::int32 x, nom::int32 y
+                                ) const
 {
-  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
-    return false;
 
-  switch ( card.getPlayerID() )
+  switch ( player_id )
   {
     case Card::PLAYER1:
-      this->card_background.setSheetID ( PLAYER1_BACKGROUND_ID );
-      break;
+    {
+      this->card_background->setStartColor ( nom::Color ( 208, 223, 255 ) );
+      this->card_background->setEndColor ( nom::Color ( 50, 59, 114 ) );
+    }
+    break;
+
     case Card::PLAYER2:
-      this->card_background.setSheetID ( PLAYER2_BACKGROUND_ID );
-      break;
+    {
+      this->card_background->setStartColor ( nom::Color ( 251, 222, 232 ) );
+      this->card_background->setEndColor ( nom::Color ( 114, 66, 66 ) );
+    }
+    break;
+
     case Card::NOPLAYER:
     default:
-      this->card_background.setSheetID ( NOPLAYER_BACKGROUND_ID );
-      break;
+    {
+      this->card_background->setStartColor ( nom::Color ( 197, 197, 197 ) );
+      this->card_background->setEndColor ( nom::Color ( 84, 84, 84 ) );
+    }
+    break;
   }
 
-  this->card_background.setPosition ( nom::Coords( BACKGROUND_ORIGIN_X + x, BACKGROUND_ORIGIN_Y + y ) );
-  this->card_background.Update();
-  this->card_background.Draw ( video_buffer );
+  //this->card_background->setPosition ( this->position );
+  this->card_background->setPosition ( x, y );
+  this->card_background->Update();
+  this->card_background->Draw ( video_buffer );
+}
 
-  this->card_face.setSheetID ( card.getID() );
-  this->card_face.setPosition ( nom::Coords( CARD_FACE_ORIGIN_X + x, CARD_FACE_ORIGIN_Y + y ) );
-  this->card_face.Update();
+void CardView::draw_face  (
+                            void* video_buffer, nom::int32 face_id,
+                            nom::int32 x, nom::int32 y
+                          ) const
+{
+  // Our sprite sheets start at ID of zero now, not one
+  this->card_face->setSheetID ( face_id - 1 );
 
-  this->card_face.Draw ( video_buffer );
+  //this->card_face->setPosition ( this->position );
+  this->card_face->setPosition ( nom::Coords ( x, y ) );
+  this->card_face->Update();
+  this->card_face->Draw ( video_buffer );
+}
 
-  switch ( card.getElement() )
+void CardView::draw_element (
+                              void* video_buffer, nom::int32 element_id,
+                              nom::int32 x, nom::int32 y
+                            ) const
+{
+  switch ( element_id )
   {
-    case NONE:
-      this->card_element.setSheetID ( ELEMENT_NONE );
-      break;
-    case EARTH:
-      this->card_element.setSheetID ( ELEMENT_EARTH );
-      break;
-    case FIRE:
-      this->card_element.setSheetID ( ELEMENT_FIRE );
-      break;
-    case HOLY:
-      this->card_element.setSheetID ( ELEMENT_HOLY );
-      break;
-    case ICE:
-      this->card_element.setSheetID ( ELEMENT_ICE );
-      break;
-    case POISON:
-      this->card_element.setSheetID ( ELEMENT_POISON );
-      break;
-    case THUNDER:
-      this->card_element.setSheetID ( ELEMENT_THUNDER );
-      break;
-    case WATER:
-      this->card_element.setSheetID ( ELEMENT_WATER );
-      break;
-    case WIND:
-      this->card_element.setSheetID ( ELEMENT_WIND );
-      break;
+    default:
+    case NONE: this->card_element->setSheetID ( ELEMENT_NONE ); break;
+    case EARTH: this->card_element->setSheetID ( ELEMENT_EARTH ); break;
+    case FIRE: this->card_element->setSheetID ( ELEMENT_FIRE ); break;
+    case HOLY: this->card_element->setSheetID ( ELEMENT_HOLY ); break;
+    case ICE: this->card_element->setSheetID ( ELEMENT_ICE ); break;
+    case POISON: this->card_element->setSheetID ( ELEMENT_POISON ); break;
+    case THUNDER: this->card_element->setSheetID ( ELEMENT_THUNDER ); break;
+    case WATER: this->card_element->setSheetID ( ELEMENT_WATER ); break;
+    case WIND: this->card_element->setSheetID ( ELEMENT_WIND ); break;
   }
 
-  card_element.setPosition ( nom::Coords( ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y ) );
-  card_element.Update();
-  card_element.Draw ( video_buffer );
+  //this->card_element->setPosition ( this->position.x, this->position.y );
+  this->card_element->setPosition ( nom::Coords( x, y ) );
+  this->card_element->Update();
+  this->card_element->Draw ( video_buffer );
+}
 
-  if ( card.getNorthRank() == 10 )
-    this->card_text.setText ( "A" );
+void CardView::draw_text  (
+                            void* video_buffer, nom::int32 rank,
+                            nom::int32 x, nom::int32 y
+                          ) const
+{
+  if ( rank == 10 )
+  {
+    this->card_text->setText ( "A" );
+  }
   else
-    this->card_text.setText ( std::to_string ( card.getNorthRank() ) );
+  {
+    this->card_text->setText ( std::to_string ( rank ) );
+  }
 
-  this->card_text.setPosition ( nom::Coords( RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y ) );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
+  //this->card_text->setPosition ( this->position );
+  this->card_text->setPosition ( nom::Coords ( x, y ) );
+  this->card_text->Update();
+  this->card_text->Draw ( video_buffer );
+}
 
-  if ( card.getEastRank() == 10 )
-    this->card_text.setText ( "A" );
-  else
-    this->card_text.setText ( std::to_string ( card.getEastRank() ) );
+void CardView::draw (
+                      void* video_buffer, const Card& card,
+                      nom::int32 x, nom::int32 y, bool face_down
+                    ) const
+{
+  if ( this->card_face_down == true )
+  {
+    this->draw_face_down ( video_buffer, x, y );
+    return;
+  }
 
-  this->card_text.setPosition ( nom::Coords( RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y ) );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
+  this->draw_background ( video_buffer, card.getPlayerID(), x, y );
 
-  if ( card.getWestRank() == 10 )
-    this->card_text.setText ( "A" );
-  else
-    this->card_text.setText ( std::to_string ( card.getWestRank() ) );
+  this->draw_face ( video_buffer, card.getID(), x, y );
 
-  this->card_text.setPosition ( nom::Coords( RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y ) );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
+  this->draw_element  (
+                        video_buffer, card.getElement(),
+                        ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y
+                      );
 
-  if ( card.getSouthRank() == 10 )
-    this->card_text.setText ( "A" );
-  else
-    this->card_text.setText ( std::to_string ( card.getSouthRank() ) );
+  this->draw_text (
+                    video_buffer, card.getNorthRank(),
+                    RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y
+                  );
 
-  this->card_text.setPosition ( nom::Coords( RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y ) );
-  this->card_text.Update();
-  this->card_text.Draw ( video_buffer );
+  this->draw_text (
+                    video_buffer, card.getEastRank(),
+                    RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y
+                  );
 
-  return true;
+  this->draw_text (
+                    video_buffer, card.getWestRank(),
+                    RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y
+                  );
+
+  this->draw_text (
+                    video_buffer, card.getSouthRank(),
+                    RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y
+                  );
+
+}
+
+void CardView::setViewCard ( const Card& card )
+{
+  this->render_card = card;
+}
+
+void CardView::reposition ( const nom::Coords& coords )
+{
+  this->position = coords;
+}
+
+void CardView::face ( bool up )
+{
+  this->card_face_down = up;
+}
+
+void CardView::Update ( void )
+{
+  //this->card_background->setPosition ( this->position );
+  //this->card_face->setPosition ( this->position );
+  //this->card_element->setPosition ( this->position );
+  //this->card_text->setPosition ( this->position );
+
+  //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
+  //{
+    //std::shared_ptr<nom::IDrawable> obj = *it;
+    //obj->Update();
+  //}
+}
+
+void CardView::Draw ( void* video_buffer ) const
+{
+  //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
+  //{
+    //std::shared_ptr<nom::IDrawable> obj = *it;
+    //this->draw_background ( video_buffer, render_card.getPlayerID(), this->position.x, this->position.y );
+    //this->draw_face ( video_buffer, render_card.getID(), this->position.x, this->position.y );
+    //this->draw_element ( video_buffer, render_card.getID(), this->position.x, this->position.y );
+    this->draw ( video_buffer, render_card, this->position.x, this->position.y, this->card_face_down );
+    //obj->Draw ( video_buffer );
+  //}
 }

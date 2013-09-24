@@ -26,22 +26,49 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "resources.hpp"
+#ifndef GAMEAPP_BOARD_TILE_HPP
+#define GAMEAPP_BOARD_TILE_HPP
 
-// Platform-dependent paths
+#include <iostream>
+#include <string>
 
-const nom::Path path;
-const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
-const std::string USER_PLAYER2_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player2.json";
-const std::string USER_BOARD_FILENAME =     TTCARDS_DATA_DIR + path.native() + "board.json";
-const std::string TTCARDS_CONFIG_FILENAME = TTCARDS_DATA_DIR + path.native() + "config.json";
+#include <nomlib/math.hpp>
+#include <nomlib/system.hpp>
 
-// Localization strings
+#include "config.hpp"
+#include "Card.hpp"
+#include "CardDebug.hpp"
 
-const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
+class BoardTile
+{
+  public:
+    /// Default constructor
+    BoardTile ( void );
 
-#ifdef DEBUG
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH ) + "-Debug";
-#else
-  const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );
-#endif
+    /// Construct a new board tile
+    BoardTile ( const Card& card, const nom::Coords& pos, const nom::uint32 element );
+
+    /// Destructor
+    ~BoardTile ( void );
+
+    /// Getter for tile_card instance var
+    const Card& tile ( void ) const;
+
+    /// Getter for tile_pos instance var
+    const nom::Coords& bounds ( void ) const;
+
+    /// Getter for tile_element instance var
+    const nom::uint32 element ( void ) const;
+
+    /// Update an existing tile
+    void update ( const nom::Coords& pos, const Card& card );
+
+  private:
+    friend class Board;
+    Card tile_card;
+    nom::Coords tile_pos;
+    nom::uint32 tile_element;
+    enum BoardPosition board_tile;
+};
+
+#endif // include guard defined

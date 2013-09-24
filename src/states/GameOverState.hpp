@@ -26,80 +26,72 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARDS_MENU_HEADERS
-#define GAMEAPP_CARDS_MENU_HEADERS
+#ifndef GAMEAPP_GAMEOVER_HEADERS
+#define GAMEAPP_GAMEOVER_HEADERS
 
 #include <iostream>
 #include <string>
 #include <memory>
+#include <vector>
 
 #include <nomlib/graphics.hpp>
-#include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
 #include "resources.hpp"
 #include "Card.hpp"
-#include "PlayState.hpp"
 #include "GameObject.hpp"
-#include "PauseState.hpp"
+#include "CardRules.hpp"
+#include "GameOverStateCursor.hpp"
 
-class CardsMenuState: public nom::IState
+class GameOverState: public nom::IState
 {
   public:
-    CardsMenuState ( std::shared_ptr<GameObject> object );
-    ~CardsMenuState ( void );
+    GameOverState (
+                    std::shared_ptr<GameObject> object,
+                    enum GameOverType gameover_state
+                  );
 
+    ~GameOverState ( void );
+
+  private:
     void onInit ( void );
     void onExit ( void );
 
-    void Pause ( void );
-    void Resume ( void );
+    void Resume ( nom::int32 response );
 
-    void Update ( nom::uint32 delta_time );
-    void Draw ( void *video_buffer );
-
-  private:
-    void onKeyDown ( int32_t key, int32_t mod );
-    void onJoyButtonDown ( int32_t which, int32_t button );
-    void onMouseLeftButtonDown ( int32_t x, int32_t y );
-    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y );
+    void onKeyDown ( nom::int32 key, nom::int32 mod );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
     void onMouseWheel ( bool up, bool down );
+    void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
 
-    void reloadDebugFile ( void );
-    void updateCursor ( void );
-    void drawCursor ( void* video_buffer );
-    unsigned int getCursorPos ( void );
-    void moveCursorLeft ( void );
-    void moveCursorRight ( void );
-    void moveCursorUp ( void );
-    void moveCursorDown ( void );
+    void Update ( float delta_time );
+    void Draw ( void* video_buffer );
 
     std::shared_ptr<GameObject> game;
 
-    nom::ui::MessageBox menu_box;
+    nom::Timer update;
+    bool show_results;
+    enum GameOverType gameover_state;
 
-    /// CardHand-derived implementation
-    Card selectedCard;
+    /// Interface cursor
+    GameOverStateCursor cursor;
 
-    /// interface menu elements
-    nom::Sprite menu_element;
+    Card selected_card;
 
-    /// MAX_COLLECTION / per_page
-    unsigned int total_pages;
-    /// number of cards to display per menu page
-    unsigned int per_page;
-    /// current card position
-    unsigned int current_index;
-     /// height of the card name text
-    unsigned int info_text_height;
+    nom::ui::MessageBox info_box;
+    nom::ui::MessageBox card_info_box;
 
-    /// y coords mapping for cursor -> card position index
-    /// minus one (1) padding
-    std::pair<int, int> cursor_coords_map[10];
+    /// Position of player 1 hand
+    nom::Coords player1_pos;
+
+    /// Position of player 2 hand
+    nom::Coords player2_pos;
+
+    nom::EventDispatcher event;
 };
 
 // Convenience declarations for changing state
-typedef std::unique_ptr<CardsMenuState> CardsMenuStatePtr;
+typedef std::unique_ptr<GameOverState> GameOverStatePtr;
 
-#endif // GAMEAPP_CARDS_MENU_HEADERS defined
+#endif // GAMEAPP_GAMEOVER_HEADERS defined

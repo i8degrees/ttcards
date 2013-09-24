@@ -29,111 +29,101 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 
 Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
-                      rank( { { 0, 0, 0, 0 } } ), name ( "\0" ),
+                      rank( { { 0 } } ), name ( "\0" ),
                       player_id ( Card::NOPLAYER ),
                       player_owner ( Card::NOPLAYER )
-{
-}
+{}
 
-Card::Card  ( unsigned int id_, unsigned int level_, unsigned int type_,
-              unsigned int element_, std::array<int, MAX_RANKS> rank_,
-              std::string name_, unsigned int player_id_,
-              unsigned int player_owner_
+Card::Card  (
+              nom::int32 id, nom::int32 level, nom::int32 type,
+              nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
+              std::string name, nom::int32 player_id, nom::int32 player_owner
             )
-{
-  this->setID ( id_ );
-  this->setLevel ( level_ );
-  this->setType ( type_ );
-  this->setElement ( element_ );
-  this->setRanks ( rank_ );
-  this->setName ( name_ );
+            : id ( id ), level ( level ), type ( type ), element ( element ),
+            rank { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } },
+            name ( name ), player_id ( player_id ), player_owner ( player_owner )
+{}
 
-  this->setPlayerID ( player_id_ );
-  this->setPlayerOwner ( player_owner_ );
-}
+Card::~Card ( void ) {}
 
-Card::~Card ( void )
-{
-}
-
-unsigned int Card::getID ( void ) const
+const nom::int32 Card::getID ( void ) const
 {
   return this->id;
 }
 
-unsigned int Card::getLevel ( void )
+const nom::int32 Card::getLevel ( void ) const
 {
   return this->level;
 }
 
-unsigned int Card::getType ( void )
+const nom::int32 Card::getType ( void ) const
 {
   return this->type;
 }
 
-unsigned int Card::getElement ( void )
+const nom::int32 Card::getElement ( void ) const
 {
   return this->element;
 }
 
-std::array<int, MAX_RANKS> Card::getRanks ( void )
+const std::array<nom::int32, MAX_RANKS> Card::getRanks ( void ) const
 {
   return this->rank;
 }
 
-unsigned int Card::getNorthRank ( void )
+const nom::int32 Card::getNorthRank ( void ) const
 {
   return this->rank[NORTH];
 }
 
-unsigned int Card::getEastRank ( void )
+const nom::int32 Card::getEastRank ( void ) const
 {
   return this->rank[EAST];
 }
 
-unsigned int Card::getSouthRank ( void )
+const nom::int32 Card::getSouthRank ( void ) const
 {
   return this->rank[SOUTH];
 }
 
-unsigned int Card::getWestRank ( void )
+const nom::int32 Card::getWestRank ( void ) const
 {
   return this->rank[WEST];
 }
 
-std::string Card::getName ( void )
+const std::string Card::getName ( void ) const
 {
   return this->name;
 }
 
-unsigned int Card::getPlayerID ( void )
+const nom::int32 Card::getPlayerID ( void ) const
 {
   return this->player_id;
 }
 
-unsigned int Card::getPlayerOwner ( void )
+const nom::int32 Card::getPlayerOwner ( void ) const
 {
   return this->player_owner;
 }
 
-void Card::setID ( unsigned int id_ )
+void Card::setID ( nom::int32 id_ )
 {
-  this->id = std::min ( id_, static_cast<nom::uint32> ( MAX_COLLECTION ) );
+  this->id = std::min ( id_, MAX_COLLECTION );
 }
 
-void Card::setLevel ( unsigned int level_ )
+void Card::setLevel ( nom::int32 level_ )
 {
-  this->level = std::min ( level_, static_cast<nom::uint32> ( MAX_LEVEL ) );
+  this->level = std::min ( level_, MAX_LEVEL );
 }
 
-void Card::setType ( unsigned int type_ )
+void Card::setType ( nom::int32 type_ )
 {
-  this->type = std::min ( type_, static_cast<nom::uint32> ( MAX_TYPE ) );
+  this->type = std::min ( type_, MAX_TYPE );
 }
 
-void Card::setElement ( unsigned int element_ )
+void Card::setElement ( nom::int32 element_ )
 {
-  this->element = std::min ( element_, static_cast<nom::uint32> ( MAX_ELEMENT ) );
+  this->element = std::min ( element_, MAX_ELEMENT );
 }
 
 void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
@@ -144,24 +134,24 @@ void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
   this->setWestRank ( ranks[WEST] );
 }
 
-void Card::setNorthRank ( unsigned int rank )
+void Card::setNorthRank ( nom::int32 rank )
 {
-  this->rank[NORTH] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[NORTH] = std::min ( rank, MAX_RANK );
 }
 
-void Card::setEastRank ( unsigned int rank )
+void Card::setEastRank ( nom::int32 rank )
 {
-  this->rank[EAST] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[EAST] = std::min ( rank, MAX_RANK );
 }
 
-void Card::setSouthRank ( unsigned int rank )
+void Card::setSouthRank ( nom::int32 rank )
 {
-  this->rank[SOUTH] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[SOUTH] = std::min ( rank, MAX_RANK );
 }
 
-void Card::setWestRank ( unsigned int rank )
+void Card::setWestRank ( nom::int32 rank )
 {
-  this->rank[WEST] = std::min ( rank, static_cast<nom::uint32> ( MAX_RANK ) );
+  this->rank[WEST] = std::min ( rank, MAX_RANK );
 }
 
 void Card::setName ( std::string name_ )
@@ -172,12 +162,190 @@ void Card::setName ( std::string name_ )
   this->name = name_;
 }
 
-void Card::setPlayerID ( unsigned int player_id_ )
+void Card::setPlayerID ( nom::int32 player_id_ )
 {
   this->player_id = std::min ( player_id_, TOTAL_PLAYERS );
 }
 
-void Card::setPlayerOwner ( unsigned int player_owner_ )
+void Card::setPlayerOwner ( nom::int32 player_owner_ )
 {
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
+}
+
+const json_spirit::Object Card::serialize ( void ) const
+{
+  json_spirit::Object node; // JSON object record we are writing
+  json_spirit::Array ranks; // JSON object child of node
+
+  // Basic card attributes
+  node.push_back ( json_spirit::Pair ( "ID", this->getID() ) );
+  node.push_back ( json_spirit::Pair ( "Name", this->getName() ) );
+  node.push_back ( json_spirit::Pair ( "Level", this->getLevel() ) );
+  node.push_back ( json_spirit::Pair ( "Type", this->getType() ) );
+  node.push_back ( json_spirit::Pair ( "Element", this->getElement() ) );
+
+  // Card rank attributes
+  ranks.push_back ( json_spirit::Value ( this->getNorthRank() ) );
+  ranks.push_back ( json_spirit::Value ( this->getEastRank() ) );
+  ranks.push_back ( json_spirit::Value ( this->getSouthRank() ) );
+  ranks.push_back ( json_spirit::Value ( this->getWestRank() ) );
+
+  // Push ranks values to our current node
+  node.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
+
+  return node;
+}
+
+void Card::increaseNorthRank ( void )
+{
+  this->setNorthRank ( this->getNorthRank() + 1 );
+}
+
+void Card::increaseEastRank ( void )
+{
+  this->setEastRank ( this->getEastRank() + 1 );
+}
+
+void Card::increaseSouthRank ( void )
+{
+  this->setSouthRank ( this->getSouthRank() + 1 );
+}
+
+void Card::increaseWestRank ( void )
+{
+  this->setWestRank ( this->getWestRank() + 1 );
+}
+
+void Card::decreaseNorthRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getNorthRank() - 1, MIN_RANK );
+  this->setNorthRank ( modified_rank );
+}
+
+void Card::decreaseEastRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getEastRank() - 1, MIN_RANK );
+  this->setEastRank ( modified_rank );
+}
+
+void Card::decreaseSouthRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getSouthRank() - 1, MIN_RANK );
+  this->setSouthRank ( modified_rank );
+}
+
+void Card::decreaseWestRank ( void )
+{
+  nom::int32 modified_rank = std::max ( this->getWestRank() - 1, MIN_RANK );
+  this->setWestRank ( modified_rank );
+}
+
+nom::int32 Card::strength ( void )
+{
+  nom::int32 total_strength_value = 0;
+
+  total_strength_value += this->getNorthRank();
+  total_strength_value += this->getEastRank();
+  total_strength_value += this->getWestRank();
+  total_strength_value += this->getSouthRank();
+
+  return total_strength_value;
+}
+
+std::ostream& operator << ( std::ostream& os, const Card& rhs )
+{
+  os  << rhs.getName()
+      << card_delimiter
+      << rhs.getID()
+      << card_delimiter
+      << rhs.getLevel()
+      << card_delimiter
+      << rhs.getType()
+      << card_delimiter
+      << rhs.getElement()
+      << card_delimiter
+      << rhs.getNorthRank()
+      << card_delimiter
+      << rhs.getEastRank()
+      << card_delimiter
+      << rhs.getSouthRank()
+      << card_delimiter
+      << rhs.getWestRank()
+      << card_delimiter
+      << rhs.getPlayerID()
+      << card_delimiter
+      << rhs.getPlayerOwner();
+
+  return os;
+}
+
+bool operator == ( const Card& lhs, const Card& rhs )
+{
+  return  ( lhs.getID() == rhs.getID() )                      &&
+          ( lhs.getLevel() == rhs.getLevel() )                &&
+          ( lhs.getType() == rhs.getType() )                  &&
+          ( lhs.getElement() == rhs.getElement() )            &&
+          ( lhs.getNorthRank() == rhs.getNorthRank() )        &&
+          ( lhs.getEastRank() == rhs.getEastRank() )          &&
+          ( lhs.getSouthRank() == rhs.getSouthRank() )        &&
+          ( lhs.getWestRank() == rhs.getWestRank() )          &&
+          ( lhs.getName() == rhs.getName() );
+}
+
+bool operator != ( const Card& lhs, const Card& rhs )
+{
+  return ! ( lhs == rhs );
+}
+
+bool operator <= ( const Card& lhs, const Card& rhs )
+{
+  return ! (rhs < lhs );
+}
+
+bool operator >= ( const Card& lhs, const Card& rhs )
+{
+  return ! ( lhs < rhs );
+}
+
+bool operator < ( const Card& lhs, const Card& rhs )
+{
+  nom::uint32 lhs_total_strengths = 0;
+  nom::uint32 rhs_total_strengths = 0;
+
+  lhs_total_strengths += lhs.getNorthRank();
+  lhs_total_strengths += lhs.getEastRank();
+  lhs_total_strengths += lhs.getWestRank();
+  lhs_total_strengths += lhs.getSouthRank();
+
+  rhs_total_strengths += rhs.getNorthRank();
+  rhs_total_strengths += rhs.getEastRank();
+  rhs_total_strengths += rhs.getWestRank();
+  rhs_total_strengths += rhs.getSouthRank();
+
+  if ( lhs_total_strengths == rhs_total_strengths )
+  {
+    return lhs_total_strengths < rhs_total_strengths;
+  }
+  else
+  {
+    return lhs_total_strengths < rhs_total_strengths;
+  }
+}
+
+bool operator > ( const Card& lhs, const Card& rhs )
+{
+  nom::uint32 lhs_total_strengths = 0;
+  nom::uint32 rhs_total_strengths = 0;
+
+  lhs_total_strengths += lhs.getNorthRank();
+  lhs_total_strengths += lhs.getEastRank();
+  lhs_total_strengths += lhs.getWestRank();
+  lhs_total_strengths += lhs.getSouthRank();
+
+  rhs_total_strengths += rhs.getNorthRank();
+  rhs_total_strengths += rhs.getEastRank();
+  rhs_total_strengths += rhs.getWestRank();
+  rhs_total_strengths += rhs.getSouthRank();
+
+  return rhs_total_strengths < lhs_total_strengths;
 }

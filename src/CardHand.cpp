@@ -30,15 +30,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardHand::CardHand ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
+  this->set_position ( 0 );
   this->clear();
   this->selectedCard = Card();
 }
 
 CardHand::~CardHand ( void )
 {
-TTCARDS_LOG_CLASSINFO;
+NOM_LOG_TRACE ( TTCARDS );
 
   this->clear();
 }
@@ -137,7 +138,51 @@ nom::int32 CardHand::at ( Card& card )
 
 void CardHand::front ( void )
 {
-  selectCard ( this->cards.front() );
+  this->set_position ( 0 );
+  this->selectCard ( this->cards.front() );
+}
+
+nom::int32 CardHand::position ( void )
+{
+  return this->card_position;
+}
+
+void CardHand::next ( void )
+{
+  nom::int32 pos = this->position();
+  CardsIterator itr;
+
+  if ( itr == this->cards.end() )
+  {
+    this->set_position ( 0 );
+  }
+  else
+  {
+    pos = pos + 1;
+    this->set_position ( pos );
+  }
+
+  itr = this->cards.begin()+pos;
+  this->selectedCard = *itr;
+}
+
+void CardHand::previous ( void )
+{
+  nom::int32 pos = this->position();
+  CardsIterator itr;
+
+  if ( itr == this->cards.end() || itr == this->cards.begin() )
+  {
+    this->set_position ( 0 );
+  }
+  else
+  {
+    pos = pos - 1;
+    this->set_position ( pos );
+  }
+
+  itr = this->cards.begin()+pos;
+  this->selectedCard = *itr;
 }
 
 void CardHand::clear ( void )
@@ -153,7 +198,7 @@ bool CardHand::exists ( const Card& card ) const
 
   for ( auto idx = 0; idx < this->size(); idx++ )
   {
-    if ( card.getID() == this->cards[idx].getID() )
+    if ( card == this->cards[idx] )
       return true;
   }
 
@@ -177,7 +222,7 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCol
 
   std::default_random_engine rand_generator ( seed );
 
-  std::uniform_int_distribution<nom::int32> distribution ( 1, MAX_COLLECTION );
+  std::uniform_int_distribution<nom::int32> distribution ( 0, MAX_COLLECTION-1 );
 
 #ifdef DEBUG_GAME
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
@@ -201,104 +246,65 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCol
 
 bool CardHand::save ( const std::string& filename )
 {
-  std::ofstream fp; // output file handle
-  json_spirit::Object node; // current JSON node we are writing
-  json_spirit::Array game; // overall data to be written out
-  json_spirit::Array ranks; // card rank attributes need to be separated
+  nom::JSON::FileWriter fp; // json_spirit wrapper for file output
+  json_spirit::Array game; // Overall container; this is the parent
+  json_spirit::Object node; // JSON object record; the child
 
-  for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
+  for ( nom::int32 idx = 0; idx < this->size(); idx++ )
   {
-    // Initial card attributes (everything other than ranks)
-    node.push_back ( json_spirit::Pair ( "ID", (int)this->cards[idx].getID() ) );
-    node.push_back ( json_spirit::Pair ( "Name", this->cards[idx].getName() ) );
-    node.push_back ( json_spirit::Pair ( "Level", (int)this->cards[idx].getLevel() ) );
-    node.push_back ( json_spirit::Pair ( "Type", (int)this->cards[idx].getType() ) );
-    node.push_back ( json_spirit::Pair ( "Element", (int)this->cards[idx].getElement() ) );
+    // Primary card attributes
+    node = this->cards[idx].serialize();
 
-    // Card rank attributes
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getNorthRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getEastRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getSouthRank() ) );
-    ranks.push_back ( json_spirit::Value ( (int)this->cards[idx].getWestRank() ) );
-
-    // Push ranks values to our current node
-    node.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
-
-    // Additional card attributes -- initialized in-game
-    node.push_back ( json_spirit::Pair ( "PlayerID", (int)this->cards[idx].getPlayerID() ) );
-    node.push_back ( json_spirit::Pair ( "Owner", (int)this->cards[idx].getPlayerOwner() ) );
+    // Additional attributes to append onto
+    node.push_back ( json_spirit::Pair ( "PlayerID", this->cards[idx].getPlayerID() ) );
+    node.push_back ( json_spirit::Pair ( "Owner", this->cards[idx].getPlayerOwner() ) );
 
     // Push current node to our overall game data to be written
     game.push_back ( node );
 
     // Get ready for the next inbound row
     node.clear();
-    ranks.clear();
   }
 
-  fp.open ( filename );
-
-  if ( fp.is_open() && fp.good() )
+  if ( fp.save ( filename, game, nom::JSON::CompactArrays ) == false )
   {
-    json_spirit::write_stream ( json_spirit::Value ( game ), fp, json_spirit::single_line_arrays );
-    fp.close();
-    return true;
-  }
-  else
-  {
-TTCARDS_LOG_ERR( "Unable to save JSON file: " + filename );
-    fp.close();
+NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
   }
+
+  return true;
 }
 
 bool CardHand::load ( const std::string& filename )
 {
-  // Card attributes to load in
-  nom::uint32 id = 0;
-  nom::uint32 level = 0;
-  nom::uint32 type = 0;
-  nom::uint32 element = 0;
-  std::array<nom::int32, MAX_RANKS> rank = { { 0 } };
-  std::string name = "\0";
-  nom::uint32 player_id = 0;
-  nom::uint32 player_owner = 0;
-
-  std::ifstream fp; // input file handle
+  nom::JSON::FileReader fp; // json_spirit wrapper for file input
   json_spirit::Object node;
   json_spirit::Value value;
   json_spirit::Array game;
-
   // Iterators
   json_spirit::Array::size_type i;
   json_spirit::Object::size_type o;
 
-  this->clear(); // otherwise we exceed our limit of cards
+  // The card attributes we are loading in will be stored in here temporarily.
+  // This will become the data to load onto the board if all goes well..!
+  Card card;
+  Cards input_cards;
 
-  fp.open ( filename );
-
-  if ( fp.is_open() && fp.good() )
+  if ( fp.load ( filename, value ) == false )
   {
-    if ( json_spirit::read_stream ( fp, value ) == false )
-    {
-TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
-      fp.close();
-      return false;
-    }
-    fp.close();
-  }
-  else
-  {
-    fp.close();
+NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  assert ( value.type() == json_spirit::array_type );
+  // FIXME
+  this->clear(); // otherwise we exceed our limit of cards
+
+NOM_ASSERT ( value.type() == json_spirit::array_type );
   game = value.get_array();
 
   for ( i = 0; i != game.size(); i++ )
   {
-    assert ( game[i].type() == json_spirit::obj_type );
+NOM_ASSERT ( game[i].type() == json_spirit::obj_type );
     node = game[i].get_obj();
 
     for ( o = 0; o != node.size(); o++ )
@@ -309,61 +315,160 @@ TTCARDS_LOG_ERR( "Unable to parse JSON input file: " + filename );
 
       if ( path == "ID" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        id = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setID ( value.get_int() );
       }
       else if ( path == "Name" )
       {
-        assert ( value.type() == json_spirit::str_type );
-        name = value.get_str();
+NOM_ASSERT ( value.type() == json_spirit::str_type );
+        card.setName ( value.get_str() );
       }
       else if ( path == "Level" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        level = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setLevel ( value.get_int() );
       }
       else if ( path == "Type" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        type = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setType ( value.get_int() );
       }
       else if ( path == "Element" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        element = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setElement ( value.get_int() );
       }
       else if ( path == "Ranks" )
       {
-        assert ( value.type() == json_spirit::array_type );
+NOM_ASSERT ( value.type() == json_spirit::array_type );
         const json_spirit::Array &ranks = value.get_array();
 
-        assert ( ranks.size() == 4 );
-        for ( nom::uint32 rdx = 0; rdx < ranks.size(); rdx++ )
-        {
-          rank[NORTH] = ranks[rdx].get_int();
-          rdx++;
-          rank[EAST] = ranks[rdx].get_int();
-          rdx++;
-          rank[SOUTH] = ranks[rdx].get_int();
-          rdx++;
-          rank[WEST] = ranks[rdx].get_int();
-          rdx++;
-        }
+NOM_ASSERT ( ranks.size() == 4 );
+        card.setNorthRank ( ranks[NORTH].get_int() );
+        card.setEastRank ( ranks[EAST].get_int() );
+        card.setSouthRank ( ranks[SOUTH].get_int() );
+        card.setWestRank ( ranks[WEST].get_int() );
       }
       else if ( path == "PlayerID" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        player_id = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setPlayerID ( value.get_int() );
       }
       else if ( path == "Owner" )
       {
-        assert ( value.type() == json_spirit::int_type );
-        player_owner = value.get_int();
+NOM_ASSERT ( value.type() == json_spirit::int_type );
+        card.setPlayerOwner ( value.get_int() );
 
-        this->cards.push_back ( Card ( id, level, type, element, { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } }, name, player_id, player_owner ) );
+        // The next line *MUST* be at the end of the current node object being
+        // read in -- or else epic failure will result!
+        input_cards.push_back ( card );
       }
     } // end current node loop
   } // end current array node
 
+#ifndef DEBUG
+  if ( input_cards.size() < 1 ) // Sanity check
+  {
+NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid at file: " + filename );
+    return false;
+  }
+#endif
+
+  // All is well, let us make our freshly loaded data permanent
+  this->cards = input_cards;
+
   return true;
+}
+
+void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )
+{
+  Card selected = this->getSelectedCard();
+  std::array<nom::int32, MAX_RANKS> ranks = {{ 0 }}; // card ranks container
+  CardsIterator pos = this->cards.begin();
+
+  // First, obtain current rank attributes of the selected card; validation is
+  // done for us by the Card class.
+  ranks = selected.getRanks();
+
+  if ( modifier ) // increase
+  {
+    ranks [ direction ] = ranks [ direction ] + 1;
+    selected.setRanks ( ranks );
+  }
+  else // assume a decrease
+  {
+    // This clamps the decreased attribute to not falling below one (1).
+    ranks [ direction ] = std::max ( ranks [ direction ] - 1, 1 );
+    selected.setRanks ( ranks );
+  }
+
+  // Get the position of the selected card before we erase it so we can
+  // reposition the new card at the same index.
+  pos = pos + this->at ( selected );
+
+  this->erase ( selected );
+
+  // Update the player hand with our modified card attributes
+  this->cards.insert ( pos, selected );
+
+  // Update the player's selected card
+  this->selectCard ( selected );
+}
+
+const Card CardHand::strongest ( void )
+{
+  Cards strongest_cards ( this->cards );
+
+  std::sort ( strongest_cards.begin(), strongest_cards.end(), std::greater<Card>() );
+
+  return strongest_cards.front();
+}
+
+const Card CardHand::weakest ( void )
+{
+  Cards weakest_cards ( this->cards );
+
+  std::sort ( weakest_cards.begin(), weakest_cards.end(), std::less<Card>() );
+
+  return weakest_cards.front();
+}
+
+void CardHand::set_position ( nom::int32 pos )
+{
+  this->card_position = pos;
+}
+
+std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
+{
+  for ( auto idx = 0; idx < rhs.cards.size(); idx++ )
+  {
+    os  << rhs.cards[idx].getName()
+        << card_delimiter
+        << rhs.cards[idx].getID()
+        << card_delimiter
+        << rhs.cards[idx].getLevel()
+        << card_delimiter
+        << rhs.cards[idx].getType()
+        << card_delimiter
+        << rhs.cards[idx].getElement()
+        << card_delimiter
+        << rhs.cards[idx].getNorthRank()
+        << card_delimiter
+        << rhs.cards[idx].getEastRank()
+        << card_delimiter
+        << rhs.cards[idx].getSouthRank()
+        << card_delimiter
+        << rhs.cards[idx].getWestRank()
+        << card_delimiter
+        << rhs.cards[idx].getPlayerID()
+        << card_delimiter
+        << rhs.cards[idx].getPlayerOwner();
+  }
+
+  return os;
+}
+
+void Free_CardHand ( CardHand* ptr )
+{
+  // Do nothing custom (smart pointer) deleter
 }

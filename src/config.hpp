@@ -29,54 +29,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_CFG_HEADERS
 #define GAMEAPP_CFG_HEADERS
 
-#include <cassert>
+#include <string>
+
+// We borrow several C macros from here for conditional debug logging
+#include <nomlib/config.hpp>
 
 /// Cross-platform support files
 #include <nomlib/types.hpp> // data types
-#include <nomlib/system/clock.hpp> // date & time
 
 /// Site-specific constants -- this is likely specific to your own local system
 /// setup; auto-generated at compile-time and therefore must recompile to modify
 /// said constants.
 #include "version.hpp"
-
-// Pretty print macros
-#define TTCARDS_DUMP_VAR(var) \
-  ( std::cout << std::endl << #var << ": " << var << std::endl << std::endl )
-
-// Debugging macros
-#ifdef TTCARDS_DEBUG
-
-  // Output info messages if debugging is turned on
-  #define TTCARDS_LOG_INFO(message) \
-    ( std::cout << "TTCARDS_LOG_INFO at " << nom::getCurrentTime() << message << std::endl << std::endl )
-
-  #define TTCARDS_LOG_ERR(message) \
-    ( std::cout << "TTCARDS_LOG_ERR at " << nom::getCurrentTime() << "In file " << __FILE__ << ":" << __LINE__ << std::endl << "Reason: " << message << std::endl << std::endl )
-
-#else // Do not add any overhead
-  #define TTCARDS_LOG_INFO(message)
-  #define TTCARDS_LOG_ERR(message)
-#endif
-
-#ifdef TTCARDS_DEBUG_ASSERT
-
-  #define TTCARDS_ASSERT(expression) \
-    ( assert (expression) )
-
-#else // Do not add any overhead
-  #define TTCARDS_ASSERT(expression)
-#endif
-
-#ifdef TTCARDS_DEBUG_TRACE
-
-  // If trace debugging is turned on, show class construction and destruction
-  #define TTCARDS_LOG_CLASSINFO \
-    ( std::cout << "TTCARDS_LOG_CLASSINFO at " << nom::getCurrentTime() << __func__ << std::endl << std::endl )
-
-#else // Do not add any overhead
-  #define TTCARDS_LOG_CLASSINFO
-#endif
 
 /// Scale factor of graphics; only a scaling factor of 1..3 is supported at the
 /// moment. Resource data is not scaled in real-time (yet), so you must also
@@ -130,7 +94,7 @@ constexpr nom::uint32 MAX_FRAMESKIP = 5;
 constexpr nom::uint32 FRAMES_PER_SECOND = 15;
 
 /// Maximum number of players -- both human & AI
-constexpr nom::uint32 TOTAL_PLAYERS = 2; // +1 padding
+constexpr nom::int32 TOTAL_PLAYERS = 2; // +1 padding
 
 /// Maximum number of cards in cards database; see cards.json
 constexpr nom::int32 MAX_COLLECTION = 110;
@@ -142,7 +106,7 @@ constexpr nom::int32 MAX_PLAYER_HAND = 5;
 constexpr nom::int32 BOARD_GRID_WIDTH = 3;
 constexpr nom::int32 BOARD_GRID_HEIGHT = 3;
 
-// Sprite sheet IDs
+/// Sprite sheet: elements.json
 constexpr nom::int32 ELEMENT_NONE = 0;
 constexpr nom::int32 ELEMENT_EARTH = 1;
 constexpr nom::int32 ELEMENT_FIRE = 2;
@@ -153,13 +117,17 @@ constexpr nom::int32 ELEMENT_THUNDER = 6;
 constexpr nom::int32 ELEMENT_WATER = 7;
 constexpr nom::int32 ELEMENT_WIND = 8;
 
-constexpr nom::int32 NOFACE_ID = 0;
-constexpr nom::int32 NOPLAYER_BACKGROUND_ID = 1;
-constexpr nom::int32 PLAYER1_BACKGROUND_ID = 2;
-constexpr nom::int32 PLAYER2_BACKGROUND_ID = 3;
+/// Sprite sheet: faces.json
+constexpr nom::int32 NOFACE_ID = 110;
+
+/// Sprite sheet: cursors.json
 constexpr nom::int32 INTERFACE_CURSOR_NONE = 0;
 constexpr nom::int32 INTERFACE_CURSOR_LEFT = 1;
-constexpr nom::int32 INTERFACE_CURSOR_RIGHT = 2;
+constexpr nom::int32 INTERFACE_CURSOR_LEFT_BLINK = 2;
+constexpr nom::int32 INTERFACE_CURSOR_RIGHT = 3;
+constexpr nom::int32 INTERFACE_CURSOR_RIGHT_BLINK = 4;
+
+/// Sprite sheet: menu_elements.json
 constexpr nom::int32 INTERFACE_MENU_ELEMENT = 0;
 constexpr nom::int32 INTERFACE_MENU_ELEMENT_USED = 1;
 constexpr nom::int32 INTERFACE_MENU_ELEMENT_PAGE_LEFT = 2;
@@ -168,9 +136,6 @@ constexpr nom::int32 INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
 /// Additional resource data; width, height, origin coordinates
 constexpr nom::int32 CARD_WIDTH = 64 * SCALE_FACTOR;
 constexpr nom::int32 CARD_HEIGHT = 64 * SCALE_FACTOR;
-
-constexpr nom::int32 BACKGROUND_WIDTH = CARD_WIDTH;
-constexpr nom::int32 BACKGROUND_HEIGHT = CARD_HEIGHT;
 
 constexpr nom::int32 ELEMENT_WIDTH = 16 * SCALE_FACTOR;
 constexpr nom::int32 ELEMENT_HEIGHT = 16 * SCALE_FACTOR;
@@ -212,22 +177,16 @@ constexpr nom::int32 PLAYER2_SCORE_ORIGIN_Y = 176 * SCALE_FACTOR;
 
 // TODO: relocate
 constexpr nom::int32 PLAYER1_GAMEOVER_ORIGIN_X = BOARD_ORIGIN_X - ( CARD_WIDTH );
-constexpr nom::int32 PLAYER1_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 3 );
+constexpr nom::int32 PLAYER1_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT ) + ( CARD_HEIGHT / 2 ) + ( CARD_HEIGHT / 4 );
 
 constexpr nom::int32 PLAYER2_GAMEOVER_ORIGIN_X = BOARD_ORIGIN_X - ( CARD_WIDTH );
-constexpr nom::int32 PLAYER2_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT ) + ( CARD_HEIGHT / 2 ) + ( CARD_HEIGHT / 4 );
+constexpr nom::int32 PLAYER2_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 3 );
 
-constexpr nom::int32 CARD_ORIGIN_X = 0;
-constexpr nom::int32 CARD_ORIGIN_Y = 0;
+constexpr nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_X = PLAYER2_GAMEOVER_ORIGIN_X;
+constexpr nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y = PLAYER2_GAMEOVER_ORIGIN_Y * 2;
 
-constexpr nom::int32 CARD_FACE_ORIGIN_X = CARD_ORIGIN_X;
-constexpr nom::int32 CARD_FACE_ORIGIN_Y = CARD_ORIGIN_Y;
-
-constexpr nom::int32 BACKGROUND_ORIGIN_X = CARD_ORIGIN_X;
-constexpr nom::int32 BACKGROUND_ORIGIN_Y = CARD_ORIGIN_Y;
-
-constexpr nom::int32 ELEMENT_ORIGIN_X = ( CARD_ORIGIN_X + 42 ) * SCALE_FACTOR;
-constexpr nom::int32 ELEMENT_ORIGIN_Y = ( CARD_ORIGIN_Y + 5 ) * SCALE_FACTOR;
+constexpr nom::int32 ELEMENT_ORIGIN_X = 42 * SCALE_FACTOR;
+constexpr nom::int32 ELEMENT_ORIGIN_Y = 5 * SCALE_FACTOR;
 
 constexpr nom::int32 RANK_NORTH_ORIGIN_X = 8 * SCALE_FACTOR;
 constexpr nom::int32 RANK_NORTH_ORIGIN_Y = 3 * SCALE_FACTOR;
@@ -240,9 +199,6 @@ constexpr nom::int32 RANK_SOUTH_ORIGIN_Y = 20 * SCALE_FACTOR;
 
 constexpr nom::int32 RANK_WEST_ORIGIN_X = 4 * SCALE_FACTOR;
 constexpr nom::int32 RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
-
-constexpr nom::int32 CARD_ID_ORIGIN_X = 26 * SCALE_FACTOR;
-constexpr nom::int32 CARD_ID_ORIGIN_Y = 4 * SCALE_FACTOR;
 
 // interface_pickOutCards() Menu
 constexpr nom::int32 PICK_CARDS_MENU_ORIGIN_X = 60 * SCALE_FACTOR;
@@ -292,25 +248,26 @@ constexpr nom::int32 MENU_CARDS_PAGE_RIGHT_ORIGIN_Y = MENU_CARDS_PAGE_LEFT_ORIGI
 constexpr nom::int32 INFO_BOX_WIDTH = 176 * SCALE_FACTOR;
 constexpr nom::int32 INFO_BOX_HEIGHT = 24 * SCALE_FACTOR;
 
-constexpr nom::int32 INFO_BOX_ORIGIN_X = 104 * SCALE_FACTOR;
+constexpr nom::int32 INFO_BOX_ORIGIN_X = ( SCREEN_WIDTH - INFO_BOX_WIDTH ) / 2;
 constexpr nom::int32 INFO_BOX_ORIGIN_Y = 194 * SCALE_FACTOR;
-constexpr nom::int32 INFO_BOX_TEXT_ORIGIN_Y = 196 * SCALE_FACTOR;
 
-constexpr nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_X = 108 * SCALE_FACTOR;
-constexpr nom::int32 INFO_BOX_SMALL_TEXT_ORIGIN_Y = 194 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_WIDTH = 88 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_HEIGHT = 24 * SCALE_FACTOR;
 
-constexpr nom::int32 DEBUG_BOX_WIDTH = 43 * SCALE_FACTOR;
-constexpr nom::int32 DEBUG_BOX_HEIGHT = 20 * SCALE_FACTOR;
-
-constexpr nom::int32 DEBUG_BOX_ORIGIN_X = 170 * SCALE_FACTOR;
+constexpr nom::int32 DEBUG_BOX_ORIGIN_X = ( SCREEN_WIDTH - DEBUG_BOX_WIDTH ) / 2;
 constexpr nom::int32 DEBUG_BOX_ORIGIN_Y = 8 * SCALE_FACTOR;
-constexpr nom::int32 DEBUG_BOX_TEXT_ORIGIN_Y = 10 * SCALE_FACTOR;
 
 constexpr nom::int32 PAUSE_BOX_WIDTH = 176 * SCALE_FACTOR;
 constexpr nom::int32 PAUSE_BOX_HEIGHT = 24 * SCALE_FACTOR;
 
 constexpr nom::int32 PAUSE_BOX_ORIGIN_X = ( SCREEN_WIDTH - PAUSE_BOX_WIDTH ) / 2;
 constexpr nom::int32 PAUSE_BOX_ORIGIN_Y = ( SCREEN_HEIGHT - PAUSE_BOX_HEIGHT ) / 2;
+
+constexpr nom::int32 OPTION_BOX_WIDTH = 116 * SCALE_FACTOR;
+constexpr nom::int32 OPTION_BOX_HEIGHT = 72 * SCALE_FACTOR;
+
+constexpr nom::int32 OPTION_BOX_ORIGIN_X = ( SCREEN_WIDTH - OPTION_BOX_WIDTH ) / 2;
+constexpr nom::int32 OPTION_BOX_ORIGIN_Y = ( SCREEN_HEIGHT - OPTION_BOX_HEIGHT ) / 2;
 
 constexpr nom::int32 PLAYER_INDICATOR_WIDTH = 16 * SCALE_FACTOR;
 constexpr nom::int32 PLAYER_INDICATOR_HEIGHT = 16 * SCALE_FACTOR;
@@ -354,6 +311,27 @@ enum {
 enum {
   PLAYER1=0,
   PLAYER2=1
+};
+
+enum GameOverType
+{
+  NotOver = 0,
+  Tie,
+  Won,
+  Lost
+};
+
+enum class BoardPosition: nom::int32
+{
+  TopLeft = 0,
+  TopCenter,
+  TopRight,
+  MiddleLeft,
+  MiddleCenter,
+  MiddleRight,
+  BottomLeft,
+  BottomCenter,
+  BottomRight
 };
 
 #endif // GAMEAPP_CFG_HEADERS defined

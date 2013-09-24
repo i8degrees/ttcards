@@ -26,48 +26,22 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_GAMEOVER_HEADERS
-#define GAMEAPP_GAMEOVER_HEADERS
+#include "CardsMenuStateCursor.hpp"
 
-#include <iostream>
-#include <string>
-#include <memory>
-#include <vector>
+CardsMenuStateCursor::CardsMenuStateCursor ( void ) {}
 
-#include <nomlib/graphics.hpp>
-#include <nomlib/system.hpp>
+CardsMenuStateCursor::~CardsMenuStateCursor ( void ) {}
 
-#include "config.hpp"
-#include "resources.hpp"
-#include "Card.hpp"
-#include "CardsMenuState.hpp"
-#include "GameObject.hpp"
-#include "PauseState.hpp"
-
-class GameOverState: public nom::IState
+/*
+nom::int32 CardsMenuStateCursor::moveCursorLeft ( void )
 {
-  public:
-    GameOverState ( std::shared_ptr<GameObject> object, nom::uint32 gameover_state );
-    ~GameOverState ( void );
-  private:
-    void onInit ( void );
-    void onExit ( void );
-
-    void Pause ( void );
-    void Resume ( void );
-
-    void Update ( nom::uint32 delta_time );
-    void Draw ( void* video_buffer );
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
-
-    std::shared_ptr<GameObject> game;
-    std::vector<Card> player_cards[2];
-    nom::Timer update;
-    bool show_results;
-    nom::uint32 gameover_state;
-};
-
-// Convenience declarations for changing state
-typedef std::unique_ptr<GameOverState> GameOverStatePtr;
-
-#endif // GAMEAPP_GAMEOVER_HEADERS defined
+  if ( this->getState() == 0 )
+  {
+    if ( this->current_index > 0 )
+    {
+      this->current_index -= this->per_page;
+      return this->current_index;
+    }
+  }
+}
+*/

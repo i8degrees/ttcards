@@ -46,14 +46,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "version.hpp"
 #include "resources.hpp"
 #include "Player.hpp"
 #include "Card.hpp"
-//#include "cpu_Player.hpp"
-#include "CardsMenuState.hpp"
-#include "GameOverState.hpp"
+//#include "cpu_player.hpp"
 #include "GameObject.hpp"
-#include "PauseState.hpp"
 
 class PlayState: public nom::IState
 {
@@ -66,7 +64,7 @@ class PlayState: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( nom::uint32 delta_time );
+    void Update ( float delta_time );
     void Draw ( void* video_buffer );
   private:
     void onKeyDown ( int32_t key, int32_t mod );
@@ -75,19 +73,10 @@ class PlayState: public nom::IState
     void onMouseWheel ( bool up, bool down );
     void onJoyButtonDown ( int32_t which, int32_t button );
 
-    // Playstate_debug.cpp
-    void debugCardsDiscard ( void );
-    void debugCardsNoRuleset ( void );
-    void debugCardsSameRuleset ( void );
-    void removePlayerCard ( void );
-    void debugBox ( void );
-    void debugModifyCardRank ( bool modifier, nom::uint32 direction );
-
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
     void endTurn ( void );
 
-    void showCardInfoBox ( void *video_buffer );
     bool isCursorLocked ( void );
     void lockCursor ( bool lock );
     void resetCursor ( void );
@@ -101,6 +90,10 @@ class PlayState: public nom::IState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
+    /// Interface Helper method; shows Card's ID number in a message box for
+    /// both cursor states; player's hand and placed board cards -- debug
+    /// handling included.
+    void updateMessageBoxes ( void );
     void updateCursor ( void );
     void drawCursor ( void* video_buffer );
 
@@ -124,12 +117,26 @@ class PlayState: public nom::IState
     /// y coords mapping for cursor -> card position index
     nom::Coords cursor_coords_map[5];
 
-    unsigned int turn; // FIXME: player1 = 0, player2 = 1
+    nom::uint32 turn; // FIXME: player1 = 0, player2 = 1
+
     /// locks cursor state to board placement
     bool cursor_locked;
 
     /// visual indication of which player's turn it is
     nom::Rectangle player_rect;
+
+    /// Animation "blink" timer for visual notification when interface cursor
+    /// is locked on a card (board drop mode).
+    nom::Timer cursor_blink;
+    bool blink_cursor;
+
+    /// Simulate an AI player taking their time in thought about the next move
+    nom::AnimationTimer player_timer[2];
+
+    /// Debug option -- when toggled on, we are able to control both players.
+    bool skip_turn;
+
+    enum GameOverType gameover_state;
 };
 
 // Convenience declarations for changing state
