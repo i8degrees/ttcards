@@ -144,7 +144,7 @@ void PlayState::onInit ( void )
 
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
-  this->player_turn ( nom::randomInteger ( 0, TOTAL_PLAYERS - 1 ) );
+  this->player_turn ( nom::rand ( 0, TOTAL_PLAYERS - 1 ) );
 
   // Initialize our animation state timers
   this->player_timer[1].setFrameRate ( 320 ); // 250 is also nice, I think!
@@ -905,7 +905,7 @@ void PlayState::Update ( float delta_time )
     // Only show player2 animation when we are not controlling him
     if ( this->skip_turn == false )
     {
-      nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[PLAYER2].size() );
+      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[PLAYER2].size() );
       this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
     }
   }
@@ -935,9 +935,9 @@ void PlayState::Update ( float delta_time )
       board_edges[3].x = 2;
       board_edges[3].y = 2;
 
-      nom::int32 edge_pick = nom::randomInteger ( 0, 3 );
+      nom::int32 edge_pick = nom::rand ( 0, 3 );
 
-      nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
+      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() );
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
 
       if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
@@ -958,9 +958,9 @@ void PlayState::Update ( float delta_time )
       }
       else
       {
-        nom::int32 moveX = nom::randomInteger ( 0, 2 );
-        nom::int32 moveY = nom::randomInteger ( 0, 2 );
-        nom::uint32 rand_pick = nom::randomInteger ( 0, this->game->hand[1].size() );
+        nom::int32 moveX = nom::rand ( 0, 2 );
+        nom::int32 moveY = nom::rand ( 0, 2 );
+        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() );
         this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
 
         this->moveTo ( moveX, moveY );

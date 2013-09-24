@@ -84,7 +84,7 @@ NOM_LOG_TRACE ( TTCARDS );
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      nom::uint32 random_element = nom::randomInteger ( 0, MAX_ELEMENT );
+      nom::uint32 random_element = nom::rand ( 0, MAX_ELEMENT );
       this->grid[x][y] = BoardTile ( Card(), this->board_map[idx], random_element );
       idx++; // this->board_map[0..8]
     }
