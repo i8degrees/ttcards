@@ -848,7 +848,7 @@ void PlayState::updateCursor ( void )
   this->game->cursor.update();
 }
 
-void PlayState::drawCursor ( void* video_buffer )
+void PlayState::drawCursor ( nom::Surface* video_buffer )
 {
   this->game->cursor.draw ( video_buffer );
 
@@ -971,7 +971,7 @@ void PlayState::Update ( float delta_time )
   this->game->context.Update();
 }
 
-void PlayState::Draw ( void *video_buffer )
+void PlayState::Draw ( nom::Surface* video_buffer )
 {
   this->game->background.Draw ( video_buffer );
 

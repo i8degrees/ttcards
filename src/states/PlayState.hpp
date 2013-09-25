@@ -65,7 +65,8 @@ class PlayState: public nom::IState
     void Resume ( void );
 
     void Update ( float delta_time );
-    void Draw ( void* video_buffer );
+    void Draw ( nom::Surface* video_buffer );
+
   private:
     void onKeyDown ( int32_t key, int32_t mod );
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
@@ -95,7 +96,7 @@ class PlayState: public nom::IState
     /// handling included.
     void updateMessageBoxes ( void );
     void updateCursor ( void );
-    void drawCursor ( void* video_buffer );
+    void drawCursor ( nom::Surface* video_buffer );
 
     /// Update each player's scoreboard
     void updateScore ( void );

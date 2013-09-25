@@ -57,7 +57,7 @@ class ContinueMenuState: public nom::IState
     void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
 
     void Update ( float delta_time );
-    void Draw ( void* video_buffer );
+    void Draw ( nom::Surface* video_buffer );
 
     std::shared_ptr<GameObject> game;
 

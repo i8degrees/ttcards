@@ -104,7 +104,7 @@ void PauseState::Update ( float delta_time )
   this->game->context.Update();
 }
 
-void PauseState::Draw ( void* video_buffer )
+void PauseState::Draw ( nom::Surface* video_buffer )
 {
   this->info_box.Draw( video_buffer );
 

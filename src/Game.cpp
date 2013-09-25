@@ -397,7 +397,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   return true;
 }
 
-void App::onEvent ( SDL_Event *event )
+void App::onEvent ( nom::Event* event )
 {
   // Take care of our own events
   Input::HandleInput ( event );
