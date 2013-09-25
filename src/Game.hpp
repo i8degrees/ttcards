@@ -60,7 +60,7 @@ class App: public nom::SDL_App // "is-a" relationship
     bool onInit ( void );
 
     /// Handle app & state events
-    void onEvent ( SDL_Event *event );
+    void onEvent ( nom::Event* event );
 
     /// Handle key events
     void onKeyDown ( int32_t key, int32_t mod );
@@ -76,7 +76,7 @@ class App: public nom::SDL_App // "is-a" relationship
     /// Timer for tracking frames per second
     nom::FPS fps;
     /// Input events
-    SDL_Event event;
+    nom::Event event;
 };
 
 

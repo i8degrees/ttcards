@@ -74,7 +74,7 @@ class Player
     void setScore ( unsigned int score );
 
     void Update ( void );
-    void Draw ( void* video_buffer );
+    void Draw ( nom::Surface* video_buffer );
 
   private:
     /// Card rendering
