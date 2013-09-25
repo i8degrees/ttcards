@@ -92,7 +92,7 @@ struct GameObject
   nom::BitmapFont info_text_gray;
 
   /// Game Over text
-  nom::Text gameover_text;
+  nom::TrueTypeFont gameover_text;
 
   /// Scoreboard text
   nom::TrueTypeFont score_text[2];
