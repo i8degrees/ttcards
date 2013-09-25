@@ -44,6 +44,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct GameObject
 {
+  GameObject ( void ) {}
+  ~GameObject ( void ) {}
+
   /// Audio subsystem
   nom::OpenAL::AudioDevice dev;
 
