@@ -1018,13 +1018,17 @@ void PlayState::Draw ( nom::Surface* video_buffer )
     }
 
     nom::int32 width = this->game->gameover_text.getFontWidth();
-    this->game->gameover_text.setPosition ( nom::Coords ( ( SCREEN_WIDTH - width ) / 2, SCREEN_HEIGHT / 2 ) );
+    nom::int32 height = this->game->gameover_text.getFontHeight();
+
+    nom::Coords centered_pos = nom::Coords ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT  - height ) / 2 );
+    this->game->gameover_text.setPosition ( centered_pos );
+
     this->game->gameover_text.Update();
     this->game->gameover_text.Draw ( video_buffer );
     this->game->context.Update();
 
-    nom::sleep ( 1000 ); // Chill for a second
-
+    // Chill for a second
+    nom::sleep ( 1000 );
     if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
     {
       nom::GameStates::ChangeState ( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
