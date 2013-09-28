@@ -1,5 +1,4 @@
-TTcards
-=======
+# TTcards pre-release v0.9.0 #
 
 All in all, I've accomplished way more than I had anticipated for!
 
@@ -14,8 +13,7 @@ All in all, I've accomplished way more than I had anticipated for!
 
 ![ttcards_v0 9 0](https://f.cloud.github.com/assets/1329364/1204974/f301ef6c-2572-11e3-8825-7df7daf6d307.png)
 
-Upcoming v1.0.0 Wish List
--------------------------
+## Upcoming v1.0.0 Wish List ##
 
 * AI player
 * Replace player rectangle placeholders with image

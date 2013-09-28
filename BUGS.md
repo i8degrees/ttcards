@@ -1,11 +1,8 @@
-BUGS
-====
+# BUGS #
 
-Unresolved
-----------
+## Unresolved ##
 
-Resolved
---------
+## Resolved ##
 
 * Text alignment issues with info_text object; this is likely due to the shared
 nature of the object between states and its potential leftover values with the
