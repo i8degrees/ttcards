@@ -1,6 +1,6 @@
 # TTcards #
 
-Remake (clone) of SquareSoft's Final Fantasy VIII Triple Triad card game.
+Remake of a beloved card game from my youth -- SquareSoft's Final Fantasy VIII Triple Triad -- no machine reverse engineering has been done (per se), other than from the game sprites. The code base derives entirely from many hours of amateur visual study and speculation (personal judgment) of how the game logic works based on reaction.
 
 ## Building Instructions ##
 
@@ -8,9 +8,8 @@ Remake (clone) of SquareSoft's Final Fantasy VIII Triple Triad card game.
 
 * cmake v2.6+
 * [nomlib](https://github.com/i8degrees/nomlib)
-* [json_spirit](https://github.com/i8degrees/json_spirit)
 * SDL v1.2.15
-* A recent compiler that has support for the latest C++11 extensions
+* clang (v3.x) with libc++ libraries or recent GCC version (known to work with v4.6.x) with c++0x
 
 ### OSX ###
 
