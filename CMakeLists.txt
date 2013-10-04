@@ -148,21 +148,27 @@ include ( "${SRC_DIR}/CMakeLists.txt" )
 #
 # Add libraries & header file inclusion paths to EXT_HEADERS & EXTLIBS as we
 # find them.
-find_package ( SDL REQUIRED )
+find_package ( SDL2 REQUIRED )
+find_package ( SDL2_image REQUIRED ) # FIXME; we should not need to do this.
+find_package ( SDL2_ttf REQUIRED ) # FIXME; we should not need to do this.
 find_package ( nomlib REQUIRED )
 
-# We need GTK2 only for its header files (nomlib links to GTK2 for us)
-# (This will be fixed sometime in the future)
-if ( PLATFORM_LINUX )
-  find_package ( GTK2 REQUIRED gtk )
-endif ( PLATFORM_LINUX )
+if ( SDL2_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
+endif ( SDL2_FOUND )
 
-if ( SDL_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL_LIBRARY} )
-else ( NOT SDL_FOUND )
-  message ( FATAL_ERROR "Required dependency SDL missing!" )
-endif ( SDL_FOUND )
+# FIXME; we should not need to do this.
+if ( SDL2_IMAGE_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
+endif ( SDL2_IMAGE_FOUND )
+
+# FIXME; we should not need to do this.
+if ( SDL2_TTF_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
+endif ( SDL2_TTF_FOUND )
 
 if ( NOMLIB_FOUND )
   set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
@@ -192,23 +198,10 @@ elseif ( NOT IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 endif ( IS_DIRECTORY "${HEADERS_JSON_SPIRIT_DIR}" )
 
 if ( PLATFORM_OSX )
-  # The SDL_LIBRARY variable for OS X is appended with the "-framework Cocoa"
-  # linkage flag, so we have to sanitize this before hand if we want to use the
-  # value in anything other than linking -- such as packaging the library into a
-  # bundle.
-  #
-  # From here on out, the burden of linking to the Cocoa framework when need be
-  # is entirely on us. I say good riddance!
-  string ( REPLACE "-framework Cocoa" "" SDL_LIBRARY ${SDL_LIBRARY} )
+  find_library ( COCOA_LIBRARY Cocoa )
+  mark_as_advanced ( COCOA_LIBRARY )
+  set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
 endif ( PLATFORM_OSX )
-
-if ( PLATFORM_LINUX )
-  if ( GTK2_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${GTK2_INCLUDE_DIRS} )
-  else ( NOT GTK2_FOUND )
-    message ( FATAL_ERROR "Required dependency GTK2 (headers) missing!" )
-  endif ( GTK2_FOUND )
-endif ( PLATFORM_LINUX )
 
 # External header files inclusion
 include_directories ( ${EXT_HEADERS} )
@@ -267,7 +260,7 @@ if ( OSXAPP )
   # Install our external dependencies into our application bundle
   install ( DIRECTORY
             "${NOMLIB_LIBRARY}" # nomlib.framework
-            "${SDL_LIBRARY}" # SDL.framework v1.2.15
+            "${SDL2_LIBRARY}" # SDL.framework v2.0.0
             DESTINATION "${INSTALL_FRAMEWORK_PATH}"
             PATTERN ".*" EXCLUDE # do not include dotfiles
             PATTERN "Headers" EXCLUDE # do not include header files
