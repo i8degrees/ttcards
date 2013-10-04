@@ -119,7 +119,7 @@ class Board
     void update ( void );
 
     /// Draws our active board grid based on their values (card IDs)
-    void draw ( nom::Surface* video_buffer );
+    void draw ( SDL_Renderer* target );
 
     /// Pretty print the current board tiles
     void list ( void );

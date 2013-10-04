@@ -848,7 +848,7 @@ void PlayState::updateCursor ( void )
   this->game->cursor.update();
 }
 
-void PlayState::drawCursor ( nom::Surface* video_buffer )
+void PlayState::drawCursor ( SDL_Renderer* target )
 {
   this->game->cursor.draw ( video_buffer );
 
@@ -879,7 +879,7 @@ void PlayState::updateScore ( void )
   }
 }
 
-void PlayState::Update ( float delta_time )
+void PlayState::update ( float delta_time )
 {
   this->game->board.update();
 
@@ -887,11 +887,11 @@ void PlayState::Update ( float delta_time )
 
   this->updateMessageBoxes();
 
-  this->info_box.Update();
-  this->debug_box.Update();
+  this->info_box.update();
+  this->debug_box.update();
 
-  this->player[0].Update();
-  this->player[1].Update();
+  this->player[0].update();
+  this->player[1].update();
 
   // Player two animation effect
   if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > SDL_GetTicks() )
@@ -971,25 +971,25 @@ void PlayState::Update ( float delta_time )
   this->game->context.Update();
 }
 
-void PlayState::Draw ( nom::Surface* video_buffer )
+void PlayState::draw ( SDL_Renderer* target )
 {
-  this->game->background.Draw ( video_buffer );
+  this->game->background.draw ( video_buffer );
 
   this->game->board.draw ( video_buffer );
 
-  this->player[0].Draw ( video_buffer );
-  this->player[1].Draw ( video_buffer );
+  this->player[0].draw ( video_buffer );
+  this->player[1].draw ( video_buffer );
 
-  this->player_rect.Draw ( video_buffer );
+  this->player_rect.draw ( video_buffer );
 
   this->drawCursor ( video_buffer );
 
-  this->info_box.Draw ( video_buffer );
-  this->debug_box.Draw ( video_buffer );
+  this->info_box.draw ( video_buffer );
+  this->debug_box.draw ( video_buffer );
 
   // Draw each player's scoreboard
-  this->game->score_text[0].Draw ( video_buffer );
-  this->game->score_text[1].Draw ( video_buffer );
+  this->game->score_text[0].draw ( video_buffer );
+  this->game->score_text[1].draw ( video_buffer );
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
@@ -1023,8 +1023,8 @@ void PlayState::Draw ( nom::Surface* video_buffer )
     nom::Coords centered_pos = nom::Coords ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT  - height ) / 2 );
     this->game->gameover_text.setPosition ( centered_pos );
 
-    this->game->gameover_text.Update();
-    this->game->gameover_text.Draw ( video_buffer );
+    this->game->gameover_text.update();
+    this->game->gameover_text.draw ( video_buffer );
     this->game->context.Update();
 
     // Chill for a second

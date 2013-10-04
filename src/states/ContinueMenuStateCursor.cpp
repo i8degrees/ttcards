@@ -70,26 +70,26 @@ nom::int32 ContinueMenuStateCursor::position ( void )
 
 nom::int32 ContinueMenuStateCursor::moveCursorUp ( void )
 {
-  if ( this->getY() > this->option_position.x )
+  if ( this->y() > this->option_position.x )
   {
     this->move ( 0, -(16) );
     this->previous();
   }
 
-NOM_DUMP_VAR ( this->getY() );
-  return this->getY();
+NOM_DUMP_VAR ( this->y() );
+  return this->y();
 }
 
 nom::int32 ContinueMenuStateCursor::moveCursorDown ( void )
 {
-  if ( this->getY() < 240 )
+  if ( this->y() < 240 )
   {
     this->move ( 0, 16 );
     this->next();
   }
 
-NOM_DUMP_VAR ( this->getY() );
-  return this->getY();
+NOM_DUMP_VAR ( this->y() );
+  return this->y();
 }
 
 void ContinueMenuStateCursor::next ( void )
@@ -97,7 +97,7 @@ void ContinueMenuStateCursor::next ( void )
   this->cursor_position++;
 NOM_DUMP_VAR(this->cursor_position);
 
-  this->cursor_event.dispatch ( nom::UserEvent::UI );
+  this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
 }
 
 void ContinueMenuStateCursor::previous ( void )
@@ -105,5 +105,5 @@ void ContinueMenuStateCursor::previous ( void )
   this->cursor_position--;
 NOM_DUMP_VAR(this->cursor_position);
 
-  this->cursor_event.dispatch ( nom::UserEvent::UI );
+  this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
 }

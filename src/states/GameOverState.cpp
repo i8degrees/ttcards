@@ -200,7 +200,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   //this->selected_card = this->game->hand[1].getSelectedCard();
 
   // Commence the countdown on the showing of results!
-  this->update.start();
+  this->transistion.start();
 }
 
 void GameOverState::onExit ( void )
@@ -214,7 +214,7 @@ void GameOverState::Resume ( nom::int32 response )
 {
   if ( response == 0 )
   {
-    event.dispatch ( nom::UserEvent::Animation );
+    event.dispatch ( nom::EventDispatcher::UserEvent::Animation );
   }
 }
 
@@ -263,7 +263,7 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
       // 4. Play sound event
 
       this->game->hand[1].set_position ( idx );
-      this->cursor.setPosition ( PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.getY() );
+      this->cursor.setPosition ( PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.y() );
 
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();
@@ -295,14 +295,14 @@ void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1,
 {
   if ( type != SDL_USEREVENT ) return;
 
-  if ( code == static_cast<nom::int32> ( nom::UserEvent::UI ) )
+  if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_info_box.setLabel ( selected_card.getName() );
 
     this->game->cursor_move.Play();
   }
-  else if ( code == static_cast<nom::int32> ( nom::UserEvent::Animation ) )
+  else if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::Animation ) )
   {
     this->card_info_box.disable();
 
@@ -323,26 +323,26 @@ void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1,
   }
 }
 
-void GameOverState::Update ( float delta_time )
+void GameOverState::update ( float delta_time )
 {
-  this->game->card.Update();
+  this->game->card.update();
 
-  this->info_box.Update();
-  this->card_info_box.Update();
+  this->info_box.update();
+  this->card_info_box.update();
   this->cursor.update();
 
-  if ( this->update.ticks() > 1500 )
+  if ( this->transistion.ticks() > 1500 )
   {
-    this->update.stop();
+    this->transistion.stop();
     this->show_results = true;
   }
 
-  this->game->context.Update();
+  this->game->context.update();
 }
 
-void GameOverState::Draw ( nom::Surface* video_buffer )
+void GameOverState::draw ( SDL_Renderer* target )
 {
-  this->game->gameover_background.Draw ( video_buffer );
+  this->game->gameover_background.draw ( target );
 
   // Show Player 2 hand on the top
   for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
@@ -355,7 +355,7 @@ void GameOverState::Draw ( nom::Surface* video_buffer )
 
     this->game->card.reposition ( this->player2_pos );
     this->game->card.setViewCard ( this->game->hand[1].cards.at( idx ) );
-    this->game->card.Draw ( video_buffer );
+    this->game->card.draw ( target );
   }
 
   // Show Player 1 hand on the bottom
@@ -369,13 +369,13 @@ void GameOverState::Draw ( nom::Surface* video_buffer )
 
     this->game->card.reposition ( this->player1_pos );
     this->game->card.setViewCard ( this->game->hand[0].cards.at( idx ) );
-    this->game->card.Draw ( video_buffer );
+    this->game->card.draw ( target );
   }
 
-  this->info_box.Draw( video_buffer );
-  this->card_info_box.Draw( video_buffer );
+  this->info_box.draw( target );
+  this->card_info_box.draw( target );
 
-  this->cursor.draw ( video_buffer );
+  this->cursor.draw ( target );
   if ( this->show_results == true )
   {
     //Card lost_card = this->game->hand[0].getSelectedCard();
@@ -385,7 +385,7 @@ void GameOverState::Draw ( nom::Surface* video_buffer )
 
     // Restart game
     //nom::GameStates::ChangeState( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
-    this->update.stop();
+    this->transistion.stop();
     this->show_results = true;
   } // end if update
 }

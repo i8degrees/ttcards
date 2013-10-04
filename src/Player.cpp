@@ -129,7 +129,7 @@ void Player::setScore ( unsigned int score )
   this->score = score;
 }
 
-void Player::Draw ( nom::Surface* video_buffer )
+void Player::draw ( SDL_Renderer* target )
 {
   bool face_down = false;
 /*
@@ -162,7 +162,7 @@ void Player::Draw ( nom::Surface* video_buffer )
       this->card->reposition ( this->player_pos );
       this->card->setViewCard ( this->hand->cards.at ( idx ) );
       this->card->face ( face_down );
-      this->card->Draw ( video_buffer );
+      this->card->draw ( target );
     }
     else if ( player_id == Card::PLAYER1 && hand_pos == idx )
     {
@@ -171,7 +171,7 @@ void Player::Draw ( nom::Surface* video_buffer )
       this->card->reposition ( this->player_pos );
       this->card->setViewCard ( this->hand->cards.at ( idx ) );
       this->card->face ( false );
-      this->card->Draw ( video_buffer );
+      this->card->draw ( target );
     }
     else
     {
@@ -187,7 +187,7 @@ void Player::Draw ( nom::Surface* video_buffer )
         this->card->face ( face_down );
       }
 
-      this->card->Draw ( video_buffer );
+      this->card->draw ( target );
     }
   } // end for this->hand loop
 
@@ -195,8 +195,8 @@ void Player::Draw ( nom::Surface* video_buffer )
   this->card->face ( false ); // Turns drawing card faces down off
 }
 
-void Player::Update ( void )
+void Player::update ( void )
 {
-  this->card->Update();
+  this->card->update();
 }
 

@@ -55,8 +55,8 @@ class CardsMenuState: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( float delta_time );
-    void Draw ( nom::Surface* video_buffer );
+    void update ( float delta_time );
+    void draw ( SDL_Renderer* target );
 
   private:
     void onKeyDown ( int32_t key, int32_t mod );
@@ -67,7 +67,7 @@ class CardsMenuState: public nom::IState
 
     void reloadDebugFile ( void );
     void updateCursor ( void );
-    void drawCursor ( nom::Surface* video_buffer );
+    void drawCursor ( SDL_Renderer* target );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );

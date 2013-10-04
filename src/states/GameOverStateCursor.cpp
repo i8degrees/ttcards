@@ -71,24 +71,24 @@ nom::int32 GameOverStateCursor::position ( void )
 
 nom::int32 GameOverStateCursor::moveCursorLeft ( void )
 {
-  if ( this->getX() > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
+  if ( this->x() > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
   {
     this->move ( -(CARD_WIDTH), 0 );
     this->previous();
   }
 
-  return this->getX();
+  return this->x();
 }
 
 nom::int32 GameOverStateCursor::moveCursorRight ( void )
 {
-  if ( this->getX() < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
+  if ( this->x() < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
   {
     this->move ( (CARD_WIDTH), 0 );
     this->next();
   }
 
-  return this->getX();
+  return this->x();
 }
 
 void GameOverStateCursor::next ( void )
@@ -97,7 +97,7 @@ void GameOverStateCursor::next ( void )
   {
     this->card_position->next();
 
-    this->cursor_event.dispatch ( nom::UserEvent::UI );
+    this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
   }
 }
 
@@ -107,6 +107,6 @@ void GameOverStateCursor::previous ( void )
   {
     this->card_position->previous();
 
-    this->cursor_event.dispatch ( nom::UserEvent::UI );
+    this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
   }
 }

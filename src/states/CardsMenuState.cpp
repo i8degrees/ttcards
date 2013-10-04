@@ -208,23 +208,23 @@ void CardsMenuState::onMouseWheel ( bool up, bool down )
   }
 }
 
-void CardsMenuState::Update ( float delta_time )
+void CardsMenuState::update ( float delta_time )
 {
-  this->game->card.Update();
+  this->game->card.update();
 
   this->updateCursor();
 
-  this->menu_box.Update();
+  this->menu_box.update();
   //this->game->menu_elements.Update();
 
-  this->game->context.Update();
+  this->game->context.update();
 }
 
-void CardsMenuState::Draw ( nom::Surface* video_buffer )
+void CardsMenuState::draw ( SDL_Renderer* target )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 
-  this->game->background.Draw ( video_buffer );
+  this->game->background.draw ( target );
 
   // FIXME / This is a lazy patch until I get around to fixing this :-)
   this->game->card.face ( true ); // Turn drawing of faces down on
@@ -239,7 +239,7 @@ void CardsMenuState::Draw ( nom::Surface* video_buffer )
                                     );
 
     this->game->card.reposition ( this->player2_pos );
-    this->game->card.Draw ( video_buffer );
+    this->game->card.draw ( target );
   }
 
   // FIXME / This is a lazy patch until I get around to fixing this :-)
@@ -256,33 +256,33 @@ void CardsMenuState::Draw ( nom::Surface* video_buffer )
 
     this->game->card.reposition ( this->player1_pos );
     this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );
-    this->game->card.Draw ( video_buffer );
+    this->game->card.draw ( target );
   }
 
-  this->menu_box.Draw ( video_buffer );
+  this->menu_box.draw ( target );
 
   for ( nom::uint32 i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {
     // Draw the top-left box title
     this->game->info_small_text.setText ( "CARDS" );
     this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y ) );
-    this->game->info_small_text.Update();
-    this->game->info_small_text.Draw ( video_buffer );
+    this->game->info_small_text.update();
+    this->game->info_small_text.draw ( target );
 
     // Draw page number if we have more than one page to display
     if ( total_pages > 0 )
     {
       this->game->info_small_text.setText ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
       this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y ) );
-      this->game->info_small_text.Update();
-      this->game->info_small_text.Draw ( video_buffer );
+      this->game->info_small_text.update();
+      this->game->info_small_text.draw ( target );
     }
 
     // Draw the top-right box title (number of cards)
     this->game->info_small_text.setText ( "NUM." );
     this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y ) );
-    this->game->info_small_text.Update();
-    this->game->info_small_text.Draw ( video_buffer );
+    this->game->info_small_text.update();
+    this->game->info_small_text.draw ( target );
 
     // Draw the card selection helper element
     this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
@@ -292,8 +292,8 @@ void CardsMenuState::Draw ( nom::Surface* video_buffer )
     else
       this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT );
 
-    this->game->menu_elements.Update();
-    this->game->menu_elements.Draw ( video_buffer );
+    this->game->menu_elements.update();
+    this->game->menu_elements.draw ( target );
 
     // Draw the card's name onto our menu box
     // FIXME ( this->game->info_text_gray )
@@ -302,15 +302,15 @@ void CardsMenuState::Draw ( nom::Surface* video_buffer )
       this->game->info_text_gray.setText ( this->game->collection.cards[i].getName() );
       this->game->info_text_gray.setFontStyle ( nom::FontStyle::Faded, 150 );
       this->game->info_text_gray.setPosition ( nom::Coords( MENU_CARDS_NAME_ORIGIN_X, y_offset ) );
-      this->game->info_text_gray.Update();
-      this->game->info_text_gray.Draw ( video_buffer );
+      this->game->info_text_gray.update();
+      this->game->info_text_gray.draw ( target );
     }
     else
     {
       this->game->info_text.setText ( this->game->collection.cards[i].getName() );
       this->game->info_text.setPosition ( nom::Coords( MENU_CARDS_NAME_ORIGIN_X, y_offset ) );
-      this->game->info_text.Update();
-      this->game->info_text.Draw ( video_buffer );
+      this->game->info_text.update();
+      this->game->info_text.draw ( target );
     }
 
     // Draw the number of cards in player's possession
@@ -319,15 +319,15 @@ void CardsMenuState::Draw ( nom::Surface* video_buffer )
     {
       this->game->info_text_gray.setText ( "0" );
       this->game->info_text_gray.setPosition ( nom::Coords( MENU_CARDS_NUM_ORIGIN_X, y_offset ) );
-      this->game->info_text_gray.Update();
-      this->game->info_text_gray.Draw ( video_buffer );
+      this->game->info_text_gray.update();
+      this->game->info_text_gray.draw ( target );
     }
     else
     {
       this->game->info_text.setText ( "1" );
       this->game->info_text.setPosition ( nom::Coords( MENU_CARDS_NUM_ORIGIN_X, y_offset ) );
-      this->game->info_text.Update();
-      this->game->info_text.Draw ( video_buffer );
+      this->game->info_text.update();
+      this->game->info_text.draw ( target );
     }
 
     // Lastly, check to see which page indicators we need to draw
@@ -335,16 +335,16 @@ void CardsMenuState::Draw ( nom::Surface* video_buffer )
     {
       this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
-      this->game->menu_elements.Update();
-      this->game->menu_elements.Draw ( video_buffer );
+      this->game->menu_elements.update();
+      this->game->menu_elements.draw ( target );
     }
 
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
       this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
-      this->game->menu_elements.Update();
-      this->game->menu_elements.Draw ( video_buffer );
+      this->game->menu_elements.update();
+      this->game->menu_elements.draw ( target );
     }
 
     // Move on to the next card in stack to draw
@@ -352,11 +352,11 @@ void CardsMenuState::Draw ( nom::Surface* video_buffer )
     y_offset += this->info_text_height;
   }
 
-  this->drawCursor ( video_buffer );
+  this->drawCursor ( target );
 
   this->game->card.setViewCard ( this->selectedCard );
   this->game->card.reposition ( this->card_pos );
-  this->game->card.Draw ( video_buffer );
+  this->game->card.draw ( target );
 }
 
 void CardsMenuState::updateCursor ( void )
@@ -379,9 +379,9 @@ void CardsMenuState::updateCursor ( void )
   this->game->cursor.update();
 }
 
-void CardsMenuState::drawCursor ( nom::Surface* video_buffer )
+void CardsMenuState::drawCursor ( SDL_Renderer* target )
 {
-  this->game->cursor.draw ( video_buffer );
+  this->game->cursor.draw ( target );
 }
 
 // Helper method for obtaining card hand index position based off given origin
@@ -398,7 +398,7 @@ unsigned int CardsMenuState::getCursorPos ( void )
 
   for ( idx = 0; idx < per_page; idx++ )
   {
-    if ( this->game->cursor.getY() <= std::get<0>(cursor_coords_map[idx]) )
+    if ( this->game->cursor.y() <= std::get<0>(cursor_coords_map[idx]) )
       return std::get<1>(cursor_coords_map[idx]);
     else // catch all safety switch
     // assume we are at the last position in the index when all else fails
@@ -450,7 +450,7 @@ void CardsMenuState::moveCursorUp ( void )
 
   if ( this->game->cursor.getState() == 0 )
   {
-    if ( this->game->cursor.getY() > MENU_CARDS_CURSOR_ORIGIN_Y )
+    if ( this->game->cursor.y() > MENU_CARDS_CURSOR_ORIGIN_Y )
     {
       this->game->cursor.move ( 0, -( this->info_text_height ) );
 
@@ -474,7 +474,7 @@ void CardsMenuState::moveCursorDown ( void )
 
   if ( this->game->cursor.getState() == 0 )
   {
-    if ( this->game->cursor.getY() < PICK_CARDS_MENU_HEIGHT )
+    if ( this->game->cursor.y() < PICK_CARDS_MENU_HEIGHT )
     {
       this->game->cursor.move ( 0, this->info_text_height );
 

@@ -53,13 +53,12 @@ void PauseState::onInit ( void )
                                           nom::ui::FrameStyle::Gray, linear
                                         );
 
-
   this->info_box.setWindowTitleFont ( &this->game->info_small_text );
   this->info_box.setLabelFont ( &this->game->info_text );
   this->info_box.setLabel ( SHORT_VERSION_INFO );
   this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
 
-  this->update.start();
+  this->blink_update.start();
 }
 
 void PauseState::onExit ( void )
@@ -88,30 +87,30 @@ void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod )
   }
 }
 
-void PauseState::Update ( float delta_time )
+void PauseState::update ( float delta_time )
 {
-  this->info_box.Update();
+  this->info_box.update();
 
   this->info_box.setWindowTitle ( "PAUSE" );
 
-  if ( this->update.ticks() > 800 )
+  if ( this->blink_update.ticks() > 800 )
   {
-    this->update.stop();
+    this->blink_update.stop();
     this->info_box.setWindowTitle ( "" );
     this->blink_text = true;
   }
 
-  this->game->context.Update();
+  this->game->context.update();
 }
 
-void PauseState::Draw ( nom::Surface* video_buffer )
+void PauseState::draw ( SDL_Renderer* target )
 {
-  this->info_box.Draw( video_buffer );
+  this->info_box.draw ( target );
 
   if ( this->blink_text )
   {
     this->info_box.setWindowTitle ( "" );
-    this->update.start();
+    this->blink_update.start();
     this->blink_text = false;
   }
 }
