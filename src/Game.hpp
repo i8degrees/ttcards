@@ -38,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/audio.hpp>
 #include <nomlib/graphics.hpp>
-#include <nomlib/sdl/utils.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
