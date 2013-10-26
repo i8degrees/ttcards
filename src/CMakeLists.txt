@@ -2,6 +2,7 @@
 
 set ( STATES_DIR "${SRC_DIR}/states" )
 
+# Core game infrastructure
 set (
       TTCARDS_SOURCE
       ${SRC_DIR}/version.cpp
@@ -20,6 +21,7 @@ set (
       ${SRC_DIR}/Game.cpp
     )
 
+# Game states logic
 set (
       TTCARDS_SOURCE
       ${TTCARDS_SOURCE}
@@ -33,5 +35,23 @@ set (
       ${STATES_DIR}/PlayState.cpp
     )
 
-# Project header files inclusion
+# Assimilating third-party jsoncpp sources
+#
+#       RESISTANCE IS FUTILE
+set (
+      JSONCPP_SOURCE
+      ${SRC_DIR}/jsoncpp/jsoncpp.cpp
+    )
+
+# Throw the stubborn, but nevertheless defeated jsoncpp sources into our
+# collective.
+set ( TTCARDS_SOURCE
+      ${TTCARDS_SOURCE}
+      ${JSONCPP_SOURCE}
+    )
+
+# Include internal project header files
 include_directories ( ${SRC_DIR} )
+
+# Include external project header files
+include_directories ( ${JSONCPP_HEADERS_DIR} )
