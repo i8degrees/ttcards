@@ -73,8 +73,8 @@ class Player
 
     void setScore ( unsigned int score );
 
-    void Update ( void );
-    void Draw ( nom::Surface* video_buffer );
+    void update ( void );
+    void draw ( SDL_Renderer* target );
 
   private:
     /// Card rendering

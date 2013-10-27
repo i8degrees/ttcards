@@ -184,23 +184,23 @@ void ContinueMenuState::onMouseWheel ( bool up, bool down )
 
 void ContinueMenuState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
 {
-  if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::UserEvent::UI ) )
+  if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
   {
     this->game->cursor_move.Play();
   }
 }
 
-void ContinueMenuState::Update ( float delta_time )
+void ContinueMenuState::update ( float delta_time )
 {
-  this->info_box.Update();
+  this->info_box.update();
   this->cursor.update();
 
-  this->game->context.Update();
+  this->game->context.update();
 }
 
-void ContinueMenuState::Draw ( nom::Surface* video_buffer )
+void ContinueMenuState::draw ( SDL_Renderer* target )
 {
-  this->info_box.Draw ( video_buffer );
+  this->info_box.draw ( target );
 
-  this->cursor.draw ( video_buffer );
+  this->cursor.draw ( target );
 }

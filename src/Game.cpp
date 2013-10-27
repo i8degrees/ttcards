@@ -178,7 +178,7 @@ bool App::onInit ( void )
   }
 
 #ifndef EMSCRIPTEN
-  this->game->context.setWindowIcon ( this->game->config.getString("APP_ICON") );
+  this->game->context.set_window_icon ( this->game->config.getString("APP_ICON") );
 #endif
 
   // Obtain a list of available video modes so we can determine how to render
@@ -190,11 +190,11 @@ bool App::onInit ( void )
     std::cout << modes[idx] << std::endl;
   }
 
-  this->game->context.createWindow ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
+  this->game->context.create ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
 
   this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
 
-  this->game->context.setWindowTitle( LOADING_TEXT );
+  this->game->context.set_window_title( LOADING_TEXT );
 
   // Commence the initialization of game objects
   this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
@@ -229,7 +229,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), nom::Color::Black, true ) == false )
   {
 NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
-    rectangle.Draw ( this->game->context.get() );
+    rectangle.draw ( this->game->context.get() );
   }
   else
   {
@@ -245,7 +245,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
     this->game->background.Draw( this->game->context.get() );
   }
 
-  this->game->context.Update();
+  this->game->context.update();
 
   // Possible bug in SDL for OS X
   //
@@ -544,8 +544,8 @@ int32_t App::Run ( void )
 
       this->fps.update();
 
-      nom::GameStates::Update ( delta_time );
-      nom::GameStates::Draw ( this->game->context.get() );
+      nom::GameStates::update ( delta_time );
+      nom::GameStates::draw ( this->game->context.get() );
 
       if ( this->getShowFPS() )
       {

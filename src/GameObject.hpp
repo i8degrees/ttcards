@@ -122,16 +122,16 @@ struct GameObject
   CardView card;
 
   /// Board background image
-  nom::Canvas background;
+  nom::Texture background;
 
   /// GameOver background image
-  nom::Canvas gameover_background;
+  nom::Texture gameover_background;
 
   /// interface cursor
   nom::ui::Cursor cursor;
 
   /// our public / visible display context handle
-  nom::Display context;
+  nom::Window context;
 
   /// Variable set configuration properties
   GameConfig config;

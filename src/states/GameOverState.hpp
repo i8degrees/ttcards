@@ -65,12 +65,12 @@ class GameOverState: public nom::IState
     void onMouseWheel ( bool up, bool down );
     void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
 
-    void Update ( float delta_time );
-    void Draw ( nom::Surface* video_buffer );
+    void update ( float delta_time );
+    void draw ( SDL_Renderer* target );
 
     std::shared_ptr<GameObject> game;
 
-    nom::Timer update;
+    nom::Timer transistion;
     bool show_results;
     enum GameOverType gameover_state;
 

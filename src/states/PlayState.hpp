@@ -64,8 +64,8 @@ class PlayState: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void Update ( float delta_time );
-    void Draw ( nom::Surface* video_buffer );
+    void update ( float delta_time );
+    void draw ( SDL_Renderer* target );
 
   private:
     void onKeyDown ( int32_t key, int32_t mod );
@@ -96,7 +96,7 @@ class PlayState: public nom::IState
     /// handling included.
     void updateMessageBoxes ( void );
     void updateCursor ( void );
-    void drawCursor ( nom::Surface* video_buffer );
+    void drawCursor ( SDL_Renderer* target );
 
     /// Update each player's scoreboard
     void updateScore ( void );

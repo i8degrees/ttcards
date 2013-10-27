@@ -357,10 +357,10 @@ const BoardTile& Board::tile ( nom::int32 x, nom::int32 y ) const
 
 void Board::update ( void )
 {
-  this->card->Update();
+  this->card->update();
 }
 
-void Board::draw ( nom::Surface* video_buffer )
+void Board::draw ( SDL_Renderer* target )
 {
   for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
@@ -378,7 +378,7 @@ void Board::draw ( nom::Surface* video_buffer )
 
       this->card->setViewCard ( this->grid[x][y].tile() );
 
-      this->card->Draw ( video_buffer );
+      this->card->draw ( target );
 
 /*
       if ( this->grid[x][y].element() != 0 )

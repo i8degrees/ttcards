@@ -101,16 +101,16 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   return true;
 }
 
-void CardView::draw_face_down ( nom::Surface* video_buffer, nom::int32 x, nom::int32 y ) const
+void CardView::draw_face_down ( SDL_Renderer* target, nom::int32 x, nom::int32 y ) const
 {
   this->card_face->setSheetID ( NOFACE_ID );
   this->card_face->setPosition ( x, y );
-  this->card_face->Update();
-  this->card_face->Draw ( video_buffer );
+  this->card_face->update();
+  this->card_face->draw ( target );
 }
 
 void CardView::draw_background  (
-                                  nom::Surface* video_buffer, nom::int32 player_id,
+                                  SDL_Renderer* target, nom::int32 player_id,
                                   nom::int32 x, nom::int32 y
                                 ) const
 {
@@ -142,12 +142,12 @@ void CardView::draw_background  (
 
   //this->card_background->setPosition ( this->position );
   this->card_background->setPosition ( x, y );
-  this->card_background->Update();
-  this->card_background->Draw ( video_buffer );
+  this->card_background->update();
+  this->card_background->draw ( target );
 }
 
 void CardView::draw_face  (
-                            nom::Surface* video_buffer, nom::int32 face_id,
+                            SDL_Renderer* target, nom::int32 face_id,
                             nom::int32 x, nom::int32 y
                           ) const
 {
@@ -156,12 +156,12 @@ void CardView::draw_face  (
 
   //this->card_face->setPosition ( this->position );
   this->card_face->setPosition ( nom::Coords ( x, y ) );
-  this->card_face->Update();
-  this->card_face->Draw ( video_buffer );
+  this->card_face->update();
+  this->card_face->draw ( target );
 }
 
 void CardView::draw_element (
-                              nom::Surface* video_buffer, nom::int32 element_id,
+                              SDL_Renderer* target, nom::int32 element_id,
                               nom::int32 x, nom::int32 y
                             ) const
 {
@@ -181,12 +181,12 @@ void CardView::draw_element (
 
   //this->card_element->setPosition ( this->position.x, this->position.y );
   this->card_element->setPosition ( nom::Coords( x, y ) );
-  this->card_element->Update();
-  this->card_element->Draw ( video_buffer );
+  this->card_element->update();
+  this->card_element->draw ( target );
 }
 
 void CardView::draw_text  (
-                            nom::Surface* video_buffer, nom::int32 rank,
+                            SDL_Renderer* target, nom::int32 rank,
                             nom::int32 x, nom::int32 y
                           ) const
 {
@@ -201,47 +201,47 @@ void CardView::draw_text  (
 
   //this->card_text->setPosition ( this->position );
   this->card_text->setPosition ( nom::Coords ( x, y ) );
-  this->card_text->Update();
-  this->card_text->Draw ( video_buffer );
+  this->card_text->update();
+  this->card_text->draw ( target );
 }
 
 void CardView::draw (
-                      nom::Surface* video_buffer, const Card& card,
+                      SDL_Renderer* target, const Card& card,
                       nom::int32 x, nom::int32 y, bool face_down
                     ) const
 {
   if ( this->card_face_down == true )
   {
-    this->draw_face_down ( video_buffer, x, y );
+    this->draw_face_down ( target, x, y );
     return;
   }
 
-  this->draw_background ( video_buffer, card.getPlayerID(), x, y );
+  this->draw_background ( target, card.getPlayerID(), x, y );
 
-  this->draw_face ( video_buffer, card.getID(), x, y );
+  this->draw_face ( target, card.getID(), x, y );
 
   this->draw_element  (
-                        video_buffer, card.getElement(),
+                        target, card.getElement(),
                         ELEMENT_ORIGIN_X + x, ELEMENT_ORIGIN_Y + y
                       );
 
   this->draw_text (
-                    video_buffer, card.getNorthRank(),
+                    target, card.getNorthRank(),
                     RANK_NORTH_ORIGIN_X + x, RANK_NORTH_ORIGIN_Y + y
                   );
 
   this->draw_text (
-                    video_buffer, card.getEastRank(),
+                    target, card.getEastRank(),
                     RANK_EAST_ORIGIN_X + x, RANK_EAST_ORIGIN_Y + y
                   );
 
   this->draw_text (
-                    video_buffer, card.getWestRank(),
+                    target, card.getWestRank(),
                     RANK_WEST_ORIGIN_X + x, RANK_WEST_ORIGIN_Y + y
                   );
 
   this->draw_text (
-                    video_buffer, card.getSouthRank(),
+                    target, card.getSouthRank(),
                     RANK_SOUTH_ORIGIN_X + x, RANK_SOUTH_ORIGIN_Y + y
                   );
 
@@ -262,7 +262,7 @@ void CardView::face ( bool up )
   this->card_face_down = up;
 }
 
-void CardView::Update ( void )
+void CardView::update ( void )
 {
   //this->card_background->setPosition ( this->position );
   //this->card_face->setPosition ( this->position );
@@ -272,19 +272,19 @@ void CardView::Update ( void )
   //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   //{
     //std::shared_ptr<nom::IDrawable> obj = *it;
-    //obj->Update();
+    //obj->update();
   //}
 }
 
-void CardView::Draw ( nom::Surface* video_buffer ) const
+void CardView::draw ( SDL_Renderer* target ) const
 {
   //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   //{
     //std::shared_ptr<nom::IDrawable> obj = *it;
-    //this->draw_background ( video_buffer, render_card.getPlayerID(), this->position.x, this->position.y );
-    //this->draw_face ( video_buffer, render_card.getID(), this->position.x, this->position.y );
-    //this->draw_element ( video_buffer, render_card.getID(), this->position.x, this->position.y );
-    this->draw ( video_buffer, render_card, this->position.x, this->position.y, this->card_face_down );
-    //obj->Draw ( video_buffer );
+    //this->draw_background ( target, render_card.getPlayerID(), this->position.x, this->position.y );
+    //this->draw_face ( target, render_card.getID(), this->position.x, this->position.y );
+    //this->draw_element ( target, render_card.getID(), this->position.x, this->position.y );
+    this->draw ( target, render_card, this->position.x, this->position.y, this->card_face_down );
+    //obj->draw ( target );
   //}
 }

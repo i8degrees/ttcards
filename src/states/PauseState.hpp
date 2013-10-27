@@ -56,11 +56,11 @@ class PauseState: public nom::IState
 
     void onKeyDown ( nom::int32 key, nom::int32 mod );
 
-    void Update ( float delta_time );
-    void Draw ( nom::Surface* video_buffer );
+    void update ( float delta_time );
+    void draw ( SDL_Renderer* target );
 
     std::shared_ptr<GameObject> game;
-    nom::Timer update;
+    nom::Timer blink_update;
     bool blink_text;
     nom::ui::MessageBox info_box;
 };
