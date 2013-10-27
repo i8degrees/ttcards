@@ -31,6 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Platform-dependent paths
 
 const nom::Path path;
+
+#if ! defined (NOM_PLATFORM_OSX)
+  // Data folder for game storage (screenshots, card dumps, ...)
+  const std::string TTCARDS_DATA_DIR = "@TTCARDS_DATA_DIR@";
+#else
+  const std::string TTCARDS_DATA_DIR = nom::user_documents_path() + path.native() + "ttcards";
+#endif
+
 const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
 const std::string USER_PLAYER2_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player2.json";
 const std::string USER_BOARD_FILENAME =     TTCARDS_DATA_DIR + path.native() + "board.json";
