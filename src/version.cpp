@@ -37,6 +37,3 @@ const std::string APP_NAME =                "TTcards";
 
 // Used to determine the strategy of obtaining Resources path
 const std::string TTCARDS_INSTALL_PREFIX =  "/Users/jeff/Projects/hax/ttcards.git/build";
-
-// Data folder for game storage (screenshots, card dumps, ...)
-const std::string TTCARDS_DATA_DIR =        "/Users/jeff/Documents/ttcards";

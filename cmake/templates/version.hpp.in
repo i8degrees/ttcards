@@ -35,13 +35,15 @@ extern const std::string APP_NAME;
 #define TTCARDS_VERSION_MINOR               @PROJECT_VERSION_MINOR@
 #define TTCARDS_VERSION_PATCH               @PROJECT_VERSION_PATCH@
 
+// FIXME; commenting out the DEBUG line below is a temporary workaround for
+// getting around the compile errors with debugging macros defined within the
+// OS X header file  "CoreServices/CoreServices.h" that are conflicting with our
+// (unassigned value) DEBUG macro.
+//
 // Used to determine if we should enable the in-game debugging tools used in
 // development -- info boxes, card modifiers, variable dumps, etc.
-#cmakedefine DEBUG
+//#cmakedefine DEBUG
 
 // Used to determine the strategy of obtaining Resources path
 #cmakedefine OSXAPP
 extern const std::string TTCARDS_INSTALL_PREFIX;
-
-// Data folder for game storage (screenshots, card dumps, ...)
-extern const std::string TTCARDS_DATA_DIR;
