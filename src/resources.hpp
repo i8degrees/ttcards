@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 
 /// Cross-platform support files
-#include <nomlib/system/Path.hpp>
+#include <nomlib/system.hpp>
 
 /// Site-specific constants -- this is likely specific to your own local system
 /// setup; auto-generated at compile-time and therefore must recompile to modify
@@ -40,7 +40,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "version.hpp"
 
 /// Platform-dependent paths
+
 extern const nom::Path path;
+
+// Data folder for game storage (screenshots, card dumps, ...)
+extern const std::string TTCARDS_DATA_DIR;
+
 extern const std::string USER_PLAYER1_FILENAME;
 extern const std::string USER_PLAYER2_FILENAME;
 extern const std::string USER_BOARD_FILENAME;

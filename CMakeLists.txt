@@ -13,7 +13,7 @@ endif ( NOT CMAKE_INSTALL_PREFIX )
 # Project configuration
 set ( PROJECT_VERSION_MAJOR 0 )
 set ( PROJECT_VERSION_MINOR 9 )
-set ( PROJECT_VERSION_PATCH 0 )
+set ( PROJECT_VERSION_PATCH 1 )
 
 # Project options
 option ( DEBUG "Enable building with debugging features" off )
@@ -24,6 +24,18 @@ option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 project ( ttcards ) # Sets PROJECT_NAME variable for us
 
 if ( DEBUG )
+  # FIXME; Passing -D DEBUG=1 is a temporary workaround for getting around the
+  # compile errors with debugging macros defined within the OS X header file
+  # "CoreServices/CoreServices.h" that are conflicting with our
+  # (unassigned value) DEBUG macro.
+  #
+  # It is not wise to allow foreign debugging mechanisms activate
+  # without understanding what they are and how they function; perhaps either:
+  # a) replacing the DEBUG declaration (see version.hpp.in) with a unique
+  # identifier; b) reconsider using these macros all together for game logic
+  # functionality?
+  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D DEBUG=1" )
+
   set ( CMAKE_BUILD_TYPE "Debug" )
   set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused" )
   set ( CMAKE_VERBOSE_MAKEFILE on )
@@ -56,19 +68,31 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
 set ( SRC_DIR "src" )
 
 # Relative path from project root to header files
-set ( HEADERS_DIR "include" )
+set ( TTCARDS_HEADERS_DIR "include" )
+
+# Relative path from project root to third-party in-project jsoncpp header file(s)
+set ( JSONCPP_HEADERS_DIR "${TTCARDS_HEADERS_DIR}/jsoncpp" )
 
 # Absolute path to the json_spirit header files
-set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${HEADERS_DIR}/json_spirit" )
+#
+#     DEPRECATED
+#
+# TODO: json_spirit will soon be entirely phased out -- removed & replaced --
+# with jsoncpp. In the mean time, though, we are going to try holding onto our
+# json_spirit investment here, in order to ease the major transitions ahead of
+# us; nomlib first needs to have a stable SDL2 engine up and going.
+set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_HEADERS_DIR}/json_spirit" )
 
 # Relative path from the from project root to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 
-# Absolute path without closing backslash to game storage path;
-# must be writable by the user.
-if ( NOT TTCARDS_DATA_DIR )
-  set ( TTCARDS_DATA_DIR "$ENV{HOME}/Documents/${PROJECT_NAME}" )
-endif ( NOT TTCARDS_DATA_DIR )
+if ( NOT PLATFORM_OSX )
+  # Absolute path without closing backslash to game storage path;
+  # must be writable by the user.
+  if ( NOT TTCARDS_DATA_DIR )
+    set ( TTCARDS_DATA_DIR "$ENV{HOME}/Documents/${PROJECT_NAME}" )
+  endif ( NOT TTCARDS_DATA_DIR )
+endif ( NOT PLATFORM_OSX )
 
 # Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
@@ -116,7 +140,10 @@ else ( NOT OSXAPP )
 endif ( OSXAPP )
 
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
-message ( STATUS "Data folder: ${TTCARDS_DATA_DIR}" )
+
+if ( NOT PLATFOMRM_OSX )
+  message ( STATUS "Data folder: ${TTCARDS_DATA_DIR}" )
+endif ( NOT PLATFOMRM_OSX )
 
 if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
@@ -204,7 +231,7 @@ if ( PLATFORM_OSX )
 endif ( PLATFORM_OSX )
 
 # External header files inclusion
-include_directories ( ${EXT_HEADERS} )
+include_directories ( "${EXT_HEADERS}" "${JSONCPP_HEADERS_DIR}" )
 
 # Installation phase
 if ( OSXAPP )
@@ -304,7 +331,7 @@ install ( DIRECTORY
         )
 
 # Create the data folder for game storage if it does not exist
-file ( MAKE_DIRECTORY "${TTCARDS_DATA_DIR}" )
+#file ( MAKE_DIRECTORY "${TTCARDS_DATA_DIR}" )
 
 if ( DOCS )
   # Install generated documentation files
