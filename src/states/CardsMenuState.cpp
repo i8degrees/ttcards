@@ -220,7 +220,7 @@ void CardsMenuState::Update ( float delta_time )
   this->game->context.Update();
 }
 
-void CardsMenuState::Draw ( void* video_buffer )
+void CardsMenuState::Draw ( nom::Surface* video_buffer )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 
@@ -379,7 +379,7 @@ void CardsMenuState::updateCursor ( void )
   this->game->cursor.update();
 }
 
-void CardsMenuState::drawCursor ( void* video_buffer )
+void CardsMenuState::drawCursor ( nom::Surface* video_buffer )
 {
   this->game->cursor.draw ( video_buffer );
 }

@@ -340,7 +340,7 @@ void GameOverState::Update ( float delta_time )
   this->game->context.Update();
 }
 
-void GameOverState::Draw ( void* video_buffer )
+void GameOverState::Draw ( nom::Surface* video_buffer )
 {
   this->game->gameover_background.Draw ( video_buffer );
 

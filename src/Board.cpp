@@ -360,7 +360,7 @@ void Board::update ( void )
   this->card->Update();
 }
 
-void Board::draw ( void* video_buffer )
+void Board::draw ( nom::Surface* video_buffer )
 {
   for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {

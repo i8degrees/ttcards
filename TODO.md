@@ -1,5 +1,4 @@
-TODO
-====
+# TODO #
 
   - Card class
     * get/set XY && width/height ?
@@ -12,14 +11,12 @@ TODO
 
 * Relocate cfg.cpp declarations to their applicable class header files?
 
-In Progress
------------
+## In Progress ##
 
 * Use new preprocessor debugging code methodology from nomlib
 * Re-enable AI control
 
-Completed
----------
+## Completed ##
 
 * Resolve resources paths issue when installed under /usr/local
 * Rename header file extensions to .hpp

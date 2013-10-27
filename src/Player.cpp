@@ -129,7 +129,7 @@ void Player::setScore ( unsigned int score )
   this->score = score;
 }
 
-void Player::Draw ( void* video_buffer )
+void Player::Draw ( nom::Surface* video_buffer )
 {
   bool face_down = false;
 /*

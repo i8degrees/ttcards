@@ -1,7 +1,8 @@
+# TTcards pre-release v0.8.0 #
+
 ![screenshot_v0 8](https://f.cloud.github.com/assets/1329364/896867/74f5d3d2-fae7-11e2-8f39-ed195ecf1324.png)
 
-Upcoming v1.0.0 Wish List
-=========================
+## Upcoming v1.0.0 Wish List ##
 
 * AboutState
 * PauseState

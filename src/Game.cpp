@@ -258,7 +258,10 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   if ( this->game->score_text[0].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->score_text[0].setColor ( nom::Color::White );
-    this->game->score_text[0].setFontSize ( 36 * SCALE_FACTOR );
+    this->game->score_text[0].setFontSize ( 48 * SCALE_FACTOR );
+    this->game->score_text[0].setFontStyle ( nom::FontStyle::Italic );
+    this->game->score_text[0].setRenderingStyle ( nom::RenderStyle::Blended );
+    this->game->score_text[0].setFontOutline ( 1 );
   }
   else
   {
@@ -269,7 +272,10 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   if ( this->game->score_text[1].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->score_text[1].setColor ( nom::Color::White );
-    this->game->score_text[1].setFontSize ( 36 * SCALE_FACTOR );
+    this->game->score_text[1].setFontSize ( 48 * SCALE_FACTOR );
+    this->game->score_text[1].setFontStyle ( nom::FontStyle::Italic );
+    this->game->score_text[1].setRenderingStyle ( nom::RenderStyle::Blended );
+    this->game->score_text[1].setFontOutline ( 1 );
   }
   else
   {
@@ -279,7 +285,10 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
 
   if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), nom::Color::White ) == true )
   {
-    this->game->gameover_text.setFontSize ( 36 * SCALE_FACTOR );
+    this->game->gameover_text.setFontSize ( 48 * SCALE_FACTOR );
+    this->game->gameover_text.setFontStyle ( nom::FontStyle::Italic );
+    this->game->gameover_text.setRenderingStyle ( nom::RenderStyle::Blended );
+    this->game->gameover_text.setFontOutline ( 1 );
   }
   else
   {
@@ -397,7 +406,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   return true;
 }
 
-void App::onEvent ( SDL_Event *event )
+void App::onEvent ( nom::Event* event )
 {
   // Take care of our own events
   Input::HandleInput ( event );

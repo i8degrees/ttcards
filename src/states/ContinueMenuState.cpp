@@ -198,7 +198,7 @@ void ContinueMenuState::Update ( float delta_time )
   this->game->context.Update();
 }
 
-void ContinueMenuState::Draw ( void* video_buffer )
+void ContinueMenuState::Draw ( nom::Surface* video_buffer )
 {
   this->info_box.Draw ( video_buffer );
 

@@ -101,7 +101,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   return true;
 }
 
-void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y ) const
+void CardView::draw_face_down ( nom::Surface* video_buffer, nom::int32 x, nom::int32 y ) const
 {
   this->card_face->setSheetID ( NOFACE_ID );
   this->card_face->setPosition ( x, y );
@@ -110,7 +110,7 @@ void CardView::draw_face_down ( void* video_buffer, nom::int32 x, nom::int32 y )
 }
 
 void CardView::draw_background  (
-                                  void* video_buffer, nom::int32 player_id,
+                                  nom::Surface* video_buffer, nom::int32 player_id,
                                   nom::int32 x, nom::int32 y
                                 ) const
 {
@@ -147,7 +147,7 @@ void CardView::draw_background  (
 }
 
 void CardView::draw_face  (
-                            void* video_buffer, nom::int32 face_id,
+                            nom::Surface* video_buffer, nom::int32 face_id,
                             nom::int32 x, nom::int32 y
                           ) const
 {
@@ -161,7 +161,7 @@ void CardView::draw_face  (
 }
 
 void CardView::draw_element (
-                              void* video_buffer, nom::int32 element_id,
+                              nom::Surface* video_buffer, nom::int32 element_id,
                               nom::int32 x, nom::int32 y
                             ) const
 {
@@ -186,7 +186,7 @@ void CardView::draw_element (
 }
 
 void CardView::draw_text  (
-                            void* video_buffer, nom::int32 rank,
+                            nom::Surface* video_buffer, nom::int32 rank,
                             nom::int32 x, nom::int32 y
                           ) const
 {
@@ -206,7 +206,7 @@ void CardView::draw_text  (
 }
 
 void CardView::draw (
-                      void* video_buffer, const Card& card,
+                      nom::Surface* video_buffer, const Card& card,
                       nom::int32 x, nom::int32 y, bool face_down
                     ) const
 {
@@ -276,7 +276,7 @@ void CardView::Update ( void )
   //}
 }
 
-void CardView::Draw ( void* video_buffer ) const
+void CardView::Draw ( nom::Surface* video_buffer ) const
 {
   //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   //{

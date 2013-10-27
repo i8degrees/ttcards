@@ -57,7 +57,7 @@ class PauseState: public nom::IState
     void onKeyDown ( nom::int32 key, nom::int32 mod );
 
     void Update ( float delta_time );
-    void Draw ( void* video_buffer );
+    void Draw ( nom::Surface* video_buffer );
 
     std::shared_ptr<GameObject> game;
     nom::Timer update;
