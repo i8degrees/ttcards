@@ -47,7 +47,7 @@ NOM_LOG_TRACE ( TTCARDS );
 
   this->card_background->setSize ( CARD_WIDTH - 4, CARD_HEIGHT - 4 );
   this->card_background->setMargins ( 4, 4 );
-  this->card_background->setFillDirection ( nom::FillDirection::Top );
+  this->card_background->setFillDirection ( nom::Gradient::FillDirection::Top );
 }
 
 CardView::CardView ( const nom::Coords& coords )

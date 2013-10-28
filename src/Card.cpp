@@ -171,7 +171,7 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
 {
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
-
+/*
 const json_spirit::Object Card::serialize ( void ) const
 {
   json_spirit::Object node; // JSON object record we are writing
@@ -195,7 +195,7 @@ const json_spirit::Object Card::serialize ( void ) const
 
   return node;
 }
-
+*/
 void Card::increaseNorthRank ( void )
 {
   this->setNorthRank ( this->getNorthRank() + 1 );

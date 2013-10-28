@@ -246,6 +246,7 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCol
 
 bool CardHand::save ( const std::string& filename )
 {
+/*
   nom::JSON::FileWriter fp; // json_spirit wrapper for file output
   json_spirit::Array game; // Overall container; this is the parent
   json_spirit::Object node; // JSON object record; the child
@@ -273,10 +274,13 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
   }
 
   return true;
+*/
+  return false;
 }
 
 bool CardHand::load ( const std::string& filename )
 {
+/*
   nom::JSON::FileReader fp; // json_spirit wrapper for file input
   json_spirit::Object node;
   json_spirit::Value value;
@@ -378,6 +382,8 @@ NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid at file: " + filename );
   this->cards = input_cards;
 
   return true;
+*/
+  return false;
 }
 
 void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )

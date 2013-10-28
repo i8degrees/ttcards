@@ -72,6 +72,7 @@ Cards CardCollection::getCards ( void )
 
 bool CardCollection::save( const std::string& filename )
 {
+/*
   nom::JSON::FileWriter fp; // json_spirit wrapper for file output
   json_spirit::Array game; // Overall container; this is the parent
   json_spirit::Object node; // JSON object record; the child
@@ -94,10 +95,13 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
   }
 
   return true;
+*/
+  return false;
 }
 
 bool CardCollection::load( const std::string& filename )
 {
+/*
   nom::JSON::FileReader fp; // json_spirit wrapper for file input
   json_spirit::Object obj;
   json_spirit::Value value;
@@ -193,4 +197,6 @@ NOM_LOG_ERR ( TTCARDS, "Cards collection data is invalid at file: " + filename )
 #endif
 
   return true;
+*/
+  return false;
 }
