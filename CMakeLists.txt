@@ -273,7 +273,7 @@ if ( OSXAPP )
                           MACOSX_BUNDLE_GUI_IDENTIFIER
                           ${BUNDLE_IDENTIFIER}
                           MACOSX_BUNDLE_SHORT_VERSION_STRING
-                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}"
+                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
                           MACOSX_BUNDLE_LONG_VERSION_STRING
                           "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
                           MACOSX_BUNDLE_BUNDLE_VERSION
