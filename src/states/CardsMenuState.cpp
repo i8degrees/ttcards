@@ -224,7 +224,7 @@ void CardsMenuState::update ( float delta_time )
   this->game->context.update();
 }
 
-void CardsMenuState::draw ( SDL_Renderer* target )
+void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 
@@ -383,7 +383,7 @@ void CardsMenuState::updateCursor ( void )
   this->game->cursor.update();
 }
 
-void CardsMenuState::drawCursor ( SDL_Renderer* target )
+void CardsMenuState::drawCursor ( nom::IDrawable::RenderTarget target )
 {
   this->game->cursor.draw ( target );
 }

@@ -56,7 +56,7 @@ class CardsMenuState: public nom::IState
     void Resume ( void );
 
     void update ( float delta_time );
-    void draw ( SDL_Renderer* target );
+    void draw ( nom::IDrawable::RenderTarget target );
 
   private:
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
@@ -67,7 +67,7 @@ class CardsMenuState: public nom::IState
 
     void reloadDebugFile ( void );
     void updateCursor ( void );
-    void drawCursor ( SDL_Renderer* target );
+    void drawCursor ( nom::IDrawable::RenderTarget target );
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
     void moveCursorRight ( void );

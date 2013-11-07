@@ -74,7 +74,7 @@ class Player
     void setScore ( unsigned int score );
 
     void update ( void );
-    void draw ( SDL_Renderer* target );
+    void draw ( nom::IDrawable::RenderTarget target );
 
   private:
     /// Card rendering

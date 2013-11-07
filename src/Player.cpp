@@ -129,7 +129,7 @@ void Player::setScore ( unsigned int score )
   this->score = score;
 }
 
-void Player::draw ( SDL_Renderer* target )
+void Player::draw ( nom::IDrawable::RenderTarget target )
 {
   bool face_down = false;
 /*

@@ -65,10 +65,10 @@ class PlayState: public nom::IState
     void Resume ( void );
 
     void update ( float delta_time );
-    void draw ( SDL_Renderer* target );
+    void draw ( nom::IDrawable::RenderTarget target );
 
   private:
-    void onKeyDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
@@ -96,7 +96,7 @@ class PlayState: public nom::IState
     /// handling included.
     void updateMessageBoxes ( void );
     void updateCursor ( void );
-    void drawCursor ( SDL_Renderer* target );
+    void drawCursor ( nom::IDrawable::RenderTarget target );
 
     /// Update each player's scoreboard
     void updateScore ( void );

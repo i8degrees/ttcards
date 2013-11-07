@@ -229,7 +229,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*nom::Color::Black,*/ true ) == false )
   {
 NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
-    rectangle.draw ( this->game->context.get() );
+    rectangle.draw ( this->game->context );
   }
   else
   {
@@ -242,7 +242,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
       this->game->background.resize ( nom::ResizeAlgorithm::hq2x );
     }
 
-    this->game->background.draw( this->game->context.get() );
+    this->game->background.draw( this->game->context );
   }
 
   this->game->context.update();
@@ -548,7 +548,7 @@ int32_t App::Run ( void )
       this->fps.update();
 
       nom::GameStates::update ( delta_time );
-      nom::GameStates::draw ( this->game->context.get() );
+      nom::GameStates::draw ( this->game->context );
 
       if ( this->show_fps() )
       {

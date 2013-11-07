@@ -346,7 +346,7 @@ void GameOverState::update ( float delta_time )
   this->game->context.update();
 }
 
-void GameOverState::draw ( SDL_Renderer* target )
+void GameOverState::draw ( nom::IDrawable::RenderTarget target )
 {
   this->game->gameover_background.draw ( target );
 

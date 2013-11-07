@@ -204,7 +204,7 @@ void ContinueMenuState::update ( float delta_time )
   this->game->context.update();
 }
 
-void ContinueMenuState::draw ( SDL_Renderer* target )
+void ContinueMenuState::draw ( nom::IDrawable::RenderTarget target )
 {
   this->info_box.draw ( target );
 

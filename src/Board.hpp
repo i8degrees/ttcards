@@ -121,7 +121,7 @@ class Board
     void update ( void );
 
     /// Draws our active board grid based on their values (card IDs)
-    void draw ( SDL_Renderer* target );
+    void draw ( nom::IDrawable::RenderTarget target );
 
     /// Pretty print the current board tiles
     void list ( void );

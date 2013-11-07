@@ -103,7 +103,7 @@ void PlayState::onInit ( void )
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
-  linear.setFillDirection ( nom::FillDirection::Left );
+  linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
                                           INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
@@ -119,11 +119,11 @@ void PlayState::onInit ( void )
 
   this->info_box.setWindowTitleFont ( &this->game->info_small_text );
   this->info_box.setLabelFont ( &this->game->info_text );
-  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
   this->debug_box.setWindowTitleFont ( &this->game->info_small_text );
   this->debug_box.setLabelFont ( &this->game->info_text );
-  this->debug_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+  this->debug_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
 #if ! defined ( DEBUG )
   this->debug_box.disable();
@@ -154,7 +154,7 @@ void PlayState::onInit ( void )
   this->blink_cursor = false;
 }
 
-void PlayState::onKeyDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   nom::uint32 player_turn = get_turn();
 
@@ -197,7 +197,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
 
     case SDLK_l: // Load saved game
     {
-      if ( mod == KMOD_LMETA ) // Special game load (player1 always wins!)
+      if ( mod == KMOD_LGUI ) // Special game load (player1 always wins!)
       {
         if ( this->game->hand[0].load ( "Debug" + path.native() + "player1_unbeatable.json" ) == false )
         {
@@ -242,7 +242,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
 #if defined ( DEBUG )
     case SDLK_e: // Full control over the other player's move
     {
-      if ( mod == KMOD_LMETA ) // Return control over to the other player
+      if ( mod == KMOD_LGUI ) // Return control over to the other player
       {
         this->skip_turn = false;
         this->player[1].set_state ( PlayerState::Reserved );
@@ -436,6 +436,7 @@ void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32
 
 void PlayState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
+/* TODO
   if ( this->game->cursor.getState() == 0 ) // Player's hand mode
   {
     if ( up )
@@ -447,6 +448,7 @@ void PlayState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id
       this->moveCursorDown();
     }
   }
+TODO */
 }
 
 void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
@@ -513,7 +515,7 @@ void PlayState::updateMessageBoxes ( void )
   // board selection state
   if ( this->isCursorLocked() == true )
   {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor.x(), this->game->cursor.y() );
     if ( coords != nom::Coords::null )
     {
       selected_card = this->game->board.get ( coords.x, coords.y );
@@ -610,7 +612,7 @@ void PlayState::lockSelectedCard ( void )
   }
   else
   {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor.getX(), this->game->cursor.getY() );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor.x(), this->game->cursor.y() );
 
     if ( coords != nom::Coords::null )
     {
@@ -749,7 +751,7 @@ unsigned int PlayState::getCursorPos ( void )
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    if ( this->game->cursor.getY() <= this->cursor_coords_map[idx].y )
+    if ( this->game->cursor.y() <= this->cursor_coords_map[idx].y )
       return this->cursor_coords_map[idx].x;
     else // catch all safety switch
       // assume we are at the last position in the index when all else fails
@@ -763,7 +765,7 @@ void PlayState::moveCursorLeft ( void )
 {
   if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.getX() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
+    if ( this->game->cursor.x() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->game->cursor.move ( -( CARD_WIDTH ), 0 );
   }
   this->game->cursor_move.Play();
@@ -773,7 +775,7 @@ void PlayState::moveCursorRight ( void )
 {
   if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.getX() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
+    if ( this->game->cursor.x() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->game->cursor.move ( ( CARD_WIDTH ), 0 );
   }
   this->game->cursor_move.Play();
@@ -786,7 +788,7 @@ void PlayState::moveCursorUp ( void )
 
   if ( this->game->cursor.getState() == 0 )
   {
-    if ( this->game->cursor.getY() > PLAYER1_CURSOR_ORIGIN_Y )
+    if ( this->game->cursor.y() > PLAYER1_CURSOR_ORIGIN_Y )
     {
       this->game->cursor.move ( 0, -( CARD_HEIGHT / 2 ) );
 
@@ -796,7 +798,7 @@ void PlayState::moveCursorUp ( void )
   }
   else if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.getY() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
+    if ( this->game->cursor.y() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->game->cursor.move ( 0, -( CARD_HEIGHT ) );
   }
   this->game->cursor_move.Play();
@@ -809,7 +811,7 @@ void PlayState::moveCursorDown ( void )
 
   if ( this->game->cursor.getState() == 0 )
   {
-    if ( this->game->cursor.getY() < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
+    if ( this->game->cursor.y() < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
     {
       this->game->cursor.move ( 0, ( CARD_HEIGHT / 2 ) );
 
@@ -819,7 +821,7 @@ void PlayState::moveCursorDown ( void )
   }
   else if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.getY() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
+    if ( this->game->cursor.y() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->game->cursor.move ( 0, ( CARD_HEIGHT ) );
   }
   this->game->cursor_move.Play();
@@ -850,9 +852,9 @@ void PlayState::updateCursor ( void )
   this->game->cursor.update();
 }
 
-void PlayState::drawCursor ( SDL_Renderer* target )
+void PlayState::drawCursor ( nom::IDrawable::RenderTarget target )
 {
-  this->game->cursor.draw ( video_buffer );
+  this->game->cursor.draw ( target );
 
   if ( this->blink_cursor )
   {
@@ -877,7 +879,7 @@ void PlayState::updateScore ( void )
     // Update the font responsible for rendering the score
     this->game->score_text[players].setText ( this->player[players].getScoreAsString() );
     this->game->score_text[players].setPosition ( nom::Coords ( this->player_scoreboard[players].x, this->player_scoreboard[players].y ) );
-    this->game->score_text[players].Update();
+    this->game->score_text[players].update();
   }
 }
 
@@ -896,6 +898,7 @@ void PlayState::update ( float delta_time )
   this->player[1].update();
 
   // Player two animation effect
+/* TODO
   if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > SDL_GetTicks() )
   {
     // return
@@ -911,7 +914,7 @@ void PlayState::update ( float delta_time )
       this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
     }
   }
-
+TODO */
   if ( this->get_turn() == 0 ) // player1
   {
     this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color ( 188, 203, 236 ) );
@@ -970,28 +973,28 @@ void PlayState::update ( float delta_time )
     } // player2
   } // end player1
 
-  this->game->context.Update();
+  this->game->context.update();
 }
 
-void PlayState::draw ( SDL_Renderer* target )
+void PlayState::draw ( nom::IDrawable::RenderTarget target )
 {
-  this->game->background.draw ( video_buffer );
+  this->game->background.draw ( target );
 
-  this->game->board.draw ( video_buffer );
+  this->game->board.draw ( target );
 
-  this->player[0].draw ( video_buffer );
-  this->player[1].draw ( video_buffer );
+  this->player[0].draw ( target );
+  this->player[1].draw ( target );
 
-  this->player_rect.draw ( video_buffer );
+  this->player_rect.draw ( target );
 
-  this->drawCursor ( video_buffer );
+  this->drawCursor ( target );
 
-  this->info_box.draw ( video_buffer );
-  this->debug_box.draw ( video_buffer );
+  this->info_box.draw ( target );
+  this->debug_box.draw ( target );
 
   // Draw each player's scoreboard
-  this->game->score_text[0].draw ( video_buffer );
-  this->game->score_text[1].draw ( video_buffer );
+  this->game->score_text[0].draw ( target );
+  this->game->score_text[1].draw ( target );
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
@@ -1026,8 +1029,8 @@ void PlayState::draw ( SDL_Renderer* target )
     this->game->gameover_text.setPosition ( centered_pos );
 
     this->game->gameover_text.update();
-    this->game->gameover_text.draw ( video_buffer );
-    this->game->context.Update();
+    this->game->gameover_text.draw ( target );
+    this->game->context.update();
 
     // Chill for a second
     nom::sleep ( 1000 );

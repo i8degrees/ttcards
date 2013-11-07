@@ -105,7 +105,7 @@ void PauseState::update ( float delta_time )
   this->game->context.update();
 }
 
-void PauseState::draw ( SDL_Renderer* target )
+void PauseState::draw ( nom::IDrawable::RenderTarget target )
 {
   this->info_box.draw ( target );
 

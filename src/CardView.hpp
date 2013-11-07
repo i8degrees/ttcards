@@ -61,34 +61,34 @@ class CardView:
 
     /// Render the complete card -- its background, face, element and text.
     void draw (
-                SDL_Renderer* target, const Card& card,
+                nom::IDrawable::RenderTarget target, const Card& card,
                 nom::int32 x, nom::int32 y, bool face_down = false
               ) const;
 
     /// Render the card's face turned away from the player (face down)
-    void draw_face_down ( SDL_Renderer* target, nom::int32 x, nom::int32 y ) const;
+    void draw_face_down ( nom::IDrawable::RenderTarget target, nom::int32 x, nom::int32 y ) const;
 
     /// Render the card's background color
     void draw_background  (
-                            SDL_Renderer* target, nom::int32 player_id,
+                            nom::IDrawable::RenderTarget target, nom::int32 player_id,
                             nom::int32 x, nom::int32 y
                           ) const;
 
     /// Render the card's face
     void draw_face  (
-                      SDL_Renderer* target, nom::int32 face_id,
+                      nom::IDrawable::RenderTarget target, nom::int32 face_id,
                       nom::int32 x, nom::int32 y
                     ) const;
 
     /// Render the card's element
     void draw_element (
-                        SDL_Renderer* target, nom::int32 element_id,
+                        nom::IDrawable::RenderTarget target, nom::int32 element_id,
                         nom::int32 x, nom::int32 y
                       ) const;
 
     /// Render the card's ranks (North, East, South, West)
     void draw_text  (
-                      SDL_Renderer* target, nom::int32 rank,
+                      nom::IDrawable::RenderTarget target, nom::int32 rank,
                       nom::int32 x, nom::int32 y
                     ) const;
 
@@ -106,7 +106,7 @@ class CardView:
     void update ( void );
 
     /// Render the card.
-    void draw ( SDL_Renderer* target ) const;
+    void draw ( nom::IDrawable::RenderTarget target ) const;
 
   private:
     nom::Coords position;

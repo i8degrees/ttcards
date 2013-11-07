@@ -66,7 +66,7 @@ class GameOverState: public nom::IState
     void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
 
     void update ( float delta_time );
-    void draw ( SDL_Renderer* target );
+    void draw ( nom::IDrawable::RenderTarget target );
 
     std::shared_ptr<GameObject> game;
 
