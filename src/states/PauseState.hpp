@@ -54,7 +54,7 @@ class PauseState: public nom::IState
     void Pause ( void );
     void Resume ( void );
 
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
+    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
 
     void update ( float delta_time );
     void draw ( SDL_Renderer* target );

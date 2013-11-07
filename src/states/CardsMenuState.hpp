@@ -59,11 +59,11 @@ class CardsMenuState: public nom::IState
     void draw ( SDL_Renderer* target );
 
   private:
-    void onKeyDown ( int32_t key, int32_t mod );
+    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
     void onJoyButtonDown ( int32_t which, int32_t button );
-    void onMouseLeftButtonDown ( int32_t x, int32_t y );
-    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y );
-    void onMouseWheel ( bool up, bool down );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
 
     void reloadDebugFile ( void );
     void updateCursor ( void );

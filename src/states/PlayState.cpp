@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameOverState.hpp"
 #include "PauseState.hpp"
 
+using namespace nom;
+
 PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -152,7 +154,7 @@ void PlayState::onInit ( void )
   this->blink_cursor = false;
 }
 
-void PlayState::onKeyDown ( int32_t key, int32_t mod )
+void PlayState::onKeyDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   nom::uint32 player_turn = get_turn();
 
@@ -377,7 +379,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
   } // end key switch
 }
 
-void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
+void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   nom::uint32 player_turn = this->get_turn();
   nom::Coords coords ( x, y ); // mouse input coordinates
@@ -427,12 +429,12 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
   }
 }
 
-void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
+void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   // Stub
 }
 
-void PlayState::onMouseWheel ( bool up, bool down )
+void PlayState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   if ( this->game->cursor.getState() == 0 ) // Player's hand mode
   {

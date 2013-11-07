@@ -68,10 +68,10 @@ class PlayState: public nom::IState
     void draw ( SDL_Renderer* target );
 
   private:
-    void onKeyDown ( int32_t key, int32_t mod );
-    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
-    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y );
-    void onMouseWheel ( bool up, bool down );
+    void onKeyDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onJoyButtonDown ( int32_t which, int32_t button );
 
     unsigned int get_turn ( void );

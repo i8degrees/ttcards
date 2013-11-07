@@ -60,9 +60,9 @@ class GameOverState: public nom::IState
 
     void Resume ( nom::int32 response );
 
-    void onKeyDown ( nom::int32 key, nom::int32 mod );
-    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y );
-    void onMouseWheel ( bool up, bool down );
+    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
+    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 );
 
     void update ( float delta_time );

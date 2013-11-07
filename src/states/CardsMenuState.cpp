@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 #include "PlayState.hpp"
 
+using namespace nom;
+
 CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 {
   nom::Gradient linear;
@@ -59,7 +61,7 @@ NOM_LOG_TRACE ( TTCARDS );
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
-  linear.setFillDirection ( nom::FillDirection::Left );
+  linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   this->menu_box = nom::ui::MessageBox  (
                                           PICK_CARDS_MENU_ORIGIN_X,
@@ -128,7 +130,7 @@ void CardsMenuState::Resume ( void )
   std::cout << "\n" << "CardsMenu state Resumed" << "\n";
 }
 
-void CardsMenuState::onKeyDown ( int32_t key, int32_t mod )
+void CardsMenuState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
 {
   switch ( key )
   {
@@ -184,19 +186,20 @@ void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
   }
 }
 
-void CardsMenuState::onMouseLeftButtonDown ( int32_t x, int32_t y )
+void CardsMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   // TODO
 }
 
-void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y )
+void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   if ( this->game->hand[0].push_back ( this->selectedCard ) )
     this->game->card_place.Play();
 }
 
-void CardsMenuState::onMouseWheel ( bool up, bool down )
+void CardsMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
+/* TODO
   if ( this->game->cursor.getState() == 0 )
   {
     if ( up )
@@ -206,6 +209,7 @@ void CardsMenuState::onMouseWheel ( bool up, bool down )
 
     this->game->cursor_move.Play();
   }
+TODO */
 }
 
 void CardsMenuState::update ( float delta_time )
@@ -300,7 +304,7 @@ void CardsMenuState::draw ( SDL_Renderer* target )
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
     {
       this->game->info_text_gray.setText ( this->game->collection.cards[i].getName() );
-      this->game->info_text_gray.setFontStyle ( nom::FontStyle::Faded, 150 );
+      this->game->info_text_gray.setFontStyle ( nom::IFont::FontStyle::Faded, 150 );
       this->game->info_text_gray.setPosition ( nom::Coords( MENU_CARDS_NAME_ORIGIN_X, y_offset ) );
       this->game->info_text_gray.update();
       this->game->info_text_gray.draw ( target );

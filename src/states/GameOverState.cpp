@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardsMenuState.hpp"
 #include "ContinueMenuState.hpp"
 
+using namespace nom;
+
 GameOverState::GameOverState  ( std::shared_ptr<GameObject> object,
                                 enum GameOverType gameover_state
                               )
@@ -125,7 +127,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   // Initialize our message box background containers (linear gradient)
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
-  linear.setFillDirection ( nom::FillDirection::Left );
+  linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   // Top display message box; "description" info box
   this->info_box = nom::ui::MessageBox  (
@@ -144,12 +146,12 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   this->info_box.setWindowTitleFont ( &this->game->info_small_text );
   this->info_box.setLabelFont ( &this->game->info_text );
   this->info_box.setLabel ( "Select 1 card(s) you want" );
-  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
   this->card_info_box.setWindowTitleFont ( &this->game->info_small_text );
   this->card_info_box.setLabelFont ( &this->game->info_text );
   this->card_info_box.setLabel ( this->game->hand[1].getSelectedCard().getName() );
-  this->card_info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+  this->card_info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into each player's respective hand.
@@ -218,7 +220,7 @@ void GameOverState::Resume ( nom::int32 response )
   }
 }
 
-void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
+void GameOverState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
 {
   switch ( key )
   {
@@ -242,7 +244,7 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod )
   }
 }
 
-void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
+void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   nom::Coords coords ( x, y ); // mouse input coordinates
 
@@ -279,8 +281,9 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
   }
 }
 
-void GameOverState::onMouseWheel ( bool up, bool down )
+void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
+/* TODO
   if ( up )
   {
     this->cursor.moveCursorLeft();
@@ -289,10 +292,12 @@ void GameOverState::onMouseWheel ( bool up, bool down )
   {
     this->cursor.moveCursorRight();
   }
+TODO */
 }
 
 void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
 {
+/* TODO
   if ( type != SDL_USEREVENT ) return;
 
   if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
@@ -321,6 +326,7 @@ void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1,
       this->game->cursor_wrong.Play();
     }
   }
+TODO */
 }
 
 void GameOverState::update ( float delta_time )

@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <memory>
 
-#include <SDL/SDL.h>
+#include "SDL.h"
 
 #include <nomlib/audio.hpp>
 #include <nomlib/graphics.hpp>
@@ -59,10 +59,10 @@ class App: public nom::SDL_App // "is-a" relationship
     bool onInit ( void );
 
     /// Handle app & state events
-    void onEvent ( nom::Event* event );
+    void onEvent ( SDL_Event* event );
 
     /// Handle key events
-    void onKeyDown ( int32_t key, int32_t mod );
+    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
 
     /// Event handler for resize app request
     void onResize ( int32_t width, int32_t height );
@@ -75,7 +75,7 @@ class App: public nom::SDL_App // "is-a" relationship
     /// Timer for tracking frames per second
     nom::FPS fps;
     /// Input events
-    nom::Event event;
+    SDL_Event event;
 };
 
 

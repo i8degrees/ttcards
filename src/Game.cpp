@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Game.hpp"
 
+using namespace nom;
+
 App::App ( nom::int32 argc, char* argv[] )
 {
   // Destination directory we descend into to locate game resources
@@ -153,7 +155,7 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
   // Note that it is important that we do not mess with the working directory
   // path until after our command line arguments have been processed, so that we
   // do not unintentionally mess up relative paths!
-  dir.setPath ( working_directory );
+  dir.set_path ( working_directory );
 }
 
 App::~App ( void )
@@ -167,7 +169,7 @@ bool App::onInit ( void )
                               nom::Color::Gray
                             );
 
-  unsigned int video_flags = SDL_SWSURFACE | SDL_RLEACCEL | SDL_DOUBLEBUF;
+  unsigned int video_flags = 0;
 
   this->game = std::shared_ptr<GameObject> ( new GameObject );
 
@@ -190,9 +192,7 @@ bool App::onInit ( void )
     std::cout << modes[idx] << std::endl;
   }
 
-  this->game->context.create ( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, video_flags );
-
-  this->enableKeyRepeat ( 100, SDL_DEFAULT_REPEAT_INTERVAL / 3 );
+  this->game->context.create ( "TTcards", SCREEN_WIDTH, SCREEN_HEIGHT, video_flags );
 
   this->game->context.set_window_title( LOADING_TEXT );
 
@@ -226,7 +226,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), nom::Color::Black, true ) == false )
+  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*nom::Color::Black,*/ true ) == false )
   {
 NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
     rectangle.draw ( this->game->context.get() );
@@ -242,7 +242,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
       this->game->background.resize ( nom::ResizeAlgorithm::hq2x );
     }
 
-    this->game->background.Draw( this->game->context.get() );
+    this->game->background.draw( this->game->context.get() );
   }
 
   this->game->context.update();
@@ -259,8 +259,8 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   {
     this->game->score_text[0].setColor ( nom::Color::White );
     this->game->score_text[0].setFontSize ( 48 * SCALE_FACTOR );
-    this->game->score_text[0].setFontStyle ( nom::FontStyle::Italic );
-    this->game->score_text[0].setRenderingStyle ( nom::RenderStyle::Blended );
+    this->game->score_text[0].setFontStyle ( nom::IFont::FontStyle::Italic );
+    this->game->score_text[0].setRenderingStyle ( nom::IFont::RenderStyle::Blended );
     this->game->score_text[0].setFontOutline ( 1 );
   }
   else
@@ -273,8 +273,8 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   {
     this->game->score_text[1].setColor ( nom::Color::White );
     this->game->score_text[1].setFontSize ( 48 * SCALE_FACTOR );
-    this->game->score_text[1].setFontStyle ( nom::FontStyle::Italic );
-    this->game->score_text[1].setRenderingStyle ( nom::RenderStyle::Blended );
+    this->game->score_text[1].setFontStyle ( nom::IFont::FontStyle::Italic );
+    this->game->score_text[1].setRenderingStyle ( nom::IFont::RenderStyle::Blended );
     this->game->score_text[1].setFontOutline ( 1 );
   }
   else
@@ -286,8 +286,8 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), nom::Color::White ) == true )
   {
     this->game->gameover_text.setFontSize ( 48 * SCALE_FACTOR );
-    this->game->gameover_text.setFontStyle ( nom::FontStyle::Italic );
-    this->game->gameover_text.setRenderingStyle ( nom::RenderStyle::Blended );
+    this->game->gameover_text.setFontStyle ( nom::IFont::FontStyle::Italic );
+    this->game->gameover_text.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
     this->game->gameover_text.setFontOutline ( 1 );
   }
   else
@@ -296,7 +296,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->gameover_background.load ( this->game->config.getString("GAMEOVER_BACKGROUND"), nom::Color::Black, true, 0 ) == false )
+  if ( this->game->gameover_background.load ( this->game->config.getString("GAMEOVER_BACKGROUND"), true ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("GAMEOVER_BACKGROUND") );
     return false;
@@ -406,7 +406,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   return true;
 }
 
-void App::onEvent ( nom::Event* event )
+void App::onEvent ( SDL_Event* event )
 {
   // Take care of our own events
   Input::HandleInput ( event );
@@ -415,7 +415,7 @@ void App::onEvent ( nom::Event* event )
   nom::GameStates::onEvent ( event );
 }
 
-void App::onKeyDown ( int32_t key, int32_t mod )
+void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
   {
@@ -424,7 +424,7 @@ void App::onKeyDown ( int32_t key, int32_t mod )
 #if defined ( DEBUG )
     case SDLK_0:
     {
-      if ( mod == KMOD_LMETA )
+      if ( mod == KMOD_LGUI )
       {
         nom::GameStates::ChangeState ( ContinueMenuStatePtr ( new ContinueMenuState ( this->game ) ) );
       }
@@ -456,9 +456,9 @@ void App::onKeyDown ( int32_t key, int32_t mod )
     }
     break;
 
-    case SDLK_BACKSLASH: this->toggleFPS(); break;
-    case SDLK_f: if ( mod == KMOD_LMETA ) this->onResize ( 0, 0 ); break;
-
+    case SDLK_BACKSLASH: this->toggle_fps(); break;
+    case SDLK_f: if ( mod == KMOD_LGUI ) this->onResize ( 0, 0 ); break;
+/* TODO
     case SDLK_F1:
     {
       nom::Image image;
@@ -473,6 +473,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not save screenshot file:" + screenshot_filename )
 NOM_LOG_INFO ( TTCARDS, "Saved screenshot: " + screenshot_filename );
     }
     break;
+TODO */
 
     case SDLK_r: // Start a new game
     {
@@ -487,7 +488,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
 
     case SDLK_LEFTBRACKET:
     {
-      if ( mod == KMOD_LMETA )
+      if ( mod == KMOD_LGUI )
         this->game->board.list();
       else
         this->game->debug.ListCards ( this->game->hand[0].cards );
@@ -496,7 +497,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
 
     case SDLK_RIGHTBRACKET:
     {
-      if ( mod == KMOD_LMETA )
+      if ( mod == KMOD_LGUI )
         this->game->debug.ListCards ( this->game->collection.cards );
       else
         this->game->debug.ListCards ( this->game->hand[1].cards );
@@ -507,6 +508,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
 
 void App::onResize ( int32_t width, int32_t height )
 {
+/* TODO
   if ( this->isFullScreen() )
   {
     this->game->context.toggleFullScreenWindow ( 0, 0 );
@@ -517,6 +519,7 @@ void App::onResize ( int32_t width, int32_t height )
     this->game->context.toggleFullScreenWindow ( 0, 0 );
     this->setFullScreen ( true );
   }
+TODO */
 }
 
 int32_t App::Run ( void )
@@ -547,13 +550,13 @@ int32_t App::Run ( void )
       nom::GameStates::update ( delta_time );
       nom::GameStates::draw ( this->game->context.get() );
 
-      if ( this->getShowFPS() )
+      if ( this->show_fps() )
       {
-        this->game->context.setWindowTitle ( APP_NAME + " " + "-" + " " + ( this->fps.fpsAsString() ) + " " + "fps" );
+        this->game->context.set_window_title ( APP_NAME + " " + "-" + " " + ( this->fps.asString() ) + " " + "fps" );
       }
       else
       {
-        this->game->context.setWindowTitle ( APP_NAME );
+        this->game->context.set_window_title ( APP_NAME );
       }
 
       next_game_tick += SKIP_TICKS;

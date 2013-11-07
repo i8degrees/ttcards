@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PauseState.hpp"
 
+using namespace nom;
+
 PauseState::PauseState ( std::shared_ptr<GameObject> object )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -56,7 +58,7 @@ void PauseState::onInit ( void )
   this->info_box.setWindowTitleFont ( &this->game->info_small_text );
   this->info_box.setLabelFont ( &this->game->info_text );
   this->info_box.setLabel ( SHORT_VERSION_INFO );
-  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
   this->blink_update.start();
 }
@@ -76,7 +78,7 @@ void PauseState::Resume ( void )
   std::cout << "\n" << "PauseState state Resumed" << "\n";
 }
 
-void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod )
+void PauseState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
 {
   switch ( key )
   {

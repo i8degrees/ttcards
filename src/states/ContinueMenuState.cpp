@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuState.hpp"
 
+using namespace nom;
+
 ContinueMenuState::ContinueMenuState ( std::shared_ptr<GameObject> object )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -46,7 +48,7 @@ void ContinueMenuState::onInit ( void )
 
   linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
   linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
-  linear.setFillDirection ( nom::FillDirection::Left );
+  linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
                                           OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y,
@@ -58,7 +60,7 @@ void ContinueMenuState::onInit ( void )
   this->info_box.setLabelFont ( &this->game->info_text );
   this->info_box.setWindowTitle ( "Choice" );
   this->info_box.setLabel ( "Are you sure?\nYes\nNo" );
-  this->info_box.setLabelTextAlignment ( nom::TextAlignment::MiddleCenter );
+  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
 //NOM_DUMP_VAR ( this->game->info_text.getMultiLineTextWidth("Are you sure?\nYes\nNo") );
 //nom::int32 text_width = this->game->info_text.getFontWidth();
@@ -116,7 +118,7 @@ void ContinueMenuState::onExit ( void )
   // Stub
 }
 
-void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod )
+void ContinueMenuState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
 {
   switch ( key )
   {
@@ -148,7 +150,7 @@ void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod )
   }
 }
 
-void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y )
+void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   nom::Coords coords ( x, y ); // mouse input coordinates
 
@@ -170,8 +172,9 @@ NOM_DUMP_VAR(option_choice);
   }
 }
 
-void ContinueMenuState::onMouseWheel ( bool up, bool down )
+void ContinueMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
+/* TODO
   if ( up )
   {
     this->cursor.moveCursorUp();
@@ -180,14 +183,17 @@ void ContinueMenuState::onMouseWheel ( bool up, bool down )
   {
     this->cursor.moveCursorDown();
   }
+TODO */
 }
 
 void ContinueMenuState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
 {
+/* TODO
   if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
   {
     this->game->cursor_move.Play();
   }
+TODO */
 }
 
 void ContinueMenuState::update ( float delta_time )
