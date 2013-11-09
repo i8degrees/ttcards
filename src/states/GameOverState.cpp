@@ -283,16 +283,14 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uin
 
 void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-/* TODO
-  if ( up )
+  if ( y > 0 )
   {
     this->cursor.moveCursorLeft();
   }
-  else if ( down )
+  else if ( y < 0 )
   {
     this->cursor.moveCursorRight();
   }
-TODO */
 }
 
 void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
