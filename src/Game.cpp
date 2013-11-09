@@ -318,6 +318,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
 
   if ( this->game->card.load ( &this->game->config ) == false )
   {
+NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     return false;
   }
 
