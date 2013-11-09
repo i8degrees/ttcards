@@ -169,7 +169,7 @@ bool App::onInit ( void )
                               nom::Color::Gray
                             );
 
-  unsigned int video_flags = 0;
+  unsigned int video_flags = SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_WINDOW_SHOWN;
 
   this->game = std::shared_ptr<GameObject> ( new GameObject );
 
@@ -192,9 +192,11 @@ bool App::onInit ( void )
     std::cout << modes[idx] << std::endl;
   }
 
-  this->game->context.create ( "TTcards", SCREEN_WIDTH, SCREEN_HEIGHT, video_flags );
+  this->game->context.create ( "TTcards", SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, video_flags );
 
-  this->game->context.set_window_title( LOADING_TEXT );
+//this->game->context.set_window_title ( LOADING_TEXT );
+
+  this->game->context.set_viewport ( SCREEN_WIDTH, SCREEN_HEIGHT );
 
   // Commence the initialization of game objects
   this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
@@ -242,10 +244,10 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
       this->game->background.resize ( nom::ResizeAlgorithm::hq2x );
     }
 
-    this->game->background.draw( this->game->context );
+//this->game->background.draw( this->game->context );
   }
 
-  this->game->context.update();
+//this->game->context.update();
 
   // Possible bug in SDL for OS X
   //
@@ -253,7 +255,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   // poll for an events afterwards. Oddly enough, this issue only happens when
   // we are launching from an application bundle under OS X -- normal binaries
   // do not need this workaround.
-  this->PollEvents( &event );
+//this->PollEvents( &event );
 
   if ( this->game->score_text[0].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color::White ) == true )
   {
