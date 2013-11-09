@@ -149,7 +149,7 @@ void PlayState::onInit ( void )
   this->player_turn ( nom::rand ( 0, TOTAL_PLAYERS - 1 ) );
 
   // Initialize our animation state timers
-  this->player_timer[1].setFrameRate ( 320 ); // 250 is also nice, I think!
+  this->player_timer[1].setFrameRate ( 500 );
   this->cursor_blink.start();
   this->blink_cursor = false;
 }
@@ -896,11 +896,7 @@ void PlayState::update ( float delta_time )
   this->player[1].update();
 
   // Player two animation effect
-  if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > nom::ticks() )
-  {
-    // return
-  }
-  else
+  if ( ! ( this->player_timer[1].ticks() + this->player_timer[1].framerate() >= delta_time ) )
   {
     this->player_timer[1].start();
 
@@ -911,6 +907,7 @@ void PlayState::update ( float delta_time )
       this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
     }
   }
+
   if ( this->get_turn() == 0 ) // player1
   {
     this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color ( 188, 203, 236 ) );

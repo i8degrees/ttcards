@@ -65,7 +65,7 @@ class App: public nom::SDL_App // "is-a" relationship
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
 
     /// Event handler for resize app request
-    void onResize ( int32_t width, int32_t height );
+    void onResize ( nom::int32 width, nom::int32 height );
 
     /// Run app loop
     nom::int32 Run ( void );
