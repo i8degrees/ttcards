@@ -564,10 +564,12 @@ int32_t App::Run ( void )
 
       // FIXME: this is a lazy patch to keep CPU cycles down; on my system,
       // usage drops from 99% to ~22..30%
+      /*
       if ( this->fps.fps() >= TICKS_PER_SECOND )
       {
         nom::sleep ( 50 );
       }
+      */
     }
   }
 

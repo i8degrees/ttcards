@@ -110,6 +110,9 @@ class Card
     /// Clamps array values to MAX_RANK
     void setRanks ( std::array<nom::int32, MAX_RANKS> ranks );
 
+    /// Clamps array values to MAX_RANK
+    void set_ranks ( std::vector<nom::int32> ranks );
+
     /// Clamps value to MAX_RANK
     void setNorthRank ( nom::int32 rank );
 

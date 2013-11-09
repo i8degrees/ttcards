@@ -134,6 +134,14 @@ void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
   this->setWestRank ( ranks[WEST] );
 }
 
+void Card::set_ranks ( std::vector<nom::int32> ranks )
+{
+  this->setNorthRank ( ranks[NORTH] );
+  this->setEastRank ( ranks[EAST] );
+  this->setSouthRank ( ranks[SOUTH] );
+  this->setWestRank ( ranks[WEST] );
+}
+
 void Card::setNorthRank ( nom::int32 rank )
 {
   this->rank[NORTH] = std::min ( rank, MAX_RANK );

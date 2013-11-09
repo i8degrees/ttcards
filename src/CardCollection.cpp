@@ -72,7 +72,7 @@ Cards CardCollection::getCards ( void )
 
 bool CardCollection::save( const std::string& filename )
 {
-/*
+/* TODO
   nom::JSON::FileWriter fp; // json_spirit wrapper for file output
   json_spirit::Array game; // Overall container; this is the parent
   json_spirit::Object node; // JSON object record; the child
@@ -95,94 +95,47 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
   }
 
   return true;
-*/
+TODO */
   return false;
 }
 
 bool CardCollection::load( const std::string& filename )
 {
-/*
-  nom::JSON::FileReader fp; // json_spirit wrapper for file input
-  json_spirit::Object obj;
-  json_spirit::Value value;
-  json_spirit::Array values;
-  json_spirit::Array::size_type i; // iterator for object values looping
-  json_spirit::Object::size_type o; // iterator for object values looping
+  nom::JSON::FileReader fp;
+  nom::JSON::Value root;
 
   // The card attributes we are loading in will be stored in here, and once a
   // card has filled its buffer, we push it into its final resting place ...
   // CardCollection's Card vector.
   Card card;
-  Cards input_cards;
+  Cards cards_buffer;
 
-  if ( fp.load ( filename, value ) == false )
+  if ( fp.load ( filename, root, false ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-NOM_ASSERT ( value.type() == json_spirit::array_type );
-  values = value.get_array();
-
-  for ( i = 0; i != values.size(); i++ )
+  for ( auto idx = 0; idx != root.size(); ++idx )
   {
-NOM_ASSERT ( values[i].type() == json_spirit::obj_type );
-    obj = values[i].get_obj();
+    card.setID ( root.get_int ( "ID", idx ) );
+    card.setName ( root.get_string ( "Name", idx ) );
+    card.setLevel ( root.get_int ( "Level", idx ) );
+    card.setType ( root.get_int ( "Type", idx ) );
+    card.setElement ( root.get_int ( "Element", idx ) );
 
-    for ( o = 0; o != obj.size(); o++ )
-    {
-      const json_spirit::Pair &pair = obj[o];
-      const std::string &path = pair.name_;
-      const json_spirit::Value &value = pair.value_;
+    std::vector<int> ranks = root.get_ints ( "Ranks", idx );
+    card.set_ranks ( ranks );
 
-      if ( path == "ID" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setID ( value.get_int() );
-      }
-      else if ( path == "Name" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::str_type );
-        card.setName ( value.get_str() );
-      }
-      else if ( path == "Level" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setLevel ( value.get_int() );
-      }
-      else if ( path == "Type" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setType ( value.get_int() );
-      }
-      else if ( path == "Element" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setElement ( value.get_int() );
-      }
-      else if ( path == "Ranks" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::array_type );
-        const json_spirit::Array &ranks = value.get_array();
+    card.setPlayerID ( Card::NOPLAYER ); // placeholder
+    card.setPlayerOwner ( Card::NOPLAYER ); // placeholder
 
-NOM_ASSERT ( ranks.size() == 4 );
-        card.setNorthRank ( ranks[NORTH].get_int() );
-        card.setEastRank ( ranks[EAST].get_int() );
-        card.setSouthRank ( ranks[SOUTH].get_int() );
-        card.setWestRank ( ranks[WEST].get_int() );
-
-        // The next three lines *MUST* be at the end of the current
-        // node object being read in -- or else epic failure will result!
-        card.setPlayerID ( Card::NOPLAYER ); // placeholder
-        card.setPlayerOwner ( Card::NOPLAYER ); // placeholder
-        input_cards.push_back ( card );
-      }
-    }
+    cards_buffer.push_back ( card );
   }
 
 // Do a sanity check if we are not a debug version
 #ifndef DEBUG
-  if ( input_cards.size() < 10 ) // Sanity check
+  if ( cards_buffer.size() < 10 ) // Sanity check
   {
 NOM_LOG_ERR ( TTCARDS, "Cards collection data is invalid at file: " + filename );
     return false;
@@ -190,13 +143,11 @@ NOM_LOG_ERR ( TTCARDS, "Cards collection data is invalid at file: " + filename )
 #endif
 
   // All is well, let us make our freshly loaded data permanent
-  this->cards = input_cards;
+  this->cards = cards_buffer;
 
 #ifdef DEBUG_CARD_COLLECTION
   debug.ListCards ( this->cards );
 #endif
 
   return true;
-*/
-  return false;
 }
