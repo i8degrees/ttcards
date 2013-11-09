@@ -293,9 +293,8 @@ void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 windo
   }
 }
 
-void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
+void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 )
 {
-/* TODO
   if ( type != SDL_USEREVENT ) return;
 
   if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
@@ -324,7 +323,6 @@ void GameOverState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1,
       this->game->cursor_wrong.Play();
     }
   }
-TODO */
 }
 
 void GameOverState::update ( float delta_time )

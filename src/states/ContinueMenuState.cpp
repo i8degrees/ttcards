@@ -174,26 +174,22 @@ NOM_DUMP_VAR(option_choice);
 
 void ContinueMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-/* TODO
-  if ( up )
+  if ( y > 0 )
   {
-    this->cursor.moveCursorUp();
+    this->cursor.move_up();
   }
-  else if ( down )
+  else if (y < 0 )
   {
-    this->cursor.moveCursorDown();
+    this->cursor.move_down();
   }
-TODO */
 }
 
-void ContinueMenuState::onUserEvent ( nom::uint8 type, nom::int32 code, void* data1, void* data2 )
+void ContinueMenuState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 )
 {
-/* TODO
   if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
   {
     this->game->cursor_move.Play();
   }
-TODO */
 }
 
 void ContinueMenuState::update ( float delta_time )
