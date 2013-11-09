@@ -69,7 +69,7 @@ nom::int32 GameOverStateCursor::position ( void )
   }
 }
 
-nom::int32 GameOverStateCursor::moveCursorLeft ( void )
+nom::int32 GameOverStateCursor::move_left ( void )
 {
   if ( this->x() > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
   {
@@ -80,7 +80,7 @@ nom::int32 GameOverStateCursor::moveCursorLeft ( void )
   return this->x();
 }
 
-nom::int32 GameOverStateCursor::moveCursorRight ( void )
+nom::int32 GameOverStateCursor::move_right ( void )
 {
   if ( this->x() < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
   {

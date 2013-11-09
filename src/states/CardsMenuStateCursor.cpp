@@ -33,7 +33,7 @@ CardsMenuStateCursor::CardsMenuStateCursor ( void ) {}
 CardsMenuStateCursor::~CardsMenuStateCursor ( void ) {}
 
 /*
-nom::int32 CardsMenuStateCursor::moveCursorLeft ( void )
+nom::int32 CardsMenuStateCursor::move_left ( void )
 {
   if ( this->getState() == 0 )
   {

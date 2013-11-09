@@ -68,7 +68,7 @@ nom::int32 ContinueMenuStateCursor::position ( void )
   return this->cursor_position;
 }
 
-nom::int32 ContinueMenuStateCursor::moveCursorUp ( void )
+nom::int32 ContinueMenuStateCursor::move_up ( void )
 {
   if ( this->y() > this->option_position.x )
   {
@@ -80,7 +80,7 @@ NOM_DUMP_VAR ( this->y() );
   return this->y();
 }
 
-nom::int32 ContinueMenuStateCursor::moveCursorDown ( void )
+nom::int32 ContinueMenuStateCursor::move_down ( void )
 {
   if ( this->y() < 240 )
   {

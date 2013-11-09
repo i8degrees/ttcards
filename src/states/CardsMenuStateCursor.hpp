@@ -43,7 +43,7 @@ class CardsMenuStateCursor: public nom::ui::Cursor
     CardsMenuStateCursor ( void );
     ~CardsMenuStateCursor ( void );
 
-      //nom::int32 moveCursorLeft ( void );
+      //nom::int32 move_left ( void );
 
   private:
     /// number of cards to display per menu page

@@ -127,8 +127,8 @@ void ContinueMenuState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
     // Resume previous state by exiting this one
     case SDLK_p: nom::GameStates::PopState(); break;
 
-    case SDLK_UP: this->cursor.moveCursorUp(); break;
-    case SDLK_DOWN: this->cursor.moveCursorDown(); break;
+    case SDLK_UP: this->cursor.move_up(); break;
+    case SDLK_DOWN: this->cursor.move_down(); break;
     case SDLK_SPACE:
     {
       nom::int32 choice = this->cursor.position();

@@ -64,12 +64,12 @@ class ContinueMenuStateCursor: public nom::ui::Cursor
     /// Move the cursor to the left.
     ///
     /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 moveCursorUp ( void );
+    nom::int32 move_up ( void );
 
     /// Move the cursor to the right.
     ///
     /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 moveCursorDown ( void );
+    nom::int32 move_down ( void );
 
   private:
     void next ( void );

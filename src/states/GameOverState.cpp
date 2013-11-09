@@ -232,8 +232,8 @@ void GameOverState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
     // Pause game
     case SDLK_p: nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) ); break;
 
-    case SDLK_LEFT: this->cursor.moveCursorLeft(); break;
-    case SDLK_RIGHT: this->cursor.moveCursorRight(); break;
+    case SDLK_LEFT: this->cursor.move_left(); break;
+    case SDLK_RIGHT: this->cursor.move_right(); break;
     case SDLK_SPACE:
     {
       this->selected_card = this->game->hand[1].getSelectedCard();
@@ -285,11 +285,11 @@ void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 windo
 {
   if ( y > 0 )
   {
-    this->cursor.moveCursorLeft();
+    this->cursor.move_left();
   }
   else if ( y < 0 )
   {
-    this->cursor.moveCursorRight();
+    this->cursor.move_right();
   }
 }
 

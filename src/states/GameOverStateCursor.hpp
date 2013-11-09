@@ -65,12 +65,12 @@ class GameOverStateCursor: public nom::ui::Cursor
     /// Move the cursor to the left.
     ///
     /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 moveCursorLeft ( void );
+    nom::int32 move_left ( void );
 
     /// Move the cursor to the right.
     ///
     /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 moveCursorRight ( void );
+    nom::int32 move_right ( void );
 
   private:
     void next ( void );
