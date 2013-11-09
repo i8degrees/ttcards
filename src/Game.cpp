@@ -202,31 +202,31 @@ bool App::onInit ( void )
   this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
 
   // Commence the loading of game resources
-  if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
+  if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color ( 255, 0, 255, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
     return false;
   }
 
-  if ( this->game->info_text_gray.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
+  if ( this->game->info_text_gray.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color ( 255, 0, 255, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
     return false;
   }
 
-  if ( this->game->info_small_text.load ( this->game->config.getString("INFO_SMALL_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
+  if ( this->game->info_small_text.load ( this->game->config.getString("INFO_SMALL_FONTFACE"), nom::Color ( 255, 0, 255, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
     return false;
   }
 
-  if ( this->game->menu_elements.load ( this->game->config.getString("MENU_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->game->menu_elements.load ( this->game->config.getString("MENU_ELEMENTS"), nom::Color ( 0, 0, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MENU_ELEMENTS") );
     return false;
   }
 
-  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*nom::Color::Black,*/ true ) == false )
+  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*nom::Color::Black,*/ 0 ) == false )
   {
 NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
     rectangle.draw ( this->game->context );

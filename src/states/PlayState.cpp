@@ -436,19 +436,17 @@ void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32
 
 void PlayState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-/* TODO
   if ( this->game->cursor.getState() == 0 ) // Player's hand mode
   {
-    if ( up )
+    if ( y > 0 )
     {
       this->moveCursorUp();
     }
-    else if ( down )
+    else if ( y < 0 )
     {
       this->moveCursorDown();
     }
   }
-TODO */
 }
 
 void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
@@ -898,8 +896,7 @@ void PlayState::update ( float delta_time )
   this->player[1].update();
 
   // Player two animation effect
-/* TODO
-  if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > SDL_GetTicks() )
+  if ( this->player_timer[1].ticks() + this->player_timer[1].framerate() > nom::ticks() )
   {
     // return
   }
@@ -914,7 +911,6 @@ void PlayState::update ( float delta_time )
       this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
     }
   }
-TODO */
   if ( this->get_turn() == 0 ) // player1
   {
     this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color ( 188, 203, 236 ) );

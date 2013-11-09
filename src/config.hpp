@@ -74,7 +74,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// To be fair, I am rescaling several of the images well beyond the recommended
 /// 256x256 guidelines and do not know how the algorithms compare on equal
 /// ground.
-#define SCALE_FACTOR 2
+#define SCALE_FACTOR 1
 
 // Global configuration
 constexpr nom::int32 SCREEN_WIDTH = 384 * SCALE_FACTOR;

@@ -45,7 +45,7 @@ NOM_LOG_TRACE ( TTCARDS );
   card.push_back ( this->card_element );
   card.push_back ( this->card_text );
 
-  this->card_background->setSize ( CARD_WIDTH - 4, CARD_HEIGHT - 4 );
+  this->card_background->setSize ( CARD_WIDTH - 4, CARD_HEIGHT );
   this->card_background->setMargins ( 4, 4 );
   this->card_background->setFillDirection ( nom::Gradient::FillDirection::Top );
 }
@@ -64,19 +64,19 @@ bool CardView::load ( GameConfig* config )
 {
   if ( config == nullptr ) return false;
 
-  if ( this->card_text->load ( config->getString("CARD_FONTFACE"), nom::Color ( 110, 144, 190 ), true ) == false )
+  if ( this->card_text->load ( config->getString("CARD_FONTFACE"), nom::Color ( 255, 0, 255, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FONTFACE") );
     return false;
   }
 
-  if ( this->card_face->load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_face->load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), true ) == false )
+  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;

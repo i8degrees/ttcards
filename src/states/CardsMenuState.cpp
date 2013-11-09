@@ -199,17 +199,18 @@ void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::u
 
 void CardsMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-/* TODO
   if ( this->game->cursor.getState() == 0 )
   {
-    if ( up )
+    if ( y > 0 )
+    {
       this->moveCursorUp();
-    else if ( down )
+    }
+    else if ( y < 0 )
+    {
       this->moveCursorDown();
-
-    this->game->cursor_move.Play();
+    }
   }
-TODO */
+  this->game->cursor_move.Play();
 }
 
 void CardsMenuState::update ( float delta_time )
