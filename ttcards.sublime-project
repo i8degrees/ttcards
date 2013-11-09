@@ -22,8 +22,8 @@
     {
       "name": "Resources",
       "path": "Resources",
-      "file_exclude_patterns": [ "*.icns", "*.bmp", "*.png" ],
-      "folder_exclude_patterns": [ "audio", "fonts", "images" ]
+      "file_exclude_patterns": [ "*.icns", "*.bmp", "*.png" ]
+      //"folder_exclude_patterns": [ "audio", "fonts", "images" ]
     },
 
     {} // placeholder
