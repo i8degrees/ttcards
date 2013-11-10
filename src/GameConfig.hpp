@@ -34,12 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <map>
 
-#include "json_spirit_writer_template.h"
-#include "json_spirit_reader_template.h"
-
 #include <nomlib/types.hpp>
+#include <nomlib/json.hpp>
 
 #include "config.hpp"
+
 /*
 template <typename T>
 class ConfigValue
@@ -59,6 +58,7 @@ class ConfigValue
 typedef ConfigValue<nom::int32> ConfigIntegerValue;
 typedef ConfigValue<std::string> ConfigStringValue;
 */
+
 class GameConfig
 {
   public:
@@ -68,7 +68,7 @@ class GameConfig
 
     const std::string getString ( const std::string& node ) const;
     const nom::int32 getInteger ( const std::string& node ) const;
-
+/*
     void init ( const std::string& node, const json_spirit::Value& value )
     {
       if ( value.type() == json_spirit::str_type )
@@ -80,11 +80,11 @@ class GameConfig
         this->config.at(node) = value.get_int();
       }
     }
-
+*/
     //void insert ( const std::string& node, nom::uint32 flags = 0 );
-
     //const T setProperty ( const std::string& node, const json_spirit::Value& value );
-    const json_spirit::Value setProperty ( const std::string& node, const json_spirit::Value& value );
+
+    const nom::JSON::ValueType& setProperty ( const std::string& node, const nom::JSON::ValueType& value );
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
@@ -98,7 +98,7 @@ class GameConfig
     bool load ( const std::string& filename );
 
   private:
-    std::map<std::string, json_spirit::Value> config;
+    std::map<std::string, nom::JSON::ValueType> config;
     //std::vector<std::pair<std::string, nom::uint32>> nodes;
 };
 

@@ -50,7 +50,7 @@ const std::string GameConfig::getString ( const std::string& node ) const
   }
   else
   {
-    return itr->second.get_str();
+    return itr->second.asString();
   }
 }
 
@@ -64,7 +64,7 @@ const nom::int32 GameConfig::getInteger ( const std::string& node ) const
   }
   else
   {
-    return itr->second.get_int();
+    return itr->second.asInt();
   }
 }
 /*
@@ -73,17 +73,17 @@ void GameConfig::insert ( const std::string& node, nom::uint32 flags )
   this->nodes.push_back ( std::make_pair ( node, flags ) );
 }
 */
-const json_spirit::Value GameConfig::setProperty ( const std::string& node, const json_spirit::Value& value )
+const nom::JSON::ValueType& GameConfig::setProperty ( const std::string& node, const nom::JSON::ValueType& value )
 {
-  auto res = config.insert ( std::pair<std::string, json_spirit::Value> ( node, value ) ).first;
+  auto res = config.insert ( std::pair<std::string, nom::JSON::ValueType> ( node, value ) ).first;
 
-  if ( value.type() == json_spirit::str_type )
+  if ( value.type() == nom::JSON::String )
   {
-NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.get_str() + "\"" + " has been added to the cache." );
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.asString() + "\"" + " has been added to the cache." );
   }
-  else if ( value.type() == json_spirit::int_type )
+  else if ( value.type() == nom::JSON::Integer )
   {
-NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.asInt() ) + " has been added to the cache." );
   }
   else
   {
@@ -95,6 +95,7 @@ NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + " has been added to the cache." 
 
 bool GameConfig::save( const std::string& filename )
 {
+/* TODO
   std::ofstream fp; // output file handle
   json_spirit::Object node; // current JSON node we are writing
   json_spirit::Array game; // overall data to be written out
@@ -151,11 +152,10 @@ bool GameConfig::save( const std::string& filename )
   node.push_back ( json_spirit::Pair ( "APP_ICON", this->getString("APP_ICON") ) );
   node.push_back ( json_spirit::Pair ( "CARDS_DB", this->getString("CARDS_DB") ) );
 
-/*
-  node.push_back ( json_spirit::Pair ( "USER_BOARD_FILENAME", this->getString("USER_BOARD_FILENAME") ) );
-  node.push_back ( json_spirit::Pair ( "USER_PLAYER1_FILENAME", this->getString("USER_PLAYER1_FILENAME") ) );
-  node.push_back ( json_spirit::Pair ( "USER_PLAYER2_FILENAME", this->getString("USER_PLAYER2_FILENAME") ) );
-*/
+
+  //node.push_back ( json_spirit::Pair ( "USER_BOARD_FILENAME", this->getString("USER_BOARD_FILENAME") ) );
+  //node.push_back ( json_spirit::Pair ( "USER_PLAYER1_FILENAME", this->getString("USER_PLAYER1_FILENAME") ) );
+  //node.push_back ( json_spirit::Pair ( "USER_PLAYER2_FILENAME", this->getString("USER_PLAYER2_FILENAME") ) );
 
   // Push current node to our overall game data to be written
   game.push_back ( node );
@@ -174,79 +174,40 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     fp.close();
     return false;
   }
-
+TODO */
+  return false;
 }
 
 bool GameConfig::load( const std::string& filename )
 {
-  std::ifstream fp; // input file handle
-  json_spirit::Object node;
-  json_spirit::Value value;
-  json_spirit::Array game;
-
-  // Iterators
-  json_spirit::Array::size_type i;
-  json_spirit::Object::size_type o;
+  nom::JSON::FileReader fp; // JSON parser
+  nom::JSON::Value root; // JSON container
 
   // Storage buffer for our configuration we are loading in; if everything is
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
 
-  fp.open ( filename );
-
-  if ( fp.is_open() && fp.good() )
+  if ( fp.load ( filename, root ) == false )
   {
-    if ( json_spirit::read_stream ( fp, value ) == false )
-    {
-NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
-      fp.close();
-      return false;
-    }
-    fp.close();
-  }
-  else
-  {
-    fp.close();
+NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
   }
 
-  if ( value.type() != json_spirit::array_type )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
-    return false;
-  }
+  nom::JSON::JSONMemberType members = root.members ( 0 );
 
-  game = value.get_array();
-
-  for ( i = 0; i != game.size(); i++ )
+  for ( auto idx = 0; idx != members.size(); ++idx )
   {
-    if ( game[i].type() != json_spirit::obj_type )
+    std::string key = members[idx];
+
+    if ( root.type ( key, 0 ) == nom::JSON::String )
     {
-NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
-      return false;
+      cfg.setProperty ( key, root.get_string ( key, 0 ) );
     }
-
-    node = game[i].get_obj();
-
-    for ( o = 0; o != node.size(); o++ )
+    else if ( root.type ( key, 0 ) == nom::JSON::Integer )
     {
-      const json_spirit::Pair& pair = node[o];
-      const std::string& path = pair.name_;
-      const json_spirit::Value& value = pair.value_;
-
-      if ( path.length() > 0 )
-      {
-        if ( value.type() == json_spirit::str_type )
-        {
-          cfg.setProperty ( path, value.get_str() );
-        }
-        else if ( value.type() == json_spirit::int_type )
-        {
-          cfg.setProperty ( path, value.get_int() );
-        }
-      } // end node variable name
-    } // end current node loop
-  } // end current array node
+      cfg.setProperty ( key, root.get_int ( key, 0 ) );
+    }
+  }
 
   // If we have made it this far, go ahead and overwrite our new configuration
   // onto the existing configuration map store!
