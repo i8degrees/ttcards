@@ -449,7 +449,7 @@ void PlayState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id
   }
 }
 
-void PlayState::onJoyButtonDown ( int32_t which, int32_t button )
+void PlayState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 {
   switch ( button )
   {

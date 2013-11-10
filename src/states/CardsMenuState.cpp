@@ -164,7 +164,7 @@ void CardsMenuState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
   }
 }
 
-void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
+void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 {
   switch ( button )
   {
@@ -178,12 +178,19 @@ void CardsMenuState::onJoyButtonDown ( int32_t which, int32_t button )
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
     case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].erase ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
     case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].push_back ( this->selectedCard ) ) this->game->card_place.Play(); break;
+
     case nom::PSXBUTTON::START:
     {
+#ifdef DEBUG
+      if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+      {
+        this->game->hand[0].randomize ( 8, 10, this->game->collection );
+      }
+#endif
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
+      break;
     }
-    break;
-  }
+  } // switch
 }
 
 void CardsMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )

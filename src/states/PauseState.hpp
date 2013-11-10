@@ -55,6 +55,7 @@ class PauseState: public nom::IState
     void Resume ( void );
 
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
+    void onJoyButtonDown ( nom::int32 which, nom::int32 button );
 
     void update ( float delta_time );
     void draw ( nom::IDrawable::RenderTarget target );

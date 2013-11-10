@@ -293,6 +293,14 @@ void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 windo
   }
 }
 
+void GameOverState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+{
+  switch ( button )
+  {
+    default: NOM_LOG_INFO ( TTCARDS, "FIXME: GameOverState needs joystick implementation!" ); break;
+  } // switch
+}
+
 void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 )
 {
   if ( type != SDL_USEREVENT ) return;

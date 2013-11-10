@@ -184,6 +184,14 @@ void ContinueMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 w
   }
 }
 
+void ContinueMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+{
+  switch ( button )
+  {
+    default: NOM_LOG_INFO ( TTCARDS, "FIXME: ContinueMenuState needs joystick implementation!" ); break;
+  } // switch
+}
+
 void ContinueMenuState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 )
 {
   if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )

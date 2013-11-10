@@ -72,7 +72,7 @@ class PlayState: public nom::IState
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
-    void onJoyButtonDown ( int32_t which, int32_t button );
+    void onJoyButtonDown ( nom::int32 which, nom::int32 button );
 
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );

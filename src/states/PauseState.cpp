@@ -89,6 +89,17 @@ void PauseState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
   }
 }
 
+void PauseState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+{
+  switch ( button )
+  {
+    default: break;
+
+    // Exit pause state; resume previous state
+    case nom::PSXBUTTON::START: nom::GameStates::PopState(); break;
+  }
+}
+
 void PauseState::update ( float delta_time )
 {
   this->info_box.update();
