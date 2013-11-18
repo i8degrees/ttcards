@@ -321,7 +321,7 @@ enum GameOverType
   Lost
 };
 
-enum class BoardPosition: nom::int32
+enum BoardPosition: nom::int32
 {
   TopLeft = 0,
   TopCenter,
