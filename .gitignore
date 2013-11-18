@@ -24,3 +24,8 @@ src/version.hpp
 # EMCC
 public/
 
+# third-party dependency binaries
+third-party/osx
+third-party/linux
+third-party/windows
+
