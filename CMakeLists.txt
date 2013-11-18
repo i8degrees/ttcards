@@ -1,6 +1,7 @@
 cmake_minimum_required ( VERSION 2.6 )
 
 # CMake Environment
+set ( CMAKE_VERBOSE_MAKEFILE OFF CACHE PATH "Verbose Makefile" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
@@ -23,23 +24,28 @@ option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
 project ( ttcards ) # Sets PROJECT_NAME variable for us
 
+# Platform detection
+include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
+
 if ( DEBUG )
-  # FIXME; Passing -D DEBUG=1 is a temporary workaround for getting around the
-  # compile errors with debugging macros defined within the OS X header file
-  # "CoreServices/CoreServices.h" that are conflicting with our
-  # (unassigned value) DEBUG macro.
-  #
-  # It is not wise to allow foreign debugging mechanisms activate
-  # without understanding what they are and how they function; perhaps either:
-  # a) replacing the DEBUG declaration (see version.hpp.in) with a unique
-  # identifier; b) reconsider using these macros all together for game logic
-  # functionality?
-  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D DEBUG=1" )
+  if ( PLATFORM_OSX )
+    # FIXME; Passing -D DEBUG=1 is a temporary workaround for getting around the
+    # compile errors with debugging macros defined within the OS X header file
+    # "CoreServices/CoreServices.h" that are conflicting with our
+    # (unassigned value) DEBUG macro.
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D DEBUG=1" )
+  endif ( PLATFORM_OSX )
+
+  if ( NOT PLATFORM_WINDOWS )
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused" )
+  else ( PLATFORM_WINDOWS )
+    # TODO: split these options up like we have for other platforms
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
+  endif ( NOT PLATFORM_WINDOWS )
 
   set ( CMAKE_BUILD_TYPE "Debug" )
-  set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused" )
-  set ( CMAKE_VERBOSE_MAKEFILE on )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
+
 else () # Build with optimizations for maximum speed and minimal size
   set ( CMAKE_BUILD_TYPE "Release" )
   message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
@@ -57,9 +63,6 @@ if ( DEBUG_TRACE )
   add_definitions ( "-D NOM_DEBUG_TRACE" )
   message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
 endif ( DEBUG_TRACE )
-
-# Platform detection
-include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
 # Utility macros
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
@@ -81,7 +84,7 @@ set ( JSONCPP_HEADERS_DIR "${TTCARDS_HEADERS_DIR}/jsoncpp" )
 # with jsoncpp. In the mean time, though, we are going to try holding onto our
 # json_spirit investment here, in order to ease the major transitions ahead of
 # us; nomlib first needs to have a stable SDL2 engine up and going.
-set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_HEADERS_DIR}/json_spirit" )
+#set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_HEADERS_DIR}/json_spirit" )
 
 # Relative path from project root to the external dependencies directory
 set ( EXTERNAL_DEPS_DIR "third-party" )
@@ -126,16 +129,6 @@ include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
 # on which build profile is chosen.
 set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}/${PROJECT_NAME}" )
 
-if ( PLATFORM_OSX )
-  option ( OSXAPP "Enable building OS X Application Bundle" on )
-  option ( UNIVERSAL "Enable building OSX Universal Application" off )
-endif ( PLATFORM_OSX )
-
-if ( UNIVERSAL )
-  set ( CMAKE_OSX_ARCHITECTURES i386; x86_64 )
-  message ( STATUS "Enabled building OSX Universal Application." )
-endif ( UNIVERSAL )
-
 if ( OSXAPP )
   message ( STATUS "Using OSXAPP install profile." )
 else ( NOT OSXAPP )
@@ -174,21 +167,8 @@ endif ( PLATFORM_LINUX )
 # List of our source code to be compiled
 include ( "${SRC_DIR}/CMakeLists.txt" )
 
-# Required Dependencies
-#
-# Add libraries & header file inclusion paths to EXT_HEADERS & EXTLIBS as we
-# find them.
-find_package ( nomlib REQUIRED )
-
-if ( NOMLIB_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
-else ( NOT NOMLIB_FOUND )
-  message ( FATAL_ERROR "Required dependency nomlib missing!" )
-endif ( NOMLIB_FOUND )
-
-set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
-message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
+#set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
+#message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
 
 # Required Dependencies
 #
@@ -205,6 +185,12 @@ if ( PLATFORM_WINDOWS )
   # *LIBRARY_DIR variables are used to ease the install of run-time dependencies.
   # You should have only DLL and LIB file types in the library directories, in
   # order for our file filtering to weed out the proper ones during installation.
+
+  set ( NOMLIB_INCLUDE_DIR "C:/Users/jeff/Projects/nomlib.git/include/" )
+  set ( NOMLIB_LIBRARY "C:/Users/jeff/Projects/nomlib.git/build/Debug/nomlib-d.lib" )
+  set ( NOMLIB_LIBRARY_DIR "C:/Users/jeff/Projects/nomlib.git/build/Debug/" )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
 
   # SDL2 dependency
   set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/include/" )
@@ -245,6 +231,15 @@ if ( PLATFORM_WINDOWS )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
 elseif ( PLATFORM_OSX )
+
+  find_package ( nomlib REQUIRED )
+
+  if ( NOMLIB_FOUND )
+    set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
+    set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
+  else ( NOT NOMLIB_FOUND )
+    message ( FATAL_ERROR "Required dependency nomlib missing!" )
+  endif ( NOMLIB_FOUND )
 
   # SDL2 dependency
   set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework/Headers" )
@@ -396,7 +391,11 @@ if ( DOCS )
 endif ( DOCS )
 
 # Linking phase -- issue link with all defined external dependencies
-target_link_libraries ( ${PROJECT_NAME} ${NOMLIB_LIBRARY} ) # ${EXTLIBS}
+if ( PLATFORM_WINDOWS )
+  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} ${NOMLIB_LIBRARY} )
+else ( NOT PLATFORM_WINDOWS )
+  target_link_libraries ( ${PROJECT_NAME} ${NOMLIB_LIBRARY} ) # ${EXTLIBS}
+endif ( PLATFORM_WINDOWS )
 
 # make run target (Sublime Text Editor Integration)
 #
@@ -426,18 +425,20 @@ configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
 
-# CPack configuration
-include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
+if ( NOT PLATFORM_WINDOWS )
+  # CPack configuration
+  include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
 
-include ( InstallRequiredSystemLibraries )
+  include ( InstallRequiredSystemLibraries )
 
-# Platform specific generator presets
-if ( PLATFORM_OSX )
-  set ( CPACK_GENERATOR "DragNDrop" )
-elseif ( PLATFORM_LINUX )
-  set ( CPACK_GENERATOR "DEB" )
-elseif ( PLATFORM_UNKNOWN )
-  set ( CPACK_GENERATOR "ZIP" )
-endif ( PLATFORM_OSX )
+  # Platform specific generator presets
+  if ( PLATFORM_OSX )
+    set ( CPACK_GENERATOR "DragNDrop" )
+  elseif ( PLATFORM_LINUX )
+    set ( CPACK_GENERATOR "DEB" )
+  elseif ( PLATFORM_UNKNOWN )
+    set ( CPACK_GENERATOR "ZIP" )
+  endif ( PLATFORM_OSX )
 
-include ( CPack )
+  include ( CPack )
+endif ( NOT PLATFORM_WINDOWS )

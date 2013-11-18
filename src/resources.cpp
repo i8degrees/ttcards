@@ -32,9 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const nom::Path path;
 
-#if ! defined (NOM_PLATFORM_OSX)
-  // Data folder for game storage (screenshots, card dumps, ...)
-  const std::string TTCARDS_DATA_DIR = "@TTCARDS_DATA_DIR@";
+// Data folder for game storage (screenshots, card dumps, ...)
+#if defined ( NOM_PLATFORM_WINDOWS ) // FIXME
+  const std::string TTCARDS_DATA_DIR = "C:/Users/jeff/Documents/ttcards";
 #else
   const std::string TTCARDS_DATA_DIR = nom::user_documents_path() + path.native() + "ttcards";
 #endif
