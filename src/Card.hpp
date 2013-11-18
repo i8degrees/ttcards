@@ -48,25 +48,25 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 const std::string card_delimiter = " ";
 
 /// Maximum level a card can contain -- starting at 1
-constexpr nom::int32 MAX_LEVEL = 10;
+const nom::int32 MAX_LEVEL = 10;
 
 /// Maximum type a card can contain -- starting at 1
-constexpr nom::int32 MAX_TYPE = 4;
+const nom::int32 MAX_TYPE = 4;
 
 /// Maximum element a card can contain -- starting at 1
-constexpr nom::int32 MAX_ELEMENT = 8;
+const nom::int32 MAX_ELEMENT = 8;
 
 /// Minimum rank a card can contain
-constexpr nom::int32 MIN_RANK = 1;
+const nom::int32 MIN_RANK = 1;
 
 /// Maximum rank a card can contain
-constexpr nom::int32 MAX_RANK = 10;
+const nom::int32 MAX_RANK = 10;
 
 /// Maximum number of rank attributes
-constexpr nom::int32 MAX_RANKS = 4;
+const nom::int32 MAX_RANKS = 4;
 
 /// Maximum name length a card can contain -- "Chubby Chocobo" (without quotes)
-constexpr nom::int32 MAX_NAME = 14; // +1 padding
+const nom::int32 MAX_NAME = 14; // +1 padding
 
 class Card
 {
