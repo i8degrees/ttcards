@@ -81,7 +81,7 @@ void GameOverState::onInit ( void )
 #if defined ( DEBUG )
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
 #else
-    nom::DailogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
+    nom::DialogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
 #endif
     exit ( EXIT_FAILURE );
   }
