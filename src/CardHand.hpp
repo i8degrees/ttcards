@@ -35,6 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <chrono>
 #include <random>
 #include <algorithm>
+#include <functional>
+#include <memory>
+
 /*
 #include "json_spirit_writer_template.h"
 #include "json_spirit_reader_template.h"
