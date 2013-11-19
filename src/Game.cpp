@@ -464,22 +464,21 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 
     case SDLK_BACKSLASH: this->toggle_fps(); break;
     case SDLK_f: if ( mod == KMOD_LGUI ) this->onResize ( 0, 0 ); break;
-/* TODO
+
     case SDLK_F1:
     {
-      nom::Image image;
+      std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".bmp";
 
-       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".bmp";
-
-      if ( image.save ( screenshot_filename, this->game->context.get() ) == false )
+      if ( this->game->context.save_screenshot( screenshot_filename ) == false )
       {
-NOM_LOG_ERR ( TTCARDS, "Could not save screenshot file:" + screenshot_filename );
+        NOM_LOG_ERR ( TTCARDS, "Could not save screenshot file:" + screenshot_filename );
         break;
       }
-NOM_LOG_INFO ( TTCARDS, "Saved screenshot: " + screenshot_filename );
+
+      NOM_LOG_INFO ( TTCARDS, "Saved screenshot: " + screenshot_filename );
+      break;
     }
     break;
-TODO */
 
     case SDLK_r: // Start a new game
     {
