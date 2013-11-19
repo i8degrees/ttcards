@@ -95,8 +95,6 @@ Removal is provided by executing **make uninstall** within your current build di
 
 ## Linux Dependencies ##
 
-Broken at the moment (CMake build scripts need updating)
-
 * ~~SDL v2.0.1~~
 * ~~SDL_image v2.0.0~~
 * ~~SDL_ttf v2.0.12~~

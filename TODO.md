@@ -1,5 +1,7 @@
 # TODO #
 
+- [ ] Fix building on Linux/Unix platforms; existing cmake build scripts need updating to reflect the many changes long since the last working version (which was back in June or May, I think...)
+
 - Card class
     - [ ] get/set XY && width/height ?
 
