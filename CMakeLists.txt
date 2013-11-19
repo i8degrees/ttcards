@@ -185,7 +185,11 @@ if ( PLATFORM_WINDOWS )
   # *LIBRARY_DIR variables are used to ease the install of run-time dependencies.
   # You should have only DLL and LIB file types in the library directories, in
   # order for our file filtering to weed out the proper ones during installation.
-
+  #
+  # FIXME: We shouldn't be linking SDL2, Open(AL|GL) or libsndfile dependencies
+  # here. It is intended that nomlib satisfies these dependencies for us!
+  # (We should be matching OS X dependency variables below, more or less).
+  # 2013-11-18
   set ( NOMLIB_INCLUDE_DIR "C:/Users/jeff/Projects/nomlib.git/include/" )
   set ( NOMLIB_LIBRARY "C:/Users/jeff/Projects/nomlib.git/build/Debug/nomlib-d.lib" )
   set ( NOMLIB_LIBRARY_DIR "C:/Users/jeff/Projects/nomlib.git/build/Debug/" )
@@ -245,31 +249,31 @@ elseif ( PLATFORM_OSX )
   set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework/Headers" )
   set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
+  #set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
 
   # SDL2_image dependency
   set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework/Headers" )
   set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
+  #set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
 
   # SDL2_ttf dependency
   set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework/Headers" )
   set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
+  #set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
 
   # OpenAL dependency
   set ( OPENAL_INCLUDE_DIR "/System/Library/Frameworks/OpenAL.framework" )
   set ( OPENAL_LIBRARY "/System/Library/Frameworks/OpenAL.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
+  #set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
 
   # libsndfile dependency
   set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework/Headers" )
   set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+  #set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
   find_library ( COCOA_LIBRARY Cocoa )
   mark_as_advanced ( COCOA_LIBRARY )
