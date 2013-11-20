@@ -71,9 +71,9 @@ void PlayState::onInit ( void )
   nom::Gradient linear;
 
   // Random seeding for picking out whose turn it is initially
-  nom::uint64 seed = std::chrono::system_clock::now().time_since_epoch().count();
+  nom::int32 seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::default_random_engine rand_generator ( seed );
-  std::uniform_int_distribution<nom::uint32> distribution ( 0, TOTAL_PLAYERS - 1 );
+  std::uniform_int_distribution<nom::int32> distribution ( 0, TOTAL_PLAYERS - 1 );
 
   this->game->cursor.setPosition ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
   this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
@@ -635,7 +635,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
 
     // Dump returned list of cards
     nom::uint32 line_number = 1;
-    for ( nom::int32 idx = 0; idx < adj.size(); idx++ )
+    for ( auto idx = 0; idx < adj.size(); idx++ )
     {
       Card tile = adj[idx].tile();
 
@@ -708,7 +708,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
 
       if ( this->game->rules.getRules() != 0 )
       {
-        for ( nom::ulong g = 0; g < grid.size(); g++ )
+        for ( nom::int32 g = 0; g < grid.size(); g++ )
         {
           this->game->board.flipCard ( grid[g].first, grid[g].second, player_turn + 1 );
           this->game->card_flip.Play();
@@ -720,7 +720,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
             continue;
           else
           {
-            for ( nom::ulong tg = 0; tg < tgrid.size(); tg++ )
+            for ( nom::int32 tg = 0; tg < tgrid.size(); tg++ )
             {
               this->game->board.flipCard( tgrid[tg].first, tgrid[tg].second, player_turn + 1 );
               this->game->card_flip.Play();
@@ -903,7 +903,7 @@ void PlayState::update ( float delta_time )
     // Only show player2 animation when we are not controlling him
     if ( this->skip_turn == false )
     {
-      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[PLAYER2].size() );
+      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[PLAYER2].size() - 1 );
       this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
     }
   }
@@ -919,7 +919,7 @@ void PlayState::update ( float delta_time )
     // Skipping a turn like this is only available in debug versions
     if ( this->skip_turn == false )
     {
-      nom::Coords board_edges[3];
+      nom::Coords board_edges[4];
 
       board_edges[0].x = 0;
       board_edges[0].y = 0;
@@ -935,7 +935,7 @@ void PlayState::update ( float delta_time )
 
       nom::int32 edge_pick = nom::rand ( 0, 3 );
 
-      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() );
+      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
 
       if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
@@ -958,7 +958,7 @@ void PlayState::update ( float delta_time )
       {
         nom::int32 moveX = nom::rand ( 0, 2 );
         nom::int32 moveY = nom::rand ( 0, 2 );
-        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() );
+        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
         this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
 
         this->moveTo ( moveX, moveY );

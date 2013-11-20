@@ -205,7 +205,7 @@ bool CardHand::exists ( const Card& card ) const
   return false;
 }
 
-void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCollection& db, nom::uint64 seedling )
+void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardCollection& db, nom::int32 seedling )
 {
   // Cards are picked out using our random number equal distribution generator; this needs to
   // be a value between 1..MAX_COLLECTION in order to yield an ID in the cards
@@ -215,10 +215,12 @@ void CardHand::randomize ( nom::uint32 level_min, nom::uint32 level_max, CardCol
 
   // Set the seed to the same as the previous game in order to produce the same
   // results for player2 hand
-  nom::uint64 seed = seedling;
+  nom::int32 seed = seedling;
 
   if ( seed == 0 )
+  {
     seed = std::chrono::system_clock::now().time_since_epoch().count();
+  }
 
   std::default_random_engine rand_generator ( seed );
 
@@ -446,7 +448,7 @@ void CardHand::set_position ( nom::int32 pos )
 
 std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
 {
-  for ( auto idx = 0; idx < rhs.cards.size(); idx++ )
+  for ( nom::uint32 idx = 0; idx < rhs.cards.size(); idx++ )
   {
     os  << rhs.cards[idx].getName()
         << card_delimiter

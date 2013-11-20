@@ -89,11 +89,9 @@ unsigned int Player::getID ( void )
 //
 void Player::setID ( unsigned int id_ )
 {
-  nom::ulong pid = 0; // iterator
-
   this->id = id_;
 
-  for ( pid = 0; pid < this->hand->cards.size(); pid++ )
+  for ( nom::uint32 pid = 0; pid < this->hand->cards.size(); pid++ )
   {
     this->hand->cards[pid].setPlayerID ( id_ );
     this->hand->cards[pid].setPlayerOwner ( id_ );

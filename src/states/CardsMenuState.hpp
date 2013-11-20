@@ -95,7 +95,7 @@ class CardsMenuState: public nom::IState
     /// minus one (1) padding
     std::pair<int, int> cursor_coords_map[10];
 
-    CardsMenuStateCursor cursor;
+    //CardsMenuStateCursor cursor;
 
     /// Position of the player's hand (player 1)
     nom::Coords player1_pos;

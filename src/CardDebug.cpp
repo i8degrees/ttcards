@@ -48,7 +48,7 @@ void CardDebug::ListCards ( Cards& cards )
   if ( cards.empty() == true )
     std::cout << "N/A";
 
-  for ( nom::ulong i = 0; i < cards.size(); i++ )
+  for ( nom::uint32 i = 0; i < cards.size(); i++ )
   {
     std::cout << cards[i].getID();
     std::cout << " ";
