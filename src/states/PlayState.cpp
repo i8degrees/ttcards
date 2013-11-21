@@ -101,8 +101,8 @@ void PlayState::onInit ( void )
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-  linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
-  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setStartColor ( nom::Color4u ( 67, 67, 67, 255 ) );
+  linear.setEndColor ( nom::Color4u ( 99, 99, 99, 255 ) );
   linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
@@ -910,11 +910,11 @@ void PlayState::update ( float delta_time )
 
   if ( this->get_turn() == 0 ) // player1
   {
-    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color ( 188, 203, 236 ) );
+    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color4u ( 188, 203, 236 ) );
   }
   else // player2
   {
-    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color ( 222, 196, 205 ) );
+    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color4u ( 222, 196, 205 ) );
 
     // Skipping a turn like this is only available in debug versions
     if ( this->skip_turn == false )
@@ -999,19 +999,19 @@ void PlayState::draw ( nom::IDrawable::RenderTarget target )
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Won;
-      this->game->gameover_text.setColor ( nom::Color::White );
+      this->game->gameover_text.setColor ( nom::Color4u::White );
       this->game->gameover_text.setText ( "You win!" );
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Lost;
-      this->game->gameover_text.setColor ( nom::Color::White );
+      this->game->gameover_text.setColor ( nom::Color4u::White );
       this->game->gameover_text.setText ( "You lose..." );
     }
     else // Assume a draw
     {
       this->gameover_state = GameOverType::Tie;
-      this->game->gameover_text.setColor ( nom::Color::White );
+      this->game->gameover_text.setColor ( nom::Color4u::White );
       this->game->gameover_text.setText ( "Tie!" );
     }
 

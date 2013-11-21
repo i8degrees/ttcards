@@ -46,8 +46,8 @@ void ContinueMenuState::onInit ( void )
 {
   nom::Gradient linear;
 
-  linear.setStartColor ( nom::Color ( 67, 67, 67, 255 ) );
-  linear.setEndColor ( nom::Color ( 99, 99, 99, 255 ) );
+  linear.setStartColor ( nom::Color4u ( 67, 67, 67, 255 ) );
+  linear.setEndColor ( nom::Color4u ( 99, 99, 99, 255 ) );
   linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
@@ -72,7 +72,7 @@ void ContinueMenuState::onInit ( void )
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
 
-  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color::Black, true ) == true )
+  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color4u::Black, true ) == true )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {

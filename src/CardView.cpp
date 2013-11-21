@@ -64,19 +64,19 @@ bool CardView::load ( GameConfig* config )
 {
   if ( config == nullptr ) return false;
 
-  if ( this->card_text->load ( config->getString("CARD_FONTFACE"), nom::Color ( 255, 0, 255, 0 ), 0 ) == false )
+  if ( this->card_text->load ( config->getString("CARD_FONTFACE"), nom::Color4u ( 255, 0, 255, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FONTFACE") );
     return false;
   }
 
-  if ( this->card_face->load ( config->getString("CARD_FACES"), nom::Color ( 0, 0, 0 ), 0 ) == false )
+  if ( this->card_face->load ( config->getString("CARD_FACES"), nom::Color4u ( 0, 0, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color ( 0, 0, 0 ), 0 ) == false )
+  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color4u ( 0, 0, 0 ), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
@@ -119,23 +119,23 @@ void CardView::draw_background  (
   {
     case Card::PLAYER1:
     {
-      this->card_background->setStartColor ( nom::Color ( 208, 223, 255 ) );
-      this->card_background->setEndColor ( nom::Color ( 50, 59, 114 ) );
+      this->card_background->setStartColor ( nom::Color4u ( 208, 223, 255 ) );
+      this->card_background->setEndColor ( nom::Color4u ( 50, 59, 114 ) );
     }
     break;
 
     case Card::PLAYER2:
     {
-      this->card_background->setStartColor ( nom::Color ( 251, 222, 232 ) );
-      this->card_background->setEndColor ( nom::Color ( 114, 66, 66 ) );
+      this->card_background->setStartColor ( nom::Color4u ( 251, 222, 232 ) );
+      this->card_background->setEndColor ( nom::Color4u ( 114, 66, 66 ) );
     }
     break;
 
     case Card::NOPLAYER:
     default:
     {
-      this->card_background->setStartColor ( nom::Color ( 197, 197, 197 ) );
-      this->card_background->setEndColor ( nom::Color ( 84, 84, 84 ) );
+      this->card_background->setStartColor ( nom::Color4u ( 197, 197, 197 ) );
+      this->card_background->setEndColor ( nom::Color4u ( 84, 84, 84 ) );
     }
     break;
   }
