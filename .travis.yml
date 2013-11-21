@@ -35,9 +35,10 @@ script:
   #- ttcards --config $HOME/my_config.json && cat $HOME/my_config.json
   - sudo make uninstall
   - make clean
+
 # whitelist
 branches:
   only:
-    - travis
-    - dev
-    - master
+    - feature/travis
+    #- dev
+    #- master
