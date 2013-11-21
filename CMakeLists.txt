@@ -125,10 +125,6 @@ include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
 
 # Check which options have been set
 
-# Assume a local development profile initially -- this likely changes depending
-# on which build profile is chosen.
-set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_APP_PATH}/${PROJECT_NAME}" )
-
 if ( OSXAPP )
   message ( STATUS "Using OSXAPP install profile." )
 else ( NOT OSXAPP )
@@ -306,9 +302,8 @@ if ( OSXAPP )
   set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
   set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}/Documentation" )
 
-  # Used for Sublime make run target and fix-up of external frameworks
+  # Directory path to fixing up external frameworks with install_name_tool(1)
   set ( INSTALL_BINARY_PATH "${INSTALL_ROOT_PATH}/MacOS/${PROJECT_NAME}" )
-  set ( SUBLIME_RUN_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_BINARY_PATH}" )
 
   # Relative path for where to install our external dependencies
   set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
@@ -400,14 +395,6 @@ if ( PLATFORM_WINDOWS )
 else ( NOT PLATFORM_WINDOWS )
   target_link_libraries ( ${PROJECT_NAME} ${NOMLIB_LIBRARY} ) # ${EXTLIBS}
 endif ( PLATFORM_WINDOWS )
-
-# make run target (Sublime Text Editor Integration)
-#
-# Needs to be added *AFTER* all modifications to SUBLIME_RUN_PATH are made.
-add_custom_target ( run COMMAND
-                    open --wait-apps --fresh -a "Terminal"
-                    "${SUBLIME_RUN_PATH}"
-                  )
 
 # Auto-generated build-time variables result in modification of the built
 # binary's run-time execution.
