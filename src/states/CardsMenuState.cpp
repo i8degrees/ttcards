@@ -101,7 +101,7 @@ void CardsMenuState::onInit ( void )
   this->game->info_text.setText ( this->game->collection.cards[0].getName() );
   this->info_text_height = this->game->info_text.getFontHeight();
 
-  this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
+  this->game->cursor.set_position ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
   this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image
   this->game->cursor.setState ( 0 ); // default state for navigating card menu
 
@@ -297,7 +297,7 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     this->game->info_small_text.draw ( target );
 
     // Draw the card selection helper element
-    this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
+    this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
 
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
       this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_USED );
@@ -346,7 +346,7 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     if ( current_index >= per_page )
     {
       this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
-      this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
+      this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
       this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
     }
@@ -354,7 +354,7 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
       this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
-      this->game->menu_elements.setPosition ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
+      this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
       this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
     }

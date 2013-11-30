@@ -204,7 +204,7 @@ bool App::onInit ( void )
   // Commence the initialization of game objects
   this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
   this->game->cursor = nom::ui::Cursor ( "images/cursors.json" );
-  this->game->cursor.setPosition ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
+  this->game->cursor.set_position ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
 
   // Commence the loading of game resources
   if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color4u ( 255, 0, 255, 0 ), 0 ) == false )

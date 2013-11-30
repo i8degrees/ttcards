@@ -95,7 +95,7 @@ NOM_DUMP_VAR(this->game->info_text.getFontHeight() );
 
     this->cursor.setSize ( CURSOR_WIDTH, CURSOR_HEIGHT );
 
-    this->cursor.setPosition  (
+    this->cursor.set_position (
                                 ( OPTION_BOX_ORIGIN_X ) - CURSOR_WIDTH,
                                 ( OPTION_BOX_ORIGIN_Y ) + ( OPTION_BOX_HEIGHT / 2 )
                               );

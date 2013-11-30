@@ -104,7 +104,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 void CardView::draw_face_down ( nom::IDrawable::RenderTarget target, nom::int32 x, nom::int32 y ) const
 {
   this->card_face->setSheetID ( NOFACE_ID );
-  this->card_face->setPosition ( x, y );
+  this->card_face->set_position ( x, y );
   this->card_face->update();
   this->card_face->draw ( target );
 }
@@ -155,7 +155,7 @@ void CardView::draw_face  (
   this->card_face->setSheetID ( face_id - 1 );
 
   //this->card_face->setPosition ( this->position );
-  this->card_face->setPosition ( nom::Coords ( x, y ) );
+  this->card_face->set_position ( nom::Coords ( x, y ) );
   this->card_face->update();
   this->card_face->draw ( target );
 }
@@ -180,7 +180,7 @@ void CardView::draw_element (
   }
 
   //this->card_element->setPosition ( this->position.x, this->position.y );
-  this->card_element->setPosition ( nom::Coords( x, y ) );
+  this->card_element->set_position ( nom::Coords( x, y ) );
   this->card_element->update();
   this->card_element->draw ( target );
 }
