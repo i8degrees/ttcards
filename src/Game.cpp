@@ -166,7 +166,7 @@ NOM_LOG_TRACE ( TTCARDS );
 bool App::onInit ( void )
 {
   nom::Rectangle rectangle  ( nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT ),
-                              nom::Color4u::Gray
+                              NOM_COLOR4U_GRAY
                             );
 
   nom::uint32 video_flags = SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_WINDOW_SHOWN;
@@ -231,7 +231,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*nom::Color4u::Black,*/ 0 ) == false )
+  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*NOM_COLOR4U_BLACK,*/ 0 ) == false )
   {
 NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
     rectangle.draw ( this->game->context );
@@ -260,9 +260,9 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   // do not need this workaround.
 //this->PollEvents( &event );
 
-  if ( this->game->score_text[0].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color4u::White ) == true )
+  if ( this->game->score_text[0].load ( this->game->config.getString("SCORE_FONTFACE"), NOM_COLOR4U_WHITE ) == true )
   {
-    this->game->score_text[0].setColor ( nom::Color4u::White );
+    this->game->score_text[0].setColor ( NOM_COLOR4U_WHITE );
     this->game->score_text[0].setFontSize ( 48 * SCALE_FACTOR );
     this->game->score_text[0].setFontStyle ( nom::IFont::FontStyle::Italic );
     this->game->score_text[0].setRenderingStyle ( nom::IFont::RenderStyle::Blended );
@@ -274,9 +274,9 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->score_text[1].load ( this->game->config.getString("SCORE_FONTFACE"), nom::Color4u::White ) == true )
+  if ( this->game->score_text[1].load ( this->game->config.getString("SCORE_FONTFACE"), NOM_COLOR4U_WHITE ) == true )
   {
-    this->game->score_text[1].setColor ( nom::Color4u::White );
+    this->game->score_text[1].setColor ( NOM_COLOR4U_WHITE );
     this->game->score_text[1].setFontSize ( 48 * SCALE_FACTOR );
     this->game->score_text[1].setFontStyle ( nom::IFont::FontStyle::Italic );
     this->game->score_text[1].setRenderingStyle ( nom::IFont::RenderStyle::Blended );
@@ -288,7 +288,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), nom::Color4u::White ) == true )
+  if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), NOM_COLOR4U_WHITE ) == true )
   {
     this->game->gameover_text.setFontSize ( 48 * SCALE_FACTOR );
     this->game->gameover_text.setFontStyle ( nom::IFont::FontStyle::Italic );
@@ -307,7 +307,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), nom::Color4u::Black, true ) == false )
+  if ( this->game->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, true ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
     return false;

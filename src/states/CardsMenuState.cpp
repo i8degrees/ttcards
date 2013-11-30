@@ -59,8 +59,8 @@ NOM_LOG_TRACE ( TTCARDS );
     this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
   }
 
-  linear.setStartColor ( nom::Color4u ( 67, 67, 67, 255 ) );
-  linear.setEndColor ( nom::Color4u ( 99, 99, 99, 255 ) );
+  linear.setStartColor ( NOM_COLOR4U_GRAY );
+  linear.setEndColor ( NOM_COLOR4U_LIGHT_GRAY );
   linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   this->menu_box = nom::ui::MessageBox  (

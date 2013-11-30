@@ -101,8 +101,8 @@ void PlayState::onInit ( void )
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-  linear.setStartColor ( nom::Color4u ( 67, 67, 67, 255 ) );
-  linear.setEndColor ( nom::Color4u ( 99, 99, 99, 255 ) );
+  linear.setStartColor ( NOM_COLOR4U_GRAY );
+  linear.setEndColor ( NOM_COLOR4U_LIGHT_GRAY );
   linear.setFillDirection ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
@@ -999,19 +999,19 @@ void PlayState::draw ( nom::IDrawable::RenderTarget target )
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Won;
-      this->game->gameover_text.setColor ( nom::Color4u::White );
+      this->game->gameover_text.setColor ( NOM_COLOR4U_WHITE );
       this->game->gameover_text.setText ( "You win!" );
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Lost;
-      this->game->gameover_text.setColor ( nom::Color4u::White );
+      this->game->gameover_text.setColor ( NOM_COLOR4U_WHITE );
       this->game->gameover_text.setText ( "You lose..." );
     }
     else // Assume a draw
     {
       this->gameover_state = GameOverType::Tie;
-      this->game->gameover_text.setColor ( nom::Color4u::White );
+      this->game->gameover_text.setColor ( NOM_COLOR4U_WHITE );
       this->game->gameover_text.setText ( "Tie!" );
     }
 
