@@ -74,7 +74,7 @@ void GameOverState::onInit ( void )
                                 PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
                                 PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
                               );
-    this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+    this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
   }
   else // EPIC FAIL
   {

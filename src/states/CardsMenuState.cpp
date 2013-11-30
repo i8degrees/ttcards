@@ -102,8 +102,8 @@ void CardsMenuState::onInit ( void )
   this->info_text_height = this->game->info_text.getFontHeight();
 
   this->game->cursor.set_position ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
-  this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT ); // default cursor image
-  this->game->cursor.setState ( 0 ); // default state for navigating card menu
+  this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT ); // default cursor image
+  this->game->cursor.set_state ( 0 ); // default state for navigating card menu
 
   for ( idx = 0; idx < per_page; idx++ )
   {
@@ -206,7 +206,7 @@ void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::u
 
 void CardsMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
     if ( y > 0 )
     {
@@ -300,9 +300,9 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
 
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
-      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_USED );
+      this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_USED );
     else
-      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT );
+      this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT );
 
     this->game->menu_elements.update();
     this->game->menu_elements.draw ( target );
@@ -345,7 +345,7 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     // Lastly, check to see which page indicators we need to draw
     if ( current_index >= per_page )
     {
-      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
+      this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
       this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
@@ -353,7 +353,7 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
 
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
-      this->game->menu_elements.setSheetID ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
+      this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
       this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
@@ -375,9 +375,9 @@ void CardsMenuState::updateCursor ( void )
 {
   unsigned int pos = 0;
 
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
-    this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+    this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
 
     pos = this->getCursorPos() + this->current_index;
     this->selectedCard = this->game->collection.cards[pos];
@@ -424,7 +424,7 @@ unsigned int CardsMenuState::getCursorPos ( void )
  // TODO: rename method call
 void CardsMenuState::moveCursorLeft ( void )
 {
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
     #ifdef DEBUG_CARDS_MENU_CURSOR
       std::cout << current_index << " " << per_page << "\n";
@@ -442,7 +442,7 @@ void CardsMenuState::moveCursorLeft ( void )
 // TODO: rename method call
 void CardsMenuState::moveCursorRight ( void )
 {
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
     #ifdef DEBUG_CARDS_MENU_CURSOR
       std::cout << current_index << " " << per_page << "\n";
@@ -460,7 +460,7 @@ void CardsMenuState::moveCursorUp ( void )
 {
   unsigned int pos = 0;
 
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
     if ( this->game->cursor.y() > MENU_CARDS_CURSOR_ORIGIN_Y )
     {
@@ -484,7 +484,7 @@ void CardsMenuState::moveCursorDown ( void )
 {
   unsigned int pos = 0;
 
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
     if ( this->game->cursor.y() < PICK_CARDS_MENU_HEIGHT )
     {

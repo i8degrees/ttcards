@@ -103,7 +103,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 
 void CardView::draw_face_down ( nom::IDrawable::RenderTarget target, nom::int32 x, nom::int32 y ) const
 {
-  this->card_face->setSheetID ( NOFACE_ID );
+  this->card_face->set_frame ( NOFACE_ID );
   this->card_face->set_position ( x, y );
   this->card_face->update();
   this->card_face->draw ( target );
@@ -152,7 +152,7 @@ void CardView::draw_face  (
                           ) const
 {
   // Our sprite sheets start at ID of zero now, not one
-  this->card_face->setSheetID ( face_id - 1 );
+  this->card_face->set_frame ( face_id - 1 );
 
   //this->card_face->setPosition ( this->position );
   this->card_face->set_position ( nom::Coords ( x, y ) );
@@ -168,15 +168,15 @@ void CardView::draw_element (
   switch ( element_id )
   {
     default:
-    case NONE: this->card_element->setSheetID ( ELEMENT_NONE ); break;
-    case EARTH: this->card_element->setSheetID ( ELEMENT_EARTH ); break;
-    case FIRE: this->card_element->setSheetID ( ELEMENT_FIRE ); break;
-    case HOLY: this->card_element->setSheetID ( ELEMENT_HOLY ); break;
-    case ICE: this->card_element->setSheetID ( ELEMENT_ICE ); break;
-    case POISON: this->card_element->setSheetID ( ELEMENT_POISON ); break;
-    case THUNDER: this->card_element->setSheetID ( ELEMENT_THUNDER ); break;
-    case WATER: this->card_element->setSheetID ( ELEMENT_WATER ); break;
-    case WIND: this->card_element->setSheetID ( ELEMENT_WIND ); break;
+    case NONE: this->card_element->set_frame ( ELEMENT_NONE ); break;
+    case EARTH: this->card_element->set_frame ( ELEMENT_EARTH ); break;
+    case FIRE: this->card_element->set_frame ( ELEMENT_FIRE ); break;
+    case HOLY: this->card_element->set_frame ( ELEMENT_HOLY ); break;
+    case ICE: this->card_element->set_frame ( ELEMENT_ICE ); break;
+    case POISON: this->card_element->set_frame ( ELEMENT_POISON ); break;
+    case THUNDER: this->card_element->set_frame ( ELEMENT_THUNDER ); break;
+    case WATER: this->card_element->set_frame ( ELEMENT_WATER ); break;
+    case WIND: this->card_element->set_frame ( ELEMENT_WIND ); break;
   }
 
   //this->card_element->setPosition ( this->position.x, this->position.y );

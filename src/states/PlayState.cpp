@@ -76,8 +76,8 @@ void PlayState::onInit ( void )
   std::uniform_int_distribution<nom::int32> distribution ( 0, TOTAL_PLAYERS - 1 );
 
   this->game->cursor.set_position ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-  this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE ); // default cursor image
-  this->game->cursor.setState ( 0 ); // default state; player hand select
+  this->game->cursor.set_frame ( INTERFACE_CURSOR_NONE ); // default cursor image
+  this->game->cursor.set_state ( 0 ); // default state; player hand select
 
   this->game->rules.setRules ( 1 );
   this->game->board = Board ( this->game->rules, &this->game->card );
@@ -436,7 +436,7 @@ void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32
 
 void PlayState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-  if ( this->game->cursor.getState() == 0 ) // Player's hand mode
+  if ( this->game->cursor.state() == 0 ) // Player's hand mode
   {
     if ( y > 0 )
     {
@@ -565,7 +565,7 @@ void PlayState::resetCursor ( void )
 
   this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
 
-  this->game->cursor.setState ( 0 );
+  this->game->cursor.set_state ( 0 );
   this->game->cursor.set_position ( this->player_cursor_coords[0].x, this->player_cursor_coords[0].y );
 
   // Only set the position of the game interface cursor for player2 when we are
@@ -579,7 +579,7 @@ void PlayState::resetCursor ( void )
 // helper method for cursor input selection
 void PlayState::unlockSelectedCard ( void )
 {
-  this->game->cursor.setState ( 0 ); // player card select
+  this->game->cursor.set_state ( 0 ); // player card select
 
   this->resetCursor();
 
@@ -593,7 +593,7 @@ void PlayState::lockSelectedCard ( void )
 {
   nom::Coords coords; // temp container var to hold cursor pos mapping coords
 
-  this->game->cursor.setState ( 1 ); // board select
+  this->game->cursor.set_state ( 1 ); // board select
 
   if ( this->isCursorLocked() == false )
   {
@@ -761,7 +761,7 @@ unsigned int PlayState::getCursorPos ( void )
 
 void PlayState::moveCursorLeft ( void )
 {
-  if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
+  if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
     if ( this->game->cursor.x() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->game->cursor.move ( -( CARD_WIDTH ), 0 );
@@ -771,7 +771,7 @@ void PlayState::moveCursorLeft ( void )
 
 void PlayState::moveCursorRight ( void )
 {
-  if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
+  if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
     if ( this->game->cursor.x() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->game->cursor.move ( ( CARD_WIDTH ), 0 );
@@ -784,7 +784,7 @@ void PlayState::moveCursorUp ( void )
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
 
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
     if ( this->game->cursor.y() > PLAYER1_CURSOR_ORIGIN_Y )
     {
@@ -794,7 +794,7 @@ void PlayState::moveCursorUp ( void )
       this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards[pos] );
     }
   }
-  else if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
+  else if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
     if ( this->game->cursor.y() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->game->cursor.move ( 0, -( CARD_HEIGHT ) );
@@ -807,7 +807,7 @@ void PlayState::moveCursorDown ( void )
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
 
-  if ( this->game->cursor.getState() == 0 )
+  if ( this->game->cursor.state() == 0 )
   {
     if ( this->game->cursor.y() < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
     {
@@ -817,7 +817,7 @@ void PlayState::moveCursorDown ( void )
       this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards[pos] );
     }
   }
-  else if ( this->game->cursor.getState() == 1 ) // locked cursor to board select mode
+  else if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
     if ( this->game->cursor.y() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->game->cursor.move ( 0, ( CARD_HEIGHT ) );
@@ -827,24 +827,24 @@ void PlayState::moveCursorDown ( void )
 
 void PlayState::updateCursor ( void )
 {
-  if ( this->game->cursor.getState() == 1 )
+  if ( this->game->cursor.state() == 1 )
   {
     if ( this->cursor_blink.ticks() > 192 ) // Blinky blink!
     {
       this->cursor_blink.stop();
-      this->game->cursor.setSheetID ( INTERFACE_CURSOR_NONE );
+      this->game->cursor.set_frame ( INTERFACE_CURSOR_NONE );
       this->blink_cursor = true;
     }
   }
 
   if ( this->get_turn() == PLAYER1 && this->blink_cursor == false ) // player1
   {
-    this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+    this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
   }
   // Only show interface cursor for player2 when we are controlling him
   else if ( this->skip_turn == true && this->get_turn() == PLAYER2 && this->blink_cursor == false )
   {
-    this->game->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+    this->game->cursor.set_frame ( INTERFACE_CURSOR_LEFT );
   }
 
   this->game->cursor.update();
@@ -856,7 +856,7 @@ void PlayState::drawCursor ( nom::IDrawable::RenderTarget target )
 
   if ( this->blink_cursor )
   {
-    this->game->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+    this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
     this->cursor_blink.start();
     this->blink_cursor = false;
   }

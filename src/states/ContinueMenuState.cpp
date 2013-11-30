@@ -100,7 +100,7 @@ NOM_DUMP_VAR(this->game->info_text.getFontHeight() );
                                 ( OPTION_BOX_ORIGIN_Y ) + ( OPTION_BOX_HEIGHT / 2 )
                               );
 
-    this->cursor.setSheetID ( INTERFACE_CURSOR_RIGHT );
+    this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
   }
   else // EPIC FAIL
   {
