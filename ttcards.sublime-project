@@ -14,9 +14,10 @@
     },
 */
     {
+      "name": "docs",
       "path": ".",
       "file_exclude_patterns": [ ".LSOverride", "ttcards", ".tags*", "ttcards.sublime-*" ],
-      "folder_exclude_patterns": [ "build", "extlibs", "ttcards.app", "ttcards.dSYM", "public", "tmp", "src", "docs", "Resources" ]
+      "folder_exclude_patterns": [ "build", "extlibs", "tmp", "src", "docs", "Resources", "third-party" ]
     },
 
     {
