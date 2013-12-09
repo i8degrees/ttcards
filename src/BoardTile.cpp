@@ -28,10 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "BoardTile.hpp"
 
-BoardTile::BoardTile ( void ) : tile_element ( 0 )
-{
-NOM_LOG_TRACE ( TTCARDS );
-}
+BoardTile::BoardTile ( void ) : tile_element ( 0 ) {}
 
 BoardTile::BoardTile  (
                         const Card& card, const nom::Coords& pos, nom::uint32 element
@@ -40,10 +37,7 @@ BoardTile::BoardTile  (
                         tile_element ( element )
 {}
 
-BoardTile::~BoardTile ( void )
-{
-NOM_LOG_TRACE ( TTCARDS );
-}
+BoardTile::~BoardTile ( void ) {}
 
 const Card& BoardTile::tile ( void ) const
 {
