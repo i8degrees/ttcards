@@ -28,6 +28,8 @@ project ( ttcards ) # Sets PROJECT_NAME variable for us
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 
 if ( DEBUG )
+  set ( CMAKE_VERBOSE_MAKEFILE ON )
+
   if ( PLATFORM_OSX )
     # FIXME; Passing -D DEBUG=1 is a temporary workaround for getting around the
     # compile errors with debugging macros defined within the OS X header file
@@ -37,23 +39,32 @@ if ( DEBUG )
   endif ( PLATFORM_OSX )
 
   if ( NOT PLATFORM_WINDOWS )
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused" )
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
   else ( PLATFORM_WINDOWS )
     # TODO: split these options up like we have for other platforms
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
+
+    # FIXME: _ITERATOR_DEBUG_LEVEL is intended as a *temporary* patch to get
+    # around a GameOverState crash involving vector or iterator access; we still
+    # need to hunt down the bugs and eliminate them...
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=0" )
   endif ( NOT PLATFORM_WINDOWS )
 
   set ( CMAKE_BUILD_TYPE "Debug" )
   message ( STATUS "Building ${PROJECT_NAME} with debugging." )
-
+  message ( STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}" )
 else () # Build with optimizations for maximum speed and minimal size
   set ( CMAKE_BUILD_TYPE "Release" )
   message ( STATUS "Building ${PROJECT_NAME} with high speed, low drag!" )
+  message ( STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}" )
 endif ( DEBUG )
 
 if ( DEBUG_ASSERT )
-  add_definitions ( "-D NOM_DEBUG_ASSERT" )
-  message ( STATUS "Building ${PROJECT_NAME} with run-time assertions." )
+  add_definitions ( "-DNOM_DEBUG_ASSERT" ) # Enable NOM_ASSERT macros
+  message ( STATUS "Run-time assertions are ON." )
+else ( NOT DEBUG_ASSERT )
+  add_definitions ( "-DNDEBUG" ) # Disable NOM_ASSERT macros
+  message ( STATUS "Run-time assertions are OFF." )
 endif ( DEBUG_ASSERT )
 
 if ( DEBUG_TRACE )
@@ -122,14 +133,6 @@ set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
 set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 
 include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
-
-# Check which options have been set
-
-if ( OSXAPP )
-  message ( STATUS "Using OSXAPP install profile." )
-else ( NOT OSXAPP )
-  message ( STATUS "Using POSIX install profile." )
-endif ( OSXAPP )
 
 message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
