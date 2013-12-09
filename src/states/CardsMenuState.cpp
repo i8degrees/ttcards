@@ -138,12 +138,10 @@ void CardsMenuState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
 
     case SDLK_RETURN:
     {
-#ifdef DEBUG
       if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
       {
         this->game->hand[0].randomize ( 8, 10, this->game->collection );
       }
-#endif
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
     }
     break;
