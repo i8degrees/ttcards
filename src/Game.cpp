@@ -533,6 +533,16 @@ void App::onResize ( nom::int32 width, nom::int32 height )
   // (The pause state has no background; we want to use the previous state's
   // background!)
   this->game->context.toggle_fullscreen();
+
+  // FIXME: This is a temporary patch until we figure out why our window does
+  // not automatically resize itself to previous dimensions after entering
+  // full-screen.
+  //
+  // This particular bug only happens on the Windows platform, and does nothing
+  // on OS X! Could this be related to the other FIXME bug above us?
+  #if defined (NOM_PLATFORM_WINDOWS)
+    this->game->context.set_size ( SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2 );
+  #endif
 }
 
 int32_t App::Run ( void )
