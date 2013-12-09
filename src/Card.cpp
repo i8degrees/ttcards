@@ -71,6 +71,12 @@ const std::array<nom::int32, MAX_RANKS> Card::getRanks ( void ) const
   return this->rank;
 }
 
+const std::vector<int> Card::ranks_as_vector ( void ) const
+{
+  return std::vector<int> { this->rank[NORTH], this->rank[EAST],
+                            this->rank[SOUTH], this->rank[WEST] };
+}
+
 const nom::int32 Card::getNorthRank ( void ) const
 {
   return this->rank[NORTH];

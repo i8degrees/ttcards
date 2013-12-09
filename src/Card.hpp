@@ -86,6 +86,7 @@ class Card
     const nom::int32 getType ( void ) const;
     const nom::int32 getElement ( void ) const;
     const std::array<nom::int32, MAX_RANKS> getRanks ( void ) const;
+    const std::vector<int> ranks_as_vector ( void ) const;
     const nom::int32 getNorthRank ( void ) const;
     const nom::int32 getEastRank ( void ) const;
     const nom::int32 getSouthRank ( void ) const;
