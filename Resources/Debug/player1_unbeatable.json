@@ -1,55 +1,55 @@
 [
-    // Player1 is unbeatable with this hand -- all rank values are A.
-    //
-    // For use with internal development of TTcards
-    {
-        "ID" : 78,
-        "Name" : "Chubby Chocobo",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 10, 10, 10, 10 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 88,
-        "Name" : "Minotaur",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 1,
-        "Ranks" : [ 10, 10, 10, 10 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 80,
-        "Name" : "Gilgamesh",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 10, 10, 10, 10 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 95,
-        "Name" : "Alexander",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 3,
-        "Ranks" : [ 10, 10, 10, 10 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 82,
-        "Name" : "Chicobo",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 10, 10, 10, 10 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    }
+  // Player1 is unbeatable with this hand -- all rank values are A.
+  //
+  // For use with internal development of TTcards
+  {
+    "id" : 78,
+    "name" : "Chubby Chocobo",
+    "level" : 8,
+    "type" : 3,
+    "element" : 0,
+    "ranks" : [ 10, 10, 10, 10 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 88,
+    "name" : "Minotaur",
+    "level" : 8,
+    "type" : 3,
+    "element" : 1,
+    "ranks" : [ 10, 10, 10, 10 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 80,
+    "name" : "Gilgamesh",
+    "level" : 8,
+    "type" : 3,
+    "element" : 0,
+    "ranks" : [ 10, 10, 10, 10 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 95,
+    "name" : "Alexander",
+    "level" : 9,
+    "type" : 3,
+    "element" : 3,
+    "ranks" : [ 10, 10, 10, 10 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 82,
+    "name" : "Chicobo",
+    "level" : 8,
+    "type" : 3,
+    "element" : 0,
+    "ranks" : [ 10, 10, 10, 10 ],
+    "player_id" : 1,
+    "owner" : 1
+  }
 ]

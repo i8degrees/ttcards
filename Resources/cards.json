@@ -1,883 +1,993 @@
+// Cards collection (complete deck of 110 cards) for TTcards
 [
-    // Cards collection (complete deck of 110 cards) for TTcards
-    {
-        "ID" : 1,
-        "Name" : "Geezard",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 1, 4, 5, 1 ]
-    },
-    {
-        "ID" : 2,
-        "Name" : "Fungar",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 5, 1, 1, 3 ]
-    },
-    {
-        "ID" : 3,
-        "Name" : "Bite Bug",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 1, 3, 3, 5 ]
-    },
-    {
-        "ID" : 4,
-        "Name" : "Red Bat",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 1, 1, 2 ]
-    },
-    {
-        "ID" : 5,
-        "Name" : "Blobra",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 2, 3, 1, 5 ]
-    },
-    {
-        "ID" : 6,
-        "Name" : "Gayla",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 6,
-        "Ranks" : [ 2, 1, 4, 4 ]
-    },
-    {
-        "ID" : 7,
-        "Name" : "Gesper",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 1, 5, 4, 1 ]
-    },
-    {
-        "ID" : 8,
-        "Name" : "Fastitocalon-F",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 1,
-        "Ranks" : [ 3, 5, 2, 1 ]
-    },
-    {
-        "ID" : 9,
-        "Name" : "Blood Soul",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 2, 1, 6, 1 ]
-    },
-    {
-        "ID" : 10,
-        "Name" : "Caterchipillar",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 4, 2, 4, 3 ]
-    },
-    {
-        "ID" : 11,
-        "Name" : "Cockatrice",
-        "Level" : 1,
-        "Type" : 1,
-        "Element" : 6,
-        "Ranks" : [ 6, 1, 2, 6 ]
-    },
-    {
-        "ID" : 12,
-        "Name" : "Grat",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 7, 1, 3, 1 ]
-    },
-    {
-        "ID" : 13,
-        "Name" : "Buel",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 2, 2, 3 ]
-    },
-    {
-        "ID" : 14,
-        "Name" : "Mesmerize",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 5, 3, 3, 4 ]
-    },
-    {
-        "ID" : 15,
-        "Name" : "Glacial Eye",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 4,
-        "Ranks" : [ 6, 1, 4, 3 ]
-    },
-    {
-        "ID" : 16,
-        "Name" : "Belhelmel",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 3, 4, 5, 3 ]
-    },
-    {
-        "ID" : 17,
-        "Name" : "Thrustaevis",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 8,
-        "Ranks" : [ 5, 3, 2, 5 ]
-    },
-    {
-        "ID" : 18,
-        "Name" : "Anacondaur",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 5,
-        "Ranks" : [ 5, 1, 3, 5 ]
-    },
-    {
-        "ID" : 19,
-        "Name" : "Creeps",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 6,
-        "Ranks" : [ 5, 2, 5, 2 ]
-    },
-    {
-        "ID" : 20,
-        "Name" : "Grendel",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 6,
-        "Ranks" : [ 4, 4, 5, 2 ]
-    },
-    {
-        "ID" : 21,
-        "Name" : "Jelleye",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 3, 2, 1, 7 ]
-    },
-    {
-        "ID" : 22,
-        "Name" : "Grand Mantis",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 5, 2, 5, 3 ]
-    },
-    {
-        "ID" : 23,
-        "Name" : "Forbidden",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 6, 3, 2 ]
-    },
-    {
-        "ID" : 24,
-        "Name" : "Armadodo",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 1,
-        "Ranks" : [ 6, 3, 1, 6 ]
-    },
-    {
-        "ID" : 25,
-        "Name" : "TriFace",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 5,
-        "Ranks" : [ 3, 5, 5, 5 ]
-    },
-    {
-        "ID" : 26,
-        "Name" : "Fastitcalon",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 1,
-        "Ranks" : [ 7, 5, 1, 3 ]
-    },
-    {
-        "ID" : 27,
-        "Name" : "Snow Lion",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 4,
-        "Ranks" : [ 7, 1, 5, 3 ]
-    },
-    {
-        "ID" : 28,
-        "Name" : "Ochu",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 5, 6, 3, 3 ]
-    },
-    {
-        "ID" : 29,
-        "Name" : "SAM08G",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 2,
-        "Ranks" : [ 5, 6, 2, 4 ]
-    },
-    {
-        "ID" : 30,
-        "Name" : "Death Claw",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 2,
-        "Ranks" : [ 4, 4, 7, 2 ]
-    },
-    {
-        "ID" : 31,
-        "Name" : "Cactaur",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 2, 6, 3 ]
-    },
-    {
-        "ID" : 32,
-        "Name" : "Tonberry",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 3, 6, 4, 4 ]
-    },
-    {
-        "ID" : 33,
-        "Name" : "Abyss Worm",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 1,
-        "Ranks" : [ 7, 2, 3, 5 ]
-    },
-    {
-        "ID" : 34,
-        "Name" : "Turtapod",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 2, 3, 6, 7 ]
-    },
-    {
-        "ID" : 35,
-        "Name" : "Vysage",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 5, 4, 5 ]
-    },
-    {
-        "ID" : 36,
-        "Name" : "T-Rexaur",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 4, 6, 2, 7 ]
-    },
-    {
-        "ID" : 37,
-        "Name" : "Bomb",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 2,
-        "Ranks" : [ 2, 7, 6, 3 ]
-    },
-    {
-        "ID" : 38,
-        "Name" : "Blitz",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 6,
-        "Ranks" : [ 1, 6, 4, 7 ]
-    },
-    {
-        "ID" : 39,
-        "Name" : "Wendigo",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 7, 3, 1, 6 ]
-    },
-    {
-        "ID" : 40,
-        "Name" : "Torama",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 7, 4, 4, 4 ]
-    },
-    {
-        "ID" : 41,
-        "Name" : "Imp",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 3, 7, 3, 6 ]
-    },
-    {
-        "ID" : 42,
-        "Name" : "Blue Dragon",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 5,
-        "Ranks" : [ 6, 2, 7, 3 ]
-    },
-    {
-        "ID" : 43,
-        "Name" : "Adamantiose",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 1,
-        "Ranks" : [ 4, 5, 5, 6 ]
-    },
-    {
-        "ID" : 44,
-        "Name" : "Hexadragon",
-        "Level" : 4,
-        "Type" : 1,
-        "Element" : 2,
-        "Ranks" : [ 7, 5, 4, 3 ]
-    },
-    {
-        "ID" : 45,
-        "Name" : "Iron Giant",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 5, 6, 5 ]
-    },
-    {
-        "ID" : 46,
-        "Name" : "Behemoth",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 3, 6, 5, 7 ]
-    },
-    {
-        "ID" : 47,
-        "Name" : "Chimera",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 7,
-        "Ranks" : [ 7, 6, 5, 3 ]
-    },
-    {
-        "ID" : 48,
-        "Name" : "PuPu",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 3, 10, 2, 1 ]
-    },
-    {
-        "ID" : 49,
-        "Name" : "Elastiod",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 2, 6, 7 ]
-    },
-    {
-        "ID" : 50,
-        "Name" : "GIM47N",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 5, 5, 7, 4 ]
-    },
-    {
-        "ID" : 51,
-        "Name" : "Malboro",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 5,
-        "Ranks" : [ 7, 7, 4, 2 ]
-    },
-    {
-        "ID" : 52,
-        "Name" : "Ruby Dragon",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 2,
-        "Ranks" : [ 7, 2, 7, 4 ]
-    },
-    {
-        "ID" : 53,
-        "Name" : "Elnoyle",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 5, 3, 7, 6 ]
-    },
-    {
-        "ID" : 54,
-        "Name" : "Tonberry King",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 4, 6, 7, 4 ]
-    },
-    {
-        "ID" : 55,
-        "Name" : "Wedge, Biggs",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 6, 6, 2, 7 ]
-    },
-    {
-        "ID" : 56,
-        "Name" : "Fujin, Raijin",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 2, 8, 8, 4 ]
-    },
-    {
-        "ID" : 57,
-        "Name" : "Elvoret",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 8,
-        "Ranks" : [ 7, 8, 3, 4 ]
-    },
-    {
-        "ID" : 58,
-        "Name" : "X-ATM092",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 4, 8, 4, 3 ]
-    },
-    {
-        "ID" : 59,
-        "Name" : "Grenaldo",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 7, 2, 8, 5 ]
-    },
-    {
-        "ID" : 60,
-        "Name" : "Gerogero",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 5,
-        "Ranks" : [ 1, 8, 8, 3 ]
-    },
-    {
-        "ID" : 61,
-        "Name" : "Iguion",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 8, 2, 8, 2 ]
-    },
-    {
-        "ID" : 62,
-        "Name" : "Abadon",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 6, 8, 4, 5 ]
-    },
-    {
-        "ID" : 63,
-        "Name" : "Trauma",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 4, 8, 5, 6 ]
-    },
-    {
-        "ID" : 64,
-        "Name" : "Oilboyle",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 1, 8, 4, 8 ]
-    },
-    {
-        "ID" : 65,
-        "Name" : "Shumi Tribe",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 6, 5, 8, 4 ]
-    },
-    {
-        "ID" : 66,
-        "Name" : "Krysta",
-        "Level" : 6,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 7, 5, 8, 1 ]
-    },
-    {
-        "ID" : 67,
-        "Name" : "Propagator",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 8, 4, 4, 8 ]
-    },
-    {
-        "ID" : 68,
-        "Name" : "Jumbo Cactaur",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 8, 8, 4, 4 ]
-    },
-    {
-        "ID" : 69,
-        "Name" : "Tri-Point",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 6,
-        "Ranks" : [ 8, 5, 2, 8 ]
-    },
-    {
-        "ID" : 70,
-        "Name" : "Gargantua",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 5, 6, 6, 8 ]
-    },
-    {
-        "ID" : 71,
-        "Name" : "Mobile Type 8",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 8, 6, 7, 3 ]
-    },
-    {
-        "ID" : 72,
-        "Name" : "Sphinxara",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 8, 3, 5, 8 ]
-    },
-    {
-        "ID" : 73,
-        "Name" : "Tiamat",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 8, 8, 5, 4 ]
-    },
-    {
-        "ID" : 74,
-        "Name" : "BGH251F2",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 5, 7, 8, 5 ]
-    },
-    {
-        "ID" : 75,
-        "Name" : "Red Giant",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 6, 8, 4, 7 ]
-    },
-    {
-        "ID" : 76,
-        "Name" : "Catoblepas",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 1, 8, 7, 7 ]
-    },
-    {
-        "ID" : 77,
-        "Name" : "Ultima Weapon",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 7, 7, 2, 8 ]
-    },
-    {
-        "ID" : 78,
-        "Name" : "Chubby Chocobo",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 4, 4, 8, 9 ]
-    },
-    {
-        "ID" : 79,
-        "Name" : "Angelo",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 9, 6, 7, 3 ]
-    },
-    {
-        "ID" : 80,
-        "Name" : "Gilgamesh",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 3, 7, 9, 6 ]
-    },
-    {
-        "ID" : 81,
-        "Name" : "MiniMog",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 9, 3, 9, 2 ]
-    },
-    {
-        "ID" : 82,
-        "Name" : "Chicobo",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 9, 4, 8, 4 ]
-    },
-    {
-        "ID" : 83,
-        "Name" : "Quezacotl",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 6,
-        "Ranks" : [ 2, 9, 9, 4 ]
-    },
-    {
-        "ID" : 84,
-        "Name" : "Shiva",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 4,
-        "Ranks" : [ 6, 7, 4, 9 ]
-    },
-    {
-        "ID" : 85,
-        "Name" : "Ifrit",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 2,
-        "Ranks" : [ 9, 6, 2, 8 ]
-    },
-    {
-        "ID" : 86,
-        "Name" : "Siren",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 9, 6, 2, 8 ]
-    },
-    {
-        "ID" : 87,
-        "Name" : "Sacred",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 1,
-        "Ranks" : [ 5, 1, 9, 9 ]
-    },
-    {
-        "ID" : 88,
-        "Name" : "Minotaur",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 1,
-        "Ranks" : [ 9, 9, 2, 5 ]
-    },
-    {
-        "ID" : 89,
-        "Name" : "Carbuncle",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 8, 4, 10, 4 ]
-    },
-    {
-        "ID" : 90,
-        "Name" : "Diablos",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 5, 10, 8, 3 ]
-    },
-    {
-        "ID" : 91,
-        "Name" : "Leviathan",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 7,
-        "Ranks" : [ 7, 10, 1, 7 ]
-    },
-    {
-        "ID" : 92,
-        "Name" : "Odin",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 8, 10, 3, 5 ]
-    },
-    {
-        "ID" : 93,
-        "Name" : "Pandemonia",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 8,
-        "Ranks" : [ 10, 1, 7, 7 ]
-    },
-    {
-        "ID" : 94,
-        "Name" : "Cerberus",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 7, 4, 6, 10 ]
-    },
-    {
-        "ID" : 95,
-        "Name" : "Alexander",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 3,
-        "Ranks" : [ 9, 10, 4, 2 ]
-    },
-    {
-        "ID" : 96,
-        "Name" : "Phoenix",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 2,
-        "Ranks" : [ 7, 2, 7, 10 ]
-    },
-    {
-        "ID" : 97,
-        "Name" : "Bahumut",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 10, 8, 2, 6 ]
-    },
-    {
-        "ID" : 98,
-        "Name" : "Doomtrain",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 5,
-        "Ranks" : [ 3, 1, 10, 10 ]
-    },
-    {
-        "ID" : 99,
-        "Name" : "Eden",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 4, 4, 9, 10 ]
-    },
-    {
-        "ID" : 100,
-        "Name" : "Ward",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 10, 7, 2, 8 ]
-    },
-    {
-        "ID" : 101,
-        "Name" : "Kiros",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 6, 7, 6, 10 ]
-    },
-    {
-        "ID" : 102,
-        "Name" : "Laguna",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 5, 10, 3, 9 ]
-    },
-    {
-        "ID" : 103,
-        "Name" : "Selphie",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 10, 8, 4, 6 ]
-    },
-    {
-        "ID" : 104,
-        "Name" : "Quistis",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 9, 6, 10, 2 ]
-    },
-    {
-        "ID" : 105,
-        "Name" : "Irvine",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 2, 6, 9, 10 ]
-    },
-    {
-        "ID" : 106,
-        "Name" : "Zell",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 8, 5, 10, 6 ]
-    },
-    {
-        "ID" : 107,
-        "Name" : "Rinoa",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 4, 10, 2, 10 ]
-    },
-    {
-        "ID" : 108,
-        "Name" : "Edea",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 10, 10, 3, 3 ]
-    },
-    {
-        "ID" : 109,
-        "Name" : "Seifer",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 6, 9, 10, 4 ]
-    },
-    {
-        "ID" : 110,
-        "Name" : "Squall",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 10, 10, 9, 6 ]
-    }
+
+  {
+    "element" : 0,
+    "id" : 1,
+    "level" : 1,
+    "name" : "Geezard",
+    "ranks" : [ 1, 4, 5, 1 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 2,
+    "level" : 1,
+    "name" : "Fungar",
+    "ranks" : [ 5, 1, 1, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 3,
+    "level" : 1,
+    "name" : "Bite Bug",
+    "ranks" : [ 1, 3, 3, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 4,
+    "level" : 1,
+    "name" : "Red Bat",
+    "ranks" : [ 6, 1, 1, 2 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 5,
+    "level" : 1,
+    "name" : "Blobra",
+    "ranks" : [ 2, 3, 1, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 6,
+    "id" : 6,
+    "level" : 1,
+    "name" : "Gayla",
+    "ranks" : [ 2, 1, 4, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 7,
+    "level" : 1,
+    "name" : "Gesper",
+    "ranks" : [ 1, 5, 4, 1 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 1,
+    "id" : 8,
+    "level" : 1,
+    "name" : "Fastitocalon-F",
+    "ranks" : [ 3, 5, 2, 1 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 9,
+    "level" : 1,
+    "name" : "Blood Soul",
+    "ranks" : [ 2, 1, 6, 1 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 10,
+    "level" : 1,
+    "name" : "Caterchipillar",
+    "ranks" : [ 4, 2, 4, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 6,
+    "id" : 11,
+    "level" : 1,
+    "name" : "Cockatrice",
+    "ranks" : [ 6, 1, 2, 6 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 12,
+    "level" : 2,
+    "name" : "Grat",
+    "ranks" : [ 7, 1, 3, 1 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 13,
+    "level" : 2,
+    "name" : "Buel",
+    "ranks" : [ 6, 2, 2, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 14,
+    "level" : 2,
+    "name" : "Mesmerize",
+    "ranks" : [ 5, 3, 3, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 4,
+    "id" : 15,
+    "level" : 2,
+    "name" : "Glacial Eye",
+    "ranks" : [ 6, 1, 4, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 16,
+    "level" : 2,
+    "name" : "Belhelmel",
+    "ranks" : [ 3, 4, 5, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 8,
+    "id" : 17,
+    "level" : 2,
+    "name" : "Thrustaevis",
+    "ranks" : [ 5, 3, 2, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 5,
+    "id" : 18,
+    "level" : 2,
+    "name" : "Anacondaur",
+    "ranks" : [ 5, 1, 3, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 6,
+    "id" : 19,
+    "level" : 2,
+    "name" : "Creeps",
+    "ranks" : [ 5, 2, 5, 2 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 6,
+    "id" : 20,
+    "level" : 2,
+    "name" : "Grendel",
+    "ranks" : [ 4, 4, 5, 2 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 21,
+    "level" : 2,
+    "name" : "Jelleye",
+    "ranks" : [ 3, 2, 1, 7 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 22,
+    "level" : 2,
+    "name" : "Grand Mantis",
+    "ranks" : [ 5, 2, 5, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 23,
+    "level" : 3,
+    "name" : "Forbidden",
+    "ranks" : [ 6, 6, 3, 2 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 1,
+    "id" : 24,
+    "level" : 3,
+    "name" : "Armadodo",
+    "ranks" : [ 6, 3, 1, 6 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 5,
+    "id" : 25,
+    "level" : 3,
+    "name" : "TriFace",
+    "ranks" : [ 3, 5, 5, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 1,
+    "id" : 26,
+    "level" : 3,
+    "name" : "Fastitcalon",
+    "ranks" : [ 7, 5, 1, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 4,
+    "id" : 27,
+    "level" : 3,
+    "name" : "Snow Lion",
+    "ranks" : [ 7, 1, 5, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 28,
+    "level" : 3,
+    "name" : "Ochu",
+    "ranks" : [ 5, 6, 3, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 2,
+    "id" : 29,
+    "level" : 3,
+    "name" : "SAM08G",
+    "ranks" : [ 5, 6, 2, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 2,
+    "id" : 30,
+    "level" : 3,
+    "name" : "Death Claw",
+    "ranks" : [ 4, 4, 7, 2 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 31,
+    "level" : 3,
+    "name" : "Cactaur",
+    "ranks" : [ 6, 2, 6, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 32,
+    "level" : 3,
+    "name" : "Tonberry",
+    "ranks" : [ 3, 6, 4, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 1,
+    "id" : 33,
+    "level" : 3,
+    "name" : "Abyss Worm",
+    "ranks" : [ 7, 2, 3, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 34,
+    "level" : 4,
+    "name" : "Turtapod",
+    "ranks" : [ 2, 3, 6, 7 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 35,
+    "level" : 4,
+    "name" : "Vysage",
+    "ranks" : [ 6, 5, 4, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 36,
+    "level" : 4,
+    "name" : "T-Rexaur",
+    "ranks" : [ 4, 6, 2, 7 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 2,
+    "id" : 37,
+    "level" : 4,
+    "name" : "Bomb",
+    "ranks" : [ 2, 7, 6, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 6,
+    "id" : 38,
+    "level" : 4,
+    "name" : "Blitz",
+    "ranks" : [ 1, 6, 4, 7 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 39,
+    "level" : 4,
+    "name" : "Wendigo",
+    "ranks" : [ 7, 3, 1, 6 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 40,
+    "level" : 4,
+    "name" : "Torama",
+    "ranks" : [ 7, 4, 4, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 41,
+    "level" : 4,
+    "name" : "Imp",
+    "ranks" : [ 3, 7, 3, 6 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 5,
+    "id" : 42,
+    "level" : 4,
+    "name" : "Blue Dragon",
+    "ranks" : [ 6, 2, 7, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 1,
+    "id" : 43,
+    "level" : 4,
+    "name" : "Adamantiose",
+    "ranks" : [ 4, 5, 5, 6 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 2,
+    "id" : 44,
+    "level" : 4,
+    "name" : "Hexadragon",
+    "ranks" : [ 7, 5, 4, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 45,
+    "level" : 5,
+    "name" : "Iron Giant",
+    "ranks" : [ 6, 5, 6, 5 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 46,
+    "level" : 5,
+    "name" : "Behemoth",
+    "ranks" : [ 3, 6, 5, 7 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 7,
+    "id" : 47,
+    "level" : 5,
+    "name" : "Chimera",
+    "ranks" : [ 7, 6, 5, 3 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 48,
+    "level" : 5,
+    "name" : "PuPu",
+    "ranks" : [ 3, 10, 2, 1 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 49,
+    "level" : 5,
+    "name" : "Elastiod",
+    "ranks" : [ 6, 2, 6, 7 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 50,
+    "level" : 5,
+    "name" : "GIM47N",
+    "ranks" : [ 5, 5, 7, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 5,
+    "id" : 51,
+    "level" : 5,
+    "name" : "Malboro",
+    "ranks" : [ 7, 7, 4, 2 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 2,
+    "id" : 52,
+    "level" : 5,
+    "name" : "Ruby Dragon",
+    "ranks" : [ 7, 2, 7, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 53,
+    "level" : 5,
+    "name" : "Elnoyle",
+    "ranks" : [ 5, 3, 7, 6 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 54,
+    "level" : 5,
+    "name" : "Tonberry King",
+    "ranks" : [ 4, 6, 7, 4 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 55,
+    "level" : 5,
+    "name" : "Wedge, Biggs",
+    "ranks" : [ 6, 6, 2, 7 ],
+    "type" : 1
+  },
+
+  {
+    "element" : 0,
+    "id" : 56,
+    "level" : 6,
+    "name" : "Fujin, Raijin",
+    "ranks" : [ 2, 8, 8, 4 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 8,
+    "id" : 57,
+    "level" : 6,
+    "name" : "Elvoret",
+    "ranks" : [ 7, 8, 3, 4 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 58,
+    "level" : 6,
+    "name" : "X-ATM092",
+    "ranks" : [ 4, 8, 4, 3 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 59,
+    "level" : 6,
+    "name" : "Grenaldo",
+    "ranks" : [ 7, 2, 8, 5 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 5,
+    "id" : 60,
+    "level" : 6,
+    "name" : "Gerogero",
+    "ranks" : [ 1, 8, 8, 3 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 61,
+    "level" : 6,
+    "name" : "Iguion",
+    "ranks" : [ 8, 2, 8, 2 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 62,
+    "level" : 6,
+    "name" : "Abadon",
+    "ranks" : [ 6, 8, 4, 5 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 63,
+    "level" : 6,
+    "name" : "Trauma",
+    "ranks" : [ 4, 8, 5, 6 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 64,
+    "level" : 6,
+    "name" : "Oilboyle",
+    "ranks" : [ 1, 8, 4, 8 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 65,
+    "level" : 6,
+    "name" : "Shumi Tribe",
+    "ranks" : [ 6, 5, 8, 4 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 66,
+    "level" : 6,
+    "name" : "Krysta",
+    "ranks" : [ 7, 5, 8, 1 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 67,
+    "level" : 7,
+    "name" : "Propagator",
+    "ranks" : [ 8, 4, 4, 8 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 68,
+    "level" : 7,
+    "name" : "Jumbo Cactaur",
+    "ranks" : [ 8, 8, 4, 4 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 6,
+    "id" : 69,
+    "level" : 7,
+    "name" : "Tri-Point",
+    "ranks" : [ 8, 5, 2, 8 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 70,
+    "level" : 7,
+    "name" : "Gargantua",
+    "ranks" : [ 5, 6, 6, 8 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 71,
+    "level" : 7,
+    "name" : "Mobile Type 8",
+    "ranks" : [ 8, 6, 7, 3 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 72,
+    "level" : 7,
+    "name" : "Sphinxara",
+    "ranks" : [ 8, 3, 5, 8 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 73,
+    "level" : 7,
+    "name" : "Tiamat",
+    "ranks" : [ 8, 8, 5, 4 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 74,
+    "level" : 7,
+    "name" : "BGH251F2",
+    "ranks" : [ 5, 7, 8, 5 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 75,
+    "level" : 7,
+    "name" : "Red Giant",
+    "ranks" : [ 6, 8, 4, 7 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 76,
+    "level" : 7,
+    "name" : "Catoblepas",
+    "ranks" : [ 1, 8, 7, 7 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 77,
+    "level" : 7,
+    "name" : "Ultima Weapon",
+    "ranks" : [ 7, 7, 2, 8 ],
+    "type" : 2
+  },
+
+  {
+    "element" : 0,
+    "id" : 78,
+    "level" : 8,
+    "name" : "Chubby Chocobo",
+    "ranks" : [ 4, 4, 8, 9 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 79,
+    "level" : 8,
+    "name" : "Angelo",
+    "ranks" : [ 9, 6, 7, 3 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 80,
+    "level" : 8,
+    "name" : "Gilgamesh",
+    "ranks" : [ 3, 7, 9, 6 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 81,
+    "level" : 8,
+    "name" : "MiniMog",
+    "ranks" : [ 9, 3, 9, 2 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 82,
+    "level" : 8,
+    "name" : "Chicobo",
+    "ranks" : [ 9, 4, 8, 4 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 6,
+    "id" : 83,
+    "level" : 8,
+    "name" : "Quezacotl",
+    "ranks" : [ 2, 9, 9, 4 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 4,
+    "id" : 84,
+    "level" : 8,
+    "name" : "Shiva",
+    "ranks" : [ 6, 7, 4, 9 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 2,
+    "id" : 85,
+    "level" : 8,
+    "name" : "Ifrit",
+    "ranks" : [ 9, 6, 2, 8 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 86,
+    "level" : 8,
+    "name" : "Siren",
+    "ranks" : [ 9, 6, 2, 8 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 1,
+    "id" : 87,
+    "level" : 8,
+    "name" : "Sacred",
+    "ranks" : [ 5, 1, 9, 9 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 1,
+    "id" : 88,
+    "level" : 8,
+    "name" : "Minotaur",
+    "ranks" : [ 9, 9, 2, 5 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 89,
+    "level" : 9,
+    "name" : "Carbuncle",
+    "ranks" : [ 8, 4, 10, 4 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 90,
+    "level" : 9,
+    "name" : "Diablos",
+    "ranks" : [ 5, 10, 8, 3 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 7,
+    "id" : 91,
+    "level" : 9,
+    "name" : "Leviathan",
+    "ranks" : [ 7, 10, 1, 7 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 92,
+    "level" : 9,
+    "name" : "Odin",
+    "ranks" : [ 8, 10, 3, 5 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 8,
+    "id" : 93,
+    "level" : 9,
+    "name" : "Pandemonia",
+    "ranks" : [ 10, 1, 7, 7 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 94,
+    "level" : 9,
+    "name" : "Cerberus",
+    "ranks" : [ 7, 4, 6, 10 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 3,
+    "id" : 95,
+    "level" : 9,
+    "name" : "Alexander",
+    "ranks" : [ 9, 10, 4, 2 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 2,
+    "id" : 96,
+    "level" : 9,
+    "name" : "Phoenix",
+    "ranks" : [ 7, 2, 7, 10 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 97,
+    "level" : 9,
+    "name" : "Bahumut",
+    "ranks" : [ 10, 8, 2, 6 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 5,
+    "id" : 98,
+    "level" : 9,
+    "name" : "Doomtrain",
+    "ranks" : [ 3, 1, 10, 10 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 99,
+    "level" : 9,
+    "name" : "Eden",
+    "ranks" : [ 4, 4, 9, 10 ],
+    "type" : 3
+  },
+
+  {
+    "element" : 0,
+    "id" : 100,
+    "level" : 10,
+    "name" : "Ward",
+    "ranks" : [ 10, 7, 2, 8 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 101,
+    "level" : 10,
+    "name" : "Kiros",
+    "ranks" : [ 6, 7, 6, 10 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 102,
+    "level" : 10,
+    "name" : "Laguna",
+    "ranks" : [ 5, 10, 3, 9 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 103,
+    "level" : 10,
+    "name" : "Selphie",
+    "ranks" : [ 10, 8, 4, 6 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 104,
+    "level" : 10,
+    "name" : "Quistis",
+    "ranks" : [ 9, 6, 10, 2 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 105,
+    "level" : 10,
+    "name" : "Irvine",
+    "ranks" : [ 2, 6, 9, 10 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 106,
+    "level" : 10,
+    "name" : "Zell",
+    "ranks" : [ 8, 5, 10, 6 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 107,
+    "level" : 10,
+    "name" : "Rinoa",
+    "ranks" : [ 4, 10, 2, 10 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 108,
+    "level" : 10,
+    "name" : "Edea",
+    "ranks" : [ 10, 10, 3, 3 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 109,
+    "level" : 10,
+    "name" : "Seifer",
+    "ranks" : [ 6, 9, 10, 4 ],
+    "type" : 4
+  },
+
+  {
+    "element" : 0,
+    "id" : 110,
+    "level" : 10,
+    "name" : "Squall",
+    "ranks" : [ 10, 10, 9, 6 ],
+    "type" : 4
+  }
 ]

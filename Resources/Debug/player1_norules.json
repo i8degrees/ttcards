@@ -1,56 +1,56 @@
 [
-    // Player1 hand for starting with no rule-set activated.
-    //
-    // Archived from PlayState_debug methods; for use with internal development
-    // of TTcards.
-    {
-        "ID" : 90,
-        "Name" : "Diablos",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 5, 10, 8, 3 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 110,
-        "Name" : "Squall",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 10, 10, 9, 6 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 100,
-        "Name" : "Ward",
-        "Level" : 10,
-        "Type" : 4,
-        "Element" : 0,
-        "Ranks" : [ 10, 7, 2, 8 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 85,
-        "Name" : "Ifrit",
-        "Level" : 8,
-        "Type" : 3,
-        "Element" : 2,
-        "Ranks" : [ 9, 6, 2, 8 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    },
-    {
-        "ID" : 17,
-        "Name" : "Thrustaevis",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 8,
-        "Ranks" : [ 5, 3, 2, 5 ],
-        "PlayerID" : 1,
-        "Owner" : 1
-    }
+  // Player1 hand for starting with no rule-set activated.
+  //
+  // Archived from PlayState_debug methods; for use with internal development
+  // of TTcards.
+  {
+    "id" : 90,
+    "name" : "Diablos",
+    "level" : 9,
+    "type" : 3,
+    "element" : 0,
+    "ranks" : [ 5, 10, 8, 3 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 110,
+    "name" : "Squall",
+    "level" : 10,
+    "type" : 4,
+    "element" : 0,
+    "ranks" : [ 10, 10, 9, 6 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 100,
+    "name" : "Ward",
+    "level" : 10,
+    "type" : 4,
+    "element" : 0,
+    "ranks" : [ 10, 7, 2, 8 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 85,
+    "name" : "Ifrit",
+    "level" : 8,
+    "type" : 3,
+    "element" : 2,
+    "ranks" : [ 9, 6, 2, 8 ],
+    "player_id" : 1,
+    "owner" : 1
+  },
+  {
+    "id" : 17,
+    "name" : "Thrustaevis",
+    "level" : 2,
+    "type" : 1,
+    "element" : 8,
+    "ranks" : [ 5, 3, 2, 5 ],
+    "player_id" : 1,
+    "owner" : 1
+  }
 ]

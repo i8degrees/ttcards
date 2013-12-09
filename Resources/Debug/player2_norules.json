@@ -1,56 +1,56 @@
 [
-    // Player2 hand for starting with no rule-set activated.
-    //
-    // Archived from PlayState_debug methods; for use with internal development
-    // of TTcards.
-    {
-        "ID" : 21,
-        "Name" : "Jelleye",
-        "Level" : 2,
-        "Type" : 1,
-        "Element" : 0,
-        "Ranks" : [ 3, 2, 1, 7 ],
-        "PlayerID" : 2,
-        "Owner" : 2
-    },
-    {
-        "ID" : 89,
-        "Name" : "Carbuncle",
-        "Level" : 9,
-        "Type" : 3,
-        "Element" : 0,
-        "Ranks" : [ 8, 4, 10, 4 ],
-        "PlayerID" : 2,
-        "Owner" : 2
-    },
-    {
-        "ID" : 25,
-        "Name" : "TriFace",
-        "Level" : 3,
-        "Type" : 1,
-        "Element" : 5,
-        "Ranks" : [ 3, 5, 5, 5 ],
-        "PlayerID" : 2,
-        "Owner" : 2
-    },
-    {
-        "ID" : 67,
-        "Name" : "Propagator",
-        "Level" : 7,
-        "Type" : 2,
-        "Element" : 0,
-        "Ranks" : [ 8, 4, 4, 8 ],
-        "PlayerID" : 2,
-        "Owner" : 2
-    },
-    {
-        "ID" : 51,
-        "Name" : "Malboro",
-        "Level" : 5,
-        "Type" : 1,
-        "Element" : 5,
-        "Ranks" : [ 7, 7, 4, 2 ],
-        "PlayerID" : 2,
-        "Owner" : 2
-    }
+  // Player2 hand for starting with no rule-set activated.
+  //
+  // Archived from PlayState_debug methods; for use with internal development
+  // of TTcards.
+  {
+    "id" : 21,
+    "name" : "Jelleye",
+    "level" : 2,
+    "type" : 1,
+    "element" : 0,
+    "ranks" : [ 3, 2, 1, 7 ],
+    "player_id" : 2,
+    "owner" : 2
+  },
+  {
+    "id" : 89,
+    "name" : "Carbuncle",
+    "level" : 9,
+    "type" : 3,
+    "element" : 0,
+    "ranks" : [ 8, 4, 10, 4 ],
+    "player_id" : 2,
+    "owner" : 2
+  },
+  {
+    "id" : 25,
+    "name" : "TriFace",
+    "level" : 3,
+    "type" : 1,
+    "element" : 5,
+    "ranks" : [ 3, 5, 5, 5 ],
+    "player_id" : 2,
+    "owner" : 2
+  },
+  {
+    "id" : 67,
+    "name" : "Propagator",
+    "level" : 7,
+    "type" : 2,
+    "element" : 0,
+    "ranks" : [ 8, 4, 4, 8 ],
+    "player_id" : 2,
+    "owner" : 2
+  },
+  {
+    "id" : 51,
+    "name" : "Malboro",
+    "level" : 5,
+    "type" : 1,
+    "element" : 5,
+    "ranks" : [ 7, 7, 4, 2 ],
+    "player_id" : 2,
+    "owner" : 2
+  }
 ]
