@@ -208,7 +208,15 @@ void CardsMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 wind
 {
   if ( this->game->cursor.state() == 0 )
   {
-    if ( y > 0 )
+    if ( x > 0 )
+    {
+      this->moveCursorLeft();
+    }
+    else if ( x < 0 )
+    {
+      this->moveCursorRight();
+    }
+    else if ( y > 0 )
     {
       this->moveCursorUp();
     }
