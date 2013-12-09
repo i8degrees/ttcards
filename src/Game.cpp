@@ -144,9 +144,15 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
 
 // These definitions are influenced at build time with CMake options and serve
 // to help determine the path of game resources
-#if defined ( OSXAPP ) // OSX Application Bundle
+#if defined (NOM_PLATFORM_OSX)
+  // We only do "OS X Application Bundle" build types under Mac OS X platform
   working_directory = nom::getBundleResourcePath();
+#elif defined (NOM_PLATFORM_WINDOWS)
+  // Assume the Resources subdirectory is in a sub-directory of wherever the
+  // executable is launched from
+  working_directory = dir.path(argv[0]) + path.native() + "Resources" + path.native();
 #else // Potentially customized layout (POSIX hierarchy by default)
+  // FIXME
   working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
 #endif
 

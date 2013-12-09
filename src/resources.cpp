@@ -33,10 +33,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 const nom::Path path;
 
 // Data folder for game storage (screenshots, card dumps, ...)
-#if defined ( NOM_PLATFORM_WINDOWS ) // FIXME
-  const std::string TTCARDS_DATA_DIR = "C:/Users/jeff/Documents/ttcards";
-#else
+#if defined (NOM_PLATFORM_WINDOWS) || defined (NOM_PLATFORM_OSX)
   const std::string TTCARDS_DATA_DIR = nom::user_documents_path() + path.native() + "ttcards";
+#else
+  // FIXME
+  working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
 #endif
 
 const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
