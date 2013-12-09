@@ -54,7 +54,12 @@ class CardCollection
     void clear ( void );
     nom::int32 size ( void ) const;
 
+    /// Save the current board grid data to a file as a series of RFC 4627
+    /// compliant JSON objects.
     bool save( const std::string& filename );
+
+    /// Load saved board grid data from a file encoded as RFC 4627 compliant
+    /// JSON objects.
     bool load( const std::string& filename );
 
     /// \todo redeclare private scope

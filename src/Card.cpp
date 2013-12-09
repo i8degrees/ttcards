@@ -185,31 +185,28 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
 {
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
-/*
-const json_spirit::Object Card::serialize ( void ) const
+
+/* FIXME
+nom::JSON::Value Card::serialize ( void ) const
 {
-  json_spirit::Object node; // JSON object record we are writing
-  json_spirit::Array ranks; // JSON object child of node
+  nom::JSON::FileReader fp;
+  nom::JSON::Value node;
 
-  // Basic card attributes
-  node.push_back ( json_spirit::Pair ( "ID", this->getID() ) );
-  node.push_back ( json_spirit::Pair ( "Name", this->getName() ) );
-  node.push_back ( json_spirit::Pair ( "Level", this->getLevel() ) );
-  node.push_back ( json_spirit::Pair ( "Type", this->getType() ) );
-  node.push_back ( json_spirit::Pair ( "Element", this->getElement() ) );
+  node.insert ( "id", this->id, 0 );
+  node.insert ( "name", this->name, 0 );
+  node.insert ( "level", this->level, 0 );
+  node.insert ( "type", this->type, 0 );
+  node.insert ( "element", this->element, 0 );
 
-  // Card rank attributes
-  ranks.push_back ( json_spirit::Value ( this->getNorthRank() ) );
-  ranks.push_back ( json_spirit::Value ( this->getEastRank() ) );
-  ranks.push_back ( json_spirit::Value ( this->getSouthRank() ) );
-  ranks.push_back ( json_spirit::Value ( this->getWestRank() ) );
+  std::vector<int> ranks {  this->rank[NORTH], this->rank[EAST],
+                            this->rank[SOUTH], this->rank[WEST] };
 
-  // Push ranks values to our current node
-  node.push_back ( json_spirit::Pair ( "Ranks", ranks ) );
+  node.insert ( "ranks", ranks, 0 );
 
   return node;
 }
-*/
+FIXME */
+
 void Card::increaseNorthRank ( void )
 {
   this->setNorthRank ( this->getNorthRank() + 1 );

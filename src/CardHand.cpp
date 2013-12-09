@@ -248,144 +248,81 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardColle
 
 bool CardHand::save ( const std::string& filename )
 {
-/*
-  nom::JSON::FileWriter fp; // json_spirit wrapper for file output
-  json_spirit::Array game; // Overall container; this is the parent
-  json_spirit::Object node; // JSON object record; the child
+  nom::JSON::FileWriter fp;
+  nom::JSON::Value node;
 
-  for ( nom::int32 idx = 0; idx < this->size(); idx++ )
+  for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
   {
-    // Primary card attributes
-    node = this->cards[idx].serialize();
+    // Serialize each card's attributes
+    node.insert ( "id", this->cards[idx].getID(), idx );
+    node.insert ( "name", this->cards[idx].getName(), idx );
+    node.insert ( "level", this->cards[idx].getLevel(), idx );
+    node.insert ( "type", this->cards[idx].getType(), idx );
+    node.insert ( "element", this->cards[idx].getElement(), idx );
+    node.insert ( "ranks", this->cards[idx].ranks_as_vector(), idx );
 
-    // Additional attributes to append onto
-    node.push_back ( json_spirit::Pair ( "PlayerID", this->cards[idx].getPlayerID() ) );
-    node.push_back ( json_spirit::Pair ( "Owner", this->cards[idx].getPlayerOwner() ) );
-
-    // Push current node to our overall game data to be written
-    game.push_back ( node );
-
-    // Get ready for the next inbound row
-    node.clear();
+    node.insert ( "player_id", this->cards[idx].getPlayerID(), idx );
+    node.insert ( "owner", this->cards[idx].getPlayerOwner(), idx );
   }
 
-  if ( fp.save ( filename, game, nom::JSON::CompactArrays ) == false )
+  if ( fp.save ( filename, node ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
   }
 
   return true;
-*/
-  return false;
 }
 
 bool CardHand::load ( const std::string& filename )
 {
-/*
-  nom::JSON::FileReader fp; // json_spirit wrapper for file input
-  json_spirit::Object node;
-  json_spirit::Value value;
-  json_spirit::Array game;
-  // Iterators
-  json_spirit::Array::size_type i;
-  json_spirit::Object::size_type o;
+  nom::JSON::FileReader fp;
+  nom::JSON::Value node;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
-  Cards input_cards;
+  Cards cards_buffer;
 
-  if ( fp.load ( filename, value ) == false )
+  if ( fp.load ( filename, node ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  // FIXME
-  this->clear(); // otherwise we exceed our limit of cards
-
-NOM_ASSERT ( value.type() == json_spirit::array_type );
-  game = value.get_array();
-
-  for ( i = 0; i != game.size(); i++ )
+  for ( nom::uint32 idx = 0; idx != node.size(); ++idx )
   {
-NOM_ASSERT ( game[i].type() == json_spirit::obj_type );
-    node = game[i].get_obj();
+    card.setID ( node.get_int( "id", idx ) );
+    card.setName ( node.get_string( "name", idx ) );
+    card.setLevel ( node.get_int( "level", idx ) );
+    card.setType ( node.get_int( "type", idx ) );
+    card.setElement ( node.get_int( "element", idx ) );
+    card.setType ( node.get_int( "type", idx ) );
 
-    for ( o = 0; o != node.size(); o++ )
-    {
-      const json_spirit::Pair& pair = node[o];
-      const std::string& path = pair.name_;
-      const json_spirit::Value& value = pair.value_;
+    std::vector<int> ranks = node.get_ints ( "ranks", idx );
+    card.set_ranks ( ranks );
 
-      if ( path == "ID" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setID ( value.get_int() );
-      }
-      else if ( path == "Name" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::str_type );
-        card.setName ( value.get_str() );
-      }
-      else if ( path == "Level" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setLevel ( value.get_int() );
-      }
-      else if ( path == "Type" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setType ( value.get_int() );
-      }
-      else if ( path == "Element" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setElement ( value.get_int() );
-      }
-      else if ( path == "Ranks" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::array_type );
-        const json_spirit::Array &ranks = value.get_array();
+    card.setPlayerID ( node.get_int( "player_id", idx ) );
+    card.setPlayerOwner ( node.get_int( "owner", idx ) );
 
-NOM_ASSERT ( ranks.size() == 4 );
-        card.setNorthRank ( ranks[NORTH].get_int() );
-        card.setEastRank ( ranks[EAST].get_int() );
-        card.setSouthRank ( ranks[SOUTH].get_int() );
-        card.setWestRank ( ranks[WEST].get_int() );
-      }
-      else if ( path == "PlayerID" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setPlayerID ( value.get_int() );
-      }
-      else if ( path == "Owner" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setPlayerOwner ( value.get_int() );
-
-        // The next line *MUST* be at the end of the current node object being
-        // read in -- or else epic failure will result!
-        input_cards.push_back ( card );
-      }
-    } // end current node loop
-  } // end current array node
+    // Commit contents to our buffer if all goes well
+    cards_buffer.push_back ( card );
+  } // end for loop
 
 #ifndef DEBUG
-  if ( input_cards.size() < 1 ) // Sanity check
+  if ( cards_buffer.size() < 1 ) // Sanity check
   {
-NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid at file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid from file: " + filename );
     return false;
   }
 #endif
 
-  // All is well, let us make our freshly loaded data permanent
-  this->cards = input_cards;
+  this->clear(); // otherwise we may exceed our limit of cards in hand
+
+  // All is well, let us make it permanent
+  this->cards = cards_buffer;
 
   return true;
-*/
-  return false;
 }
 
 void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )

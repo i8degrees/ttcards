@@ -172,24 +172,30 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
     {
       if ( this->game->hand[0].save( USER_PLAYER1_FILENAME ) == false )
       {
-NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER1_FILENAME );
+        NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER1_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
+
+      NOM_LOG_INFO ( TTCARDS, "Saved player 1 hand data at: " + std::string(USER_PLAYER1_FILENAME) );
 
       if ( this->game->hand[1].save( USER_PLAYER2_FILENAME ) == false )
       {
-NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER2_FILENAME );
+        NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER2_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
 
+      NOM_LOG_INFO ( TTCARDS, "Saved player 2 hand data at: " + std::string(USER_PLAYER2_FILENAME) );
+
       if ( this->game->board.save( USER_BOARD_FILENAME ) == false )
       {
-NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
+        NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
+
+      NOM_LOG_INFO ( TTCARDS, "Saved board data at: " + std::string(USER_BOARD_FILENAME) );
 
       this->game->save_game.Play(); // Successful saved game!
     }
@@ -201,40 +207,43 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
       {
         if ( this->game->hand[0].load ( "Debug" + path.native() + "player1_unbeatable.json" ) == false )
         {
-// FIXME
-//NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + "player1_unbeatable.json" );
-NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: player1_unbeatable.json" );
+          NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + std::string("player1_unbeatable.json") );
           this->game->cursor_wrong.Play();
           break;
         }
+        NOM_LOG_INFO ( TTCARDS, "Loaded player 1 data from: " + std::string("player1_unbeatable.json") );
       }
       else // Normal game load for player1
       {
         if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
         {
-NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_PLAYER1_FILENAME );
+          NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_PLAYER1_FILENAME );
           this->game->cursor_wrong.Play();
           break;
         }
+        NOM_LOG_INFO ( TTCARDS, "Loaded player 1 data from: " + std::string(USER_PLAYER1_FILENAME) );
       }
-
       if ( this->game->hand[1].load( USER_PLAYER2_FILENAME ) == false )
       {
-NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_PLAYER2_FILENAME );
+        NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_PLAYER2_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
+      NOM_LOG_INFO ( TTCARDS, "Loaded player 2 data from: " + std::string(USER_PLAYER2_FILENAME) );
 
       if ( this->game->board.load( USER_BOARD_FILENAME ) == false )
       {
-NOM_LOG_ERR ( TTCARDS, "Unable to load game data at: " + USER_BOARD_FILENAME );
+        NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_BOARD_FILENAME );
         this->game->cursor_wrong.Play();
         break;
       }
+
+      NOM_LOG_INFO ( TTCARDS, "Loaded board data from: " + std::string(USER_BOARD_FILENAME) );
 
       // Successful load of saved game!
       this->updateScore();
       this->resetCursor();
+
       this->game->load_game.Play();
     }
     break;

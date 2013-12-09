@@ -72,37 +72,36 @@ Cards CardCollection::getCards ( void )
 
 bool CardCollection::save( const std::string& filename )
 {
-/* TODO
-  nom::JSON::FileWriter fp; // json_spirit wrapper for file output
-  json_spirit::Array game; // Overall container; this is the parent
-  json_spirit::Object node; // JSON object record; the child
+  nom::JSON::FileWriter fp;
+  nom::JSON::Value node;
+  nom::JSON::Value card;
 
   if ( this->cards.empty() ) return false;
 
-  for ( nom::int32 idx = 0; idx < this->cards.size(); idx++ )
+  for ( nom::uint32 idx = 0; idx < this->cards.size(); ++idx )
   {
-    // A card object is one JSON object
-    game.push_back ( this->cards[idx].serialize() );
-
-    // Get ready for the next row
-    node.clear();
+    // Serialize each card's attributes
+    node.insert ( "id", this->cards[idx].getID(), idx );
+    node.insert ( "name", this->cards[idx].getName(), idx );
+    node.insert ( "level", this->cards[idx].getLevel(), idx );
+    node.insert ( "type", this->cards[idx].getType(), idx );
+    node.insert ( "element", this->cards[idx].getElement(), idx );
+    node.insert ( "ranks", this->cards[idx].ranks_as_vector(), idx );
   }
 
-  if ( fp.save ( filename, game, nom::JSON::CompactArrays ) == false )
+  if ( fp.save ( filename, node ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
   }
 
   return true;
-TODO */
-  return false;
 }
 
 bool CardCollection::load( const std::string& filename )
 {
   nom::JSON::FileReader fp;
-  nom::JSON::Value root;
+  nom::JSON::Value node;
 
   // The card attributes we are loading in will be stored in here, and once a
   // card has filled its buffer, we push it into its final resting place ...
@@ -110,21 +109,21 @@ bool CardCollection::load( const std::string& filename )
   Card card;
   Cards cards_buffer;
 
-  if ( fp.load ( filename, root, false ) == false )
+  if ( fp.load ( filename, node, false ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( auto idx = 0; idx != root.size(); ++idx )
+  for ( nom::uint32 idx = 0; idx != node.size(); ++idx )
   {
-    card.setID ( root.get_int ( "ID", idx ) );
-    card.setName ( root.get_string ( "Name", idx ) );
-    card.setLevel ( root.get_int ( "Level", idx ) );
-    card.setType ( root.get_int ( "Type", idx ) );
-    card.setElement ( root.get_int ( "Element", idx ) );
+    card.setID ( node.get_int ( "id", idx ) );
+    card.setName ( node.get_string ( "name", idx ) );
+    card.setLevel ( node.get_int ( "level", idx ) );
+    card.setType ( node.get_int ( "type", idx ) );
+    card.setElement ( node.get_int ( "element", idx ) );
 
-    std::vector<int> ranks = root.get_ints ( "Ranks", idx );
+    std::vector<int> ranks = node.get_ints ( "ranks", idx );
     card.set_ranks ( ranks );
 
     card.setPlayerID ( Card::NOPLAYER ); // placeholder
@@ -141,6 +140,8 @@ NOM_LOG_ERR ( TTCARDS, "Cards collection data is invalid at file: " + filename )
     return false;
   }
 #endif
+
+  this->clear(); // otherwise we may exceed our limit of cards
 
   // All is well, let us make our freshly loaded data permanent
   this->cards = cards_buffer;

@@ -37,15 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <cassert>
 
-/*
-#include "json_spirit_writer_template.h"
-#include "json_spirit_reader_template.h"
-
-#ifndef JSON_SPIRIT_VALUE_ENABLED
-  #define JSON_SPIRIT_VALUE_ENABLED
-#endif
-*/
-
 #include <nomlib/types.hpp>
 #include <nomlib/math.hpp>
 #include <nomlib/json.hpp>
@@ -128,16 +119,10 @@ class Board
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
-    ///
-    /// Order in which data is saved *does* matter and must match to the order
-    /// in which it is loaded.
     bool save ( const std::string& filename );
 
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.
-    ///
-    /// Loading order *does* matter and expects the order in which it was saved
-    /// to match precisely.
     bool load ( const std::string& filename );
 
     const nom::int32 operator() ( const nom::int32 x, const nom::int32 y );

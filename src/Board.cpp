@@ -400,153 +400,95 @@ void Board::draw ( nom::IDrawable::RenderTarget target )
 
 bool Board::save ( const std::string& filename )
 {
-/*
-  nom::JSON::FileWriter fp; // json_spirit wrapper for file output
-  json_spirit::Array game; // Overall container; this is the parent
-  json_spirit::Object node; // JSON object record; the child
+  nom::JSON::FileWriter fp;
+  nom::JSON::Value node;
 
+  nom::uint32 idx = 0;
   for ( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; y++ )
   {
     for ( nom::int32 x = 0; x != BOARD_GRID_WIDTH; x++ )
     {
-      // Primary card attributes
-      node = this->grid[x][y].tile_card.serialize();
+      // Serialize each card's attributes
+      node.insert ( "id", this->grid[x][y].tile_card.getID(), idx );
+      node.insert ( "name", this->grid[x][y].tile_card.getName(), idx );
+      node.insert ( "level", this->grid[x][y].tile_card.getLevel(), idx );
+      node.insert ( "type", this->grid[x][y].tile_card.getType(), idx );
+      node.insert ( "element", this->grid[x][y].tile_card.getElement(), idx );
+      node.insert ( "ranks", this->grid[x][y].tile_card.ranks_as_vector(), idx );
 
-      // Additional card attributes to append onto
-      node.push_back ( json_spirit::Pair ( "PlayerID", this->grid[x][y].tile_card.getPlayerID() ) );
-      node.push_back ( json_spirit::Pair ( "Owner", this->grid[x][y].tile_card.getPlayerOwner() ) );
+      node.insert ( "player_id", this->grid[x][y].tile_card.getPlayerID(), idx );
+      node.insert ( "owner", this->grid[x][y].tile_card.getPlayerOwner(), idx );
 
-      // Push current node to our overall game data to be written
-      game.push_back ( node );
-
-      // Get ready for the next inbound row
-      node.clear();
+      idx++;
     }
   }
 
-  if ( fp.save ( filename, game, nom::JSON::CompactArrays ) == false )
+  if ( fp.save ( filename, node ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
   }
 
   return true;
-*/
-  return false;
 }
 
 bool Board::load ( const std::string& filename )
 {
-/*
-  nom::JSON::FileReader fp; // json_spirit wrapper for file input
-  json_spirit::Object node;
-  json_spirit::Value value;
-  json_spirit::Array game;
-  // Iterators
-  json_spirit::Array::size_type i;
-  json_spirit::Object::size_type o;
+  nom::JSON::FileReader fp;
+  nom::JSON::Value node;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
-  Cards input_cards;
+  Cards cards_buffer;
 
-  if ( fp.load ( filename, value ) == false )
+  if ( fp.load ( filename, node ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-NOM_ASSERT ( value.type() == json_spirit::array_type );
-  game = value.get_array();
-
-  for ( i = 0; i != game.size(); i++ )
+  for ( nom::uint32 idx = 0; idx != node.size(); ++idx )
   {
-NOM_ASSERT ( game[i].type() == json_spirit::obj_type );
-    node = game[i].get_obj();
+    card.setID ( node.get_int( "id", idx ) );
+    card.setName ( node.get_string( "name", idx ) );
+    card.setLevel ( node.get_int( "level", idx ) );
+    card.setType ( node.get_int( "type", idx ) );
+    card.setElement ( node.get_int( "element", idx ) );
+    card.setType ( node.get_int( "type", idx ) );
 
-    for ( o = 0; o != node.size(); o++ )
-    {
-      const json_spirit::Pair& pair = node[o];
-      const std::string& path = pair.name_;
-      const json_spirit::Value& value = pair.value_;
+    std::vector<int> ranks = node.get_ints ( "ranks", idx );
+    card.set_ranks ( ranks );
 
-      if ( path == "ID" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setID ( value.get_int() );
-      }
-      else if ( path == "Name" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::str_type );
-        card.setName ( value.get_str() );
-      }
-      else if ( path == "Level" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setLevel ( value.get_int() );
-      }
-      else if ( path == "Type" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setType ( value.get_int() );
-      }
-      else if ( path == "Element" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setElement ( value.get_int() );
-      }
-      else if ( path == "Ranks" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::array_type );
-        const json_spirit::Array &ranks = value.get_array();
+    card.setPlayerID ( node.get_int( "player_id", idx ) );
+    card.setPlayerOwner ( node.get_int( "owner", idx ) );
 
-NOM_ASSERT ( ranks.size() == 4 );
-        card.setNorthRank ( ranks[NORTH].get_int() );
-        card.setEastRank ( ranks[EAST].get_int() );
-        card.setSouthRank ( ranks[SOUTH].get_int() );
-        card.setWestRank ( ranks[WEST].get_int() );
-      }
-      else if ( path == "PlayerID" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setPlayerID ( value.get_int() );
-      }
-      else if ( path == "Owner" )
-      {
-NOM_ASSERT ( value.type() == json_spirit::int_type );
-        card.setPlayerOwner ( value.get_int() );
-
-        // The next line *MUST* be at the end of the current node object being
-        // read in -- or else epic failure will result!
-        input_cards.push_back ( card );
-      }
-    } // end current node loop
-  } // end current array node
+    // Commit contents to our buffer if all goes well
+    cards_buffer.push_back ( card );
+  } // end for loop
 
   // Sanity check
-  if ( input_cards.size() < 8 ) // + 1 padding; we start at zero, not one
+  if ( cards_buffer.size() < 8 ) // - 1 padding; we start at zero, not one
   {
-NOM_LOG_ERR ( TTCARDS, "Board data is invalid at file: " + filename );
+NOM_LOG_ERR ( TTCARDS, "Board data is invalid from file: " + filename );
     return false;
   }
 
-  // All is well, let us make our freshly loaded data permanent;
-  //
+  this->clear(); // otherwise we may exceed our board size limit
+
+  // All is well, let us make it permanent!
   // Load each card object onto the board grid at the proper X, Y coordinates.
-  nom::int32 idx = 0;
+  nom::uint32 idx = 0;
   for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_HEIGHT; x++ )
     {
-      this->grid[x][y].update ( nom::Coords ( x, y ), input_cards[idx] );
+      this->grid[x][y].update ( nom::Coords ( x, y ), cards_buffer[idx] );
       idx++;
     }
   }
 
   return true;
-*/
-  return false;
 }
 
 const nom::int32 Board::operator() ( const nom::int32 x, const nom::int32 y )
