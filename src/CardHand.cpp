@@ -236,7 +236,7 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardColle
   {
     card_id = distribution ( rand_generator );
 
-    if ( db.cards[card_id].getLevel() <= level_max && db.cards[card_id].getLevel() >= level_min )
+    if ( db.cards[card_id].getLevel() <= LEVEL_MAX && db.cards[card_id].getLevel() >= LEVEL_MIN )
     {
       if ( this->push_back ( db.cards[card_id] ) )
       {

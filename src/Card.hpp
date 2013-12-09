@@ -43,8 +43,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Used with pretty printing the card attributes when using << operator
 const std::string card_delimiter = " ";
 
-/// Maximum level a card can contain -- starting at 1
-const nom::int32 MAX_LEVEL = 10;
+/// Minimum level a card can contain
+const nom::int32 LEVEL_MIN = 1;
+
+/// Maximum level a card can contain
+const nom::int32 LEVEL_MAX = 10;
 
 /// Maximum type a card can contain -- starting at 1
 const nom::int32 MAX_TYPE = 4;

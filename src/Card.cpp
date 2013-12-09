@@ -119,7 +119,7 @@ void Card::setID ( nom::int32 id_ )
 
 void Card::setLevel ( nom::int32 level_ )
 {
-  this->level = std::min ( level_, MAX_LEVEL );
+  this->level = std::min ( level_, LEVEL_MAX );
 }
 
 void Card::setType ( nom::int32 type_ )
