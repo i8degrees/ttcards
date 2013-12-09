@@ -525,13 +525,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
 
 void App::onResize ( nom::int32 width, nom::int32 height )
 {
-  // FIXME: Although the full-screen switch works, we have artifacts in the
-  // upper and lower sections of the screen after going full-screen. Clearing
-  // the renderer context before doing any drawing for each state almost solves
-  // our problem, but leaves us with a black background upon entering the pause
-  // state.
-  // (The pause state has no background; we want to use the previous state's
-  // background!)
   this->game->context.toggle_fullscreen();
 
   // FIXME: This is a temporary patch until we figure out why our window does
