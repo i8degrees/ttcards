@@ -463,8 +463,20 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
     break;
 
     case SDLK_BACKSLASH: this->toggle_fps(); break;
-    case SDLK_f: if ( mod == KMOD_LGUI ) this->onResize ( 0, 0 ); break;
 
+    case SDLK_f:
+    {
+      // Platform dependent key bindings for full-screen toggling:
+      //
+      //  Mac OS X: Command + Control + F, Command + F
+      //  Linux, Windows & all other platforms: Control + F
+      #if defined ( NOM_PLATFORM_OSX )
+      if ( mod == KMOD_LGUI || ( mod & KMOD_LCTRL && mod & KMOD_LGUI ) ) this->onResize ( 0, 0 ); break;
+      #else
+      if ( mod == KMOD_LCTRL ) this->onResize ( 0, 0 ); break;
+      #endif
+      break;
+    }
     case SDLK_F1:
     {
       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".bmp";
