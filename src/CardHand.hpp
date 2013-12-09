@@ -93,7 +93,7 @@ class CardHand
     void set_position ( nom::int32 pos );
 
     void clear ( void );
-    nom::int32 size ( void ) const;
+    nom::uint32 size ( void ) const;
     nom::int32 at ( Card& card );
 
     /// Creates a randomized player hand with the preferred minimum & maximum

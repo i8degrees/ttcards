@@ -46,13 +46,13 @@ NOM_LOG_TRACE ( TTCARDS );
 
 bool CardHand::push_back ( Card& card )
 {
-  if ( this->exists( card ) == true )
-    return false;
-  else if ( this->size() > MAX_PLAYER_HAND - 1 ) // minus one padding because we are counting from zero, not one
-    return false;
+  // No go; we already have this card somewhere in our hand
+  if ( this->exists( card ) == true ) return false;
+
+  // No go -- we are out of space!
+  else if ( this->size() > ( MAX_PLAYER_HAND - 1 ) ) return false;
 
   this->cards.push_back ( card );
-
   return true;
 }
 
@@ -106,23 +106,18 @@ void CardHand::selectCard ( Card& card )
 #endif
 }
 
-nom::int32 CardHand::size ( void ) const
+nom::uint32 CardHand::size ( void ) const
 {
-  nom::int32 count = 0;
-
-  count = this->cards.size();
-
-  return count;
+  return this->cards.size();
 }
 
 nom::int32 CardHand::at ( Card& card )
 {
-  nom::int32 idx;
   nom::int32 pos = -1;
 
   if ( this->size() > 0 )
   {
-    for ( idx = 0; idx < this->size() && pos == -1; idx++ )
+    for ( nom::uint32 idx = 0; idx < this->size() && pos == -1; idx++ )
     {
       if ( this->cards[idx].getID() == card.getID() && this->cards[idx].getName() == card.getName() )
       {
@@ -196,10 +191,9 @@ bool CardHand::exists ( const Card& card ) const
   if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
     return false;
 
-  for ( auto idx = 0; idx < this->size(); idx++ )
+  for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
   {
-    if ( card == this->cards[idx] )
-      return true;
+    if ( card == this->cards[idx] ) return true;
   }
 
   return false;
@@ -211,7 +205,7 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardColle
   // be a value between 1..MAX_COLLECTION in order to yield an ID in the cards
   // database.
   nom::uint32 card_id = 1;
-  nom::int32 num_cards = 0; // iterator
+  nom::uint32 num_cards = 0; // iterator
 
   // Set the seed to the same as the previous game in order to produce the same
   // results for player2 hand
@@ -224,7 +218,7 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardColle
 
   std::default_random_engine rand_generator ( seed );
 
-  std::uniform_int_distribution<nom::int32> distribution ( 0, MAX_COLLECTION-1 );
+  std::uniform_int_distribution<nom::int32> distribution ( 0, MAX_COLLECTION - 1 );
 
 #ifdef DEBUG_GAME
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;

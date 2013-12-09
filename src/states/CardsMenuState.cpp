@@ -266,7 +266,7 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
   this->game->card.face ( false ); // Turn drawing of faces down back off
 
   // Active player's card selection(s)
-  for ( nom::int32 idx = 0; idx < this->game->hand[0].size(); idx++ )
+  for ( nom::uint32 idx = 0; idx < this->game->hand[0].size(); idx++ )
   {
     this->player1_pos = nom::Coords (
                                       PLAYER1_ORIGIN_X,
