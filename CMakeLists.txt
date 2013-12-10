@@ -87,16 +87,6 @@ set ( TTCARDS_HEADERS_DIR "include" )
 # Relative path from project root to third-party in-project jsoncpp header file(s)
 set ( JSONCPP_HEADERS_DIR "${TTCARDS_HEADERS_DIR}/jsoncpp" )
 
-# Absolute path to the json_spirit header files
-#
-#     DEPRECATED
-#
-# TODO: json_spirit will soon be entirely phased out -- removed & replaced --
-# with jsoncpp. In the mean time, though, we are going to try holding onto our
-# json_spirit investment here, in order to ease the major transitions ahead of
-# us; nomlib first needs to have a stable SDL2 engine up and going.
-#set ( HEADERS_JSON_SPIRIT_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_HEADERS_DIR}/json_spirit" )
-
 # Relative path from project root to the external dependencies directory
 set ( EXTERNAL_DEPS_DIR "third-party" )
 
@@ -161,9 +151,6 @@ endif ( PLATFORM_LINUX )
 
 # List of our source code to be compiled
 include ( "${SRC_DIR}/CMakeLists.txt" )
-
-#set ( EXT_HEADERS ${EXT_HEADERS} "${HEADERS_JSON_SPIRIT_DIR}" )
-#message ( STATUS "Found packaged json_spirit: ${HEADERS_JSON_SPIRIT_DIR}" )
 
 # Required Dependencies
 #
