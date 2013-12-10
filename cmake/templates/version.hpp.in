@@ -44,6 +44,7 @@ extern const std::string APP_NAME;
 // development -- info boxes, card modifiers, variable dumps, etc.
 //#cmakedefine DEBUG
 
-// Used to determine the strategy of obtaining Resources path
-#cmakedefine OSXAPP
+/// Used to determine the strategy of obtaining Resources path
+///
+/// \deprecated This will soon be removed
 extern const std::string TTCARDS_INSTALL_PREFIX;

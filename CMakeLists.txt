@@ -103,13 +103,8 @@ set ( EXTERNAL_DEPS_DIR "third-party" )
 # Relative path from the from project root to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 
-if ( NOT PLATFORM_OSX )
-  # Absolute path without closing backslash to game storage path;
-  # must be writable by the user.
-  if ( NOT TTCARDS_DATA_DIR )
-    set ( TTCARDS_DATA_DIR "$ENV{HOME}/Documents/${PROJECT_NAME}" )
-  endif ( NOT TTCARDS_DATA_DIR )
-endif ( NOT PLATFORM_OSX )
+# Additional flags to pass add_executable
+set ( EXECUTABLE_FLAGS "" )
 
 # Files used with documentation generation
 set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxygen" )
@@ -134,11 +129,12 @@ set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
 
 include ( "${PROJECT_SOURCE_DIR}/cmake/uninstall.cmake" )
 
-message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
+# CMAKE_SYSTEM_PREFIX_PATH is searched to find libraries when the find_package
+# command is used
+message ( STATUS "Library Search Prefix: ${CMAKE_SYSTEM_PREFIX_PATH}" )
 
-if ( NOT PLATFOMRM_OSX )
-  message ( STATUS "Data folder: ${TTCARDS_DATA_DIR}" )
-endif ( NOT PLATFOMRM_OSX )
+# Installation prefix path set for our project
+message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 
 if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
@@ -233,6 +229,8 @@ if ( PLATFORM_WINDOWS )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
 
+  set ( MSVCPP_LIBRARY_REDIST "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
+
 elseif ( PLATFORM_OSX )
 
   find_package ( nomlib REQUIRED )
@@ -286,79 +284,131 @@ endif ( PLATFORM_WINDOWS )
 include_directories ( "${EXT_HEADERS}" "${JSONCPP_HEADERS_DIR}" )
 
 # Installation phase
-if ( OSXAPP )
-
-  add_executable  ( ${PROJECT_NAME} MACOSX_BUNDLE ${TTCARDS_SOURCE} )
+if ( PLATFORM_OSX )
 
   # CMAKE_INSTALL_PREFIX = ttcards.app
+
+  # Set the path of our library dependencies to search within our app bundle
   set ( INSTALL_NAME_PATH
         "@executable_path/../Frameworks"
       )
 
-  set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
+  if ( OSXAPP )
+    set ( EXECUTABLE_FLAGS "MACOSX_BUNDLE" )
 
-  set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
+    add_executable  ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
 
-  set ( INSTALL_RESOURCES_PATH "${INSTALL_ROOT_PATH}" )
+    set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
 
-  set ( INSTALL_DOCS_PATH "${INSTALL_RESOURCES_PATH}/Resources" )
-  set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
-  set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}/Documentation" )
+    set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
 
-  # Directory path to fixing up external frameworks with install_name_tool(1)
-  set ( INSTALL_BINARY_PATH "${INSTALL_ROOT_PATH}/MacOS/${PROJECT_NAME}" )
+    set ( INSTALL_RESOURCES_PATH "${INSTALL_ROOT_PATH}" )
 
-  # Relative path for where to install our external dependencies
-  set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
+    set ( INSTALL_DOCS_PATH "${INSTALL_RESOURCES_PATH}/Resources" )
+    set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
+    set ( INSTALL_GENERATED_DOCS_PATH "${INSTALL_DOCS_PATH}/Documentation" )
 
-  # Generate Info.plist for distribution within our soon-to-be application bundle
-  set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                          MACOSX_BUNDLE_INFO_PLIST
-                          "${BUNDLE_TEMPLATE_PLIST}"
-                          MACOSX_BUNDLE_BUNDLE_NAME
-                          "${BUNDLE_NAME}"
-                          MACOSX_BUNDLE_ICON_FILE
-                          "${BUNDLE_ICON}"
-                          MACOSX_BUNDLE_INFO_STRING
-                          "${BUNDLE_DESCRIPTION} version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} by ${BUNDLE_COPYRIGHT_NAME}"
-                          MACOSX_BUNDLE_GUI_IDENTIFIER
-                          ${BUNDLE_IDENTIFIER}
-                          MACOSX_BUNDLE_SHORT_VERSION_STRING
-                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
-                          MACOSX_BUNDLE_LONG_VERSION_STRING
-                          "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
-                          MACOSX_BUNDLE_BUNDLE_VERSION
-                          "${CMAKE_VERSION}"
-                          MACOSX_BUNDLE_COPYRIGHT
-                          "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
-                        )
+    # Directory path to fixing up external frameworks with install_name_tool(1)
+    set ( INSTALL_BINARY_PATH "${INSTALL_ROOT_PATH}/MacOS/${PROJECT_NAME}" )
 
-  add_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
+    # Relative path for where to install our external dependencies
+    set ( INSTALL_FRAMEWORK_PATH "${INSTALL_ROOT_PATH}/Frameworks" )
 
-  # Install our external dependencies into our application bundle
-  install ( DIRECTORY
-            "${NOMLIB_LIBRARY}" # nomlib.framework
-            "${SDL2_LIBRARY}" # SDL.framework v2.0.0
-            DESTINATION "${INSTALL_FRAMEWORK_PATH}"
-            PATTERN ".*" EXCLUDE # do not include dotfiles
-            PATTERN "Headers" EXCLUDE # do not include header files
-            PATTERN "CMake" EXCLUDE # do not include CMake config scripts
-          )
+    # Generate Info.plist for distribution within our soon-to-be application bundle
+    set_target_properties ( ${PROJECT_NAME} PROPERTIES
+                            MACOSX_BUNDLE_INFO_PLIST
+                            "${BUNDLE_TEMPLATE_PLIST}"
+                            MACOSX_BUNDLE_BUNDLE_NAME
+                            "${BUNDLE_NAME}"
+                            MACOSX_BUNDLE_ICON_FILE
+                            "${BUNDLE_ICON}"
+                            MACOSX_BUNDLE_INFO_STRING
+                            "${BUNDLE_DESCRIPTION} version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH} by ${BUNDLE_COPYRIGHT_NAME}"
+                            MACOSX_BUNDLE_GUI_IDENTIFIER
+                            ${BUNDLE_IDENTIFIER}
+                            MACOSX_BUNDLE_SHORT_VERSION_STRING
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
+                            MACOSX_BUNDLE_LONG_VERSION_STRING
+                            "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_BUILD_TYPE}"
+                            MACOSX_BUNDLE_BUNDLE_VERSION
+                            "${CMAKE_VERSION}"
+                            MACOSX_BUNDLE_COPYRIGHT
+                            "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
+                          )
 
-  # CPack refuses to work with me on anything other than a single dot as the
-  # destination target path when we are building a package.
-  install ( TARGETS ${PROJECT_NAME} DESTINATION . )
+    add_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
 
-else ( NOT OSXAPP ) # POSIX install profile
+    # Install our external dependencies into our application bundle
+    install ( DIRECTORY
+              "${NOMLIB_LIBRARY}" # nomlib.framework
+              "${SDL2_LIBRARY}" # SDL.framework v2.0.0
+              DESTINATION "${INSTALL_FRAMEWORK_PATH}"
+              PATTERN ".*" EXCLUDE # do not include dotfiles
+              PATTERN "Headers" EXCLUDE # do not include header files
+              PATTERN "CMake" EXCLUDE # do not include CMake config scripts
+            )
 
-  add_executable ( ${PROJECT_NAME} ${TTCARDS_SOURCE} )
-  # Install executables
+    # CPack refuses to work with me on anything other than a single dot as the
+    # destination target path when we are building a package.
+    install ( TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}" )
+  endif ( OSXAPP )
+
+# ...PLATFORM_OSX...
+
+elseif ( PLATFORM_WINDOWS )
+
+  set ( INSTALL_APP_PATH "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}" )
+  set ( INSTALL_RESOURCES_PATH "${INSTALL_APP_PATH}" )
+
+  # TODO:
+  #set ( INSTALL_DOCS_PATH "share/doc/${PROJECT_NAME}" )
+  #set ( INSTALL_DOCS_HELP_PATH "${INSTALL_DOCS_PATH}" )
+  #set ( INSTALL_GENERATED_DOCS_PATH "share/doc/${PROJECT_NAME}" )
+
+  # Build as console app -- shows cmd.exe window for logging -- only when
+  # debugging is toggled on
+  if ( NOT DEBUG )
+    set ( EXECUTABLE_FLAGS "WIN32" ) # Implies WIN_MAIN
+  else ( DEBUG )
+    # MSVCPP should default to Console if we set EXECUTABLE_FLAGS empty
+    set ( EXECUTABLE_FLAGS "" )
+  endif ( NOT DEBUG )
+
+  add_executable ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
+
+  # Install binaries to our platform-dependent paths we've now set
   install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
 
-endif ( OSXAPP )
+  # Install library dependencies into binary output directory
+  install ( DIRECTORY
+            "${SDL2_LIBRARY_DIR}"
+            "${SDL2_IMAGE_LIBRARY_DIR}"
+            "${SDL2_TTF_LIBRARY_DIR}"
+            "${OPENAL_LIBRARY_DIR}"
+            "${LIBSNDFILE_LIBRARY_DIR}"
+            "${MSVCPP_LIBRARY_REDIST}"
+            DESTINATION
+            "${INSTALL_APP_PATH}"
+            FILES_MATCHING PATTERN "*.dll"
+          )
+
+elseif ( PLATFORM_LINUX ) # POSIX install layout
+  # TODO: set paths, etc. like we do above with OSX & Windows platforms
+
+  add_executable ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
+
+  # Install binaries to our platform-dependent paths we've now set
+  install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
+
+endif ( PLATFORM_OSX )
+
+# FIXME: If it weren't for the infinite recursion issue we have with the OS X
+# Application Bundle, we'd be able to use a single install targets line here:
+#
+# install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
 
 # Install game resources
-install ( DIRECTORY ${TTCARDS_RESOURCES_DIR}
+install ( DIRECTORY "${TTCARDS_RESOURCES_DIR}"
           DESTINATION "${INSTALL_RESOURCES_PATH}"
           OPTIONAL
           PATTERN ".*" EXCLUDE # do not include dotfiles
@@ -380,9 +430,6 @@ install ( DIRECTORY
           DESTINATION "${INSTALL_DOCS_HELP_PATH}"
           PATTERN ".*" EXCLUDE # do not include dotfiles
         )
-
-# Create the data folder for game storage if it does not exist
-#file ( MAKE_DIRECTORY "${TTCARDS_DATA_DIR}" )
 
 if ( DOCS )
   # Install generated documentation files
@@ -419,6 +466,7 @@ configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
                   "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
                 )
 
+# TODO: Windows platform support
 if ( NOT PLATFORM_WINDOWS )
   # CPack configuration
   include ( "${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake" )
