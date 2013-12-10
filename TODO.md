@@ -14,10 +14,6 @@
 - [ ] Relocate cfg.cpp declarations to their applicable class header files?
 
 - [x] Use new preprocessor debugging code methodology from nomlib
-- [ ] Animation effects
-- [ ] Refactor AI bot; (re-implement CPUPlayer class, smart AI bot, ...)
-- [ ] Replace player rectangle placeholders with an image
-- [ ] User interfacing for card rules & states
 - [x] AboutState
 - [x] PauseState
 - [x] Find a nice looking scoreboard font
