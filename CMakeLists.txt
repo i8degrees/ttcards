@@ -337,8 +337,8 @@ elseif ( PLATFORM_WINDOWS )
 
   add_executable ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
 
-  # Install binaries to our platform-dependent paths we've now set
-  install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
+  # FIXME: Install binaries to our platform-dependent paths we've now set
+  #install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
 
   # Install library dependencies into binary output directory
   install ( DIRECTORY
