@@ -30,14 +30,6 @@ include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
 if ( DEBUG )
   set ( CMAKE_VERBOSE_MAKEFILE ON )
 
-  if ( PLATFORM_OSX )
-    # FIXME; Passing -D DEBUG=1 is a temporary workaround for getting around the
-    # compile errors with debugging macros defined within the OS X header file
-    # "CoreServices/CoreServices.h" that are conflicting with our
-    # (unassigned value) DEBUG macro.
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D DEBUG=1" )
-  endif ( PLATFORM_OSX )
-
   if ( NOT PLATFORM_WINDOWS )
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
   else ( PLATFORM_WINDOWS )

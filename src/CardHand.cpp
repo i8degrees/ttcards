@@ -220,7 +220,7 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardColle
 
   std::uniform_int_distribution<nom::int32> distribution ( 0, MAX_COLLECTION - 1 );
 
-#ifdef DEBUG_GAME
+#if defined (NOM_DEBUG)
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
 #endif
 
@@ -303,7 +303,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     cards_buffer.push_back ( card );
   } // end for loop
 
-#ifndef DEBUG
+#if ! defined (NOM_DEBUG)
   if ( cards_buffer.size() < 1 ) // Sanity check
   {
 NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid from file: " + filename );

@@ -133,7 +133,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
   }
 
 // Do a sanity check if we are not a debug version
-#ifndef DEBUG
+#if ! defined (NOM_DEBUG)
   if ( cards_buffer.size() < 10 ) // Sanity check
   {
 NOM_LOG_ERR ( TTCARDS, "Cards collection data is invalid at file: " + filename );

@@ -49,7 +49,7 @@ const std::string TTCARDS_CONFIG_FILENAME = TTCARDS_DATA_DIR + path.native() + "
 
 const std::string LOADING_TEXT = APP_NAME + " - " + "Loading...";
 
-#ifdef DEBUG
+#if defined (NOM_DEBUG)
   const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH ) + "-Debug";
 #else
   const std::string SHORT_VERSION_INFO = APP_NAME  + " " + "v" + std::to_string ( TTCARDS_VERSION_MAJOR ) + "." + std::to_string ( TTCARDS_VERSION_MINOR ) + "." + std::to_string ( TTCARDS_VERSION_PATCH );

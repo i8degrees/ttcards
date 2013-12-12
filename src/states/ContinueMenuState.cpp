@@ -104,7 +104,7 @@ NOM_DUMP_VAR(this->game->info_text.getFontHeight() );
   }
   else // EPIC FAIL
   {
-#if defined ( DEBUG )
+#if defined (NOM_DEBUG)
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
 #else
     nom::DialogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );

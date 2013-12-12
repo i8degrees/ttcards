@@ -105,7 +105,7 @@ enum PlayerState Player::state ( void )
 
 void Player::set_state ( enum PlayerState state )
 {
-#if ! defined ( DEBUG )
+#if ! defined (NOM_DEBUG)
   if ( state == PlayerState::Debug ) return;
 #endif
 
@@ -134,7 +134,7 @@ void Player::draw ( nom::IDrawable::RenderTarget target )
   if ( this->ruleset.getRules() != CardRules::Open )
   {
     face_down = true;
-#if defined ( DEBUG )
+#if defined (NOM_DEBUG)
     if ( this->state() == PlayerState::Debug )
     {
       face_down = false;

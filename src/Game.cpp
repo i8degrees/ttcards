@@ -409,7 +409,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
 
   this->game->music_track.Play();
 
-#ifdef NOM_DEBUG
+#if defined (NOM_DEBUG)
   this->game->music_track.Pause();
 #endif
 
@@ -433,7 +433,7 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
   {
     default: break;
 
-#if defined ( DEBUG )
+#if defined (NOM_DEBUG)
     case SDLK_0:
     {
       if ( mod == KMOD_LGUI )

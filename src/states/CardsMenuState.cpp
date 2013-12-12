@@ -179,7 +179,7 @@ void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 
     case nom::PSXBUTTON::START:
     {
-#ifdef DEBUG
+#if defined (NOM_DEBUG)
       if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
       {
         this->game->hand[0].randomize ( 8, 10, this->game->collection );

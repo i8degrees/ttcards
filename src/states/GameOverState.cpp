@@ -78,7 +78,7 @@ void GameOverState::onInit ( void )
   }
   else // EPIC FAIL
   {
-#if defined ( DEBUG )
+#if defined (NOM_DEBUG)
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
 #else
     nom::DialogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
@@ -187,7 +187,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
 */
     // Play "You won!" music track
     this->game->music_track.Stop();
-#if ! defined ( DEBUG )
+#if ! defined (NOM_DEBUG)
     this->game->winning_track.Play();
 #endif
 

@@ -125,7 +125,7 @@ void PlayState::onInit ( void )
   this->debug_box.setLabelFont ( &this->game->info_text );
   this->debug_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
 
-#if ! defined ( DEBUG )
+#if ! defined (NOM_DEBUG)
   this->debug_box.disable();
 #endif
 
@@ -248,7 +248,7 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
     }
     break;
 
-#if defined ( DEBUG )
+#if defined (NOM_DEBUG)
     case SDLK_e: // Full control over the other player's move
     {
       if ( mod == KMOD_LGUI ) // Return control over to the other player
@@ -530,7 +530,7 @@ void PlayState::updateMessageBoxes ( void )
   }
   else // player hand selection state
   {
-#if defined (DEBUG) // Allow watching both players make their card selections
+#if defined (NOM_DEBUG) // Allow watching both players make their card selections
     selected_card = this->game->hand[player_turn].getSelectedCard();
 #else // Do not show the actions of other players
     selected_card = this->game->hand[PLAYER1].getSelectedCard();
