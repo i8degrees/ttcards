@@ -235,7 +235,7 @@ void CardsMenuState::update ( float delta_time )
   this->menu_box.update();
   //this->game->menu_elements.Update();
 
-  this->game->context.update();
+  this->game->window.update();
 }
 
 void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )

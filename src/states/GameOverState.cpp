@@ -347,7 +347,7 @@ void GameOverState::update ( float delta_time )
     this->show_results = true;
   }
 
-  this->game->context.update();
+  this->game->window.update();
 }
 
 void GameOverState::draw ( nom::IDrawable::RenderTarget target )

@@ -189,23 +189,23 @@ bool App::onInit ( void )
   }
 
 #ifndef EMSCRIPTEN
-  this->game->context.set_window_icon ( this->game->config.getString("APP_ICON") );
+  this->game->window.set_window_icon ( this->game->config.getString("APP_ICON") );
 #endif
 
   // Obtain a list of available video modes so we can determine how to render
   // the game (scale factors, positioning, etc.).
-  nom::VideoModeList modes = this->game->context.getVideoModes();
+  nom::VideoModeList modes = this->game->window.getVideoModes();
 
   for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
   {
     std::cout << modes[idx] << std::endl;
   }
 
-  this->game->context.create ( "TTcards", SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, video_flags );
+  this->game->window.create ( "TTcards", SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, video_flags );
 
-//this->game->context.set_window_title ( LOADING_TEXT );
+//this->game->window.set_window_title ( LOADING_TEXT );
 
-  this->game->context.set_logical_resolution ( SCREEN_WIDTH, SCREEN_HEIGHT );
+  this->game->window.set_logical_resolution ( SCREEN_WIDTH, SCREEN_HEIGHT );
 
   // Commence the initialization of game objects
   this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
@@ -240,7 +240,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*NOM_COLOR4U_BLACK,*/ 0 ) == false )
   {
 NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
-    rectangle.draw ( this->game->context );
+    rectangle.draw ( this->game->window );
   }
   else
   {
@@ -253,10 +253,10 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
       this->game->background.resize ( nom::ResizeAlgorithm::hq2x );
     }
 
-//this->game->background.draw( this->game->context );
+//this->game->background.draw( this->game->window );
   }
 
-//this->game->context.update();
+//this->game->window.update();
 
   // Possible bug in SDL for OS X
   //
@@ -487,7 +487,7 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
     {
       std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".bmp";
 
-      if ( this->game->context.save_screenshot( screenshot_filename ) == false )
+      if ( this->game->window.save_screenshot( screenshot_filename ) == false )
       {
         NOM_LOG_ERR ( TTCARDS, "Could not save screenshot file:" + screenshot_filename );
         break;
@@ -531,7 +531,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
 
 void App::onResize ( nom::int32 width, nom::int32 height )
 {
-  this->game->context.toggle_fullscreen();
+  this->game->window.toggle_fullscreen();
 
   // FIXME: This is a temporary patch until we figure out why our window does
   // not automatically resize itself to previous dimensions after entering
@@ -540,7 +540,7 @@ void App::onResize ( nom::int32 width, nom::int32 height )
   // This particular bug only happens on the Windows platform, and does nothing
   // on OS X! Could this be related to the other FIXME bug above us?
   #if defined (NOM_PLATFORM_WINDOWS)
-    this->game->context.set_size ( SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2 );
+    this->game->window.set_size ( SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2 );
   #endif
 }
 
@@ -571,15 +571,15 @@ int32_t App::Run ( void )
       this->fps.update();
 
       nom::GameStates::update ( delta_time );
-      nom::GameStates::draw ( this->game->context );
+      nom::GameStates::draw ( this->game->window );
 
       if ( this->show_fps() )
       {
-        this->game->context.set_window_title ( APP_NAME + " " + "-" + " " + ( this->fps.asString() ) + " " + "fps" );
+        this->game->window.set_window_title ( APP_NAME + " " + "-" + " " + ( this->fps.asString() ) + " " + "fps" );
       }
       else
       {
-        this->game->context.set_window_title ( APP_NAME );
+        this->game->window.set_window_title ( APP_NAME );
       }
 
       next_game_tick += SKIP_TICKS;

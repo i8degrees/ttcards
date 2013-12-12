@@ -131,7 +131,7 @@ struct GameObject
   nom::ui::Cursor cursor;
 
   /// our public / visible display context handle
-  nom::Window context;
+  nom::Window window;
 
   /// Variable set configuration properties
   GameConfig config;

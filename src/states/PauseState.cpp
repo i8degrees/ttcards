@@ -113,7 +113,7 @@ void PauseState::update ( float delta_time )
     this->blink_text = true;
   }
 
-  this->game->context.update();
+  this->game->window.update();
 }
 
 void PauseState::draw ( nom::IDrawable::RenderTarget target )

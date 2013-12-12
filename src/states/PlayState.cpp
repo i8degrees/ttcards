@@ -975,7 +975,7 @@ void PlayState::update ( float delta_time )
     } // player2
   } // end player1
 
-  this->game->context.update();
+  this->game->window.update();
 }
 
 void PlayState::draw ( nom::IDrawable::RenderTarget target )
@@ -1032,7 +1032,7 @@ void PlayState::draw ( nom::IDrawable::RenderTarget target )
 
     this->game->gameover_text.update();
     this->game->gameover_text.draw ( target );
-    this->game->context.update();
+    this->game->window.update();
 
     // Chill for a second
     nom::sleep ( 1000 );
