@@ -6,6 +6,19 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   option ( OSXAPP "Enable building OS X Application Bundle" on )
   option ( UNIVERSAL "Enable building OSX Universal Application" off )
 
+  # Setup the SDK selection for backwards compatibility
+  set ( SDKVER "10.7" )
+  set ( DEVROOT "/Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
+  set ( SDKROOT "${DEVROOT}/SDKs/MacOSX${SDKVER}.sdk" )
+
+  if ( EXISTS ${SDKROOT} )
+    set ( CMAKE_OSX_SYSROOT "${SDKROOT}" )
+    set ( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
+  else () # Mac OS X v10.5 SDK not found -- that's OK
+    message ( WARNING "Warning, Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
+  endif ( EXISTS ${SDKROOT} )
+
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
 
@@ -26,6 +39,8 @@ elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
 
   option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
   option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
+
+  set ( CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" )
 
   message ( STATUS "Platform: Windows" )
 else () # Not OSX, Linux or Windows OS
