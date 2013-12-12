@@ -130,25 +130,6 @@ if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
 endif ( DOCS )
 
-# Platform specific
-if ( PLATFORM_LINUX ) # Tested on Ubuntu v12.04-LTS
-
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
-
-elseif ( PLATFORM_OSX )
-
-  # libc++ requires OSX v10.7+
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
-
-  if ( CMAKE_GENERATOR STREQUAL "Xcode" )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11" )
-    set ( CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++" )
-  endif ( CMAKE_GENERATOR STREQUAL "Xcode" )
-
-else ( NOT PLATFORM_LINUX OR PLATFORM_OSX )
-  # Use whatever CMake gathers for us and pray for the best!
-endif ( PLATFORM_LINUX )
-
 # List of our source code to be compiled
 include ( "${SRC_DIR}/CMakeLists.txt" )
 
@@ -338,6 +319,7 @@ if ( PLATFORM_OSX )
     # CPack refuses to work with me on anything other than a single dot as the
     # destination target path when we are building a package.
     install ( TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}" )
+    #set ( INSTALL_APP_PATH "${CMAKE_INSTALL_PREFIX}" )
   endif ( OSXAPP )
 
 # ...PLATFORM_OSX...
