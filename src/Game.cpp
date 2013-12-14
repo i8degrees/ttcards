@@ -538,7 +538,7 @@ void App::onResize ( nom::int32 width, nom::int32 height )
   // full-screen.
   //
   // This particular bug only happens on the Windows platform, and does nothing
-  // on OS X! Could this be related to the other FIXME bug above us?
+  // on OS X! Could this be related to GitHub Issue #9 ..?
   #if defined (NOM_PLATFORM_WINDOWS)
     this->game->window.set_size ( SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2 );
   #endif
