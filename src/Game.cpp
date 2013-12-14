@@ -205,7 +205,7 @@ bool App::onInit ( void )
 
 //this->game->window.set_window_title ( LOADING_TEXT );
 
-  this->game->window.set_logical_resolution ( SCREEN_WIDTH, SCREEN_HEIGHT );
+  this->game->window.set_logical_size ( SCREEN_WIDTH, SCREEN_HEIGHT );
 
   // Commence the initialization of game objects
   this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
