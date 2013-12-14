@@ -246,11 +246,11 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
-      this->game->background.resize ( nom::ResizeAlgorithm::scale2x );
+      this->game->background.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     }
     else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
     {
-      this->game->background.resize ( nom::ResizeAlgorithm::hq2x );
+      this->game->background.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     }
 
 //this->game->background.draw( this->game->window );
@@ -334,21 +334,21 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   // Rescale our game resources if necessary.
   if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    this->game->info_text.resize ( nom::ResizeAlgorithm::scale2x );
-    this->game->info_text_gray.resize ( nom::ResizeAlgorithm::scale2x );
-    this->game->info_small_text.resize ( nom::ResizeAlgorithm::scale2x );
-    this->game->cursor.resize ( nom::ResizeAlgorithm::scale2x );
-    this->game->menu_elements.resize ( nom::ResizeAlgorithm::scale2x );
-    this->game->gameover_background.resize ( nom::ResizeAlgorithm::scale2x );
+    this->game->info_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->game->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->game->info_small_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->game->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->game->menu_elements.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->game->gameover_background.resize ( nom::Texture::ResizeAlgorithm::scale2x );
   }
   else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
   {
-    this->game->info_text.resize ( nom::ResizeAlgorithm::hq2x );
-    this->game->info_text_gray.resize ( nom::ResizeAlgorithm::hq2x );
-    this->game->info_small_text.resize ( nom::ResizeAlgorithm::hq2x );
-    this->game->cursor.resize ( nom::ResizeAlgorithm::hq2x );
-    this->game->menu_elements.resize ( nom::ResizeAlgorithm::hq2x );
-    this->game->gameover_background.resize ( nom::ResizeAlgorithm::hq2x );
+    this->game->info_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->game->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->game->info_small_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->game->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->game->menu_elements.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->game->gameover_background.resize ( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   // Load optional audio resources

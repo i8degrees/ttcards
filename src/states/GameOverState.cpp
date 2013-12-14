@@ -61,11 +61,11 @@ void GameOverState::onInit ( void )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
-      this->cursor.resize ( nom::ResizeAlgorithm::scale2x );
+      this->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     }
     else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
     {
-      this->cursor.resize ( nom::ResizeAlgorithm::hq2x );
+      this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     }
 
     this->cursor.set_position_map ( &this->game->hand[1] );

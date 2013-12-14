@@ -85,17 +85,17 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   // Rescale our game resources if necessary.
   if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    this->card_text->resize ( nom::ResizeAlgorithm::scale2x );
-    this->card_face->resize ( nom::ResizeAlgorithm::scale2x );
-    //this->card_background->resize ( nom::ResizeAlgorithm::scale2x );
-    this->card_element->resize ( nom::ResizeAlgorithm::scale2x );
+    this->card_text->resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->card_face->resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    //this->card_background->resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->card_element->resize ( nom::Texture::ResizeAlgorithm::scale2x );
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
-    this->card_text->resize ( nom::ResizeAlgorithm::hq2x );
-    this->card_face->resize ( nom::ResizeAlgorithm::hq2x );
-    //this->card_background->resize ( nom::ResizeAlgorithm::hq2x );
-    this->card_element->resize ( nom::ResizeAlgorithm::hq2x );
+    this->card_text->resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->card_face->resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    //this->card_background->resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->card_element->resize ( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   return true;
