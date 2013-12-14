@@ -485,7 +485,7 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
     }
     case SDLK_F1:
     {
-      std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".bmp";
+      std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".png";
 
       if ( this->game->window.save_screenshot( screenshot_filename ) == false )
       {
