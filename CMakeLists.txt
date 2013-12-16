@@ -76,9 +76,6 @@ set ( SRC_DIR "src" )
 # Relative path from project root to header files
 set ( TTCARDS_HEADERS_DIR "include" )
 
-# Relative path from project root to third-party in-project jsoncpp header file(s)
-set ( JSONCPP_HEADERS_DIR "${TTCARDS_HEADERS_DIR}/jsoncpp" )
-
 # Relative path from project root to the external dependencies directory
 set ( EXTERNAL_DEPS_DIR "third-party" )
 
@@ -121,9 +118,6 @@ message ( STATUS "Installation Prefix: ${CMAKE_INSTALL_PREFIX}" )
 if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
 endif ( DOCS )
-
-# List of our source code to be compiled
-include ( "${SRC_DIR}/CMakeLists.txt" )
 
 # Required Dependencies
 #
@@ -241,7 +235,10 @@ elseif ( PLATFORM_LINUX )
 endif ( PLATFORM_WINDOWS )
 
 # External header files inclusion
-include_directories ( "${EXT_HEADERS}" "${JSONCPP_HEADERS_DIR}" )
+include_directories ( "${EXT_HEADERS}" )
+
+# List of our source code to be compiled
+include ( "${SRC_DIR}/CMakeLists.txt" )
 
 # Installation phase
 if ( PLATFORM_OSX )
