@@ -181,31 +181,31 @@ TODO */
 bool GameConfig::load( const std::string& filename )
 {
   nom::JSON::FileReader fp; // JSON parser
-  nom::JSON::Value root; // JSON container
+  nom::JSON::Value object; // JSON container
 
   // Storage buffer for our configuration we are loading in; if everything is
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
 
-  if ( fp.load ( filename, root ) == false )
+  if ( fp.load ( filename, object ) == false )
   {
 NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
   }
 
-  nom::JSON::JSONMemberType members = root.members ( 0 );
+  nom::JSON::JSONMemberType members = object.members ( 0 );
 
   for ( auto idx = 0; idx != members.size(); ++idx )
   {
     std::string key = members[idx];
 
-    if ( root.type ( key, 0 ) == nom::JSON::String )
+    if ( object.type ( key ) == nom::JSON::String )
     {
-      cfg.setProperty ( key, root.get_string ( key, 0 ) );
+      cfg.setProperty ( key, object.get_string ( key ) );
     }
-    else if ( root.type ( key, 0 ) == nom::JSON::Integer )
+    else if ( object.type ( key ) == nom::JSON::Integer )
     {
-      cfg.setProperty ( key, root.get_int ( key, 0 ) );
+      cfg.setProperty ( key, object.get_int ( key ) );
     }
   }
 

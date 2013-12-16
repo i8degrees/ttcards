@@ -243,23 +243,22 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardColle
 bool CardHand::save ( const std::string& filename )
 {
   nom::JSON::FileWriter fp;
-  nom::JSON::Value node;
+  nom::JSON::Value object;
+  nom::JSON::Value card;
 
   for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
   {
     // Serialize each card's attributes
-    node.insert ( "id", this->cards[idx].getID(), idx );
-    node.insert ( "name", this->cards[idx].getName(), idx );
-    node.insert ( "level", this->cards[idx].getLevel(), idx );
-    node.insert ( "type", this->cards[idx].getType(), idx );
-    node.insert ( "element", this->cards[idx].getElement(), idx );
-    node.insert ( "ranks", this->cards[idx].ranks_as_vector(), idx );
+    card = this->cards[idx].serialize();
+    object.insert ( card );
 
-    node.insert ( "player_id", this->cards[idx].getPlayerID(), idx );
-    node.insert ( "owner", this->cards[idx].getPlayerOwner(), idx );
+    // Additional card attributes
+    object.insert ( "player_id", this->cards[idx].getPlayerID() );
+    object.insert ( "owner", this->cards[idx].getPlayerOwner() );
+    object.endl();
   }
 
-  if ( fp.save ( filename, node ) == false )
+  if ( fp.save ( filename, object ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -271,33 +270,35 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 bool CardHand::load ( const std::string& filename )
 {
   nom::JSON::FileReader fp;
-  nom::JSON::Value node;
+  nom::JSON::Value object;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp.load ( filename, node ) == false )
+  if ( fp.load ( filename, object ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( nom::uint32 idx = 0; idx != node.size(); ++idx )
+  for ( nom::uint32 idx = 0; idx != object.size(); ++idx )
   {
-    card.setID ( node.get_int( "id", idx ) );
-    card.setName ( node.get_string( "name", idx ) );
-    card.setLevel ( node.get_int( "level", idx ) );
-    card.setType ( node.get_int( "type", idx ) );
-    card.setElement ( node.get_int( "element", idx ) );
-    card.setType ( node.get_int( "type", idx ) );
+    card.setID ( object.get_int( "id" ) );
+    card.setName ( object.get_string( "name" ) );
+    card.setLevel ( object.get_int( "level" ) );
+    card.setType ( object.get_int( "type" ) );
+    card.setElement ( object.get_int( "element" ) );
+    card.setType ( object.get_int( "type" ) );
 
-    std::vector<int> ranks = node.get_ints ( "ranks", idx );
+    std::vector<int> ranks = object.get_ints ( "ranks" );
     card.set_ranks ( ranks );
 
-    card.setPlayerID ( node.get_int( "player_id", idx ) );
-    card.setPlayerOwner ( node.get_int( "owner", idx ) );
+    card.setPlayerID ( object.get_int( "player_id" ) );
+    card.setPlayerOwner ( object.get_int( "owner" ) );
+
+    object.endl();
 
     // Commit contents to our buffer if all goes well
     cards_buffer.push_back ( card );

@@ -401,29 +401,25 @@ void Board::draw ( nom::IDrawable::RenderTarget target )
 bool Board::save ( const std::string& filename )
 {
   nom::JSON::FileWriter fp;
-  nom::JSON::Value node;
+  nom::JSON::Value object;
+  nom::JSON::Value card;
 
-  nom::uint32 idx = 0;
   for ( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; y++ )
   {
     for ( nom::int32 x = 0; x != BOARD_GRID_WIDTH; x++ )
     {
       // Serialize each card's attributes
-      node.insert ( "id", this->grid[x][y].tile_card.getID(), idx );
-      node.insert ( "name", this->grid[x][y].tile_card.getName(), idx );
-      node.insert ( "level", this->grid[x][y].tile_card.getLevel(), idx );
-      node.insert ( "type", this->grid[x][y].tile_card.getType(), idx );
-      node.insert ( "element", this->grid[x][y].tile_card.getElement(), idx );
-      node.insert ( "ranks", this->grid[x][y].tile_card.ranks_as_vector(), idx );
+      card = this->grid[x][y].tile_card.serialize();
+      object.insert ( card );
 
-      node.insert ( "player_id", this->grid[x][y].tile_card.getPlayerID(), idx );
-      node.insert ( "owner", this->grid[x][y].tile_card.getPlayerOwner(), idx );
-
-      idx++;
+      // Additional card attributes
+      object.insert ( "player_id", this->grid[x][y].tile_card.getPlayerID() );
+      object.insert ( "owner", this->grid[x][y].tile_card.getPlayerOwner() );
+      object.endl();
     }
   }
 
-  if ( fp.save ( filename, node ) == false )
+  if ( fp.save ( filename, object ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -435,34 +431,35 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 bool Board::load ( const std::string& filename )
 {
   nom::JSON::FileReader fp;
-  nom::JSON::Value node;
+  nom::JSON::Value object;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp.load ( filename, node ) == false )
+  if ( fp.load ( filename, object ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( nom::uint32 idx = 0; idx != node.size(); ++idx )
+  for ( nom::uint32 idx = 0; idx != object.size(); ++idx )
   {
-    card.setID ( node.get_int( "id", idx ) );
-    card.setName ( node.get_string( "name", idx ) );
-    card.setLevel ( node.get_int( "level", idx ) );
-    card.setType ( node.get_int( "type", idx ) );
-    card.setElement ( node.get_int( "element", idx ) );
-    card.setType ( node.get_int( "type", idx ) );
+    card.setID ( object.get_int( "id" ) );
+    card.setName ( object.get_string( "name" ) );
+    card.setLevel ( object.get_int( "level" ) );
+    card.setType ( object.get_int( "type" ) );
+    card.setElement ( object.get_int( "element" ) );
+    card.setType ( object.get_int( "type" ) );
 
-    std::vector<int> ranks = node.get_ints ( "ranks", idx );
+    std::vector<int> ranks = object.get_ints ( "ranks" );
     card.set_ranks ( ranks );
 
-    card.setPlayerID ( node.get_int( "player_id", idx ) );
-    card.setPlayerOwner ( node.get_int( "owner", idx ) );
+    card.setPlayerID ( object.get_int( "player_id" ) );
+    card.setPlayerOwner ( object.get_int( "owner" ) );
 
+    object.endl();
     // Commit contents to our buffer if all goes well
     cards_buffer.push_back ( card );
   } // end for loop

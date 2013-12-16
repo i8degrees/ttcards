@@ -159,7 +159,7 @@ class Card
       PLAYER2=2
     };
 
-    // FIXME: nom::JSON::Value serialize ( void ) const;
+    nom::JSON::Value serialize ( void ) const;
 
   private:
     nom::int32 id;

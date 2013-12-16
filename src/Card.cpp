@@ -186,26 +186,19 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
 
-/* FIXME
 nom::JSON::Value Card::serialize ( void ) const
 {
-  nom::JSON::FileReader fp;
-  nom::JSON::Value node;
+  nom::JSON::Value object;
 
-  node.insert ( "id", this->id, 0 );
-  node.insert ( "name", this->name, 0 );
-  node.insert ( "level", this->level, 0 );
-  node.insert ( "type", this->type, 0 );
-  node.insert ( "element", this->element, 0 );
+  object.insert ( "id", this->id );
+  object.insert ( "name", this->name );
+  object.insert ( "level", this->level );
+  object.insert ( "type", this->type );
+  object.insert ( "element", this->element );
+  object.insert ( "ranks", this->ranks_as_vector() );
 
-  std::vector<int> ranks {  this->rank[NORTH], this->rank[EAST],
-                            this->rank[SOUTH], this->rank[WEST] };
-
-  node.insert ( "ranks", ranks, 0 );
-
-  return node;
+  return object;
 }
-FIXME */
 
 void Card::increaseNorthRank ( void )
 {
