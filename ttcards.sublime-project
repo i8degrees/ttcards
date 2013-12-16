@@ -2,6 +2,19 @@
   "folders":
   [
     {
+      "name": ".",
+      "path": ".",
+      "file_exclude_patterns": [ ".LSOverride", "ttcards", ".tags*", "ttcards.sublime-*" ],
+      "folder_exclude_patterns": [ "build", "extlibs", "tmp", "src", "docs", "Resources", "third-party", "include" ]
+    },
+
+    {
+      "name": "include",
+      "path": "include",
+      "file_include_patterns": ["*.*"]
+    },
+
+    {
       "name": "src",
       "path": "src",
       "file_include_patterns": ["*.*"]
@@ -13,13 +26,6 @@
       "folder_exclude_patterns": ["build", "tmp", "public", "docs/man" ]
     },
 */
-    {
-      "name": "docs",
-      "path": ".",
-      "file_exclude_patterns": [ ".LSOverride", "ttcards", ".tags*", "ttcards.sublime-*" ],
-      "folder_exclude_patterns": [ "build", "extlibs", "tmp", "src", "docs", "Resources", "third-party" ]
-    },
-
     {
       "name": "Resources",
       "path": "Resources",
