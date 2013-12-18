@@ -1,7 +1,7 @@
 [
     // Default configuration values for TTcards
     {
-        "SCALE_ALGORITHM" : "scale2x",
+        "SCALE_ALGORITHM" : "",
         "SCORE_FONTFACE" : "fonts/TimesNewRoman.ttf",
         "GAMEOVER_FONTFACE" : "fonts/TimesNewRoman.ttf",
         "CARD_FONTFACE" : "fonts/VIII_cards.png",
