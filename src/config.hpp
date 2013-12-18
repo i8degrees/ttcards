@@ -96,8 +96,30 @@ const nom::uint32 FRAMES_PER_SECOND = 15;
 /// Maximum number of players -- both human & AI
 const nom::int32 TOTAL_PLAYERS = 2; // +1 padding
 
-/// Maximum number of cards in cards database; see cards.json
-const nom::int32 MAX_COLLECTION = 110;
+/// Minimum number of cards in cards database (see Resources/cards.json)
+///
+/// \remark Loading of the database will fail a sanity check if we fall short of
+/// this number
+const nom::uint32 MIN_COLLECTION = 10;
+
+/// Maximum number of cards in cards database (see Resources/cards.json)
+///
+/// \remark Loading of the database will fail a sanity check if we go beyond
+/// this number
+const nom::int32 MAX_COLLECTION = 220;
+
+/// Variable number of cards found in the cards database
+/// (see Resources/cards.json)
+///
+/// \remark This number cannot exceed MAX_COLLECTION or fall under
+/// MIN_COLLECTION
+///
+/// \FIXME We have this defined in the Card class as a workaround patch, until
+/// we figure out how we want to approach the initialization order issues.
+///
+/// Card::setID has its ID check disabled as well; Card class appears to be
+/// the origin point of troubles.
+//extern nom::int32 CARDS_COLLECTION;
 
 /// Maximum number of cards a player can hold in a game round
 const nom::int32 MAX_PLAYER_HAND = 5;

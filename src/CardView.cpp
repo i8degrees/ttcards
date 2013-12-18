@@ -151,8 +151,7 @@ void CardView::draw_face  (
                             nom::int32 x, nom::int32 y
                           ) const
 {
-  // Our sprite sheets start at ID of zero now, not one
-  this->card_face->set_frame ( face_id - 1 );
+  this->card_face->set_frame ( face_id );
 
   //this->card_face->setPosition ( this->position );
   this->card_face->set_position ( nom::Coords ( x, y ) );

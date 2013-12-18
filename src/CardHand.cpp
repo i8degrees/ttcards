@@ -188,8 +188,10 @@ void CardHand::clear ( void )
 
 bool CardHand::exists ( const Card& card ) const
 {
-  if ( card.getID() < 1 || card.getID() > MAX_COLLECTION )
+  if ( card.getID() < 0 || card.getID() > Card::CARDS_COLLECTION )
+  {
     return false;
+  }
 
   for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
   {
@@ -201,10 +203,10 @@ bool CardHand::exists ( const Card& card ) const
 
 void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardCollection& db, nom::int32 seedling )
 {
-  // Cards are picked out using our random number equal distribution generator; this needs to
-  // be a value between 1..MAX_COLLECTION in order to yield an ID in the cards
-  // database.
-  nom::uint32 card_id = 1;
+  // Cards are picked out using our random number equal distribution generator;
+  // this needs to be a value between 0..Card::CARDS_COLLECTION in order to yield a
+  // ID in the cards database.
+  nom::uint32 card_id = 0;
   nom::uint32 num_cards = 0; // iterator
 
   // Set the seed to the same as the previous game in order to produce the same
@@ -218,7 +220,7 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardColle
 
   std::default_random_engine rand_generator ( seed );
 
-  std::uniform_int_distribution<nom::int32> distribution ( 0, MAX_COLLECTION - 1 );
+  std::uniform_int_distribution<nom::int32> distribution ( 0, Card::CARDS_COLLECTION );
 
 #if defined (NOM_DEBUG)
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;

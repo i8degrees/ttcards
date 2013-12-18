@@ -81,7 +81,7 @@ class CardsMenuState: public nom::IState
     /// CardHand-derived implementation
     Card selectedCard;
 
-    /// MAX_COLLECTION / per_page
+    /// Card::CARDS_COLLECTION / per_page
     unsigned int total_pages;
     /// number of cards to display per menu page
     unsigned int per_page;

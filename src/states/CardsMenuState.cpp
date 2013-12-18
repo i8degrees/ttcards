@@ -46,7 +46,6 @@ NOM_LOG_TRACE ( TTCARDS );
   this->game->hand[1].clear();
 
   // this->game->collection is initialized for us in the main app loop
-
   // Borrowed from Player class; this is perhaps a hack-(ish) workaround
     /* FIXME: */
   // As we presently expect / depend on this state to always be player1 and we
@@ -454,7 +453,7 @@ void CardsMenuState::moveCursorRight ( void )
       std::cout << current_index << " " << per_page << "\n";
     #endif
 
-    if ( current_index < MAX_COLLECTION - per_page )
+    if ( current_index < Card::CARDS_COLLECTION - per_page )
     {
       current_index += per_page;
       this->game->cursor_move.Play();

@@ -52,7 +52,7 @@ class CardCollection
     Cards getCards ( void );
 
     void clear ( void );
-    nom::int32 size ( void ) const;
+    nom::uint32 size ( void ) const;
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.

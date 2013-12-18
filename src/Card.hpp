@@ -70,6 +70,9 @@ const nom::int32 MAX_NAME = 14; // +1 padding
 class Card
 {
   public:
+    /// FIXME: See CARDS_COLLECTION initialization issue
+    static nom::int32 CARDS_COLLECTION;
+
     Card ( void );
 
     Card  (
@@ -95,7 +98,7 @@ class Card
     const nom::int32 getPlayerID ( void ) const;
     const nom::int32 getPlayerOwner ( void ) const;
 
-    /// Clamps value to MAX_COLLECTION
+    /// Clamps value to Card::CARDS_COLLECTION
     void setID ( nom::int32 id_ );
 
     /// Clamps value to MAX_LEVEL

@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 CardCollection::CardCollection ( void )
 {
 NOM_LOG_TRACE ( TTCARDS );
-  this->clear();
 }
 
 CardCollection::~CardCollection ( void )
@@ -44,13 +43,9 @@ void CardCollection::clear ( void )
   this->cards.clear();
 }
 
-nom::int32 CardCollection::size ( void ) const
+nom::uint32 CardCollection::size ( void ) const
 {
-  nom::int32 count = 0;
-
-  count = this->cards.size();
-
-  return count;
+  return this->cards.size();
 }
 
 Card& CardCollection::getCards ( unsigned int idx )
@@ -60,12 +55,12 @@ Card& CardCollection::getCards ( unsigned int idx )
 
 Cards CardCollection::getCards ( void )
 {
-  unsigned int idx = 0;
   Cards temp_cards; // temp var for return passing
-  temp_cards.clear();
 
-  for ( idx = 0; idx < this->cards.size(); idx++ )
+  for ( nom::uint32 idx = 0; idx < this->cards.size(); idx++ )
+  {
     temp_cards.push_back ( this->cards[idx] );
+  }
 
   return temp_cards;
 }
@@ -76,9 +71,19 @@ bool CardCollection::save( const std::string& filename )
   nom::JSON::Value object;
   nom::JSON::Value card;
 
-  if ( this->cards.empty() ) return false;
+  if ( this->cards.size() < MIN_COLLECTION ) // Sanity check
+  {
+    NOM_LOG_ERR ( TTCARDS, "Failed MIN_COLLECTION sanity check before saving: " + filename );
+    return false;
+  }
 
-  for ( nom::uint32 idx = 0; idx < this->cards.size(); ++idx )
+  if ( this->cards.size() > MAX_COLLECTION ) // Sanity check
+  {
+    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check before saving: " + filename );
+    return false;
+  }
+
+  for ( nom::uint32 idx = 0; idx != this->cards.size(); ++idx )
   {
     // Serialize each card's attributes
     card = this->cards[idx].serialize();
@@ -92,6 +97,8 @@ bool CardCollection::save( const std::string& filename )
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
   }
+
+  Card::CARDS_COLLECTION = this->cards.size();
 
   return true;
 }
@@ -110,6 +117,12 @@ bool CardCollection::load( const std::string& filename )
   if ( fp.load ( filename, object, false ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
+    return false;
+  }
+
+  if ( object.size() > MAX_COLLECTION ) // Sanity check
+  {
+    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check before loading: " + filename );
     return false;
   }
 
@@ -132,19 +145,21 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     cards_buffer.push_back ( card );
   }
 
-// Do a sanity check if we are not a debug version
-#if ! defined (NOM_DEBUG)
-  if ( cards_buffer.size() < 10 ) // Sanity check
+  if ( cards_buffer.size() < MIN_COLLECTION ) // Sanity check
   {
-NOM_LOG_ERR ( TTCARDS, "Cards collection data is invalid at file: " + filename );
+    NOM_LOG_ERR ( TTCARDS, "Failed MIN_COLLECTION sanity check after loading: " + filename );
     return false;
   }
-#endif
 
-  this->clear(); // otherwise we may exceed our limit of cards
+  if ( cards_buffer.size() > MAX_COLLECTION ) // Sanity check
+  {
+    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check after loading: " + filename );
+    return false;
+  }
 
   // All is well, let us make our freshly loaded data permanent
   this->cards = cards_buffer;
+  Card::CARDS_COLLECTION = this->cards.size();
 
 #ifdef DEBUG_CARD_COLLECTION
   debug.ListCards ( this->cards );

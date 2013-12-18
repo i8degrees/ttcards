@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Card.hpp"
 
+nom::int32 Card::CARDS_COLLECTION = 0;
+
 Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
                       rank( { { 0 } } ), name ( "\0" ),
                       player_id ( Card::NOPLAYER ),
@@ -114,7 +116,9 @@ const nom::int32 Card::getPlayerOwner ( void ) const
 
 void Card::setID ( nom::int32 id_ )
 {
-  this->id = std::min ( id_, MAX_COLLECTION );
+  this->id = id_;
+  // FIXME:
+  //this->id = std::min ( id_, Card::CARDS_COLLECTION );
 }
 
 void Card::setLevel ( nom::int32 level_ )
