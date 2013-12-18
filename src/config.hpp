@@ -121,6 +121,9 @@ const nom::int32 MAX_COLLECTION = 220;
 /// the origin point of troubles.
 //extern nom::int32 CARDS_COLLECTION;
 
+/// Minimum number of cards a player can hold in a game round
+const nom::int32 MIN_PLAYER_HAND = 0;
+
 /// Maximum number of cards a player can hold in a game round
 const nom::int32 MAX_PLAYER_HAND = 5;
 

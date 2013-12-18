@@ -50,7 +50,7 @@ bool CardHand::push_back ( Card& card )
   if ( this->exists( card ) == true ) return false;
 
   // No go -- we are out of space!
-  else if ( this->size() > ( MAX_PLAYER_HAND - 1 ) ) return false;
+  if ( this->size() > ( MAX_PLAYER_HAND - 1 ) ) return false;
 
   this->cards.push_back ( card );
   return true;
@@ -248,6 +248,13 @@ bool CardHand::save ( const std::string& filename )
   nom::JSON::Value object;
   nom::JSON::Value card;
 
+  // Sanity check
+  if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND )
+  {
+    NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid in file: " + filename );
+    return false;
+  }
+
   for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
   {
     // Serialize each card's attributes
@@ -306,15 +313,12 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     cards_buffer.push_back ( card );
   } // end for loop
 
-#if ! defined (NOM_DEBUG)
-  if ( cards_buffer.size() < 1 ) // Sanity check
+  // Sanity check
+  if ( cards_buffer.size() <= MIN_PLAYER_HAND || cards_buffer.size() > MAX_PLAYER_HAND )
   {
-NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid from file: " + filename );
+    NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid in file: " + filename );
     return false;
   }
-#endif
-
-  this->clear(); // otherwise we may exceed our limit of cards in hand
 
   // All is well, let us make it permanent
   this->cards = cards_buffer;
