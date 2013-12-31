@@ -370,7 +370,7 @@ install ( DIRECTORY "${TTCARDS_RESOURCES_DIR}"
           DESTINATION "${INSTALL_RESOURCES_PATH}"
           OPTIONAL
           PATTERN ".*" EXCLUDE # do not include dotfiles
-          PATTERN "Help" EXCLUDE # do not include documentation here
+          PATTERN "Documentation" EXCLUDE # do not include documentation here
         )
 
 # Install software license & general project information
@@ -384,7 +384,7 @@ install ( FILES
 
 # Install general game information -- rules, how to play, etc.
 install ( DIRECTORY
-          ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/Help
+          ${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/Documentation
           DESTINATION "${INSTALL_DOCS_HELP_PATH}"
           PATTERN ".*" EXCLUDE # do not include dotfiles
         )
