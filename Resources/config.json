@@ -26,7 +26,7 @@
     "SFX_SAVE_GAME" : "audio/save_game.wav",
     "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
     "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
-    "APP_ICON" : "icon.bmp",
+    "APP_ICON" : "icon.png",
     "CARDS_DB" : "cards.json",
     "PLAYER1_SCORE_ORIGIN_X": 320,
     "PLAYER1_SCORE_ORIGIN_Y": 176,
