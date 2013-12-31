@@ -50,9 +50,12 @@ void PauseState::onInit ( void )
   linear.setEndColor ( nom::Color4u ( 99, 99, 99, 255 ) );
 
   this->info_box = nom::ui::MessageBox  (
-                                          PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y,
-                                          PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT,
-                                          nom::ui::FrameStyle::Gray, linear
+                                          PAUSE_BOX_ORIGIN_X,
+                                          PAUSE_BOX_ORIGIN_Y,
+                                          PAUSE_BOX_WIDTH,
+                                          PAUSE_BOX_HEIGHT,
+                                          nom::ui::FrameStyle::Gray,
+                                          linear
                                         );
 
   this->info_box.setWindowTitleFont ( &this->game->info_small_text );
