@@ -59,38 +59,38 @@ NOM_LOG_TRACE ( TTCARDS );
         if ( argv[opt + 1] == nullptr )
         {
 NOM_LOG_ERR ( TTCARDS, "Missing parameter <input_filename> for export argument." );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
         else if ( dir.exists ( argv[opt + 1] ) == false )
         {
 NOM_LOG_ERR ( TTCARDS, "File path for <input_filename> does not exist at: " + std::string(argv[opt + 1]) );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
         else if ( cards.load( argv[opt + 1] ) == false )
         {
 NOM_LOG_ERR ( TTCARDS, "Could not load game cards collection at: " + std::string(argv[opt + 1]) );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
 
         if ( argv[opt + 2] == nullptr )
         {
 NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for export argument." );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
         else if ( dir.exists ( argv[opt + 2] ) == true )
         {
 NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 2]) );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
         else if ( cards.save( argv[opt + 2] ) == false )
         {
 NOM_LOG_ERR ( TTCARDS, "Could not save the game cards collection at: " + std::string(argv[opt + 2]) );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
         else
         {
 NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[opt + 2]) );
-          exit ( EXIT_SUCCESS );
+          exit ( NOM_EXIT_SUCCESS );
         }
       } // end export cards option
       else if ( std::string(argv[opt]) == "--config" ) // Save configuration opt
@@ -98,30 +98,30 @@ NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[
         if ( argv[opt + 1] == nullptr )
         {
 NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
         else if ( dir.exists ( argv[opt + 1] ) == true )
         {
 NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
 
         GameConfig cfg;
         if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
         {
 NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
 
         if ( cfg.save ( argv[opt + 1] ) == false )
         {
 NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
-          exit ( EXIT_FAILURE );
+          exit ( NOM_EXIT_FAILURE );
         }
         else
         {
 NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
-          exit ( EXIT_SUCCESS );
+          exit ( NOM_EXIT_SUCCESS );
         }
       } // end save config option
       else if ( std::string(argv[opt]) == "-v" || std::string(argv[opt]) == "--version" )
@@ -139,7 +139,7 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
     } // end for argv[opt] loop
 
     // If we have got this far, we assume command execution was successful
-    exit ( EXIT_SUCCESS );
+    exit ( NOM_EXIT_SUCCESS );
   } // end argc > 1
 
 // These definitions are influenced at build time with CMake options and serve
@@ -185,7 +185,7 @@ bool App::onInit ( void )
   if ( this->game->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
   {
     nom::DialogMessageBox ( "Critical Error", "Could not load configuration file at: " + TTCARDS_CONFIG_FILENAME );
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
 #ifndef EMSCRIPTEN
@@ -413,8 +413,6 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   this->game->music_track.Pause();
 #endif
 
-  this->Running(); // ...here we go!
-
   return true;
 }
 
@@ -556,7 +554,7 @@ int32_t App::Run ( void )
 
   nom::GameStates::ChangeState( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
 
-  while ( this->isRunning() == true )
+  while ( this->running() == true )
   {
     loops = 0;
     delta_time = this->ticks();
@@ -587,7 +585,7 @@ int32_t App::Run ( void )
     }
   }
 
-  return EXIT_SUCCESS;
+  return NOM_EXIT_SUCCESS;
 }
 
 int main ( int argc, char* argv[] )
@@ -597,7 +595,7 @@ int main ( int argc, char* argv[] )
   if ( engine.onInit() == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not initialize game." );
-    return EXIT_FAILURE;
+    return NOM_EXIT_FAILURE;
   }
 
 #ifdef EMSCRIPTEN

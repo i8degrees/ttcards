@@ -38,16 +38,16 @@ NOM_LOG_TRACE ( TTCARDS );
   this->card_background = std::shared_ptr<nom::Gradient> ( new nom::Gradient() );
   this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
   this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
-  this->card_text = std::shared_ptr<nom::BitmapFont> ( new nom::BitmapFont() );
+  this->card_text = std::shared_ptr<nom::Label> ( new nom::Label() );
 
   card.push_back ( this->card_background );
   card.push_back ( this->card_face );
   card.push_back ( this->card_element );
   card.push_back ( this->card_text );
 
-  this->card_background->setSize ( CARD_WIDTH - 4, CARD_HEIGHT );
-  this->card_background->setMargins ( 4, 4 );
-  this->card_background->setFillDirection ( nom::Gradient::FillDirection::Top );
+  this->card_background->set_size ( CARD_WIDTH - 4, CARD_HEIGHT );
+  this->card_background->set_margins ( 4, 4 );
+  this->card_background->set_fill_direction ( nom::Gradient::FillDirection::Top );
 }
 
 CardView::CardView ( const nom::Coords& coords )
@@ -119,29 +119,29 @@ void CardView::draw_background  (
   {
     case Card::PLAYER1:
     {
-      this->card_background->setStartColor ( nom::Color4u ( 208, 223, 255 ) );
-      this->card_background->setEndColor ( nom::Color4u ( 50, 59, 114 ) );
+      this->card_background->set_start_color ( nom::Color4u ( 208, 223, 255 ) );
+      this->card_background->set_end_color ( nom::Color4u ( 50, 59, 114 ) );
     }
     break;
 
     case Card::PLAYER2:
     {
-      this->card_background->setStartColor ( nom::Color4u ( 251, 222, 232 ) );
-      this->card_background->setEndColor ( nom::Color4u ( 114, 66, 66 ) );
+      this->card_background->set_start_color ( nom::Color4u ( 251, 222, 232 ) );
+      this->card_background->set_end_color ( nom::Color4u ( 114, 66, 66 ) );
     }
     break;
 
     case Card::NOPLAYER:
     default:
     {
-      this->card_background->setStartColor ( nom::Color4u ( 197, 197, 197 ) );
-      this->card_background->setEndColor ( nom::Color4u ( 84, 84, 84 ) );
+      this->card_background->set_start_color ( nom::Color4u ( 197, 197, 197 ) );
+      this->card_background->set_end_color ( nom::Color4u ( 84, 84, 84 ) );
     }
     break;
   }
 
-  //this->card_background->setPosition ( this->position );
-  this->card_background->setPosition ( x, y );
+  //this->card_background->set_position ( this->position );
+  this->card_background->set_position ( x, y );
   this->card_background->update();
   this->card_background->draw ( target );
 }
@@ -191,16 +191,16 @@ void CardView::draw_text  (
 {
   if ( rank == 10 )
   {
-    this->card_text->setText ( "A" );
+    this->card_text->set_text ( "A" );
   }
   else
   {
-    this->card_text->setText ( std::to_string ( rank ) );
+    this->card_text->set_text ( std::to_string ( rank ) );
   }
 
-  //this->card_text->setPosition ( this->position );
-  this->card_text->setPosition ( nom::Coords ( x, y ) );
-  this->card_text->update();
+  //this->card_text->set_position ( this->position );
+  this->card_text->set_position ( nom::Coords ( x, y ) );
+//this->card_text->update();
   this->card_text->draw ( target );
 }
 
@@ -263,7 +263,7 @@ void CardView::face ( bool up )
 
 void CardView::update ( void )
 {
-  //this->card_background->setPosition ( this->position );
+  //this->card_background->set_position ( this->position );
   //this->card_face->setPosition ( this->position );
   //this->card_element->setPosition ( this->position );
   //this->card_text->setPosition ( this->position );

@@ -46,9 +46,9 @@ void ContinueMenuState::onInit ( void )
 {
   nom::Gradient linear;
 
-  linear.setStartColor ( nom::Color4u ( 67, 67, 67, 255 ) );
-  linear.setEndColor ( nom::Color4u ( 99, 99, 99, 255 ) );
-  linear.setFillDirection ( nom::Gradient::FillDirection::Left );
+  linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
+  linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
+  linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
                                           OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y,
@@ -109,7 +109,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
 #else
     nom::DialogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
 #endif
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 }
 

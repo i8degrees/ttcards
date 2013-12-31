@@ -75,7 +75,7 @@ class App: public nom::SDL_App // "is-a" relationship
     /// Timer for tracking frames per second
     nom::FPS fps;
     /// Input events
-    SDL_Event event;
+    Input::Event event;
 };
 
 

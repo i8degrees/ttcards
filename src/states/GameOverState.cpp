@@ -83,7 +83,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
 #else
     nom::DialogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
 #endif
-    exit ( EXIT_FAILURE );
+    exit ( NOM_EXIT_FAILURE );
   }
 
 /*
@@ -125,9 +125,9 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   this->game->hand[1].front();
 
   // Initialize our message box background containers (linear gradient)
-  linear.setStartColor ( NOM_COLOR4U_GRAY );
-  linear.setEndColor ( NOM_COLOR4U_LIGHT_GRAY );
-  linear.setFillDirection ( nom::Gradient::FillDirection::Left );
+  linear.set_start_color ( NOM_COLOR4U_GRAY );
+  linear.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
+  linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   // Top display message box; "description" info box
   this->info_box = nom::ui::MessageBox  (

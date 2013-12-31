@@ -101,9 +101,9 @@ void PlayState::onInit ( void )
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-  linear.setStartColor ( NOM_COLOR4U_GRAY );
-  linear.setEndColor ( NOM_COLOR4U_LIGHT_GRAY );
-  linear.setFillDirection ( nom::Gradient::FillDirection::Left );
+  linear.set_start_color ( NOM_COLOR4U_GRAY );
+  linear.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
+  linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::ui::MessageBox  (
                                           INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,

@@ -46,8 +46,8 @@ void PauseState::onInit ( void )
 {
   nom::Gradient linear;
 
-  linear.setStartColor ( nom::Color4u ( 67, 67, 67, 255 ) );
-  linear.setEndColor ( nom::Color4u ( 99, 99, 99, 255 ) );
+  linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
+  linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
 
   this->info_box = nom::ui::MessageBox  (
                                           PAUSE_BOX_ORIGIN_X,
