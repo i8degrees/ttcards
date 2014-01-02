@@ -483,16 +483,14 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
     }
     case SDLK_F1:
     {
-      std::string screenshot_filename = TTCARDS_DATA_DIR + "/" + "Screenshot_" + std::to_string ( this->ticks() ) + ".png";
+      nom::Path p;
+      std::string screenshot_filename = TTCARDS_DATA_DIR + p.native() + "Screenshot.png";
 
       if ( this->game->window.save_screenshot( screenshot_filename ) == false )
       {
-        NOM_LOG_ERR ( TTCARDS, "Could not save screenshot file:" + screenshot_filename );
+        NOM_LOG_ERR ( TTCARDS, "Could not save screenshot" );
         break;
       }
-
-      NOM_LOG_INFO ( TTCARDS, "Saved screenshot: " + screenshot_filename );
-      break;
     }
     break;
 
