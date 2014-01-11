@@ -1,8 +1,5 @@
 [
-  {
-    "comment": "Default configuration values for TTcards"
-  },
-
+  //"comment": "Default configuration values for TTcards"
   {
     "SCALE_ALGORITHM" : "",
     "SCORE_FONTFACE" : "fonts/TimesNewRoman.ttf",
