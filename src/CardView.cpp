@@ -60,13 +60,17 @@ CardView::~CardView ( void )
 NOM_LOG_TRACE ( TTCARDS );
 }
 
-bool CardView::load ( GameConfig* config )
+bool CardView::load ( GameConfig* config, const nom::IFont& card_font )
 {
   if ( config == nullptr ) return false;
 
-  if ( this->card_text->load ( config->getString("CARD_FONTFACE"), nom::Color4u ( 255, 0, 255, 0 ), 0 ) == false )
+  if ( card_font.valid() )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FONTFACE") );
+    this->card_text->set_font ( card_font );
+  }
+  else
+  {
+    NOM_LOG_ERR ( TTCARDS, "Could not assign card text font" );
     return false;
   }
 
@@ -85,17 +89,21 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   // Rescale our game resources if necessary.
   if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
   {
+/* FIXME
     this->card_text->resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->card_face->resize ( nom::Texture::ResizeAlgorithm::scale2x );
     //this->card_background->resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->card_element->resize ( nom::Texture::ResizeAlgorithm::scale2x );
+*/
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
+/* FIXME
     this->card_text->resize ( nom::Texture::ResizeAlgorithm::hq2x );
     this->card_face->resize ( nom::Texture::ResizeAlgorithm::hq2x );
     //this->card_background->resize ( nom::Texture::ResizeAlgorithm::hq2x );
     this->card_element->resize ( nom::Texture::ResizeAlgorithm::hq2x );
+*/
   }
 
   return true;

@@ -76,7 +76,7 @@ class CardsMenuState: public nom::IState
 
     std::shared_ptr<GameObject> game;
 
-    nom::ui::MessageBox menu_box;
+    nom::MessageBox menu_box;
 
     /// CardHand-derived implementation
     Card selectedCard;
@@ -105,6 +105,9 @@ class CardsMenuState: public nom::IState
 
     /// Position of the card selection from the menu list
     nom::Coords card_pos;
+
+    nom::Label title_text;
+    nom::Label card_text;
 };
 
 // Convenience declarations for changing state

@@ -89,16 +89,12 @@ struct GameObject
   nom::OpenAL::SoundBuffer winning_buffer;
   nom::OpenAL::Music winning_track;
 
-  /// dialog text
+  /// Font resources
   nom::BitmapFont info_text;
   nom::BitmapFont info_small_text;
-  nom::BitmapFont info_text_gray;
-
-  /// Game Over text
-  nom::TrueTypeFont gameover_text;
-
-  /// Scoreboard text
-  nom::TrueTypeFont score_text[2];
+  nom::BitmapFont card_font;
+  nom::TrueTypeFont gameover_font;
+  nom::TrueTypeFont scoreboard_font;
 
   /// Menu elements
   nom::SpriteBatch menu_elements;
@@ -128,7 +124,7 @@ struct GameObject
   nom::Texture gameover_background;
 
   /// interface cursor
-  nom::ui::Cursor cursor;
+  nom::Cursor cursor;
 
   /// our public / visible display context handle
   nom::Window window;

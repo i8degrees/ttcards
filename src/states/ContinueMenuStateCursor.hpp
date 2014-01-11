@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
-class ContinueMenuStateCursor: public nom::ui::Cursor
+class ContinueMenuStateCursor: public nom::Cursor
 {
   public:
     ContinueMenuStateCursor ( void );

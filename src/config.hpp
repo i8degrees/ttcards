@@ -303,6 +303,9 @@ const nom::int32 PLAYER1_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_X = 40 * SCALE_FACTOR;
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
 
+#define TTCARDS_COLOR4U_GRAYED_TEXT \
+  nom::Color4u(195,209,228,nom::ALPHA_OPAQUE)
+
 /// Card elemental type
 enum {
   NONE=0, // type 0; no element

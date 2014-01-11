@@ -32,8 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameOverState.hpp"
 #include "PauseState.hpp"
 
-using namespace nom;
-
 PlayState::PlayState ( std::shared_ptr<GameObject> object )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -96,6 +94,19 @@ void PlayState::onInit ( void )
   this->player_scoreboard[0].setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
   this->player_scoreboard[1].setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 
+  // Set both player's scoreboard fonts
+  for ( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx )
+  {
+    this->scoreboard_text[idx].set_font ( this->game->scoreboard_font );
+    this->scoreboard_text[idx].set_text_size ( 48 * SCALE_FACTOR );
+    this->scoreboard_text[idx].set_style ( nom::Label::Style::Italic );
+  }
+
+  // Initialize game over text
+  this->gameover_text.set_font ( this->game->gameover_font );
+  this->gameover_text.set_text_size ( 48 * SCALE_FACTOR );
+  this->gameover_text.set_style ( nom::Label::Style::Italic );
+
   for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
     this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
@@ -105,25 +116,26 @@ void PlayState::onInit ( void )
   linear.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
-  this->info_box = nom::ui::MessageBox  (
+  this->info_box = nom::MessageBox  (
                                           INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
                                           INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                          nom::ui::FrameStyle::Gray, linear
+                                          nom::MessageBox::Style::Gray, linear
                                         );
 
-  this->debug_box = nom::ui::MessageBox (
+  this->debug_box = nom::MessageBox (
                                           DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
                                           DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT,
-                                          nom::ui::FrameStyle::Gray, linear
+                                          nom::MessageBox::Style::Gray, linear
                                         );
 
-  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
-  this->info_box.setLabelFont ( &this->game->info_text );
-  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
+  this->info_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
+  this->debug_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
 
-  this->debug_box.setWindowTitleFont ( &this->game->info_small_text );
-  this->debug_box.setLabelFont ( &this->game->info_text );
-  this->debug_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
+  this->debug_text.set_font ( this->game->info_text );
+  this->debug_text.set_alignment ( nom::Label::Alignment::MiddleCenter );
+
+  this->info_text.set_font ( this->game->info_text );
+  this->info_text.set_alignment ( nom::Label::Alignment::MiddleCenter );
 
 #if ! defined (NOM_DEBUG)
   this->debug_box.disable();
@@ -277,7 +289,7 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
     case SDLK_i:
     {
-      if ( this->debug_box.isEnabled() == true )
+      if ( this->debug_box.enabled() == true )
       {
         this->debug_box.disable();
       }
@@ -540,13 +552,16 @@ void PlayState::updateMessageBoxes ( void )
   // Debug helping info MessageBox display
   if ( selected_card.getID() != 0 )
   {
-    this->debug_box.setLabel ( std::to_string ( selected_card.getID() ) );
+    std::string card_id = std::to_string ( selected_card.getID() );
+    this->debug_text.set_text ( card_id );
+    this->debug_box.set_text ( this->debug_text );
   }
 
   // (Southern) informational MessageBox display (selected / active card's name)
   if ( selected_card.getName().length() != 0 )
   {
-    this->info_box.setLabel ( selected_card.getName() );
+    this->info_text.set_text ( selected_card.getName() );
+    this->info_box.set_text ( this->info_text );
   }
 }
 
@@ -661,9 +676,9 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
                   << ", "
                   << pos.y
                   << " ("
-                  << pos.width
+                  << pos.w
                   << "x"
-                  << pos.height
+                  << pos.h
                   << ") "
                   << " with an element ID of "
                   << element
@@ -884,9 +899,8 @@ void PlayState::updateScore ( void )
     this->player[players].setScore ( board_count + hand_count );
 
     // Update the font responsible for rendering the score
-    this->game->score_text[players].setText ( this->player[players].getScoreAsString() );
-    this->game->score_text[players].setPosition ( nom::Coords ( this->player_scoreboard[players].x, this->player_scoreboard[players].y ) );
-    this->game->score_text[players].update();
+    this->scoreboard_text[players].set_text ( this->player[players].getScoreAsString() );
+    this->scoreboard_text[players].set_position ( nom::Coords (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
   }
 }
 
@@ -995,8 +1009,8 @@ void PlayState::draw ( nom::IDrawable::RenderTarget target )
   this->debug_box.draw ( target );
 
   // Draw each player's scoreboard
-  this->game->score_text[0].draw ( target );
-  this->game->score_text[1].draw ( target );
+  this->scoreboard_text[0].draw ( target );
+  this->scoreboard_text[1].draw ( target );
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
@@ -1008,30 +1022,27 @@ void PlayState::draw ( nom::IDrawable::RenderTarget target )
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Won;
-      this->game->gameover_text.setColor ( NOM_COLOR4U_WHITE );
-      this->game->gameover_text.setText ( "You win!" );
+      this->gameover_text.set_color ( NOM_COLOR4U_WHITE );
+      this->gameover_text.set_text ( "You win!" );
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Lost;
-      this->game->gameover_text.setColor ( NOM_COLOR4U_WHITE );
-      this->game->gameover_text.setText ( "You lose..." );
+      this->gameover_text.set_color ( NOM_COLOR4U_WHITE );
+      this->gameover_text.set_text ( "You lose..." );
     }
     else // Assume a draw
     {
       this->gameover_state = GameOverType::Tie;
-      this->game->gameover_text.setColor ( NOM_COLOR4U_WHITE );
-      this->game->gameover_text.setText ( "Tie!" );
+      this->gameover_text.set_color ( NOM_COLOR4U_WHITE );
+      this->gameover_text.set_text ( "Tie!" );
     }
 
-    nom::int32 width = this->game->gameover_text.getFontWidth();
-    nom::int32 height = this->game->gameover_text.getFontHeight();
+    nom::Coords pos = nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 
-    nom::Coords centered_pos = nom::Coords ( ( SCREEN_WIDTH - width ) / 2, ( SCREEN_HEIGHT  - height ) / 2 );
-    this->game->gameover_text.setPosition ( centered_pos );
-
-    this->game->gameover_text.update();
-    this->game->gameover_text.draw ( target );
+    this->gameover_text.set_position ( pos );
+    this->gameover_text.set_alignment ( nom::Label::Alignment::MiddleCenter );
+    this->gameover_text.draw ( target );
     this->game->window.update();
 
     // Chill for a second

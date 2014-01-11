@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "CardHand.hpp"
 
-class GameOverStateCursor: public nom::ui::Cursor
+class GameOverStateCursor: public nom::Cursor
 {
   public:
     GameOverStateCursor ( void );

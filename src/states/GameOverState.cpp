@@ -32,8 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardsMenuState.hpp"
 #include "ContinueMenuState.hpp"
 
-using namespace nom;
-
 GameOverState::GameOverState  ( std::shared_ptr<GameObject> object,
                                 enum GameOverType gameover_state
                               )
@@ -130,28 +128,24 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   // Top display message box; "description" info box
-  this->info_box = nom::ui::MessageBox  (
+  this->info_box = nom::MessageBox  (
                                           INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
                                           INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                          nom::ui::FrameStyle::Gray, linear
+                                          nom::MessageBox::Style::Gray, linear
                                         );
 
+  this->info_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
+  this->info_box.set_text ( nom::Label("Select 1 card(s) you want", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
+
   // Bottom display message box; card info (card name)
-  this->card_info_box = nom::ui::MessageBox (
+  this->card_info_box = nom::MessageBox (
                                               INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
                                               INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                              nom::ui::FrameStyle::Gray, linear
+                                              nom::MessageBox::Style::Gray, linear
                                             );
 
-  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
-  this->info_box.setLabelFont ( &this->game->info_text );
-  this->info_box.setLabel ( "Select 1 card(s) you want" );
-  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
-
-  this->card_info_box.setWindowTitleFont ( &this->game->info_small_text );
-  this->card_info_box.setLabelFont ( &this->game->info_text );
-  this->card_info_box.setLabel ( this->game->hand[1].getSelectedCard().getName() );
-  this->card_info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
+  this->card_info_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
+  this->card_info_box.set_text ( nom::Label(this->game->hand[1].getSelectedCard().getName(), this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
 
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into each player's respective hand.
@@ -220,7 +214,7 @@ void GameOverState::Resume ( nom::int32 response )
   }
 }
 
-void GameOverState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
+void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
   {
@@ -270,7 +264,7 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uin
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();
 
-      this->card_info_box.setLabel ( selected_card.getName() );
+      this->card_info_box.set_text ( nom::Label(selected_card.getName(), this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
 
       this->game->cursor_move.Play();
       // We must break the loop here upon the end of a matching coords check
@@ -308,7 +302,7 @@ void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1
   if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
-    this->card_info_box.setLabel ( selected_card.getName() );
+    this->card_info_box.set_text ( nom::Label(selected_card.getName(), this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
 
     this->game->cursor_move.Play();
   }
@@ -320,7 +314,7 @@ void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1
     if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
     {
       // FIXME; should have no spacing on card printout
-      this->info_box.setLabel ( this->selected_card.getName() + " card acquired" );
+      this->info_box.set_text ( nom::Label(this->selected_card.getName() + " card acquired", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
       this->game->hand[1].cards[card_pos].setPlayerID(Card::PLAYER1);
 
       this->game->card_flip.Play();

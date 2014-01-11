@@ -62,7 +62,7 @@ class ContinueMenuState: public nom::IState
 
     std::shared_ptr<GameObject> game;
 
-    nom::ui::MessageBox info_box;
+    nom::MessageBox info_box;
     ContinueMenuStateCursor cursor;
 
     nom::Coords position_map;

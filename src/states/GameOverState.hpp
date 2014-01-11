@@ -80,8 +80,8 @@ class GameOverState: public nom::IState
 
     Card selected_card;
 
-    nom::ui::MessageBox info_box;
-    nom::ui::MessageBox card_info_box;
+    nom::MessageBox info_box;
+    nom::MessageBox card_info_box;
 
     /// Position of player 1 hand
     nom::Coords player1_pos;

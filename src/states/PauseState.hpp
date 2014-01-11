@@ -63,7 +63,9 @@ class PauseState: public nom::IState
     std::shared_ptr<GameObject> game;
     nom::Timer blink_update;
     bool blink_text;
-    nom::ui::MessageBox info_box;
+
+    nom::MessageBox info_box;
+    nom::Label title_text[2];
 };
 
 // Convenience declarations for changing state

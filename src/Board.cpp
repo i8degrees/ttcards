@@ -95,7 +95,7 @@ const nom::Coords Board::getGlobalBounds ( nom::int32 x, nom::int32 y ) const
 {
   for ( nom::int32 idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
   {
-    if ( x <= this->board_map[idx].width && x >= BOARD_ORIGIN_X && y <= this->board_map[idx].height && y >= BOARD_ORIGIN_Y )
+    if ( x <= this->board_map[idx].w && x >= BOARD_ORIGIN_X && y <= this->board_map[idx].h && y >= BOARD_ORIGIN_Y )
       return this->board_map[idx];
   }
 
@@ -513,9 +513,9 @@ void Board::list ( void )
                 << ", "
                 << pos.y
                 << " ("
-                << pos.width
+                << pos.w
                 << "x"
-                << pos.height
+                << pos.h
                 << ") "
                 << " with an element ID of "
                 << element

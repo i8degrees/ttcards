@@ -28,8 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuState.hpp"
 
-using namespace nom;
-
 ContinueMenuState::ContinueMenuState ( std::shared_ptr<GameObject> object )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -45,22 +43,20 @@ NOM_LOG_TRACE ( TTCARDS );
 void ContinueMenuState::onInit ( void )
 {
   nom::Gradient linear;
+  nom::Label option_text = nom::Label("Are you sure?\nYes\nNo", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter);
 
   linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
   linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
-  this->info_box = nom::ui::MessageBox  (
+  this->info_box = nom::MessageBox  (
                                           OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y,
                                           OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT,
-                                          nom::ui::FrameStyle::Gray, linear
+                                          nom::MessageBox::Style::Gray, linear
                                         );
 
-  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
-  this->info_box.setLabelFont ( &this->game->info_text );
-  this->info_box.setWindowTitle ( "Choice" );
-  this->info_box.setLabel ( "Are you sure?\nYes\nNo" );
-  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
+  this->info_box.set_title ( nom::Label("CHOICE", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
+  this->info_box.set_text ( option_text );
 
 //NOM_DUMP_VAR ( this->game->info_text.getMultiLineTextWidth("Are you sure?\nYes\nNo") );
 //nom::int32 text_width = this->game->info_text.getFontWidth();
@@ -72,7 +68,7 @@ void ContinueMenuState::onInit ( void )
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
 
-  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, true ) == true )
+  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, 0 ) == true )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
@@ -87,10 +83,10 @@ void ContinueMenuState::onInit ( void )
                                           OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 ),
                                           OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 )
                                           +
-                                          ( this->game->info_text.getFontHeight() / 2 )
+                                          ( option_text.height() / 2 )
                                         );
 
-NOM_DUMP_VAR(this->game->info_text.getFontHeight() );
+NOM_DUMP_VAR(option_text.height());
     this->cursor.set_position_map ( position_map );
 
     this->cursor.setSize ( CURSOR_WIDTH, CURSOR_HEIGHT );
@@ -118,7 +114,7 @@ void ContinueMenuState::onExit ( void )
   // Stub
 }
 
-void ContinueMenuState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
+void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
   {
@@ -156,9 +152,8 @@ void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom:
 
   // Player hand selection checks
   nom::int32 option_choice = this->cursor.position();
+
 NOM_DUMP_VAR(option_choice);
-
-
 
   if ( this->position_map.intersects ( coords ) )
   {

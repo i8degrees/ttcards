@@ -28,8 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PauseState.hpp"
 
-using namespace nom;
-
 PauseState::PauseState ( std::shared_ptr<GameObject> object )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -46,22 +44,23 @@ void PauseState::onInit ( void )
 {
   nom::Gradient linear;
 
+  this->title_text[0] = { nom::Label("PAUSE", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) };
+  this->title_text[1] = { nom::Label("", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) };
+
   linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
   linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::ui::MessageBox  (
-                                          PAUSE_BOX_ORIGIN_X,
-                                          PAUSE_BOX_ORIGIN_Y,
-                                          PAUSE_BOX_WIDTH,
-                                          PAUSE_BOX_HEIGHT,
-                                          nom::ui::FrameStyle::Gray,
-                                          linear
-                                        );
+  this->info_box = nom::MessageBox  (
+                                      PAUSE_BOX_ORIGIN_X,
+                                      PAUSE_BOX_ORIGIN_Y,
+                                      PAUSE_BOX_WIDTH,
+                                      PAUSE_BOX_HEIGHT,
+                                      nom::MessageBox::Style::Gray,
+                                      linear
+                                    );
 
-  this->info_box.setWindowTitleFont ( &this->game->info_small_text );
-  this->info_box.setLabelFont ( &this->game->info_text );
-  this->info_box.setLabel ( SHORT_VERSION_INFO );
-  this->info_box.setLabelTextAlignment ( nom::IFont::TextAlignment::MiddleCenter );
+  this->info_box.set_title ( this->title_text[0] );
+  this->info_box.set_text ( nom::Label(SHORT_VERSION_INFO, this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
 
   this->blink_update.start();
 }
@@ -81,7 +80,7 @@ void PauseState::Resume ( void )
   std::cout << "\n" << "PauseState state Resumed" << "\n";
 }
 
-void PauseState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
+void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
   {
@@ -107,12 +106,12 @@ void PauseState::update ( float delta_time )
 {
   this->info_box.update();
 
-  this->info_box.setWindowTitle ( "PAUSE" );
+  this->info_box.set_title ( this->title_text[0] );
 
   if ( this->blink_update.ticks() > 800 )
   {
     this->blink_update.stop();
-    this->info_box.setWindowTitle ( "" );
+    this->info_box.set_title ( this->title_text[1] );
     this->blink_text = true;
   }
 
@@ -125,7 +124,7 @@ void PauseState::draw ( nom::IDrawable::RenderTarget target )
 
   if ( this->blink_text )
   {
-    this->info_box.setWindowTitle ( "" );
+    this->info_box.set_title ( this->title_text[1] );
     this->blink_update.start();
     this->blink_text = false;
   }

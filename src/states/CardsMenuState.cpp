@@ -31,8 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 #include "PlayState.hpp"
 
-using namespace nom;
-
 CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
 {
   nom::Gradient linear;
@@ -62,13 +60,13 @@ NOM_LOG_TRACE ( TTCARDS );
   linear.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
-  this->menu_box = nom::ui::MessageBox  (
-                                          PICK_CARDS_MENU_ORIGIN_X,
-                                          PICK_CARDS_MENU_ORIGIN_Y,
-                                          PICK_CARDS_MENU_WIDTH,
-                                          PICK_CARDS_MENU_HEIGHT,
-                                          nom::ui::FrameStyle::Gray, linear
-                                        );
+  this->menu_box = nom::MessageBox  (
+                                      PICK_CARDS_MENU_ORIGIN_X,
+                                      PICK_CARDS_MENU_ORIGIN_Y,
+                                      PICK_CARDS_MENU_WIDTH,
+                                      PICK_CARDS_MENU_HEIGHT,
+                                      nom::MessageBox::Style::Gray, linear
+                                    );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->game->collection.cards.size() / per_page;
@@ -97,8 +95,18 @@ void CardsMenuState::onInit ( void )
   unsigned int idx = 0; // iterator for cursor_coords_map
 
   // Initialize card name text so that we can obtain height info early on
-  this->game->info_text.setText ( this->game->collection.cards[0].getName() );
-  this->info_text_height = this->game->info_text.getFontHeight();
+  this->card_text.set_font ( this->game->info_text );
+  this->card_text.set_text ( this->game->collection.cards[0].getName() );
+
+  //this->info_text_height = this->card_text.height();
+  // FIXME: Height calculation is messed up
+  this->info_text_height = this->card_text.height() + 4;
+
+  // FIXME: We must set the menu_box labels to quiet the debug logs
+  this->menu_box.set_title ( nom::Label("",this->game->info_small_text,0) );
+  this->menu_box.set_text ( nom::Label("",this->game->info_text,0) );
+
+  this->title_text.set_font ( this->game->info_small_text );
 
   this->game->cursor.set_position ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
   this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT ); // default cursor image
@@ -129,7 +137,7 @@ void CardsMenuState::Resume ( void )
   std::cout << "\n" << "CardsMenu state Resumed" << "\n";
 }
 
-void CardsMenuState::onKeyDown ( int32 key, int32 mod, uint32 window_id )
+void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
   {
@@ -281,25 +289,22 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
   for ( nom::uint32 i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {
     // Draw the top-left box title
-    this->game->info_small_text.setText ( "CARDS" );
-    this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y ) );
-    this->game->info_small_text.update();
-    this->game->info_small_text.draw ( target );
+    this->title_text.set_text ( "CARDS" );
+    this->title_text.set_position ( nom::Coords(MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y) );
+    this->title_text.draw ( target );
 
     // Draw page number if we have more than one page to display
     if ( total_pages > 0 )
     {
-      this->game->info_small_text.setText ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
-      this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y ) );
-      this->game->info_small_text.update();
-      this->game->info_small_text.draw ( target );
+      this->title_text.set_text ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
+      this->title_text.set_position ( nom::Coords(MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y) );
+      this->title_text.draw ( target );
     }
 
     // Draw the top-right box title (number of cards)
-    this->game->info_small_text.setText ( "NUM." );
-    this->game->info_small_text.setPosition ( nom::Coords( MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y ) );
-    this->game->info_small_text.update();
-    this->game->info_small_text.draw ( target );
+    this->title_text.set_text ( "NUM." );
+    this->title_text.set_position ( nom::Coords(MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y) );
+    this->title_text.draw ( target );
 
     // Draw the card selection helper element
     this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
@@ -316,35 +321,34 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     // FIXME ( this->game->info_text_gray )
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
     {
-      this->game->info_text_gray.setText ( this->game->collection.cards[i].getName() );
-      this->game->info_text_gray.setFontStyle ( nom::IFont::FontStyle::Faded, 150 );
-      this->game->info_text_gray.setPosition ( nom::Coords( MENU_CARDS_NAME_ORIGIN_X, y_offset ) );
-      this->game->info_text_gray.update();
-      this->game->info_text_gray.draw ( target );
+      this->card_text.set_text ( this->game->collection.cards[i].getName() );
+      this->card_text.set_color ( TTCARDS_COLOR4U_GRAYED_TEXT );
+      this->card_text.set_position ( nom::Coords(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
+      this->card_text.draw ( target );
     }
     else
     {
-      this->game->info_text.setText ( this->game->collection.cards[i].getName() );
-      this->game->info_text.setPosition ( nom::Coords( MENU_CARDS_NAME_ORIGIN_X, y_offset ) );
-      this->game->info_text.update();
-      this->game->info_text.draw ( target );
+      this->card_text.set_text ( this->game->collection.cards[i].getName() );
+      this->card_text.set_color ( NOM_COLOR4U_WHITE );
+      this->card_text.set_position ( nom::Coords(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
+      this->card_text.draw ( target );
     }
 
     // Draw the number of cards in player's possession
     // TODO: Stub
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
     {
-      this->game->info_text_gray.setText ( "0" );
-      this->game->info_text_gray.setPosition ( nom::Coords( MENU_CARDS_NUM_ORIGIN_X, y_offset ) );
-      this->game->info_text_gray.update();
-      this->game->info_text_gray.draw ( target );
+      this->card_text.set_text ( "0" );
+      this->card_text.set_color ( TTCARDS_COLOR4U_GRAYED_TEXT );
+      this->card_text.set_position ( nom::Coords(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
+      this->card_text.draw ( target );
     }
     else
     {
-      this->game->info_text.setText ( "1" );
-      this->game->info_text.setPosition ( nom::Coords( MENU_CARDS_NUM_ORIGIN_X, y_offset ) );
-      this->game->info_text.update();
-      this->game->info_text.draw ( target );
+      this->card_text.set_text ( "1" );
+      this->card_text.set_color ( NOM_COLOR4U_WHITE );
+      this->card_text.set_position ( nom::Coords(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
+      this->card_text.draw ( target );
     }
 
     // Lastly, check to see which page indicators we need to draw

@@ -103,8 +103,8 @@ class PlayState: public nom::IState
 
     std::shared_ptr<GameObject> game;
 
-    nom::ui::MessageBox info_box;
-    nom::ui::MessageBox debug_box;
+    nom::MessageBox info_box;
+    nom::MessageBox debug_box;
 
     /// In-game players (including AI)
     Player player[2];
@@ -138,6 +138,11 @@ class PlayState: public nom::IState
     bool skip_turn;
 
     enum GameOverType gameover_state;
+
+    nom::Label debug_text;
+    nom::Label info_text;
+    nom::Label scoreboard_text[2];
+    nom::Label gameover_text;
 };
 
 // Convenience declarations for changing state

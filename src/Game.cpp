@@ -36,8 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Game.hpp"
 
-using namespace nom;
-
 App::App ( nom::int32 argc, char* argv[] )
 {
   // Destination directory we descend into to locate game resources
@@ -161,12 +159,20 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
   // Note that it is important that we do not mess with the working directory
   // path until after our command line arguments have been processed, so that we
   // do not unintentionally mess up relative paths!
-  dir.set_path ( working_directory );
+  dir.set_path (working_directory);
+
+  if ( nom::init_third_party(0) == false )
+  {
+    nom::DialogMessageBox ( "Critical Error", "Could not load third party libraries" );
+    exit ( NOM_EXIT_FAILURE );
+  }
+
+  atexit(nom::quit);
 }
 
 App::~App ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE ( TTCARDS );
 }
 
 bool App::onInit ( void )
@@ -209,25 +215,25 @@ bool App::onInit ( void )
 
   // Commence the initialization of game objects
   this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
-  this->game->cursor = nom::ui::Cursor ( "images/cursors.json" );
+  this->game->cursor = nom::Cursor ( "images/cursors.json" );
   this->game->cursor.set_position ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
 
   // Commence the loading of game resources
-  if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color4u ( 255, 0, 255, 0 ), 0 ) == false )
+  if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
     return false;
   }
 
-  if ( this->game->info_text_gray.load ( this->game->config.getString("INFO_FONTFACE"), nom::Color4u ( 255, 0, 255, 0 ), 0 ) == false )
+  if ( this->game->info_small_text.load ( this->game->config.getString("INFO_SMALL_FONTFACE"), 0 ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_SMALL_FONTFACE") );
     return false;
   }
 
-  if ( this->game->info_small_text.load ( this->game->config.getString("INFO_SMALL_FONTFACE"), nom::Color4u ( 255, 0, 255, 0 ), 0 ) == false )
+  if ( this->game->card_font.load ( this->game->config.getString("CARD_FONTFACE"), 0 ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INFO_FONTFACE") );
+NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARD_FONTFACE") );
     return false;
   }
 
@@ -237,7 +243,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), /*NOM_COLOR4U_BLACK,*/ 0 ) == false )
+  if ( this->game->background.load( this->game->config.getString("BOARD_BACKGROUND"), 0 ) == false )
   {
 NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("BOARD_BACKGROUND") );
     rectangle.draw ( this->game->window );
@@ -246,11 +252,11 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
-      this->game->background.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+      // FIXME: this->game->background.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     }
     else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
     {
-      this->game->background.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+      // FIXME: this->game->background.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     }
 
 //this->game->background.draw( this->game->window );
@@ -266,13 +272,9 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
   // do not need this workaround.
 //this->PollEvents( &event );
 
-  if ( this->game->score_text[0].load ( this->game->config.getString("SCORE_FONTFACE"), NOM_COLOR4U_WHITE ) == true )
+  if ( this->game->scoreboard_font.load ( this->game->config.getString("SCORE_FONTFACE"), 0 ) == true )
   {
-    this->game->score_text[0].setColor ( NOM_COLOR4U_WHITE );
-    this->game->score_text[0].setFontSize ( 48 * SCALE_FACTOR );
-    this->game->score_text[0].setFontStyle ( nom::IFont::FontStyle::Italic );
-    this->game->score_text[0].setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-    this->game->score_text[0].setFontOutline ( 1 );
+    // TODO: this->game->scoreboard_font.set_outline ( 1 );
   }
   else
   {
@@ -280,26 +282,9 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->score_text[1].load ( this->game->config.getString("SCORE_FONTFACE"), NOM_COLOR4U_WHITE ) == true )
+  if ( this->game->gameover_font.load ( this->game->config.getString("GAMEOVER_FONTFACE"), 0 ) == true )
   {
-    this->game->score_text[1].setColor ( NOM_COLOR4U_WHITE );
-    this->game->score_text[1].setFontSize ( 48 * SCALE_FACTOR );
-    this->game->score_text[1].setFontStyle ( nom::IFont::FontStyle::Italic );
-    this->game->score_text[1].setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-    this->game->score_text[1].setFontOutline ( 1 );
-  }
-  else
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SCORE_FONTFACE") );
-    return false;
-  }
-
-  if ( this->game->gameover_text.load ( this->game->config.getString("GAMEOVER_FONTFACE"), NOM_COLOR4U_WHITE ) == true )
-  {
-    this->game->gameover_text.setFontSize ( 48 * SCALE_FACTOR );
-    this->game->gameover_text.setFontStyle ( nom::IFont::FontStyle::Italic );
-    this->game->gameover_text.setRenderingStyle ( nom::IFont::RenderStyle::Blended );
-    this->game->gameover_text.setFontOutline ( 1 );
+    // TODO: this->game->gameover_font.set_outline ( 1 );
   }
   else
   {
@@ -307,13 +292,13 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->gameover_background.load ( this->game->config.getString("GAMEOVER_BACKGROUND"), true ) == false )
+  if ( this->game->gameover_background.load ( this->game->config.getString("GAMEOVER_BACKGROUND"), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("GAMEOVER_BACKGROUND") );
     return false;
   }
 
-  if ( this->game->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, true ) == false )
+  if ( this->game->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
     return false;
@@ -325,7 +310,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->card.load ( &this->game->config ) == false )
+  if ( this->game->card.load ( &this->game->config, this->game->card_font ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     return false;
@@ -334,21 +319,25 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   // Rescale our game resources if necessary.
   if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
   {
+/* FIXME
     this->game->info_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->game->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->game->info_small_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->game->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->game->menu_elements.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->game->gameover_background.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+*/
   }
   else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
   {
+/* FIXME
     this->game->info_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     this->game->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     this->game->info_small_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     this->game->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     this->game->menu_elements.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     this->game->gameover_background.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+*/
   }
 
   // Load optional audio resources

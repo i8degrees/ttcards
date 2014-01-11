@@ -40,8 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameConfig.hpp"
 #include "Card.hpp"
 
-class CardView:
-                public nom::IDrawable
+class CardView: public nom::IDrawable
 {
   public:
     typedef std::vector<std::shared_ptr<nom::IDrawable>> DrawableList;
@@ -57,7 +56,7 @@ class CardView:
     /// Load the resources used in rendering a card
     ///
     /// The failure of any of these resources results in failure
-    bool load ( GameConfig* config );
+    bool load ( GameConfig* config, const nom::IFont& card_font );
 
     /// Render the complete card -- its background, face, element and text.
     void draw (
