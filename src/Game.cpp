@@ -194,10 +194,6 @@ bool App::onInit ( void )
     exit ( NOM_EXIT_FAILURE );
   }
 
-#ifndef EMSCRIPTEN
-  this->game->window.set_window_icon ( this->game->config.getString("APP_ICON") );
-#endif
-
   // Obtain a list of available video modes so we can determine how to render
   // the game (scale factors, positioning, etc.).
   nom::VideoModeList modes = this->game->window.getVideoModes();
@@ -208,7 +204,7 @@ bool App::onInit ( void )
   }
 
   this->game->window.create ( "TTcards", SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, video_flags );
-
+  this->game->window.set_window_icon ( this->game->config.getString("APP_ICON") );
 //this->game->window.set_window_title ( LOADING_TEXT );
 
   this->game->window.set_logical_size ( SCREEN_WIDTH, SCREEN_HEIGHT );
