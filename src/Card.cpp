@@ -30,23 +30,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 nom::int32 Card::CARDS_COLLECTION = 0;
 
-Card::Card ( void ) : id ( 0 ), level ( 0 ), type ( 0 ), element ( NONE ),
-                      rank( { { 0 } } ), name ( "\0" ),
-                      player_id ( Card::NOPLAYER ),
-                      player_owner ( Card::NOPLAYER )
-{}
+Card::Card ( void ) :
+  id ( BAD_CARD_ID ),
+  level ( 0 ),
+  type ( 0 ),
+  element ( NONE ),
+  rank( { { 0 } } ),
+  player_id ( Card::NOPLAYER ),
+  player_owner ( Card::NOPLAYER )
+{
+  // ...
+}
 
 Card::Card  (
               nom::int32 id, nom::int32 level, nom::int32 type,
               nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
               std::string name, nom::int32 player_id, nom::int32 player_owner
-            )
-            : id ( id ), level ( level ), type ( type ), element ( element ),
+            ) : id ( id ), level ( level ), type ( type ), element ( element ),
             rank { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } },
             name ( name ), player_id ( player_id ), player_owner ( player_owner )
-{}
+{
+  // ...
+}
 
-Card::~Card ( void ) {}
+Card::~Card ( void )
+{
+  // ...
+}
 
 const nom::int32 Card::getID ( void ) const
 {

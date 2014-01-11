@@ -112,7 +112,7 @@ const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y )
   // Compare card's WEST rank with opponent's EAST rank
   if ( rows != 0 )
   {
-    if ( this->getStatus ( rows - 1, cols ) != 0 )
+    if ( this->getStatus ( rows - 1, cols ) != BAD_CARD_ID )
     {
       adjacent_cards.push_back ( this->tile ( rows - 1, cols ) );
     }
@@ -121,7 +121,7 @@ const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y )
   // Compare card's EAST rank with opponent's WEST rank
   if ( rows != BOARD_GRID_WIDTH - 1 )
   {
-    if ( this->getStatus ( rows + 1, cols ) != 0 )
+    if ( this->getStatus ( rows + 1, cols ) != BAD_CARD_ID )
     {
       adjacent_cards.push_back ( this->tile ( rows + 1, cols ) );
     }
@@ -130,7 +130,7 @@ const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y )
   // Compare card's NORTH rank with opponent's SOUTH rank
   if ( cols != 0 )
   {
-    if ( this->getStatus ( rows, cols - 1 ) != 0 )
+    if ( this->getStatus ( rows, cols - 1 ) != BAD_CARD_ID )
     {
       adjacent_cards.push_back ( this->tile ( rows, cols - 1 ) );
     }
@@ -139,7 +139,7 @@ const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y )
   // Compare card's SOUTH rank with opponent's NORTH rank
   if ( cols != BOARD_GRID_HEIGHT - 1 )
   {
-    if ( this->getStatus ( rows, cols + 1 ) != 0 )
+    if ( this->getStatus ( rows, cols + 1 ) != BAD_CARD_ID )
     {
       adjacent_cards.push_back ( this->tile ( rows, cols + 1 ) );
     }
@@ -163,7 +163,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       // Compare card's WEST rank with opponent's EAST rank
       if ( rows != 0 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != BAD_CARD_ID )
         {
           if ( this->rules.getRules() == 2 )
           {
@@ -188,7 +188,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       // Compare card's SOUTH rank with opponent's NORTH rank
       if ( cols != BOARD_GRID_HEIGHT - 1 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != BAD_CARD_ID )
         {
           if ( this->rules.getRules() == 2 )
           {
@@ -213,7 +213,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       // Compare card's EAST rank with opponent's WEST rank
       if ( rows != BOARD_GRID_WIDTH - 1 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != BAD_CARD_ID )
         {
           if ( this->rules.getRules() == 2 )
           {
@@ -238,7 +238,7 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
       // Compare card's NORTH rank with opponent's SOUTH rank
       if ( cols != 0 )
       {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != 0 )
+        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != BAD_CARD_ID )
         {
           if ( this->rules.getRules() == 2 )
           {
@@ -274,7 +274,7 @@ nom::uint32 Board::getCount ( void )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      if ( this->getStatus ( x, y ) != 0 )
+      if ( this->getStatus ( x, y ) != BAD_CARD_ID )
       {
         total_count += 1;
       }
@@ -303,9 +303,11 @@ nom::uint32 Board::getPlayerCount ( nom::int32 player_id )
 const nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y ) const
 {
   if ( ( x >= 0 && x <= BOARD_GRID_WIDTH ) && ( y >= 0 && y <= BOARD_GRID_HEIGHT ) )
+  {
     return this->grid[x][y].tile_card.getID(); // FIXME
-  else
-    return -1;
+  }
+
+  return BAD_CARD_ID;
 }
 
 void Board::updateStatus ( nom::int32 x, nom::int32 y, const Card& card )
@@ -366,7 +368,7 @@ void Board::draw ( nom::IDrawable::RenderTarget target )
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
-      if ( this->get ( x, y ).getID() == 0 ) continue;
+      if ( this->get ( x, y ).getID() == BAD_CARD_ID ) continue;
 
       // Positions of the cards on the game board
       nom::Coords board_pos (

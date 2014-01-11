@@ -550,7 +550,7 @@ void PlayState::updateMessageBoxes ( void )
   }
 
   // Debug helping info MessageBox display
-  if ( selected_card.getID() != 0 )
+  if ( selected_card.getID() != BAD_CARD_ID )
   {
     std::string card_id = std::to_string ( selected_card.getID() );
     this->debug_text.set_text ( card_id );
@@ -705,14 +705,14 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
 
   //std::cout << "\n";
 
-  if ( selected.getID() != 0 )
+  if ( selected.getID() != BAD_CARD_ID )
   {
-    if ( player_turn == PLAYER1 && this->game->board ( x, y ) != 0 )
+    if ( player_turn == PLAYER1 && this->game->board ( x, y ) != BAD_CARD_ID )
     {
       this->game->cursor_wrong.Play();
     }
 
-    if ( this->game->board ( x, y ) == false )
+    if ( this->game->board ( x, y ) == BAD_CARD_ID )
     {
       this->game->board.updateStatus ( x, y, this->game->hand[ player_turn ].getSelectedCard() );
       this->game->hand[ player_turn ].erase ( this->game->hand[ player_turn ].getSelectedCard() );
@@ -961,19 +961,19 @@ void PlayState::update ( float delta_time )
       nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
 
-      if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == false )
+      if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == BAD_CARD_ID )
       {
         this->moveTo ( board_edges[ edge_pick ].x, board_edges[ edge_pick ].y );
       }
-      else if ( this->game->board.getStatus ( board_edges[1].x, board_edges[1].y ) == false )
+      else if ( this->game->board.getStatus ( board_edges[1].x, board_edges[1].y ) == BAD_CARD_ID )
       {
         this->moveTo ( board_edges[1].x, board_edges[1].y );
       }
-      else if ( this->game->board.getStatus ( board_edges[2].x, board_edges[2].y ) == false )
+      else if ( this->game->board.getStatus ( board_edges[2].x, board_edges[2].y ) == BAD_CARD_ID )
       {
         this->moveTo ( board_edges[2].x, board_edges[2].y );
       }
-      else if ( this->game->board.getStatus ( board_edges[3].x, board_edges[3].y ) == false )
+      else if ( this->game->board.getStatus ( board_edges[3].x, board_edges[3].y ) == BAD_CARD_ID )
       {
         this->moveTo ( board_edges[3].x, board_edges[3].y );
       }
