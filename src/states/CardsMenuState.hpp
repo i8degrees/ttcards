@@ -91,9 +91,9 @@ class CardsMenuState: public nom::IState
     /// height of the card name text
     unsigned int info_text_height;
 
-    /// y coords mapping for cursor -> card position index
-    /// minus one (1) padding
-    std::pair<int, int> cursor_coords_map[10];
+    /// Y coords mapping for cursor -> card position index
+    std::pair<int, int> cursor_coords_map[11];  // Should be the same value as
+                                                // the per_page instance var
 
     //CardsMenuStateCursor cursor;
 
