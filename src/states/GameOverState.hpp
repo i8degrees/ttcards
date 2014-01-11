@@ -90,6 +90,9 @@ class GameOverState: public nom::IState
     nom::Coords player2_pos;
 
     nom::EventDispatcher event;
+
+    nom::Label info_text;
+    nom::Label card_text;
 };
 
 // Convenience declarations for changing state

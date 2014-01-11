@@ -127,6 +127,10 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   linear.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
+  this->info_text = nom::Label("Select 1 card(s) you want", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter);
+
+  this->card_text = nom::Label(this->game->hand[1].getSelectedCard().getName(), this->game->info_text, 12, nom::Label::MiddleCenter);
+
   // Top display message box; "description" info box
   this->info_box = nom::MessageBox  (
                                           INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
@@ -135,7 +139,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
                                         );
 
   this->info_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
-  this->info_box.set_text ( nom::Label("Select 1 card(s) you want", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
+  this->info_box.set_text ( this->info_text );
 
   // Bottom display message box; card info (card name)
   this->card_info_box = nom::MessageBox (
@@ -145,7 +149,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
                                             );
 
   this->card_info_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
-  this->card_info_box.set_text ( nom::Label(this->game->hand[1].getSelectedCard().getName(), this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
+  this->card_info_box.set_text ( this->card_text );
 
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into each player's respective hand.
@@ -264,7 +268,8 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uin
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();
 
-      this->card_info_box.set_text ( nom::Label(selected_card.getName(), this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
+      this->card_text.set_text ( selected_card.getName() );
+      //this->card_info_box.set_text ( nom::Label(, this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
 
       this->game->cursor_move.Play();
       // We must break the loop here upon the end of a matching coords check
@@ -302,7 +307,7 @@ void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1
   if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
-    this->card_info_box.set_text ( nom::Label(selected_card.getName(), this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
+    this->card_text.set_text ( selected_card.getName() );
 
     this->game->cursor_move.Play();
   }
@@ -314,7 +319,7 @@ void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1
     if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
     {
       // FIXME; should have no spacing on card printout
-      this->info_box.set_text ( nom::Label(this->selected_card.getName() + " card acquired", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
+      this->info_text.set_text ( this->selected_card.getName() + " card acquired" );
       this->game->hand[1].cards[card_pos].setPlayerID(Card::PLAYER1);
 
       this->game->card_flip.Play();
@@ -330,6 +335,9 @@ void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1
 void GameOverState::update ( float delta_time )
 {
   this->game->card.update();
+
+  this->info_box.set_text ( this->info_text );
+  this->card_info_box.set_text ( this->card_text );
 
   this->info_box.update();
   this->card_info_box.update();
