@@ -550,19 +550,15 @@ void PlayState::updateMessageBoxes ( void )
   }
 
   // Debug helping info MessageBox display
-  if ( selected_card.getID() != BAD_CARD_ID )
-  {
-    std::string card_id = std::to_string ( selected_card.getID() );
-    this->debug_text.set_text ( card_id );
-    this->debug_box.set_text ( this->debug_text );
-  }
+  NOM_ASSERT(selected_card.getID() != BAD_CARD_ID );
+
+  std::string card_id = std::to_string ( selected_card.getID() );
+  this->debug_text.set_text ( card_id );
+  this->debug_box.set_text ( this->debug_text );
 
   // (Southern) informational MessageBox display (selected / active card's name)
-  if ( selected_card.getName().length() != 0 )
-  {
-    this->info_text.set_text ( selected_card.getName() );
-    this->info_box.set_text ( this->info_text );
-  }
+  this->info_text.set_text ( selected_card.getName() );
+  this->info_box.set_text ( this->info_text );
 }
 
 bool PlayState::isCursorLocked ( void )
