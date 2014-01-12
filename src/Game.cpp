@@ -181,7 +181,7 @@ bool App::onInit ( void )
                               NOM_COLOR4U_GRAY
                             );
 
-  nom::uint32 video_flags = SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_MOUSE_FOCUS | SDL_WINDOW_SHOWN;
+  nom::uint32 video_flags = 0;
   /* TODO: Use me when fixed-time-step is fully implemented
   nom::uint32 renderer_flags = SDL_RENDERER_PRESENTVSYNC;
   TODO */
