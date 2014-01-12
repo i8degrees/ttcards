@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Cross-platform support files
 #include <nomlib/types.hpp> // data types
 
+#include <nomlib/math.hpp>
+
 /// Site-specific constants -- this is likely specific to your own local system
 /// setup; auto-generated at compile-time and therefore must recompile to modify
 /// said constants.
@@ -306,8 +308,7 @@ const nom::int32 PLAYER1_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_X = 40 * SCALE_FACTOR;
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
 
-#define TTCARDS_COLOR4U_GRAYED_TEXT \
-  nom::Color4u(195,209,228,nom::ALPHA_OPAQUE)
+const nom::Color4i GrayText(195,209,228);
 
 /// Card elemental type
 enum {

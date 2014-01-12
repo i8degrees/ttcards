@@ -74,13 +74,13 @@ bool CardView::load ( GameConfig* config, const nom::IFont& card_font )
     return false;
   }
 
-  if ( this->card_face->load ( config->getString("CARD_FACES"), nom::Color4u ( 0, 0, 0 ), 0 ) == false )
+  if ( this->card_face->load ( config->getString("CARD_FACES"), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), nom::Color4u ( 0, 0, 0 ), 0 ) == false )
+  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
@@ -127,23 +127,23 @@ void CardView::draw_background  (
   {
     case Card::PLAYER1:
     {
-      this->card_background->set_start_color ( nom::Color4u ( 208, 223, 255 ) );
-      this->card_background->set_end_color ( nom::Color4u ( 50, 59, 114 ) );
+      this->card_background->set_start_color ( nom::Color4i ( 208, 223, 255 ) );
+      this->card_background->set_end_color ( nom::Color4i ( 50, 59, 114 ) );
     }
     break;
 
     case Card::PLAYER2:
     {
-      this->card_background->set_start_color ( nom::Color4u ( 251, 222, 232 ) );
-      this->card_background->set_end_color ( nom::Color4u ( 114, 66, 66 ) );
+      this->card_background->set_start_color ( nom::Color4i ( 251, 222, 232 ) );
+      this->card_background->set_end_color ( nom::Color4i ( 114, 66, 66 ) );
     }
     break;
 
     case Card::NOPLAYER:
     default:
     {
-      this->card_background->set_start_color ( nom::Color4u ( 197, 197, 197 ) );
-      this->card_background->set_end_color ( nom::Color4u ( 84, 84, 84 ) );
+      this->card_background->set_start_color ( nom::Color4i ( 197, 197, 197 ) );
+      this->card_background->set_end_color ( nom::Color4i ( 84, 84, 84 ) );
     }
     break;
   }

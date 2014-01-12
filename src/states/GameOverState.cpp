@@ -55,7 +55,7 @@ void GameOverState::onInit ( void )
   // Initialize interface cursor
   this->cursor = GameOverStateCursor ( "images/cursors.json" );
 
-  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, true ) == true )
+  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), 0 ) == true )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
@@ -123,8 +123,8 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   this->game->hand[1].front();
 
   // Initialize our message box background containers (linear gradient)
-  linear.set_start_color ( NOM_COLOR4U_GRAY );
-  linear.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
+  linear.set_start_color ( nom::Color4i::Gray );
+  linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   this->info_text = nom::Label("Select 1 card(s) you want", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter);

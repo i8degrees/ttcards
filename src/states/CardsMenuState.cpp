@@ -56,8 +56,8 @@ NOM_LOG_TRACE ( TTCARDS );
     this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
   }
 
-  linear.set_start_color ( NOM_COLOR4U_GRAY );
-  linear.set_end_color ( NOM_COLOR4U_LIGHT_GRAY );
+  linear.set_start_color ( nom::Color4i::Gray );
+  linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   this->menu_box = nom::MessageBox  (
@@ -320,14 +320,14 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
     {
       this->card_text.set_text ( this->game->collection.cards[i].getName() );
-      this->card_text.set_color ( TTCARDS_COLOR4U_GRAYED_TEXT );
+      this->card_text.set_color ( GrayText );
       this->card_text.set_position ( nom::Coords(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }
     else
     {
       this->card_text.set_text ( this->game->collection.cards[i].getName() );
-      this->card_text.set_color ( NOM_COLOR4U_WHITE );
+      this->card_text.set_color ( nom::Color4i::White );
       this->card_text.set_position ( nom::Coords(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }
@@ -337,14 +337,14 @@ void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
     {
       this->card_text.set_text ( "0" );
-      this->card_text.set_color ( TTCARDS_COLOR4U_GRAYED_TEXT );
+      this->card_text.set_color ( GrayText );
       this->card_text.set_position ( nom::Coords(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }
     else
     {
       this->card_text.set_text ( "1" );
-      this->card_text.set_color ( NOM_COLOR4U_WHITE );
+      this->card_text.set_color ( nom::Color4i::White );
       this->card_text.set_position ( nom::Coords(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }

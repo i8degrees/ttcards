@@ -178,7 +178,7 @@ App::~App ( void )
 bool App::onInit ( void )
 {
   nom::Rectangle rectangle  ( nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT ),
-                              NOM_COLOR4U_GRAY
+                              nom::Color4i::Gray
                             );
 
   nom::uint32 video_flags = 0;
@@ -233,7 +233,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->menu_elements.load ( this->game->config.getString("MENU_ELEMENTS"), nom::Color4u ( 0, 0, 0 ), 0 ) == false )
+  if ( this->game->menu_elements.load ( this->game->config.getString("MENU_ELEMENTS"), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MENU_ELEMENTS") );
     return false;
@@ -294,7 +294,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     return false;
   }
 
-  if ( this->game->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, 0 ) == false )
+  if ( this->game->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), 0 ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
     return false;

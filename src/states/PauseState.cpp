@@ -47,8 +47,8 @@ void PauseState::onInit ( void )
   this->title_text[0] = { nom::Label("PAUSE", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) };
   this->title_text[1] = { nom::Label("", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) };
 
-  linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
-  linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
+  linear.set_start_color ( nom::Color4i ( 67, 67, 67, 255 ) );
+  linear.set_end_color ( nom::Color4i ( 99, 99, 99, 255 ) );
 
   this->info_box = nom::MessageBox  (
                                       PAUSE_BOX_ORIGIN_X,

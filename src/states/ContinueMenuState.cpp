@@ -45,8 +45,8 @@ void ContinueMenuState::onInit ( void )
   nom::Gradient linear;
   nom::Label option_text = nom::Label("Are you sure?\nYes\nNo", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter);
 
-  linear.set_start_color ( nom::Color4u ( 67, 67, 67, 255 ) );
-  linear.set_end_color ( nom::Color4u ( 99, 99, 99, 255 ) );
+  linear.set_start_color ( nom::Color4i::Gray );
+  linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::MessageBox  (
@@ -68,7 +68,7 @@ void ContinueMenuState::onInit ( void )
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
 
-  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), NOM_COLOR4U_BLACK, 0 ) == true )
+  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), 0 ) == true )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
