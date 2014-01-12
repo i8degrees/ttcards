@@ -197,7 +197,6 @@ void ContinueMenuState::onUserEvent ( nom::uint32 type, nom::int32 code, void* d
 
 void ContinueMenuState::update ( float delta_time )
 {
-  this->info_box.update();
   this->cursor.update();
 
   this->game->window.update();

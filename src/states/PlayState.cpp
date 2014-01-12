@@ -912,9 +912,6 @@ void PlayState::update ( float delta_time )
 
   this->updateMessageBoxes();
 
-  this->info_box.update();
-  this->debug_box.update();
-
   this->player[0].update();
   this->player[1].update();
 

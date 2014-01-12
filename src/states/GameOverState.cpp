@@ -339,8 +339,6 @@ void GameOverState::update ( float delta_time )
   this->info_box.set_text ( this->info_text );
   this->card_info_box.set_text ( this->card_text );
 
-  this->info_box.update();
-  this->card_info_box.update();
   this->cursor.update();
 
   if ( this->transistion.ticks() > 1500 )

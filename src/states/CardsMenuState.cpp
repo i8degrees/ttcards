@@ -238,8 +238,6 @@ void CardsMenuState::update ( float delta_time )
   this->game->card.update();
 
   this->updateCursor();
-
-  this->menu_box.update();
   //this->game->menu_elements.Update();
 
   this->game->window.update();

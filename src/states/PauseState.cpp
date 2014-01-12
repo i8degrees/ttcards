@@ -104,8 +104,6 @@ void PauseState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 
 void PauseState::update ( float delta_time )
 {
-  this->info_box.update();
-
   this->info_box.set_title ( this->title_text[0] );
 
   if ( this->blink_update.ticks() > 800 )
