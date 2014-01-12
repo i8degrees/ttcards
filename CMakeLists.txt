@@ -92,7 +92,7 @@ set ( PROJECT_DOXYGEN_DIR "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/doxyge
 set ( BUNDLE_TEMPLATE_PLIST "${CMAKE_TEMPLATE_PATH}/Info.plist.in" )
 set ( BUNDLE_NAME "TTcards" )
 set ( BUNDLE_DESCRIPTION "Triple Triad Remake" )
-set ( BUNDLE_ICON "ttcards.icns" )
+set ( BUNDLE_ICON "icon.icns" )
 set ( BUNDLE_IDENTIFIER "org.i8degrees.${PROJECT_NAME}" )
 set ( BUNDLE_COPYRIGHT_YEAR "2013" )
 set ( BUNDLE_COPYRIGHT_NAME "Jeffrey Carpenter" )
