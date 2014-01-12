@@ -137,7 +137,7 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
     } // end for argv[opt] loop
 
     // If we have got this far, we assume command execution was successful
-    exit ( NOM_EXIT_SUCCESS );
+    exit(NOM_EXIT_SUCCESS);
   } // end argc > 1
 
 // These definitions are influenced at build time with CMake options and serve
@@ -164,7 +164,7 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
   if ( nom::init_third_party(0) == false )
   {
     nom::DialogMessageBox ( "Critical Error", "Could not load third party libraries" );
-    exit ( NOM_EXIT_FAILURE );
+    exit(NOM_EXIT_FAILURE);
   }
 
   atexit(nom::quit);
@@ -270,7 +270,7 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.ge
 
   if ( this->game->scoreboard_font.load ( this->game->config.getString("SCORE_FONTFACE"), 0 ) == true )
   {
-    // TODO: this->game->scoreboard_font.set_outline ( 1 );
+    this->game->scoreboard_font.set_outline ( 1 );
   }
   else
   {
@@ -280,7 +280,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
 
   if ( this->game->gameover_font.load ( this->game->config.getString("GAMEOVER_FONTFACE"), 0 ) == true )
   {
-    // TODO: this->game->gameover_font.set_outline ( 1 );
+    this->game->gameover_font.set_outline ( 1 );
   }
   else
   {
