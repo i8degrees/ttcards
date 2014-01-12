@@ -53,40 +53,35 @@ struct GameObject
   /// Master volume control
   nom::OpenAL::Listener listener;
 
+  /// Audio buffers (one buffer per sound)
+  nom::OpenAL::SoundBuffer sound_buffers[12]; // Four buffers are intentionally
+                                              // left unallocated
+
   /// Cursor has been moved sound event
-  nom::OpenAL::SoundBuffer cursor_move_buffer;
   nom::OpenAL::Sound cursor_move;
 
   /// Action has been canceled sound event
-  nom::OpenAL::SoundBuffer cursor_cancel_buffer;
   nom::OpenAL::Sound cursor_cancel;
 
   /// Invalid action sound event
-  nom::OpenAL::SoundBuffer cursor_wrong_buffer;
   nom::OpenAL::Sound cursor_wrong;
 
   /// Card has been placed sound event
-  nom::OpenAL::SoundBuffer card_place_buffer;
   nom::OpenAL::Sound card_place;
 
   /// Card has been flipped sound event
-  nom::OpenAL::SoundBuffer card_flip_buffer;
   nom::OpenAL::Sound card_flip;
 
   /// Load saved game sound event
-  nom::OpenAL::SoundBuffer load_game_buffer;
   nom::OpenAL::Sound load_game;
 
   /// Save game sound event
-  nom::OpenAL::SoundBuffer save_game_buffer;
   nom::OpenAL::Sound save_game;
 
   /// Theme song track
-  nom::OpenAL::SoundBuffer music_buffer;
   nom::OpenAL::Music music_track;
 
   /// Player 1 has won track
-  nom::OpenAL::SoundBuffer winning_buffer;
   nom::OpenAL::Music winning_track;
 
   /// Font resources

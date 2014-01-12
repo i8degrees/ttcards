@@ -337,60 +337,60 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   }
 
   // Load optional audio resources
-  if ( this->game->cursor_move_buffer.load ( this->game->config.getString("CURSOR_MOVE") ) == false )
+  if ( this->game->sound_buffers[0].load ( this->game->config.getString("CURSOR_MOVE") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_MOVE") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_MOVE") );
   }
 
-  if ( this->game->cursor_cancel_buffer.load ( this->game->config.getString("CURSOR_CANCEL") ) == false )
+  if ( this->game->sound_buffers[1].load ( this->game->config.getString("CURSOR_CANCEL") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_CANCEL") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_CANCEL") );
   }
 
-  if ( this->game->cursor_wrong_buffer.load ( this->game->config.getString("CURSOR_WRONG") ) == false )
+  if ( this->game->sound_buffers[2].load ( this->game->config.getString("CURSOR_WRONG") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_WRONG") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CURSOR_WRONG") );
   }
 
-  if ( this->game->card_place_buffer.load ( this->game->config.getString("CARD_PLACE") ) == false )
+  if ( this->game->sound_buffers[3].load ( this->game->config.getString("CARD_PLACE") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARD_PLACE") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARD_PLACE") );
   }
 
-  if ( this->game->card_flip_buffer.load ( this->game->config.getString("CARD_FLIP") ) == false )
+  if ( this->game->sound_buffers[4].load ( this->game->config.getString("CARD_FLIP") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARD_FLIP") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("CARD_FLIP") );
   }
 
-  if ( this->game->load_game_buffer.load ( this->game->config.getString("SFX_LOAD_GAME") ) == false )
+  if ( this->game->sound_buffers[5].load ( this->game->config.getString("SFX_LOAD_GAME") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SFX_LOAD_GAME") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SFX_LOAD_GAME") );
   }
 
-  if ( this->game->save_game_buffer.load ( this->game->config.getString("SFX_SAVE_GAME") ) == false )
+  if ( this->game->sound_buffers[6].load ( this->game->config.getString("SFX_SAVE_GAME") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SFX_SAVE_GAME") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("SFX_SAVE_GAME") );
   }
 
-  if ( this->game->music_buffer.load ( this->game->config.getString("MUSIC_TRACK") ) == false )
+  if ( this->game->sound_buffers[7].load ( this->game->config.getString("MUSIC_TRACK") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MUSIC_TRACK") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MUSIC_TRACK") );
   }
 
-  if ( this->game->winning_buffer.load ( this->game->config.getString("MUSIC_WIN_TRACK") ) == false )
+  if ( this->game->sound_buffers[8].load ( this->game->config.getString("MUSIC_WIN_TRACK") ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MUSIC_WIN_TRACK") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->game->config.getString("MUSIC_WIN_TRACK") );
   }
 
-  this->game->cursor_move.setBuffer ( this->game->cursor_move_buffer );
-  this->game->cursor_cancel.setBuffer ( this->game->cursor_cancel_buffer );
-  this->game->cursor_wrong.setBuffer ( this->game->cursor_wrong_buffer );
-  this->game->card_place.setBuffer ( this->game->card_place_buffer );
-  this->game->card_flip.setBuffer ( this->game->card_flip_buffer );
-  this->game->load_game.setBuffer ( this->game->load_game_buffer );
-  this->game->save_game.setBuffer ( this->game->save_game_buffer );
-  this->game->music_track.setBuffer ( this->game->music_buffer );
-  this->game->winning_track.setBuffer ( this->game->winning_buffer );
+  this->game->cursor_move.setBuffer ( this->game->sound_buffers[0] );
+  this->game->cursor_cancel.setBuffer ( this->game->sound_buffers[1] );
+  this->game->cursor_wrong.setBuffer ( this->game->sound_buffers[2] );
+  this->game->card_place.setBuffer ( this->game->sound_buffers[3] );
+  this->game->card_flip.setBuffer ( this->game->sound_buffers[4] );
+  this->game->load_game.setBuffer ( this->game->sound_buffers[5] );
+  this->game->save_game.setBuffer ( this->game->sound_buffers[6] );
+  this->game->music_track.setBuffer ( this->game->sound_buffers[7] );
+  this->game->winning_track.setBuffer ( this->game->sound_buffers[8] );
 
   this->game->music_track.Play();
 
