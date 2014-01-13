@@ -48,7 +48,7 @@ class GameOverState: public nom::IState
 {
   public:
     GameOverState (
-                    std::shared_ptr<GameObject> object,
+                    const std::shared_ptr<GameObject>& object,
                     enum GameOverType gameover_state
                   );
 

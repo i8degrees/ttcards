@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuState.hpp"
 
-ContinueMenuState::ContinueMenuState ( std::shared_ptr<GameObject> object )
+ContinueMenuState::ContinueMenuState ( const std::shared_ptr<GameObject>& object )
 {
 NOM_LOG_TRACE ( TTCARDS );
 

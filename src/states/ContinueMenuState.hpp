@@ -44,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class ContinueMenuState: public nom::IState
 {
   public:
-    ContinueMenuState ( std::shared_ptr<GameObject> object );
+    ContinueMenuState ( const std::shared_ptr<GameObject>& object );
     ~ContinueMenuState ( void );
 
   private:

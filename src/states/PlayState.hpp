@@ -56,7 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class PlayState: public nom::IState
 {
   public:
-    PlayState ( std::shared_ptr<GameObject> object );
+    PlayState ( const std::shared_ptr<GameObject>& object );
     ~PlayState ( void );
 
     void onInit ( void );

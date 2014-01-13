@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardsMenuState.hpp"
 #include "ContinueMenuState.hpp"
 
-GameOverState::GameOverState  ( std::shared_ptr<GameObject> object,
+GameOverState::GameOverState  ( const std::shared_ptr<GameObject>& object,
                                 enum GameOverType gameover_state
                               )
 {

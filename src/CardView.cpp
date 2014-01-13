@@ -60,7 +60,7 @@ CardView::~CardView ( void )
 NOM_LOG_TRACE ( TTCARDS );
 }
 
-bool CardView::load ( GameConfig* config, const nom::IFont& card_font )
+bool CardView::load ( const GameConfig* config, const nom::IFont& card_font )
 {
   if ( config == nullptr ) return false;
 

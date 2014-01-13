@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class PauseState: public nom::IState
 {
   public:
-    PauseState ( std::shared_ptr<GameObject> object );
+    PauseState ( const std::shared_ptr<GameObject>& object );
     ~PauseState ( void );
   private:
     void onInit ( void );

@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameOverState.hpp"
 #include "PauseState.hpp"
 
-PlayState::PlayState ( std::shared_ptr<GameObject> object )
+PlayState::PlayState ( const std::shared_ptr<GameObject>& object )
 {
 NOM_LOG_TRACE ( TTCARDS );
 

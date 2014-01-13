@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PauseState.hpp"
 
-PauseState::PauseState ( std::shared_ptr<GameObject> object )
+PauseState::PauseState ( const std::shared_ptr<GameObject>& object )
 {
 NOM_LOG_TRACE ( TTCARDS );
 

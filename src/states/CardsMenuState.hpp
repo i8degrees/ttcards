@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardsMenuState: public nom::IState
 {
   public:
-    CardsMenuState ( std::shared_ptr<GameObject> object );
+    CardsMenuState ( const std::shared_ptr<GameObject>& object );
     ~CardsMenuState ( void );
 
     void onInit ( void );

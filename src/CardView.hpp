@@ -56,7 +56,7 @@ class CardView: public nom::IDrawable
     /// Load the resources used in rendering a card
     ///
     /// The failure of any of these resources results in failure
-    bool load ( GameConfig* config, const nom::IFont& card_font );
+    bool load ( const GameConfig* config, const nom::IFont& card_font );
 
     /// Render the complete card -- its background, face, element and text.
     void draw (

@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 #include "PlayState.hpp"
 
-CardsMenuState::CardsMenuState ( std::shared_ptr<GameObject> object )
+CardsMenuState::CardsMenuState ( const std::shared_ptr<GameObject>& object )
 {
   nom::Gradient linear;
 
