@@ -43,7 +43,7 @@ NOM_LOG_TRACE ( TTCARDS );
 void ContinueMenuState::onInit ( void )
 {
   nom::Gradient linear;
-  nom::Label option_text = nom::Label("Are you sure?\nYes\nNo", this->game->info_text, 12, nom::Label::Alignment::MiddleCenter);
+  nom::Text option_text = nom::Text("Are you sure?\nYes\nNo", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
 
   linear.set_start_color ( nom::Color4i::Gray );
   linear.set_end_color ( nom::Color4i::LightGray );
@@ -55,7 +55,7 @@ void ContinueMenuState::onInit ( void )
                                           nom::MessageBox::Style::Gray, linear
                                         );
 
-  this->info_box.set_title ( nom::Label("CHOICE", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
+  this->info_box.set_title ( nom::Text("CHOICE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
   this->info_box.set_text ( option_text );
 
 //NOM_DUMP_VAR ( this->game->info_text.getMultiLineTextWidth("Are you sure?\nYes\nNo") );

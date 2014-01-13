@@ -113,7 +113,7 @@ class CardView: public nom::IDrawable
     bool card_face_down;
 
     DrawableList card;
-    std::shared_ptr<nom::Label> card_text;
+    std::shared_ptr<nom::Text> card_text;
     std::shared_ptr<nom::SpriteBatch> card_face;
     std::shared_ptr<nom::SpriteBatch> card_element;
     std::shared_ptr<nom::Gradient> card_background;

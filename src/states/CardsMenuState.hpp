@@ -106,8 +106,8 @@ class CardsMenuState: public nom::IState
     /// Position of the card selection from the menu list
     nom::Coords card_pos;
 
-    nom::Label title_text;
-    nom::Label card_text;
+    nom::Text title_text;
+    nom::Text card_text;
 };
 
 // Convenience declarations for changing state

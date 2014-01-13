@@ -103,8 +103,8 @@ void CardsMenuState::onInit ( void )
   this->info_text_height = this->card_text.height() + 4;
 
   // FIXME: We must set the menu_box labels to quiet the debug logs
-  this->menu_box.set_title ( nom::Label("",this->game->info_small_text,0) );
-  this->menu_box.set_text ( nom::Label("",this->game->info_text,0) );
+  this->menu_box.set_title ( nom::Text("",this->game->info_small_text,0) );
+  this->menu_box.set_text ( nom::Text("",this->game->info_text,0) );
 
   this->title_text.set_font ( this->game->info_small_text );
 

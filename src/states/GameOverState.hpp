@@ -91,8 +91,8 @@ class GameOverState: public nom::IState
 
     nom::EventDispatcher event;
 
-    nom::Label info_text;
-    nom::Label card_text;
+    nom::Text info_text;
+    nom::Text card_text;
 };
 
 // Convenience declarations for changing state

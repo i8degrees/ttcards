@@ -65,7 +65,7 @@ class PauseState: public nom::IState
     bool blink_text;
 
     nom::MessageBox info_box;
-    nom::Label title_text[2];
+    nom::Text title_text[2];
 };
 
 // Convenience declarations for changing state

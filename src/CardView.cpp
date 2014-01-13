@@ -38,7 +38,7 @@ NOM_LOG_TRACE ( TTCARDS );
   this->card_background = std::shared_ptr<nom::Gradient> ( new nom::Gradient() );
   this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
   this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
-  this->card_text = std::shared_ptr<nom::Label> ( new nom::Label() );
+  this->card_text = std::shared_ptr<nom::Text> ( new nom::Text() );
 
   card.push_back ( this->card_background );
   card.push_back ( this->card_face );

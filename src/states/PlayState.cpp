@@ -99,13 +99,13 @@ void PlayState::onInit ( void )
   {
     this->scoreboard_text[idx].set_font ( this->game->scoreboard_font );
     this->scoreboard_text[idx].set_text_size ( 48 * SCALE_FACTOR );
-    this->scoreboard_text[idx].set_style ( nom::Label::Style::Italic );
+    this->scoreboard_text[idx].set_style ( nom::Text::Style::Italic );
   }
 
   // Initialize game over text
   this->gameover_text.set_font ( this->game->gameover_font );
   this->gameover_text.set_text_size ( 48 * SCALE_FACTOR );
-  this->gameover_text.set_style ( nom::Label::Style::Italic );
+  this->gameover_text.set_style ( nom::Text::Style::Italic );
 
   for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
@@ -128,14 +128,14 @@ void PlayState::onInit ( void )
                                           nom::MessageBox::Style::Gray, linear
                                         );
 
-  this->info_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
-  this->debug_box.set_title ( nom::Label("INFO.", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) );
+  this->info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->debug_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
 
   this->debug_text.set_font ( this->game->info_text );
-  this->debug_text.set_alignment ( nom::Label::Alignment::MiddleCenter );
+  this->debug_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
 
   this->info_text.set_font ( this->game->info_text );
-  this->info_text.set_alignment ( nom::Label::Alignment::MiddleCenter );
+  this->info_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
 
 #if ! defined (NOM_DEBUG)
   this->debug_box.disable();
@@ -1034,7 +1034,7 @@ void PlayState::draw ( nom::IDrawable::RenderTarget target )
     nom::Coords pos = nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 
     this->gameover_text.set_position ( pos );
-    this->gameover_text.set_alignment ( nom::Label::Alignment::MiddleCenter );
+    this->gameover_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
     this->gameover_text.draw ( target );
     this->game->window.update();
 

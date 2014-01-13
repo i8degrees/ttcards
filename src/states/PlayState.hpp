@@ -139,10 +139,10 @@ class PlayState: public nom::IState
 
     enum GameOverType gameover_state;
 
-    nom::Label debug_text;
-    nom::Label info_text;
-    nom::Label scoreboard_text[2];
-    nom::Label gameover_text;
+    nom::Text debug_text;
+    nom::Text info_text;
+    nom::Text scoreboard_text[2];
+    nom::Text gameover_text;
 };
 
 // Convenience declarations for changing state

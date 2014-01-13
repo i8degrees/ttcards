@@ -44,8 +44,8 @@ void PauseState::onInit ( void )
 {
   nom::Gradient linear;
 
-  this->title_text[0] = { nom::Label("PAUSE", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) };
-  this->title_text[1] = { nom::Label("", this->game->info_small_text, 9, nom::Label::Alignment::TopLeft) };
+  this->title_text[0] = { nom::Text("PAUSE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
+  this->title_text[1] = { nom::Text("", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
 
   linear.set_start_color ( nom::Color4i ( 67, 67, 67, 255 ) );
   linear.set_end_color ( nom::Color4i ( 99, 99, 99, 255 ) );
@@ -60,7 +60,7 @@ void PauseState::onInit ( void )
                                     );
 
   this->info_box.set_title ( this->title_text[0] );
-  this->info_box.set_text ( nom::Label(SHORT_VERSION_INFO, this->game->info_text, 12, nom::Label::Alignment::MiddleCenter) );
+  this->info_box.set_text ( nom::Text(SHORT_VERSION_INFO, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
 
   this->blink_update.start();
 }
