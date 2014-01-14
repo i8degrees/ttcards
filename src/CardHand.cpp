@@ -44,7 +44,7 @@ NOM_LOG_TRACE ( TTCARDS );
   this->clear();
 }
 
-bool CardHand::push_back ( Card& card )
+bool CardHand::push_back ( const Card& card )
 {
   // No go; we already have this card somewhere in our hand
   if ( this->exists( card ) == true ) return false;
@@ -201,7 +201,7 @@ bool CardHand::exists ( const Card& card ) const
   return false;
 }
 
-void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, CardCollection& db, nom::int32 seedling )
+void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling )
 {
   // Cards are picked out using our random number equal distribution generator;
   // this needs to be a value between 0..Card::CARDS_COLLECTION in order to yield a

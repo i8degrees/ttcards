@@ -53,7 +53,7 @@ class CardHand
     CardHand ( void );
     ~CardHand ( void );
 
-    bool push_back ( Card& card );
+    bool push_back ( const Card& card );
     bool erase ( Card& card );
 
     void clearSelectedCard ( void );
@@ -101,7 +101,7 @@ class CardHand
     ///
     /// Do not forget to set the proper player ID on your new card objects
     /// before heading off into battle!
-    void randomize ( nom::int32 level_min, nom::int32 level_max, CardCollection& db, nom::int32 seedling = 0 );
+    void randomize ( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling = 0 );
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
     /// compliant objects.
