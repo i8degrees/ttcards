@@ -42,9 +42,6 @@ NOM_LOG_TRACE ( TTCARDS );
   this->cursor_locked = false;
   this->skip_turn = false;
   this->gameover_state = GameOverType::NotOver;
-
-  // this->game->hand[0] is initialized for us in the CardsMenu state
-  this->game->hand[1].clear();
 }
 
 PlayState::~PlayState ( void )
@@ -67,6 +64,14 @@ void PlayState::Resume ( void )
 void PlayState::onInit ( void )
 {
   nom::Gradient linear;
+
+  if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+  {
+    this->game->hand[0].randomize ( 8, 10, this->game->collection );
+  }
+
+  // Clear CPUPlayer's hand (we will initialize it here soon enough
+  this->game->hand[1].clear();
 
   // Random seeding for picking out whose turn it is initially
   nom::int32 seed = std::chrono::system_clock::now().time_since_epoch().count();

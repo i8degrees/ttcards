@@ -145,10 +145,6 @@ void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 win
 
     case SDLK_RETURN:
     {
-      if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
-      {
-        this->game->hand[0].randomize ( 8, 10, this->game->collection );
-      }
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
     }
     break;
@@ -186,12 +182,6 @@ void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 
     case nom::PSXBUTTON::START:
     {
-#if defined (NOM_DEBUG)
-      if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
-      {
-        this->game->hand[0].randomize ( 8, 10, this->game->collection );
-      }
-#endif
       nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
       break;
     }
