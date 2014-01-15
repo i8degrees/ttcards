@@ -71,7 +71,7 @@ class Game: public nom::SDLApp
     /// Run app loop
     nom::int32 Run ( void );
 
-    void set_state ( uint32 id, nom::void_ptr data = nullptr );
+    void set_state ( nom::uint32 id, nom::void_ptr data = nullptr );
 
     /// Audio subsystem
     nom::OpenAL::AudioDevice dev;

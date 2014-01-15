@@ -590,7 +590,7 @@ int32_t Game::Run ( void )
   return NOM_EXIT_SUCCESS;
 }
 
-void Game::set_state ( uint32 id, nom::void_ptr data )
+void Game::set_state ( nom::uint32 id, nom::void_ptr data )
 {
   switch ( id )
   {
