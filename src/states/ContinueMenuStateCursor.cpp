@@ -82,7 +82,7 @@ NOM_DUMP_VAR ( this->y() );
 
 nom::int32 ContinueMenuStateCursor::move_down ( void )
 {
-  if ( this->y() < 240 )
+  if ( this->y() < 128 )
   {
     this->move ( 0, 16 );
     this->next();
