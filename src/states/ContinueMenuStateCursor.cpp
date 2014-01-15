@@ -28,33 +28,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuStateCursor.hpp"
 
-ContinueMenuStateCursor::ContinueMenuStateCursor ( void )
+ContinueMenuStateCursor::ContinueMenuStateCursor ( void ) :
+  //Cursor()
+  cursor_position ( 0 )
 {
-NOM_LOG_TRACE( TTCARDS );
-  this->cursor_position = 0;
-}
-
-ContinueMenuStateCursor::ContinueMenuStateCursor  (
-                                                    const nom::SpriteSheet& sheet
-                                                  ) : Cursor ( sheet )
-{
-NOM_LOG_TRACE( TTCARDS );
-
-  this->cursor_position = 0;
-}
-
-ContinueMenuStateCursor::ContinueMenuStateCursor  (
-                                                    const std::string& filename
-                                                  ) : Cursor ( filename )
-{
-NOM_LOG_TRACE( TTCARDS );
-
-  this->cursor_position = 0;
+  //NOM_LOG_TRACE( TTCARDS );
 }
 
 ContinueMenuStateCursor::~ContinueMenuStateCursor ( void )
 {
-NOM_LOG_TRACE( TTCARDS );
+  //NOM_LOG_TRACE( TTCARDS );
+}
+
+ContinueMenuStateCursor::ContinueMenuStateCursor  (
+                                                    const nom::SpriteSheet& sheet
+                                                  ) :
+  Cursor ( sheet ),
+  cursor_position ( 0 )
+{
+  //NOM_LOG_TRACE( TTCARDS );
+}
+
+ContinueMenuStateCursor::ContinueMenuStateCursor  (
+                                                    const std::string& filename
+                                                  ) :
+  Cursor ( filename ),
+  cursor_position ( 0 )
+{
+  //NOM_LOG_TRACE( TTCARDS );
 }
 
 void ContinueMenuStateCursor::set_position_map ( const nom::Coords& position_map )
@@ -76,7 +77,7 @@ nom::int32 ContinueMenuStateCursor::move_up ( void )
     this->previous();
   }
 
-NOM_DUMP_VAR ( this->y() );
+  //NOM_DUMP_VAR ( this->y() );
   return this->y();
 }
 
@@ -88,14 +89,14 @@ nom::int32 ContinueMenuStateCursor::move_down ( void )
     this->next();
   }
 
-NOM_DUMP_VAR ( this->y() );
+  //NOM_DUMP_VAR ( this->y() );
   return this->y();
 }
 
 void ContinueMenuStateCursor::next ( void )
 {
   this->cursor_position++;
-NOM_DUMP_VAR(this->cursor_position);
+  //NOM_DUMP_VAR(this->cursor_position);
 
   this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
 }
@@ -103,7 +104,7 @@ NOM_DUMP_VAR(this->cursor_position);
 void ContinueMenuStateCursor::previous ( void )
 {
   this->cursor_position--;
-NOM_DUMP_VAR(this->cursor_position);
+  //NOM_DUMP_VAR(this->cursor_position);
 
   this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
 }

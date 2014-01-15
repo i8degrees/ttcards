@@ -45,15 +45,11 @@ class ContinueMenuStateCursor: public nom::Cursor
   public:
     ContinueMenuStateCursor ( void );
 
-    ContinueMenuStateCursor (
-                              const nom::SpriteSheet& sheet
-                            );
-
-    ContinueMenuStateCursor (
-                              const std::string& filename
-                            );
-
     ~ContinueMenuStateCursor ( void );
+
+    ContinueMenuStateCursor ( const nom::SpriteSheet& sheet );
+
+    ContinueMenuStateCursor ( const std::string& filename );
 
     /// Set a new positioning object for this instance to use
     void set_position_map ( const nom::Coords& position_map );

@@ -599,44 +599,31 @@ void Game::set_state ( nom::uint32 id, nom::void_ptr data )
   {
     default: /* Ignore unknown identifiers */ break;
 
-    case State::CardsMenu:
+    case Game::State::CardsMenu:
     {
       SDLApp::set_state( CardsMenuStatePtr( new CardsMenuState( this->game ) ), data );
       break;
     }
 
-    case State::Play:
+    case Game::State::Play:
     {
       SDLApp::set_state( PlayStatePtr( new PlayState( this->game ) ), data );
       break;
     }
 
-    case State::GameOver:
+    case Game::State::GameOver:
     {
       SDLApp::set_state( GameOverStatePtr( new GameOverState( this->game, data ) ), data );
       break;
     }
 
-    case State::Pause:
+    case Game::State::Pause:
     {
-      // TODO: explain why this is needed
-/*
-      if ( this->game->state_id() != Game::State::Pause && this->game->state_id() != Game::State::GameOver )
-      {
-        this->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
-      }
-      else
-      {
-        // FIXME: Game crashes if we un-pause the game while in GameOverState;
-        // by checking for the absence of the state is a workaround patch.
-        this->pop_state();
-      }
-*/
       this->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
       break;
     }
 
-    case State::ContinueMenu:
+    case Game::State::ContinueMenu:
     {
       SDLApp::push_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
       break;

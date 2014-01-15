@@ -58,55 +58,42 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
   this->info_box.set_title ( nom::Text("CHOICE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
   this->info_box.set_text ( option_text );
 
-//NOM_DUMP_VAR ( this->game->info_text.getMultiLineTextWidth("Are you sure?\nYes\nNo") );
-//nom::int32 text_width = this->game->info_text.getFontWidth();
-//nom::int32 text_height = this->game->info_text.getFontHeight();
-//NOM_DUMP_VAR ( text_width );
-//NOM_DUMP_VAR ( text_height );
-//NOM_DUMP_VAR ( this->game->info_text.getNewline() );
-
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
 
-  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), 0 ) == true )
+  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), 0 ) == false )
   {
-    if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
-    {
-      //this->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    }
-    else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
-    {
-      //this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    }
-
-      this->position_map = nom::Coords  (
-                                          OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 ),
-                                          OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 )
-                                          +
-                                          ( option_text.height() / 2 )
-                                        );
-
-NOM_DUMP_VAR(option_text.height());
-    this->cursor.set_position_map ( position_map );
-
-    this->cursor.setSize ( CURSOR_WIDTH, CURSOR_HEIGHT );
-
-    this->cursor.set_position (
-                                ( OPTION_BOX_ORIGIN_X ) - CURSOR_WIDTH,
-                                ( OPTION_BOX_ORIGIN_Y ) + ( OPTION_BOX_HEIGHT / 2 )
-                              );
-
-    this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
-  }
-  else // EPIC FAIL
-  {
-#if defined (NOM_DEBUG)
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
-#else
-    nom::DialogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
-#endif
+    // EPIC FAIL
+    nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
     exit ( NOM_EXIT_FAILURE );
   }
+
+  if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
+  {
+    //this->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+  }
+  else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
+  {
+    //this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+  }
+
+  this->position_map = nom::Coords  (
+                                      OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 ),
+                                      OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 )
+                                      +
+                                      ( option_text.height() / 2 )
+                                    );
+
+  this->cursor.set_position_map ( position_map );
+
+  this->cursor.setSize ( CURSOR_WIDTH, CURSOR_HEIGHT );
+
+  this->cursor.set_position (
+                              ( OPTION_BOX_ORIGIN_X ) - CURSOR_WIDTH,
+                              ( OPTION_BOX_ORIGIN_Y ) + ( OPTION_BOX_HEIGHT / 2 )
+                            );
+
+  this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
 }
 
 void ContinueMenuState::on_exit ( nom::void_ptr data )
