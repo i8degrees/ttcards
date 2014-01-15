@@ -7,6 +7,7 @@ set (
       TTCARDS_SOURCE
       ${SRC_DIR}/version.cpp
       ${SRC_DIR}/resources.cpp
+      ${SRC_DIR}/main.cpp
       ${SRC_DIR}/GameConfig.cpp
       ${SRC_DIR}/Board.cpp
       ${SRC_DIR}/BoardTile.cpp

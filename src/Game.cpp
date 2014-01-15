@@ -652,23 +652,3 @@ void free_game ( Game* game )
 }
 
 } // namespace tt
-
-int main ( int argc, char* argv[] )
-{
-  Game engine ( argc, argv );
-
-  if ( engine.on_init() == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not initialize game." );
-    return NOM_EXIT_FAILURE;
-  }
-
-#ifdef EMSCRIPTEN
-  // TODO
-#else
-  return engine.Run();
-#endif
-
-  // This is past the point of execution; all execution must reside within our
-  // Game class
-}
