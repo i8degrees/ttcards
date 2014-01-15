@@ -51,21 +51,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Player.hpp"
 #include "Card.hpp"
 //#include "cpu_player.hpp"
-#include "GameObject.hpp"
+
+#include "Game.hpp"
 
 class PlayState: public nom::IState
 {
   public:
-    PlayState ( const std::shared_ptr<GameObject>& object );
+    PlayState ( const nom::SDLApp::SharedPtr& object );
     ~PlayState ( void );
 
-    void onInit ( void );
-    void onExit ( void );
-    void Pause ( void );
-    void Resume ( void );
+    void on_init ( void );
+    void on_exit ( void );
+    void on_pause ( void );
+    void on_resume ( nom::void_ptr data );
 
-    void update ( float delta_time );
-    void draw ( nom::IDrawable::RenderTarget target );
+    void on_update ( float delta_time );
+    void on_draw ( nom::IDrawable::RenderTarget target );
 
   private:
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
@@ -101,7 +102,7 @@ class PlayState: public nom::IState
     /// Update each player's scoreboard
     void updateScore ( void );
 
-    std::shared_ptr<GameObject> game;
+    App::SharedPtr game;
 
     nom::MessageBox info_box;
     nom::MessageBox debug_box;

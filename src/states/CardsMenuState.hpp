@@ -40,23 +40,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "resources.hpp"
 #include "Card.hpp"
-#include "GameObject.hpp"
 #include "CardsMenuStateCursor.hpp"
+
+#include "Game.hpp"
 
 class CardsMenuState: public nom::IState
 {
   public:
-    CardsMenuState ( const std::shared_ptr<GameObject>& object );
+    CardsMenuState ( const nom::SDLApp::SharedPtr& object );
     ~CardsMenuState ( void );
 
-    void onInit ( void );
-    void onExit ( void );
+    void on_init ( void );
+    void on_exit ( void );
 
-    void Pause ( void );
-    void Resume ( void );
+    void on_pause ( void );
+    void on_resume ( nom::void_ptr data );
 
-    void update ( float delta_time );
-    void draw ( nom::IDrawable::RenderTarget target );
+    void on_update ( float delta_time );
+    void on_draw ( nom::IDrawable::RenderTarget target );
 
   private:
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
@@ -74,7 +75,7 @@ class CardsMenuState: public nom::IState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    std::shared_ptr<GameObject> game;
+    App::SharedPtr game;
 
     nom::MessageBox menu_box;
 

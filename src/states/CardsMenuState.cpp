@@ -28,18 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardsMenuState.hpp"
 
-#include "PauseState.hpp"
-#include "PlayState.hpp"
-
-CardsMenuState::CardsMenuState ( const std::shared_ptr<GameObject>& object )
+CardsMenuState::CardsMenuState ( const nom::SDLApp::SharedPtr& object ) :
+  game { std::dynamic_pointer_cast<App> (object) }
 {
   nom::Gradient linear;
 
-  unsigned int pid = 0; // temp var for for loop iteration
+  nom::uint pid = 0; // temp var for for loop iteration
 
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 
-  this->game = object;
   this->game->hand[0].clear();
   this->game->hand[1].clear();
 
@@ -90,7 +87,7 @@ NOM_LOG_TRACE ( TTCARDS );
   this->selectedCard = Card();
 }
 
-void CardsMenuState::onInit ( void )
+void CardsMenuState::on_init ( void )
 {
   unsigned int idx = 0; // iterator for cursor_coords_map
 
@@ -122,17 +119,17 @@ void CardsMenuState::onInit ( void )
   }
 }
 
-void CardsMenuState::onExit ( void )
+void CardsMenuState::on_exit ( void )
 {
   std::cout << "\n" << "CardsMenu state onExit" << "\n";
 }
 
-void CardsMenuState::Pause ( void )
+void CardsMenuState::on_pause ( void )
 {
   std::cout << "\n" << "CardsMenu state Paused" << "\n";
 }
 
-void CardsMenuState::Resume ( void )
+void CardsMenuState::on_resume ( nom::void_ptr data )
 {
   std::cout << "\n" << "CardsMenu state Resumed" << "\n";
 }
@@ -143,11 +140,18 @@ void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 win
   {
     default: break;
 
+    // Pause game
+    case SDLK_p:
+    {
+      this->game->set_state( App::State::Pause );
+      break;
+    }
+
     case SDLK_RETURN:
     {
-      nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
+      this->game->set_state( 1 );
+      break;
     }
-    break;
 
     case SDLK_LEFT: this->moveCursorLeft(); break;
     case SDLK_RIGHT: this->moveCursorRight(); break;
@@ -182,7 +186,7 @@ void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 
     case nom::PSXBUTTON::START:
     {
-      nom::GameStates::ChangeState( PlayStatePtr( new PlayState ( this->game ) ) );
+      this->game->set_state( 1 );
       break;
     }
   } // switch
@@ -223,7 +227,7 @@ void CardsMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 wind
   this->game->cursor_move.Play();
 }
 
-void CardsMenuState::update ( float delta_time )
+void CardsMenuState::on_update ( float delta_time )
 {
   this->game->card.update();
 
@@ -233,7 +237,7 @@ void CardsMenuState::update ( float delta_time )
   this->game->window.update();
 }
 
-void CardsMenuState::draw ( nom::IDrawable::RenderTarget target )
+void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 

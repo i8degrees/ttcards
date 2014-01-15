@@ -35,30 +35,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 
 #include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
 #include "resources.hpp"
 #include "Card.hpp"
-#include "GameObject.hpp"
 #include "CardRules.hpp"
 #include "GameOverStateCursor.hpp"
+
+#include "Game.hpp"
 
 class GameOverState: public nom::IState
 {
   public:
     GameOverState (
-                    const std::shared_ptr<GameObject>& object,
-                    enum GameOverType gameover_state
+                    const nom::SDLApp::SharedPtr& object,
+                    nom::void_ptr state
                   );
 
     ~GameOverState ( void );
 
   private:
-    void onInit ( void );
-    void onExit ( void );
+    void on_init ( void );
+    void on_exit ( void );
 
-    void Resume ( nom::int32 response );
+    void on_resume ( nom::void_ptr data );
 
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
@@ -66,14 +68,15 @@ class GameOverState: public nom::IState
     void onJoyButtonDown ( nom::int32 which, nom::int32 button );
     void onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 );
 
-    void update ( float delta_time );
-    void draw ( nom::IDrawable::RenderTarget target );
+    void on_update ( float delta_time );
+    void on_draw ( nom::IDrawable::RenderTarget target );
 
-    std::shared_ptr<GameObject> game;
+    App::SharedPtr game;
 
     nom::Timer transistion;
     bool show_results;
-    enum GameOverType gameover_state;
+
+    //nom::void_ptr gameover_state;
 
     /// Interface cursor
     GameOverStateCursor cursor;

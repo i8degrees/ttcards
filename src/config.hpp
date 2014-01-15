@@ -345,7 +345,7 @@ enum {
   PLAYER2=1
 };
 
-enum GameOverType
+enum GameOverType: nom::uint32
 {
   NotOver = 0,
   Tie,

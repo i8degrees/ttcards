@@ -28,19 +28,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PauseState.hpp"
 
-PauseState::PauseState ( const std::shared_ptr<GameObject>& object )
+PauseState::PauseState ( const nom::SDLApp::SharedPtr& object ) :
+  nom::IState { App::State::Pause, 0, nom::IState::StateFlags::BackRender },
+  game { std::dynamic_pointer_cast<App> (object) }
 {
-NOM_LOG_TRACE ( TTCARDS );
-
-  this->game = object;
+  NOM_LOG_TRACE( TTCARDS );
 }
 
 PauseState::~PauseState ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 }
 
-void PauseState::onInit ( void )
+void PauseState::on_init ( void )
 {
   nom::Gradient linear;
 
@@ -65,17 +65,17 @@ void PauseState::onInit ( void )
   this->blink_update.start();
 }
 
-void PauseState::onExit ( void )
+void PauseState::on_exit ( void )
 {
   std::cout << "\n" << "PauseState state onExit" << "\n";
 }
 
-void PauseState::Pause ( void )
+void PauseState::on_pause ( void )
 {
   std::cout << "\n" << "PauseState state Paused" << "\n";
 }
 
-void PauseState::Resume ( void )
+void PauseState::on_resume ( nom::void_ptr data )
 {
   std::cout << "\n" << "PauseState state Resumed" << "\n";
 }
@@ -87,7 +87,7 @@ void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_
     default: break;
 
     // Exit pause state; resume previous state
-    case SDLK_p: nom::GameStates::PopState(); break;
+    case SDLK_p: this->game->pop_state(); break;
   }
 }
 
@@ -98,11 +98,11 @@ void PauseState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
     default: break;
 
     // Exit pause state; resume previous state
-    case nom::PSXBUTTON::START: nom::GameStates::PopState(); break;
+    case nom::PSXBUTTON::START: this->game->pop_state(); break;
   }
 }
 
-void PauseState::update ( float delta_time )
+void PauseState::on_update ( float delta_time )
 {
   this->info_box.set_title ( this->title_text[0] );
 
@@ -116,7 +116,7 @@ void PauseState::update ( float delta_time )
   this->game->window.update();
 }
 
-void PauseState::draw ( nom::IDrawable::RenderTarget target )
+void PauseState::on_draw ( nom::IDrawable::RenderTarget target )
 {
   this->info_box.draw ( target );
 

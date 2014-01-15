@@ -38,18 +38,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "ContinueMenuStateCursor.hpp"
-#include "CardsMenuState.hpp"
-#include "GameObject.hpp"
+#include "Game.hpp"
 
 class ContinueMenuState: public nom::IState
 {
   public:
-    ContinueMenuState ( const std::shared_ptr<GameObject>& object );
+    ContinueMenuState ( const nom::SDLApp::SharedPtr& object );
     ~ContinueMenuState ( void );
 
   private:
-    void onInit ( void );
-    void onExit ( void );
+    void on_init ( void );
+    void on_exit ( void );
+    void on_resume ( nom::void_ptr data );
 
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
@@ -57,10 +57,10 @@ class ContinueMenuState: public nom::IState
     void onJoyButtonDown ( nom::int32 which, nom::int32 button );
     void onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 );
 
-    void update ( float delta_time );
-    void draw ( nom::IDrawable::RenderTarget target );
+    void on_update ( float delta_time );
+    void on_draw ( nom::IDrawable::RenderTarget target );
 
-    std::shared_ptr<GameObject> game;
+    App::SharedPtr game;
 
     nom::MessageBox info_box;
     ContinueMenuStateCursor cursor;

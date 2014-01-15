@@ -28,27 +28,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverState.hpp"
 
-#include "PauseState.hpp"
-#include "CardsMenuState.hpp"
-#include "ContinueMenuState.hpp"
-
-GameOverState::GameOverState  ( const std::shared_ptr<GameObject>& object,
-                                enum GameOverType gameover_state
-                              )
+GameOverState::GameOverState  ( const nom::SDLApp::SharedPtr& object,
+                                nom::void_ptr state
+                              ) :
+  game { std::dynamic_pointer_cast<App> (object) },
+  show_results ( false )/*,
+  gameover_state { static_cast<nom::uint32_ptr>(state) }*/
 {
-NOM_LOG_TRACE ( TTCARDS );
-
-  this->game = object;
-  this->show_results = false;
-  this->gameover_state = gameover_state;
+  NOM_LOG_TRACE( TTCARDS );
 }
 
 GameOverState::~GameOverState ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 }
 
-void GameOverState::onInit ( void )
+void GameOverState::on_init ( void )
 {
   nom::Gradient linear;
 
@@ -203,16 +198,17 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   this->transistion.start();
 }
 
-void GameOverState::onExit ( void )
+void GameOverState::on_exit ( void )
 {
 NOM_LOG_TRACE ( TTCARDS );
 
   this->game->winning_track.Stop();
 }
 
-void GameOverState::Resume ( nom::int32 response )
+void GameOverState::on_resume ( nom::void_ptr data )
 {
-  if ( response == 0 )
+  nom::int32_ptr response = static_cast<nom::int32_ptr> (data);
+  if ( *response == 0 ) // ContinueMenuState: Yes to picked out card
   {
     event.dispatch ( nom::EventDispatcher::UserEvent::Animation );
   }
@@ -222,13 +218,17 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
 {
   switch ( key )
   {
-    default: break;
-
-    // Start a new game
-    case SDLK_RETURN: nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) ); break;
+    default: /* Ignore non-mapped keys */ break;
 
     // Pause game
-    case SDLK_p: nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) ); break;
+    case SDLK_p:
+    {
+      //this->game->set_state( App::State::Pause );
+      break;
+    }
+
+    // Start a new game
+    case SDLK_RETURN: this->game->set_state( App::State::CardsMenu );
 
     case SDLK_LEFT: this->cursor.move_left(); break;
     case SDLK_RIGHT: this->cursor.move_right(); break;
@@ -236,9 +236,9 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
     {
       this->selected_card = this->game->hand[1].getSelectedCard();
 
-      nom::GameStates::PushState ( ContinueMenuStatePtr ( new ContinueMenuState ( this->game ) ) );
+      this->game->set_state( App::State::ContinueMenu );
+      break;
     }
-    break;
   }
 }
 
@@ -332,7 +332,7 @@ void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1
   }
 }
 
-void GameOverState::update ( float delta_time )
+void GameOverState::on_update ( float delta_time )
 {
   this->game->card.update();
 
@@ -350,7 +350,7 @@ void GameOverState::update ( float delta_time )
   this->game->window.update();
 }
 
-void GameOverState::draw ( nom::IDrawable::RenderTarget target )
+void GameOverState::on_draw ( nom::IDrawable::RenderTarget target )
 {
   this->game->gameover_background.draw ( target );
 
@@ -394,7 +394,7 @@ void GameOverState::draw ( nom::IDrawable::RenderTarget target )
     //nom::sleep ( 1000 );
 
     // Restart game
-    //nom::GameStates::ChangeState( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
+    //this->game->set_state ( App::State::CardsMenu );
     this->transistion.stop();
     this->show_results = true;
   } // end if update

@@ -36,13 +36,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Game.hpp"
 
-App::App ( nom::int32 argc, char* argv[] )
+#include "states/GameOverState.hpp"
+#include "states/ContinueMenuState.hpp"
+#include "states/PauseState.hpp"
+#include "states/CardsMenuState.hpp"
+#include "states/PlayState.hpp"
+
+//#include "states/States.hpp" // StateFactory
+
+App::App ( void ) :
+  game { this, tt::free_game }
 {
+  NOM_LOG_TRACE(NOM);
+}
+
+App::App ( nom::int32 argc, char* argv[] )  :
+  game { this, tt::free_game }
+{
+  //this->state_factory = new States();
+
   // Destination directory we descend into to locate game resources
   std::string working_directory;
   nom::File dir;
 
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 
   // Command line arguments
   if ( argc > 1 )
@@ -167,7 +184,7 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
     exit(NOM_EXIT_FAILURE);
   }
 
-  atexit(nom::quit);
+  atexit(nom::quit); // Clean up memory associated with nomlib
 }
 
 App::~App ( void )
@@ -175,7 +192,7 @@ App::~App ( void )
   NOM_LOG_TRACE ( TTCARDS );
 }
 
-bool App::onInit ( void )
+bool App::on_init ( void )
 {
   nom::Rectangle rectangle  ( nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT ),
                               nom::Color4i::Gray
@@ -185,8 +202,6 @@ bool App::onInit ( void )
   /* TODO: Use me when fixed-time-step is fully implemented
   nom::uint32 renderer_flags = SDL_RENDERER_PRESENTVSYNC;
   TODO */
-
-  this->game = std::shared_ptr<GameObject> ( new GameObject );
 
   if ( this->game->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
   {
@@ -401,15 +416,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   return true;
 }
 
-void App::onEvent ( SDL_Event* event )
-{
-  // Take care of our own events
-  Input::HandleInput ( event );
-
-  // Take care of each state's event
-  nom::GameStates::onEvent ( event );
-}
-
 void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
@@ -421,35 +427,43 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
     {
       if ( mod == KMOD_LGUI )
       {
-        nom::GameStates::ChangeState ( ContinueMenuStatePtr ( new ContinueMenuState ( this->game ) ) );
+        this->game->set_state( App::State::ContinueMenu );
       }
       else
       {
-        nom::GameStates::ChangeState ( GameOverStatePtr ( new GameOverState ( this->game, GameOverType::Won ) ) );
+        nom::uint32_ptr player1_win = new nom::uint32 (GameOverType::Won);
+        this->game->set_state( App::State::GameOver, player1_win );
       }
     }
     break;
 #endif
 
     case SDLK_ESCAPE:
-    case SDLK_q: this->onQuit(); break;
+    case SDLK_q: this->on_quit(); break;
 
-    case SDLK_p:
-    {
-      this->game->music_track.togglePause();
-      this->game->winning_track.togglePause();
-    }
-    break;
-
+    // Audio control
     case SDLK_m:
     {
+      if ( mod == KMOD_LSHIFT ) // Pause music
+      {
+        this->game->music_track.togglePause();
+        this->game->winning_track.togglePause();
+        break;
+      }
+
+      // Global volume level in game
       float current_volume = this->game->listener.getVolume();
       if ( current_volume >= 100.0 )
+      {
         this->game->listener.setVolume ( 0.0 );
+      }
       else if ( current_volume <= 0.0 )
+      {
         this->game->listener.setVolume ( 100.0 );
+      }
+
+      break;
     }
-    break;
 
     case SDLK_BACKSLASH: this->toggle_fps(); break;
 
@@ -486,9 +500,10 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONFIG_FILENAME );
         break;
       }
-      nom::GameStates::ChangeState ( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
+
+      this->game->set_state( App::State::CardsMenu );
+      break;
     }
-    break;
 
     case SDLK_LEFTBRACKET:
     {
@@ -535,7 +550,7 @@ int32_t App::Run ( void )
 
   next_game_tick = this->ticks();
 
-  nom::GameStates::ChangeState( CardsMenuStatePtr( new CardsMenuState ( this->game ) ) );
+  this->game->set_state( App::State::CardsMenu );
 
   while ( this->running() == true )
   {
@@ -544,15 +559,19 @@ int32_t App::Run ( void )
 
     while ( this->ticks() > next_game_tick && loops <= MAX_FRAMESKIP )
     {
-      while ( this->PollEvents ( &event ) )
+      while ( this->poll_events ( &event ) )
       {
-        this->onEvent ( &event );
+        this->on_event ( &event );
       }
 
       this->fps.update();
 
-      nom::GameStates::update ( delta_time );
-      nom::GameStates::draw ( this->game->window );
+      this->on_update ( delta_time );
+
+      // Fix for GitHub Issue #9
+      this->game->window.fill(nom::Color4i::Black);
+
+      this->on_draw ( this->game->window );
 
       if ( this->show_fps() )
       {
@@ -571,11 +590,74 @@ int32_t App::Run ( void )
   return NOM_EXIT_SUCCESS;
 }
 
+void App::set_state ( uint32 id, nom::void_ptr data )
+{
+  switch ( id )
+  {
+    default: /* Ignore unknown identifiers */ break;
+
+    case State::CardsMenu:
+    {
+      SDLApp::set_state( CardsMenuStatePtr( new CardsMenuState( this->game ) ), data );
+      break;
+    }
+
+    case State::Play:
+    {
+      SDLApp::set_state( PlayStatePtr( new PlayState( this->game ) ), data );
+      break;
+    }
+
+    case State::GameOver:
+    {
+      SDLApp::set_state( GameOverStatePtr( new GameOverState( this->game, data ) ), data );
+      break;
+    }
+
+    case State::Pause:
+    {
+      // TODO: explain why this is needed
+/*
+      if ( this->game->state_id() != App::State::Pause && this->game->state_id() != App::State::GameOver )
+      {
+        this->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
+      }
+      else
+      {
+        // FIXME: Game crashes if we un-pause the game while in GameOverState;
+        // by checking for the absence of the state is a workaround patch.
+        this->pop_state();
+      }
+*/
+      this->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
+      break;
+    }
+
+    case State::ContinueMenu:
+    {
+      SDLApp::push_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
+      break;
+    }
+  }
+}
+
+namespace tt {
+
+void free_game ( App* game )
+{
+  NOM_LOG_TRACE(TTCARDS);
+
+  // Fixes double delete issues that result otherwise
+  //if ( game != nullptr ) delete game;
+}
+
+} // namespace tt
+
 int main ( int argc, char* argv[] )
 {
   App engine ( argc, argv );
 
-  if ( engine.onInit() == false )
+  if ( engine.on_init() == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not initialize game." );
     return NOM_EXIT_FAILURE;

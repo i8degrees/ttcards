@@ -28,15 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PlayState.hpp"
 
-#include "CardsMenuState.hpp"
-#include "GameOverState.hpp"
-#include "PauseState.hpp"
-
-PlayState::PlayState ( const std::shared_ptr<GameObject>& object )
+PlayState::PlayState ( const nom::SDLApp::SharedPtr& object ) :
+  game { std::dynamic_pointer_cast<App> (object) }
 {
-NOM_LOG_TRACE ( TTCARDS );
-
-  this->game = object;
+  NOM_LOG_TRACE( TTCARDS );
 
   this->turn = 0;
   this->cursor_locked = false;
@@ -46,22 +41,22 @@ NOM_LOG_TRACE ( TTCARDS );
 
 PlayState::~PlayState ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 }
 
-void PlayState::onExit ( void ) {}
+void PlayState::on_exit ( void ) {}
 
-void PlayState::Pause ( void )
+void PlayState::on_pause ( void )
 {
   std::cout << "\n" << "PlayState Paused" << "\n";
 }
 
-void PlayState::Resume ( void )
+void PlayState::on_resume ( nom::void_ptr data )
 {
   std::cout << "\n" << "PlayState Resumed" << "\n";
 }
 
-void PlayState::onInit ( void )
+void PlayState::on_init ( void )
 {
   nom::Gradient linear;
 
@@ -177,13 +172,14 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
   switch ( key )
   {
-    default: break;
+    default: /* Ignore unmapped keys */ break;
 
-    case SDLK_p: // Pause game
+    // Pause game
+    case SDLK_p:
     {
-      nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
+      this->game->set_state( App::State::Pause );
+      break;
     }
-    break;
 
     case SDLK_s: // Save current game
     {
@@ -483,9 +479,9 @@ void PlayState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 
     case nom::PSXBUTTON::START:
     {
-      nom::GameStates::PushState ( PauseStatePtr( new PauseState ( this->game ) ) );
+      this->game->set_state( App::State::Pause);
+      break;
     }
-    break;
 
     case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
     case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;
@@ -905,7 +901,7 @@ void PlayState::updateScore ( void )
   }
 }
 
-void PlayState::update ( float delta_time )
+void PlayState::on_update ( float delta_time )
 {
   this->game->board.update();
 
@@ -990,7 +986,7 @@ void PlayState::update ( float delta_time )
   this->game->window.update();
 }
 
-void PlayState::draw ( nom::IDrawable::RenderTarget target )
+void PlayState::on_draw ( nom::IDrawable::RenderTarget target )
 {
   this->game->background.draw ( target );
 
@@ -1047,11 +1043,12 @@ void PlayState::draw ( nom::IDrawable::RenderTarget target )
     nom::sleep ( 1000 );
     if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
     {
-      nom::GameStates::ChangeState ( CardsMenuStatePtr ( new CardsMenuState ( this->game ) ) );
+      this->game->set_state( App::State::CardsMenu );
     }
     else
     {
-      nom::GameStates::ChangeState ( GameOverStatePtr( new GameOverState( this->game, this->gameover_state ) ) );
+      nom::uint32_ptr data = new nom::uint32 ( this->gameover_state );
+      this->game->set_state( App::State::GameOver, data );
     }
   }
 }

@@ -40,27 +40,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "version.hpp"
 #include "resources.hpp"
-#include "GameObject.hpp"
+
+#include "Game.hpp"
 
 class PauseState: public nom::IState
 {
   public:
-    PauseState ( const std::shared_ptr<GameObject>& object );
+    PauseState ( const nom::SDLApp::SharedPtr& object );
     ~PauseState ( void );
-  private:
-    void onInit ( void );
-    void onExit ( void );
 
-    void Pause ( void );
-    void Resume ( void );
+  private:
+    void on_init ( void );
+    void on_exit ( void );
+
+    void on_pause ( void );
+    void on_resume ( nom::void_ptr data );
 
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
     void onJoyButtonDown ( nom::int32 which, nom::int32 button );
 
-    void update ( float delta_time );
-    void draw ( nom::IDrawable::RenderTarget target );
+    void on_update ( float delta_time );
+    void on_draw ( nom::IDrawable::RenderTarget target );
 
-    std::shared_ptr<GameObject> game;
+    App::SharedPtr game;
+
     nom::Timer blink_update;
     bool blink_text;
 

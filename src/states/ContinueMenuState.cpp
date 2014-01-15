@@ -28,19 +28,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuState.hpp"
 
-ContinueMenuState::ContinueMenuState ( const std::shared_ptr<GameObject>& object )
+ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::SharedPtr& object ) :
+  nom::IState { App::State::ContinueMenu, 0, nom::IState::StateFlags::BackRender },
+  game { std::dynamic_pointer_cast<App> (object) }
 {
-NOM_LOG_TRACE ( TTCARDS );
-
-  this->game = object;
+  NOM_LOG_TRACE( TTCARDS );
 }
 
 ContinueMenuState::~ContinueMenuState ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 }
 
-void ContinueMenuState::onInit ( void )
+void ContinueMenuState::on_init ( void )
 {
   nom::Gradient linear;
   nom::Text option_text = nom::Text("Are you sure?\nYes\nNo", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
@@ -72,11 +72,11 @@ void ContinueMenuState::onInit ( void )
   {
     if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
-      this->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+      //this->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     }
     else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
     {
-      this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+      //this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
     }
 
       this->position_map = nom::Coords  (
@@ -109,7 +109,12 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   }
 }
 
-void ContinueMenuState::onExit ( void )
+void ContinueMenuState::on_exit ( void )
+{
+  // Stub
+}
+
+void ContinueMenuState::on_resume ( nom::void_ptr data )
 {
   // Stub
 }
@@ -118,31 +123,38 @@ void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 
 {
   switch ( key )
   {
-    default: break;
+    default: /* Ignore non-mapped keys */ break;
 
-    // Resume previous state by exiting this one
-    case SDLK_p: nom::GameStates::PopState(); break;
+    // Pause game
+    case SDLK_p:
+    {
+      this->game->set_state( App::State::Pause );
+      break;
+    }
 
     case SDLK_UP: this->cursor.move_up(); break;
     case SDLK_DOWN: this->cursor.move_down(); break;
     case SDLK_SPACE:
     {
+      // We will use the positioning of the cursor to map user's response
       nom::int32 choice = this->cursor.position();
 
-      if ( choice == 0 ) // Yes
+      if ( choice == 0 ) // Yes; response will be 0 (TRUE)
       {
-        nom::GameStates::PopState ( choice );
+        nom::int32_ptr response = new nom::int32 (0);
+        this->game->pop_state(response);
       }
-      else if ( choice == 1 ) // No
+      else if ( choice == 1 ) // No; response will be 1 (FALSE)
       {
-        nom::GameStates::PopState();
+        nom::int32_ptr response = new nom::int32 (1);
+        this->game->pop_state(response);
       }
       else
       {
         this->game->cursor_wrong.Play();
       }
+      break;
     }
-    break;
   }
 }
 
@@ -195,16 +207,15 @@ void ContinueMenuState::onUserEvent ( nom::uint32 type, nom::int32 code, void* d
   }
 }
 
-void ContinueMenuState::update ( float delta_time )
+void ContinueMenuState::on_update ( float delta_time )
 {
   this->cursor.update();
 
   this->game->window.update();
 }
 
-void ContinueMenuState::draw ( nom::IDrawable::RenderTarget target )
+void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget target )
 {
   this->info_box.draw ( target );
-
   this->cursor.draw ( target );
 }

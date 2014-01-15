@@ -30,20 +30,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardView::CardView ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 
   this->card_face_down = false;
   this->render_card = Card();
 
   this->card_background = std::shared_ptr<nom::Gradient> ( new nom::Gradient() );
-  this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
-  this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
   this->card_text = std::shared_ptr<nom::Text> ( new nom::Text() );
 
-  card.push_back ( this->card_background );
-  card.push_back ( this->card_face );
-  card.push_back ( this->card_element );
-  card.push_back ( this->card_text );
+  this->card.push_back ( this->card_background );
+  this->card.push_back ( this->card_text );
 
   this->card_background->set_size ( CARD_WIDTH - 4, CARD_HEIGHT );
   this->card_background->set_margins ( 4, 4 );
@@ -57,11 +53,20 @@ CardView::CardView ( const nom::Coords& coords )
 
 CardView::~CardView ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 }
 
 bool CardView::load ( const GameConfig* config, const nom::IFont& card_font )
 {
+  // Any file resources must be initialized *after* construction of this class;
+  // our working directory where we load resources from is not set at the time
+  // of CardView construction.
+  this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
+  this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
+
+  this->card.push_back ( this->card_face );
+  this->card.push_back ( this->card_element );
+
   if ( config == nullptr ) return false;
 
   if ( card_font.valid() )

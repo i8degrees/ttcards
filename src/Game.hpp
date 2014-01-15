@@ -34,32 +34,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <memory>
 
-#include "SDL.h"
-
 #include <nomlib/audio.hpp>
 #include <nomlib/graphics.hpp>
+#include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
 #include "version.hpp"
 #include "resources.hpp"
+
+#include "Board.hpp"
 #include "CardCollection.hpp"
-#include "GameObject.hpp"
+#include "CardDebug.hpp"
+#include "CardHand.hpp"
+#include "CardView.hpp"
+#include "CardRules.hpp"
+#include "GameConfig.hpp"
 
-#include "states/GameOverState.hpp"
-#include "states/CardsMenuState.hpp"
-#include "states/ContinueMenuState.hpp"
-
-class App: public nom::SDL_App // "is-a" relationship
+class App: public nom::SDLApp // "is-a" relationship
 {
   public:
+    typedef std::shared_ptr<App> SharedPtr;
+
+    App ( void );
     App ( nom::int32 argc, char* argv[] );
     ~App ( void );
 
-    bool onInit ( void );
-
-    /// Handle app & state events
-    void onEvent ( SDL_Event* event );
+    bool on_init ( void );
 
     /// Handle key events
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
@@ -70,13 +71,110 @@ class App: public nom::SDL_App // "is-a" relationship
     /// Run app loop
     nom::int32 Run ( void );
 
+    void set_state ( uint32 id, nom::void_ptr data = nullptr );
+
+    /// Audio subsystem
+    nom::OpenAL::AudioDevice dev;
+
+    /// Master volume control
+    nom::OpenAL::Listener listener;
+
+    /// Audio buffers (one buffer per sound)
+    nom::OpenAL::SoundBuffer sound_buffers[12]; // Four buffers are intentionally
+                                                // left unallocated
+
+    /// Cursor has been moved sound event
+    nom::OpenAL::Sound cursor_move;
+
+    /// Action has been canceled sound event
+    nom::OpenAL::Sound cursor_cancel;
+
+    /// Invalid action sound event
+    nom::OpenAL::Sound cursor_wrong;
+
+    /// Card has been placed sound event
+    nom::OpenAL::Sound card_place;
+
+    /// Card has been flipped sound event
+    nom::OpenAL::Sound card_flip;
+
+    /// Load saved game sound event
+    nom::OpenAL::Sound load_game;
+
+    /// Save game sound event
+    nom::OpenAL::Sound save_game;
+
+    /// Theme song track
+    nom::OpenAL::Music music_track;
+
+    /// Player 1 has won track
+    nom::OpenAL::Music winning_track;
+
+    /// Font resources
+    nom::BitmapFont info_text;
+    nom::BitmapFont info_small_text;
+    nom::BitmapFont card_font;
+    nom::TrueTypeFont gameover_font;
+    nom::TrueTypeFont scoreboard_font;
+
+    /// Menu elements
+    nom::SpriteBatch menu_elements;
+
+    /// Game board
+    Board board;
+
+    /// Rules logic
+    CardRules rules;
+
+    /// Cards database
+    CardCollection collection;
+
+    /// Debug support for card attributes
+    CardDebug debug;
+
+    /// Player hands
+    CardHand hand[2];
+
+    /// Card rendering
+    CardView card;
+
+    /// Board background image
+    nom::Texture background;
+
+    /// GameOver background image
+    nom::Texture gameover_background;
+
+    /// interface cursor
+    nom::Cursor cursor;
+
+    /// our public / visible display context handle
+    nom::Window window;
+
+    /// Variable set configuration properties
+    GameConfig config;
+
+    enum State
+    {
+      CardsMenu = 0,
+      Play,
+      GameOver,
+      Pause,
+      ContinueMenu
+    };
+
   private:
-    std::shared_ptr<GameObject> game;
+    App::SharedPtr game;
+
     /// Timer for tracking frames per second
     nom::FPS fps;
-    /// Input events
-    Input::Event event;
 };
 
+namespace tt {
+
+/// Custom deleter for std::shared_ptr<nom::App> object; fix for double delete
+/// issues.
+void free_game ( App* game );
+
+}
 
 #endif // GAME_APP_HEADERS defined
