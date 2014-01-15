@@ -71,7 +71,7 @@ class GameOverState: public nom::IState
     void on_update ( float delta_time );
     void on_draw ( nom::IDrawable::RenderTarget target );
 
-    App::SharedPtr game;
+    Game::SharedPtr game;
 
     nom::Timer transistion;
     bool show_results;

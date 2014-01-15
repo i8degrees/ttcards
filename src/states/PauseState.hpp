@@ -62,7 +62,7 @@ class PauseState: public nom::IState
     void on_update ( float delta_time );
     void on_draw ( nom::IDrawable::RenderTarget target );
 
-    App::SharedPtr game;
+    Game::SharedPtr game;
 
     nom::Timer blink_update;
     bool blink_text;

@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 GameOverState::GameOverState  ( const nom::SDLApp::SharedPtr& object,
                                 nom::void_ptr state
                               ) :
-  game { std::dynamic_pointer_cast<App> (object) },
+  game { std::dynamic_pointer_cast<Game> (object) },
   show_results ( false )/*,
   gameover_state { static_cast<nom::uint32_ptr>(state) }*/
 {
@@ -223,12 +223,12 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
     // Pause game
     case SDLK_p:
     {
-      //this->game->set_state( App::State::Pause );
+      //this->game->set_state( Game::State::Pause );
       break;
     }
 
     // Start a new game
-    case SDLK_RETURN: this->game->set_state( App::State::CardsMenu );
+    case SDLK_RETURN: this->game->set_state( Game::State::CardsMenu );
 
     case SDLK_LEFT: this->cursor.move_left(); break;
     case SDLK_RIGHT: this->cursor.move_right(); break;
@@ -236,7 +236,7 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
     {
       this->selected_card = this->game->hand[1].getSelectedCard();
 
-      this->game->set_state( App::State::ContinueMenu );
+      this->game->set_state( Game::State::ContinueMenu );
       break;
     }
   }
@@ -394,7 +394,7 @@ void GameOverState::on_draw ( nom::IDrawable::RenderTarget target )
     //nom::sleep ( 1000 );
 
     // Restart game
-    //this->game->set_state ( App::State::CardsMenu );
+    //this->game->set_state ( Game::State::CardsMenu );
     this->transistion.stop();
     this->show_results = true;
   } // end if update

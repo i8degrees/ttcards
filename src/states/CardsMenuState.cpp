@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardsMenuState.hpp"
 
 CardsMenuState::CardsMenuState ( const nom::SDLApp::SharedPtr& object ) :
-  game { std::dynamic_pointer_cast<App> (object) }
+  game { std::dynamic_pointer_cast<Game> (object) }
 {
   nom::Gradient linear;
 
@@ -143,7 +143,7 @@ void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 win
     // Pause game
     case SDLK_p:
     {
-      this->game->set_state( App::State::Pause );
+      this->game->set_state( Game::State::Pause );
       break;
     }
 

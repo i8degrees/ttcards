@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PlayState.hpp"
 
 PlayState::PlayState ( const nom::SDLApp::SharedPtr& object ) :
-  game { std::dynamic_pointer_cast<App> (object) }
+  game { std::dynamic_pointer_cast<Game> (object) }
 {
   NOM_LOG_TRACE( TTCARDS );
 
@@ -177,7 +177,7 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
     // Pause game
     case SDLK_p:
     {
-      this->game->set_state( App::State::Pause );
+      this->game->set_state( Game::State::Pause );
       break;
     }
 
@@ -479,7 +479,7 @@ void PlayState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 
     case nom::PSXBUTTON::START:
     {
-      this->game->set_state( App::State::Pause);
+      this->game->set_state( Game::State::Pause);
       break;
     }
 
@@ -1043,12 +1043,12 @@ void PlayState::on_draw ( nom::IDrawable::RenderTarget target )
     nom::sleep ( 1000 );
     if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
     {
-      this->game->set_state( App::State::CardsMenu );
+      this->game->set_state( Game::State::CardsMenu );
     }
     else
     {
       nom::uint32_ptr data = new nom::uint32 ( this->gameover_state );
-      this->game->set_state( App::State::GameOver, data );
+      this->game->set_state( Game::State::GameOver, data );
     }
   }
 }

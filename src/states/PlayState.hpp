@@ -102,7 +102,7 @@ class PlayState: public nom::IState
     /// Update each player's scoreboard
     void updateScore ( void );
 
-    App::SharedPtr game;
+    Game::SharedPtr game;
 
     nom::MessageBox info_box;
     nom::MessageBox debug_box;

@@ -44,13 +44,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#include "states/States.hpp" // StateFactory
 
-App::App ( void ) :
+Game::Game ( void ) :
   game { this, tt::free_game }
 {
   NOM_LOG_TRACE(NOM);
 }
 
-App::App ( nom::int32 argc, char* argv[] )  :
+Game::Game ( nom::int32 argc, char* argv[] )  :
   game { this, tt::free_game }
 {
   //this->state_factory = new States();
@@ -187,12 +187,12 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
   atexit(nom::quit); // Clean up memory associated with nomlib
 }
 
-App::~App ( void )
+Game::~Game ( void )
 {
   NOM_LOG_TRACE ( TTCARDS );
 }
 
-bool App::on_init ( void )
+bool Game::on_init ( void )
 {
   nom::Rectangle rectangle  ( nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT ),
                               nom::Color4i::Gray
@@ -416,7 +416,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   return true;
 }
 
-void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+void Game::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 {
   switch ( key )
   {
@@ -427,12 +427,12 @@ void App::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
     {
       if ( mod == KMOD_LGUI )
       {
-        this->game->set_state( App::State::ContinueMenu );
+        this->game->set_state( Game::State::ContinueMenu );
       }
       else
       {
         nom::uint32_ptr player1_win = new nom::uint32 (GameOverType::Won);
-        this->game->set_state( App::State::GameOver, player1_win );
+        this->game->set_state( Game::State::GameOver, player1_win );
       }
     }
     break;
@@ -501,7 +501,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
         break;
       }
 
-      this->game->set_state( App::State::CardsMenu );
+      this->game->set_state( Game::State::CardsMenu );
       break;
     }
 
@@ -525,7 +525,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
   }
 }
 
-void App::onResize ( nom::int32 width, nom::int32 height )
+void Game::onResize ( nom::int32 width, nom::int32 height )
 {
   this->game->window.toggle_fullscreen();
 
@@ -540,7 +540,7 @@ void App::onResize ( nom::int32 width, nom::int32 height )
   #endif
 }
 
-int32_t App::Run ( void )
+int32_t Game::Run ( void )
 {
   unsigned int loops = 0;
   unsigned int next_game_tick = 0;
@@ -550,7 +550,7 @@ int32_t App::Run ( void )
 
   next_game_tick = this->ticks();
 
-  this->game->set_state( App::State::CardsMenu );
+  this->game->set_state( Game::State::CardsMenu );
 
   while ( this->running() == true )
   {
@@ -590,7 +590,7 @@ int32_t App::Run ( void )
   return NOM_EXIT_SUCCESS;
 }
 
-void App::set_state ( uint32 id, nom::void_ptr data )
+void Game::set_state ( uint32 id, nom::void_ptr data )
 {
   switch ( id )
   {
@@ -618,7 +618,7 @@ void App::set_state ( uint32 id, nom::void_ptr data )
     {
       // TODO: explain why this is needed
 /*
-      if ( this->game->state_id() != App::State::Pause && this->game->state_id() != App::State::GameOver )
+      if ( this->game->state_id() != Game::State::Pause && this->game->state_id() != Game::State::GameOver )
       {
         this->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
       }
@@ -643,7 +643,7 @@ void App::set_state ( uint32 id, nom::void_ptr data )
 
 namespace tt {
 
-void free_game ( App* game )
+void free_game ( Game* game )
 {
   NOM_LOG_TRACE(TTCARDS);
 
@@ -655,7 +655,7 @@ void free_game ( App* game )
 
 int main ( int argc, char* argv[] )
 {
-  App engine ( argc, argv );
+  Game engine ( argc, argv );
 
   if ( engine.on_init() == false )
   {
@@ -670,5 +670,5 @@ NOM_LOG_ERR ( TTCARDS, "Could not initialize game." );
 #endif
 
   // This is past the point of execution; all execution must reside within our
-  // App class
+  // Game class
 }

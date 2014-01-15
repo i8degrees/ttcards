@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAME_APP_HEADERS
-#define GAME_APP_HEADERS
+#ifndef TTCARDS_GAME_APP_HPP
+#define TTCARDS_GAME_APP_HPP
 
 #include <iostream>
 #include <string>
@@ -51,14 +51,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardRules.hpp"
 #include "GameConfig.hpp"
 
-class App: public nom::SDLApp // "is-a" relationship
+class Game: public nom::SDLApp
 {
   public:
-    typedef std::shared_ptr<App> SharedPtr;
+    typedef std::shared_ptr<Game> SharedPtr;
 
-    App ( void );
-    App ( nom::int32 argc, char* argv[] );
-    ~App ( void );
+    Game ( void );
+    Game ( nom::int32 argc, char* argv[] );
+    ~Game ( void );
 
     bool on_init ( void );
 
@@ -163,7 +163,7 @@ class App: public nom::SDLApp // "is-a" relationship
     };
 
   private:
-    App::SharedPtr game;
+    Game::SharedPtr game;
 
     /// Timer for tracking frames per second
     nom::FPS fps;
@@ -171,10 +171,10 @@ class App: public nom::SDLApp // "is-a" relationship
 
 namespace tt {
 
-/// Custom deleter for std::shared_ptr<nom::App> object; fix for double delete
+/// Custom deleter for std::shared_ptr<Game> object; fix for double delete
 /// issues.
-void free_game ( App* game );
+void free_game ( Game* game );
 
 }
 
-#endif // GAME_APP_HEADERS defined
+#endif // include guard defined

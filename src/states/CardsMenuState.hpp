@@ -75,7 +75,7 @@ class CardsMenuState: public nom::IState
     void moveCursorUp ( void );
     void moveCursorDown ( void );
 
-    App::SharedPtr game;
+    Game::SharedPtr game;
 
     nom::MessageBox menu_box;
 
