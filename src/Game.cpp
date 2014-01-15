@@ -584,6 +584,9 @@ int32_t Game::Run ( void )
 
       next_game_tick += SKIP_TICKS;
       loops++;
+
+      // Sleep away the spare ticks (improves CPU usage dramatically)
+      nom::sleep(50);
     }
   }
 
