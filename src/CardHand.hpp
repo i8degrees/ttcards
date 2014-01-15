@@ -101,7 +101,7 @@ class CardHand
     ///
     /// Do not forget to set the proper player ID on your new card objects
     /// before heading off into battle!
-    void randomize ( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling = 0 );
+    void shuffle ( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling = 0 );
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
     /// compliant objects.

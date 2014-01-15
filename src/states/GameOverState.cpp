@@ -100,10 +100,18 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
     this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
   }
 */
-// REMOVE ME
-this->game->hand[0].randomize ( 8, 10, this->game->collection );
-this->game->hand[1].randomize ( 1, 7, this->game->collection );
-// REMOVE ME
+
+  // REMOVE ME
+  while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+  {
+    this->game->hand[0].shuffle ( 8, 10, this->game->collection );
+  }
+
+  while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
+  {
+    this->game->hand[1].shuffle ( 1, 7, this->game->collection );
+  }
+
 for ( auto idx = 0; idx < MAX_PLAYER_HAND; idx++ )
 {
 this->game->hand[0].cards[idx].setPlayerID(Card::PLAYER1);

@@ -201,7 +201,7 @@ bool CardHand::exists ( const Card& card ) const
   return false;
 }
 
-void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling )
+void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling )
 {
   // Cards are picked out using our random number equal distribution generator;
   // this needs to be a value between 0..Card::CARDS_COLLECTION in order to yield a
@@ -226,19 +226,11 @@ void CardHand::randomize ( nom::int32 level_min, nom::int32 level_max, const Car
   std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
 #endif
 
-  this->clear();
+  card_id = distribution ( rand_generator );
 
-  while ( num_cards < MAX_PLAYER_HAND )
+  if ( db.cards[card_id].getLevel() <= LEVEL_MAX && db.cards[card_id].getLevel() >= LEVEL_MIN )
   {
-    card_id = distribution ( rand_generator );
-
-    if ( db.cards[card_id].getLevel() <= LEVEL_MAX && db.cards[card_id].getLevel() >= LEVEL_MIN )
-    {
-      if ( this->push_back ( db.cards[card_id] ) )
-      {
-        num_cards++;
-      }
-    }
+    if ( this->push_back ( db.cards[card_id] ) ) num_cards++;
   }
 }
 

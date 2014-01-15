@@ -60,9 +60,9 @@ void PlayState::on_init ( void )
 {
   nom::Gradient linear;
 
-  if ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+  while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
   {
-    this->game->hand[0].randomize ( 8, 10, this->game->collection );
+    this->game->hand[0].shuffle ( 8, 10, this->game->collection );
   }
 
   // Clear CPUPlayer's hand (we will initialize it here soon enough
@@ -141,7 +141,10 @@ void PlayState::on_init ( void )
   this->debug_box.disable();
 #endif
 
-  this->game->hand[1].randomize ( 1, 10, this->game->collection );
+  while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
+  {
+    this->game->hand[1].shuffle ( 1, 10, this->game->collection );
+  }
 
   // Initialize player cards to their respective defaults; this lets us know not
   // only whose cards they are originally but also presently -- critical in card
