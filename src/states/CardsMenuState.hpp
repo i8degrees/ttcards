@@ -50,10 +50,10 @@ class CardsMenuState: public nom::IState
     CardsMenuState ( const nom::SDLApp::SharedPtr& object );
     ~CardsMenuState ( void );
 
-    void on_init ( void );
-    void on_exit ( void );
+    void on_init ( nom::void_ptr data );
+    void on_exit ( nom::void_ptr data );
 
-    void on_pause ( void );
+    void on_pause ( nom::void_ptr data );
     void on_resume ( nom::void_ptr data );
 
     void on_update ( float delta_time );

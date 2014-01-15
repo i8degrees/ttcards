@@ -40,7 +40,7 @@ PauseState::~PauseState ( void )
   NOM_LOG_TRACE( TTCARDS );
 }
 
-void PauseState::on_init ( void )
+void PauseState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
 
@@ -65,12 +65,12 @@ void PauseState::on_init ( void )
   this->blink_update.start();
 }
 
-void PauseState::on_exit ( void )
+void PauseState::on_exit ( nom::void_ptr data )
 {
   std::cout << "\n" << "PauseState state onExit" << "\n";
 }
 
-void PauseState::on_pause ( void )
+void PauseState::on_pause ( nom::void_ptr data )
 {
   std::cout << "\n" << "PauseState state Paused" << "\n";
 }

@@ -57,9 +57,10 @@ class GameOverState: public nom::IState
     ~GameOverState ( void );
 
   private:
-    void on_init ( void );
-    void on_exit ( void );
+    void on_init ( nom::void_ptr data );
+    void on_exit ( nom::void_ptr data );
 
+    void on_pause ( nom::void_ptr data );
     void on_resume ( nom::void_ptr data );
 
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );

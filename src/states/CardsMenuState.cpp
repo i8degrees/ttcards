@@ -87,7 +87,7 @@ NOM_LOG_TRACE ( TTCARDS );
   this->selectedCard = Card();
 }
 
-void CardsMenuState::on_init ( void )
+void CardsMenuState::on_init ( nom::void_ptr data )
 {
   unsigned int idx = 0; // iterator for cursor_coords_map
 
@@ -119,12 +119,12 @@ void CardsMenuState::on_init ( void )
   }
 }
 
-void CardsMenuState::on_exit ( void )
+void CardsMenuState::on_exit ( nom::void_ptr data )
 {
   std::cout << "\n" << "CardsMenu state onExit" << "\n";
 }
 
-void CardsMenuState::on_pause ( void )
+void CardsMenuState::on_pause ( nom::void_ptr data )
 {
   std::cout << "\n" << "CardsMenu state Paused" << "\n";
 }

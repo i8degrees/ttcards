@@ -60,9 +60,9 @@ class PlayState: public nom::IState
     PlayState ( const nom::SDLApp::SharedPtr& object );
     ~PlayState ( void );
 
-    void on_init ( void );
-    void on_exit ( void );
-    void on_pause ( void );
+    void on_init ( nom::void_ptr data );
+    void on_exit ( nom::void_ptr data );
+    void on_pause ( nom::void_ptr data );
     void on_resume ( nom::void_ptr data );
 
     void on_update ( float delta_time );

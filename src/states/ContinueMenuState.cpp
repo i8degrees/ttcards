@@ -40,7 +40,7 @@ ContinueMenuState::~ContinueMenuState ( void )
   NOM_LOG_TRACE( TTCARDS );
 }
 
-void ContinueMenuState::on_init ( void )
+void ContinueMenuState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
   nom::Text option_text = nom::Text("Are you sure?\nYes\nNo", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
@@ -109,7 +109,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.get
   }
 }
 
-void ContinueMenuState::on_exit ( void )
+void ContinueMenuState::on_exit ( nom::void_ptr data )
 {
   // Stub
 }

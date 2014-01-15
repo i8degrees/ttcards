@@ -43,7 +43,7 @@ GameOverState::~GameOverState ( void )
   NOM_LOG_TRACE( TTCARDS );
 }
 
-void GameOverState::on_init ( void )
+void GameOverState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
 
@@ -206,7 +206,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   this->transistion.start();
 }
 
-void GameOverState::on_exit ( void )
+void GameOverState::on_exit ( nom::void_ptr data )
 {
 NOM_LOG_TRACE ( TTCARDS );
 

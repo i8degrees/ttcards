@@ -44,9 +44,9 @@ PlayState::~PlayState ( void )
   NOM_LOG_TRACE( TTCARDS );
 }
 
-void PlayState::on_exit ( void ) {}
+void PlayState::on_exit ( nom::void_ptr data ) {}
 
-void PlayState::on_pause ( void )
+void PlayState::on_pause ( nom::void_ptr data )
 {
   std::cout << "\n" << "PlayState Paused" << "\n";
 }
@@ -56,7 +56,7 @@ void PlayState::on_resume ( nom::void_ptr data )
   std::cout << "\n" << "PlayState Resumed" << "\n";
 }
 
-void PlayState::on_init ( void )
+void PlayState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
 
