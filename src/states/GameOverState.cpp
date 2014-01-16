@@ -305,11 +305,11 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uin
 
 void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-  if ( y > 0 )
+  if ( x > 0 || y > 0 )
   {
     this->cursor.move_left();
   }
-  else if ( y < 0 )
+  else if ( x < 0 || y < 0 )
   {
     this->cursor.move_right();
   }
