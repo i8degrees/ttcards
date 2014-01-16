@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardsMenuState.hpp"
 
+using namespace nom;
+
 CardsMenuState::CardsMenuState ( const nom::SDLApp::SharedPtr& object ) :
   game { std::dynamic_pointer_cast<Game> (object) }
 {
@@ -105,7 +107,7 @@ void CardsMenuState::on_init ( nom::void_ptr data )
 
   this->title_text.set_font ( this->game->info_small_text );
 
-  this->game->cursor.set_position ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
+  this->game->cursor.set_position ( Point2i(MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y) );
   this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT ); // default cursor image
   this->game->cursor.set_state ( 0 ); // default state for navigating card menu
 
@@ -282,24 +284,24 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
   {
     // Draw the top-left box title
     this->title_text.set_text ( "CARDS" );
-    this->title_text.set_position ( nom::Coords(MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y) );
+    this->title_text.set_position ( nom::Point2i(MENU_CARDS_TITLE_ORIGIN_X, MENU_CARDS_TITLE_ORIGIN_Y) );
     this->title_text.draw ( target );
 
     // Draw page number if we have more than one page to display
     if ( total_pages > 0 )
     {
       this->title_text.set_text ( "P. " + std::to_string ( current_index / per_page + 1 ) ); // padded + 1 since page starts at zero, not one
-      this->title_text.set_position ( nom::Coords(MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y) );
+      this->title_text.set_position ( nom::Point2i(MENU_CARDS_TITLE_PAGE_ORIGIN_X, MENU_CARDS_TITLE_PAGE_ORIGIN_Y) );
       this->title_text.draw ( target );
     }
 
     // Draw the top-right box title (number of cards)
     this->title_text.set_text ( "NUM." );
-    this->title_text.set_position ( nom::Coords(MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y) );
+    this->title_text.set_position ( nom::Point2i(MENU_CARDS_TITLE_NUM_ORIGIN_X, MENU_CARDS_TITLE_NUM_ORIGIN_Y) );
     this->title_text.draw ( target );
 
     // Draw the card selection helper element
-    this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
+    this->game->menu_elements.set_position ( nom::Point2i( MENU_CARDS_HELPER_ORIGIN_X, y_offset ) );
 
     if ( this->game->hand[0].exists ( this->game->collection.cards[i] ) )
       this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_USED );
@@ -315,14 +317,14 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
     {
       this->card_text.set_text ( this->game->collection.cards[i].getName() );
       this->card_text.set_color ( GrayText );
-      this->card_text.set_position ( nom::Coords(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
+      this->card_text.set_position ( nom::Point2i(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }
     else
     {
       this->card_text.set_text ( this->game->collection.cards[i].getName() );
       this->card_text.set_color ( nom::Color4i::White );
-      this->card_text.set_position ( nom::Coords(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
+      this->card_text.set_position ( nom::Point2i(MENU_CARDS_NAME_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }
 
@@ -332,14 +334,14 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
     {
       this->card_text.set_text ( "0" );
       this->card_text.set_color ( GrayText );
-      this->card_text.set_position ( nom::Coords(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
+      this->card_text.set_position ( nom::Point2i(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }
     else
     {
       this->card_text.set_text ( "1" );
       this->card_text.set_color ( nom::Color4i::White );
-      this->card_text.set_position ( nom::Coords(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
+      this->card_text.set_position ( nom::Point2i(MENU_CARDS_NUM_ORIGIN_X, y_offset) );
       this->card_text.draw ( target );
     }
 
@@ -347,7 +349,7 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
     if ( current_index >= per_page )
     {
       this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
-      this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
+      this->game->menu_elements.set_position ( nom::Point2i( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
       this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
     }
@@ -355,7 +357,7 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
     if ( current_index / per_page < total_pages - 1 ) // calculate current page minus padding of one
     {
       this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
-      this->game->menu_elements.set_position ( nom::Coords( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
+      this->game->menu_elements.set_position ( nom::Point2i( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
       this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
     }

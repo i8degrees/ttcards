@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PlayState.hpp"
 
+using namespace nom;
+
 PlayState::PlayState ( const nom::SDLApp::SharedPtr& object ) :
   game { std::dynamic_pointer_cast<Game> (object) }
 {
@@ -73,7 +75,7 @@ void PlayState::on_init ( nom::void_ptr data )
   std::default_random_engine rand_generator ( seed );
   std::uniform_int_distribution<nom::int32> distribution ( 0, TOTAL_PLAYERS - 1 );
 
-  this->game->cursor.set_position ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+  this->game->cursor.set_position ( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
   this->game->cursor.set_frame ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->game->cursor.set_state ( 0 ); // default state; player hand select
 
@@ -287,7 +289,7 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
     {
       this->game->hand[player_turn].erase ( this->game->hand[player_turn].getSelectedCard() );
 
-      this->game->cursor.set_position ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+      this->game->cursor.set_position ( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
     }
     break;
 
@@ -431,7 +433,7 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 
       // 3. Play sound event
       this->game->hand[ player_turn ].selectCard ( this->game->hand[ player_turn ].cards[ idx ] );
 
-      this->game->cursor.set_position ( this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx );
+      this->game->cursor.set_position ( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
 
       this->game->cursor_move.Play();
 
@@ -590,13 +592,13 @@ void PlayState::resetCursor ( void )
   this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
 
   this->game->cursor.set_state ( 0 );
-  this->game->cursor.set_position ( this->player_cursor_coords[0].x, this->player_cursor_coords[0].y );
+  this->game->cursor.set_position ( Point2i(this->player_cursor_coords[0].x, this->player_cursor_coords[0].y) );
 
   // Only set the position of the game interface cursor for player2 when we are
   // controlling him
   if ( this->skip_turn == true )
   {
-    this->game->cursor.set_position ( this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y );
+    this->game->cursor.set_position ( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
   }
 }
 
@@ -623,11 +625,11 @@ void PlayState::lockSelectedCard ( void )
   {
     if ( get_turn() == 0 )
     {
-      this->game->cursor.set_position ( CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y ); // FIXME
+      this->game->cursor.set_position ( Point2i(CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y) ); // FIXME
     }
     else if ( get_turn() == 1 )
     {
-      this->game->cursor.set_position ( CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y ); // FIXME
+      this->game->cursor.set_position ( Point2i(CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y) ); // FIXME
     }
 
     this->lockCursor ( true );
@@ -900,7 +902,7 @@ void PlayState::updateScore ( void )
 
     // Update the font responsible for rendering the score
     this->scoreboard_text[players].set_text ( this->player[players].getScoreAsString() );
-    this->scoreboard_text[players].set_position ( nom::Coords (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
+    this->scoreboard_text[players].set_position ( nom::Point2i (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
   }
 }
 
@@ -1035,9 +1037,11 @@ void PlayState::on_draw ( nom::IDrawable::RenderTarget target )
       this->gameover_text.set_text ( "Tie!" );
     }
 
-    nom::Coords pos = nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+    nom::Point2i pos = nom::Point2i ( 0, 0 );
+    nom::Size2i size = nom::Size2i ( SCREEN_WIDTH, SCREEN_HEIGHT );
 
     this->gameover_text.set_position ( pos );
+    this->gameover_text.set_size ( size );
     this->gameover_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
     this->gameover_text.draw ( target );
     this->game->window.update();

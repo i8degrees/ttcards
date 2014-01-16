@@ -88,11 +88,12 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   this->cursor.set_position_map ( position_map );
 
-  this->cursor.setSize ( CURSOR_WIDTH, CURSOR_HEIGHT );
+  this->cursor.set_size ( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
 
-  this->cursor.set_position (
+  this->cursor.set_position ( Point2i (
                               ( OPTION_BOX_ORIGIN_X ) - CURSOR_WIDTH,
                               ( OPTION_BOX_ORIGIN_Y ) + ( OPTION_BOX_HEIGHT / 2 )
+                                      )
                             );
 
   this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );

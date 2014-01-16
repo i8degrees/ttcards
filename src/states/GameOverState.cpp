@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverState.hpp"
 
+using namespace nom;
+
 GameOverState::GameOverState  ( const nom::SDLApp::SharedPtr& object,
                                 nom::void_ptr state
                               ) :
@@ -63,10 +65,11 @@ void GameOverState::on_init ( nom::void_ptr data )
     }
 
     this->cursor.set_position_map ( &this->game->hand[1] );
-    this->cursor.setSize ( CURSOR_WIDTH, CURSOR_HEIGHT );
-    this->cursor.set_position (
+    this->cursor.set_size ( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
+    this->cursor.set_position ( Point2i (
                                 PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
                                 PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
+                                        )
                               );
     this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
   }
@@ -286,7 +289,7 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uin
       // 4. Play sound event
 
       this->game->hand[1].set_position ( idx );
-      this->cursor.set_position ( PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.y() );
+      this->cursor.set_position ( Point2i(PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.y() ) );
 
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();

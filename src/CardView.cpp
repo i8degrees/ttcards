@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardView.hpp"
 
+using namespace nom;
+
 CardView::CardView ( void )
 {
   NOM_LOG_TRACE( TTCARDS );
@@ -117,7 +119,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
 void CardView::draw_face_down ( nom::IDrawable::RenderTarget target, nom::int32 x, nom::int32 y ) const
 {
   this->card_face->set_frame ( NOFACE_ID );
-  this->card_face->set_position ( x, y );
+  this->card_face->set_position ( Point2i(x, y) );
   this->card_face->update();
   this->card_face->draw ( target );
 }
@@ -167,7 +169,7 @@ void CardView::draw_face  (
   this->card_face->set_frame ( face_id );
 
   //this->card_face->setPosition ( this->position );
-  this->card_face->set_position ( nom::Coords ( x, y ) );
+  this->card_face->set_position ( nom::Point2i ( x, y ) );
   this->card_face->update();
   this->card_face->draw ( target );
 }
@@ -192,7 +194,7 @@ void CardView::draw_element (
   }
 
   //this->card_element->setPosition ( this->position.x, this->position.y );
-  this->card_element->set_position ( nom::Coords( x, y ) );
+  this->card_element->set_position ( nom::Point2i ( x, y ) );
   this->card_element->update();
   this->card_element->draw ( target );
 }
@@ -212,7 +214,7 @@ void CardView::draw_text  (
   }
 
   //this->card_text->set_position ( this->position );
-  this->card_text->set_position ( nom::Coords ( x, y ) );
+  this->card_text->set_position ( nom::Point2i ( x, y ) );
 //this->card_text->update();
   this->card_text->draw ( target );
 }

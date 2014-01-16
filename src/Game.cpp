@@ -44,6 +44,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#include "states/States.hpp" // StateFactory
 
+using namespace nom;
+
 Game::Game ( void ) :
   game { this, tt::free_game }
 {
@@ -227,7 +229,7 @@ bool Game::on_init ( void )
   // Commence the initialization of game objects
   this->game->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
   this->game->cursor = nom::Cursor ( "images/cursors.json" );
-  this->game->cursor.set_position ( MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y );
+  this->game->cursor.set_position ( Point2i(MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y) );
 
   // Commence the loading of game resources
   if ( this->game->info_text.load ( this->game->config.getString("INFO_FONTFACE"), 0 ) == false )
