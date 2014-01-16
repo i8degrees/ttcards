@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 GameOverState::GameOverState  ( const nom::SDLApp::SharedPtr& object,
                                 nom::void_ptr state
                               ) :
+  nom::IState { Game::State::GameOver },
   game { std::dynamic_pointer_cast<Game> (object) },
   show_results ( false )/*,
   gameover_state { static_cast<nom::uint32_ptr>(state) }*/
@@ -213,12 +214,26 @@ NOM_LOG_TRACE ( TTCARDS );
   this->game->winning_track.Stop();
 }
 
+void GameOverState::on_pause ( nom::void_ptr data )
+{
+  // Hide the cursor so that it doesn't show up during undesirable states such
+  // as during the ContinueMenu or Pause states.
+  this->cursor.set_frame ( INTERFACE_CURSOR_NONE );
+  this->cursor.update();
+}
+
 void GameOverState::on_resume ( nom::void_ptr data )
 {
+  // Restore the rendering of the player's cursor
+  this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
+
   nom::int32_ptr response = static_cast<nom::int32_ptr> (data);
-  if ( *response == 0 ) // ContinueMenuState: Yes to picked out card
+
+  // "Yes" to verification of choice; we expect this response to be coming from
+  // ContinueMenuState.
+  if ( response != nullptr && this->game->previous_state() == Game::State::GameOver )
   {
-    event.dispatch ( nom::EventDispatcher::UserEvent::Animation );
+    this->event.dispatch ( nom::EventDispatcher::UserEvent::Animation );
   }
 }
 
@@ -231,7 +246,7 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
     // Pause game
     case SDLK_p:
     {
-      //this->game->set_state( Game::State::Pause );
+      this->game->set_state( Game::State::Pause );
       break;
     }
 

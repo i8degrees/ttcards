@@ -625,7 +625,7 @@ void Game::set_state ( nom::uint32 id, nom::void_ptr data )
 
     case Game::State::ContinueMenu:
     {
-      SDLApp::push_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
+      this->push_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
       break;
     }
   }

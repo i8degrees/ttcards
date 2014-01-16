@@ -123,21 +123,28 @@ void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 
     case SDLK_DOWN: this->cursor.move_down(); break;
     case SDLK_SPACE:
     {
-      // We will use the positioning of the cursor to map user's response
+      // We will use the positioning of the cursor to map user's response;
+      //
+      // Position zero (0) will generate a "Yes" response.
+      // Position one (1) will generate a "No" response.
+      //
+      // We pass the response along to whomever called us (this state) as we
+      // exit stage right.
       nom::int32 choice = this->cursor.position();
 
-      if ( choice == 0 ) // Yes; response will be 0 (TRUE)
-      {
-        nom::int32_ptr response = new nom::int32 (0);
-        this->game->pop_state(response);
-      }
-      else if ( choice == 1 ) // No; response will be 1 (FALSE)
+      if ( choice == 0 )
       {
         nom::int32_ptr response = new nom::int32 (1);
         this->game->pop_state(response);
       }
+      else if ( choice == 1 )
+      {
+        nom::int32_ptr response = nullptr;
+        this->game->pop_state(response);
+      }
       else
       {
+        // This should never get executed!
         this->game->cursor_wrong.Play();
       }
       break;
