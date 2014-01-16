@@ -251,7 +251,7 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
     }
 
     // Start a new game
-    case SDLK_RETURN: this->game->set_state( Game::State::CardsMenu );
+    case SDLK_RETURN: this->game->set_state( Game::State::CardsMenu ); break;
 
     case SDLK_LEFT: this->cursor.move_left(); break;
     case SDLK_RIGHT: this->cursor.move_right(); break;
