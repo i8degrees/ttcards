@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PauseState.hpp"
 
 PauseState::PauseState ( const nom::SDLApp::SharedPtr& object ) :
-  nom::IState { Game::State::Pause, 0, nom::IState::StateFlags::BackRender },
+  nom::IState { Game::State::Pause, nom::IState::StateFlags::BackRender },
   game { std::dynamic_pointer_cast<Game> (object) }
 {
   NOM_LOG_TRACE( TTCARDS );
