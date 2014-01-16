@@ -83,7 +83,7 @@ nom::int32 ContinueMenuStateCursor::move_up ( void )
 
 nom::int32 ContinueMenuStateCursor::move_down ( void )
 {
-  if ( this->y() < 128 )
+  if ( this->y() < 128 /*this->option_position.y*/ ) // FIXME
   {
     this->move ( 0, 16 );
     this->next();

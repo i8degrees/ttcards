@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuState.hpp"
 
+using namespace nom;
+
 ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::SharedPtr& object ) :
   nom::IState { Game::State::ContinueMenu, nom::IState::StateFlags::BackRender },
   game { std::dynamic_pointer_cast<Game> (object) }
@@ -43,17 +45,17 @@ ContinueMenuState::~ContinueMenuState ( void )
 void ContinueMenuState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
-  nom::Text option_text = nom::Text("Are you sure?\nYes\nNo", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
+  Text option_text = nom::Text("Are you sure?\n\t\tYes\n\t\tNo", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
 
   linear.set_start_color ( nom::Color4i::Gray );
   linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
   this->info_box = nom::MessageBox  (
-                                          OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y,
-                                          OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT,
-                                          nom::MessageBox::Style::Gray, linear
-                                        );
+                                      OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y,
+                                      OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT,
+                                      nom::MessageBox::Style::Gray, linear
+                                    );
 
   this->info_box.set_title ( nom::Text("CHOICE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
   this->info_box.set_text ( option_text );
@@ -154,22 +156,18 @@ void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 
 
 void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-  nom::Coords coords ( x, y ); // mouse input coordinates
+  Point2i mouse_input ( x, y ); // mouse input coordinates
+  IntRect text_bounds = this->info_box.text_bounds();
+  //IntRect text_bounds = IntRect ( option_text.position().x, option_text.position().y, option_text.width(), option_text.height() );
+  //nom::int32 option_choice = this->cursor.position();
 
-  // Player hand selection checks
-  nom::int32 option_choice = this->cursor.position();
-
-NOM_DUMP_VAR(option_choice);
-
-  if ( this->position_map.intersects ( coords ) )
+  if ( text_bounds.contains ( mouse_input ) )
   {
-    NOM_DUMP_VAR("b00bs");
     // 1. Update cursor position
-    // 2. Update player's selected card
-    // 3. Update the card info message box
-    // 4. Play sound event
-
-    //this->game->cursor_move.Play();
+    // 2. Update player's selected choice
+    // 3. Play sound event
+    // 4. $$$ PROFIT $$$
+    this->game->cursor_wrong.Play();
   }
 }
 
