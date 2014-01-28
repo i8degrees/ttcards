@@ -276,18 +276,18 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
 
 void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-  nom::Coords coords ( x, y ); // mouse input coordinates
+  nom::Point2i coords ( x, y ); // mouse input coordinates
 
   // Player hand selection checks
   for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
   {
-    this->player2_pos = nom::Coords (
-                                      PLAYER2_GAMEOVER_ORIGIN_X,
-                                      PLAYER2_GAMEOVER_ORIGIN_Y,
-                                      ( CARD_WIDTH ) * ( idx + 1 ), CARD_WIDTH
-                                    );
+    IntRect player2_card_pos  ( PLAYER2_GAMEOVER_ORIGIN_X,
+                                PLAYER2_GAMEOVER_ORIGIN_Y,
+                                ( CARD_WIDTH ) * ( idx + 1 ),
+                                CARD_WIDTH
+                              );
 
-    if ( player2_pos.intersects ( coords ) )
+    if ( player2_card_pos.contains ( coords ) )
     {
       // 1. Update cursor position
       // 2. Update player's selected card
@@ -389,11 +389,11 @@ void GameOverState::on_draw ( nom::IDrawable::RenderTarget target )
   // Show Player 2 hand on the top
   for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
   {
-    this->player2_pos = nom::Coords (
-                                      PLAYER2_GAMEOVER_ORIGIN_X +
-                                      ( CARD_WIDTH * idx ),
-                                      PLAYER2_GAMEOVER_ORIGIN_Y
-                                    );
+    this->player2_pos = nom::Point2i (  PLAYER2_GAMEOVER_ORIGIN_X
+                                        +
+                                        ( CARD_WIDTH * idx ),
+                                        PLAYER2_GAMEOVER_ORIGIN_Y
+                                      );
 
     this->game->card.reposition ( this->player2_pos );
     this->game->card.setViewCard ( this->game->hand[1].cards.at( idx ) );
@@ -403,11 +403,11 @@ void GameOverState::on_draw ( nom::IDrawable::RenderTarget target )
   // Show Player 1 hand on the bottom
   for ( nom::int32 idx = 0; idx < this->game->hand[0].size(); idx++ )
   {
-    this->player1_pos = nom::Coords (
-                                      PLAYER1_GAMEOVER_ORIGIN_X +
-                                      ( CARD_WIDTH * idx ),
-                                      PLAYER1_GAMEOVER_ORIGIN_Y
-                                    );
+    this->player1_pos = nom::Point2i  ( PLAYER1_GAMEOVER_ORIGIN_X
+                                        +
+                                        ( CARD_WIDTH * idx ),
+                                        PLAYER1_GAMEOVER_ORIGIN_Y
+                                      );
 
     this->game->card.reposition ( this->player1_pos );
     this->game->card.setViewCard ( this->game->hand[0].cards.at( idx ) );

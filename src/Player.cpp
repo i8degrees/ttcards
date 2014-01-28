@@ -28,50 +28,48 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Player.hpp"
 
-Player::Player ( void ) : card ( nullptr ), hand ( nullptr ),
-                          id ( 0 ), score ( 0 ),
-                          player_state ( PlayerState::Reserved )
+using namespace nom;
+
+Player::Player ( void ) :
+  card ( nullptr ),
+  ruleset ( CardRules::NoRules ),
+  hand ( nullptr ),
+  id ( 0 ),
+  score ( 0 ),
+  player_state ( PlayerState::Reserved )
 {
 NOM_LOG_TRACE ( TTCARDS );
-}
-
-Player::Player ( CardHand* player_cards, CardView* view, const CardRules& ruleset )
-{
-NOM_LOG_TRACE ( TTCARDS );
-
-  this->hand.reset ( player_cards, Free_CardHand );
-  this->ruleset = ruleset;
-  this->card = view;
-
-  this->coords = nom::Coords ( 0, 0, 0, 0 ); // initialize X, Y origin coords
-  this->id = 0;
-  this->set_state ( PlayerState::Reserved );
-  this->score = 0;
 }
 
 Player::~Player ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS );
 }
 
-nom::int32 Player::getX ( void )
+Player::Player (  CardHand* player_cards,
+                  CardView* view,
+                  const CardRules& ruleset
+                ) :
+  card ( view ),
+  ruleset ( ruleset ),
+  hand { player_cards, Free_CardHand },
+  position_ ( Point2i::null ),
+  id ( 0 ),
+  score ( 0 ),
+  player_state ( PlayerState::Reserved )
+
 {
-  return this->coords.x;
+  //NOM_LOG_TRACE ( TTCARDS );
 }
 
-nom::int32 Player::getY ( void )
+const Point2i& Player::position ( void ) const
 {
-  return this->coords.y;
+  return this->position_;
 }
 
-const nom::Coords Player::getPosition ( void ) const
+void Player::set_position ( const Point2i& pos )
 {
-  return this->coords;
-}
-
-void Player::setPosition ( nom::int32 x, nom::int32 y )
-{
-  this->coords.setPosition ( x, y );
+  this->position_ = pos;
 }
 
 unsigned int Player::getID ( void )
@@ -145,10 +143,10 @@ void Player::draw ( nom::IDrawable::RenderTarget target )
 
   for ( nom::int32 idx = 0; idx < this->hand->size(); idx++ )
   {
-    this->player_pos = nom::Coords  (
-                                      this->getX(),
-                                      this->getY() + ( CARD_HEIGHT / 2 ) * idx
-                                    );
+    // Position of Player's cards in their hand
+    Point2i player_pos  ( this->position().x,
+                          this->position().y + ( CARD_HEIGHT / 2 ) * idx
+                        );
 
     nom::int32 player_id = this->hand->cards.at( idx ).getPlayerID();
     Card selected_card = this->hand->getSelectedCard();
@@ -156,24 +154,24 @@ void Player::draw ( nom::IDrawable::RenderTarget target )
 
     if ( player_id == Card::PLAYER2 && hand_pos == idx )
     {
-      this->player_pos.x += 16;
-      this->card->reposition ( this->player_pos );
+      player_pos.x += 16;
+      this->card->reposition ( player_pos );
       this->card->setViewCard ( this->hand->cards.at ( idx ) );
       this->card->face ( face_down );
       this->card->draw ( target );
     }
     else if ( player_id == Card::PLAYER1 && hand_pos == idx )
     {
-      this->player_pos.x -= 16;
+      player_pos.x -= 16;
 
-      this->card->reposition ( this->player_pos );
+      this->card->reposition ( player_pos );
       this->card->setViewCard ( this->hand->cards.at ( idx ) );
       this->card->face ( false );
       this->card->draw ( target );
     }
     else
     {
-      this->card->reposition ( this->player_pos );
+      this->card->reposition ( player_pos );
       this->card->setViewCard ( this->hand->cards[idx] );
 
       if ( player_id == Card::PLAYER1 )

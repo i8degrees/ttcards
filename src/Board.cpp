@@ -62,17 +62,17 @@ void Board::initialize ( void )
 NOM_LOG_TRACE ( TTCARDS );
 
   // Calculate the global screen coordinates for local positions on the board
-  this->board_map[0] = nom::Coords ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_map[1] = nom::Coords ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_map[2] = nom::Coords ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_map[0] = nom::IntRect ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_map[1] = nom::IntRect ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  this->board_map[2] = nom::IntRect ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
 
-  this->board_map[3] = nom::Coords ( 0, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_map[4] = nom::Coords ( 1, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_map[5] = nom::Coords ( 2, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_map[3] = nom::IntRect ( 0, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_map[4] = nom::IntRect ( 1, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->board_map[5] = nom::IntRect ( 2, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
 
-  this->board_map[6] = nom::Coords ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_map[7] = nom::Coords ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_map[8] = nom::Coords ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_map[6] = nom::IntRect ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_map[7] = nom::IntRect ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
+  this->board_map[8] = nom::IntRect ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
 
   this->grid.resize ( BOARD_GRID_HEIGHT );
 
@@ -91,7 +91,7 @@ NOM_LOG_TRACE ( TTCARDS );
   }
 }
 
-const nom::Coords Board::getGlobalBounds ( nom::int32 x, nom::int32 y ) const
+const nom::IntRect Board::getGlobalBounds ( nom::int32 x, nom::int32 y ) const
 {
   for ( nom::int32 idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
   {
@@ -99,7 +99,7 @@ const nom::Coords Board::getGlobalBounds ( nom::int32 x, nom::int32 y ) const
       return this->board_map[idx];
   }
 
-  return nom::Coords::null;
+  return nom::IntRect::null;
 }
 
 const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
@@ -312,7 +312,7 @@ const nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y ) const
 
 void Board::updateStatus ( nom::int32 x, nom::int32 y, const Card& card )
 {
-  this->grid[x][y].update ( nom::Coords ( x, y ), card );
+  this->grid[x][y].update ( nom::Point2i( x, y ), card );
 /*
   if ( this->grid[x][y].element() != 0 )
   {
@@ -371,10 +371,10 @@ void Board::draw ( nom::IDrawable::RenderTarget target )
       if ( this->get ( x, y ).getID() == BAD_CARD_ID ) continue;
 
       // Positions of the cards on the game board
-      nom::Coords board_pos (
-                              BOARD_ORIGIN_X + ( CARD_WIDTH * x ),
-                              BOARD_ORIGIN_Y + ( CARD_HEIGHT * y )
-                            );
+      nom::Point2i board_pos  (
+                                BOARD_ORIGIN_X + ( CARD_WIDTH * x ),
+                                BOARD_ORIGIN_Y + ( CARD_HEIGHT * y )
+                              );
 
       this->card->reposition ( board_pos );
 
@@ -385,7 +385,7 @@ void Board::draw ( nom::IDrawable::RenderTarget target )
 /*
       if ( this->grid[x][y].element() != 0 )
       {
-        nom::Coords element_pos (
+        nom::IntRect element_pos (
                                   board_pos.x + ELEMENT_WIDTH,
                                   board_pos.y + ELEMENT_HEIGHT
                                 );
@@ -482,7 +482,7 @@ NOM_LOG_ERR ( TTCARDS, "Board data is invalid from file: " + filename );
   {
     for ( nom::int32 x = 0; x < BOARD_GRID_HEIGHT; x++ )
     {
-      this->grid[x][y].update ( nom::Coords ( x, y ), cards_buffer[idx] );
+      this->grid[x][y].update ( nom::Point2i( x, y ), cards_buffer[idx] );
       idx++;
     }
   }
@@ -504,7 +504,7 @@ void Board::list ( void )
     for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     {
       Card tile = this->grid[x][y].tile();
-      nom::Coords pos = this->grid[x][y].bounds();
+      nom::IntRect pos = this->grid[x][y].bounds();
       nom::uint32 element = this->grid[x][y].element();
 
       std::cout << line_number

@@ -88,10 +88,10 @@ class GameOverState: public nom::IState
     nom::MessageBox card_info_box;
 
     /// Position of player 1 hand
-    nom::Coords player1_pos;
+    nom::Point2i player1_pos;
 
     /// Position of player 2 hand
-    nom::Coords player2_pos;
+    nom::Point2i player2_pos;
 
     nom::EventDispatcher event;
 

@@ -99,13 +99,13 @@ class CardsMenuState: public nom::IState
     //CardsMenuStateCursor cursor;
 
     /// Position of the player's hand (player 1)
-    nom::Coords player1_pos;
+    nom::Point2i player1_pos;
 
     /// Position of the opponent's hand (player 2)
-    nom::Coords player2_pos;
+    nom::Point2i player2_pos;
 
     /// Position of the card selection from the menu list
-    nom::Coords card_pos;
+    nom::Point2i card_pos;
 
     nom::Text title_text;
     nom::Text card_text;

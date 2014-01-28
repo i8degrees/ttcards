@@ -30,32 +30,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 BoardTile::BoardTile ( void ) : tile_element ( 0 ) {}
 
-BoardTile::BoardTile  (
-                        const Card& card, const nom::Coords& pos, nom::uint32 element
-                      )
-                      : tile_card ( card ), tile_pos ( pos ),
-                        tile_element ( element )
-{}
+BoardTile::BoardTile  ( const Card& card,
+                        const nom::IntRect& bounds,
+                        nom::uint32 element
+                      ) :
+  tile_card ( card ),
+  bounds_ ( bounds ),
+  tile_element ( element )
+{
+  //NOM_LOG_TRACE(TTCARDS);
+}
 
-BoardTile::~BoardTile ( void ) {}
+BoardTile::~BoardTile ( void )
+{
+  //NOM_LOG_TRACE(TTCARDS);
+}
 
 const Card& BoardTile::tile ( void ) const
 {
   return this->tile_card;
 }
 
-const nom::Coords& BoardTile::bounds ( void ) const
+const nom::IntRect& BoardTile::bounds ( void ) const
 {
-  return this->tile_pos;
+  return this->bounds_;
 }
 
-const nom::uint32 BoardTile::element ( void ) const
+nom::uint32 BoardTile::element ( void ) const
 {
   return this->tile_element;
 }
 
-void BoardTile::update ( const nom::Coords& pos, const Card& card )
+void BoardTile::update ( const nom::Point2i& pos, const Card& card )
 {
   this->tile_card = card;
-  //this->tile_pos = pos;
+  //this->bounds_.x = pos.x;
+  //this->bounds_.y = pos.y;
 }

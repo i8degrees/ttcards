@@ -47,8 +47,10 @@ class CardRules
     /// Destructor
     ~CardRules ( void );
 
-    unsigned int getRules ( void );
-    void setRules ( unsigned int type );
+    CardRules ( nom::uint32 ruleset );
+
+    nom::uint32 getRules ( void );
+    void setRules ( nom::uint32 type );
 
     bool compareCards ( unsigned int r1, unsigned int r2 );
 
@@ -56,8 +58,8 @@ class CardRules
     /// has been triggered.
     enum
     {
-      NoRules = 0, // default
-      Open,
+      NoRules = 0,  // Default (enables opponent's card face down)
+      Open,         // Inverse of the default above; show the opponent's cards
       Elemental,
       Same,
       SameWall,
@@ -82,7 +84,7 @@ class CardRules
     };
 
   private:
-    unsigned int rules; // stores our card game rules in use
+    nom::uint32 rules; // stores our card game rules in use
 };
 
 #endif // GAMEAPP_CARD_RULES_HEADERS defined

@@ -49,14 +49,17 @@ class Player
 {
   public:
     Player ( void );
-    Player ( CardHand* player_cards, CardView* view, const CardRules& ruleset );
+
     ~Player ( void );
 
-    nom::int32 getX ( void );
-    nom::int32 getY ( void );
+    Player  (
+              CardHand* player_cards,
+              CardView* view,
+              const CardRules& ruleset
+            );
 
-    const nom::Coords getPosition ( void ) const;
-    void setPosition ( nom::int32 x, nom::int32 y );
+    const nom::Point2i& position ( void ) const;
+    void set_position ( const nom::Point2i& pos );
 
     unsigned int getID ( void );
     void setID ( unsigned int id_ );
@@ -77,29 +80,26 @@ class Player
     void draw ( nom::IDrawable::RenderTarget target );
 
   private:
-    /// Card rendering
+    /// Card rendering; defaults to NULL.
     CardView* card;
 
-    /// Ruleset in use
+    /// Ruleset in use; defaults to CardRules::NoRules.
     CardRules ruleset;
 
-    /// pointer reference to player's hand
+    /// pointer reference to player's hand; defaults to NULL.
     CardHand::SharedPtr hand;
 
-    /// x, y origin coords
-    nom::Coords coords;
+    /// x, y origin coords; defaults to Point2i::null (-1,-1).
+    nom::Point2i position_;
 
-    /// unique identifier for tracking each player in game
+    /// unique identifier for tracking each player in game; defaults to 0.
     unsigned int id;
 
-    /// player's scoreboard
+    /// player's scoreboard; defaults to 0.
     unsigned int score;
 
-    /// Player state
+    /// Player's state; defaults to PlayerState::Reserved
     enum PlayerState player_state;
-
-    /// Position of Player's cards in their hand
-    nom::Coords player_pos;
 };
 
 #endif // GAMEAPP_PLAYER_HEADERS defined

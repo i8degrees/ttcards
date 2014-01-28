@@ -58,7 +58,7 @@ ContinueMenuStateCursor::ContinueMenuStateCursor  (
   //NOM_LOG_TRACE( TTCARDS );
 }
 
-void ContinueMenuStateCursor::set_position_map ( const nom::Coords& position_map )
+void ContinueMenuStateCursor::set_position_map ( const nom::Point2i& position_map )
 {
   this->option_position = position_map;
   this->cursor_position = 0;

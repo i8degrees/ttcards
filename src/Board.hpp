@@ -69,12 +69,12 @@ class Board
     ///   0, 1    1, 1    2, 1
     ///   0, 2    1, 2    2, 2
     ///
-    /// Returns a nom::Coords filled with the global coordinate values; the
+    /// Returns a nom::IntRect filled with the global coordinate values; the
     /// width and height member values are the bounding boxes of each local grid
     /// coordinate. The x & y member values are the input grid coordinates.
     ///
     /// Returns -1, -1 when undefined.
-    const nom::Coords getGlobalBounds ( nom::int32 x, nom::int32 y ) const;
+    const nom::IntRect getGlobalBounds ( nom::int32 x, nom::int32 y ) const;
 
     const std::vector<BoardTile> find_adjacent ( nom::int32 x, nom::int32 y ) const;
 
@@ -144,7 +144,7 @@ class Board
 
     /// X, Y translation coordinates for mapping local to global positions on
     /// the board
-    nom::Coords board_map[9];
+    nom::IntRect board_map[9];
 };
 
 #endif // GAMEAPP_BOARD_HEADERS defined

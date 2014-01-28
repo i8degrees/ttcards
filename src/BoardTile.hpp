@@ -45,28 +45,31 @@ class BoardTile
     /// Default constructor
     BoardTile ( void );
 
-    /// Construct a new board tile
-    BoardTile ( const Card& card, const nom::Coords& pos, const nom::uint32 element );
-
     /// Destructor
     ~BoardTile ( void );
+
+    /// Construct a new board tile
+    BoardTile ( const Card& card,
+                const nom::IntRect& bounds,
+                const nom::uint32 element
+              );
 
     /// Getter for tile_card instance var
     const Card& tile ( void ) const;
 
     /// Getter for tile_pos instance var
-    const nom::Coords& bounds ( void ) const;
+    const nom::IntRect& bounds ( void ) const;
 
     /// Getter for tile_element instance var
-    const nom::uint32 element ( void ) const;
+    nom::uint32 element ( void ) const;
 
     /// Update an existing tile
-    void update ( const nom::Coords& pos, const Card& card );
+    void update ( const nom::Point2i& pos, const Card& card );
 
   private:
     friend class Board;
     Card tile_card;
-    nom::Coords tile_pos;
+    nom::IntRect bounds_;
     nom::uint32 tile_element;
     enum BoardPosition board_tile;
 };

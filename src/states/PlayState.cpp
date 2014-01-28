@@ -83,18 +83,18 @@ void PlayState::on_init ( nom::void_ptr data )
   this->game->board = Board ( this->game->rules, &this->game->card );
 
   this->player[0] = Player ( &this->game->hand[0], &this->game->card, this->game->rules );
-  this->player[0].setPosition ( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y );
+  this->player[0].set_position( Point2i( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y ) );
 
   this->player[1] = Player ( &this->game->hand[1], &this->game->card, this->game->rules );
-  this->player[1].setPosition ( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y );
+  this->player[1].set_position( Point2i( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y ) );
 
   // player1, player2 cursor X, Y coords
-  this->player_cursor_coords[0] = nom::Coords ( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-  this->player_cursor_coords[1] = nom::Coords ( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+  this->player_cursor_coords[0] = nom::Point2i( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
+  this->player_cursor_coords[1] = nom::Point2i( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
 
   // Compute the player's scoreboard X, Y coordinate positions
-  this->player_scoreboard[0].setPosition ( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
-  this->player_scoreboard[1].setPosition ( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->player_scoreboard[0] = Point2i( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
+  this->player_scoreboard[1] = Point2i( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 
   // Set both player's scoreboard fonts
   for ( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx )
@@ -111,7 +111,7 @@ void PlayState::on_init ( nom::void_ptr data )
 
   for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    this->cursor_coords_map[idx] = nom::Coords ( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
+    this->cursor_coords_map[idx] = nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
   linear.set_start_color ( nom::Color4i::Gray );
@@ -414,9 +414,15 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
 void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
-  nom::uint32 player_turn = this->get_turn();
-  nom::Coords coords ( x, y ); // mouse input coordinates
-  nom::Coords player_coords = this->player[player_turn].getPosition(); // Player cursor origin coordinates
+  uint32 player_turn = this->get_turn(); // Ignore player2 mouse input
+  // Player cursor positioning
+  Point2i player_pos = this->player[player_turn].position();
+
+  // mouse input coordinates
+  Point2i mouse_input ( x, y );
+
+  // Rectangle bounds of player's card
+  IntRect card_bounds;
 
   // Disable mouse input if we are not controlling the other player
   if ( this->skip_turn == false )
@@ -424,15 +430,19 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 
     if ( this->get_turn() != 0 ) return;
   }
 
-  // Player hand selection checks
+  // Player hand selection checks; we must calculate the valid bounds of any
+  // given card in the player's hand -- the current player position combined
+  // with the known card size yields rectangular coordinates we can compare.
   for ( nom::int32 idx = 0; idx < this->game->hand[ player_turn ].size(); idx++ )
   {
-    player_coords = nom::Coords (
-                                  player_coords.x, player_coords.y,
-                                  CARD_WIDTH, ( CARD_HEIGHT / 2  ) * ( idx + 1 )
-                                );
+    card_bounds = IntRect ( player_pos.x,
+                            player_pos.y,
+                            CARD_WIDTH,
+                            ( CARD_HEIGHT / 2  ) * ( idx + 1 )
+                          );
 
-    if ( player_coords.intersects ( coords ) )
+    // If the mouse coordinates match within the card bounds, we have a match!
+    if ( card_bounds.contains( mouse_input ) )
     {
       // 1. Update player's selected card
       // 2. Update cursor position
@@ -452,13 +462,13 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 
 
   // Board grid coords check; player is attempting to place a card on the board
   // when the player hand coords check above comes back false
-  coords = this->game->board.getGlobalBounds ( x, y );
+  IntRect mouse_map = this->game->board.getGlobalBounds ( x, y );
 
   // Attempts to move card onto board; validity checking is performed within
   // the following method call
-  if ( coords != nom::Coords::null ) // undefined if -1, -1
+  if ( mouse_map != nom::IntRect::null ) // undefined if -1, -1
   {
-    this->moveTo ( coords.x, coords.y );
+    this->moveTo ( mouse_map.x, mouse_map.y );
   }
 }
 
@@ -541,13 +551,13 @@ void PlayState::updateMessageBoxes ( void )
 {
   nom::uint32 player_turn = get_turn();
   Card selected_card; // temp container var to hold our card info (ID, name)
-  nom::Coords coords; // temp container var to hold cursor pos mapping coords
+  nom::IntRect coords; // temp container var to hold cursor pos mapping coords
 
   // board selection state
   if ( this->isCursorLocked() == true )
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.x(), this->game->cursor.y() );
-    if ( coords != nom::Coords::null )
+    if ( coords != nom::IntRect::null )
     {
       selected_card = this->game->board.get ( coords.x, coords.y );
     }
@@ -623,7 +633,7 @@ void PlayState::unlockSelectedCard ( void )
 // helper method for cursor input selection
 void PlayState::lockSelectedCard ( void )
 {
-  nom::Coords coords; // temp container var to hold cursor pos mapping coords
+  nom::IntRect coords; // temp container var to hold cursor pos mapping coords
 
   this->game->cursor.set_state ( 1 ); // board select
 
@@ -644,7 +654,7 @@ void PlayState::lockSelectedCard ( void )
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.x(), this->game->cursor.y() );
 
-    if ( coords != nom::Coords::null )
+    if ( coords != nom::IntRect::null )
     {
       this->moveTo ( coords.x, coords.y );
     }
@@ -673,7 +683,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
 
       if ( tile.getPlayerID() != Card::PLAYER1 )
       {
-        nom::Coords pos = adj[idx].bounds();
+        nom::IntRect pos = adj[idx].bounds();
         nom::uint32 element = adj[idx].element();
 
         std::cout << line_number
@@ -947,7 +957,7 @@ void PlayState::on_update ( float delta_time )
     // Skipping a turn like this is only available in debug versions
     if ( this->skip_turn == false )
     {
-      nom::Coords board_edges[4];
+      nom::IntRect board_edges[4];
 
       board_edges[0].x = 0;
       board_edges[0].y = 0;

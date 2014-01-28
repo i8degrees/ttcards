@@ -28,22 +28,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardRules.hpp"
 
-CardRules::CardRules ( void ) : rules ( 0 )
+using namespace nom;
+
+CardRules::CardRules ( void ) :
+  rules ( 0 )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS );
 }
 
 CardRules::~CardRules ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS );
 }
 
-unsigned int CardRules::getRules ( void )
+CardRules::CardRules ( uint32 ruleset ) :
+  rules ( ruleset )
+{
+  //NOM_LOG_TRACE ( TTCARDS );
+}
+
+nom::uint32 CardRules::getRules ( void )
 {
   return this->rules;
 }
 
-void CardRules::setRules ( unsigned int type )
+void CardRules::setRules ( nom::uint32 type )
 {
   this->rules = type;
 }
@@ -102,4 +111,3 @@ bool CardRules::compareCards ( unsigned int r1, unsigned int r2 )
 
   return false;
 }
-

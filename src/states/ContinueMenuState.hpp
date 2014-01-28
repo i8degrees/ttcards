@@ -65,7 +65,7 @@ class ContinueMenuState: public nom::IState
     nom::MessageBox info_box;
     ContinueMenuStateCursor cursor;
 
-    nom::Coords position_map;
+    nom::Point2i position_map;
 };
 
 // Convenience declarations for changing state

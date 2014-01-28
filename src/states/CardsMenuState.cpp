@@ -74,7 +74,7 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::SharedPtr& object ) :
 
   this->selectedCard = this->game->collection.cards.front();
 
-  this->card_pos = nom::Coords  (
+  this->card_pos = nom::Point2i (
                                   BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ),
                                   BOARD_ORIGIN_Y +
                                   (
@@ -252,11 +252,11 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
   // static player2 hand background
   for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    this->player2_pos = nom::Coords (
-                                      PLAYER2_ORIGIN_X,
-                                      PLAYER2_ORIGIN_Y +
-                                      ( CARD_HEIGHT / 2 ) * idx
-                                    );
+    this->player2_pos = Point2i (
+                                  PLAYER2_ORIGIN_X,
+                                  PLAYER2_ORIGIN_Y +
+                                  ( CARD_HEIGHT / 2 ) * idx
+                                );
 
     this->game->card.reposition ( this->player2_pos );
     this->game->card.draw ( target );
@@ -268,11 +268,11 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget target )
   // Active player's card selection(s)
   for ( nom::uint32 idx = 0; idx < this->game->hand[0].size(); idx++ )
   {
-    this->player1_pos = nom::Coords (
-                                      PLAYER1_ORIGIN_X,
-                                      PLAYER1_ORIGIN_Y +
-                                      ( CARD_HEIGHT / 2 ) * idx
-                                    );
+    this->player1_pos = Point2i (
+                                  PLAYER1_ORIGIN_X,
+                                  PLAYER1_ORIGIN_Y +
+                                  ( CARD_HEIGHT / 2 ) * idx
+                              );
 
     this->game->card.reposition ( this->player1_pos );
     this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );

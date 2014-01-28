@@ -111,13 +111,13 @@ class PlayState: public nom::IState
     Player player[2];
 
     /// x, y coords mapping for player1, player2 cursor starting position
-    nom::Coords player_cursor_coords[2];
+    nom::Point2i player_cursor_coords[2];
 
     /// x, y coords mapping for player1, player2 scoreboard positions
-    nom::Coords player_scoreboard[2];
+    nom::Point2i player_scoreboard[2];
 
     /// y coords mapping for cursor -> card position index
-    nom::Coords cursor_coords_map[5];
+    nom::Point2i cursor_coords_map[5];
 
     nom::uint32 turn; // FIXME: player1 = 0, player2 = 1
 

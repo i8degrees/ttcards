@@ -48,7 +48,7 @@ class CardView: public nom::IDrawable
     /// Default constructor
     CardView ( void );
 
-    CardView ( const nom::Coords& coords );
+    CardView ( const nom::IntRect& coords );
 
     /// Default destructor
     ~CardView ( void );
@@ -95,7 +95,7 @@ class CardView: public nom::IDrawable
     void setViewCard ( const Card& card );
 
     /// Set new rendering coordinates for the card
-    void reposition ( const nom::Coords& coords );
+    void reposition ( const nom::Point2i& pos );
 
     /// Render the face of the card either shown to the player or not
     void face ( bool up = false );
@@ -108,7 +108,7 @@ class CardView: public nom::IDrawable
     void draw ( nom::IDrawable::RenderTarget target ) const;
 
   private:
-    nom::Coords position;
+    nom::Point2i position_;
     Card render_card;
     bool card_face_down;
 

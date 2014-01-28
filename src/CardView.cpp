@@ -48,7 +48,7 @@ CardView::CardView ( void )
   this->card_background->set_fill_direction ( nom::Gradient::FillDirection::Top );
 }
 
-CardView::CardView ( const nom::Coords& coords )
+CardView::CardView ( const nom::IntRect& coords )
 {
   // Stub
 }
@@ -266,9 +266,9 @@ void CardView::setViewCard ( const Card& card )
   this->render_card = card;
 }
 
-void CardView::reposition ( const nom::Coords& coords )
+void CardView::reposition ( const nom::Point2i& pos )
 {
-  this->position = coords;
+  this->position_ = pos;
 }
 
 void CardView::face ( bool up )
@@ -278,10 +278,10 @@ void CardView::face ( bool up )
 
 void CardView::update ( void )
 {
-  //this->card_background->set_position ( this->position );
-  //this->card_face->setPosition ( this->position );
-  //this->card_element->setPosition ( this->position );
-  //this->card_text->setPosition ( this->position );
+  //this->card_background->set_position ( this->position_ );
+  //this->card_face->setPosition ( this->position_ );
+  //this->card_element->setPosition ( this->position_ );
+  //this->card_text->setPosition ( this->position_ );
 
   //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   //{
@@ -295,10 +295,10 @@ void CardView::draw ( nom::IDrawable::RenderTarget target ) const
   //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   //{
     //std::shared_ptr<nom::IDrawable> obj = *it;
-    //this->draw_background ( target, render_card.getPlayerID(), this->position.x, this->position.y );
-    //this->draw_face ( target, render_card.getID(), this->position.x, this->position.y );
-    //this->draw_element ( target, render_card.getID(), this->position.x, this->position.y );
-    this->draw ( target, render_card, this->position.x, this->position.y, this->card_face_down );
+    //this->draw_background ( target, render_card.getPlayerID(), this->position_.x, this->position_.y );
+    //this->draw_face ( target, render_card.getID(), this->position_.x, this->position_.y );
+    //this->draw_element ( target, render_card.getID(), this->position_.x, this->position_.y );
+    this->draw ( target, render_card, this->position_.x, this->position_.y, this->card_face_down );
     //obj->draw ( target );
   //}
 }

@@ -82,12 +82,12 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
     //this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
-  this->position_map = nom::Coords  (
-                                      OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 ),
-                                      OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 )
-                                      +
-                                      ( option_text.height() / 2 )
-                                    );
+  this->position_map = Point2i  (
+                                  OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 ),
+                                  OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 )
+                                  +
+                                  ( option_text.height() / 2 )
+                                );
 
   this->cursor.set_position_map ( position_map );
 
