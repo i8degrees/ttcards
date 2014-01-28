@@ -196,7 +196,7 @@ Game::~Game ( void )
 
 bool Game::on_init ( void )
 {
-  nom::Rectangle rectangle  ( nom::Coords ( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT ),
+  nom::Rectangle rectangle  ( IntRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
                               nom::Color4i::Gray
                             );
 

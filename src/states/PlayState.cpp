@@ -932,11 +932,11 @@ void PlayState::on_update ( float delta_time )
 
   if ( this->get_turn() == 0 ) // player1
   {
-    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color4i ( 188, 203, 236 ) );
+    this->player_rect = nom::Rectangle ( nom::IntRect( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT), nom::Color4i( 188, 203, 236 ) );
   }
   else // player2
   {
-    this->player_rect = nom::Rectangle ( nom::Coords ( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT ), nom::Color4i ( 222, 196, 205 ) );
+    this->player_rect = nom::Rectangle ( nom::IntRect( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT), nom::Color4i( 222, 196, 205 ) );
 
     // Skipping a turn like this is only available in debug versions
     if ( this->skip_turn == false )
