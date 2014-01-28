@@ -32,7 +32,7 @@ using namespace nom;
 
 PauseState::PauseState ( const nom::SDLApp::SharedPtr& object ) :
   nom::IState { Game::State::Pause, nom::IState::StateFlags::BackRender },
-  game { std::dynamic_pointer_cast<Game> (object) }
+  game { NOM_PTR_CAST( Game, object) }
 {
   NOM_LOG_TRACE( TTCARDS );
 }

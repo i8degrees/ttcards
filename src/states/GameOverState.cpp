@@ -34,7 +34,7 @@ GameOverState::GameOverState  ( const nom::SDLApp::SharedPtr& object,
                                 nom::void_ptr state
                               ) :
   nom::IState { Game::State::GameOver },
-  game { std::dynamic_pointer_cast<Game> (object) },
+  game { NOM_PTR_CAST( Game, object) },
   show_results ( false )/*,
   gameover_state { static_cast<nom::uint32_ptr>(state) }*/
 {

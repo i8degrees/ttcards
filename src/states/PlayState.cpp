@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 PlayState::PlayState ( const nom::SDLApp::SharedPtr& object ) :
-  game { std::dynamic_pointer_cast<Game> (object) }
+  game { NOM_PTR_CAST( Game, object) }
 {
   NOM_LOG_TRACE( TTCARDS );
 

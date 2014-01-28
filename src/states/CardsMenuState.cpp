@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 CardsMenuState::CardsMenuState ( const nom::SDLApp::SharedPtr& object ) :
-  game { std::dynamic_pointer_cast<Game> (object) }
+  game { NOM_PTR_CAST( Game, object) }
 {
   nom::Gradient linear;
 
