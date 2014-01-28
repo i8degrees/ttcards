@@ -51,10 +51,13 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
   linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
-  this->info_box = nom::MessageBox  (
-                                      OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y,
-                                      OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT,
-                                      nom::MessageBox::Style::Gray, linear
+  Point2i info_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
+  Size2i info_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
+
+  this->info_box = nom::MessageBox  ( info_box_origin,
+                                      info_box_size,
+                                      nom::MessageBox::Style::Gray,
+                                      linear
                                     );
 
   this->info_box.set_title ( nom::Text("CHOICE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );

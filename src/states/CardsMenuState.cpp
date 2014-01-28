@@ -59,12 +59,13 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::SharedPtr& object ) :
   linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
-  this->menu_box = nom::MessageBox  (
-                                      PICK_CARDS_MENU_ORIGIN_X,
-                                      PICK_CARDS_MENU_ORIGIN_Y,
-                                      PICK_CARDS_MENU_WIDTH,
-                                      PICK_CARDS_MENU_HEIGHT,
-                                      nom::MessageBox::Style::Gray, linear
+  Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y );
+  Size2i menu_box_size = Size2i( PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
+
+  this->menu_box = nom::MessageBox  ( menu_box_origin,
+                                      menu_box_size,
+                                      nom::MessageBox::Style::Gray,
+                                      linear
                                     );
 
   this->per_page = 11; // number of cards to display per menu page

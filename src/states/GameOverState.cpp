@@ -138,22 +138,28 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
 
   this->card_text = nom::Text(this->game->hand[1].getSelectedCard().getName(), this->game->info_text, 12, nom::Text::MiddleCenter);
 
+  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
+  Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
+
   // Top display message box; "description" info box
-  this->info_box = nom::MessageBox  (
-                                          INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y,
-                                          INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                          nom::MessageBox::Style::Gray, linear
-                                        );
+  this->info_box = nom::MessageBox  ( info_box_origin,
+                                      info_box_size,
+                                      nom::MessageBox::Style::Gray,
+                                      linear
+                                    );
 
   this->info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
   this->info_box.set_text ( this->info_text );
 
+  Point2i card_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
+  Size2i card_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
+
   // Bottom display message box; card info (card name)
-  this->card_info_box = nom::MessageBox (
-                                              INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y,
-                                              INFO_BOX_WIDTH, INFO_BOX_HEIGHT,
-                                              nom::MessageBox::Style::Gray, linear
-                                            );
+  this->card_info_box = nom::MessageBox ( card_box_origin,
+                                          card_box_size,
+                                          nom::MessageBox::Style::Gray,
+                                          linear
+                                        );
 
   this->card_info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
   this->card_info_box.set_text ( this->card_text );

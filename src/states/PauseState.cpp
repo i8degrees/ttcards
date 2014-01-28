@@ -52,11 +52,11 @@ void PauseState::on_init ( nom::void_ptr data )
   linear.set_start_color ( nom::Color4i ( 67, 67, 67, 255 ) );
   linear.set_end_color ( nom::Color4i ( 99, 99, 99, 255 ) );
 
-  this->info_box = nom::MessageBox  (
-                                      PAUSE_BOX_ORIGIN_X,
-                                      PAUSE_BOX_ORIGIN_Y,
-                                      PAUSE_BOX_WIDTH,
-                                      PAUSE_BOX_HEIGHT,
+  Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
+  Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
+
+  this->info_box = nom::MessageBox  ( info_box_origin,
+                                      info_box_size,
                                       nom::MessageBox::Style::Gray,
                                       linear
                                     );
