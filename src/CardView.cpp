@@ -43,8 +43,8 @@ CardView::CardView ( void )
   this->card.push_back ( this->card_background );
   this->card.push_back ( this->card_text );
 
-  this->card_background->set_size ( CARD_WIDTH - 4, CARD_HEIGHT );
-  this->card_background->set_margins ( 4, 4 );
+  this->card_background->set_size ( Size2i(CARD_WIDTH - 4, CARD_HEIGHT) );
+  this->card_background->set_margins ( Point2i(4, 4) );
   this->card_background->set_fill_direction ( nom::Gradient::FillDirection::Top );
 }
 
@@ -156,7 +156,7 @@ void CardView::draw_background  (
   }
 
   //this->card_background->set_position ( this->position );
-  this->card_background->set_position ( x, y );
+  this->card_background->set_position ( Point2i(x, y) );
   this->card_background->update();
   this->card_background->draw ( target );
 }
