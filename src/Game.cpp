@@ -220,7 +220,15 @@ bool Game::on_init ( void )
     std::cout << modes[idx] << std::endl;
   }
 
+  // Original scale (384x224)
+  //this->game->window.create ( "TTcards", SCREEN_WIDTH * 1, SCREEN_HEIGHT * 1, video_flags );
+
+  // Enhanced scaling (784x448)
   this->game->window.create ( "TTcards", SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, video_flags );
+
+  // Almost-HD resolution scaling (1152x672)
+  //this->game->window.create ( "TTcards", SCREEN_WIDTH * 3, SCREEN_HEIGHT * 3, video_flags );
+
   this->game->window.set_window_icon ( this->game->config.getString("APP_ICON") );
 //this->game->window.set_window_title ( LOADING_TEXT );
 
