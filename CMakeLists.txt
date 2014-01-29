@@ -375,10 +375,8 @@ install ( DIRECTORY "${TTCARDS_RESOURCES_DIR}"
 
 # Install software license & general project information
 install ( FILES
-          ${PROJECT_SOURCE_DIR}/BUGS.md
           ${PROJECT_SOURCE_DIR}/LICENSE.md
           ${PROJECT_SOURCE_DIR}/README.md
-          ${PROJECT_SOURCE_DIR}/TODO.md
           DESTINATION "${INSTALL_DOCS_PATH}"
         )
 
