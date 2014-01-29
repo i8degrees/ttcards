@@ -1,36 +1,36 @@
-# Credits #
+# Credits
 
-## Final Fantasy VIII Triple Triad ##
+## Final Fantasy VIII & Triple Triad
 
 Developed by Square Soft, Inc.
 
-[*...COPYRIGHT NOTICES...*]
+**[TODO: COPYRIGHT NOTICES]**
 
-* Card Game Director
-> Takayoshi Nakazato
+Card Game Director
+  * Takayoshi Nakazato
 
-* Game Plan & Program
-> Kentarow Yasui
+Game Plan & Program
+  * Kentarow Yasui
 
-* Designer
-> Hiroyuki Yotsuji
+Designer
+  * Hiroyuki Yotsuji
 
-* Audio Effects
-> [*...NAMES...*]
+Audio Effects
+  **[ TODO: Authors ]**
 
-## TTcards (Remake) ##
+## TTcards, the Remake
 
-[*...COPYRIGHT NOTICES...*]
+Programming
+  * Jeffrey Carpenter <i8degrees@gmail.com>
 
-* Programming
-> Jeffrey Carpenter
+Spinning Triad (spinning top for the game board)
+  * Stew Martin <withheld>
 
-  - Bitmaps
-    * Menu, fonts & battle elements
-    > Original sprite rips by Ultimecia
+Menu elements, bitmap fonts & battle elements
+  * Sprite ripped by Ultimecia
 
-    * Card faces & background images
-    > Original sprite rips by Mamoruanime
+Card faces & background artwork (board & game over)
+  * Sprite ripped by Mamoruanime
 
-* Special thanks to
-> Daniel Johnston
+Special thanks
+  * Daniel Johnston & my family
