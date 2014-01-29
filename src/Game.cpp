@@ -340,7 +340,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   // Rescale our game resources if necessary.
   if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
   {
-/* FIXME
+/*
     this->game->info_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->game->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::scale2x );
     this->game->info_small_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );

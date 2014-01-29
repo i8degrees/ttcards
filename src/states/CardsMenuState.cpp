@@ -152,7 +152,7 @@ void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 win
 
     case SDLK_RETURN:
     {
-      this->game->set_state( 1 );
+      this->game->set_state( Game::State::Play );
       break;
     }
 
@@ -166,10 +166,12 @@ void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 win
     case SDLK_SPACE:
     {
       if ( this->game->hand[0].push_back ( this->selectedCard ) )
+      {
         this->game->card_place.Play();
+      }
+      break;
     }
-    break;
-  }
+  } // end switch ( key )
 }
 
 void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
@@ -198,6 +200,14 @@ void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
 void CardsMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   // TODO
+}
+
+void CardsMenuState::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  )
+{
+  if ( this->game->hand[0].push_back ( this->selectedCard ) )
+  {
+    this->game->card_place.Play();
+  }
 }
 
 void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )

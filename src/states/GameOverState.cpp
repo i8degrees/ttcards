@@ -312,6 +312,13 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uin
   }
 }
 
+void GameOverState::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  )
+{
+  this->selected_card = this->game->hand[1].getSelectedCard();
+
+  this->game->set_state( Game::State::ContinueMenu );
+}
+
 void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
 {
   if ( x > 0 || y > 0 )

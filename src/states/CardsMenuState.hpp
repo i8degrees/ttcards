@@ -61,10 +61,13 @@ class CardsMenuState: public nom::IState
 
   private:
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
-    void onJoyButtonDown ( nom::int32 which, nom::int32 button );
+
     void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void onMouseMiddleButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
     void onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+
+    void onJoyButtonDown ( nom::int32 which, nom::int32 button );
 
     void reloadDebugFile ( void );
     void updateCursor ( void );

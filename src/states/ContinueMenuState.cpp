@@ -129,33 +129,10 @@ void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 
     case SDLK_DOWN: this->cursor.move_down(); break;
     case SDLK_SPACE:
     {
-      // We will use the positioning of the cursor to map user's response;
-      //
-      // Position zero (0) will generate a "Yes" response.
-      // Position one (1) will generate a "No" response.
-      //
-      // We pass the response along to whomever called us (this state) as we
-      // exit stage right.
-      nom::int32 choice = this->cursor.position();
-
-      if ( choice == 0 )
-      {
-        nom::int32_ptr response = new nom::int32 (1);
-        this->game->pop_state(response);
-      }
-      else if ( choice == 1 )
-      {
-        nom::int32_ptr response = nullptr;
-        this->game->pop_state(response);
-      }
-      else
-      {
-        // This should never get executed!
-        this->game->cursor_wrong.Play();
-      }
+      this->send_response();
       break;
     }
-  }
+  } // end switch ( key )
 }
 
 void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
@@ -173,6 +150,11 @@ void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom:
     // 4. $$$ PROFIT $$$
     this->game->cursor_wrong.Play();
   }
+}
+
+void ContinueMenuState::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  )
+{
+  this->send_response();
 }
 
 void ContinueMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
@@ -214,4 +196,32 @@ void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget target )
 {
   this->info_box.draw ( target );
   this->cursor.draw ( target );
+}
+
+void ContinueMenuState::send_response ( void )
+{
+  // We will use the positioning of the cursor to map user's response;
+  //
+  // Position zero (0) will generate a "Yes" response.
+  // Position one (1) will generate a "No" response.
+  //
+  // We pass the response along to whomever called us (this state) as we
+  // exit stage right.
+  nom::int32 choice = this->cursor.position();
+
+  if ( choice == 0 )
+  {
+    nom::int32_ptr response = new nom::int32 (1);
+    this->game->pop_state(response);
+  }
+  else if ( choice == 1 )
+  {
+    nom::int32_ptr response = nullptr;
+    this->game->pop_state(response);
+  }
+  else
+  {
+    // This should never be heard!
+    this->game->cursor_wrong.Play();
+  }
 }
