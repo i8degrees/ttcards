@@ -236,9 +236,9 @@ void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardC
 
 bool CardHand::save ( const std::string& filename )
 {
-  nom::JSON::FileWriter fp;
-  nom::JSON::Value object;
-  nom::JSON::Value card;
+  nom::JsonCppSerializer fp;
+  nom::JsonCppValue object;
+  nom::JsonCppValue card;
 
   // Sanity check
   if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND )
@@ -251,15 +251,15 @@ bool CardHand::save ( const std::string& filename )
   {
     // Serialize each card's attributes
     card = this->cards[idx].serialize();
-    object.insert ( card );
+    object.insert( card );
 
     // Additional card attributes
-    object.insert ( "player_id", this->cards[idx].getPlayerID() );
-    object.insert ( "owner", this->cards[idx].getPlayerOwner() );
+    object.insert( "player_id", this->cards[idx].getPlayerID() );
+    object.insert( "owner", this->cards[idx].getPlayerOwner() );
     object.endl();
   }
 
-  if ( fp.save ( filename, object ) == false )
+  if ( fp.serialize( object, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -270,15 +270,15 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool CardHand::load ( const std::string& filename )
 {
-  nom::JSON::FileReader fp;
-  nom::JSON::Value object;
+  nom::JsonCppSerializer fp;
+  nom::JsonCppValue object;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp.load ( filename, object ) == false )
+  if ( fp.unserialize( filename, object ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;

@@ -67,9 +67,9 @@ Cards CardCollection::getCards ( void )
 
 bool CardCollection::save( const std::string& filename )
 {
-  nom::JSON::FileWriter fp;
-  nom::JSON::Value object;
-  nom::JSON::Value card;
+  nom::JsonCppSerializer fp;
+  nom::JsonCppValue object;
+  nom::JsonCppValue card;
 
   if ( this->cards.size() < MIN_COLLECTION ) // Sanity check
   {
@@ -87,12 +87,12 @@ bool CardCollection::save( const std::string& filename )
   {
     // Serialize each card's attributes
     card = this->cards[idx].serialize();
-    object.insert ( card );
+    object.insert( card );
 
     object.endl();
   }
 
-  if ( fp.save ( filename, object ) == false )
+  if ( fp.serialize( object, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -105,8 +105,8 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool CardCollection::load( const std::string& filename )
 {
-  nom::JSON::FileReader fp;
-  nom::JSON::Value object;
+  nom::JsonCppSerializer fp;
+  nom::JsonCppValue object;
 
   // The card attributes we are loading in will be stored in here, and once a
   // card has filled its buffer, we push it into its final resting place ...
@@ -114,7 +114,7 @@ bool CardCollection::load( const std::string& filename )
   Card card;
   Cards cards_buffer;
 
-  if ( fp.load ( filename, object, false ) == false )
+  if ( fp.unserialize( filename, object ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
@@ -128,21 +128,21 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
 
   for ( nom::uint32 idx = 0; idx != object.size(); ++idx )
   {
-    card.setID ( object.get_int ( "id" ) );
-    card.setName ( object.get_string ( "name" ));
-    card.setLevel ( object.get_int ( "level" ) );
-    card.setType ( object.get_int ( "type" ) );
-    card.setElement ( object.get_int ( "element" ) );
+    card.setID( object.get_int( "id" ) );
+    card.setName( object.get_string( "name" ) );
+    card.setLevel( object.get_int( "level" ) );
+    card.setType( object.get_int( "type" ) );
+    card.setElement( object.get_int( "element" ) );
 
-    std::vector<int> ranks = object.get_ints ( "ranks" );
-    card.set_ranks ( ranks );
+    std::vector<int> ranks = object.get_ints( "ranks" );
+    card.set_ranks( ranks );
 
-    card.setPlayerID ( Card::NOPLAYER ); // placeholder
-    card.setPlayerOwner ( Card::NOPLAYER ); // placeholder
+    card.setPlayerID( Card::NOPLAYER ); // placeholder
+    card.setPlayerOwner( Card::NOPLAYER ); // placeholder
 
     object.endl();
 
-    cards_buffer.push_back ( card );
+    cards_buffer.push_back( card );
   }
 
   if ( cards_buffer.size() < MIN_COLLECTION ) // Sanity check

@@ -50,7 +50,7 @@ const std::string GameConfig::getString ( const std::string& node ) const
   }
   else
   {
-    return itr->second.asString();
+    return itr->second.get_string( node );
   }
 }
 
@@ -64,7 +64,7 @@ const nom::int32 GameConfig::getInteger ( const std::string& node ) const
   }
   else
   {
-    return itr->second.asInt();
+    return itr->second.get_int( node );
   }
 }
 /*
@@ -73,17 +73,17 @@ void GameConfig::insert ( const std::string& node, nom::uint32 flags )
   this->nodes.push_back ( std::make_pair ( node, flags ) );
 }
 */
-const nom::JSON::ValueType& GameConfig::setProperty ( const std::string& node, const nom::JSON::ValueType& value )
+const nom::JsonCppValue& GameConfig::setProperty ( const std::string& node, const nom::JsonCppValue& value )
 {
-  auto res = config.insert ( std::pair<std::string, nom::JSON::ValueType> ( node, value ) ).first;
+  auto res = config.insert ( std::pair<std::string, nom::JsonCppValue> ( node, value ) ).first;
 
-  if ( value.type() == nom::JSON::String )
+  if ( value.string_type( node ) )
   {
-NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.asString() + "\"" + " has been added to the cache." );
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.get_string( node ) + "\"" + " has been added to the cache." );
   }
-  else if ( value.type() == nom::JSON::Integer )
+  else if ( value.int_type ( node ) )
   {
-NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.asInt() ) + " has been added to the cache." );
+NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.get_int( node ) ) + " has been added to the cache." );
   }
   else
   {
@@ -180,32 +180,32 @@ TODO */
 
 bool GameConfig::load( const std::string& filename )
 {
-  nom::JSON::FileReader fp; // JSON parser
-  nom::JSON::Value object; // JSON container
+  nom::JsonCppSerializer fp;  // JSON parser
+  nom::JsonCppValue object;   // JSON container
 
   // Storage buffer for our configuration we are loading in; if everything is
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
 
-  if ( fp.load ( filename, object ) == false )
+  if ( fp.unserialize( filename, object ) == false )
   {
-NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
+    NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
   }
 
-  nom::JSON::JSONMemberType members = object.members ( 0 );
+  nom::JsonCppValue::JsonMemberType members = object.members( 0 );
 
   for ( auto idx = 0; idx != members.size(); ++idx )
   {
     std::string key = members[idx];
 
-    if ( object.type ( key ) == nom::JSON::String )
+    if( object.string_type( key ) )
     {
-      cfg.setProperty ( key, object.get_string ( key ) );
+      cfg.setProperty( key, object );
     }
-    else if ( object.type ( key ) == nom::JSON::Integer )
+    else if( object.int_type( key ) )
     {
-      cfg.setProperty ( key, object.get_int ( key ) );
+      cfg.setProperty( key, object );
     }
   }
 
@@ -215,29 +215,3 @@ NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
 
   return true;
 }
-/*
-    for ( o = 0; o != node.size(); o++ )
-    {
-      const json_spirit::Pair& pair = node[o];
-      const std::string& path = pair.name_;
-      const json_spirit::Value& value = pair.value_;
-
-      for ( nom::int32 idx = 0; idx != this->nodes.size(); idx++ )
-      {
-        if ( this->nodes[idx].first == path )
-        {
-          if ( value.type() == json_spirit::str_type )
-          {
-            cfg.setProperty ( path, value.get_str() );
-          }
-          else if ( value.type() == json_spirit::int_type )
-          {
-            if ( this->nodes[idx].second == 1 )
-            {
-              cfg.setProperty ( path, value.get_int() * 2 );
-            }
-          }
-        }
-      }
-    } // end current node loop
-*/

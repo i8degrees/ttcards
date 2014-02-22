@@ -402,9 +402,9 @@ void Board::draw ( nom::IDrawable::RenderTarget& target )
 
 bool Board::save ( const std::string& filename )
 {
-  nom::JSON::FileWriter fp;
-  nom::JSON::Value object;
-  nom::JSON::Value card;
+  nom::JsonCppSerializer fp;
+  nom::JsonCppValue object;
+  nom::JsonCppValue card;
 
   for ( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; y++ )
   {
@@ -421,7 +421,7 @@ bool Board::save ( const std::string& filename )
     }
   }
 
-  if ( fp.save ( filename, object ) == false )
+  if ( fp.serialize( object, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -432,15 +432,15 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool Board::load ( const std::string& filename )
 {
-  nom::JSON::FileReader fp;
-  nom::JSON::Value object;
+  nom::JsonCppSerializer fp;
+  nom::JsonCppValue object;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp.load ( filename, object ) == false )
+  if ( fp.unserialize( filename, object ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;

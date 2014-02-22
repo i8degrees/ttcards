@@ -84,7 +84,7 @@ class GameConfig
     //void insert ( const std::string& node, nom::uint32 flags = 0 );
     //const T setProperty ( const std::string& node, const json_spirit::Value& value );
 
-    const nom::JSON::ValueType& setProperty ( const std::string& node, const nom::JSON::ValueType& value );
+    const nom::JsonCppValue& setProperty ( const std::string& node, const nom::JsonCppValue& value );
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
@@ -98,7 +98,7 @@ class GameConfig
     bool load ( const std::string& filename );
 
   private:
-    std::map<std::string, nom::JSON::ValueType> config;
+    std::map<std::string, nom::JsonCppValue> config;
     //std::vector<std::pair<std::string, nom::uint32>> nodes;
 };
 

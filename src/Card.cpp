@@ -200,16 +200,16 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
 
-nom::JSON::Value Card::serialize ( void ) const
+nom::JsonCppValue Card::serialize( void ) const
 {
-  nom::JSON::Value object;
+  nom::JsonCppValue object;
 
-  object.insert ( "id", this->id );
-  object.insert ( "name", this->name );
-  object.insert ( "level", this->level );
-  object.insert ( "type", this->type );
-  object.insert ( "element", this->element );
-  object.insert ( "ranks", this->ranks_as_vector() );
+  object.insert( "id", this->id );
+  object.insert( "name", this->name );
+  object.insert( "level", this->level );
+  object.insert( "type", this->type );
+  object.insert( "element", this->element );
+  object.insert( "ranks", this->ranks_as_vector() );
 
   return object;
 }
