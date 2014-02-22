@@ -66,7 +66,7 @@ class PlayState: public nom::IState
     void on_resume ( nom::void_ptr data );
 
     void on_update ( float delta_time );
-    void on_draw ( nom::IDrawable::RenderTarget target );
+    void on_draw ( nom::IDrawable::RenderTarget& target );
 
   private:
     void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
@@ -99,7 +99,7 @@ class PlayState: public nom::IState
     /// handling included.
     void updateMessageBoxes ( void );
     void updateCursor ( void );
-    void drawCursor ( nom::IDrawable::RenderTarget target );
+    void drawCursor ( nom::IDrawable::RenderTarget& target );
 
     /// Update each player's scoreboard
     void updateScore ( void );

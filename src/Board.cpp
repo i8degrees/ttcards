@@ -362,7 +362,7 @@ void Board::update ( void )
   this->card->update();
 }
 
-void Board::draw ( nom::IDrawable::RenderTarget target )
+void Board::draw ( nom::IDrawable::RenderTarget& target )
 {
   for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
   {

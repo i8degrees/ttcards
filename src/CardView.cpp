@@ -115,7 +115,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CAR
   return true;
 }
 
-void CardView::draw_face_down ( nom::IDrawable::RenderTarget target, nom::int32 x, nom::int32 y ) const
+void CardView::draw_face_down ( nom::IDrawable::RenderTarget& target, nom::int32 x, nom::int32 y ) const
 {
   this->card_face->set_frame ( NOFACE_ID );
   this->card_face->set_position ( Point2i(x, y) );
@@ -124,7 +124,7 @@ void CardView::draw_face_down ( nom::IDrawable::RenderTarget target, nom::int32 
 }
 
 void CardView::draw_background  (
-                                  nom::IDrawable::RenderTarget target, nom::int32 player_id,
+                                  nom::IDrawable::RenderTarget& target, nom::int32 player_id,
                                   nom::int32 x, nom::int32 y
                                 ) const
 {
@@ -161,7 +161,7 @@ void CardView::draw_background  (
 }
 
 void CardView::draw_face  (
-                            nom::IDrawable::RenderTarget target, nom::int32 face_id,
+                            nom::IDrawable::RenderTarget& target, nom::int32 face_id,
                             nom::int32 x, nom::int32 y
                           ) const
 {
@@ -174,7 +174,7 @@ void CardView::draw_face  (
 }
 
 void CardView::draw_element (
-                              nom::IDrawable::RenderTarget target, nom::int32 element_id,
+                              nom::IDrawable::RenderTarget& target, nom::int32 element_id,
                               nom::int32 x, nom::int32 y
                             ) const
 {
@@ -199,7 +199,7 @@ void CardView::draw_element (
 }
 
 void CardView::draw_text  (
-                            nom::IDrawable::RenderTarget target, nom::int32 rank,
+                            nom::IDrawable::RenderTarget& target, nom::int32 rank,
                             nom::int32 x, nom::int32 y
                           ) const
 {
@@ -219,7 +219,7 @@ void CardView::draw_text  (
 }
 
 void CardView::draw (
-                      nom::IDrawable::RenderTarget target, const Card& card,
+                      nom::IDrawable::RenderTarget& target, const Card& card,
                       nom::int32 x, nom::int32 y, bool face_down
                     ) const
 {
@@ -289,7 +289,7 @@ void CardView::update ( void )
   //}
 }
 
-void CardView::draw ( nom::IDrawable::RenderTarget target ) const
+void CardView::draw ( nom::IDrawable::RenderTarget& target ) const
 {
   //for ( DrawableList::const_iterator it = card.begin(); it != card.end(); ++it )
   //{

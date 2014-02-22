@@ -77,7 +77,7 @@ class Player
     void setScore ( unsigned int score );
 
     void update ( void );
-    void draw ( nom::IDrawable::RenderTarget target );
+    void draw ( nom::IDrawable::RenderTarget& target );
 
   private:
     /// Card rendering; defaults to NULL.

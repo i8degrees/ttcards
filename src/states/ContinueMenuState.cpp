@@ -192,7 +192,7 @@ void ContinueMenuState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget target )
+void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
   this->info_box.draw ( target );
   this->cursor.draw ( target );

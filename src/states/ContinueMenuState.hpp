@@ -61,7 +61,7 @@ class ContinueMenuState: public nom::IState
     void onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 );
 
     void on_update ( float delta_time );
-    void on_draw ( nom::IDrawable::RenderTarget target );
+    void on_draw ( nom::IDrawable::RenderTarget& target );
 
     /// \brief Event handler for player's choice selection.
     void send_response ( void );

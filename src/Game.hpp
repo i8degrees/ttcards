@@ -148,7 +148,7 @@ class Game: public nom::SDLApp
     nom::Cursor cursor;
 
     /// our public / visible display context handle
-    nom::Window window;
+    nom::RenderWindow window;
 
     /// Variable set configuration properties
     GameConfig config;

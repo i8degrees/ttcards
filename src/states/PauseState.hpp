@@ -60,7 +60,7 @@ class PauseState: public nom::IState
     void onJoyButtonDown ( nom::int32 which, nom::int32 button );
 
     void on_update ( float delta_time );
-    void on_draw ( nom::IDrawable::RenderTarget target );
+    void on_draw ( nom::IDrawable::RenderTarget& target );
 
     Game::SharedPtr game;
 

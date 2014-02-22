@@ -892,7 +892,7 @@ void PlayState::updateCursor ( void )
   this->game->cursor.update();
 }
 
-void PlayState::drawCursor ( nom::IDrawable::RenderTarget target )
+void PlayState::drawCursor ( nom::IDrawable::RenderTarget& target )
 {
   this->game->cursor.draw ( target );
 
@@ -1007,7 +1007,7 @@ void PlayState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void PlayState::on_draw ( nom::IDrawable::RenderTarget target )
+void PlayState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
   this->game->background.draw ( target );
 

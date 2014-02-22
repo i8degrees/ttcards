@@ -118,7 +118,7 @@ void PauseState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void PauseState::on_draw ( nom::IDrawable::RenderTarget target )
+void PauseState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
   this->info_box.draw ( target );
 
