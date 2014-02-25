@@ -64,8 +64,8 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
 
   this->menu_box = nom::MessageBox  ( menu_box_origin,
                                       menu_box_size,
-                                      nom::MessageBox::Style::Gray,
-                                      linear
+                                      nom::GrayWindow()
+                                      // linear
                                     );
 
   this->per_page = 11; // number of cards to display per menu page

@@ -56,8 +56,8 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   this->info_box = nom::MessageBox  ( info_box_origin,
                                       info_box_size,
-                                      nom::MessageBox::Style::Gray,
-                                      linear
+                                      nom::GrayWindow()
+                                      // linear
                                     );
 
   this->info_box.set_title ( nom::Text("CHOICE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
