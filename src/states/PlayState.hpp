@@ -69,13 +69,13 @@ class PlayState: public nom::IState
     void on_draw ( nom::IDrawable::RenderTarget& target );
 
   private:
-    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
+    void on_key_down( const nom::Event& ev );
 
-    void onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
-    void onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
-    void onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id );
+    void on_mouse_left_button_down( const nom::Event& ev );
+    void on_mouse_right_button_down( const nom::Event& ev );
+    void on_mouse_wheel( const nom::Event& ev );
 
-    void onJoyButtonDown ( nom::int32 which, nom::int32 button );
+    void on_joy_button_down( const nom::Event& ev );
 
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );

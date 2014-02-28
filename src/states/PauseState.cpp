@@ -82,9 +82,9 @@ void PauseState::on_resume ( nom::void_ptr data )
   std::cout << "\n" << "PauseState state Resumed" << "\n";
 }
 
-void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+void PauseState::on_key_down( const nom::Event& ev )
 {
-  switch ( key )
+  switch ( ev.key.sym )
   {
     default: break;
 
@@ -93,9 +93,9 @@ void PauseState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_
   }
 }
 
-void PauseState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+void PauseState::on_joy_button_down( const nom::Event& ev )
 {
-  switch ( button )
+  switch ( ev.jbutton.button )
   {
     default: break;
 

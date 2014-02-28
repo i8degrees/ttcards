@@ -242,13 +242,18 @@ void GameOverState::on_resume ( nom::void_ptr data )
   // ContinueMenuState.
   if ( response != nullptr && this->game->previous_state() == Game::State::GameOver )
   {
-    this->event.dispatch ( nom::EventDispatcher::UserEvent::Animation );
+    nom::UserEvent ev;
+    ev.code = GameEvent::AnimationEvent;
+    ev.data1 = nullptr;
+    ev.data2 = nullptr;
+    ev.window_id = 0;
+    this->event.dispatch ( ev );
   }
 }
 
-void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+void GameOverState::on_key_down( const nom::Event& ev )
 {
-  switch ( key )
+  switch ( ev.key.sym )
   {
     default: /* Ignore non-mapped keys */ break;
 
@@ -274,9 +279,9 @@ void GameOverState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 wind
   }
 }
 
-void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void GameOverState::on_mouse_left_button_down( const nom::Event& ev )
 {
-  nom::Point2i coords ( x, y ); // mouse input coordinates
+  nom::Point2i coords ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
 
   // Player hand selection checks
   for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
@@ -312,45 +317,46 @@ void GameOverState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uin
   }
 }
 
-void GameOverState::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  )
+void GameOverState::on_mouse_middle_button_down( const nom::Event& ev )
 {
   this->selected_card = this->game->hand[1].getSelectedCard();
 
   this->game->set_state( Game::State::ContinueMenu );
 }
 
-void GameOverState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void GameOverState::on_mouse_wheel( const nom::Event& ev )
 {
-  if ( x > 0 || y > 0 )
+  if ( ev.wheel.x > 0 || ev.wheel.y > 0 )
   {
     this->cursor.move_left();
   }
-  else if ( x < 0 || y < 0 )
+  else if ( ev.wheel.x < 0 || ev.wheel.y < 0 )
   {
     this->cursor.move_right();
   }
 }
 
-void GameOverState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+void GameOverState::on_joy_button_down( const nom::Event& ev )
 {
-  switch ( button )
+  switch ( ev.jbutton.button )
   {
     default: NOM_LOG_INFO ( TTCARDS, "FIXME: GameOverState needs joystick implementation!" ); break;
   } // switch
 }
 
-void GameOverState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 )
+void GameOverState::on_user_event( const nom::UserEvent& ev )
 {
-  if ( type != SDL_USEREVENT ) return;
+  // Nothing to do; not the right event type for us!
+  if ( ev.type != SDL_USEREVENT ) return;
 
-  if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
+  if ( ev.code == GameEvent::UIEvent )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_text.set_text ( selected_card.getName() );
 
     this->game->cursor_move.Play();
   }
-  else if ( code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::Animation ) )
+  else if ( ev.code == GameEvent::AnimationEvent )
   {
     this->card_info_box.disable();
 

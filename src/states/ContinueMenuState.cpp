@@ -112,9 +112,9 @@ void ContinueMenuState::on_resume ( nom::void_ptr data )
   // Stub
 }
 
-void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+void ContinueMenuState::on_key_down( const nom::Event& ev )
 {
-  switch ( key )
+  switch ( ev.key.sym )
   {
     default: /* Ignore non-mapped keys */ break;
 
@@ -135,9 +135,9 @@ void ContinueMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 
   } // end switch ( key )
 }
 
-void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void ContinueMenuState::on_mouse_left_button_down( const nom::Event& ev )
 {
-  Point2i mouse_input ( x, y ); // mouse input coordinates
+  Point2i mouse_input ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
   IntRect text_bounds = this->info_box.text_bounds();
   //IntRect text_bounds = IntRect ( option_text.position().x, option_text.position().y, option_text.width(), option_text.height() );
   //nom::int32 option_choice = this->cursor.position();
@@ -152,34 +152,37 @@ void ContinueMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom:
   }
 }
 
-void ContinueMenuState::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  )
+void ContinueMenuState::on_mouse_middle_button_down( const nom::Event& ev )
 {
   this->send_response();
 }
 
-void ContinueMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void ContinueMenuState::on_mouse_wheel( const nom::Event& ev )
 {
-  if ( y > 0 )
+  if ( ev.wheel.y > 0 )
   {
     this->cursor.move_up();
   }
-  else if (y < 0 )
+  else if (ev.wheel.y < 0 )
   {
     this->cursor.move_down();
   }
 }
 
-void ContinueMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+void ContinueMenuState::on_joy_button_down( const nom::Event& ev )
 {
-  switch ( button )
+  switch ( ev.jbutton.button )
   {
     default: NOM_LOG_INFO ( TTCARDS, "FIXME: ContinueMenuState needs joystick implementation!" ); break;
   } // switch
 }
 
-void ContinueMenuState::onUserEvent ( nom::uint32 type, nom::int32 code, void* data1, void* data2 )
+void ContinueMenuState::on_user_event( const nom::UserEvent& ev )
 {
-  if ( type == SDL_USEREVENT && code == static_cast<nom::int32> ( nom::EventDispatcher::UserEvent::UI ) )
+  // Nothing to do; not the right event type for us!
+  if ( ev.type != SDL_USEREVENT ) return;
+
+  if ( ev.code == GameEvent::AudioEvent )
   {
     this->game->cursor_move.Play();
   }

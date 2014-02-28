@@ -422,20 +422,19 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
 #if defined (NOM_DEBUG)
   this->game->music_track.Pause();
 #endif
-
   return true;
 }
 
-void Game::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+void Game::on_key_down( const nom::Event& ev )
 {
-  switch ( key )
+  switch ( ev.key.sym )
   {
     default: break;
 
 #if defined (NOM_DEBUG)
     case SDLK_0:
     {
-      if ( mod == KMOD_LGUI )
+      if ( ev.key.mod == KMOD_LGUI )
       {
         this->game->set_state( Game::State::ContinueMenu );
       }
@@ -449,12 +448,12 @@ void Game::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
 #endif
 
     case SDLK_ESCAPE:
-    case SDLK_q: this->on_quit(); break;
+    case SDLK_q: this->on_app_quit( ev ); break;
 
     // Audio control
     case SDLK_m:
     {
-      if ( mod == KMOD_LSHIFT ) // Pause music
+      if ( ev.key.mod == KMOD_LSHIFT ) // Pause music
       {
         this->game->music_track.togglePause();
         this->game->winning_track.togglePause();
@@ -484,10 +483,19 @@ void Game::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
       //  Mac OS X: Command + Control + F, Command + F
       //  Linux, Windows & all other platforms: Control + F
       #if defined ( NOM_PLATFORM_OSX )
-      if ( mod == KMOD_LGUI || ( mod & KMOD_LCTRL && mod & KMOD_LGUI ) ) this->onResize ( 0, 0 ); break;
+        if ( ev.key.mod == KMOD_LGUI || ( ev.key.mod & KMOD_LCTRL && ev.key.mod & KMOD_LGUI ) )
+        {
+          this->on_window_resized( ev );
+          break;
+        }
       #else
-      if ( mod == KMOD_LCTRL ) this->onResize ( 0, 0 ); break;
+        if ( ev.key.mod == KMOD_LCTRL )
+        {
+          this->on_window_resized( ev );
+        }
+        break;
       #endif
+
       break;
     }
     case SDLK_F1:
@@ -517,7 +525,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
 
     case SDLK_LEFTBRACKET:
     {
-      if ( mod == KMOD_LGUI )
+      if ( ev.key.mod == KMOD_LGUI )
         this->game->board.list();
       else
         this->game->debug.ListCards ( this->game->hand[0].cards );
@@ -526,7 +534,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
 
     case SDLK_RIGHTBRACKET:
     {
-      if ( mod == KMOD_LGUI )
+      if ( ev.key.mod == KMOD_LGUI )
         this->game->debug.ListCards ( this->game->collection.cards );
       else
         this->game->debug.ListCards ( this->game->hand[1].cards );
@@ -535,7 +543,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONF
   }
 }
 
-void Game::onResize ( nom::int32 width, nom::int32 height )
+void Game::on_window_resized( const nom::Event& ev )
 {
   this->game->window.toggle_fullscreen();
 
@@ -569,9 +577,9 @@ int32_t Game::Run ( void )
 
     while ( this->ticks() > next_game_tick && loops <= MAX_FRAMESKIP )
     {
-      while ( this->poll_events ( &event ) )
+      while( this->poll_event( &this->event ) )
       {
-        this->on_event ( &event );
+        this->on_event( &this->event );
       }
 
       this->fps.update();

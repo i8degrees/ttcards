@@ -97,7 +97,12 @@ void GameOverStateCursor::next ( void )
   {
     this->card_position->next();
 
-    this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
+    nom::UserEvent ev;
+    ev.code = GameEvent::UIEvent;
+    ev.data1 = nullptr;
+    ev.data2 = nullptr;
+    ev.window_id = 0;
+    this->cursor_event.dispatch ( ev );
   }
 }
 
@@ -107,6 +112,11 @@ void GameOverStateCursor::previous ( void )
   {
     this->card_position->previous();
 
-    this->cursor_event.dispatch ( nom::EventDispatcher::UserEvent::UI );
+    nom::UserEvent ev;
+    ev.code = GameEvent::UIEvent;
+    ev.data1 = nullptr;
+    ev.data2 = nullptr;
+    ev.window_id = 0;
+    this->cursor_event.dispatch ( ev );
   }
 }

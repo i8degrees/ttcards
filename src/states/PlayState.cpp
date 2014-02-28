@@ -177,11 +177,11 @@ void PlayState::on_init ( nom::void_ptr data )
   this->blink_cursor = false;
 }
 
-void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+void PlayState::on_key_down( const nom::Event& ev )
 {
   nom::uint32 player_turn = get_turn();
 
-  switch ( key )
+  switch ( ev.key.sym )
   {
     default: /* Ignore unmapped keys */ break;
 
@@ -227,7 +227,7 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
     case SDLK_l: // Load saved game
     {
-      if ( mod == KMOD_LGUI ) // Special game load (player1 always wins!)
+      if ( ev.key.mod == KMOD_LGUI ) // Special game load (player1 always wins!)
       {
         if ( this->game->hand[0].load ( "Debug" + path.native() + "player1_unbeatable.json" ) == false )
         {
@@ -275,7 +275,7 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 #if defined (NOM_DEBUG)
     case SDLK_e: // Full control over the other player's move
     {
-      if ( mod == KMOD_LGUI ) // Return control over to the other player
+      if ( ev.key.mod == KMOD_LGUI ) // Return control over to the other player
       {
         this->skip_turn = false;
         this->player[1].set_state ( PlayerState::Reserved );
@@ -314,11 +314,11 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
     case SDLK_LEFT:
     {
-      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      if ( ev.key.mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( true, WEST );
       }
-      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      else if ( ev.key.mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( false, WEST );
       }
@@ -331,11 +331,11 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
     case SDLK_RIGHT:
     {
-      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      if ( ev.key.mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( true, EAST );
       }
-      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      else if ( ev.key.mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( false, EAST );
       }
@@ -348,11 +348,11 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
     case SDLK_UP:
     {
-      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      if ( ev.key.mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( true, NORTH );
       }
-      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      else if ( ev.key.mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( false, NORTH );
       }
@@ -365,11 +365,11 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
 
     case SDLK_DOWN:
     {
-      if ( mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
+      if ( ev.key.mod == KMOD_LSHIFT ) // increase card rank attribute by + 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( true, SOUTH );
       }
-      else if ( mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
+      else if ( ev.key.mod == KMOD_LCTRL ) // decrease card rank attribute by - 1
       {
         this->game->hand[ player_turn ].modifyCardRank ( false, SOUTH );
       }
@@ -412,14 +412,15 @@ void PlayState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_i
   } // end key switch
 }
 
-void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void PlayState::on_mouse_left_button_down( const nom::Event& ev )
 {
   uint32 player_turn = this->get_turn(); // Ignore player2 mouse input
+
   // Player cursor positioning
   Point2i player_pos = this->player[player_turn].position();
 
   // mouse input coordinates
-  Point2i mouse_input ( x, y );
+  Point2i mouse_input ( ev.mouse.x, ev.mouse.y );
 
   // Rectangle bounds of player's card
   IntRect card_bounds;
@@ -462,7 +463,7 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 
 
   // Board grid coords check; player is attempting to place a card on the board
   // when the player hand coords check above comes back false
-  IntRect mouse_map = this->game->board.getGlobalBounds ( x, y );
+  IntRect mouse_map = this->game->board.getGlobalBounds ( ev.mouse.x, ev.mouse.y );
 
   // Attempts to move card onto board; validity checking is performed within
   // the following method call
@@ -472,29 +473,29 @@ void PlayState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 
   }
 }
 
-void PlayState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void PlayState::on_mouse_right_button_down( const nom::Event& ev )
 {
   // Stub
 }
 
-void PlayState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void PlayState::on_mouse_wheel( const nom::Event& ev )
 {
   if ( this->game->cursor.state() == 0 ) // Player's hand mode
   {
-    if ( y > 0 )
+    if ( ev.wheel.y > 0 )
     {
       this->moveCursorUp();
     }
-    else if ( y < 0 )
+    else if ( ev.wheel.y < 0 )
     {
       this->moveCursorDown();
     }
   }
 }
 
-void PlayState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+void PlayState::on_joy_button_down( const nom::Event& ev )
 {
-  switch ( button )
+  switch ( ev.jbutton.button )
   {
     default: break;
 

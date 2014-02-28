@@ -366,4 +366,12 @@ enum BoardPosition: nom::int32
   BottomRight
 };
 
+enum GameEvent: nom::int32
+{
+  AnimationEvent,
+  DebugEvent = 0,
+  UIEvent,
+  AudioEvent
+};
+
 #endif // GAMEAPP_CFG_HEADERS defined

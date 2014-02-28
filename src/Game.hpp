@@ -63,10 +63,10 @@ class Game: public nom::SDLApp
     bool on_init ( void );
 
     /// Handle key events
-    void onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id );
+    void on_key_down( const nom::Event& ev );
 
     /// Event handler for resize app request
-    void onResize ( nom::int32 width, nom::int32 height );
+    void on_window_resized( const nom::Event& ev );
 
     /// Run app loop
     nom::int32 Run ( void );

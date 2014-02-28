@@ -137,9 +137,9 @@ void CardsMenuState::on_resume ( nom::void_ptr data )
   std::cout << "\n" << "CardsMenu state Resumed" << "\n";
 }
 
-void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 window_id )
+void CardsMenuState::on_key_down( const nom::Event& ev )
 {
-  switch ( key )
+  switch ( ev.key.sym )
   {
     default: break;
 
@@ -174,9 +174,9 @@ void CardsMenuState::onKeyDown ( nom::int32 key, nom::int32 mod, nom::uint32 win
   } // end switch ( key )
 }
 
-void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
+void CardsMenuState::on_joy_button_down( const nom::Event& ev )
 {
-  switch ( button )
+  switch ( ev.jbutton.button )
   {
     default: break;
 
@@ -197,12 +197,12 @@ void CardsMenuState::onJoyButtonDown ( nom::int32 which, nom::int32 button )
   } // switch
 }
 
-void CardsMenuState::onMouseLeftButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void CardsMenuState::on_mouse_left_button_down( const nom::Event& ev )
 {
   // TODO
 }
 
-void CardsMenuState::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_id  )
+void CardsMenuState::on_mouse_middle_button_down( const nom::Event& ev )
 {
   if ( this->game->hand[0].push_back ( this->selectedCard ) )
   {
@@ -210,29 +210,29 @@ void CardsMenuState::onMouseMiddleButtonDown ( int32 x, int32 y, uint32 window_i
   }
 }
 
-void CardsMenuState::onMouseRightButtonDown ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void CardsMenuState::on_mouse_right_button_down( const nom::Event& ev )
 {
   if ( this->game->hand[0].push_back ( this->selectedCard ) )
     this->game->card_place.Play();
 }
 
-void CardsMenuState::onMouseWheel ( nom::int32 x, nom::int32 y, nom::uint32 window_id )
+void CardsMenuState::on_mouse_wheel( const nom::Event& ev )
 {
   if ( this->game->cursor.state() == 0 )
   {
-    if ( x > 0 )
+    if ( ev.wheel.x > 0 )
     {
       this->moveCursorLeft();
     }
-    else if ( x < 0 )
+    else if ( ev.wheel.x < 0 )
     {
       this->moveCursorRight();
     }
-    else if ( y > 0 )
+    else if ( ev.wheel.y > 0 )
     {
       this->moveCursorUp();
     }
-    else if ( y < 0 )
+    else if ( ev.wheel.y < 0 )
     {
       this->moveCursorDown();
     }
