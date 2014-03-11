@@ -177,12 +177,17 @@ void ContinueMenuState::on_joy_button_down( const nom::Event& ev )
   } // switch
 }
 
-void ContinueMenuState::on_user_event( const nom::UserEvent& ev )
+void ContinueMenuState::on_user_event( const nom::Event& ev )
 {
-  // Nothing to do; not the right event type for us!
-  if ( ev.type != SDL_USEREVENT ) return;
+  NOM_LOG_TRACE( NOM );
 
-  if ( ev.code == GameEvent::AudioEvent )
+  // Nothing to do; not the right event type for us!
+  if ( ev.type != SDL_USEREVENT )
+  {
+    return;
+  }
+
+  if ( ev.user.code == GameEvent::AudioEvent )
   {
     this->game->cursor_move.Play();
   }

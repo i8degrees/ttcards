@@ -242,11 +242,11 @@ void GameOverState::on_resume ( nom::void_ptr data )
   // ContinueMenuState.
   if ( response != nullptr && this->game->previous_state() == Game::State::GameOver )
   {
-    nom::UserEvent ev;
-    ev.code = GameEvent::AnimationEvent;
-    ev.data1 = nullptr;
-    ev.data2 = nullptr;
-    ev.window_id = 0;
+    nom::Event ev;
+    ev.user.code = GameEvent::AnimationEvent;
+    ev.user.data1 = nullptr;
+    ev.user.data2 = nullptr;
+    ev.user.window_id = 0;
     this->event.dispatch ( ev );
   }
 }
@@ -344,19 +344,19 @@ void GameOverState::on_joy_button_down( const nom::Event& ev )
   } // switch
 }
 
-void GameOverState::on_user_event( const nom::UserEvent& ev )
+void GameOverState::on_user_event( const nom::Event& ev )
 {
   // Nothing to do; not the right event type for us!
   if ( ev.type != SDL_USEREVENT ) return;
 
-  if ( ev.code == GameEvent::UIEvent )
+  if ( ev.user.code == GameEvent::UIEvent )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_text.set_text ( selected_card.getName() );
 
     this->game->cursor_move.Play();
   }
-  else if ( ev.code == GameEvent::AnimationEvent )
+  else if ( ev.user.code == GameEvent::AnimationEvent )
   {
     this->card_info_box.disable();
 

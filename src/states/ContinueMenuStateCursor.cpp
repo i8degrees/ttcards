@@ -98,11 +98,11 @@ void ContinueMenuStateCursor::next ( void )
   this->cursor_position++;
   //NOM_DUMP_VAR(this->cursor_position);
 
-  nom::UserEvent ev;
-  ev.code = GameEvent::AudioEvent;
-  ev.data1 = nullptr;
-  ev.data2 = nullptr;
-  ev.window_id = 0;
+  nom::Event ev;
+  ev.user.code = GameEvent::AudioEvent;
+  ev.user.data1 = nullptr;
+  ev.user.data2 = nullptr;
+  ev.user.window_id = 0;
   this->cursor_event.dispatch ( ev );
 }
 
@@ -111,10 +111,10 @@ void ContinueMenuStateCursor::previous ( void )
   this->cursor_position--;
   //NOM_DUMP_VAR(this->cursor_position);
 
-  nom::UserEvent ev;
-  ev.code = GameEvent::AudioEvent;
-  ev.data1 = nullptr;
-  ev.data2 = nullptr;
-  ev.window_id = 0;
+  nom::Event ev;
+  ev.user.code = GameEvent::AudioEvent;
+  ev.user.data1 = nullptr;
+  ev.user.data2 = nullptr;
+  ev.user.window_id = 0;
   this->cursor_event.dispatch ( ev );
 }
