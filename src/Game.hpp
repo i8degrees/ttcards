@@ -165,6 +165,8 @@ class Game: public nom::SDLApp
   private:
     Game::SharedPtr game;
 
+    nom::Event event;
+
     /// Timer for tracking frames per second
     nom::FPS fps;
 };

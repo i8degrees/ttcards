@@ -577,9 +577,9 @@ int32_t Game::Run ( void )
 
     while ( this->ticks() > next_game_tick && loops <= MAX_FRAMESKIP )
     {
-      while( this->poll_event( &this->event ) )
+      while( this->poll_event( this->event ) )
       {
-        this->on_event( &this->event );
+        this->on_event( this->event );
       }
 
       this->fps.update();
