@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/math.hpp>
 
+#include "debug.hpp"
 /// Site-specific constants -- this is likely specific to your own local system
 /// setup; auto-generated at compile-time and therefore must recompile to modify
 /// said constants.

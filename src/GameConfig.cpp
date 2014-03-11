@@ -77,18 +77,20 @@ const nom::JsonCppValue& GameConfig::setProperty ( const std::string& node, cons
 {
   auto res = config.insert ( std::pair<std::string, nom::JsonCppValue> ( node, value ) ).first;
 
-  if ( value.string_type( node ) )
-  {
-NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.get_string( node ) + "\"" + " has been added to the cache." );
-  }
-  else if ( value.int_type ( node ) )
-  {
-NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.get_int( node ) ) + " has been added to the cache." );
-  }
-  else
-  {
-NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + " has been added to the cache." );
-  }
+  #if defined( TTCARDS_DEBUG_GAME_CONFIG )
+    if ( value.string_type( node ) )
+    {
+      NOM_LOG_INFO( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.get_string( node ) + "\"" + " has been added to the cache." );
+    }
+    else if ( value.int_type ( node ) )
+    {
+      NOM_LOG_INFO( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.get_int( node ) ) + " has been added to the cache." );
+    }
+    else
+    {
+      NOM_LOG_INFO( TTCARDS, "GameConfig: " + node + " has been added to the cache." );
+    }
+  #endif
 
   return res->second;
 }
