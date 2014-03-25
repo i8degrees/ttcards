@@ -159,6 +159,10 @@ void ContinueMenuState::on_mouse_middle_button_down( const nom::Event& ev )
 
 void ContinueMenuState::on_mouse_wheel( const nom::Event& ev )
 {
+  // Do not check mouse wheel state unless it is a valid event; we receive
+  // invalid data here if we do not check for this.
+  if( ev.type != SDL_MOUSEWHEEL ) return;
+
   if ( ev.wheel.y > 0 )
   {
     this->cursor.move_up();
