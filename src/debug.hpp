@@ -31,7 +31,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define TTCARDS_DEBUG_GAME_STATE
 #define TTCARDS_DEBUG_PLAY_STATE
+
+/// \brief Toggles the debugging output of general GameConfig operations, such
+/// as logging all the items added to the cache.
 // #define TTCARDS_DEBUG_GAME_CONFIG
+
+/// \brief Toggles the debugging output of un-serialization of GameConfig data.
+// #define TTCARDS_DEBUG_GAME_CONFIG_LOAD
+
+/// \brief Toggles the debugging output of serialization of GameConfig data.
+// #define TTCARDS_DEBUG_GAME_CONFIG_SAVE
 
 #define DEBUG_BOARD
 #define DEBUG_BOARD_CMP
