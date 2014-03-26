@@ -180,32 +180,31 @@ TODO */
 
 bool GameConfig::load( const std::string& filename )
 {
-  nom::JsonCppSerializer fp;  // JSON parser
-  nom::JsonCppValue object;   // JSON container
+  nom::JsonCppValue fp; // JSON interface (deprecated)
 
   // Storage buffer for our configuration we are loading in; if everything is
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
 
-  if ( fp.unserialize( filename, object ) == false )
+  if ( fp.unserialize( filename, fp ) == false )
   {
     NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
   }
 
-  nom::JsonCppValue::JsonMemberType members = object.members( 0 );
+  nom::JsonCppValue::JsonMemberType members = fp.members( 0 );
 
   for ( auto idx = 0; idx != members.size(); ++idx )
   {
     std::string key = members[idx];
 
-    if( object.string_type( key ) )
+    if( fp.string_type( key ) )
     {
-      cfg.setProperty( key, object );
+      cfg.setProperty( key, fp );
     }
-    else if( object.int_type( key ) )
+    else if( fp.int_type( key ) )
     {
-      cfg.setProperty( key, object );
+      cfg.setProperty( key, fp );
     }
   }
 

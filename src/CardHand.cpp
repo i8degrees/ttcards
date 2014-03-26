@@ -236,8 +236,7 @@ void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardC
 
 bool CardHand::save ( const std::string& filename )
 {
-  nom::JsonCppSerializer fp;
-  nom::JsonCppValue object;
+  nom::JsonCppValue fp; // JSON interface
   nom::JsonCppValue card;
 
   // Sanity check
@@ -251,15 +250,15 @@ bool CardHand::save ( const std::string& filename )
   {
     // Serialize each card's attributes
     card = this->cards[idx].serialize();
-    object.insert( card );
+    fp.insert( card );
 
     // Additional card attributes
-    object.insert( "player_id", this->cards[idx].getPlayerID() );
-    object.insert( "owner", this->cards[idx].getPlayerOwner() );
-    object.endl();
+    fp.insert( "player_id", this->cards[idx].getPlayerID() );
+    fp.insert( "owner", this->cards[idx].getPlayerOwner() );
+    fp.endl();
   }
 
-  if ( fp.serialize( object, filename ) == false )
+  if ( fp.serialize( fp, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -270,36 +269,35 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool CardHand::load ( const std::string& filename )
 {
-  nom::JsonCppSerializer fp;
-  nom::JsonCppValue object;
+  nom::JsonCppValue fp; // JSON interface (deprecated)
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp.unserialize( filename, object ) == false )
+  if ( fp.unserialize( filename, fp ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( nom::uint32 idx = 0; idx != object.size(); ++idx )
+  for ( nom::uint32 idx = 0; idx != fp.size(); ++idx )
   {
-    card.setID ( object.get_int( "id" ) );
-    card.setName ( object.get_string( "name" ) );
-    card.setLevel ( object.get_int( "level" ) );
-    card.setType ( object.get_int( "type" ) );
-    card.setElement ( object.get_int( "element" ) );
-    card.setType ( object.get_int( "type" ) );
+    card.setID ( fp.get_int( "id" ) );
+    card.setName ( fp.get_string( "name" ) );
+    card.setLevel ( fp.get_int( "level" ) );
+    card.setType ( fp.get_int( "type" ) );
+    card.setElement ( fp.get_int( "element" ) );
+    card.setType ( fp.get_int( "type" ) );
 
-    std::vector<int> ranks = object.get_ints ( "ranks" );
+    std::vector<int> ranks = fp.get_ints ( "ranks" );
     card.set_ranks ( ranks );
 
-    card.setPlayerID ( object.get_int( "player_id" ) );
-    card.setPlayerOwner ( object.get_int( "owner" ) );
+    card.setPlayerID ( fp.get_int( "player_id" ) );
+    card.setPlayerOwner ( fp.get_int( "owner" ) );
 
-    object.endl();
+    fp.endl();
 
     // Commit contents to our buffer if all goes well
     cards_buffer.push_back ( card );
