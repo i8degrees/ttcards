@@ -200,10 +200,9 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
 
-nom::Object Card::serialize( void ) const
+nom::Value Card::serialize( void ) const
 {
-  nom::Object obj;
-  nom::Array arr;
+  nom::Value obj;
 
   obj["id"] = this->id;
   obj["name"] = this->name;
@@ -211,16 +210,19 @@ nom::Object Card::serialize( void ) const
   obj["type"] = this->type;
   obj["element"] = this->element;
 
-  arr = nom::Array  { this->rank[NORTH], this->rank[EAST],
-                      this->rank[SOUTH], this->rank[WEST]
-                    };
+  for( auto it = this->rank.begin(); it != this->rank.end(); ++it )
+  {
+    // If we do not insert the array elements as an integer here, nom::Value
+    // gets confused and assigns the values as boolean.
+    int val = *it;
 
-  obj["ranks"] = arr;
+    obj["ranks"].push_back( val );
+  }
 
   return obj;
 }
 
-void Card::unserialize( nom::Object& obj )
+void Card::unserialize( nom::Value& obj )
 {
   this->setID( obj["id"].get_int() );
   this->setName( obj["name"].get_string() );
@@ -228,7 +230,7 @@ void Card::unserialize( nom::Object& obj )
   this->setType( obj["type"].get_int() );
   this->setElement( obj["element"].get_int() );
 
-  nom::Array arr = obj["ranks"].array();
+  nom::Value arr = obj["ranks"].array();
 
   uint idx = 0;
   for( auto it = arr.begin(); it != arr.end(); ++it )

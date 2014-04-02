@@ -162,9 +162,9 @@ class Card
       PLAYER2=2
     };
 
-    nom::Object serialize( void ) const;
+    nom::Value serialize( void ) const;
 
-    void unserialize( nom::Object& obj );
+    void unserialize( nom::Value& obj );
 
   private:
     nom::int32 id;

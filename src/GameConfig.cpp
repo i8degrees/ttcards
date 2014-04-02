@@ -98,9 +98,9 @@ bool GameConfig::save( const std::string& filename )
 {
   nom::ISerializer* fp;   // High-level JSON interface
 
-  nom::Array arr;           // Top-level node for our JSON objects.
-  nom::Object object;       // Temporary buffer used to collect data to be
-                            // stored and processed.
+  // Temporary buffer used to collect data to be
+  // stored and processed.
+  nom::Value object;
 
   fp = new nom::JsonCppSerializer();
 
@@ -172,15 +172,15 @@ bool GameConfig::save( const std::string& filename )
   object["USER_PLAYER1_FILENAME"] = this->getString("USER_PLAYER1_FILENAME");
   object["USER_PLAYER2_FILENAME"] = this->getString("USER_PLAYER2_FILENAME");
 
-  // Commit data to our top-level node object; this creates a JSON array to
-  // hold unmapped objects within.
-  arr.push_back( object );
+  // Commit data to our top-level node object; this creates a top-level JSON
+  // object called "root" to store everything under.
+  object["root"] = object;
 
   #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
-    NOM_DUMP( arr );
+    NOM_DUMP( object );
   #endif
 
-  if( fp->serialize( arr, filename ) == false )
+  if( fp->serialize( object, filename ) == false )
   {
     NOM_LOG_ERR( TTCARDS, "Failed to serialize JSON in file: " + filename );
     return false;
@@ -191,52 +191,49 @@ bool GameConfig::save( const std::string& filename )
 
 bool GameConfig::load( const std::string& filename )
 {
+
+  // High-level file I/O interface
+  nom::ISerializer* fp = new nom::JsonCppSerializer();
   std::string key;
-
-  nom::ISerializer* fp;   // High-level file I/O interface
-  nom::Value dest;
-  nom::Object objects;
-
-  fp = new nom::JsonCppSerializer();
+  nom::Value objects;
 
   // Storage buffer for our configuration we are loading in; if everything is
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
 
-  if ( fp->unserialize( filename, dest ) == false )
+  if ( fp->unserialize( filename, objects ) == false )
   {
     NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
   }
 
   #if defined( TTCARDS_DEBUG_GAME_CONFIG_LOAD )
-    NOM_DUMP( dest );
-    NOM_DUMP( dest.size() );
+    NOM_DUMP( objects );
+    NOM_DUMP( objects.size() );
   #endif
 
-  for( nom::Value::Iterator itr = dest.begin(); itr != dest.end(); ++itr )
+  for( auto itr = objects.begin(); itr != objects.end(); ++itr )
   {
     if( itr->object_type() )
     {
-      objects = itr->object();
+      nom::Object obj = itr->object();
 
-      for( auto itr = objects.begin(); itr != objects.end(); ++itr )
+      for( auto it = obj.begin(); it != obj.end(); ++it )
       {
-        nom::Value::Iterator member( itr );
-
-        key = member.key();
+        nom::Value::ConstIterator members( it );
+        std::string key = members.key();
 
         #if defined( TTCARDS_DEBUG_GAME_CONFIG_LOAD )
           NOM_DUMP( key );
         #endif
 
-        if( member->string_type() )
+        if( members->string_type() )
         {
-          cfg.setProperty( key, member->get_string() );
+          cfg.setProperty( key, members->get_string() );
         }
-        else if( member->int_type() )
+        else if( members->int_type() )
         {
-          cfg.setProperty( key, member->get_int() );
+          cfg.setProperty( key, members->get_int() );
         }
       }
     }
@@ -247,7 +244,7 @@ bool GameConfig::load( const std::string& filename )
   this->config = cfg.config;
 
   // Sanity check
-  NOM_ASSERT( this->config.size() == objects.size() );
+  // NOM_ASSERT( this->config.size() == objects.size() );
 
   return true;
 }

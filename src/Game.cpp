@@ -89,11 +89,13 @@ NOM_LOG_ERR ( TTCARDS, "Could not load game cards collection at: " + std::string
 NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for export argument." );
           exit ( NOM_EXIT_FAILURE );
         }
+      #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
         else if ( dir.exists ( argv[opt + 2] ) == true )
         {
-NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 2]) );
+          NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 2]) );
           exit ( NOM_EXIT_FAILURE );
         }
+      #endif
         else if ( cards.save( argv[opt + 2] ) == false )
         {
 NOM_LOG_ERR ( TTCARDS, "Could not save the game cards collection at: " + std::string(argv[opt + 2]) );
@@ -112,11 +114,13 @@ NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[
 NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
           exit ( NOM_EXIT_FAILURE );
         }
+      #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
         else if ( dir.exists ( argv[opt + 1] ) == true )
         {
-NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
+          NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
           exit ( NOM_EXIT_FAILURE );
         }
+      #endif
 
         GameConfig cfg;
         if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )

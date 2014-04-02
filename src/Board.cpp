@@ -403,9 +403,8 @@ void Board::draw ( nom::IDrawable::RenderTarget& target )
 bool Board::save ( const std::string& filename )
 {
   nom::ISerializer* fp; // High-level file I/O interface
-  nom::Value value;
-  nom::Object card;
-  nom::Array arr;
+  nom::Value value(nom::Value::ArrayValues);
+  nom::Value card(nom::Value::ObjectValues);
 
   fp = new nom::JsonCppSerializer();
 
@@ -420,11 +419,9 @@ bool Board::save ( const std::string& filename )
       card["player_id"] = this->grid[x][y].tile_card.getPlayerID();
       card["owner"] = this->grid[x][y].tile_card.getPlayerOwner();
 
-      arr.push_back( card );
+      value.push_back( card );
     }
   }
-
-  value = arr;
 
   if ( fp->serialize( value, filename ) == false )
   {
@@ -437,27 +434,25 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool Board::load ( const std::string& filename )
 {
-  nom::ISerializer* fp; // High-level file I/O interface
-  nom::Value value;
-  nom::Array arr;
+  // High-level file I/O interface
+  nom::ISerializer* fp = new nom::JsonCppSerializer();
 
-  fp = new nom::JsonCppSerializer();
+  nom::Value values;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp->unserialize( filename, value ) == false )
+  if ( fp->unserialize( filename, values ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( auto itr = value.begin(); itr != value.end(); ++itr )
+  for ( auto itr = values.begin(); itr != values.end(); ++itr )
   {
-    nom::Object obj = itr->object();
-
+    nom::Value obj = itr->ref();
     card.unserialize( obj );
 
     // Additional attributes
@@ -466,7 +461,6 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
 
     // Commit contents to our buffer if all goes well
     cards_buffer.push_back ( card );
-
   } // end for loop
 
   // Sanity check

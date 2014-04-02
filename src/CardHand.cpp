@@ -236,13 +236,11 @@ void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardC
 
 bool CardHand::save ( const std::string& filename )
 {
-  nom::ISerializer* fp; // High-level file I/O interface
-  nom::Value val;
-  nom::Array arr;
+   // High-level file I/O interface
+  nom::ISerializer* fp = new nom::JsonCppSerializer();
 
-  nom::Object card;
-
-  fp = new nom::JsonCppSerializer();
+  nom::Value value(nom::Value::ArrayValues);
+  nom::Value card(nom::Value::ObjectValues);
 
   // Sanity check
   if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND )
@@ -260,12 +258,10 @@ bool CardHand::save ( const std::string& filename )
     card["player_id"] = this->cards[idx].getPlayerID();
     card["owner"] = this->cards[idx].getPlayerOwner();
 
-    arr.push_back( card );
+    value.push_back( card );
   }
 
-  val = arr;
-
-  if ( fp->serialize( val, filename ) == false )
+  if ( fp->serialize( value, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -276,27 +272,24 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool CardHand::load ( const std::string& filename )
 {
-  nom::ISerializer* fp; // High-level file I/O interface
-  nom::Value value;
-  nom::Array arr;
-
-  fp = new nom::JsonCppSerializer();
+   // High-level file I/O interface
+  nom::ISerializer* fp = new nom::JsonCppSerializer();
+  nom::Value values;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp->unserialize( filename, value ) == false )
+  if ( fp->unserialize( filename, values ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( auto itr = value.begin(); itr != value.end(); ++itr )
+  for ( auto itr = values.begin(); itr != values.end(); ++itr )
   {
-    nom::Object obj = itr->object();
-
+    nom::Value obj = itr->ref();
     card.unserialize( obj );
 
     // Additional attributes

@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardCollection.hpp"
 
+using namespace nom;
+
 CardCollection::CardCollection ( void )
 {
 NOM_LOG_TRACE ( TTCARDS );
@@ -67,10 +69,17 @@ Cards CardCollection::getCards ( void )
 
 bool CardCollection::save( const std::string& filename )
 {
-  nom::ISerializer* fp; // High-level file I/O interface
-  nom::Object obj;
+  // High-level file I/O interface
+  nom::ISerializer* fp = new nom::JsonCppSerializer();
 
-  fp = new nom::JsonCppSerializer();
+  // Our JSON output will be a JSON object enclosing an array keyed "cards",
+  // of which holds each of our individual, unnamed JSON objects.
+  //
+  // NOTE: I wished for "cards" to be an object as well, but then sorting gets
+  // all messed up -- the "off by six-ish" bug from before -- so the compromise
+  // until we figure these things out is going to have to be this!
+  nom::Value obj( nom::Value::ObjectValues );
+  nom::Value arr( nom::Value::ArrayValues );
 
   if ( this->cards.size() < MIN_COLLECTION ) // Sanity check
   {
@@ -86,8 +95,12 @@ bool CardCollection::save( const std::string& filename )
 
   for ( nom::uint32 idx = 0; idx != this->cards.size(); ++idx )
   {
-    // Serialize each card's attributes
-    obj = this->cards[idx].serialize();
+    // Serialize each card's attributes; said card attributes become JSON
+    // objects, enclosed within our overall container ("cards" array).
+    arr.push_back( this->cards[idx].serialize() );
+
+    // Top-level array node
+    obj["cards"] = arr;
   }
 
   if ( fp->serialize( obj, filename ) == false )
@@ -105,7 +118,6 @@ bool CardCollection::load( const std::string& filename )
 {
   nom::ISerializer* fp; // High-level file I/O interface
   nom::Value value;
-  nom::Array arr;
 
   // The card attributes we are loading in will be stored in here, and once a
   // card has filled its buffer, we push it into its final resting place ...
@@ -127,11 +139,11 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( auto itr = value.begin(); itr != value.end(); ++itr )
+  for ( auto itr = value["cards"].begin(); itr != value["cards"].end(); ++itr )
   {
-    nom::Object obj = itr->object();
+    nom::Value val = itr->ref();
 
-    card.unserialize( obj );
+    card.unserialize( val );
 
     // Additional attributes
     card.setPlayerID( Card::NOPLAYER );     // placeholder
