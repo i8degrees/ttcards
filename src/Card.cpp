@@ -200,18 +200,42 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
 
-nom::JsonCppValue Card::serialize( void ) const
+nom::Object Card::serialize( void ) const
 {
-  nom::JsonCppValue object;
+  nom::Object obj;
+  nom::Array arr;
 
-  object.insert( "id", this->id );
-  object.insert( "name", this->name );
-  object.insert( "level", this->level );
-  object.insert( "type", this->type );
-  object.insert( "element", this->element );
-  object.insert( "ranks", this->ranks_as_vector() );
+  obj["id"] = this->id;
+  obj["name"] = this->name;
+  obj["level"] = this->level;
+  obj["type"] = this->type;
+  obj["element"] = this->element;
 
-  return object;
+  arr = nom::Array  { this->rank[NORTH], this->rank[EAST],
+                      this->rank[SOUTH], this->rank[WEST]
+                    };
+
+  obj["ranks"] = arr;
+
+  return obj;
+}
+
+void Card::unserialize( nom::Object& obj )
+{
+  this->setID( obj["id"].get_int() );
+  this->setName( obj["name"].get_string() );
+  this->setLevel( obj["level"].get_int() );
+  this->setType( obj["type"].get_int() );
+  this->setElement( obj["element"].get_int() );
+
+  nom::Array arr = obj["ranks"].array();
+
+  uint idx = 0;
+  for( auto it = arr.begin(); it != arr.end(); ++it )
+  {
+    this->rank[idx] = it->get_int();
+    ++idx;
+  }
 }
 
 void Card::increaseNorthRank ( void )

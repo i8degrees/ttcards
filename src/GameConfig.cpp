@@ -96,11 +96,13 @@ const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::
 
 bool GameConfig::save( const std::string& filename )
 {
-  nom::JsonSerializer fp;   // High-level JSON interface
+  nom::ISerializer* fp;   // High-level JSON interface
 
   nom::Array arr;           // Top-level node for our JSON objects.
   nom::Object object;       // Temporary buffer used to collect data to be
                             // stored and processed.
+
+  fp = new nom::JsonCppSerializer();
 
   for ( auto it = this->config.begin(); it != this->config.end(); ++it )
   {
@@ -178,7 +180,7 @@ bool GameConfig::save( const std::string& filename )
     NOM_DUMP( arr );
   #endif
 
-  if( fp.serialize( arr, filename ) == false )
+  if( fp->serialize( arr, filename ) == false )
   {
     NOM_LOG_ERR( TTCARDS, "Failed to serialize JSON in file: " + filename );
     return false;
@@ -191,15 +193,17 @@ bool GameConfig::load( const std::string& filename )
 {
   std::string key;
 
-  nom::JsonSerializer fp; // JSON interface (deprecated)
+  nom::ISerializer* fp;   // High-level file I/O interface
   nom::Value dest;
   nom::Object objects;
+
+  fp = new nom::JsonCppSerializer();
 
   // Storage buffer for our configuration we are loading in; if everything is
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
 
-  if ( fp.unserialize( filename, dest ) == false )
+  if ( fp->unserialize( filename, dest ) == false )
   {
     NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;
@@ -238,12 +242,12 @@ bool GameConfig::load( const std::string& filename )
     }
   }
 
-  // Sanity check
-  NOM_ASSERT( this->config.size() != objects.size() );
-
   // If we have made it this far, go ahead and overwrite our new configuration
   // onto the existing configuration map store!
   this->config = cfg.config;
+
+  // Sanity check
+  NOM_ASSERT( this->config.size() == objects.size() );
 
   return true;
 }

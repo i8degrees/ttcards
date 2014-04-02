@@ -162,7 +162,9 @@ class Card
       PLAYER2=2
     };
 
-    nom::JsonCppValue serialize( void ) const;
+    nom::Object serialize( void ) const;
+
+    void unserialize( nom::Object& obj );
 
   private:
     nom::int32 id;

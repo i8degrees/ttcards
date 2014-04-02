@@ -236,8 +236,13 @@ void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardC
 
 bool CardHand::save ( const std::string& filename )
 {
-  nom::JsonCppValue fp; // JSON interface
-  nom::JsonCppValue card;
+  nom::ISerializer* fp; // High-level file I/O interface
+  nom::Value val;
+  nom::Array arr;
+
+  nom::Object card;
+
+  fp = new nom::JsonCppSerializer();
 
   // Sanity check
   if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND )
@@ -250,15 +255,17 @@ bool CardHand::save ( const std::string& filename )
   {
     // Serialize each card's attributes
     card = this->cards[idx].serialize();
-    fp.insert( card );
 
     // Additional card attributes
-    fp.insert( "player_id", this->cards[idx].getPlayerID() );
-    fp.insert( "owner", this->cards[idx].getPlayerOwner() );
-    fp.endl();
+    card["player_id"] = this->cards[idx].getPlayerID();
+    card["owner"] = this->cards[idx].getPlayerOwner();
+
+    arr.push_back( card );
   }
 
-  if ( fp.serialize( fp, filename ) == false )
+  val = arr;
+
+  if ( fp->serialize( val, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -269,38 +276,36 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool CardHand::load ( const std::string& filename )
 {
-  nom::JsonCppValue fp; // JSON interface (deprecated)
+  nom::ISerializer* fp; // High-level file I/O interface
+  nom::Value value;
+  nom::Array arr;
+
+  fp = new nom::JsonCppSerializer();
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
 
-  if ( fp.unserialize( filename, fp ) == false )
+  if ( fp->unserialize( filename, value ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;
   }
 
-  for ( nom::uint32 idx = 0; idx != fp.size(); ++idx )
+  for ( auto itr = value.begin(); itr != value.end(); ++itr )
   {
-    card.setID ( fp.get_int( "id" ) );
-    card.setName ( fp.get_string( "name" ) );
-    card.setLevel ( fp.get_int( "level" ) );
-    card.setType ( fp.get_int( "type" ) );
-    card.setElement ( fp.get_int( "element" ) );
-    card.setType ( fp.get_int( "type" ) );
+    nom::Object obj = itr->object();
 
-    std::vector<int> ranks = fp.get_ints ( "ranks" );
-    card.set_ranks ( ranks );
+    card.unserialize( obj );
 
-    card.setPlayerID ( fp.get_int( "player_id" ) );
-    card.setPlayerOwner ( fp.get_int( "owner" ) );
-
-    fp.endl();
+    // Additional attributes
+    card.setPlayerID( obj["player_id"].get_int() );
+    card.setPlayerOwner( obj["owner"].get_int() );
 
     // Commit contents to our buffer if all goes well
     cards_buffer.push_back ( card );
+
   } // end for loop
 
   // Sanity check
