@@ -96,7 +96,8 @@ const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::
 
 bool GameConfig::save( const std::string& filename )
 {
-  nom::ISerializer* fp;   // High-level JSON interface
+  // High-level JSON interface
+  nom::IValueSerializer* fp;
 
   // Temporary buffer used to collect data to be
   // stored and processed.
@@ -135,52 +136,50 @@ bool GameConfig::save( const std::string& filename )
   }
 
   // Order in which we save node paths does not matter
-  object["SCALE_ALGORITHM"] = this->getString("SCALE_ALGORITHM");
+  object["root"]["SCALE_ALGORITHM"] = this->getString("SCALE_ALGORITHM");
 
   // Fonts
-  object["SCORE_FONTFACE"] = this->getString("SCORE_FONTFACE");
-  object["GAMEOVER_FONTFACE"] = this->getString("GAMEOVER_FONTFACE");
-  object["CARD_FONTFACE"] = this->getString("CARD_FONTFACE");
-  object["INFO_FONTFACE"] = this->getString("INFO_FONTFACE");
-  object["INFO_SMALL_FONTFACE"] = this->getString("INFO_SMALL_FONTFACE");
+  object["root"]["SCORE_FONTFACE"] = this->getString("SCORE_FONTFACE");
+  object["root"]["GAMEOVER_FONTFACE"] = this->getString("GAMEOVER_FONTFACE");
+  object["root"]["CARD_FONTFACE"] = this->getString("CARD_FONTFACE");
+  object["root"]["INFO_FONTFACE"] = this->getString("INFO_FONTFACE");
+  object["root"]["INFO_SMALL_FONTFACE"] = this->getString("INFO_SMALL_FONTFACE");
 
   // Sprites & static backgrounds
-  object["BOARD_BACKGROUND"] = this->getString("BOARD_BACKGROUND");
-  object["GAMEOVER_BACKGROUND"] =  this->getString("GAMEOVER_BACKGROUND");
-  object["CARD_ELEMENTS"] = this->getString("CARD_ELEMENTS");
-  object["CARD_FACES"] = this->getString("CARD_FACES");
-  object["CARD_BACKGROUNDS"] = this->getString("CARD_BACKGROUNDS");
-  object["INTERFACE_CURSOR"] = this->getString("INTERFACE_CURSOR");
-  object["MENU_ELEMENTS"] = this->getString("MENU_ELEMENTS");
+  object["root"]["BOARD_BACKGROUND"] = this->getString("BOARD_BACKGROUND");
+  object["root"]["GAMEOVER_BACKGROUND"] =  this->getString("GAMEOVER_BACKGROUND");
+  object["root"]["CARD_ELEMENTS"] = this->getString("CARD_ELEMENTS");
+  object["root"]["CARD_FACES"] = this->getString("CARD_FACES");
+  object["root"]["CARD_BACKGROUNDS"] = this->getString("CARD_BACKGROUNDS");
+  object["root"]["INTERFACE_CURSOR"] = this->getString("INTERFACE_CURSOR");
+  object["root"]["MENU_ELEMENTS"] = this->getString("MENU_ELEMENTS");
 
   // Audio effects
-  object["CURSOR_MOVE"] = this->getString("CURSOR_MOVE");
-  object["CURSOR_CANCEL"] = this->getString("CURSOR_CANCEL");
-  object["CURSOR_WRONG"] = this->getString("CURSOR_WRONG");
-  object["CARD_FLIP"] = this->getString("CARD_FLIP");
-  object["CARD_PLACE"] = this->getString("CARD_PLACE");
-  object["SFX_LOAD_GAME"] = this->getString("SFX_LOAD_GAME");
-  object["SFX_SAVE_GAME"] = this->getString("SFX_SAVE_GAME");
-  object["MUSIC_TRACK"] = this->getString("MUSIC_TRACK");
-  object["MUSIC_WIN_TRACK"] = this->getString("MUSIC_WIN_TRACK");
+  object["root"]["CURSOR_MOVE"] = this->getString("CURSOR_MOVE");
+  object["root"]["CURSOR_CANCEL"] = this->getString("CURSOR_CANCEL");
+  object["root"]["CURSOR_WRONG"] = this->getString("CURSOR_WRONG");
+  object["root"]["CARD_FLIP"] = this->getString("CARD_FLIP");
+  object["root"]["CARD_PLACE"] = this->getString("CARD_PLACE");
+  object["root"]["SFX_LOAD_GAME"] = this->getString("SFX_LOAD_GAME");
+  object["root"]["SFX_SAVE_GAME"] = this->getString("SFX_SAVE_GAME");
+  object["root"]["MUSIC_TRACK"] = this->getString("MUSIC_TRACK");
+  object["root"]["MUSIC_WIN_TRACK"] = this->getString("MUSIC_WIN_TRACK");
 
   // Miscellaneous
-  object["APP_ICON"] = this->getString("APP_ICON");
-  object["CARDS_DB"] = this->getString("CARDS_DB");
+  object["root"]["APP_ICON"] = this->getString("APP_ICON");
+  object["root"]["CARDS_DB"] = this->getString("CARDS_DB");
 
-  object["USER_BOARD_FILENAME"] = this->getString("USER_BOARD_FILENAME");
-  object["USER_PLAYER1_FILENAME"] = this->getString("USER_PLAYER1_FILENAME");
-  object["USER_PLAYER2_FILENAME"] = this->getString("USER_PLAYER2_FILENAME");
-
-  // Commit data to our top-level node object; this creates a top-level JSON
-  // object called "root" to store everything under.
-  object["root"] = object;
+  object["root"]["USER_BOARD_FILENAME"] = this->getString("USER_BOARD_FILENAME");
+  object["root"]["USER_PLAYER1_FILENAME"] = this->getString("USER_PLAYER1_FILENAME");
+  object["root"]["USER_PLAYER2_FILENAME"] = this->getString("USER_PLAYER2_FILENAME");
 
   #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
     NOM_DUMP( object );
   #endif
 
-  if( fp->serialize( object, filename ) == false )
+  // Commit data to our top-level node object; this creates a top-level JSON
+  // object called "root" to store everything under.
+  if( fp->save( object, filename ) == false )
   {
     NOM_LOG_ERR( TTCARDS, "Failed to serialize JSON in file: " + filename );
     return false;
@@ -191,9 +190,8 @@ bool GameConfig::save( const std::string& filename )
 
 bool GameConfig::load( const std::string& filename )
 {
-
   // High-level file I/O interface
-  nom::ISerializer* fp = new nom::JsonCppSerializer();
+  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
   std::string key;
   nom::Value objects;
 
@@ -201,7 +199,7 @@ bool GameConfig::load( const std::string& filename )
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
 
-  if ( fp->unserialize( filename, objects ) == false )
+  if ( fp->load( filename, objects ) == false )
   {
     NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
     return false;

@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include <nomlib/types.hpp>
-#include <nomlib/json.hpp>
+#include <nomlib/serializers.hpp>
 
 #include "Card.hpp"
 #include "CardCollection.hpp"

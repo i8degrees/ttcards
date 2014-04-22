@@ -70,7 +70,7 @@ Cards CardCollection::getCards ( void )
 bool CardCollection::save( const std::string& filename )
 {
   // High-level file I/O interface
-  nom::ISerializer* fp = new nom::JsonCppSerializer();
+  nom::IValueSerializer* fp = new nom::JsonCppSerializer();
 
   // Our JSON output will be a JSON object enclosing an array keyed "cards",
   // of which holds each of our individual, unnamed JSON objects.
@@ -103,7 +103,7 @@ bool CardCollection::save( const std::string& filename )
     obj["cards"] = arr;
   }
 
-  if ( fp->serialize( obj, filename ) == false )
+  if ( fp->save( obj, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -116,7 +116,8 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 
 bool CardCollection::load( const std::string& filename )
 {
-  nom::ISerializer* fp; // High-level file I/O interface
+  // High-level file I/O interface
+  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
   nom::Value value;
 
   // The card attributes we are loading in will be stored in here, and once a
@@ -125,9 +126,7 @@ bool CardCollection::load( const std::string& filename )
   Card card;
   Cards cards_buffer;
 
-  fp = new nom::JsonCppSerializer();
-
-  if ( fp->unserialize( filename, value ) == false )
+  if ( fp->load( filename, value ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;

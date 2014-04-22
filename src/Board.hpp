@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <nomlib/types.hpp>
 #include <nomlib/math.hpp>
-#include <nomlib/json.hpp>
+#include <nomlib/serializers.hpp>
 
 #include "config.hpp"
 #include "resources.hpp"

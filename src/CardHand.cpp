@@ -237,7 +237,7 @@ void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardC
 bool CardHand::save ( const std::string& filename )
 {
    // High-level file I/O interface
-  nom::ISerializer* fp = new nom::JsonCppSerializer();
+  nom::IValueSerializer* fp = new nom::JsonCppSerializer();
 
   nom::Value value(nom::Value::ArrayValues);
   nom::Value card(nom::Value::ObjectValues);
@@ -261,7 +261,7 @@ bool CardHand::save ( const std::string& filename )
     value.push_back( card );
   }
 
-  if ( fp->serialize( value, filename ) == false )
+  if ( fp->save( value, filename ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
     return false;
@@ -273,7 +273,7 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 bool CardHand::load ( const std::string& filename )
 {
    // High-level file I/O interface
-  nom::ISerializer* fp = new nom::JsonCppSerializer();
+  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
   nom::Value values;
 
   // The card attributes we are loading in will be stored in here temporarily.
@@ -281,7 +281,7 @@ bool CardHand::load ( const std::string& filename )
   Card card;
   Cards cards_buffer;
 
-  if ( fp->unserialize( filename, values ) == false )
+  if ( fp->load( filename, values ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     return false;

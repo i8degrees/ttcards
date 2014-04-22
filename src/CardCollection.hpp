@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <cassert>
 
-#include <nomlib/json.hpp>
+#include <nomlib/serializers.hpp>
 
 #include "Card.hpp"
 #include "CardDebug.hpp"
