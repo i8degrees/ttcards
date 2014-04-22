@@ -142,10 +142,10 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
 
   // Top display message box; "description" info box
-  this->info_box = nom::MessageBox  ( info_box_origin,
-                                      info_box_size,
-                                      nom::GrayWindow()
-                                      // linear
+  this->info_box = nom::MessageBox  (
+                                       nom::Window(),
+                                      info_box_origin,
+                                      info_box_size
                                     );
 
   this->info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
@@ -155,10 +155,10 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   Size2i card_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
 
   // Bottom display message box; card info (card name)
-  this->card_info_box = nom::MessageBox ( card_box_origin,
-                                          card_box_size,
-                                          nom::GrayWindow()
-                                          // linear
+  this->card_info_box = nom::MessageBox (
+                                          nom::Window(),
+                                          card_box_origin,
+                                          card_box_size
                                         );
 
   this->card_info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );

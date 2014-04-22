@@ -121,19 +121,19 @@ void PlayState::on_init ( nom::void_ptr data )
   Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
 
-  this->info_box = nom::MessageBox  ( info_box_origin,
-                                      info_box_size,
-                                      nom::GrayWindow()
-                                      // linear
+  this->info_box = nom::MessageBox  (
+                                      nom::Window(),
+                                      info_box_origin,
+                                      info_box_size
                                     );
 
   Point2i debug_box_origin = Point2i( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
   Size2i debug_box_size = Size2i( DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT );
 
-  this->debug_box = nom::MessageBox ( debug_box_origin,
-                                      debug_box_size,
-                                      nom::GrayWindow()
-                                      // linear
+  this->debug_box = nom::MessageBox (
+                                      nom::Window(),
+                                      debug_box_origin,
+                                      debug_box_size
                                     );
 
   this->info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );

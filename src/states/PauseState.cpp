@@ -55,10 +55,10 @@ void PauseState::on_init ( nom::void_ptr data )
   Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
 
-  this->info_box = nom::MessageBox  ( info_box_origin,
-                                      info_box_size,
-                                      nom::GrayWindow()
-                                      // linear
+  this->info_box = nom::MessageBox  (
+                                      nom::Window(),
+                                      info_box_origin,
+                                      info_box_size
                                     );
 
   this->info_box.set_title ( this->title_text[0] );

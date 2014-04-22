@@ -62,10 +62,16 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y );
   Size2i menu_box_size = Size2i( PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
-  this->menu_box = nom::MessageBox  ( menu_box_origin,
-                                      menu_box_size,
-                                      nom::GrayWindow()
-                                      // linear
+  nom::Window::WindowShape style;
+  // style.push_back( nom::IDrawable::SharedPtr( new nom::Gradient( linear ) ));
+  style.push_back( nom::IDrawable::SharedPtr( new nom::GrayWindow( menu_box_origin, menu_box_size ) ));
+
+  nom::Window* window = new nom::Window( menu_box_origin, menu_box_size, style );
+
+  this->menu_box = nom::MessageBox  (
+                                      window,
+                                      menu_box_origin,
+                                      menu_box_size
                                     );
 
   this->per_page = 11; // number of cards to display per menu page
@@ -292,7 +298,7 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );
     this->game->card.draw ( target );
   }
-
+  /*
   this->menu_box.draw ( target );
 
   for ( nom::uint32 i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
@@ -381,6 +387,7 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     // We calculate height after setting the text buffer for each card name
     y_offset += this->info_text_height;
   }
+  */
 
   this->drawCursor ( target );
 
