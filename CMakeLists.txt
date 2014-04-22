@@ -193,7 +193,12 @@ elseif ( PLATFORM_OSX )
     set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
     set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
   else ( NOT NOMLIB_FOUND )
-    message ( FATAL_ERROR "Required dependency nomlib missing!" )
+    message ( FATAL_ERROR
+              "Not found: nomlib.\n"
+              "\nNOMLIB_INCLUDE_DIR: ${NOMLIB_INCLUDE_DIR}"
+              "\nNOMLIB_LIBRARY: ${NOMLIB_LIBRARY}"
+              "\nNOMLIB_THIRD_PARTY_INCLUDE_DIR: ${NOMLIB_THIRD_PARTY_INCLUDE_DIR}"
+            )
   endif ( NOMLIB_FOUND )
 
   # SDL2 dependency
@@ -235,7 +240,11 @@ elseif ( PLATFORM_LINUX )
 endif ( PLATFORM_WINDOWS )
 
 # External header files inclusion
-include_directories ( "${EXT_HEADERS}" )
+include_directories (
+                      ${EXT_HEADERS}
+                      # RapidXml, JsonCpp
+                      "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/common"
+                    )
 
 # List of our source code to be compiled
 include ( "${SRC_DIR}/CMakeLists.txt" )
