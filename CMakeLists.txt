@@ -318,6 +318,13 @@ if ( PLATFORM_OSX )
     # destination target path when we are building a package.
     install ( TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}" )
     #set ( INSTALL_APP_PATH "${CMAKE_INSTALL_PREFIX}" )
+
+
+    install ( FILES
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config.json"
+              # DESTINATION "${INSTALL_APP_PATH}/Resources"
+              DESTINATION "$ENV{HOME}/Documents/ttcards"
+            )
   endif ( OSXAPP )
 
 # ...PLATFORM_OSX...
