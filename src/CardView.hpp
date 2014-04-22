@@ -40,7 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameConfig.hpp"
 #include "Card.hpp"
 
-class CardView: public nom::IDrawable
+// class CardView: public nom::IDrawable
+class CardView
 {
   public:
     typedef std::vector<std::shared_ptr<nom::IDrawable>> DrawableList;
