@@ -68,7 +68,10 @@ class ContinueMenuState: public nom::IState
 
     Game::SharedPtr game;
 
-    nom::MessageBox info_box;
+    /// \note We segfault if this is not declared as a pointer; nom::Window
+    /// *must* be initialized first, so we can pass onto this object instance.
+    nom::MessageBox::UniquePtr info_box;
+
     ContinueMenuStateCursor cursor;
 
     nom::Point2i position_map;

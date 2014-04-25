@@ -67,7 +67,10 @@ class PauseState: public nom::IState
     nom::Timer blink_update;
     bool blink_text;
 
-    nom::MessageBox info_box;
+    /// \note We segfault if this is not declared as a pointer; nom::Window
+    /// *must* be initialized first, so we can pass onto this object instance.
+    nom::MessageBox::UniquePtr info_box;
+
     nom::Text title_text[2];
 };
 

@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
+PauseState::PauseState ( const nom::SDLApp::SharedPtr& object ) :
   nom::IState { Game::State::Pause, nom::IState::StateFlags::BackRender },
   game { NOM_PTR_CAST( Game, object) }
 {
@@ -45,28 +45,38 @@ PauseState::~PauseState ( void )
 void PauseState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
+  nom::Window* window = nullptr;
+
+  Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
+  Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
 
   this->title_text[0] = { nom::Text("PAUSE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
   this->title_text[1] = { nom::Text("", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
 
   linear.set_start_color ( nom::Color4i ( 67, 67, 67, 255 ) );
   linear.set_end_color ( nom::Color4i ( 99, 99, 99, 255 ) );
+  linear.set_position( info_box_origin );
+  linear.set_size( info_box_size );
 
-  Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
+  window = new nom::Window( info_box_origin, info_box_size );
+  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::GrayWindow( info_box_origin, info_box_size ) );
 
-  this->info_box = nom::MessageBox  (
-                                      nom::Window(),
-                                      info_box_origin,
-                                      info_box_size
-                                    );
+  this->info_box = nom::MessageBox::UniquePtr (
+                                                new nom::MessageBox(
+                                                  window,
+                                                  info_box_origin,
+                                                  info_box_size
+                                                )
+                                              );
 
-  this->info_box.set_title ( this->title_text[0] );
-  this->info_box.set_text ( nom::Text(SHORT_VERSION_INFO, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
-  // this->info_box.set_title( "PAUSE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft );
-  // this->info_box.set_text( SHORT_VERSION_INFO, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter );
+  this->info_box->set_title( this->title_text[0] );
+  this->info_box->set_text( nom::Text(SHORT_VERSION_INFO, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
 
   this->blink_update.start();
+
+  // FIXME:
+  // delete window;
 }
 
 void PauseState::on_exit ( nom::void_ptr data )
@@ -108,14 +118,12 @@ void PauseState::on_joy_button_down( const nom::Event& ev )
 
 void PauseState::on_update ( float delta_time )
 {
-  // this->info_box.set_title ( this->title_text[0] );
-  this->info_box.set_title_label( "PAUSE" );
+  this->info_box->set_title( this->title_text[0] );
 
   if ( this->blink_update.ticks() > 800 )
   {
     this->blink_update.stop();
-    this->info_box.set_title ( this->title_text[1] );
-    // this->info_box.set_title_label( "" );
+    this->info_box->set_title( this->title_text[1] );
     this->blink_text = true;
   }
 
@@ -124,12 +132,11 @@ void PauseState::on_update ( float delta_time )
 
 void PauseState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
-  this->info_box.draw ( target );
+  this->info_box->draw ( target );
 
   if ( this->blink_text )
   {
-    this->info_box.set_title ( this->title_text[1] );
-    // this->info_box.set_title_label( "" );
+    this->info_box->set_title( this->title_text[1] );
     this->blink_update.start();
     this->blink_text = false;
   }

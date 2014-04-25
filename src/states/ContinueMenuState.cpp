@@ -45,23 +45,33 @@ ContinueMenuState::~ContinueMenuState ( void )
 void ContinueMenuState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
+  nom::Window* window;
+
+  Point2i info_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
+  Size2i info_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
+
   Text option_text = nom::Text("Are you sure?\n\t\tYes\n\t\tNo", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
 
   linear.set_start_color ( nom::Color4i::Gray );
   linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
+  linear.set_position( info_box_origin );
+  linear.set_size( info_box_size );
 
-  Point2i info_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
+  window = new nom::Window( info_box_origin, info_box_size );
+  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::GrayWindow( info_box_origin, info_box_size ) );
 
-  this->info_box = nom::MessageBox  (
-                                      nom::Window(),
-                                      info_box_origin,
-                                      info_box_size
-                                    );
+  this->info_box = nom::MessageBox::UniquePtr (
+                                                new nom::MessageBox(
+                                                  window,
+                                                  info_box_origin,
+                                                  info_box_size
+                                                )
+                                              );
 
-  this->info_box.set_title ( nom::Text("CHOICE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->info_box.set_text ( option_text );
+  this->info_box->set_title( nom::Text("CHOICE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->info_box->set_text( option_text );
 
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
@@ -100,6 +110,9 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
                             );
 
   this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
+
+  // FIXME:
+  // delete window;
 }
 
 void ContinueMenuState::on_exit ( nom::void_ptr data )
@@ -138,7 +151,7 @@ void ContinueMenuState::on_key_down( const nom::Event& ev )
 void ContinueMenuState::on_mouse_left_button_down( const nom::Event& ev )
 {
   Point2i mouse_input ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
-  IntRect text_bounds = this->info_box.text_bounds();
+  IntRect text_bounds = this->info_box->text_bounds();
   //IntRect text_bounds = IntRect ( option_text.position().x, option_text.position().y, option_text.width(), option_text.height() );
   //nom::int32 option_choice = this->cursor.position();
 
@@ -206,7 +219,8 @@ void ContinueMenuState::on_update ( float delta_time )
 
 void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
-  this->info_box.draw ( target );
+  this->info_box->draw ( target );
+
   this->cursor.draw ( target );
 }
 

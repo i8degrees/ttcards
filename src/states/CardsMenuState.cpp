@@ -34,6 +34,10 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   game { NOM_PTR_CAST( Game, object) }
 {
   nom::Gradient linear;
+  nom::Window* window = nullptr;
+
+  Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y );
+  Size2i menu_box_size = Size2i( PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
   nom::uint pid = 0; // temp var for for loop iteration
 
@@ -58,21 +62,20 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   linear.set_start_color ( nom::Color4i::Gray );
   linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
+  linear.set_position( menu_box_origin );
+  linear.set_size( menu_box_size );
 
-  Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y );
-  Size2i menu_box_size = Size2i( PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
+  window = new nom::Window( menu_box_origin, menu_box_size );
+  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::GrayWindow( menu_box_origin, menu_box_size ) );
 
-  nom::Window::WindowShape style;
-  // style.push_back( nom::IDrawable::SharedPtr( new nom::Gradient( linear ) ));
-  style.push_back( nom::IDrawable::SharedPtr( new nom::GrayWindow( menu_box_origin, menu_box_size ) ));
-
-  nom::Window* window = new nom::Window( menu_box_origin, menu_box_size, style );
-
-  this->menu_box = nom::MessageBox  (
-                                      window,
-                                      menu_box_origin,
-                                      menu_box_size
-                                    );
+  this->menu_box = nom::MessageBox::UniquePtr (
+                                                new nom::MessageBox(
+                                                  window,
+                                                  menu_box_origin,
+                                                  menu_box_size
+                                                )
+                                              );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->game->collection.cards.size() / per_page;
@@ -87,17 +90,22 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
                                     ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1
                                   ) - 8
                                 );
+
+  // FIXME:
+  // delete window;
 }
 
 CardsMenuState::~CardsMenuState ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS );
 
   this->selectedCard = Card();
 }
 
 void CardsMenuState::on_init ( nom::void_ptr data )
 {
+  NOM_LOG_TRACE( TTCARDS );
+
   unsigned int idx = 0; // iterator for cursor_coords_map
 
   // Initialize card name text so that we can obtain height info early on
@@ -109,8 +117,8 @@ void CardsMenuState::on_init ( nom::void_ptr data )
   this->info_text_height = this->card_text.height() + 4;
 
   // FIXME: We must set the menu_box labels to quiet the debug logs
-  this->menu_box.set_title ( nom::Text("",this->game->info_small_text,0) );
-  this->menu_box.set_text ( nom::Text("",this->game->info_text,0) );
+  this->menu_box->set_title( nom::Text( "", this->game->info_small_text ) );
+  this->menu_box->set_text( nom::Text( "", this->game->info_text ) );
 
   this->title_text.set_font ( this->game->info_small_text );
 
@@ -298,8 +306,8 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );
     this->game->card.draw ( target );
   }
-  /*
-  this->menu_box.draw ( target );
+
+  this->menu_box->draw ( target );
 
   for ( nom::uint32 i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {
@@ -387,7 +395,6 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     // We calculate height after setting the text buffer for each card name
     y_offset += this->info_text_height;
   }
-  */
 
   this->drawCursor ( target );
 

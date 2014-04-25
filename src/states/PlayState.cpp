@@ -61,6 +61,12 @@ void PlayState::on_resume ( nom::void_ptr data )
 void PlayState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
+  nom::Window* window = nullptr;
+
+  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
+  Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
+  Point2i debug_box_origin = Point2i( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
+  Size2i debug_box_size = Size2i( DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT );
 
   while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
   {
@@ -117,27 +123,42 @@ void PlayState::on_init ( nom::void_ptr data )
   linear.set_start_color ( nom::Color4i::Gray );
   linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
+  linear.set_position( info_box_origin );
+  linear.set_size( info_box_size );
 
-  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
+  window = new nom::Window( info_box_origin, info_box_size );
+  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::GrayWindow( info_box_origin, info_box_size ) );
 
-  this->info_box = nom::MessageBox  (
-                                      nom::Window(),
-                                      info_box_origin,
-                                      info_box_size
-                                    );
+  this->info_box = nom::MessageBox::UniquePtr (
+                                                new nom::MessageBox(
+                                                  window,
+                                                  info_box_origin,
+                                                  info_box_size
+                                                )
+                                              );
 
-  Point2i debug_box_origin = Point2i( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
-  Size2i debug_box_size = Size2i( DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT );
+  // Re-use the same nom::Gradient object for our second nom::MessageBox, but
+  // with new dimensions.
+  linear.set_position( debug_box_origin );
+  linear.set_size( debug_box_size );
 
-  this->debug_box = nom::MessageBox (
-                                      nom::Window(),
-                                      debug_box_origin,
-                                      debug_box_size
-                                    );
+  // Re-declare the nom::Window object with new dimensions for our second
+  // nom::MessageBox object (debug_box).
+  window = new nom::Window( debug_box_origin, debug_box_size );
+  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::GrayWindow( debug_box_origin, debug_box_size ) );
 
-  this->info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->debug_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->debug_box = nom::MessageBox::UniquePtr  (
+                                                  new nom::MessageBox(
+                                                    window,
+                                                    debug_box_origin,
+                                                    debug_box_size
+                                                    )
+                                                );
+
+  this->info_box->set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->debug_box->set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
 
   this->debug_text.set_font ( this->game->info_text );
   this->debug_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
@@ -146,7 +167,7 @@ void PlayState::on_init ( nom::void_ptr data )
   this->info_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
 
 #if ! defined (NOM_DEBUG)
-  this->debug_box.disable();
+  this->debug_box->disable();
 #endif
 
   while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
@@ -175,6 +196,9 @@ void PlayState::on_init ( nom::void_ptr data )
   this->player_timer[1].setFrameRate ( 500 );
   this->cursor_blink.start();
   this->blink_cursor = false;
+
+  // FIXME:
+  // delete window;
 }
 
 void PlayState::on_key_down( const nom::Event& ev )
@@ -301,13 +325,13 @@ void PlayState::on_key_down( const nom::Event& ev )
 
     case SDLK_i:
     {
-      if ( this->debug_box.enabled() == true )
+      if ( this->debug_box->enabled() == true )
       {
-        this->debug_box.disable();
+        this->debug_box->disable();
       }
       else
       {
-        this->debug_box.enable();
+        this->debug_box->enable();
       }
     }
     break;
@@ -580,11 +604,11 @@ void PlayState::updateMessageBoxes ( void )
   {
     std::string card_id = std::to_string ( selected_card.getID() );
     this->debug_text.set_text ( card_id );
-    this->debug_box.set_text ( this->debug_text );
+    this->debug_box->set_text ( this->debug_text );
 
     // (Southern) informational MessageBox display (selected / active card's name)
     this->info_text.set_text ( selected_card.getName() );
-    this->info_box.set_text ( this->info_text );
+    this->info_box->set_text ( this->info_text );
   }
 }
 
@@ -1025,8 +1049,8 @@ void PlayState::on_draw ( nom::IDrawable::RenderTarget& target )
 
   this->drawCursor ( target );
 
-  this->info_box.draw ( target );
-  this->debug_box.draw ( target );
+  this->info_box->draw ( target );
+  this->debug_box->draw ( target );
 
   // Draw each player's scoreboard
   this->scoreboard_text[0].draw ( target );

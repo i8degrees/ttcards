@@ -49,6 +49,14 @@ GameOverState::~GameOverState ( void )
 void GameOverState::on_init ( nom::void_ptr data )
 {
   nom::Gradient linear;
+  // nom::Window::UniquePtr window;
+  nom::Window* window = nullptr;
+
+  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
+  Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
+
+  Point2i card_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
+  Size2i card_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
 
   // Initialize interface cursor
   this->cursor = GameOverStateCursor ( "images/cursors.json" );
@@ -134,35 +142,68 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   linear.set_end_color ( nom::Color4i::LightGray );
   linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
 
+  linear.set_position( info_box_origin );
+  linear.set_size( info_box_size );
+
   this->info_text = nom::Text("Select 1 card(s) you want", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
 
   this->card_text = nom::Text(this->game->hand[1].getSelectedCard().getName(), this->game->info_text, 12, nom::Text::MiddleCenter);
 
-  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
+  // window = nom::Window::UniquePtr (
+  //                                   new nom::Window(
+  //                                     info_box_origin,
+  //                                     info_box_size
+  //                                   )
+  //                                 );
+
+  window = new nom::Window( info_box_origin, info_box_size );
+
+  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::GrayWindow( info_box_origin, info_box_size ) );
 
   // Top display message box; "description" info box
-  this->info_box = nom::MessageBox  (
-                                       nom::Window(),
-                                      info_box_origin,
-                                      info_box_size
-                                    );
+  this->info_box = nom::MessageBox::UniquePtr (
+                                                new nom::MessageBox(
+                                                  // window.get(),
+                                                  window,
+                                                  info_box_origin,
+                                                  info_box_size
+                                                )
+                                              );
 
-  this->info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->info_box.set_text ( this->info_text );
+  this->info_box->set_title( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->info_box->set_text( this->info_text );
 
-  Point2i card_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
-  Size2i card_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
+  // Re-use the same nom::Gradient object for our second nom::MessageBox, but
+  // with new dimensions.
+  linear.set_position( card_box_origin );
+  linear.set_size( card_box_size );
+
+  // window = nom::Window::UniquePtr (
+  //                                   new nom::Window(
+  //                                     card_box_origin,
+  //                                     card_box_size
+  //                                   )
+  //                                 );
+
+  // Re-declare the nom::Window object with new dimensions for our second
+  // nom::MessageBox object (card_info_box).
+  window = new nom::Window( card_box_origin, card_box_size );
+  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::GrayWindow( card_box_origin, card_box_size ) );
 
   // Bottom display message box; card info (card name)
-  this->card_info_box = nom::MessageBox (
-                                          nom::Window(),
-                                          card_box_origin,
-                                          card_box_size
-                                        );
+  this->card_info_box = nom::MessageBox::UniquePtr  (
+                                                      new nom::MessageBox(
+                                                        // window.get(),
+                                                        window,
+                                                        card_box_origin,
+                                                        card_box_size
+                                                      )
+                                                    );
 
-  this->card_info_box.set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->card_info_box.set_text ( this->card_text );
+  this->card_info_box->set_title( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->card_info_box->set_text( this->card_text );
 
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into each player's respective hand.
@@ -214,6 +255,9 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
 
   // Commence the countdown on the showing of results!
   this->transistion.start();
+
+  // FIXME:
+  // delete window;
 }
 
 void GameOverState::on_exit ( nom::void_ptr data )
@@ -305,8 +349,8 @@ void GameOverState::on_mouse_left_button_down( const nom::Event& ev )
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();
 
-      this->card_text.set_text ( selected_card.getName() );
-      //this->card_info_box.set_text ( nom::Text(, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
+      this->card_text.set_text( selected_card.getName() );
+      //this->card_info_box->set_text( nom::Text(, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
 
       this->game->cursor_move.Play();
       // We must break the loop here upon the end of a matching coords check
@@ -356,26 +400,26 @@ void GameOverState::on_user_event( const nom::Event& ev )
   if ( ev.user.code == GameEvent::UIEvent )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
-    this->card_text.set_text ( selected_card.getName() );
+    this->card_text.set_text( selected_card.getName() );
 
     this->game->cursor_move.Play();
   }
   else if ( ev.user.code == GameEvent::AnimationEvent )
   {
-    this->card_info_box.disable();
+    this->card_info_box->disable();
 
     nom::int32 card_pos = this->game->hand[1].at ( selected_card );
     if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
     {
       // FIXME; should have no spacing on card printout
-      this->info_text.set_text ( this->selected_card.getName() + " card acquired" );
+      this->info_text.set_text( this->selected_card.getName() + " card acquired" );
       this->game->hand[1].cards[card_pos].setPlayerID(Card::PLAYER1);
 
       this->game->card_flip.Play();
     }
     else
     {
-      //this->info_box.diable();
+      //this->info_box->diable();
       this->game->cursor_wrong.Play();
     }
   }
@@ -385,8 +429,8 @@ void GameOverState::on_update ( float delta_time )
 {
   this->game->card.update();
 
-  this->info_box.set_text ( this->info_text );
-  this->card_info_box.set_text ( this->card_text );
+  this->info_box->set_text( this->info_text );
+  this->card_info_box->set_text( this->card_text );
 
   this->cursor.update();
 
@@ -431,8 +475,8 @@ void GameOverState::on_draw ( nom::IDrawable::RenderTarget& target )
     this->game->card.draw ( target );
   }
 
-  this->info_box.draw( target );
-  this->card_info_box.draw( target );
+  this->info_box->draw( target );
+  this->card_info_box->draw( target );
 
   this->cursor.draw ( target );
   if ( this->show_results == true )

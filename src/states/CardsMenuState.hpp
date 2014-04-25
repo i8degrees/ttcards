@@ -80,7 +80,9 @@ class CardsMenuState: public nom::IState
 
     Game::SharedPtr game;
 
-    nom::MessageBox menu_box;
+    /// \note We segfault if this is not declared as a pointer; nom::Window
+    /// *must* be initialized first, so we can pass onto this object instance.
+    nom::MessageBox::UniquePtr menu_box;
 
     /// CardHand-derived implementation
     Card selectedCard;
