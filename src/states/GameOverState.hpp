@@ -90,11 +90,11 @@ class GameOverState: public nom::IState
 
     /// \note We segfault if this is not declared as a pointer; nom::Window
     /// *must* be initialized first, so we can pass onto this object instance.
-    nom::MessageBox::UniquePtr info_box;
+    nom::MessageBox::unique_ptr info_box;
 
     /// \note We segfault if this is not declared as a pointer; nom::Window
     /// *must* be initialized first, so we can pass onto this object instance.
-    nom::MessageBox::UniquePtr card_info_box;
+    nom::MessageBox::unique_ptr card_info_box;
 
     /// Position of player 1 hand
     nom::Point2i player1_pos;

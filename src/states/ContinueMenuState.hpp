@@ -70,7 +70,7 @@ class ContinueMenuState: public nom::IState
 
     /// \note We segfault if this is not declared as a pointer; nom::Window
     /// *must* be initialized first, so we can pass onto this object instance.
-    nom::MessageBox::UniquePtr info_box;
+    nom::MessageBox::unique_ptr info_box;
 
     ContinueMenuStateCursor cursor;
 

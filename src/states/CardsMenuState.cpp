@@ -69,12 +69,12 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   window->set_shape( new nom::Gradient( linear ) );
   window->set_shape( new nom::GrayFrame( menu_box_origin, menu_box_size ) );
 
-  this->menu_box = nom::MessageBox::UniquePtr (
-                                                new nom::MessageBox(
-                                                  window,
-                                                  menu_box_origin,
-                                                  menu_box_size
-                                                )
+  this->menu_box = nom::MessageBox::unique_ptr  (
+                                                  new nom::MessageBox(
+                                                    window,
+                                                    menu_box_origin,
+                                                    menu_box_size
+                                                  )
                                               );
 
   this->per_page = 11; // number of cards to display per menu page

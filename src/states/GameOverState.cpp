@@ -149,7 +149,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
 
   this->card_text = nom::Text(this->game->hand[1].getSelectedCard().getName(), &this->game->info_text, 12, nom::Text::MiddleCenter);
 
-  // window = nom::Window::UniquePtr (
+  // window = nom::Window::unique_ptr (
   //                                   new nom::Window(
   //                                     info_box_origin,
   //                                     info_box_size
@@ -162,7 +162,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
   // Top display message box; "description" info box
-  this->info_box = nom::MessageBox::UniquePtr (
+  this->info_box = nom::MessageBox::unique_ptr (
                                                 new nom::MessageBox(
                                                   // window.get(),
                                                   window,
@@ -193,7 +193,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   window->set_shape( new nom::GrayFrame( card_box_origin, card_box_size ) );
 
   // Bottom display message box; card info (card name)
-  this->card_info_box = nom::MessageBox::UniquePtr  (
+  this->card_info_box = nom::MessageBox::unique_ptr (
                                                       new nom::MessageBox(
                                                         // window.get(),
                                                         window,

@@ -62,12 +62,12 @@ void PauseState::on_init ( nom::void_ptr data )
   window->set_shape( new nom::Gradient( linear ) );
   window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
-  this->info_box = nom::MessageBox::UniquePtr (
-                                                new nom::MessageBox(
-                                                  window,
-                                                  info_box_origin,
-                                                  info_box_size
-                                                )
+  this->info_box = nom::MessageBox::unique_ptr  (
+                                                  new nom::MessageBox(
+                                                    window,
+                                                    info_box_origin,
+                                                    info_box_size
+                                                  )
                                               );
 
   this->info_box->set_title_label( this->title_text[0] );

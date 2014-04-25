@@ -131,12 +131,12 @@ void PlayState::on_init ( nom::void_ptr data )
 
   window->set_shape( new nom::GrayFrame( debug_box_origin, debug_box_size ) );
 
-  this->debug_box = nom::MessageBox::UniquePtr  (
+  this->debug_box = nom::MessageBox::unique_ptr (
                                                   new nom::MessageBox(
                                                     window,
                                                     debug_box_origin,
                                                     debug_box_size
-                                                    )
+                                                  )
                                                 );
 
   // Title label text *must* be ALL CAPITALS; the small bitmap font used only
@@ -159,13 +159,13 @@ void PlayState::on_init ( nom::void_ptr data )
   window->set_shape( new nom::Gradient( gradient_colors, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
   window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
-  this->info_box = nom::MessageBox::UniquePtr (
-                                                new nom::MessageBox(
-                                                  window,
-                                                  info_box_origin,
-                                                  info_box_size
-                                                )
-                                              );
+  this->info_box = nom::MessageBox::unique_ptr  (
+                                                  new nom::MessageBox(
+                                                    window,
+                                                    info_box_origin,
+                                                    info_box_size
+                                                  )
+                                                );
 
   // Title label text *must* be ALL CAPITALS; the small bitmap font used only
   // has the glyphs for the capital letters of the alphabet.

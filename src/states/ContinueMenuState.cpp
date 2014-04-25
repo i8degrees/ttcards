@@ -62,13 +62,13 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
   window->set_shape( new nom::Gradient( linear ) );
   window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
-  this->info_box = nom::MessageBox::UniquePtr (
-                                                new nom::MessageBox(
-                                                  window,
-                                                  info_box_origin,
-                                                  info_box_size
-                                                )
-                                              );
+  this->info_box = nom::MessageBox::unique_ptr  (
+                                                  new nom::MessageBox(
+                                                    window,
+                                                    info_box_origin,
+                                                    info_box_size
+                                                  )
+                                                );
 
   this->info_box->set_title_label( nom::Text("CHOICE", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
   this->info_box->set_message_label( option_text );
