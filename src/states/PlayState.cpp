@@ -128,7 +128,7 @@ void PlayState::on_init ( nom::void_ptr data )
 
   window = new nom::Window( info_box_origin, info_box_size );
   window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayWindow( info_box_origin, info_box_size ) );
+  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
   this->info_box = nom::MessageBox::UniquePtr (
                                                 new nom::MessageBox(
@@ -147,7 +147,7 @@ void PlayState::on_init ( nom::void_ptr data )
   // nom::MessageBox object (debug_box).
   window = new nom::Window( debug_box_origin, debug_box_size );
   window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayWindow( debug_box_origin, debug_box_size ) );
+  window->set_shape( new nom::GrayFrame( debug_box_origin, debug_box_size ) );
 
   this->debug_box = nom::MessageBox::UniquePtr  (
                                                   new nom::MessageBox(

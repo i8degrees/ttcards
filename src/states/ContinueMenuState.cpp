@@ -60,7 +60,7 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   window = new nom::Window( info_box_origin, info_box_size );
   window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayWindow( info_box_origin, info_box_size ) );
+  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
   this->info_box = nom::MessageBox::UniquePtr (
                                                 new nom::MessageBox(

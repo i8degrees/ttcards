@@ -67,7 +67,7 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
 
   window = new nom::Window( menu_box_origin, menu_box_size );
   window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayWindow( menu_box_origin, menu_box_size ) );
+  window->set_shape( new nom::GrayFrame( menu_box_origin, menu_box_size ) );
 
   this->menu_box = nom::MessageBox::UniquePtr (
                                                 new nom::MessageBox(

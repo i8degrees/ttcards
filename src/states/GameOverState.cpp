@@ -159,7 +159,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   window = new nom::Window( info_box_origin, info_box_size );
 
   window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayWindow( info_box_origin, info_box_size ) );
+  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
   // Top display message box; "description" info box
   this->info_box = nom::MessageBox::UniquePtr (
@@ -190,7 +190,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   // nom::MessageBox object (card_info_box).
   window = new nom::Window( card_box_origin, card_box_size );
   window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayWindow( card_box_origin, card_box_size ) );
+  window->set_shape( new nom::GrayFrame( card_box_origin, card_box_size ) );
 
   // Bottom display message box; card info (card name)
   this->card_info_box = nom::MessageBox::UniquePtr  (
