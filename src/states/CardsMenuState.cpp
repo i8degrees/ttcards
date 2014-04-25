@@ -109,7 +109,7 @@ void CardsMenuState::on_init ( nom::void_ptr data )
   unsigned int idx = 0; // iterator for cursor_coords_map
 
   // Initialize card name text so that we can obtain height info early on
-  this->card_text.set_font ( this->game->info_text );
+  this->card_text.set_font( &this->game->info_text );
   this->card_text.set_text ( this->game->collection.cards[0].getName() );
 
   //this->info_text_height = this->card_text.height();
@@ -117,10 +117,10 @@ void CardsMenuState::on_init ( nom::void_ptr data )
   this->info_text_height = this->card_text.height() + 4;
 
   // FIXME: We must set the menu_box labels to quiet the debug logs
-  this->menu_box->set_title( nom::Text( "", this->game->info_small_text ) );
-  this->menu_box->set_text( nom::Text( "", this->game->info_text ) );
+  this->menu_box->set_title_label( nom::Text( "", &this->game->info_small_text ) );
+  this->menu_box->set_message_label( nom::Text( "", &this->game->info_text ) );
 
-  this->title_text.set_font ( this->game->info_small_text );
+  this->title_text.set_font( &this->game->info_small_text );
 
   this->game->cursor.set_position ( Point2i(MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y) );
   this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT ); // default cursor image

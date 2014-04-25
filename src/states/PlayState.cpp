@@ -60,7 +60,8 @@ void PlayState::on_resume ( nom::void_ptr data )
 
 void PlayState::on_init ( nom::void_ptr data )
 {
-  nom::Gradient linear;
+  // UI elements below are used in the construction of both dialog message boxes!
+  nom::Gradient* gradient = nullptr;
   nom::Window* window = nullptr;
 
   Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
@@ -105,48 +106,29 @@ void PlayState::on_init ( nom::void_ptr data )
   // Set both player's scoreboard fonts
   for ( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx )
   {
-    this->scoreboard_text[idx].set_font ( this->game->scoreboard_font );
+    this->scoreboard_text[idx].set_font( &this->game->scoreboard_font );
     this->scoreboard_text[idx].set_text_size ( 48 * SCALE_FACTOR );
     this->scoreboard_text[idx].set_style ( nom::Text::Style::Italic );
   }
 
   // Initialize game over text
-  this->gameover_text.set_font ( this->game->gameover_font );
-  this->gameover_text.set_text_size ( 48 * SCALE_FACTOR );
-  this->gameover_text.set_style ( nom::Text::Style::Italic );
+  this->gameover_text.set_font( &this->game->gameover_font );
+  this->gameover_text.set_text_size( 48 * SCALE_FACTOR );
+  this->gameover_text.set_style( nom::Text::Style::Italic );
 
   for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
     this->cursor_coords_map[idx] = nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-  linear.set_start_color ( nom::Color4i::Gray );
-  linear.set_end_color ( nom::Color4i::LightGray );
-  linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
-  linear.set_position( info_box_origin );
-  linear.set_size( info_box_size );
-
-  window = new nom::Window( info_box_origin, info_box_size );
-  window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
-
-  this->info_box = nom::MessageBox::UniquePtr (
-                                                new nom::MessageBox(
-                                                  window,
-                                                  info_box_origin,
-                                                  info_box_size
-                                                )
-                                              );
-
-  // Re-use the same nom::Gradient object for our second nom::MessageBox, but
-  // with new dimensions.
-  linear.set_position( debug_box_origin );
-  linear.set_size( debug_box_size );
-
-  // Re-declare the nom::Window object with new dimensions for our second
-  // nom::MessageBox object (debug_box).
   window = new nom::Window( debug_box_origin, debug_box_size );
-  window->set_shape( new nom::Gradient( linear ) );
+
+  // Initialize default gradient colors
+  nom::Color4i gradient_colors[2] = { nom::Color4i::Gray, nom::Color4i::LightGray };
+
+  // Construct the gradient used as the backdrop of the dialog message box.
+  window->set_shape( new nom::Gradient( gradient_colors, debug_box_origin, debug_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
+
   window->set_shape( new nom::GrayFrame( debug_box_origin, debug_box_size ) );
 
   this->debug_box = nom::MessageBox::UniquePtr  (
@@ -157,18 +139,41 @@ void PlayState::on_init ( nom::void_ptr data )
                                                     )
                                                 );
 
-  this->info_box->set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->debug_box->set_title ( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  // Title label text *must* be ALL CAPITALS; the small bitmap font used only
+  // has the glyphs for the capital letters of the alphabet.
+  this->debug_box->set_title_label( nom::Text("INFO.", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
 
-  this->debug_text.set_font ( this->game->info_text );
-  this->debug_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
+  // Initialize message label text to sane defaults; see also:
+  // ::on_update_info_dialogs method.
+  this->debug_box->set_message_label( nom::Text("", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
 
-  this->info_text.set_font ( this->game->info_text );
-  this->info_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
+  #if ! defined ( NOM_DEBUG )
+    this->debug_box->disable();
+  #endif
 
-#if ! defined (NOM_DEBUG)
-  this->debug_box->disable();
-#endif
+  // Re-declare the nom::Window object with new dimensions for our second
+  // nom::MessageBox object.
+  window = new nom::Window( info_box_origin, info_box_size );
+
+  // Construct the gradient used as the backdrop of the dialog message box.
+  window->set_shape( new nom::Gradient( gradient_colors, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
+  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
+
+  this->info_box = nom::MessageBox::UniquePtr (
+                                                new nom::MessageBox(
+                                                  window,
+                                                  info_box_origin,
+                                                  info_box_size
+                                                )
+                                              );
+
+  // Title label text *must* be ALL CAPITALS; the small bitmap font used only
+  // has the glyphs for the capital letters of the alphabet.
+  this->info_box->set_title_label( nom::Text("INFO.", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft ) );
+
+  // Initialize message label text to sane defaults; see also:
+  // ::on_update_info_dialogs method.
+  this->info_box->set_message_label( nom::Text("", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
 
   while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
   {
@@ -576,13 +581,13 @@ void PlayState::endTurn ( void )
   }
 }
 
-void PlayState::updateMessageBoxes ( void )
+void PlayState::on_update_info_dialogs( void )
 {
   nom::uint32 player_turn = get_turn();
   Card selected_card; // temp container var to hold our card info (ID, name)
   nom::IntRect coords; // temp container var to hold cursor pos mapping coords
 
-  // board selection state
+  // Board selection state
   if ( this->isCursorLocked() == true )
   {
     coords = this->game->board.getGlobalBounds ( this->game->cursor.x(), this->game->cursor.y() );
@@ -591,24 +596,27 @@ void PlayState::updateMessageBoxes ( void )
       selected_card = this->game->board.get ( coords.x, coords.y );
     }
   }
-  else // player hand selection state
+  else // Player hand selection state
   {
-#if defined (NOM_DEBUG) // Allow watching both players make their card selections
-    selected_card = this->game->hand[player_turn].getSelectedCard();
-#else // Do not show the actions of other players
-    selected_card = this->game->hand[PLAYER1].getSelectedCard();
-#endif
+    // Allow watching both players make their card selections for DEBUG
+    // (think: development) builds.
+    #if defined ( NOM_DEBUG )
+        selected_card = this->game->hand[player_turn].getSelectedCard();
+    #else // Do not show the actions of other players
+        selected_card = this->game->hand[PLAYER1].getSelectedCard();
+    #endif
   }
 
   if ( selected_card.getID() != BAD_CARD_ID )
   {
-    std::string card_id = std::to_string ( selected_card.getID() );
-    this->debug_text.set_text ( card_id );
-    this->debug_box->set_text ( this->debug_text );
+    std::string card_id = selected_card.get_id_string();
+    std::string card_name = selected_card.getName();
 
-    // (Southern) informational MessageBox display (selected / active card's name)
-    this->info_text.set_text ( selected_card.getName() );
-    this->info_box->set_text ( this->info_text );
+    // (Northern) debug info box
+    this->debug_box->set_message_text( card_id );
+
+    // (Southern) info card box
+    this->info_box->set_message_text( card_name );
   }
 }
 
@@ -957,7 +965,7 @@ void PlayState::on_update ( float delta_time )
 
   this->updateCursor();
 
-  this->updateMessageBoxes();
+  this->on_update_info_dialogs();
 
   this->player[0].update();
   this->player[1].update();
@@ -1049,8 +1057,8 @@ void PlayState::on_draw ( nom::IDrawable::RenderTarget& target )
 
   this->drawCursor ( target );
 
-  this->info_box->draw ( target );
-  this->debug_box->draw ( target );
+  this->debug_box->draw( target );
+  this->info_box->draw( target );
 
   // Draw each player's scoreboard
   this->scoreboard_text[0].draw ( target );

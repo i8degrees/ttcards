@@ -145,9 +145,9 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   linear.set_position( info_box_origin );
   linear.set_size( info_box_size );
 
-  this->info_text = nom::Text("Select 1 card(s) you want", this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
+  this->info_text = nom::Text("Select 1 card(s) you want", &this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
 
-  this->card_text = nom::Text(this->game->hand[1].getSelectedCard().getName(), this->game->info_text, 12, nom::Text::MiddleCenter);
+  this->card_text = nom::Text(this->game->hand[1].getSelectedCard().getName(), &this->game->info_text, 12, nom::Text::MiddleCenter);
 
   // window = nom::Window::UniquePtr (
   //                                   new nom::Window(
@@ -171,8 +171,8 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
                                                 )
                                               );
 
-  this->info_box->set_title( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->info_box->set_text( this->info_text );
+  this->info_box->set_title_label( nom::Text("INFO.", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->info_box->set_message_label( this->info_text );
 
   // Re-use the same nom::Gradient object for our second nom::MessageBox, but
   // with new dimensions.
@@ -202,8 +202,8 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
                                                       )
                                                     );
 
-  this->card_info_box->set_title( nom::Text("INFO.", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->card_info_box->set_text( this->card_text );
+  this->card_info_box->set_title_label( nom::Text("INFO.", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->card_info_box->set_message_label( this->card_text );
 
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into each player's respective hand.
@@ -350,7 +350,7 @@ void GameOverState::on_mouse_left_button_down( const nom::Event& ev )
       Card selected_card = this->game->hand[1].getSelectedCard();
 
       this->card_text.set_text( selected_card.getName() );
-      //this->card_info_box->set_text( nom::Text(, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
+      //this->card_info_box->set_text( nom::Text(, &this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
 
       this->game->cursor_move.Play();
       // We must break the loop here upon the end of a matching coords check
@@ -429,8 +429,8 @@ void GameOverState::on_update ( float delta_time )
 {
   this->game->card.update();
 
-  this->info_box->set_text( this->info_text );
-  this->card_info_box->set_text( this->card_text );
+  this->info_box->set_message_label( this->info_text );
+  this->card_info_box->set_message_label( this->card_text );
 
   this->cursor.update();
 

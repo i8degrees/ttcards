@@ -97,7 +97,7 @@ class PlayState: public nom::IState
     /// Interface Helper method; shows Card's ID number in a message box for
     /// both cursor states; player's hand and placed board cards -- debug
     /// handling included.
-    void updateMessageBoxes ( void );
+    void on_update_info_dialogs( void );
     void updateCursor ( void );
     void drawCursor ( nom::IDrawable::RenderTarget& target );
 
@@ -147,8 +147,6 @@ class PlayState: public nom::IState
 
     enum GameOverType gameover_state;
 
-    nom::Text debug_text;
-    nom::Text info_text;
     nom::Text scoreboard_text[2];
     nom::Text gameover_text;
 };

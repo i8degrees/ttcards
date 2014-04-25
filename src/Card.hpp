@@ -82,6 +82,7 @@ class Card
     ~Card ( void );
 
     const nom::int32 getID ( void ) const;
+    const std::string get_id_string( void ) const;
     const nom::int32 getLevel ( void ) const;
     const nom::int32 getType ( void ) const;
     const nom::int32 getElement ( void ) const;
@@ -91,7 +92,7 @@ class Card
     const nom::int32 getEastRank ( void ) const;
     const nom::int32 getSouthRank ( void ) const;
     const nom::int32 getWestRank ( void ) const;
-    const std::string getName ( void ) const;
+    const std::string& getName ( void ) const;
 
     const nom::int32 getPlayerID ( void ) const;
     const nom::int32 getPlayerOwner ( void ) const;

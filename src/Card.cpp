@@ -63,6 +63,11 @@ const nom::int32 Card::getID ( void ) const
   return this->id;
 }
 
+const std::string Card::get_id_string( void ) const
+{
+  return std::to_string( this->id );
+}
+
 const nom::int32 Card::getLevel ( void ) const
 {
   return this->level;
@@ -109,7 +114,7 @@ const nom::int32 Card::getWestRank ( void ) const
   return this->rank[WEST];
 }
 
-const std::string Card::getName ( void ) const
+const std::string& Card::getName ( void ) const
 {
   return this->name;
 }

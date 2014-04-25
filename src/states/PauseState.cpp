@@ -50,8 +50,8 @@ void PauseState::on_init ( nom::void_ptr data )
   Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
 
-  this->title_text[0] = { nom::Text("PAUSE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
-  this->title_text[1] = { nom::Text("", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
+  this->title_text[0] = { nom::Text("PAUSE", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
+  this->title_text[1] = { nom::Text("", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
 
   linear.set_start_color ( nom::Color4i ( 67, 67, 67, 255 ) );
   linear.set_end_color ( nom::Color4i ( 99, 99, 99, 255 ) );
@@ -70,8 +70,8 @@ void PauseState::on_init ( nom::void_ptr data )
                                                 )
                                               );
 
-  this->info_box->set_title( this->title_text[0] );
-  this->info_box->set_text( nom::Text(SHORT_VERSION_INFO, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
+  this->info_box->set_title_label( this->title_text[0] );
+  this->info_box->set_message_label( nom::Text(SHORT_VERSION_INFO, &this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
 
   this->blink_update.start();
 
@@ -118,12 +118,12 @@ void PauseState::on_joy_button_down( const nom::Event& ev )
 
 void PauseState::on_update ( float delta_time )
 {
-  this->info_box->set_title( this->title_text[0] );
+  this->info_box->set_title_label( this->title_text[0] );
 
   if ( this->blink_update.ticks() > 800 )
   {
     this->blink_update.stop();
-    this->info_box->set_title( this->title_text[1] );
+    this->info_box->set_title_label( this->title_text[1] );
     this->blink_text = true;
   }
 
@@ -132,11 +132,11 @@ void PauseState::on_update ( float delta_time )
 
 void PauseState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
-  this->info_box->draw ( target );
+  this->info_box->draw( target );
 
   if ( this->blink_text )
   {
-    this->info_box->set_title( this->title_text[1] );
+    this->info_box->set_title_label( this->title_text[1] );
     this->blink_update.start();
     this->blink_text = false;
   }

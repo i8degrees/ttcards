@@ -73,7 +73,7 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
 
   if ( card_font.valid() )
   {
-    this->card_text->set_font ( card_font );
+    this->card_text->set_font( &card_font );
   }
   else
   {
