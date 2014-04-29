@@ -60,6 +60,12 @@ class ContinueMenuState: public nom::IState
     void on_joy_button_down( const nom::Event& ev );
     void on_user_event( const nom::Event& ev );
 
+    /// \remarks This is a delegate method that is used by question_box.
+    void on_key_event( const nom::UIEvent& ev );
+
+    /// \remarks This is a delegate method that is used by question_box.
+    void on_mouse_event( const nom::UIEvent& ev );
+
     void on_update ( float delta_time );
     void on_draw ( nom::IDrawable::RenderTarget& target );
 
@@ -68,9 +74,7 @@ class ContinueMenuState: public nom::IState
 
     Game::SharedPtr game;
 
-    /// \note We segfault if this is not declared as a pointer; nom::Window
-    /// *must* be initialized first, so we can pass onto this object instance.
-    nom::MessageBox::unique_ptr info_box;
+    nom::QuestionDialogBox::unique_ptr question_box;
 
     ContinueMenuStateCursor cursor;
 

@@ -44,34 +44,41 @@ ContinueMenuState::~ContinueMenuState ( void )
 
 void ContinueMenuState::on_init ( nom::void_ptr data )
 {
-  nom::Gradient linear;
-  nom::Window* window;
+  // Default gradient colors for our question dialog widget
+  nom::Color4i gradient_colors[2] = { nom::Color4i::Gray, nom::Color4i::LightGray };
+  nom::Window* window = nullptr;
 
-  Point2i info_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
+  Point2i question_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
+  Size2i question_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
 
-  Text option_text = nom::Text("Are you sure?\n\t\tYes\n\t\tNo", &this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
+  window = new nom::Window( question_box_origin, question_box_size );
+  window->set_shape( new nom::Gradient( gradient_colors, question_box_origin, question_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
+  window->set_shape( new nom::GrayFrame( question_box_origin, question_box_size ) );
 
-  linear.set_start_color ( nom::Color4i::Gray );
-  linear.set_end_color ( nom::Color4i::LightGray );
-  linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
-  linear.set_position( info_box_origin );
-  linear.set_size( info_box_size );
+  this->question_box = nom::QuestionDialogBox::unique_ptr (
+                                                            new nom::QuestionDialogBox(
+                                                              window,
+                                                              question_box_origin,
+                                                              question_box_size
+                                                          )
+                                                      );
 
-  window = new nom::Window( info_box_origin, info_box_size );
-  window->set_shape( new nom::Gradient( linear ) );
-  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
+  this->question_box->set_title_label( nom::Text("CHOICE", &this->game->info_small_text, -1, nom::Text::Alignment::TopLeft) );
 
-  this->info_box = nom::MessageBox::unique_ptr  (
-                                                  new nom::MessageBox(
-                                                    window,
-                                                    info_box_origin,
-                                                    info_box_size
-                                                  )
-                                                );
+  // We need to use the height of the text font later for cursor calculations.
+  Text option_text = nom::Text( "Are you sure?", &this->game->info_text, -1, nom::Text::Alignment::TopCenter );
+  this->question_box->set_message_label( option_text );
 
-  this->info_box->set_title_label( nom::Text("CHOICE", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
-  this->info_box->set_message_label( option_text );
+  nom::Text yes_label( nom::Text( "Yes", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
+
+  // Appending a single space character onto "No" text label so that it lines up
+  // with our "Yes" text label.
+  nom::Text no_label( nom::Text( "No ", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
+
+  this->question_box->append_choice( yes_label );
+  this->question_box->append_choice( no_label );
+
+  this->question_box->register_delegate( 1, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_event( ev ); } ) );
 
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
@@ -151,7 +158,7 @@ void ContinueMenuState::on_key_down( const nom::Event& ev )
 void ContinueMenuState::on_mouse_left_button_down( const nom::Event& ev )
 {
   Point2i mouse_input ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
-  IntRect text_bounds = this->info_box->message_bounds();
+  IntRect text_bounds = this->question_box->message_bounds();
 
   //IntRect text_bounds = IntRect ( option_text.position().x, option_text.position().y, option_text.width(), option_text.height() );
   //nom::int32 option_choice = this->cursor.position();
@@ -164,6 +171,8 @@ void ContinueMenuState::on_mouse_left_button_down( const nom::Event& ev )
     // 4. $$$ PROFIT $$$
     this->game->cursor_wrong.Play();
   }
+
+  this->question_box->on_event( ev );
 }
 
 void ContinueMenuState::on_mouse_middle_button_down( const nom::Event& ev )
@@ -211,6 +220,22 @@ void ContinueMenuState::on_user_event( const nom::Event& ev )
   }
 }
 
+void ContinueMenuState::on_mouse_event( const nom::UIEvent& ev )
+{
+  NOM_LOG_TRACE( NOM );
+  NOM_DUMP( ev.index() );
+  NOM_DUMP( ev.text() );
+
+   // Obtain the option label text chosen by index.
+  switch( ev.index() )
+  {
+    default: /* Do nothing */ break;
+
+    case 0: this->cursor.move_up(); break;
+    case 1: this->cursor.move_down(); break;
+  }
+}
+
 void ContinueMenuState::on_update ( float delta_time )
 {
   this->cursor.update();
@@ -220,7 +245,7 @@ void ContinueMenuState::on_update ( float delta_time )
 
 void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
-  this->info_box->draw( target );
+  this->question_box->draw( target );
 
   this->cursor.draw ( target );
 }
