@@ -172,6 +172,7 @@ void ContinueMenuState::on_mouse_left_button_down( const nom::Event& ev )
     this->game->cursor_wrong.Play();
   }
 
+  // Callback to ::on_mouse_event
   this->question_box->on_event( ev );
 }
 

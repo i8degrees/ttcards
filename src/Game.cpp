@@ -321,7 +321,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString
     return false;
   }
 
-  if ( this->card.load ( &this->config, this->card_font ) == false )
+  if ( this->card.load( &this->config, &this->card_font ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     return false;
