@@ -33,7 +33,6 @@ using namespace nom;
 CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   game { NOM_PTR_CAST( Game, object) }
 {
-  nom::Gradient linear;
   nom::Window* window = nullptr;
 
   Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y );
@@ -59,14 +58,13 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
     this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
   }
 
-  linear.set_start_color ( nom::Color4i::Gray );
-  linear.set_end_color ( nom::Color4i::LightGray );
-  linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
-  linear.set_position( menu_box_origin );
-  linear.set_size( menu_box_size );
+  nom::Gradient::Colors menu_box_grad = {
+                                          nom::Color4i::Gray,
+                                          nom::Color4i::LightGray
+                                        };
 
   window = new nom::Window( menu_box_origin, menu_box_size );
-  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::Gradient( menu_box_grad, menu_box_origin, menu_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
   window->set_shape( new nom::GrayFrame( menu_box_origin, menu_box_size ) );
 
   this->menu_box = nom::MessageBox::unique_ptr  (

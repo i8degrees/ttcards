@@ -137,13 +137,11 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   // with the order of initialization?
   this->game->hand[1].front();
 
-  // Initialize our message box background containers (linear gradient)
-  linear.set_start_color ( nom::Color4i::Gray );
-  linear.set_end_color ( nom::Color4i::LightGray );
-  linear.set_fill_direction ( nom::Gradient::FillDirection::Left );
-
-  linear.set_position( info_box_origin );
-  linear.set_size( info_box_size );
+  // Our gradient-filled background colors; from starting color to ending color.
+  nom::Gradient::Colors info_box_grad = {
+                                          nom::Color4i::Gray,
+                                          nom::Color4i::LightGray
+                                        };
 
   this->info_text = nom::Text("Select 1 card(s) you want", &this->game->info_text, 12, nom::Text::Alignment::MiddleCenter);
 
@@ -158,7 +156,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
 
   window = new nom::Window( info_box_origin, info_box_size );
 
-  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::Gradient( info_box_grad, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
   window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
   // Top display message box; "description" info box
@@ -189,7 +187,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   // Re-declare the nom::Window object with new dimensions for our second
   // nom::MessageBox object (card_info_box).
   window = new nom::Window( card_box_origin, card_box_size );
-  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::Gradient( info_box_grad, card_box_origin, card_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
   window->set_shape( new nom::GrayFrame( card_box_origin, card_box_size ) );
 
   // Bottom display message box; card info (card name)

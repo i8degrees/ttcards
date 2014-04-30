@@ -61,7 +61,6 @@ void PlayState::on_resume ( nom::void_ptr data )
 void PlayState::on_init ( nom::void_ptr data )
 {
   // UI elements below are used in the construction of both dialog message boxes!
-  nom::Gradient* gradient = nullptr;
   nom::Window* window = nullptr;
 
   Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
@@ -123,11 +122,11 @@ void PlayState::on_init ( nom::void_ptr data )
 
   window = new nom::Window( debug_box_origin, debug_box_size );
 
-  // Initialize default gradient colors
-  nom::Color4i gradient_colors[2] = { nom::Color4i::Gray, nom::Color4i::LightGray };
+  // Our gradient-filled background colors; from starting color to ending color.
+  nom::Gradient::Colors g_colors = { nom::Color4i::Gray, nom::Color4i::LightGray };
 
   // Construct the gradient used as the backdrop of the dialog message box.
-  window->set_shape( new nom::Gradient( gradient_colors, debug_box_origin, debug_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
+  window->set_shape( new nom::Gradient( g_colors, debug_box_origin, debug_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
 
   window->set_shape( new nom::GrayFrame( debug_box_origin, debug_box_size ) );
 
@@ -156,7 +155,7 @@ void PlayState::on_init ( nom::void_ptr data )
   window = new nom::Window( info_box_origin, info_box_size );
 
   // Construct the gradient used as the backdrop of the dialog message box.
-  window->set_shape( new nom::Gradient( gradient_colors, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
+  window->set_shape( new nom::Gradient( g_colors, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
   window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
   this->info_box = nom::MessageBox::unique_ptr  (

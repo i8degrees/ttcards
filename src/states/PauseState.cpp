@@ -53,13 +53,13 @@ void PauseState::on_init ( nom::void_ptr data )
   this->title_text[0] = { nom::Text("PAUSE", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
   this->title_text[1] = { nom::Text("", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
 
-  linear.set_start_color ( nom::Color4i ( 67, 67, 67, 255 ) );
-  linear.set_end_color ( nom::Color4i ( 99, 99, 99, 255 ) );
-  linear.set_position( info_box_origin );
-  linear.set_size( info_box_size );
+  nom::Gradient::Colors pause_box_grad =  {
+                                            nom::Color4i( 67, 67, 67, 255 ),
+                                            nom::Color4i( 99, 99, 99, 255 )
+                                          };
 
   window = new nom::Window( info_box_origin, info_box_size );
-  window->set_shape( new nom::Gradient( linear ) );
+  window->set_shape( new nom::Gradient( pause_box_grad, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
   window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
 
   this->info_box = nom::MessageBox::unique_ptr  (

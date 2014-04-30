@@ -40,12 +40,12 @@ CardView::CardView ( void )
   this->card_background = std::shared_ptr<nom::Gradient> ( new nom::Gradient() );
   this->card_text = std::shared_ptr<nom::Text> ( new nom::Text() );
 
-  this->card.push_back ( this->card_background );
-  this->card.push_back ( this->card_text );
+  this->card.push_back( this->card_background );
+  this->card.push_back( this->card_text );
 
-  this->card_background->set_size ( Size2i(CARD_WIDTH - 4, CARD_HEIGHT) );
-  this->card_background->set_margins ( Point2i(4, 4) );
-  this->card_background->set_fill_direction ( nom::Gradient::FillDirection::Top );
+  this->card_background->set_size( Size2i(CARD_WIDTH - 4, CARD_HEIGHT) );
+  this->card_background->set_margins( Point2i(4, 4) );
+  this->card_background->set_fill_direction( nom::Gradient::FillDirection::Top );
 }
 
 CardView::CardView ( const nom::IntRect& coords )
@@ -131,33 +131,45 @@ void CardView::draw_background  (
 
   switch ( player_id )
   {
-    case Card::PLAYER1:
-    {
-      this->card_background->set_start_color ( nom::Color4i ( 208, 223, 255 ) );
-      this->card_background->set_end_color ( nom::Color4i ( 50, 59, 114 ) );
-    }
-    break;
-
-    case Card::PLAYER2:
-    {
-      this->card_background->set_start_color ( nom::Color4i ( 251, 222, 232 ) );
-      this->card_background->set_end_color ( nom::Color4i ( 114, 66, 66 ) );
-    }
-    break;
-
     case Card::NOPLAYER:
     default:
     {
-      this->card_background->set_start_color ( nom::Color4i ( 197, 197, 197 ) );
-      this->card_background->set_end_color ( nom::Color4i ( 84, 84, 84 ) );
+      nom::Gradient::Colors player0_grad_bg = {
+                                                nom::Color4i( 197, 197, 197 ),
+                                                nom::Color4i( 84, 84, 84 )
+                                              };
+
+      this->card_background->set_colors( player0_grad_bg );
+      break;
     }
-    break;
+
+    case Card::PLAYER1:
+    {
+      nom::Gradient::Colors player1_grad_bg = {
+                                                nom::Color4i( 208, 223, 255 ),
+                                                nom::Color4i( 50, 59, 114 )
+                                              };
+
+      this->card_background->set_colors( player1_grad_bg );
+      break;
+    }
+
+    case Card::PLAYER2:
+    {
+      nom::Gradient::Colors player2_grad_bg = {
+                                                nom::Color4i( 251, 222, 232 ),
+                                                nom::Color4i( 114, 66, 66 )
+                                              };
+
+      this->card_background->set_colors( player2_grad_bg );
+      break;
+    }
   }
 
   //this->card_background->set_position ( this->position );
-  this->card_background->set_position ( Point2i(x, y) );
+  this->card_background->set_position( nom::Point2i(x, y) );
   this->card_background->update();
-  this->card_background->draw ( target );
+  this->card_background->draw( target );
 }
 
 void CardView::draw_face  (

@@ -44,15 +44,16 @@ ContinueMenuState::~ContinueMenuState ( void )
 
 void ContinueMenuState::on_init ( nom::void_ptr data )
 {
-  // Default gradient colors for our question dialog widget
-  nom::Color4i gradient_colors[2] = { nom::Color4i::Gray, nom::Color4i::LightGray };
+  // Our gradient-filled background colors; from starting color to ending color.
+  nom::Gradient::Colors g_colors = { nom::Color4i::Gray, nom::Color4i::LightGray };
+
   nom::Window* window = nullptr;
 
   Point2i question_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
   Size2i question_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
 
   window = new nom::Window( question_box_origin, question_box_size );
-  window->set_shape( new nom::Gradient( gradient_colors, question_box_origin, question_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
+  window->set_shape( new nom::Gradient( g_colors, question_box_origin, question_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
   window->set_shape( new nom::GrayFrame( question_box_origin, question_box_size ) );
 
   this->question_box = nom::QuestionDialogBox::unique_ptr (
