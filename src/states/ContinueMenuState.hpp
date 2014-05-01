@@ -52,19 +52,24 @@ class ContinueMenuState: public nom::IState
     void on_resume ( nom::void_ptr data );
 
     void on_key_down( const nom::Event& ev );
-
-    void on_mouse_left_button_down( const nom::Event& ev );
-    void on_mouse_middle_button_down( const nom::Event& ev );
     void on_mouse_wheel( const nom::Event& ev );
-
     void on_joy_button_down( const nom::Event& ev );
     void on_user_event( const nom::Event& ev );
 
     /// \remarks This is a delegate method that is used by question_box.
     void on_key_event( const nom::UIEvent& ev );
 
-    /// \remarks This is a delegate method that is used by question_box.
+    /// \remarks This is an event listener callback used by question_box.
     void on_mouse_event( const nom::UIEvent& ev );
+
+    /// \remarks This is an event listener callback used by question_box.
+    void on_mouse_dclick( const nom::UIEvent& ev );
+
+    /// \remarks This is an event listener callback used by question_box.
+    void on_wheel( const nom::UIEvent& ev );
+
+    /// \brief Implements optional IState::on_event interface method.
+    void on_event( const nom::Event& ev );
 
     void on_update ( float delta_time );
     void on_draw ( nom::IDrawable::RenderTarget& target );

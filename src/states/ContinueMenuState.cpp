@@ -78,8 +78,13 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   this->question_box->append_choice( yes_label );
   this->question_box->append_choice( no_label );
+  this->question_box->set_selection( 1 );
 
-  this->question_box->register_delegate( 1, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_event( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEventType::MOUSE_SELECTION, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_event( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEventType::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_event( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEventType::MOUSE_DCLICK, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_dclick( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEventType::MOUSE_WHEEL, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_wheel( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEventType::KEY_SELECTION, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_key_event( ev ); } ) );
 
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
@@ -137,7 +142,11 @@ void ContinueMenuState::on_key_down( const nom::Event& ev )
 {
   switch ( ev.key.sym )
   {
-    default: /* Ignore non-mapped keys */ break;
+    default:
+    {
+      // Ignore non-mapped keys
+      break;
+    }
 
     // Pause game
     case SDLK_p:
@@ -146,8 +155,8 @@ void ContinueMenuState::on_key_down( const nom::Event& ev )
       break;
     }
 
-    case SDLK_UP: this->cursor.move_up(); break;
-    case SDLK_DOWN: this->cursor.move_down(); break;
+    // case SDLK_UP: this->cursor.move_up(); break;
+    // case SDLK_DOWN: this->cursor.move_down(); break;
     case SDLK_SPACE:
     {
       this->send_response();
@@ -156,46 +165,20 @@ void ContinueMenuState::on_key_down( const nom::Event& ev )
   } // end switch ( key )
 }
 
-void ContinueMenuState::on_mouse_left_button_down( const nom::Event& ev )
-{
-  Point2i mouse_input ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
-  IntRect text_bounds = this->question_box->message_bounds();
-
-  //IntRect text_bounds = IntRect ( option_text.position().x, option_text.position().y, option_text.width(), option_text.height() );
-  //nom::int32 option_choice = this->cursor.position();
-
-  if ( text_bounds.contains ( mouse_input ) )
-  {
-    // 1. Update cursor position
-    // 2. Update player's selected choice
-    // 3. Play sound event
-    // 4. $$$ PROFIT $$$
-    this->game->cursor_wrong.Play();
-  }
-
-  // Callback to ::on_mouse_event
-  this->question_box->on_event( ev );
-}
-
-void ContinueMenuState::on_mouse_middle_button_down( const nom::Event& ev )
-{
-  this->send_response();
-}
-
 void ContinueMenuState::on_mouse_wheel( const nom::Event& ev )
 {
   // Do not check mouse wheel state unless it is a valid event; we receive
   // invalid data here if we do not check for this.
-  if( ev.type != SDL_MOUSEWHEEL ) return;
+  // if( ev.type != SDL_MOUSEWHEEL ) return;
 
-  if ( ev.wheel.y > 0 )
-  {
-    this->cursor.move_up();
-  }
-  else if (ev.wheel.y < 0 )
-  {
-    this->cursor.move_down();
-  }
+  // if ( ev.wheel.y > 0 )
+  // {
+  //   this->cursor.move_up();
+  // }
+  // else if (ev.wheel.y < 0 )
+  // {
+  //   this->cursor.move_down();
+  // }
 }
 
 void ContinueMenuState::on_joy_button_down( const nom::Event& ev )
@@ -222,6 +205,27 @@ void ContinueMenuState::on_user_event( const nom::Event& ev )
   }
 }
 
+void ContinueMenuState::on_key_event( const nom::UIEvent& ev )
+{
+  nom::Event event = ev.event();
+
+  // if( event.type != SDL_KEYDOWN ) return;
+
+  switch( event.key.sym )
+  {
+    default: break;
+
+    case SDLK_UP: this->cursor.move_up(); break;
+    case SDLK_DOWN: this->cursor.move_down(); break;
+
+    case SDLK_SPACE:
+    {
+      // this->send_response();
+      break;
+    }
+  } // end switch ( key )
+}
+
 void ContinueMenuState::on_mouse_event( const nom::UIEvent& ev )
 {
   NOM_LOG_TRACE( NOM );
@@ -233,9 +237,63 @@ void ContinueMenuState::on_mouse_event( const nom::UIEvent& ev )
   {
     default: /* Do nothing */ break;
 
-    case 0: this->cursor.move_up(); break;
-    case 1: this->cursor.move_down(); break;
+    case 0:
+    {
+      this->cursor.move_up();
+      break;
+    }
+
+    case 1:
+    {
+      this->cursor.move_down();
+      break;
+    }
   }
+}
+
+void ContinueMenuState::on_mouse_dclick( const nom::UIEvent& ev )
+{
+  NOM_LOG_TRACE( NOM );
+  NOM_DUMP( ev.index() );
+  NOM_DUMP( ev.text() );
+
+   // Obtain the option label text chosen by index.
+  switch( ev.index() )
+  {
+    default: /* Do nothing */ break;
+
+    case 0:
+    case 1:
+    {
+      this->send_response();
+      break;
+    }
+  }
+}
+
+void ContinueMenuState::on_wheel( const nom::UIEvent& ev )
+{
+  nom::Event event = ev.event();
+
+  // Do not check mouse wheel state unless it is a valid event; we receive
+  // invalid data here if we do not check for this.
+  if( event.type != SDL_MOUSEWHEEL ) return;
+
+  int selection = this->question_box->selection();
+
+  if ( event.wheel.y > 0 && selection > 0 ) // Up
+  {
+    this->cursor.move_up();
+  }
+  else if (event.wheel.y < 0 && selection < this->question_box->items_size() )
+  {
+    this->cursor.move_down();
+  }
+}
+
+void ContinueMenuState::on_event( const nom::Event& ev )
+{
+  this->question_box->process_event( ev );
 }
 
 void ContinueMenuState::on_update ( float delta_time )
