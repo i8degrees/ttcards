@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::SharedPtr& object ) :
+ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::shared_ptr& object ) :
   nom::IState { Game::State::ContinueMenu, nom::IState::StateFlags::BackRender },
   game { NOM_PTR_CAST( Game, object) }
 {

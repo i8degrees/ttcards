@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-PauseState::PauseState ( const nom::SDLApp::SharedPtr& object ) :
+PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
   nom::IState { Game::State::Pause, nom::IState::StateFlags::BackRender },
   game { NOM_PTR_CAST( Game, object) }
 {
@@ -63,6 +63,8 @@ void PauseState::on_init ( nom::void_ptr data )
 
   this->info_box.set_title ( this->title_text[0] );
   this->info_box.set_text ( nom::Text(SHORT_VERSION_INFO, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
+  // this->info_box.set_title( "PAUSE", this->game->info_small_text, 9, nom::Text::Alignment::TopLeft );
+  // this->info_box.set_text( SHORT_VERSION_INFO, this->game->info_text, 12, nom::Text::Alignment::MiddleCenter );
 
   this->blink_update.start();
 }
@@ -106,12 +108,14 @@ void PauseState::on_joy_button_down( const nom::Event& ev )
 
 void PauseState::on_update ( float delta_time )
 {
-  this->info_box.set_title ( this->title_text[0] );
+  // this->info_box.set_title ( this->title_text[0] );
+  this->info_box.set_title_label( "PAUSE" );
 
   if ( this->blink_update.ticks() > 800 )
   {
     this->blink_update.stop();
     this->info_box.set_title ( this->title_text[1] );
+    // this->info_box.set_title_label( "" );
     this->blink_text = true;
   }
 
@@ -125,6 +129,7 @@ void PauseState::on_draw ( nom::IDrawable::RenderTarget& target )
   if ( this->blink_text )
   {
     this->info_box.set_title ( this->title_text[1] );
+    // this->info_box.set_title_label( "" );
     this->blink_update.start();
     this->blink_text = false;
   }

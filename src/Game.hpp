@@ -110,12 +110,12 @@ class Game: public nom::SDLApp
     /// Player 1 has won track
     nom::OpenAL::Music winning_track;
 
-    /// Font resources
-    nom::BitmapFont info_text;
-    nom::BitmapFont info_small_text;
-    nom::BitmapFont card_font;
-    nom::TrueTypeFont gameover_font;
-    nom::TrueTypeFont scoreboard_font;
+    // Font resources
+    nom::Font info_text;
+    nom::Font info_small_text;
+    nom::Font card_font;
+    nom::Font gameover_font;
+    nom::Font scoreboard_font;
 
     /// Menu elements
     nom::SpriteBatch menu_elements;

@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class ContinueMenuState: public nom::IState
 {
   public:
-    ContinueMenuState ( const nom::SDLApp::SharedPtr& object );
+    ContinueMenuState ( const nom::SDLApp::shared_ptr& object );
     ~ContinueMenuState ( void );
 
   private:

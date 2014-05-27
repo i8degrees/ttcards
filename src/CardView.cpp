@@ -58,7 +58,7 @@ CardView::~CardView ( void )
   NOM_LOG_TRACE( TTCARDS );
 }
 
-bool CardView::load ( const GameConfig* config, const nom::IFont& card_font )
+bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
 {
   // Any file resources must be initialized *after* construction of this class;
   // our working directory where we load resources from is not set at the time
@@ -81,15 +81,15 @@ bool CardView::load ( const GameConfig* config, const nom::IFont& card_font )
     return false;
   }
 
-  if ( this->card_face->load ( config->getString("CARD_FACES"), 0 ) == false )
+  if( this->card_face->load ( config->getString("CARD_FACES") ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if ( this->card_element->load ( config->getString("CARD_ELEMENTS"), 0 ) == false )
+  if( this->card_element->load ( config->getString("CARD_ELEMENTS") ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
   }
 

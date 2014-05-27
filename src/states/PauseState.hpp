@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class PauseState: public nom::IState
 {
   public:
-    PauseState ( const nom::SDLApp::SharedPtr& object );
+    PauseState ( const nom::SDLApp::shared_ptr& object );
     ~PauseState ( void );
 
   private:

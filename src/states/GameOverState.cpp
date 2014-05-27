@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-GameOverState::GameOverState  ( const nom::SDLApp::SharedPtr& object,
+GameOverState::GameOverState  ( const nom::SDLApp::shared_ptr& object,
                                 nom::void_ptr state
                               ) :
   nom::IState { Game::State::GameOver },

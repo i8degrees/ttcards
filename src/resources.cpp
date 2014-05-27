@@ -31,10 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Platform-dependent paths
 
 const nom::Path path;
+nom::File fp;
 
 // Data folder for game storage (screenshots, card dumps, ...)
 #if defined (NOM_PLATFORM_WINDOWS) || defined (NOM_PLATFORM_OSX)
-  const std::string TTCARDS_DATA_DIR = nom::user_documents_path() + path.native() + "ttcards";
+  const std::string TTCARDS_DATA_DIR = fp.user_documents_path() + path.native() + "ttcards";
 #else
   // FIXME
   working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";

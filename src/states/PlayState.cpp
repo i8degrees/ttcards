@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-PlayState::PlayState ( const nom::SDLApp::SharedPtr& object ) :
+PlayState::PlayState ( const nom::SDLApp::shared_ptr& object ) :
   game { NOM_PTR_CAST( Game, object) }
 {
   NOM_LOG_TRACE( TTCARDS );

@@ -57,7 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class PlayState: public nom::IState
 {
   public:
-    PlayState ( const nom::SDLApp::SharedPtr& object );
+    PlayState ( const nom::SDLApp::shared_ptr& object );
     ~PlayState ( void );
 
     void on_init ( nom::void_ptr data );

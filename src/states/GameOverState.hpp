@@ -50,7 +50,7 @@ class GameOverState: public nom::IState
 {
   public:
     GameOverState (
-                    const nom::SDLApp::SharedPtr& object,
+                    const nom::SDLApp::shared_ptr& object,
                     nom::void_ptr state
                   );
 

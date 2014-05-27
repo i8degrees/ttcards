@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-CardsMenuState::CardsMenuState ( const nom::SDLApp::SharedPtr& object ) :
+CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   game { NOM_PTR_CAST( Game, object) }
 {
   nom::Gradient linear;

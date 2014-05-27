@@ -232,7 +232,7 @@ void Card::unserialize( nom::Value& obj )
 
   nom::Value arr = obj["ranks"].array();
 
-  uint idx = 0;
+  nom::uint idx = 0;
   for( auto it = arr.begin(); it != arr.end(); ++it )
   {
     this->rank[idx] = it->get_int();

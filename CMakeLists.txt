@@ -197,7 +197,6 @@ elseif ( PLATFORM_OSX )
               "Not found: nomlib.\n"
               "\nNOMLIB_INCLUDE_DIR: ${NOMLIB_INCLUDE_DIR}"
               "\nNOMLIB_LIBRARY: ${NOMLIB_LIBRARY}"
-              "\nNOMLIB_THIRD_PARTY_INCLUDE_DIR: ${NOMLIB_THIRD_PARTY_INCLUDE_DIR}"
             )
   endif ( NOMLIB_FOUND )
 
@@ -242,8 +241,6 @@ endif ( PLATFORM_WINDOWS )
 # External header files inclusion
 include_directories (
                       ${EXT_HEADERS}
-                      # RapidXml, JsonCpp
-                      "${NOMLIB_THIRD_PARTY_INCLUDE_DIR}/common"
                     )
 
 # List of our source code to be compiled

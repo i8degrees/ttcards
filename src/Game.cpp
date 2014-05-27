@@ -47,7 +47,9 @@ Game::Game ( void ) :
   NOM_LOG_TRACE(NOM);
 }
 
-Game::Game ( nom::int32 argc, char* argv[] )  :
+Game::Game ( nom::int32 argc, char* argv[] ) :
+  // SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES | INIT_ENGINE_FONTS ),
+  SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
   game { this, tt::free_game }
 {
   //this->state_factory = new States();
@@ -158,19 +160,8 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
     exit(NOM_EXIT_SUCCESS);
   } // end argc > 1
 
-// These definitions are influenced at build time with CMake options and serve
-// to help determine the path of game resources
-#if defined (NOM_PLATFORM_OSX)
-  // We only do "OS X Application Bundle" build types under Mac OS X platform
-  working_directory = nom::getBundleResourcePath();
-#elif defined (NOM_PLATFORM_WINDOWS)
-  // Assume the Resources subdirectory is in a sub-directory of wherever the
-  // executable is launched from
-  working_directory = dir.path(argv[0]) + path.native() + "Resources" + path.native();
-#else // Potentially customized layout (POSIX hierarchy by default)
-  // FIXME
-  working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
-#endif
+
+  working_directory = dir.resource_path();
 
   // Change the working directory to whatever working_directory has been set to
   //
@@ -239,33 +230,33 @@ bool Game::on_init ( void )
   this->cursor.set_position ( Point2i(MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y) );
 
   // Commence the loading of game resources
-  if ( this->info_text.load ( this->config.getString("INFO_FONTFACE"), 0 ) == false )
+  if( this->info_text.load( this->config.getString("INFO_FONTFACE") ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INFO_FONTFACE") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INFO_FONTFACE") );
     return false;
   }
 
-  if ( this->info_small_text.load ( this->config.getString("INFO_SMALL_FONTFACE"), 0 ) == false )
+  if( this->info_small_text.load( this->config.getString("INFO_SMALL_FONTFACE") ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INFO_SMALL_FONTFACE") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INFO_SMALL_FONTFACE") );
     return false;
   }
 
-  if ( this->card_font.load ( this->config.getString("CARD_FONTFACE"), 0 ) == false )
+  if( this->card_font.load ( this->config.getString("CARD_FONTFACE") ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE") );
     return false;
   }
 
-  if ( this->menu_elements.load ( this->config.getString("MENU_ELEMENTS"), 0 ) == false )
+  if( this->menu_elements.load( this->config.getString("MENU_ELEMENTS") ) == false )
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("MENU_ELEMENTS") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("MENU_ELEMENTS") );
     return false;
   }
 
-  if ( this->background.load( this->config.getString("BOARD_BACKGROUND"), 0 ) == false )
+  if( this->background.load( this->config.getString("BOARD_BACKGROUND"), 0 ) == false )
   {
-NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("BOARD_BACKGROUND") );
+    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("BOARD_BACKGROUND") );
     rectangle.draw ( this->window );
   }
   else
@@ -292,23 +283,23 @@ NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getStrin
   // do not need this workaround.
 //this->PollEvents( &event );
 
-  if ( this->scoreboard_font.load ( this->config.getString("SCORE_FONTFACE"), 0 ) == true )
+  if( this->scoreboard_font.load( this->config.getString("SCORE_FONTFACE") ) == true )
   {
     this->scoreboard_font.set_outline ( 1 );
   }
   else
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("SCORE_FONTFACE") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("SCORE_FONTFACE") );
     return false;
   }
 
-  if ( this->gameover_font.load ( this->config.getString("GAMEOVER_FONTFACE"), 0 ) == true )
+  if( this->gameover_font.load( this->config.getString("GAMEOVER_FONTFACE") ) == true )
   {
     this->gameover_font.set_outline ( 1 );
   }
   else
   {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_FONTFACE") );
+    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_FONTFACE") );
     return false;
   }
 

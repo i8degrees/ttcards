@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardsMenuState: public nom::IState
 {
   public:
-    CardsMenuState ( const nom::SDLApp::SharedPtr& object );
+    CardsMenuState ( const nom::SDLApp::shared_ptr& object );
     ~CardsMenuState ( void );
 
     void on_init ( nom::void_ptr data );
