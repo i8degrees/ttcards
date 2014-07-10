@@ -37,7 +37,7 @@ GameConfig::GameConfig ( const std::string& filename )
 {
   if ( this->load ( filename ) == false )
   {
-    NOM_LOG_ERR ( TTCARDS, "Could not parse input file: " + filename );
+    NOM_LOG_ERR ( TTCARDS_LOG_CATEGORY_CFG, "Could not parse input file: " + filename );
   }
 }
 
@@ -80,15 +80,15 @@ const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::
 
   if ( value.string_type() )
   {
-    NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + "\"" + value.get_string() + "\"" + " has been added to the cache." );
+    NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + "\"" + value.get_string() + "\"" + " has been added to the cache." );
   }
   else if ( value.int_type() )
   {
-    NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
+    NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
   }
   else
   {
-    NOM_LOG_INFO ( TTCARDS, "GameConfig: " + node + " has been added to the cache." );
+    NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + " has been added to the cache." );
   }
 
   return res->second;
@@ -107,32 +107,20 @@ bool GameConfig::save( const std::string& filename )
 
   for ( auto it = this->config.begin(); it != this->config.end(); ++it )
   {
-    #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
-      std::cout << it->first << ": ";
-    #endif
+    NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, it->first, ":" );
 
     if ( it->second.string_type() )
     {
-      #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
-        std::cout << it->second.get_string();
-      #endif
+      NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, it->second.get_string() );
     }
     else if ( it->second.int_type() )
     {
-      #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
-        std::cout << it->second.get_int();
-      #endif
+      NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, it->second.get_int() );
     }
     else
     {
-      #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
-        std::cout << "null";
-      #endif
+      NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, "null" );
     }
-
-    #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
-      std::cout << std::endl;
-    #endif
   }
 
   // Order in which we save node paths does not matter
@@ -173,9 +161,7 @@ bool GameConfig::save( const std::string& filename )
   object["root"]["USER_PLAYER1_FILENAME"] = this->getString("USER_PLAYER1_FILENAME");
   object["root"]["USER_PLAYER2_FILENAME"] = this->getString("USER_PLAYER2_FILENAME");
 
-  #if defined( TTCARDS_DEBUG_GAME_CONFIG_SAVE )
-    NOM_DUMP( object );
-  #endif
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, object );
 
   // Commit data to our top-level node object; this creates a top-level JSON
   // object called "root" to store everything under.
@@ -205,10 +191,8 @@ bool GameConfig::load( const std::string& filename )
     return false;
   }
 
-  #if defined( TTCARDS_DEBUG_GAME_CONFIG_LOAD )
-    NOM_DUMP( objects );
-    NOM_DUMP( objects.size() );
-  #endif
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, objects );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, objects.size() );
 
   for( auto itr = objects.begin(); itr != objects.end(); ++itr )
   {
@@ -221,9 +205,7 @@ bool GameConfig::load( const std::string& filename )
         nom::Value::ConstIterator members( it );
         std::string key = members.key();
 
-        #if defined( TTCARDS_DEBUG_GAME_CONFIG_LOAD )
-          NOM_DUMP( key );
-        #endif
+        NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, key );
 
         if( members->string_type() )
         {

@@ -31,12 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
-// We borrow several C macros from here for conditional debug logging
-#include <nomlib/config.hpp>
-
-/// Cross-platform support files
-#include <nomlib/types.hpp> // data types
-
+#include "nomlib/config.hpp"
 #include <nomlib/math.hpp>
 
 #include "debug.hpp"

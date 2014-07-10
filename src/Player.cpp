@@ -38,12 +38,12 @@ Player::Player ( void ) :
   score ( 0 ),
   player_state ( PlayerState::Reserved )
 {
-NOM_LOG_TRACE ( TTCARDS );
+NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 Player::~Player ( void )
 {
-  //NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 Player::Player (  CardHand* player_cards,
@@ -59,7 +59,7 @@ Player::Player (  CardHand* player_cards,
   player_state ( PlayerState::Reserved )
 
 {
-  //NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 const Point2i& Player::position ( void ) const

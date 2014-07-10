@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
-class CardsMenuStateCursor: public nom::Cursor
+class CardsMenuStateCursor: public nom::AnimatedSprite
 {
   public:
     CardsMenuStateCursor ( void );

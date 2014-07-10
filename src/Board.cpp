@@ -49,7 +49,7 @@ Board::Board ( void )
 
 Board::~Board ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 void Board::clear ( void )
@@ -59,7 +59,7 @@ void Board::clear ( void )
 
 void Board::initialize ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 
   // Calculate the global screen coordinates for local positions on the board
   this->board_map[0] = nom::IntRect ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );

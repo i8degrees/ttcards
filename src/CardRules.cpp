@@ -33,18 +33,18 @@ using namespace nom;
 CardRules::CardRules ( void ) :
   rules ( 0 )
 {
-  //NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 CardRules::~CardRules ( void )
 {
-  //NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 CardRules::CardRules ( uint32 ruleset ) :
   rules ( ruleset )
 {
-  //NOM_LOG_TRACE ( TTCARDS );
+  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 nom::uint32 CardRules::getRules ( void )

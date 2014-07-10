@@ -32,12 +32,12 @@ using namespace nom;
 
 CardCollection::CardCollection ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 CardCollection::~CardCollection ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 void CardCollection::clear ( void )

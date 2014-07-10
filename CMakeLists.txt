@@ -19,7 +19,6 @@ set ( PROJECT_VERSION_PATCH 0 )
 # Project options
 option ( DEBUG "Enable building with debugging features" off )
 option ( DEBUG_ASSERT "Enable building with run-time assertions" off )
-option ( DEBUG_TRACE "Enable building with logging of every object's construction & destruction" off )
 option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
 project ( ttcards ) # Sets PROJECT_NAME variable for us
@@ -34,7 +33,7 @@ if ( DEBUG )
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D NOM_DEBUG -Wall -Wunused -O0" ) #-D_GLIBCXX_DEBUG
   else ( PLATFORM_WINDOWS )
     # TODO: split these options up like we have for other platforms
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT /D NOM_DEBUG_TRACE" )
+    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT" )
 
     # FIXME: _ITERATOR_DEBUG_LEVEL is intended as a *temporary* patch to get
     # around a GameOverState crash involving vector or iterator access; we still
@@ -58,14 +57,6 @@ else ( NOT DEBUG_ASSERT )
   add_definitions ( "-DNDEBUG" ) # Disable NOM_ASSERT macros
   message ( STATUS "Run-time assertions are OFF." )
 endif ( DEBUG_ASSERT )
-
-if ( DEBUG_TRACE )
-  # We intentionally do not set CMAKE_BUILD_TYPE to "Debug" or "Release" here so
-  # we can enable this feature in either target mode to maximize debugging
-  # capabilities.
-  add_definitions ( "-D NOM_DEBUG_TRACE" )
-  message ( STATUS "Building ${PROJECT_NAME} with class object call tracing." )
-endif ( DEBUG_TRACE )
 
 # Utility macros
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )

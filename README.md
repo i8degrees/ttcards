@@ -81,7 +81,7 @@ cmake -D CMAKE_INSTALL_PREFIX=$HOME/Applications/Games ..
     * Defaults to **OFF**
     * When built (**ON**), the resulting documentation will reside in a new directory named **docs**
 
-  - Debugging: -D DEBUG=**\<BOOLEAN\>** -D DEBUG_ASSERT=**\<BOOLEAN\>** -D DEBUG_TRACE=**\<BOOLEAN\>**
+  - Debugging: -D DEBUG=**\<BOOLEAN\>** -D DEBUG_ASSERT=**\<BOOLEAN\>**
     * Defaults to **OFF**
 
   - Universal binary: -D UNIVERSAL=**\<BOOLEAN\>**

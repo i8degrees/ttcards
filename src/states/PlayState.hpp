@@ -106,13 +106,10 @@ class PlayState: public nom::IState
 
     Game::SharedPtr game;
 
-    /// \note We segfault if this is not declared as a pointer; nom::Window
-    /// *must* be initialized first, so we can pass onto this object instances.
-    nom::MessageBox::unique_ptr info_box;
-
-    /// \note We segfault if this is not declared as a pointer; nom::Window
-    /// *must* be initialized first, so we can pass onto this object instances.
-    nom::MessageBox::unique_ptr debug_box;
+    nom::UIWidget* debug_box_window;
+    nom::UIWidget* info_box_window;
+    nom::MessageBox* debug_box;
+    nom::MessageBox* info_box;
 
     /// In-game players (including AI)
     Player player[2];

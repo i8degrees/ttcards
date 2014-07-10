@@ -32,7 +32,7 @@ using namespace nom;
 
 CardView::CardView ( void )
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 
   this->card_face_down = false;
   this->render_card = Card();
@@ -55,7 +55,7 @@ CardView::CardView ( const nom::IntRect& coords )
 
 CardView::~CardView ( void )
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
@@ -73,7 +73,7 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
 
   if ( card_font.valid() )
   {
-    this->card_text->set_font( &card_font );
+    this->card_text->set_font( card_font );
   }
   else
   {
@@ -134,7 +134,7 @@ void CardView::draw_background  (
     case Card::NOPLAYER:
     default:
     {
-      nom::Gradient::Colors player0_grad_bg = {
+      nom::Color4iColors player0_grad_bg = {
                                                 nom::Color4i( 197, 197, 197 ),
                                                 nom::Color4i( 84, 84, 84 )
                                               };
@@ -145,7 +145,7 @@ void CardView::draw_background  (
 
     case Card::PLAYER1:
     {
-      nom::Gradient::Colors player1_grad_bg = {
+      nom::Color4iColors player1_grad_bg = {
                                                 nom::Color4i( 208, 223, 255 ),
                                                 nom::Color4i( 50, 59, 114 )
                                               };
@@ -156,7 +156,7 @@ void CardView::draw_background  (
 
     case Card::PLAYER2:
     {
-      nom::Gradient::Colors player2_grad_bg = {
+      nom::Color4iColors player2_grad_bg = {
                                                 nom::Color4i( 251, 222, 232 ),
                                                 nom::Color4i( 114, 66, 66 )
                                               };
@@ -166,9 +166,7 @@ void CardView::draw_background  (
     }
   }
 
-  //this->card_background->set_position ( this->position );
   this->card_background->set_position( nom::Point2i(x, y) );
-  this->card_background->update();
   this->card_background->draw( target );
 }
 

@@ -145,7 +145,7 @@ class Game: public nom::SDLApp
     nom::Texture gameover_background;
 
     /// interface cursor
-    nom::Cursor cursor;
+    nom::AnimatedSprite cursor;
 
     /// our public / visible display context handle
     nom::RenderWindow window;

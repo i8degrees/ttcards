@@ -32,59 +32,54 @@ using namespace nom;
 
 ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::shared_ptr& object ) :
   nom::IState { Game::State::ContinueMenu, nom::IState::StateFlags::BackRender },
-  game { NOM_PTR_CAST( Game, object) }
+  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
+  question_box_window{ nullptr },
+  question_box{ nullptr }
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 ContinueMenuState::~ContinueMenuState ( void )
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  NOM_DELETE_PTR( this->question_box_window );
 }
 
 void ContinueMenuState::on_init ( nom::void_ptr data )
 {
-  // Our gradient-filled background colors; from starting color to ending color.
-  nom::Gradient::Colors g_colors = { nom::Color4i::Gray, nom::Color4i::LightGray };
-
-  nom::Window* window = nullptr;
-
   Point2i question_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
   Size2i question_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
 
-  window = new nom::Window( question_box_origin, question_box_size );
-  window->set_shape( new nom::Gradient( g_colors, question_box_origin, question_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
-  window->set_shape( new nom::GrayFrame( question_box_origin, question_box_size ) );
+  this->question_box_window = new nom::UIWidget( question_box_origin, question_box_size );
 
-  this->question_box = nom::QuestionDialogBox::unique_ptr (
-                                                            new nom::QuestionDialogBox(
-                                                              window,
-                                                              question_box_origin,
-                                                              question_box_size
-                                                          )
-                                                      );
+  this->question_box = new nom::QuestionDialogBox (
+                                                    this->question_box_window,
+                                                    -1,
+                                                    question_box_origin,
+                                                    question_box_size
+                                                  );
 
-  this->question_box->set_title_label( nom::Text("CHOICE", &this->game->info_small_text, -1, nom::Text::Alignment::TopLeft) );
+  this->question_box->set_decorator( new nom::FinalFantasyDecorator() );
+
+  this->question_box->set_title( "CHOICE", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
 
   // We need to use the height of the text font later for cursor calculations.
-  Text option_text = nom::Text( "Are you sure?", &this->game->info_text, -1, nom::Text::Alignment::TopCenter );
-  this->question_box->set_message_label( option_text );
+  this->question_box->set_message( "Are you sure?", this->game->info_text, nom::DEFAULT_FONT_SIZE );
+  this->question_box->set_message_alignment( nom::Text::Alignment::TopCenter );
 
-  nom::Text yes_label( nom::Text( "Yes", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
-
-  // Appending a single space character onto "No" text label so that it lines up
-  // with our "Yes" text label.
-  nom::Text no_label( nom::Text( "No ", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
+  std::string yes_label( "Yes" );
+  std::string no_label( "No " );
 
   this->question_box->append_choice( yes_label );
   this->question_box->append_choice( no_label );
-  this->question_box->set_selection( 1 );
+  this->question_box->set_selection( 0 ); // Match the starting position of
+                                          // the cursor
 
-  this->question_box->register_event_listener( nom::UIEventType::MOUSE_SELECTION, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_event( ev ); } ) );
-  this->question_box->register_event_listener( nom::UIEventType::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_event( ev ); } ) );
-  this->question_box->register_event_listener( nom::UIEventType::MOUSE_DCLICK, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_mouse_dclick( ev ); } ) );
-  this->question_box->register_event_listener( nom::UIEventType::MOUSE_WHEEL, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_wheel( ev ); } ) );
-  this->question_box->register_event_listener( nom::UIEventType::KEY_SELECTION, nom::UIEventCallback( [&] ( nom::UIEvent& ev ) { this->on_key_event( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_mouse_event( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEvent::MOUSE_DCLICK, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_mouse_dclick( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEvent::MOUSE_WHEEL, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_wheel( ev ); } ) );
+  this->question_box->register_event_listener( nom::UIEvent::KEY_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_key_event( ev ); } ) );
 
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
@@ -109,7 +104,7 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
                                   OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 ),
                                   OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 )
                                   +
-                                  ( option_text.height() / 2 )
+                                  ( this->question_box->message_bounds().h / 2 )
                                 );
 
   this->cursor.set_position_map ( position_map );
@@ -124,8 +119,7 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
 
-  // FIXME:
-  // delete window;
+  this->question_box_window->insert_child( this->question_box );
 }
 
 void ContinueMenuState::on_exit ( nom::void_ptr data )
@@ -191,7 +185,7 @@ void ContinueMenuState::on_joy_button_down( const nom::Event& ev )
 
 void ContinueMenuState::on_user_event( const nom::Event& ev )
 {
-  NOM_LOG_TRACE( NOM );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
 
   // Nothing to do; not the right event type for us!
   if ( ev.type != SDL_USEREVENT )
@@ -205,7 +199,7 @@ void ContinueMenuState::on_user_event( const nom::Event& ev )
   }
 }
 
-void ContinueMenuState::on_key_event( const nom::UIEvent& ev )
+void ContinueMenuState::on_key_event( const nom::UIWidgetEvent& ev )
 {
   nom::Event event = ev.event();
 
@@ -226,11 +220,11 @@ void ContinueMenuState::on_key_event( const nom::UIEvent& ev )
   } // end switch ( key )
 }
 
-void ContinueMenuState::on_mouse_event( const nom::UIEvent& ev )
+void ContinueMenuState::on_mouse_event( const nom::UIWidgetEvent& ev )
 {
-  NOM_LOG_TRACE( NOM );
-  NOM_DUMP( ev.index() );
-  NOM_DUMP( ev.text() );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
 
    // Obtain the option label text chosen by index.
   switch( ev.index() )
@@ -251,11 +245,11 @@ void ContinueMenuState::on_mouse_event( const nom::UIEvent& ev )
   }
 }
 
-void ContinueMenuState::on_mouse_dclick( const nom::UIEvent& ev )
+void ContinueMenuState::on_mouse_dclick( const nom::UIWidgetEvent& ev )
 {
-  NOM_LOG_TRACE( NOM );
-  NOM_DUMP( ev.index() );
-  NOM_DUMP( ev.text() );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
 
    // Obtain the option label text chosen by index.
   switch( ev.index() )
@@ -263,6 +257,11 @@ void ContinueMenuState::on_mouse_dclick( const nom::UIEvent& ev )
     default: /* Do nothing */ break;
 
     case 0:
+    {
+      this->send_response();
+      break;
+    }
+
     case 1:
     {
       this->send_response();
@@ -271,7 +270,7 @@ void ContinueMenuState::on_mouse_dclick( const nom::UIEvent& ev )
   }
 }
 
-void ContinueMenuState::on_wheel( const nom::UIEvent& ev )
+void ContinueMenuState::on_wheel( const nom::UIWidgetEvent& ev )
 {
   nom::Event event = ev.event();
 
@@ -293,11 +292,13 @@ void ContinueMenuState::on_wheel( const nom::UIEvent& ev )
 
 void ContinueMenuState::on_event( const nom::Event& ev )
 {
-  this->question_box->process_event( ev );
+  this->question_box_window->process_event( ev );
 }
 
 void ContinueMenuState::on_update ( float delta_time )
 {
+  this->question_box_window->update();
+
   this->cursor.update();
 
   this->game->window.update();
@@ -305,7 +306,7 @@ void ContinueMenuState::on_update ( float delta_time )
 
 void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
-  this->question_box->draw( target );
+  this->question_box_window->draw( target );
 
   this->cursor.draw ( target );
 }
@@ -319,7 +320,7 @@ void ContinueMenuState::send_response ( void )
   //
   // We pass the response along to whomever called us (this state) as we
   // exit stage right.
-  nom::int32 choice = this->cursor.position();
+  nom::int32 choice = this->cursor.cursor_position();
 
   if ( choice == 0 )
   {

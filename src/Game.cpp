@@ -44,7 +44,7 @@ using namespace nom;
 Game::Game ( void ) :
   game { this, tt::free_game }
 {
-  NOM_LOG_TRACE(NOM);
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 Game::Game ( nom::int32 argc, char* argv[] ) :
@@ -52,13 +52,59 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
   SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
   game { this, tt::free_game }
 {
+  std::ostringstream ttcards_version;
+
+  ttcards_version << APP_NAME << " " << "v" << TTCARDS_VERSION_MAJOR << "."
+      << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << "-d"
+      << std::endl;
+
   //this->state_factory = new States();
 
   // Destination directory we descend into to locate game resources
   std::string working_directory;
   nom::File dir;
 
-  NOM_LOG_TRACE( TTCARDS );
+  if ( nom::init_third_party(0) == false )
+  {
+    nom::DialogMessageBox ( "Critical Error", "Could not load third party libraries" );
+    exit(NOM_EXIT_FAILURE);
+  }
+
+  atexit(nom::quit); // Clean up memory associated with nomlib
+
+  #if ! defined( NDEBUG )  // Debug target build
+    NOM_LOG_INFO( TTCARDS, "DEBUG build" );
+
+    // Enable info log level and greater for our engine
+    nom::SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_INFO );
+
+    // Enable logging of all messages in the game
+    nom::SDL2Logger::set_logging_priority( TTCARDS, SDL_LOG_PRIORITY_VERBOSE );
+
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, SDL_LOG_PRIORITY_DEBUG );
+    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, SDL_LOG_PRIORITY_DEBUG );
+
+    // Disable logging of all messages from GameConfig except for fatal errs.
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, SDL_LOG_PRIORITY_ERROR );
+
+    // Enable logging of game state function traces
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE_STATES, SDL_LOG_PRIORITY_DEBUG );
+
+  #else // NDEBUG -- release target build
+
+    NOM_LOG_INFO( TTCARDS, "RELEASE build" );
+
+    // Disable logging of all messages but critical log level (these are fatal)
+    // under the scope of our engine, nomlib.
+    nom::SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_CRITICAL );
+
+    // Disable logging of all messages but critical log level (these are fatal)
+    // under the scope of the game.
+    nom::SDL2Logger::set_logging_priority( TTCARDS, SDL_LOG_PRIORITY_CRITICAL );
+
+  #endif
+
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 
   // Command line arguments
   if ( argc > 1 )
@@ -72,23 +118,23 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
 
         if ( argv[opt + 1] == nullptr )
         {
-NOM_LOG_ERR ( TTCARDS, "Missing parameter <input_filename> for export argument." );
+          NOM_LOG_ERR ( TTCARDS, "Missing parameter <input_filename> for export argument." );
           exit ( NOM_EXIT_FAILURE );
         }
         else if ( dir.exists ( argv[opt + 1] ) == false )
         {
-NOM_LOG_ERR ( TTCARDS, "File path for <input_filename> does not exist at: " + std::string(argv[opt + 1]) );
+          NOM_LOG_ERR ( TTCARDS, "File path for <input_filename> does not exist at: " + std::string(argv[opt + 1]) );
           exit ( NOM_EXIT_FAILURE );
         }
         else if ( cards.load( argv[opt + 1] ) == false )
         {
-NOM_LOG_ERR ( TTCARDS, "Could not load game cards collection at: " + std::string(argv[opt + 1]) );
+          NOM_LOG_ERR ( TTCARDS, "Could not load game cards collection at: " + std::string(argv[opt + 1]) );
           exit ( NOM_EXIT_FAILURE );
         }
 
         if ( argv[opt + 2] == nullptr )
         {
-NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for export argument." );
+          NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for export argument." );
           exit ( NOM_EXIT_FAILURE );
         }
       #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
@@ -100,12 +146,12 @@ NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for export argument.
       #endif
         else if ( cards.save( argv[opt + 2] ) == false )
         {
-NOM_LOG_ERR ( TTCARDS, "Could not save the game cards collection at: " + std::string(argv[opt + 2]) );
+          NOM_LOG_ERR ( TTCARDS, "Could not save the game cards collection at: " + std::string(argv[opt + 2]) );
           exit ( NOM_EXIT_FAILURE );
         }
         else
         {
-NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[opt + 2]) );
+          NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[opt + 2]) );
           exit ( NOM_EXIT_SUCCESS );
         }
       } // end export cards option
@@ -113,7 +159,7 @@ NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[
       {
         if ( argv[opt + 1] == nullptr )
         {
-NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
+          NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
           exit ( NOM_EXIT_FAILURE );
         }
       #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
@@ -127,24 +173,25 @@ NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument.
         GameConfig cfg;
         if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
         {
-NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
+          NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
           exit ( NOM_EXIT_FAILURE );
         }
 
         if ( cfg.save ( argv[opt + 1] ) == false )
         {
-NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
+          NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
           exit ( NOM_EXIT_FAILURE );
         }
         else
         {
-NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
+          NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
           exit ( NOM_EXIT_SUCCESS );
         }
       } // end save config option
       else if ( std::string(argv[opt]) == "-v" || std::string(argv[opt]) == "--version" )
       {
-        std::cout << APP_NAME << " version " << TTCARDS_VERSION_MAJOR << "." << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << " by Jeffrey Carpenter" << std::endl;
+        std::cout << ttcards_version.str() << std::endl;
+        // TODO: Copyright info
       } // end version option
       else // -h, --help
       {
@@ -160,7 +207,6 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
     exit(NOM_EXIT_SUCCESS);
   } // end argc > 1
 
-
   working_directory = dir.resource_path();
 
   // Change the working directory to whatever working_directory has been set to
@@ -169,19 +215,11 @@ NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::stri
   // path until after our command line arguments have been processed, so that we
   // do not unintentionally mess up relative paths!
   dir.set_path (working_directory);
-
-  if ( nom::init_third_party(0) == false )
-  {
-    nom::DialogMessageBox ( "Critical Error", "Could not load third party libraries" );
-    exit(NOM_EXIT_FAILURE);
-  }
-
-  atexit(nom::quit); // Clean up memory associated with nomlib
 }
 
 Game::~Game ( void )
 {
-  NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 bool Game::on_init ( void )
@@ -226,7 +264,7 @@ bool Game::on_init ( void )
 
   // Commence the initialization of game objects
   this->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
-  this->cursor = nom::Cursor ( "images/cursors.json" );
+  this->cursor = nom::AnimatedSprite( "images/cursors.json" );
   this->cursor.set_position ( Point2i(MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y) );
 
   // Commence the loading of game resources
@@ -321,7 +359,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString
     return false;
   }
 
-  if ( this->card.load( &this->config, &this->card_font ) == false )
+  if ( this->card.load( &this->config, this->card_font ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     return false;
@@ -643,7 +681,7 @@ namespace tt {
 
 void free_game ( Game* game )
 {
-  NOM_LOG_TRACE(TTCARDS);
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 
   // Fixes double delete issues that result otherwise
   //if ( game != nullptr ) delete game;

@@ -29,18 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef TTCARDS_DEBUG_HPP
 #define TTCARDS_DEBUG_HPP
 
+// TODO: Phase out the preprocessor definitions, in favor of nomlib's run-time
+// configurable logging facilities
+
 #define TTCARDS_DEBUG_GAME_STATE
 #define TTCARDS_DEBUG_PLAY_STATE
-
-/// \brief Toggles the debugging output of general GameConfig operations, such
-/// as logging all the items added to the cache.
-// #define TTCARDS_DEBUG_GAME_CONFIG
-
-/// \brief Toggles the debugging output of un-serialization of GameConfig data.
-// #define TTCARDS_DEBUG_GAME_CONFIG_LOAD
-
-/// \brief Toggles the debugging output of serialization of GameConfig data.
-// #define TTCARDS_DEBUG_GAME_CONFIG_SAVE
 
 #define DEBUG_BOARD
 #define DEBUG_BOARD_CMP
@@ -55,5 +48,44 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DEBUG_GAMEOVER
 #define DEBUG_CARDS_MENU
 //#define DEBUG_CARDS_MENU_CURSOR
+
+#include "SDL.h"
+
+/// \brief The predefined logging categories.
+///
+/// \see nom::SDL2Logger
+///
+/// \todo Consider breaking the logging category cfg (file I/O) into input &
+/// output?
+enum
+{
+  /// \brief Default logging categories
+  ///
+  /// \deprecated This identifier exists only to preserve legacy code, and
+  /// isn't likely to disappear anytime soon. New code should use one of the
+  /// logging categories that best describes their purpose (or add a new one).
+  TTCARDS = NOM_LOG_CATEGORY_CUSTOM,
+
+  TTCARDS_LOG_CATEGORY_APPLICATION,
+  TTCARDS_LOG_CATEGORY_ERROR,
+  TTCARDS_LOG_CATEGORY_ASSERT,
+  TTCARDS_LOG_CATEGORY_SYSTEM,
+  TTCARDS_LOG_CATEGORY_AUDIO,
+  TTCARDS_LOG_CATEGORY_VIDEO,
+  TTCARDS_LOG_CATEGORY_RENDER,
+  TTCARDS_LOG_CATEGORY_INPUT,
+  TTCARDS_LOG_CATEGORY_TEST,
+  TTCARDS_LOG_CATEGORY_GUI,
+  /// \todo Rename to TTCARDS_LOG_CATEGORY_FILE?
+  TTCARDS_LOG_CATEGORY_CFG,
+
+  TTCARDS_LOG_CATEGORY_TRACE,
+  TTCARDS_LOG_CATEGORY_TRACE_AUDIO,
+  TTCARDS_LOG_CATEGORY_TRACE_VIDEO,
+  TTCARDS_LOG_CATEGORY_TRACE_RENDER,
+  TTCARDS_LOG_CATEGORY_TRACE_GUI,
+  TTCARDS_LOG_CATEGORY_TRACE_EVENTS,
+  TTCARDS_LOG_CATEGORY_TRACE_STATES
+};
 
 #endif // include guard defined

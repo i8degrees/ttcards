@@ -31,9 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 PlayState::PlayState ( const nom::SDLApp::shared_ptr& object ) :
-  game { NOM_PTR_CAST( Game, object) }
+  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
+  debug_box_window{ nullptr },
+  info_box_window{ nullptr },
+  debug_box{ nullptr },
+  info_box{ nullptr }
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->turn = 0;
   this->cursor_locked = false;
@@ -43,26 +47,29 @@ PlayState::PlayState ( const nom::SDLApp::shared_ptr& object ) :
 
 PlayState::~PlayState ( void )
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  NOM_DELETE_PTR( this->debug_box_window );
+  NOM_DELETE_PTR( this->info_box_window );
 }
 
-void PlayState::on_exit ( nom::void_ptr data ) {}
+void PlayState::on_exit ( nom::void_ptr data )
+{
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+}
 
 void PlayState::on_pause ( nom::void_ptr data )
 {
-  std::cout << "\n" << "PlayState Paused" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void PlayState::on_resume ( nom::void_ptr data )
 {
-  std::cout << "\n" << "PlayState Resumed" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void PlayState::on_init ( nom::void_ptr data )
 {
-  // UI elements below are used in the construction of both dialog message boxes!
-  nom::Window* window = nullptr;
-
   Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
   Point2i debug_box_origin = Point2i( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
@@ -120,59 +127,49 @@ void PlayState::on_init ( nom::void_ptr data )
     this->cursor_coords_map[idx] = nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-  window = new nom::Window( debug_box_origin, debug_box_size );
+  // Northern message box
+  this->debug_box_window = new nom::UIWidget( debug_box_origin, debug_box_size );
 
-  // Our gradient-filled background colors; from starting color to ending color.
-  nom::Gradient::Colors g_colors = { nom::Color4i::Gray, nom::Color4i::LightGray };
+  this->debug_box = new nom::MessageBox (
+                                          this->debug_box_window,
+                                          -1,
+                                          debug_box_origin,
+                                          debug_box_size
+                                        );
 
-  // Construct the gradient used as the backdrop of the dialog message box.
-  window->set_shape( new nom::Gradient( g_colors, debug_box_origin, debug_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
-
-  window->set_shape( new nom::GrayFrame( debug_box_origin, debug_box_size ) );
-
-  this->debug_box = nom::MessageBox::unique_ptr (
-                                                  new nom::MessageBox(
-                                                    window,
-                                                    debug_box_origin,
-                                                    debug_box_size
-                                                  )
-                                                );
+  this->debug_box->set_decorator( new nom::FinalFantasyDecorator() );
 
   // Title label text *must* be ALL CAPITALS; the small bitmap font used only
   // has the glyphs for the capital letters of the alphabet.
-  this->debug_box->set_title_label( nom::Text("INFO.", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) );
+  this->debug_box->set_title( "INFO.", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
 
   // Initialize message label text to sane defaults; see also:
   // ::on_update_info_dialogs method.
-  this->debug_box->set_message_label( nom::Text("", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
+  this->debug_box->set_message( "", this->game->info_text, nom::DEFAULT_FONT_SIZE);
 
   #if ! defined ( NOM_DEBUG )
     this->debug_box->disable();
   #endif
 
-  // Re-declare the nom::Window object with new dimensions for our second
-  // nom::MessageBox object.
-  window = new nom::Window( info_box_origin, info_box_size );
+  // Southern message box
+  this->info_box_window = new nom::UIWidget( info_box_origin, info_box_size );
 
-  // Construct the gradient used as the backdrop of the dialog message box.
-  window->set_shape( new nom::Gradient( g_colors, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
-  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
+  this->info_box = new nom::MessageBox  (
+                                          this->info_box_window,
+                                          -1,
+                                          info_box_origin,
+                                          info_box_size
+                                        );
 
-  this->info_box = nom::MessageBox::unique_ptr  (
-                                                  new nom::MessageBox(
-                                                    window,
-                                                    info_box_origin,
-                                                    info_box_size
-                                                  )
-                                                );
+  this->info_box->set_decorator( new nom::FinalFantasyDecorator() );
 
   // Title label text *must* be ALL CAPITALS; the small bitmap font used only
   // has the glyphs for the capital letters of the alphabet.
-  this->info_box->set_title_label( nom::Text("INFO.", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft ) );
+  this->info_box->set_title( "INFO.", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
 
   // Initialize message label text to sane defaults; see also:
   // ::on_update_info_dialogs method.
-  this->info_box->set_message_label( nom::Text("", &this->game->info_text, -1, nom::Text::Alignment::MiddleCenter ) );
+  this->info_box->set_message( "", this->game->info_text, nom::DEFAULT_FONT_SIZE );
 
   while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
   {
@@ -201,8 +198,8 @@ void PlayState::on_init ( nom::void_ptr data )
   this->cursor_blink.start();
   this->blink_cursor = false;
 
-  // FIXME:
-  // delete window;
+  this->debug_box_window->insert_child( this->debug_box );
+  this->info_box_window->insert_child( this->info_box );
 }
 
 void PlayState::on_key_down( const nom::Event& ev )
@@ -589,7 +586,7 @@ void PlayState::on_update_info_dialogs( void )
   // Board selection state
   if ( this->isCursorLocked() == true )
   {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor.x(), this->game->cursor.y() );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor.position().x, this->game->cursor.position().y );
     if ( coords != nom::IntRect::null )
     {
       selected_card = this->game->board.get ( coords.x, coords.y );
@@ -688,7 +685,7 @@ void PlayState::lockSelectedCard ( void )
   }
   else
   {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor.x(), this->game->cursor.y() );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor.position().x, this->game->cursor.position().y );
 
     if ( coords != nom::IntRect::null )
     {
@@ -827,7 +824,7 @@ unsigned int PlayState::getCursorPos ( void )
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    if ( this->game->cursor.y() <= this->cursor_coords_map[idx].y )
+    if ( this->game->cursor.position().y <= this->cursor_coords_map[idx].y )
       return this->cursor_coords_map[idx].x;
     else // catch all safety switch
       // assume we are at the last position in the index when all else fails
@@ -841,7 +838,7 @@ void PlayState::moveCursorLeft ( void )
 {
   if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.x() > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
+    if ( this->game->cursor.position().x > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->game->cursor.move ( -( CARD_WIDTH ), 0 );
   }
   this->game->cursor_move.Play();
@@ -851,7 +848,7 @@ void PlayState::moveCursorRight ( void )
 {
   if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.x() < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
+    if ( this->game->cursor.position().x < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->game->cursor.move ( ( CARD_WIDTH ), 0 );
   }
   this->game->cursor_move.Play();
@@ -864,7 +861,7 @@ void PlayState::moveCursorUp ( void )
 
   if ( this->game->cursor.state() == 0 )
   {
-    if ( this->game->cursor.y() > PLAYER1_CURSOR_ORIGIN_Y )
+    if ( this->game->cursor.position().y > PLAYER1_CURSOR_ORIGIN_Y )
     {
       this->game->cursor.move ( 0, -( CARD_HEIGHT / 2 ) );
 
@@ -874,7 +871,7 @@ void PlayState::moveCursorUp ( void )
   }
   else if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.y() > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
+    if ( this->game->cursor.position().y > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->game->cursor.move ( 0, -( CARD_HEIGHT ) );
   }
   this->game->cursor_move.Play();
@@ -887,7 +884,7 @@ void PlayState::moveCursorDown ( void )
 
   if ( this->game->cursor.state() == 0 )
   {
-    if ( this->game->cursor.y() < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
+    if ( this->game->cursor.position().y < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
     {
       this->game->cursor.move ( 0, ( CARD_HEIGHT / 2 ) );
 
@@ -897,7 +894,7 @@ void PlayState::moveCursorDown ( void )
   }
   else if ( this->game->cursor.state() == 1 ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.y() < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
+    if ( this->game->cursor.position().y < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->game->cursor.move ( 0, ( CARD_HEIGHT ) );
   }
   this->game->cursor_move.Play();
@@ -1056,8 +1053,13 @@ void PlayState::on_draw ( nom::IDrawable::RenderTarget& target )
 
   this->drawCursor ( target );
 
-  this->debug_box->draw( target );
-  this->info_box->draw( target );
+  // FIXME (?):
+  if( this->debug_box->enabled() == true )
+  {
+    this->debug_box_window->draw( target );
+  }
+
+  this->info_box_window->draw( target );
 
   // Draw each player's scoreboard
   this->scoreboard_text[0].draw ( target );

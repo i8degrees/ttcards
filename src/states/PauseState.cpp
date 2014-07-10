@@ -30,68 +30,59 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-PauseState::PauseState ( const nom::SDLApp::SharedPtr& object ) :
+PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
   nom::IState { Game::State::Pause, nom::IState::StateFlags::BackRender },
-  game { NOM_PTR_CAST( Game, object) }
+  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
+  info_box_window{ nullptr },
+  info_box{ nullptr }
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 PauseState::~PauseState ( void )
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  NOM_DELETE_PTR( this->info_box_window );
 }
 
 void PauseState::on_init ( nom::void_ptr data )
 {
-  nom::Gradient linear;
-  nom::Window* window = nullptr;
-
   Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
 
-  this->title_text[0] = { nom::Text("PAUSE", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
-  this->title_text[1] = { nom::Text("", &this->game->info_small_text, 9, nom::Text::Alignment::TopLeft) };
+  this->info_box_window = new nom::UIWidget( info_box_origin, info_box_size );
 
-  nom::Gradient::Colors pause_box_grad =  {
-                                            nom::Color4i( 67, 67, 67, 255 ),
-                                            nom::Color4i( 99, 99, 99, 255 )
-                                          };
+  this->info_box = new nom::MessageBox  (
+                                          this->info_box_window,
+                                          -1,
+                                          info_box_origin,
+                                          info_box_size
+                                        );
 
-  window = new nom::Window( info_box_origin, info_box_size );
-  window->set_shape( new nom::Gradient( pause_box_grad, info_box_origin, info_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
-  window->set_shape( new nom::GrayFrame( info_box_origin, info_box_size ) );
+  this->info_box->set_decorator( new nom::FinalFantasyDecorator() );
 
-  this->info_box = nom::MessageBox::unique_ptr  (
-                                                  new nom::MessageBox(
-                                                    window,
-                                                    info_box_origin,
-                                                    info_box_size
-                                                  )
-                                              );
-
-  this->info_box->set_title_label( this->title_text[0] );
-  this->info_box->set_message_label( nom::Text(SHORT_VERSION_INFO, &this->game->info_text, 12, nom::Text::Alignment::MiddleCenter) );
+  this->info_box->set_title( "PAUSE", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
+  this->info_box->set_message( SHORT_VERSION_INFO, this->game->info_text, nom::DEFAULT_FONT_SIZE );
 
   this->blink_update.start();
 
-  // FIXME:
-  // delete window;
+  this->info_box_window->insert_child( this->info_box );
 }
 
 void PauseState::on_exit ( nom::void_ptr data )
 {
-  std::cout << "\n" << "PauseState state onExit" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void PauseState::on_pause ( nom::void_ptr data )
 {
-  std::cout << "\n" << "PauseState state Paused" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void PauseState::on_resume ( nom::void_ptr data )
 {
-  std::cout << "\n" << "PauseState state Resumed" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void PauseState::on_key_down( const nom::Event& ev )
@@ -118,12 +109,12 @@ void PauseState::on_joy_button_down( const nom::Event& ev )
 
 void PauseState::on_update ( float delta_time )
 {
-  this->info_box->set_title_label( this->title_text[0] );
+  this->info_box->set_title_text( "PAUSE" );
 
   if ( this->blink_update.ticks() > 800 )
   {
     this->blink_update.stop();
-    this->info_box->set_title_label( this->title_text[1] );
+    this->info_box->set_title_text( "" );
     this->blink_text = true;
   }
 
@@ -132,11 +123,11 @@ void PauseState::on_update ( float delta_time )
 
 void PauseState::on_draw ( nom::IDrawable::RenderTarget& target )
 {
-  this->info_box->draw( target );
+  this->info_box_window->draw( target );
 
   if ( this->blink_text )
   {
-    this->info_box->set_title_label( this->title_text[1] );
+    this->info_box->set_title_text( "" );
     this->blink_update.start();
     this->blink_text = false;
   }

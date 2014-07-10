@@ -29,74 +29,73 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ContinueMenuStateCursor.hpp"
 
 ContinueMenuStateCursor::ContinueMenuStateCursor ( void ) :
-  //Cursor()
-  cursor_position ( 0 )
+  cursor_position_{ 0 }
 {
-  //NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 ContinueMenuStateCursor::~ContinueMenuStateCursor ( void )
 {
-  //NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 ContinueMenuStateCursor::ContinueMenuStateCursor  (
                                                     const nom::SpriteSheet& sheet
                                                   ) :
-  Cursor ( sheet ),
-  cursor_position ( 0 )
+  AnimatedSprite{ sheet },
+  cursor_position_{ 0 }
 {
-  //NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 ContinueMenuStateCursor::ContinueMenuStateCursor  (
                                                     const std::string& filename
                                                   ) :
-  Cursor ( filename ),
-  cursor_position ( 0 )
+  AnimatedSprite{ filename },
+  cursor_position_{ 0 }
 {
-  //NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 void ContinueMenuStateCursor::set_position_map ( const nom::Point2i& position_map )
 {
   this->option_position = position_map;
-  this->cursor_position = 0;
+  this->cursor_position_ = 0;
 }
 
-nom::int32 ContinueMenuStateCursor::position ( void )
+int ContinueMenuStateCursor::cursor_position( void )
 {
-  return this->cursor_position;
+  return this->cursor_position_;
 }
 
 nom::int32 ContinueMenuStateCursor::move_up ( void )
 {
-  if ( this->y() > this->option_position.x )
+  if ( this->position().y > this->option_position.x )
   {
     this->move ( 0, -(16) );
     this->previous();
   }
 
-  //NOM_DUMP_VAR ( this->y() );
-  return this->y();
+  //NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_GUI, this->position().y );
+  return this->position().y;
 }
 
 nom::int32 ContinueMenuStateCursor::move_down ( void )
 {
-  if ( this->y() < 128 /*this->option_position.y*/ ) // FIXME
+  if ( this->position().y < 128 /*this->option_position.y*/ ) // FIXME
   {
     this->move ( 0, 16 );
     this->next();
   }
 
-  //NOM_DUMP_VAR ( this->y() );
-  return this->y();
+  //NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_GUI, this->position().y );
+  return this->position().y;
 }
 
 void ContinueMenuStateCursor::next ( void )
 {
-  this->cursor_position++;
-  //NOM_DUMP_VAR(this->cursor_position);
+  this->cursor_position_++;
+  //NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_GUI, this->cursor_position_);
 
   nom::Event ev;
   ev.user.code = GameEvent::AudioEvent;
@@ -108,8 +107,8 @@ void ContinueMenuStateCursor::next ( void )
 
 void ContinueMenuStateCursor::previous ( void )
 {
-  this->cursor_position--;
-  //NOM_DUMP_VAR(this->cursor_position);
+  this->cursor_position_--;
+  //NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_GUI, this->cursor_position_);
 
   nom::Event ev;
   ev.user.code = GameEvent::AudioEvent;

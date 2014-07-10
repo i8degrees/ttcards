@@ -31,16 +31,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
-  game { NOM_PTR_CAST( Game, object) }
+  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
+  menu_box_window{ nullptr },
+  menu_box{ nullptr }
 {
-  nom::Window* window = nullptr;
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y );
+  // FIXME: The creation of the window relies on absolute coordinates, whereas
+  // the MessageBox should be using relative coordinates (from the window)...
+  Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X/2, PICK_CARDS_MENU_ORIGIN_Y/2 );
   Size2i menu_box_size = Size2i( PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
   nom::uint pid = 0; // temp var for for loop iteration
-
-  NOM_LOG_TRACE( TTCARDS );
 
   this->game->hand[0].clear();
   this->game->hand[1].clear();
@@ -58,22 +60,16 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
     this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
   }
 
-  nom::Gradient::Colors menu_box_grad = {
-                                          nom::Color4i::Gray,
-                                          nom::Color4i::LightGray
-                                        };
+  this->menu_box_window = new nom::UIWidget( menu_box_origin, menu_box_size );
 
-  window = new nom::Window( menu_box_origin, menu_box_size );
-  window->set_shape( new nom::Gradient( menu_box_grad, menu_box_origin, menu_box_size, nom::Point2i( 0,0 ), nom::Gradient::FillDirection::Left ) );
-  window->set_shape( new nom::GrayFrame( menu_box_origin, menu_box_size ) );
+  this->menu_box = new nom::MessageBox  (
+                                          this->menu_box_window,
+                                          -1,
+                                          menu_box_origin,
+                                          menu_box_size
+                                        );
 
-  this->menu_box = nom::MessageBox::unique_ptr  (
-                                                  new nom::MessageBox(
-                                                    window,
-                                                    menu_box_origin,
-                                                    menu_box_size
-                                                  )
-                                              );
+  this->menu_box->set_decorator( new nom::FinalFantasyDecorator() );
 
   this->per_page = 11; // number of cards to display per menu page
   this->total_pages = this->game->collection.cards.size() / per_page;
@@ -89,25 +85,26 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
                                   ) - 8
                                 );
 
-  // FIXME:
-  // delete window;
+  this->menu_box_window->insert_child( this->menu_box );
 }
 
 CardsMenuState::~CardsMenuState ( void )
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->selectedCard = Card();
+
+  NOM_DELETE_PTR( this->menu_box_window );
 }
 
 void CardsMenuState::on_init ( nom::void_ptr data )
 {
-  NOM_LOG_TRACE( TTCARDS );
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   unsigned int idx = 0; // iterator for cursor_coords_map
 
   // Initialize card name text so that we can obtain height info early on
-  this->card_text.set_font( &this->game->info_text );
+  this->card_text.set_font( this->game->info_text );
   this->card_text.set_text ( this->game->collection.cards[0].getName() );
 
   //this->info_text_height = this->card_text.height();
@@ -115,8 +112,8 @@ void CardsMenuState::on_init ( nom::void_ptr data )
   this->info_text_height = this->card_text.height() + 4;
 
   // FIXME: We must set the menu_box labels to quiet the debug logs
-  this->menu_box->set_title_label( nom::Text( "", &this->game->info_small_text ) );
-  this->menu_box->set_message_label( nom::Text( "", &this->game->info_text ) );
+  this->menu_box->set_title( "", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
+  this->menu_box->set_message( "", this->game->info_text, nom::DEFAULT_FONT_SIZE );
 
   this->title_text.set_font( &this->game->info_small_text );
 
@@ -136,17 +133,17 @@ void CardsMenuState::on_init ( nom::void_ptr data )
 
 void CardsMenuState::on_exit ( nom::void_ptr data )
 {
-  std::cout << "\n" << "CardsMenu state onExit" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void CardsMenuState::on_pause ( nom::void_ptr data )
 {
-  std::cout << "\n" << "CardsMenu state Paused" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void CardsMenuState::on_resume ( nom::void_ptr data )
 {
-  std::cout << "\n" << "CardsMenu state Resumed" << "\n";
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void CardsMenuState::on_key_down( const nom::Event& ev )
@@ -258,6 +255,8 @@ void CardsMenuState::on_mouse_wheel( const nom::Event& ev )
 
 void CardsMenuState::on_update ( float delta_time )
 {
+  this->menu_box_window->update();
+
   this->game->card.update();
 
   this->updateCursor();
@@ -305,7 +304,7 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     this->game->card.draw ( target );
   }
 
-  this->menu_box->draw ( target );
+  this->menu_box_window->draw( target );
 
   for ( nom::uint32 i = current_index; i < total_pages + current_index + 1; i++ ) // padded + 1 since page starts at zero, not one
   {
@@ -440,7 +439,7 @@ unsigned int CardsMenuState::getCursorPos ( void )
 
   for ( idx = 0; idx < per_page; idx++ )
   {
-    if ( this->game->cursor.y() <= std::get<0>(cursor_coords_map[idx]) )
+    if ( this->game->cursor.position().y <= std::get<0>(cursor_coords_map[idx]) )
       return std::get<1>(cursor_coords_map[idx]);
     else // catch all safety switch
     // assume we are at the last position in the index when all else fails
@@ -492,7 +491,7 @@ void CardsMenuState::moveCursorUp ( void )
 
   if ( this->game->cursor.state() == 0 )
   {
-    if ( this->game->cursor.y() > MENU_CARDS_CURSOR_ORIGIN_Y )
+    if ( this->game->cursor.position().y > MENU_CARDS_CURSOR_ORIGIN_Y )
     {
       this->game->cursor.move ( 0, -( this->info_text_height ) );
 
@@ -516,7 +515,7 @@ void CardsMenuState::moveCursorDown ( void )
 
   if ( this->game->cursor.state() == 0 )
   {
-    if ( this->game->cursor.y() < PICK_CARDS_MENU_HEIGHT )
+    if ( this->game->cursor.position().y < PICK_CARDS_MENU_HEIGHT )
     {
       this->game->cursor.move ( 0, this->info_text_height );
 

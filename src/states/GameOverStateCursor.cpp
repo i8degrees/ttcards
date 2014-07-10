@@ -30,26 +30,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 GameOverStateCursor::GameOverStateCursor ( void )
 {
-NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 GameOverStateCursor::GameOverStateCursor  (
                                             const nom::SpriteSheet& sheet
-                                          ) : Cursor ( sheet )
+                                          ) : AnimatedSprite{ sheet }
 {
-NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 GameOverStateCursor::GameOverStateCursor  (
                                             const std::string& filename
-                                          ) : Cursor ( filename )
+                                          ) : AnimatedSprite{ filename }
 {
-NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 GameOverStateCursor::~GameOverStateCursor ( void )
 {
-NOM_LOG_TRACE( TTCARDS );
+  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
 void GameOverStateCursor::set_position_map ( CardHand* position )
@@ -57,7 +57,7 @@ void GameOverStateCursor::set_position_map ( CardHand* position )
   this->card_position.reset ( position, Free_CardHand );
 }
 
-nom::int32 GameOverStateCursor::position ( void )
+int GameOverStateCursor::cursor_position( void )
 {
   if ( this->card_position )
   {
@@ -71,24 +71,24 @@ nom::int32 GameOverStateCursor::position ( void )
 
 nom::int32 GameOverStateCursor::move_left ( void )
 {
-  if ( this->x() > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
+  if ( this->position().x > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
   {
     this->move ( -(CARD_WIDTH), 0 );
     this->previous();
   }
 
-  return this->x();
+  return this->position().x;
 }
 
 nom::int32 GameOverStateCursor::move_right ( void )
 {
-  if ( this->x() < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
+  if ( this->position().x < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
   {
     this->move ( (CARD_WIDTH), 0 );
     this->next();
   }
 
-  return this->x();
+  return this->position().x;
 }
 
 void GameOverStateCursor::next ( void )

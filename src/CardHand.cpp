@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 CardHand::CardHand ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 
   this->set_position ( 0 );
   this->clear();
@@ -39,7 +39,7 @@ NOM_LOG_TRACE ( TTCARDS );
 
 CardHand::~CardHand ( void )
 {
-NOM_LOG_TRACE ( TTCARDS );
+  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 
   this->clear();
 }
@@ -222,11 +222,11 @@ void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardC
 
   std::uniform_int_distribution<nom::int32> distribution ( 0, Card::CARDS_COLLECTION );
 
-#if defined (NOM_DEBUG)
-  std::cout << "Random Generator Seed: " << seed << std::endl << std::endl;
-#endif
-
   card_id = distribution ( rand_generator );
+
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "card_id: ", card_id );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "CARDS_COLLECTION: ", Card::CARDS_COLLECTION );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "Random Generator Seed: ", seed );
 
   if ( db.cards[card_id].getLevel() <= LEVEL_MAX && db.cards[card_id].getLevel() >= LEVEL_MIN )
   {

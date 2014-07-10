@@ -38,12 +38,12 @@ BoardTile::BoardTile  ( const Card& card,
   bounds_ ( bounds ),
   tile_element ( element )
 {
-  //NOM_LOG_TRACE(TTCARDS);
+  //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
 BoardTile::~BoardTile ( void )
 {
-  //NOM_LOG_TRACE(TTCARDS);
+  //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
 const Card& BoardTile::tile ( void ) const

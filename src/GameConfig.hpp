@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <map>
 
-#include <nomlib/types.hpp>
+#include "nomlib/config.hpp"
 #include <nomlib/serializers.hpp>
 
 #include "config.hpp"

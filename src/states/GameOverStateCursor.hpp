@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "CardHand.hpp"
 
-class GameOverStateCursor: public nom::Cursor
+class GameOverStateCursor: public nom::AnimatedSprite
 {
   public:
     GameOverStateCursor ( void );
@@ -59,8 +59,9 @@ class GameOverStateCursor: public nom::Cursor
     /// Set a new positioning object for this instance to use
     void set_position_map ( CardHand* position );
 
-    /// Obtain the current position we are at in the player's hand.
-    nom::int32 position ( void );
+    /// \brief Get the current position, relative to the card element (index) in
+    /// the player's hand.
+    int cursor_position( void );
 
     /// Move the cursor to the left.
     ///
@@ -75,6 +76,7 @@ class GameOverStateCursor: public nom::Cursor
   private:
     void next ( void );
     void previous ( void );
+
     CardHand::SharedPtr card_position;
     nom::EventDispatcher cursor_event;
 };

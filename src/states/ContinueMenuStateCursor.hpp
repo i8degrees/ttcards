@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
-class ContinueMenuStateCursor: public nom::Cursor
+class ContinueMenuStateCursor: public nom::AnimatedSprite
 {
   public:
     ContinueMenuStateCursor ( void );
@@ -54,8 +54,9 @@ class ContinueMenuStateCursor: public nom::Cursor
     /// Set a new positioning object for this instance to use
     void set_position_map ( const nom::Point2i& position_map );
 
-    /// Obtain the current position we are at in the player's hand.
-    nom::int32 position ( void );
+    /// \brief Get the current position, relative to the card element (index) in
+    /// the player's hand.
+    int cursor_position( void );
 
     /// Move the cursor to the left.
     ///
@@ -70,8 +71,9 @@ class ContinueMenuStateCursor: public nom::Cursor
   private:
     void next ( void );
     void previous ( void );
+
     nom::Point2i option_position;
-    nom::int32 cursor_position;
+    int cursor_position_;
     nom::EventDispatcher cursor_event;
 };
 

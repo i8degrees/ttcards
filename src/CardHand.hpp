@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <functional>
 #include <memory>
 
-#include <nomlib/types.hpp>
+#include "nomlib/config.hpp"
 #include <nomlib/serializers.hpp>
 
 #include "Card.hpp"
