@@ -80,7 +80,7 @@ class CardsMenuState: public nom::IState
 
     Game::SharedPtr game;
 
-    nom::UIWidget* menu_box_window;
+    std::shared_ptr<nom::UIWidget> menu_box_window;
     nom::MessageBox* menu_box;
 
     /// CardHand-derived implementation

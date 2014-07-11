@@ -127,9 +127,10 @@ void PlayState::on_init ( nom::void_ptr data )
     this->cursor_coords_map[idx] = nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-  // Northern message box
-  this->debug_box_window = new nom::UIWidget( debug_box_origin, debug_box_size );
+  // This widget's coordinates will be relative to the top-level widget
+  this->debug_box_window = new nom::UIWidget( this->game->gui_window_ );
 
+  // Northern message box
   this->debug_box = new nom::MessageBox (
                                           this->debug_box_window,
                                           -1,
@@ -151,9 +152,10 @@ void PlayState::on_init ( nom::void_ptr data )
     this->debug_box->disable();
   #endif
 
-  // Southern message box
-  this->info_box_window = new nom::UIWidget( info_box_origin, info_box_size );
+  // This widget's coordinates will be relative to the top-level widget
+  this->info_box_window = new nom::UIWidget( this->game->gui_window_ );
 
+  // Southern message box
   this->info_box = new nom::MessageBox  (
                                           this->info_box_window,
                                           -1,

@@ -260,7 +260,14 @@ bool Game::on_init ( void )
   this->window.set_window_icon ( this->config.getString("APP_ICON") );
 //this->window.set_window_title ( LOADING_TEXT );
 
-  this->window.set_logical_size ( SCREEN_WIDTH, SCREEN_HEIGHT );
+  this->window.set_logical_size( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+  // Top level (parent) widget; coordinates are relative to our game's
+  // resolution (window)
+  this->gui_window_ = new nom::UIWidget (
+                                          nom::Point2i::zero,
+                                          this->window.size()
+                                        );
 
   // Commence the initialization of game objects
   this->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );

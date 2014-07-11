@@ -55,9 +55,7 @@ GameOverState::~GameOverState ( void )
 
 void GameOverState::on_init ( nom::void_ptr data )
 {
-  // FIXME: The creation of the window relies on absolute coordinates, whereas
-  // the MessageBox should be using relative coordinates (from the window)...
-  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X/2, DEBUG_BOX_ORIGIN_Y/2 );
+  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
 
   Point2i card_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
@@ -142,9 +140,10 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   // with the order of initialization?
   this->game->hand[1].front();
 
-  this->info_box_window = new nom::UIWidget( info_box_origin, info_box_size );
+  // This widget's coordinates will be relative to the top-level widget
+  this->info_box_window = new nom::UIWidget( this->game->gui_window_ );
 
-  // Top display message box; "description" info box
+  // Northern message box; (description / info help)
   this->info_box = new nom::MessageBox  (
                                           this->info_box_window,
                                           -1,
@@ -157,11 +156,10 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   this->info_box->set_title( "INFO.", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
   this->info_box->set_message( "Select 1 card(s) you want", this->game->info_text, nom::DEFAULT_FONT_SIZE );
 
-  // Re-declare the nom::Window object with new dimensions for our second
-  // nom::MessageBox object (card_info_box).
-  this->card_box_window = new nom::UIWidget( card_box_origin, card_box_size );
+  // This widget's coordinates will be relative to the top-level widget
+  this->card_box_window = new nom::UIWidget( this->game->gui_window_ );
 
-  // Bottom display message box; card info (card name)
+  // Southern message box (card name)
   this->card_info_box = new nom::MessageBox (
                                               this->card_box_window,
                                               -1,

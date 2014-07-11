@@ -34,12 +34,11 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
   menu_box_window{ nullptr },
   menu_box{ nullptr }
+
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  // FIXME: The creation of the window relies on absolute coordinates, whereas
-  // the MessageBox should be using relative coordinates (from the window)...
-  Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X/2, PICK_CARDS_MENU_ORIGIN_Y/2 );
+  Point2i menu_box_origin = Point2i( PICK_CARDS_MENU_ORIGIN_X, PICK_CARDS_MENU_ORIGIN_Y );
   Size2i menu_box_size = Size2i( PICK_CARDS_MENU_WIDTH, PICK_CARDS_MENU_HEIGHT );
 
   nom::uint pid = 0; // temp var for for loop iteration
@@ -60,10 +59,11 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
     this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
   }
 
-  this->menu_box_window = new nom::UIWidget( menu_box_origin, menu_box_size );
+  // This widget's coordinates will be relative to the top-level widget
+  this->menu_box_window.reset( new nom::UIWidget( this->game->gui_window_ ) );
 
   this->menu_box = new nom::MessageBox  (
-                                          this->menu_box_window,
+                                          this->menu_box_window.get(),
                                           -1,
                                           menu_box_origin,
                                           menu_box_size
@@ -93,8 +93,6 @@ CardsMenuState::~CardsMenuState ( void )
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->selectedCard = Card();
-
-  NOM_DELETE_PTR( this->menu_box_window );
 }
 
 void CardsMenuState::on_init ( nom::void_ptr data )

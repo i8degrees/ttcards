@@ -51,7 +51,8 @@ void PauseState::on_init ( nom::void_ptr data )
   Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
 
-  this->info_box_window = new nom::UIWidget( info_box_origin, info_box_size );
+  // This widget's coordinates will be relative to the top-level widget
+  this->info_box_window = new nom::UIWidget( this->game->gui_window_ );
 
   this->info_box = new nom::MessageBox  (
                                           this->info_box_window,

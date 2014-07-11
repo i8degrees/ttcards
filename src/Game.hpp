@@ -153,6 +153,14 @@ class Game: public nom::SDLApp
     /// Variable set configuration properties
     GameConfig config;
 
+    /// \brief The top-level GUI window.
+    ///
+    /// \remarks This is the "central" widget and should always contain the
+    /// game's native resolution (absolute coordinates). All GUI objects
+    /// (anything deriving from nom::UIWidget) can be initialized from this
+    /// one, in order to quickly & easily set coordinates properly.
+    nom::UIWidget* gui_window_;
+
     enum State
     {
       CardsMenu = 0,

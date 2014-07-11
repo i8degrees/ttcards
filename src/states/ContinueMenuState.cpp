@@ -51,7 +51,8 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
   Point2i question_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
   Size2i question_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
 
-  this->question_box_window = new nom::UIWidget( question_box_origin, question_box_size );
+  // This widget's coordinates will be relative to the top-level widget
+  this->question_box_window = new nom::UIWidget( this->game->gui_window_ );
 
   this->question_box = new nom::QuestionDialogBox (
                                                     this->question_box_window,
