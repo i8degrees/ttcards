@@ -85,7 +85,7 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
 
-  if ( this->cursor.load ( this->game->config.getString("INTERFACE_CURSOR"), 0 ) == false )
+  if ( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
   {
     // EPIC FAIL
     nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
@@ -94,11 +94,11 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    //this->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    this->cursor.resize( nom::Texture::ResizeAlgorithm::scale2x );
   }
   else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
   {
-    //this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    this->cursor.resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   this->position_map = Point2i  (

@@ -81,13 +81,13 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
     return false;
   }
 
-  if( this->card_face->load ( config->getString("CARD_FACES") ) == false )
+  if( this->card_face->load( config->getString("CARD_FACES"), false, nom::Texture::Access::Streaming ) == false )
   {
     NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
     return false;
   }
 
-  if( this->card_element->load ( config->getString("CARD_ELEMENTS") ) == false )
+  if( this->card_element->load( config->getString("CARD_ELEMENTS"), false, nom::Texture::Access::Streaming ) == false )
   {
     NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
@@ -96,20 +96,20 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
   // Rescale our game resources if necessary.
   if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
   {
-/* FIXME
-    this->card_text->resize ( nom::Texture::ResizeAlgorithm::scale2x );
-*/
-    //this->card_face->resize ( nom::Image::ResizeAlgorithm::scale2x );
-    //this->card_element->resize ( nom::Image::ResizeAlgorithm::scale2x );
+    // FIXME: (see nomlib's "feature/Image_Resize" branch):
+    // this->card_text->resize( nom::Texture::ResizeAlgorithm::scale2x );
+
+    this->card_face->resize( nom::Texture::ResizeAlgorithm::scale2x );
+    this->card_element->resize( nom::Texture::ResizeAlgorithm::scale2x );
   }
   else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
   {
-/* FIXME
-    this->card_text->resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    this->card_face->resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    //this->card_background->resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    this->card_element->resize ( nom::Texture::ResizeAlgorithm::hq2x );
-*/
+    // FIXME: (see nomlib's "feature/Image_Resize" branch):
+    // this->card_text->resize( nom::Texture::ResizeAlgorithm::hq2x );
+
+    this->card_face->resize( nom::Texture::ResizeAlgorithm::hq2x );
+    // this->card_background->resize( nom::Texture::ResizeAlgorithm::hq2x );
+    this->card_element->resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   return true;

@@ -75,7 +75,7 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
   #if ! defined( NDEBUG )  // Debug target build
     NOM_LOG_INFO( TTCARDS, "DEBUG build" );
 
-    // Enable info log level and greater for our engine
+    // Enable info log level and greater for our engine (deprecated)
     nom::SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_INFO );
 
     // Enable logging of all messages in the game
@@ -293,13 +293,13 @@ bool Game::on_init ( void )
     return false;
   }
 
-  if( this->menu_elements.load( this->config.getString("MENU_ELEMENTS") ) == false )
+  if( this->menu_elements.load( this->config.getString("MENU_ELEMENTS"), false, nom::Texture::Access::Streaming ) == false )
   {
     NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("MENU_ELEMENTS") );
     return false;
   }
 
-  if( this->background.load( this->config.getString("BOARD_BACKGROUND"), 0 ) == false )
+  if( this->background.load( this->config.getString("BOARD_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("BOARD_BACKGROUND") );
     rectangle.draw ( this->window );
@@ -308,11 +308,11 @@ bool Game::on_init ( void )
   {
     if ( this->config.getString("SCALE_ALGORITHM") == "scale2x" )
     {
-      // FIXME: this->background.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+      this->background.resize( nom::Texture::ResizeAlgorithm::scale2x );
     }
     else if ( this->config.getString("SCALE_ALGORITHM") == "hqx" )
     {
-      // FIXME: this->background.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+      this->background.resize( nom::Texture::ResizeAlgorithm::hq2x );
     }
 
 //this->background.draw( this->window );
@@ -348,13 +348,13 @@ bool Game::on_init ( void )
     return false;
   }
 
-  if ( this->gameover_background.load ( this->config.getString("GAMEOVER_BACKGROUND"), 0 ) == false )
+  if ( this->gameover_background.load( this->config.getString("GAMEOVER_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_BACKGROUND") );
     return false;
   }
 
-  if ( this->cursor.load ( this->config.getString("INTERFACE_CURSOR"), 0 ) == false )
+  if ( this->cursor.load( this->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR") );
     return false;
@@ -375,25 +375,25 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   // Rescale our game resources if necessary.
   if ( this->config.getString("SCALE_ALGORITHM") == "scale2x" )
   {
-/*
-    this->info_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    this->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    this->info_small_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    this->cursor.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    this->menu_elements.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    this->gameover_background.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-*/
+    // FIXME: (see nomlib's "feature/Image_Resize" branch):
+    // this->info_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    // this->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+    // this->info_small_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
+
+    this->cursor.resize( nom::Texture::ResizeAlgorithm::scale2x );
+    this->menu_elements.resize( nom::Texture::ResizeAlgorithm::scale2x );
+    this->gameover_background.resize( nom::Texture::ResizeAlgorithm::scale2x );
   }
   else if ( this->config.getString("SCALE_ALGORITHM") == "hqx" )
   {
-/* FIXME
-    this->info_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    this->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    this->info_small_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    this->cursor.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    this->menu_elements.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    this->gameover_background.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-*/
+    // FIXME: (see nomlib's "feature/Image_Resize" branch):
+    // this->info_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    // this->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+    // this->info_small_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
+
+    this->cursor.resize( nom::Texture::ResizeAlgorithm::hq2x );
+    this->menu_elements.resize( nom::Texture::ResizeAlgorithm::hq2x );
+    this->gameover_background.resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   // Load optional audio resources

@@ -24,6 +24,8 @@
     "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
     "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
     "SCALE_ALGORITHM" : "",
+    // "SCALE_ALGORITHM" : "scale2x",
+    // "SCALE_ALGORITHM" : "hqx",
     "SCORE_FONTFACE" : "fonts/TimesNewRoman.ttf",
     "SFX_LOAD_GAME" : "audio/load_game.wav",
     "SFX_SAVE_GAME" : "audio/save_game.wav",
