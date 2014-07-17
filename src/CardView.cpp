@@ -119,7 +119,6 @@ void CardView::draw_face_down ( nom::IDrawable::RenderTarget& target, nom::int32
 {
   this->card_face->set_frame ( NOFACE_ID );
   this->card_face->set_position ( Point2i(x, y) );
-  this->card_face->update();
   this->card_face->draw ( target );
 }
 
@@ -177,9 +176,7 @@ void CardView::draw_face  (
 {
   this->card_face->set_frame ( face_id );
 
-  //this->card_face->setPosition ( this->position );
   this->card_face->set_position ( nom::Point2i ( x, y ) );
-  this->card_face->update();
   this->card_face->draw ( target );
 }
 
@@ -202,9 +199,7 @@ void CardView::draw_element (
     case WIND: this->card_element->set_frame ( ELEMENT_WIND ); break;
   }
 
-  //this->card_element->setPosition ( this->position.x, this->position.y );
   this->card_element->set_position ( nom::Point2i ( x, y ) );
-  this->card_element->update();
   this->card_element->draw ( target );
 }
 
@@ -222,9 +217,7 @@ void CardView::draw_text  (
     this->card_text->set_text ( std::to_string ( rank ) );
   }
 
-  //this->card_text->set_position ( this->position );
   this->card_text->set_position ( nom::Point2i ( x, y ) );
-//this->card_text->update();
   this->card_text->draw ( target );
 }
 

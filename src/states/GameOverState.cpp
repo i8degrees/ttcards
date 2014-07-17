@@ -238,7 +238,7 @@ void GameOverState::on_pause ( nom::void_ptr data )
 {
   // Hide the cursor so that it doesn't show up during undesirable states such
   // as during the ContinueMenu or Pause states.
-  this->cursor.set_frame ( INTERFACE_CURSOR_NONE );
+  this->cursor.set_frame( INTERFACE_CURSOR_NONE );
   this->cursor.update();
 }
 

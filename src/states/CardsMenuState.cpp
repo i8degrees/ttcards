@@ -258,7 +258,6 @@ void CardsMenuState::on_update ( float delta_time )
   this->game->card.update();
 
   this->updateCursor();
-  //this->game->menu_elements.Update();
 
   this->game->window.update();
 }
@@ -332,7 +331,6 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     else
       this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT );
 
-    this->game->menu_elements.update();
     this->game->menu_elements.draw ( target );
 
     // Draw the card's name onto our menu box
@@ -374,7 +372,6 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     {
       this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_PAGE_LEFT );
       this->game->menu_elements.set_position ( nom::Point2i( MENU_CARDS_PAGE_LEFT_ORIGIN_X, MENU_CARDS_PAGE_LEFT_ORIGIN_Y ) );
-      this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
     }
 
@@ -382,7 +379,6 @@ void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
     {
       this->game->menu_elements.set_frame ( INTERFACE_MENU_ELEMENT_PAGE_RIGHT );
       this->game->menu_elements.set_position ( nom::Point2i( MENU_CARDS_PAGE_RIGHT_ORIGIN_X, MENU_CARDS_PAGE_RIGHT_ORIGIN_Y ) );
-      this->game->menu_elements.update();
       this->game->menu_elements.draw ( target );
     }
 
