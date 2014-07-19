@@ -363,7 +363,7 @@ void GameOverState::on_user_event( const nom::Event& ev )
   // Nothing to do; not the right event type for us!
   if ( ev.type != SDL_USEREVENT ) return;
 
-  if ( ev.user.code == GameEvent::UIEvent )
+  if ( ev.user.code == GameEvent::GUIEvent )
   {
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_info_box->set_message_text( selected_card.getName() );

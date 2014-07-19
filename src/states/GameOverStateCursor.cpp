@@ -98,7 +98,7 @@ void GameOverStateCursor::next ( void )
     this->card_position->next();
 
     nom::Event ev;
-    ev.user.code = GameEvent::UIEvent;
+    ev.user.code = GameEvent::GUIEvent;
     ev.user.data1 = nullptr;
     ev.user.data2 = nullptr;
     ev.user.window_id = 0;
@@ -113,7 +113,7 @@ void GameOverStateCursor::previous ( void )
     this->card_position->previous();
 
     nom::Event ev;
-    ev.user.code = GameEvent::UIEvent;
+    ev.user.code = GameEvent::GUIEvent;
     ev.user.data1 = nullptr;
     ev.user.data2 = nullptr;
     ev.user.window_id = 0;

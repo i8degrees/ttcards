@@ -366,7 +366,7 @@ enum GameEvent: nom::int32
 {
   AnimationEvent,
   DebugEvent = 0,
-  UIEvent,
+  GUIEvent,
   AudioEvent
 };
 

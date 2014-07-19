@@ -77,10 +77,10 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
   this->question_box->set_selection( 0 ); // Match the starting position of
                                           // the cursor
 
-  this->question_box->register_event_listener( nom::UIEvent::MOUSE_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_mouse_event( ev ); } ) );
-  this->question_box->register_event_listener( nom::UIEvent::MOUSE_DCLICK, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_mouse_dclick( ev ); } ) );
-  this->question_box->register_event_listener( nom::UIEvent::MOUSE_WHEEL, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_wheel( ev ); } ) );
-  this->question_box->register_event_listener( nom::UIEvent::KEY_DOWN, nom::UIEventCallback( [&] ( nom::UIWidgetEvent& ev ) { this->on_key_event( ev ); } ) );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DOWN, this->on_mouse_event( ev ) );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DCLICK, this->on_mouse_dclick( ev ) );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_WHEEL, this->on_wheel( ev ) );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::KEY_DOWN, this->on_key_event( ev ) );
 
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
@@ -200,13 +200,17 @@ void ContinueMenuState::on_user_event( const nom::Event& ev )
   }
 }
 
-void ContinueMenuState::on_key_event( const nom::UIWidgetEvent& ev )
+void ContinueMenuState::on_key_event( nom::UIEvent* ev )
 {
-  nom::Event event = ev.event();
+  nom::UIWidgetEvent* event = NOM_DYN_PTR_CAST( nom::UIWidgetEvent*, ev->etype() );
 
-  // if( event.type != SDL_KEYDOWN ) return;
+  if( event == nullptr ) return;
 
-  switch( event.key.sym )
+  nom::Event evt = event->event();
+
+  if( evt.type != SDL_KEYDOWN ) return;
+
+  switch( evt.key.sym )
   {
     default: break;
 
@@ -221,14 +225,20 @@ void ContinueMenuState::on_key_event( const nom::UIWidgetEvent& ev )
   } // end switch ( key )
 }
 
-void ContinueMenuState::on_mouse_event( const nom::UIWidgetEvent& ev )
+void ContinueMenuState::on_mouse_event( nom::UIEvent* ev )
 {
+  nom::UIWidgetEvent* event = NOM_DYN_PTR_CAST( nom::UIWidgetEvent*, ev->etype() );
+
+  if( event == nullptr ) return;
+
+  // nom::Event evt = event->event();
+
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, event->index() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, event->text() );
 
    // Obtain the option label text chosen by index.
-  switch( ev.index() )
+  switch( event->index() )
   {
     default: /* Do nothing */ break;
 
@@ -246,14 +256,20 @@ void ContinueMenuState::on_mouse_event( const nom::UIWidgetEvent& ev )
   }
 }
 
-void ContinueMenuState::on_mouse_dclick( const nom::UIWidgetEvent& ev )
+void ContinueMenuState::on_mouse_dclick( nom::UIEvent* ev )
 {
+  nom::UIWidgetEvent* event = NOM_DYN_PTR_CAST( nom::UIWidgetEvent*, ev->etype() );
+
+  if( event == nullptr ) return;
+
+  // nom::Event evt = event->event();
+
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, event->index() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, event->text() );
 
    // Obtain the option label text chosen by index.
-  switch( ev.index() )
+  switch( event->index() )
   {
     default: /* Do nothing */ break;
 
@@ -271,21 +287,25 @@ void ContinueMenuState::on_mouse_dclick( const nom::UIWidgetEvent& ev )
   }
 }
 
-void ContinueMenuState::on_wheel( const nom::UIWidgetEvent& ev )
+void ContinueMenuState::on_wheel( nom::UIEvent* ev )
 {
-  nom::Event event = ev.event();
+  nom::UIWidgetEvent* event = NOM_DYN_PTR_CAST( nom::UIWidgetEvent*, ev->etype() );
+
+  if( event == nullptr ) return;
+
+  nom::Event evt = event->event();
 
   // Do not check mouse wheel state unless it is a valid event; we receive
   // invalid data here if we do not check for this.
-  if( event.type != SDL_MOUSEWHEEL ) return;
+  if( evt.type != SDL_MOUSEWHEEL ) return;
 
   int selection = this->question_box->selection();
 
-  if ( event.wheel.y > 0 && selection > 0 ) // Up
+  if ( evt.wheel.y > 0 && selection > 0 ) // Up
   {
     this->cursor.move_up();
   }
-  else if (event.wheel.y < 0 && selection < this->question_box->items_size() )
+  else if( evt.wheel.y < 0 && selection < this->question_box->items_size() )
   {
     this->cursor.move_down();
   }
