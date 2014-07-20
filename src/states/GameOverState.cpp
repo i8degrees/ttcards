@@ -208,9 +208,9 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   {
 */
     // Play "You won!" music track
-    this->game->music_track.Stop();
+    this->game->music_track->Stop();
 #if ! defined (NOM_DEBUG)
-    this->game->winning_track.Play();
+    this->game->winning_track->Play();
 #endif
 
   //}
@@ -231,7 +231,7 @@ void GameOverState::on_exit ( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  this->game->winning_track.Stop();
+  this->game->winning_track->Stop();
 }
 
 void GameOverState::on_pause ( nom::void_ptr data )
@@ -318,7 +318,7 @@ void GameOverState::on_mouse_left_button_down( const nom::Event& ev )
 
       this->card_info_box->set_message_text( selected_card.getName() );
 
-      this->game->cursor_move.Play();
+      this->game->cursor_move->Play();
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
       // bug from cropping back up!
@@ -368,7 +368,7 @@ void GameOverState::on_user_event( const nom::Event& ev )
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_info_box->set_message_text( selected_card.getName() );
 
-    this->game->cursor_move.Play();
+    this->game->cursor_move->Play();
   }
   else if ( ev.user.code == GameEvent::AnimationEvent )
   {
@@ -384,12 +384,12 @@ void GameOverState::on_user_event( const nom::Event& ev )
 
       this->game->hand[1].cards[card_pos].setPlayerID(Card::PLAYER1);
 
-      this->game->card_flip.Play();
+      this->game->card_flip->Play();
     }
     else
     {
       //this->info_box->diable();
-      this->game->cursor_wrong.Play();
+      this->game->cursor_wrong->Play();
     }
   }
 }

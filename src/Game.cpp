@@ -42,6 +42,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 Game::Game ( void ) :
+  audio_dev_{ nullptr },
+  listener_{ nullptr },
+  sound_buffers{ nullptr },
+  cursor_move{ nullptr },
+  cursor_cancel{ nullptr },
+  cursor_wrong{ nullptr },
+  card_place{ nullptr },
+  card_flip{ nullptr },
+  load_game{ nullptr },
+  save_game{ nullptr },
+  music_track{ nullptr },
+  winning_track{ nullptr },
   game { this, tt::free_game }
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
@@ -396,67 +408,111 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     this->gameover_background.resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
+  // Quick and dirty method of toggling the use of nomlib's audio subsystem
+  // #undef NOM_USE_OPENAL
+
+  // Initialize audio subsystem...
+  #if defined( NOM_USE_OPENAL )
+    this->audio_dev_ = new nom::AudioDevice();
+    this->listener_ = new nom::Listener();
+  #else
+    this->audio_dev_ = new nom::NullAudioDevice();
+    this->listener_ = new nom::NullListener();
+  #endif // defined NOM_USE_OPENAL
+
+  for( auto idx = 0; idx != NUM_SOUND_BUFFERS; ++idx )
+  {
+    #if defined( NOM_USE_OPENAL )
+      this->sound_buffers[idx] = new nom::SoundBuffer();
+    #else
+      this->sound_buffers[idx] = new nom::NullSoundBuffer();
+    #endif // defined NOM_USE_OPENAL
+  }
+
   // Load optional audio resources
-  if ( this->sound_buffers[0].load ( this->config.getString("CURSOR_MOVE") ) == false )
+  if ( this->sound_buffers[0]->load( this->config.getString("CURSOR_MOVE") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_MOVE") );
   }
 
-  if ( this->sound_buffers[1].load ( this->config.getString("CURSOR_CANCEL") ) == false )
+  if ( this->sound_buffers[1]->load( this->config.getString("CURSOR_CANCEL") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_CANCEL") );
   }
 
-  if ( this->sound_buffers[2].load ( this->config.getString("CURSOR_WRONG") ) == false )
+  if ( this->sound_buffers[2]->load( this->config.getString("CURSOR_WRONG") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_WRONG") );
   }
 
-  if ( this->sound_buffers[3].load ( this->config.getString("CARD_PLACE") ) == false )
+  if ( this->sound_buffers[3]->load( this->config.getString("CARD_PLACE") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_PLACE") );
   }
 
-  if ( this->sound_buffers[4].load ( this->config.getString("CARD_FLIP") ) == false )
+  if ( this->sound_buffers[4]->load( this->config.getString("CARD_FLIP") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FLIP") );
   }
 
-  if ( this->sound_buffers[5].load ( this->config.getString("SFX_LOAD_GAME") ) == false )
+  if ( this->sound_buffers[5]->load( this->config.getString("SFX_LOAD_GAME") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("SFX_LOAD_GAME") );
   }
 
-  if ( this->sound_buffers[6].load ( this->config.getString("SFX_SAVE_GAME") ) == false )
+  if ( this->sound_buffers[6]->load( this->config.getString("SFX_SAVE_GAME") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("SFX_SAVE_GAME") );
   }
 
-  if ( this->sound_buffers[7].load ( this->config.getString("MUSIC_TRACK") ) == false )
+  if ( this->sound_buffers[7]->load( this->config.getString("MUSIC_TRACK") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("MUSIC_TRACK") );
   }
 
-  if ( this->sound_buffers[8].load ( this->config.getString("MUSIC_WIN_TRACK") ) == false )
+  if ( this->sound_buffers[8]->load( this->config.getString("MUSIC_WIN_TRACK") ) == false )
   {
     NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("MUSIC_WIN_TRACK") );
   }
 
-  this->cursor_move.setBuffer ( this->sound_buffers[0] );
-  this->cursor_cancel.setBuffer ( this->sound_buffers[1] );
-  this->cursor_wrong.setBuffer ( this->sound_buffers[2] );
-  this->card_place.setBuffer ( this->sound_buffers[3] );
-  this->card_flip.setBuffer ( this->sound_buffers[4] );
-  this->load_game.setBuffer ( this->sound_buffers[5] );
-  this->save_game.setBuffer ( this->sound_buffers[6] );
-  this->music_track.setBuffer ( this->sound_buffers[7] );
-  this->winning_track.setBuffer ( this->sound_buffers[8] );
+  #if defined( NOM_USE_OPENAL )
+    this->cursor_move = new nom::Sound();
+    this->cursor_cancel = new nom::Sound();
+    this->cursor_wrong = new nom::Sound();
+    this->card_place = new nom::Sound();
+    this->card_flip = new nom::Sound();
+    this->load_game = new nom::Sound();
+    this->save_game = new nom::Sound();
+    this->music_track = new nom::Music();
+    this->winning_track = new nom::Music();
 
-  this->music_track.Play();
+    this->cursor_move->setBuffer( *this->sound_buffers[0] );
+    this->cursor_cancel->setBuffer( *this->sound_buffers[1] );
+    this->cursor_wrong->setBuffer( *this->sound_buffers[2] );
+    this->card_place->setBuffer( *this->sound_buffers[3] );
+    this->card_flip->setBuffer( *this->sound_buffers[4] );
+    this->load_game->setBuffer( *this->sound_buffers[5] );
+    this->save_game->setBuffer( *this->sound_buffers[6] );
+    this->music_track->setBuffer( *this->sound_buffers[7] );
+    this->winning_track->setBuffer( *this->sound_buffers[8] );
+  #else
+    this->cursor_move = new nom::NullSound();
+    this->cursor_cancel = new nom::NullSound();
+    this->cursor_wrong = new nom::NullSound();
+    this->card_place = new nom::NullSound();
+    this->card_flip = new nom::NullSound();
+    this->load_game = new nom::NullSound();
+    this->save_game = new nom::NullSound();
+    this->music_track = new nom::NullMusic();
+    this->winning_track = new nom::NullMusic();
+  #endif // defined NOM_USE_OPENAL
 
-#if defined (NOM_DEBUG)
-  this->music_track.Pause();
-#endif
+  this->music_track->Play();
+
+  #if defined (NOM_DEBUG)
+    this->music_track->Pause();
+  #endif
+
   return true;
 }
 
@@ -490,20 +546,20 @@ void Game::on_key_down( const nom::Event& ev )
     {
       if ( ev.key.mod == KMOD_LSHIFT ) // Pause music
       {
-        this->music_track.togglePause();
-        this->winning_track.togglePause();
+        this->music_track->togglePause();
+        this->winning_track->togglePause();
         break;
       }
 
       // Global volume level in game
-      float current_volume = this->listener.getVolume();
+      float current_volume = this->listener_->getVolume();
       if ( current_volume >= 100.0 )
       {
-        this->listener.setVolume ( 0.0 );
+        this->listener_->setVolume( 0.0 );
       }
       else if ( current_volume <= 0.0 )
       {
-        this->listener.setVolume ( 100.0 );
+        this->listener_->setVolume( 100.0 );
       }
 
       break;

@@ -168,13 +168,13 @@ void CardsMenuState::on_key_down( const nom::Event& ev )
     case SDLK_UP: this->moveCursorUp(); break;
     case SDLK_DOWN: this->moveCursorDown(); break;
 
-    case SDLK_d: if ( this->game->hand[0].erase( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
+    case SDLK_d: if ( this->game->hand[0].erase( this->selectedCard ) ) this->game->cursor_cancel->Play(); break;
 
     case SDLK_SPACE:
     {
       if ( this->game->hand[0].push_back ( this->selectedCard ) )
       {
-        this->game->card_place.Play();
+        this->game->card_place->Play();
       }
       break;
     }
@@ -193,8 +193,8 @@ void CardsMenuState::on_joy_button_down( const nom::Event& ev )
     case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
 
     case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
-    case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].erase ( this->selectedCard ) ) this->game->cursor_cancel.Play(); break;
-    case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].push_back ( this->selectedCard ) ) this->game->card_place.Play(); break;
+    case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].erase ( this->selectedCard ) ) this->game->cursor_cancel->Play(); break;
+    case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].push_back ( this->selectedCard ) ) this->game->card_place->Play(); break;
 
     case nom::PSXBUTTON::START:
     {
@@ -213,14 +213,14 @@ void CardsMenuState::on_mouse_middle_button_down( const nom::Event& ev )
 {
   if ( this->game->hand[0].push_back ( this->selectedCard ) )
   {
-    this->game->card_place.Play();
+    this->game->card_place->Play();
   }
 }
 
 void CardsMenuState::on_mouse_right_button_down( const nom::Event& ev )
 {
   if ( this->game->hand[0].push_back ( this->selectedCard ) )
-    this->game->card_place.Play();
+    this->game->card_place->Play();
 }
 
 void CardsMenuState::on_mouse_wheel( const nom::Event& ev )
@@ -248,7 +248,7 @@ void CardsMenuState::on_mouse_wheel( const nom::Event& ev )
       this->moveCursorDown();
     }
   }
-  this->game->cursor_move.Play();
+  this->game->cursor_move->Play();
 }
 
 void CardsMenuState::on_update ( float delta_time )
@@ -456,7 +456,7 @@ void CardsMenuState::moveCursorLeft ( void )
     if ( current_index > 0 )
     {
       current_index -= per_page;
-      this->game->cursor_move.Play();
+      this->game->cursor_move->Play();
     }
   }
 }
@@ -474,7 +474,7 @@ void CardsMenuState::moveCursorRight ( void )
     if ( current_index < Card::CARDS_COLLECTION - per_page )
     {
       current_index += per_page;
-      this->game->cursor_move.Play();
+      this->game->cursor_move->Play();
     }
   }
 }
@@ -493,7 +493,7 @@ void CardsMenuState::moveCursorUp ( void )
       pos = this->current_index + this->getCursorPos();
       this->selectedCard = this->game->collection.cards[pos];
 
-      this->game->cursor_move.Play();
+      this->game->cursor_move->Play();
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";
@@ -517,7 +517,7 @@ void CardsMenuState::moveCursorDown ( void )
       pos = current_index + this->getCursorPos();
       this->selectedCard = this->game->collection.cards[pos];
 
-      this->game->cursor_move.Play();
+      this->game->cursor_move->Play();
 
       #ifdef DEBUG_CARDS_MENU_CURSOR
         std::cout << "\npos: " << pos << "\n";

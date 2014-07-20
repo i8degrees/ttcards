@@ -196,7 +196,7 @@ void ContinueMenuState::on_user_event( const nom::Event& ev )
 
   if ( ev.user.code == GameEvent::AudioEvent )
   {
-    this->game->cursor_move.Play();
+    this->game->cursor_move->Play();
   }
 }
 
@@ -356,6 +356,6 @@ void ContinueMenuState::send_response ( void )
   else
   {
     // This should never be heard!
-    this->game->cursor_wrong.Play();
+    this->game->cursor_wrong->Play();
   }
 }

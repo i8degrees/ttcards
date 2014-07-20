@@ -74,41 +74,42 @@ class Game: public nom::SDLApp
     void set_state ( nom::uint32 id, nom::void_ptr data = nullptr );
 
     /// Audio subsystem
-    nom::OpenAL::AudioDevice dev;
+    nom::IAudioDevice* audio_dev_;
 
     /// Master volume control
-    nom::OpenAL::Listener listener;
+    nom::IListener* listener_;
+
+    static const int NUM_SOUND_BUFFERS = 9;
 
     /// Audio buffers (one buffer per sound)
-    nom::OpenAL::SoundBuffer sound_buffers[12]; // Four buffers are intentionally
-                                                // left unallocated
+    nom::ISoundBuffer* sound_buffers[NUM_SOUND_BUFFERS];
 
     /// Cursor has been moved sound event
-    nom::OpenAL::Sound cursor_move;
+    nom::ISoundSource* cursor_move;
 
     /// Action has been canceled sound event
-    nom::OpenAL::Sound cursor_cancel;
+    nom::ISoundSource* cursor_cancel;
 
     /// Invalid action sound event
-    nom::OpenAL::Sound cursor_wrong;
+    nom::ISoundSource* cursor_wrong;
 
     /// Card has been placed sound event
-    nom::OpenAL::Sound card_place;
+    nom::ISoundSource* card_place;
 
     /// Card has been flipped sound event
-    nom::OpenAL::Sound card_flip;
+    nom::ISoundSource* card_flip;
 
     /// Load saved game sound event
-    nom::OpenAL::Sound load_game;
+    nom::ISoundSource* load_game;
 
     /// Save game sound event
-    nom::OpenAL::Sound save_game;
+    nom::ISoundSource* save_game;
 
     /// Theme song track
-    nom::OpenAL::Music music_track;
+    nom::ISoundSource* music_track;
 
     /// Player 1 has won track
-    nom::OpenAL::Music winning_track;
+    nom::ISoundSource* winning_track;
 
     // Font resources
     nom::Font info_text;

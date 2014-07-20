@@ -224,7 +224,7 @@ void PlayState::on_key_down( const nom::Event& ev )
       if ( this->game->hand[0].save( USER_PLAYER1_FILENAME ) == false )
       {
         NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER1_FILENAME );
-        this->game->cursor_wrong.Play();
+        this->game->cursor_wrong->Play();
         break;
       }
 
@@ -233,7 +233,7 @@ void PlayState::on_key_down( const nom::Event& ev )
       if ( this->game->hand[1].save( USER_PLAYER2_FILENAME ) == false )
       {
         NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER2_FILENAME );
-        this->game->cursor_wrong.Play();
+        this->game->cursor_wrong->Play();
         break;
       }
 
@@ -242,13 +242,13 @@ void PlayState::on_key_down( const nom::Event& ev )
       if ( this->game->board.save( USER_BOARD_FILENAME ) == false )
       {
         NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
-        this->game->cursor_wrong.Play();
+        this->game->cursor_wrong->Play();
         break;
       }
 
       NOM_LOG_INFO ( TTCARDS, "Saved board data at: " + std::string(USER_BOARD_FILENAME) );
 
-      this->game->save_game.Play(); // Successful saved game!
+      this->game->save_game->Play(); // Successful saved game!
     }
     break;
 
@@ -259,7 +259,7 @@ void PlayState::on_key_down( const nom::Event& ev )
         if ( this->game->hand[0].load ( "Debug" + path.native() + "player1_unbeatable.json" ) == false )
         {
           NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + std::string("player1_unbeatable.json") );
-          this->game->cursor_wrong.Play();
+          this->game->cursor_wrong->Play();
           break;
         }
         NOM_LOG_INFO ( TTCARDS, "Loaded player 1 data from: " + std::string("player1_unbeatable.json") );
@@ -269,7 +269,7 @@ void PlayState::on_key_down( const nom::Event& ev )
         if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
         {
           NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_PLAYER1_FILENAME );
-          this->game->cursor_wrong.Play();
+          this->game->cursor_wrong->Play();
           break;
         }
         NOM_LOG_INFO ( TTCARDS, "Loaded player 1 data from: " + std::string(USER_PLAYER1_FILENAME) );
@@ -277,7 +277,7 @@ void PlayState::on_key_down( const nom::Event& ev )
       if ( this->game->hand[1].load( USER_PLAYER2_FILENAME ) == false )
       {
         NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_PLAYER2_FILENAME );
-        this->game->cursor_wrong.Play();
+        this->game->cursor_wrong->Play();
         break;
       }
       NOM_LOG_INFO ( TTCARDS, "Loaded player 2 data from: " + std::string(USER_PLAYER2_FILENAME) );
@@ -285,7 +285,7 @@ void PlayState::on_key_down( const nom::Event& ev )
       if ( this->game->board.load( USER_BOARD_FILENAME ) == false )
       {
         NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_BOARD_FILENAME );
-        this->game->cursor_wrong.Play();
+        this->game->cursor_wrong->Play();
         break;
       }
 
@@ -295,7 +295,7 @@ void PlayState::on_key_down( const nom::Event& ev )
       this->updateScore();
       this->resetCursor();
 
-      this->game->load_game.Play();
+      this->game->load_game->Play();
     }
     break;
 
@@ -479,7 +479,7 @@ void PlayState::on_mouse_left_button_down( const nom::Event& ev )
 
       this->game->cursor.set_position ( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
 
-      this->game->cursor_move.Play();
+      this->game->cursor_move->Play();
 
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
@@ -662,7 +662,7 @@ void PlayState::unlockSelectedCard ( void )
 
   this->lockCursor ( false );
 
-  this->game->cursor_cancel.Play();
+  this->game->cursor_cancel->Play();
 }
 
 // helper method for cursor input selection
@@ -762,7 +762,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
   {
     if ( player_turn == PLAYER1 && this->game->board ( x, y ) != BAD_CARD_ID )
     {
-      this->game->cursor_wrong.Play();
+      this->game->cursor_wrong->Play();
     }
 
     if ( this->game->board ( x, y ) == BAD_CARD_ID )
@@ -770,7 +770,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
       this->game->board.updateStatus ( x, y, this->game->hand[ player_turn ].getSelectedCard() );
       this->game->hand[ player_turn ].erase ( this->game->hand[ player_turn ].getSelectedCard() );
 
-      this->game->card_place.Play();
+      this->game->card_place->Play();
 
       std::vector<std::pair<int, int>> grid = this->game->board.checkBoard ( x, y );
 
@@ -779,7 +779,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
         if ( this->game->rules.getRules() == 0 )
         {
           this->game->board.flipCard ( grid[0].first, grid[0].second, player_turn + 1 );
-          this->game->card_flip.Play();
+          this->game->card_flip->Play();
         }
       }
 
@@ -788,7 +788,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
         for ( nom::int32 g = 0; g < grid.size(); g++ )
         {
           this->game->board.flipCard ( grid[g].first, grid[g].second, player_turn + 1 );
-          this->game->card_flip.Play();
+          this->game->card_flip->Play();
 
           std::vector<std::pair<int, int>> tgrid = this->game->board.checkBoard ( grid[g].first, grid[g].second );
 
@@ -800,7 +800,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
             for ( nom::int32 tg = 0; tg < tgrid.size(); tg++ )
             {
               this->game->board.flipCard( tgrid[tg].first, tgrid[tg].second, player_turn + 1 );
-              this->game->card_flip.Play();
+              this->game->card_flip->Play();
             }
           }
         }
@@ -843,7 +843,7 @@ void PlayState::moveCursorLeft ( void )
     if ( this->game->cursor.position().x > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
       this->game->cursor.move ( -( CARD_WIDTH ), 0 );
   }
-  this->game->cursor_move.Play();
+  this->game->cursor_move->Play();
 }
 
 void PlayState::moveCursorRight ( void )
@@ -853,7 +853,7 @@ void PlayState::moveCursorRight ( void )
     if ( this->game->cursor.position().x < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
       this->game->cursor.move ( ( CARD_WIDTH ), 0 );
   }
-  this->game->cursor_move.Play();
+  this->game->cursor_move->Play();
 }
 
 void PlayState::moveCursorUp ( void )
@@ -876,7 +876,7 @@ void PlayState::moveCursorUp ( void )
     if ( this->game->cursor.position().y > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
       this->game->cursor.move ( 0, -( CARD_HEIGHT ) );
   }
-  this->game->cursor_move.Play();
+  this->game->cursor_move->Play();
 }
 
 void PlayState::moveCursorDown ( void )
@@ -899,7 +899,7 @@ void PlayState::moveCursorDown ( void )
     if ( this->game->cursor.position().y < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
       this->game->cursor.move ( 0, ( CARD_HEIGHT ) );
   }
-  this->game->cursor_move.Play();
+  this->game->cursor_move->Play();
 }
 
 void PlayState::updateCursor ( void )
