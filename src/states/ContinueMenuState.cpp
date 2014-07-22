@@ -67,7 +67,7 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   // We need to use the height of the text font later for cursor calculations.
   this->question_box->set_message( "Are you sure?", this->game->info_text, nom::DEFAULT_FONT_SIZE );
-  this->question_box->set_message_alignment( nom::Text::Alignment::TopCenter );
+  this->question_box->set_message_alignment( nom::Anchor::TopCenter );
 
   std::string yes_label( "Yes" );
   std::string no_label( "No " );

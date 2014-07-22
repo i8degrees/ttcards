@@ -1098,7 +1098,7 @@ void PlayState::on_draw ( nom::IDrawable::RenderTarget& target )
 
     this->gameover_text.set_position ( pos );
     this->gameover_text.set_size ( size );
-    this->gameover_text.set_alignment ( nom::Text::Alignment::MiddleCenter );
+    this->gameover_text.set_alignment ( nom::Anchor::MiddleCenter );
     this->gameover_text.draw ( target );
     this->game->window.update();
 
