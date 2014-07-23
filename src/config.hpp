@@ -365,9 +365,13 @@ enum BoardPosition: nom::int32
 enum GameEvent: nom::int32
 {
   AnimationEvent,
-  DebugEvent = 0,
+  DebugEvent,
   GUIEvent,
-  AudioEvent
+  AudioEvent,
+
+  /// \remarks Starting event number for Game::State enum (to ensure unique
+  /// code identifiers).
+  NUM_EVENTS
 };
 
 #endif // GAMEAPP_CFG_HEADERS defined
