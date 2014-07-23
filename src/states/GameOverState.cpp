@@ -264,6 +264,8 @@ void GameOverState::on_resume ( nom::void_ptr data )
 
 void GameOverState::on_key_down( const nom::Event& ev )
 {
+  if( ev.type != SDL_KEYDOWN ) return;
+
   switch ( ev.key.sym )
   {
     default: /* Ignore non-mapped keys */ break;
@@ -275,11 +277,12 @@ void GameOverState::on_key_down( const nom::Event& ev )
       break;
     }
 
+    case SDLK_LEFT: this->cursor.move_left(); break;
+    case SDLK_RIGHT: this->cursor.move_right(); break;
+
     // Start a new game
     case SDLK_RETURN: this->game->set_state( Game::State::CardsMenu ); break;
 
-    case SDLK_LEFT: this->cursor.move_left(); break;
-    case SDLK_RIGHT: this->cursor.move_right(); break;
     case SDLK_SPACE:
     {
       this->selected_card = this->game->hand[1].getSelectedCard();

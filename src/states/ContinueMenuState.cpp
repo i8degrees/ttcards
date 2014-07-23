@@ -74,13 +74,13 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   this->question_box->append_choice( yes_label );
   this->question_box->append_choice( no_label );
-  this->question_box->set_selection( 0 ); // Match the starting position of
+  this->question_box->set_selection( 1 ); // Match the starting position of
                                           // the cursor
 
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DOWN, this->on_mouse_event );
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DCLICK, this->on_mouse_dclick );
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_WHEEL, this->on_wheel );
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::KEY_DOWN, this->on_key_event );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DOWN, this->on_gui_mouse_down );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DCLICK, this->on_gui_mouse_dclick );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_WHEEL, this->on_gui_mouse_wheel );
+  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::KEY_DOWN, this->on_gui_key_down );
 
   // Initialize interface cursor
   this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
@@ -120,6 +120,9 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
 
+  // Match starting position index of question box selection
+  this->cursor.move_down();
+
   this->question_box_window->insert_child( this->question_box );
 }
 
@@ -152,28 +155,13 @@ void ContinueMenuState::on_key_down( const nom::Event& ev )
 
     // case SDLK_UP: this->cursor.move_up(); break;
     // case SDLK_DOWN: this->cursor.move_down(); break;
-    case SDLK_SPACE:
-    {
-      this->send_response();
-      break;
-    }
+
+    // case SDLK_SPACE:
+    // {
+    //   // this->send_response();
+    //   break;
+    // }
   } // end switch ( key )
-}
-
-void ContinueMenuState::on_mouse_wheel( const nom::Event& ev )
-{
-  // Do not check mouse wheel state unless it is a valid event; we receive
-  // invalid data here if we do not check for this.
-  // if( ev.type != SDL_MOUSEWHEEL ) return;
-
-  // if ( ev.wheel.y > 0 )
-  // {
-  //   this->cursor.move_up();
-  // }
-  // else if (ev.wheel.y < 0 )
-  // {
-  //   this->cursor.move_down();
-  // }
 }
 
 void ContinueMenuState::on_joy_button_down( const nom::Event& ev )
@@ -198,15 +186,24 @@ void ContinueMenuState::on_user_event( const nom::Event& ev )
   {
     this->game->cursor_move->Play();
   }
+
+  // See note in on_gui_key_down
+  else if( ev.user.code == GameEvent::GUIEvent )
+  {
+    this->send_response();
+  }
 }
 
-void ContinueMenuState::on_key_event( const UIWidgetEvent& ev )
+void ContinueMenuState::on_gui_key_down( const UIWidgetEvent& ev )
 {
   nom::Event evt = ev.event();
 
   if( evt.type != SDL_KEYDOWN ) return;
 
-  switch( evt.key.sym )
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
+
+  switch( ev.index() )
   {
     default:
     {
@@ -214,27 +211,42 @@ void ContinueMenuState::on_key_event( const UIWidgetEvent& ev )
       break;
     }
 
-    case SDLK_UP:
+    case 0:
     {
       this->cursor.move_up();
       break;
     }
 
-    case SDLK_DOWN:
+    case 1:
     {
       this->cursor.move_down();
       break;
     }
+  }
 
-    case SDLK_SPACE:
-    {
-      // this->send_response();
-      break;
-    }
-  } // end switch ( key )
+  // This [1] crashes in the same predictable way the game does when using
+  // nomlib's input mapper -_- (Invalid memory access)
+  //
+  // Dispatching an event [2] works here
+  //
+  // Why do we not crash when the double mouse click callback is used???
+  if( evt.type == SDL_KEYDOWN && evt.key.sym == SDLK_SPACE )
+  {
+    // Alternative [2]
+    nom::Event ev;
+    nom::EventDispatcher pevent;
+    ev.user.code = GameEvent::GUIEvent;
+    ev.user.data1 = nullptr;
+    ev.user.data2 = nullptr;
+    ev.user.window_id = 0;
+    pevent.dispatch( ev );
+
+    // Crash happens here [1]
+    // this->send_response();
+  }
 }
 
-void ContinueMenuState::on_mouse_event( const nom::UIWidgetEvent& ev )
+void ContinueMenuState::on_gui_mouse_down( const nom::UIWidgetEvent& ev )
 {
   // nom::Event evt = ev.event();
 
@@ -265,7 +277,7 @@ void ContinueMenuState::on_mouse_event( const nom::UIWidgetEvent& ev )
   }
 }
 
-void ContinueMenuState::on_mouse_dclick( const nom::UIWidgetEvent& ev )
+void ContinueMenuState::on_gui_mouse_dclick( const nom::UIWidgetEvent& ev )
 {
   // nom::Event evt = ev.event();
 
@@ -296,7 +308,7 @@ void ContinueMenuState::on_mouse_dclick( const nom::UIWidgetEvent& ev )
   }
 }
 
-void ContinueMenuState::on_wheel( const nom::UIWidgetEvent& ev )
+void ContinueMenuState::on_gui_mouse_wheel( const nom::UIWidgetEvent& ev )
 {
   nom::Event evt = ev.event();
 
@@ -304,21 +316,38 @@ void ContinueMenuState::on_wheel( const nom::UIWidgetEvent& ev )
   // invalid data here if we do not check for this.
   if( evt.type != SDL_MOUSEWHEEL ) return;
 
-  int selection = this->question_box->selection();
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
 
-  if ( evt.wheel.y > 0 && selection > 0 ) // Up
+   // Obtain the option label text chosen by index.
+  switch( ev.index() )
   {
-    this->cursor.move_up();
-  }
-  else if( evt.wheel.y < 0 && selection < this->question_box->items_size() )
-  {
-    this->cursor.move_down();
+    default:
+    {
+      // Do nothing
+      break;
+    }
+
+    case 0:
+    {
+      this->cursor.move_up();
+      break;
+    }
+
+    case 1:
+    {
+      this->cursor.move_down();
+      break;
+    }
   }
 }
 
 void ContinueMenuState::on_event( const nom::Event& ev )
 {
-  this->question_box_window->process_event( ev );
+  if( this->question_box_window != nullptr )
+  {
+    this->question_box_window->process_event( ev );
+  }
 }
 
 void ContinueMenuState::on_update ( float delta_time )
@@ -351,12 +380,12 @@ void ContinueMenuState::send_response ( void )
   if ( choice == 0 )
   {
     nom::int32_ptr response = new nom::int32 (1);
-    this->game->pop_state(response);
+    this->game->pop_state_resume(response);
   }
   else if ( choice == 1 )
   {
     nom::int32_ptr response = nullptr;
-    this->game->pop_state(response);
+    this->game->pop_state_resume(response);
   }
   else
   {
