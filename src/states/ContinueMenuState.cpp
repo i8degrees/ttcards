@@ -366,7 +366,7 @@ void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
   this->cursor.draw ( target );
 }
 
-void ContinueMenuState::send_response ( void )
+void ContinueMenuState::send_response( void )
 {
   // We will use the positioning of the cursor to map user's response;
   //
@@ -380,12 +380,12 @@ void ContinueMenuState::send_response ( void )
   if ( choice == 0 )
   {
     nom::int32_ptr response = new nom::int32 (1);
-    this->game->pop_state_resume(response);
+    this->game->state()->pop_state_resume(response);
   }
   else if ( choice == 1 )
   {
     nom::int32_ptr response = nullptr;
-    this->game->pop_state_resume(response);
+    this->game->state()->pop_state_resume(response);
   }
   else
   {

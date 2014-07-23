@@ -245,6 +245,8 @@ bool Game::on_init ( void )
   nom::uint32 renderer_flags = SDL_RENDERER_PRESENTVSYNC;
   TODO */
 
+  this->set_state_machine( new nom::StateMachine() );
+
   if ( this->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
   {
     nom::DialogMessageBox ( "Critical Error", "Could not load configuration file at: " + TTCARDS_CONFIG_FILENAME );
@@ -702,7 +704,7 @@ int32_t Game::Run ( void )
   return NOM_EXIT_SUCCESS;
 }
 
-void Game::set_state ( nom::uint32 id, nom::void_ptr data )
+void Game::set_state( nom::uint32 id, nom::void_ptr data )
 {
   switch ( id )
   {
@@ -710,31 +712,31 @@ void Game::set_state ( nom::uint32 id, nom::void_ptr data )
 
     case Game::State::CardsMenu:
     {
-      SDLApp::set_state( CardsMenuStatePtr( new CardsMenuState( this->game ) ), data );
+      this->state()->set_state( CardsMenuStatePtr( new CardsMenuState( this->game ) ), data );
       break;
     }
 
     case Game::State::Play:
     {
-      SDLApp::set_state( PlayStatePtr( new PlayState( this->game ) ), data );
+      this->state()->set_state( PlayStatePtr( new PlayState( this->game ) ), data );
       break;
     }
 
     case Game::State::GameOver:
     {
-      SDLApp::set_state( GameOverStatePtr( new GameOverState( this->game, data ) ), data );
+      this->state()->set_state( GameOverStatePtr( new GameOverState( this->game, data ) ), data );
       break;
     }
 
     case Game::State::Pause:
     {
-      this->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
+      this->state()->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
       break;
     }
 
     case Game::State::ContinueMenu:
     {
-      this->push_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
+      this->state()->push_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
       break;
     }
   }

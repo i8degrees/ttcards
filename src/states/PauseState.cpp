@@ -93,7 +93,11 @@ void PauseState::on_key_down( const nom::Event& ev )
     default: break;
 
     // Exit pause state; resume previous state
-    case SDLK_p: this->game->pop_state_resume(); break;
+    case SDLK_p:
+    {
+      this->game->state()->pop_state_resume();
+      break;
+    }
   }
 }
 
@@ -104,7 +108,11 @@ void PauseState::on_joy_button_down( const nom::Event& ev )
     default: break;
 
     // Exit pause state; resume previous state
-    case nom::PSXBUTTON::START: this->game->pop_state_resume(); break;
+    case nom::PSXBUTTON::START:
+    {
+      this->game->state()->pop_state_resume();
+      break;
+    }
   }
 }
 

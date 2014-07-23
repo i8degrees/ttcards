@@ -74,7 +74,7 @@ class ContinueMenuState: public nom::IState
     void on_draw ( nom::IDrawable::RenderTarget& target );
 
     /// \brief Event handler for player's choice selection.
-    void send_response ( void );
+    void send_response( void );
 
     Game::SharedPtr game;
 
