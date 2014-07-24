@@ -74,7 +74,7 @@ class GameOverState: public nom::IState
     void on_user_event( const nom::Event& ev );
 
     void on_update ( float delta_time );
-    void on_draw ( nom::IDrawable::RenderTarget& target );
+    void on_draw( nom::RenderWindow& target );
 
     Game::SharedPtr game;
 

@@ -415,7 +415,7 @@ void GameOverState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void GameOverState::on_draw ( nom::IDrawable::RenderTarget& target )
+void GameOverState::on_draw( nom::RenderWindow& target )
 {
   this->game->gameover_background.draw ( target );
 

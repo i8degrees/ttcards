@@ -57,7 +57,7 @@ class CardsMenuState: public nom::IState
     void on_resume ( nom::void_ptr data );
 
     void on_update ( float delta_time );
-    void on_draw ( nom::IDrawable::RenderTarget& target );
+    void on_draw( nom::RenderWindow& target );
 
   private:
     void on_key_down( const nom::Event& ev );

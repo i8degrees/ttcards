@@ -730,13 +730,13 @@ void Game::set_state( nom::uint32 id, nom::void_ptr data )
 
     case Game::State::Pause:
     {
-      this->state()->push_state( PauseStatePtr( new PauseState( this->game ) ), data );
+      this->state()->set_state( PauseStatePtr( new PauseState( this->game ) ), data );
       break;
     }
 
     case Game::State::ContinueMenu:
     {
-      this->state()->push_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
+      this->state()->set_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
       break;
     }
   }

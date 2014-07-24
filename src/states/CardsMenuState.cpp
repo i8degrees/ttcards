@@ -262,7 +262,7 @@ void CardsMenuState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void CardsMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
+void CardsMenuState::on_draw( nom::RenderWindow& target )
 {
   unsigned int y_offset = MENU_CARDS_FIELD_ORIGIN_Y; // card text, helper elements, card numbers
 

@@ -1042,7 +1042,7 @@ void PlayState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void PlayState::on_draw ( nom::IDrawable::RenderTarget& target )
+void PlayState::on_draw( nom::RenderWindow& target )
 {
   this->game->background.draw ( target );
 

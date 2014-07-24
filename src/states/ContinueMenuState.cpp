@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::shared_ptr& object ) :
-  nom::IState { Game::State::ContinueMenu, nom::IState::StateFlags::BackRender },
+  nom::IState{ Game::State::ContinueMenu, nom::IState::Flags::BackRender, nom::IState::Type::Child },
   game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
   question_box_window{ nullptr },
   question_box{ nullptr }
@@ -189,12 +189,6 @@ void ContinueMenuState::on_user_event( const nom::Event& ev )
   {
     this->game->cursor_move->Play();
   }
-
-  // See note in on_gui_key_down
-  else if( ev.user.code == GameEvent::GUIEvent )
-  {
-    this->send_response();
-  }
 }
 
 void ContinueMenuState::on_gui_key_down( const UIWidgetEvent& ev )
@@ -227,25 +221,9 @@ void ContinueMenuState::on_gui_key_down( const UIWidgetEvent& ev )
     }
   }
 
-  // This [1] crashes in the same predictable way the game does when using
-  // nomlib's input mapper -_- (Invalid memory access)
-  //
-  // Dispatching an event [2] works here
-  //
-  // Why do we not crash when the double mouse click callback is used???
   if( evt.type == SDL_KEYDOWN && evt.key.sym == SDLK_SPACE )
   {
-    // Alternative [2]
-    nom::Event ev;
-    nom::EventDispatcher pevent;
-    ev.user.code = GameEvent::GUIEvent;
-    ev.user.data1 = nullptr;
-    ev.user.data2 = nullptr;
-    ev.user.window_id = 0;
-    pevent.dispatch( ev );
-
-    // Crash happens here [1]
-    // this->send_response();
+    this->send_response();
   }
 }
 
@@ -362,7 +340,7 @@ void ContinueMenuState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void ContinueMenuState::on_draw ( nom::IDrawable::RenderTarget& target )
+void ContinueMenuState::on_draw( nom::RenderWindow& target )
 {
   this->question_box_window->draw( target );
 
@@ -382,13 +360,13 @@ void ContinueMenuState::send_response( void )
 
   if ( choice == 0 )
   {
-    nom::int32_ptr response = new nom::int32 (1);
-    this->game->state()->pop_state_resume(response);
+    nom::int32_ptr response = new nom::int32( 1 );
+    this->game->state()->pop_state( response );
   }
   else if ( choice == 1 )
   {
     nom::int32_ptr response = nullptr;
-    this->game->state()->pop_state_resume(response);
+    this->game->state()->pop_state( response );
   }
   else
   {

@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
-  nom::IState { Game::State::Pause, nom::IState::StateFlags::BackRender },
+  nom::IState{ Game::State::Pause, nom::IState::Flags::BackRender, nom::IState::Type::Child },
   game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
   info_box_window{ nullptr },
   info_box{ nullptr }
@@ -95,7 +95,7 @@ void PauseState::on_key_down( const nom::Event& ev )
     // Exit pause state; resume previous state
     case SDLK_p:
     {
-      this->game->state()->pop_state_resume();
+      this->game->state()->pop_state( nullptr );
       break;
     }
   }
@@ -110,7 +110,7 @@ void PauseState::on_joy_button_down( const nom::Event& ev )
     // Exit pause state; resume previous state
     case nom::PSXBUTTON::START:
     {
-      this->game->state()->pop_state_resume();
+      this->game->state()->pop_state( nullptr );
       break;
     }
   }
@@ -130,7 +130,7 @@ void PauseState::on_update ( float delta_time )
   this->game->window.update();
 }
 
-void PauseState::on_draw ( nom::IDrawable::RenderTarget& target )
+void PauseState::on_draw( nom::RenderWindow& target )
 {
   this->info_box_window->draw( target );
 
