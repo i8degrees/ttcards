@@ -88,7 +88,7 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
     NOM_LOG_INFO( TTCARDS, "DEBUG build" );
 
     // Enable info log level and greater for our engine (deprecated)
-    nom::SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_INFO );
+    nom::SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_DEBUG );
 
     // Enable logging of all messages in the game
     nom::SDL2Logger::set_logging_priority( TTCARDS, SDL_LOG_PRIORITY_VERBOSE );

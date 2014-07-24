@@ -63,6 +63,9 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
 
   this->question_box->set_decorator( new nom::FinalFantasyDecorator() );
 
+  // The font used for choice text labels
+  this->question_box->set_font( this->game->info_text );
+
   this->question_box->set_title( "CHOICE", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
 
   // We need to use the height of the text font later for cursor calculations.
