@@ -251,14 +251,14 @@ void GameOverState::on_resume ( nom::void_ptr data )
 
   // "Yes" to verification of choice; we expect this response to be coming from
   // ContinueMenuState.
-  if ( response != nullptr && this->game->state()->previous_state() == Game::State::GameOver )
+  if( response != nullptr && this->game->state()->current_state_id() == Game::State::GameOver )
   {
     nom::Event ev;
     ev.user.code = GameEvent::AnimationEvent;
     ev.user.data1 = nullptr;
     ev.user.data2 = nullptr;
     ev.user.window_id = 0;
-    this->event.dispatch ( ev );
+    this->event.dispatch( ev );
   }
 }
 

@@ -48,6 +48,8 @@ PauseState::~PauseState ( void )
 
 void PauseState::on_init ( nom::void_ptr data )
 {
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
   Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
 
