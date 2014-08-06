@@ -88,19 +88,22 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
     NOM_LOG_INFO( TTCARDS, "DEBUG build" );
 
     // Enable info log level and greater for our engine (deprecated)
-    nom::SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_DEBUG );
+    nom::SDL2Logger::set_logging_priority( NOM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // Enable logging of all messages in the game
-    nom::SDL2Logger::set_logging_priority( TTCARDS, SDL_LOG_PRIORITY_VERBOSE );
+    nom::SDL2Logger::set_logging_priority( TTCARDS, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
-    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, SDL_LOG_PRIORITY_DEBUG );
-    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, SDL_LOG_PRIORITY_DEBUG );
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+
+    // DISABLE ME BEFORE COMMIT
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_EVENTS, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // Disable logging of all messages from GameConfig except for fatal errs.
-    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, SDL_LOG_PRIORITY_ERROR );
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, nom::LogPriority::NOM_LOG_PRIORITY_ERROR );
 
     // Enable logging of game state function traces
-    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE_STATES, SDL_LOG_PRIORITY_DEBUG );
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE_STATES, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
   #else // NDEBUG -- release target build
 
@@ -108,11 +111,11 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
 
     // Disable logging of all messages but critical log level (these are fatal)
     // under the scope of our engine, nomlib.
-    nom::SDL2Logger::set_logging_priority( NOM, SDL_LOG_PRIORITY_CRITICAL );
+    nom::SDL2Logger::set_logging_priority( NOM, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
     // Disable logging of all messages but critical log level (these are fatal)
     // under the scope of the game.
-    nom::SDL2Logger::set_logging_priority( TTCARDS, SDL_LOG_PRIORITY_CRITICAL );
+    nom::SDL2Logger::set_logging_priority( TTCARDS, nom::LogPriority::NOM_LOG_PRIORITY_CRITICAL );
 
   #endif
 
