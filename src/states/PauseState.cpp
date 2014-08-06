@@ -39,14 +39,14 @@ PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-PauseState::~PauseState ( void )
+PauseState::~PauseState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   NOM_DELETE_PTR( this->info_box_window );
 }
 
-void PauseState::on_init ( nom::void_ptr data )
+void PauseState::on_init( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -71,54 +71,42 @@ void PauseState::on_init ( nom::void_ptr data )
   this->blink_update.start();
 
   this->info_box_window->insert_child( this->info_box );
+
+  nom::InputActionMapper state;
+
+  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->state()->pop_state( nullptr ); } );
+
+  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
+  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+
+  this->game->input_mapper.erase( "PauseState" );
+  this->game->input_mapper.insert( "PauseState", state, true );
+  this->game->input_mapper.activate_only( "PauseState" );
+  this->game->input_mapper.activate( "Game" );
+
+  // Disable all input contexts and leave access to only the global input
+  // mappings
+
+  // this->game->input_mapper.disable();
+  // this->game->input_mapper.activate_only( "Game" );
 }
 
-void PauseState::on_exit ( nom::void_ptr data )
+void PauseState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void PauseState::on_pause ( nom::void_ptr data )
+void PauseState::on_pause( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void PauseState::on_resume ( nom::void_ptr data )
+void PauseState::on_resume( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void PauseState::on_key_down( const nom::Event& ev )
-{
-  switch ( ev.key.sym )
-  {
-    default: break;
-
-    // Exit pause state; resume previous state
-    case SDLK_p:
-    {
-      this->game->state()->pop_state( nullptr );
-      break;
-    }
-  }
-}
-
-void PauseState::on_joy_button_down( const nom::Event& ev )
-{
-  switch ( ev.jbutton.button )
-  {
-    default: break;
-
-    // Exit pause state; resume previous state
-    case nom::PSXBUTTON::START:
-    {
-      this->game->state()->pop_state( nullptr );
-      break;
-    }
-  }
-}
-
-void PauseState::on_update ( float delta_time )
+void PauseState::on_update( float delta_time )
 {
   this->info_box->set_title_text( "PAUSE" );
 

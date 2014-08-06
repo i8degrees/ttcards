@@ -54,22 +54,19 @@ class GameOverState: public nom::IState
                     nom::void_ptr state
                   );
 
-    ~GameOverState ( void );
+    ~GameOverState();
 
   private:
-    void on_init ( nom::void_ptr data );
-    void on_exit ( nom::void_ptr data );
+    void on_init( nom::void_ptr data );
+    void on_exit( nom::void_ptr data );
 
-    void on_pause ( nom::void_ptr data );
-    void on_resume ( nom::void_ptr data );
+    void on_pause( nom::void_ptr data );
+    void on_resume( nom::void_ptr data );
 
-    void on_key_down( const nom::Event& ev );
-
-    void on_mouse_left_button_down( const nom::Event& ev );
-    void on_mouse_middle_button_down( const nom::Event& ev );
-    void on_mouse_wheel( const nom::Event& ev );
-
-    void on_joy_button_down( const nom::Event& ev );
+    /// \brief Method callback for mouse button actions.
+    ///
+    /// \see nom::InputMapper.
+    void on_mouse_button_down( const nom::Event& ev );
 
     void on_user_event( const nom::Event& ev );
 

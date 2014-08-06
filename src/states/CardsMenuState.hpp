@@ -47,28 +47,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardsMenuState: public nom::IState
 {
   public:
+    /// \todo Move most of construction init code to ::on_init.
     CardsMenuState ( const nom::SDLApp::shared_ptr& object );
-    ~CardsMenuState ( void );
 
-    void on_init ( nom::void_ptr data );
-    void on_exit ( nom::void_ptr data );
+    ~CardsMenuState();
 
-    void on_pause ( nom::void_ptr data );
-    void on_resume ( nom::void_ptr data );
+    void on_init( nom::void_ptr data );
+    void on_exit( nom::void_ptr data );
 
-    void on_update ( float delta_time );
+    void on_pause( nom::void_ptr data );
+    void on_resume( nom::void_ptr data );
+
+    void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
   private:
-    void on_key_down( const nom::Event& ev );
-
-    void on_mouse_left_button_down( const nom::Event& ev );
-    void on_mouse_middle_button_down( const nom::Event& ev );
-    void on_mouse_right_button_down( const nom::Event& ev );
-    void on_mouse_wheel( const nom::Event& ev );
-
-    void on_joy_button_down( const nom::Event& ev );
-
     void reloadDebugFile ( void );
     void updateCursor ( void );
     void drawCursor ( nom::IDrawable::RenderTarget& target );
@@ -88,8 +81,10 @@ class CardsMenuState: public nom::IState
 
     /// Card::CARDS_COLLECTION / per_page
     unsigned int total_pages;
+
     /// number of cards to display per menu page
     unsigned int per_page;
+
     /// current card position
     unsigned int current_index;
 

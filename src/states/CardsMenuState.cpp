@@ -34,7 +34,6 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
   menu_box_window{ nullptr },
   menu_box{ nullptr }
-
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -88,14 +87,14 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   this->menu_box_window->insert_child( this->menu_box );
 }
 
-CardsMenuState::~CardsMenuState ( void )
+CardsMenuState::~CardsMenuState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->selectedCard = Card();
 }
 
-void CardsMenuState::on_init ( nom::void_ptr data )
+void CardsMenuState::on_init( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -127,131 +126,77 @@ void CardsMenuState::on_init ( nom::void_ptr data )
       std::cout << "\nidx:" << std::get<1>(this->cursor_coords_map[idx]) << " " << "y:" << std::get<0>(this->cursor_coords_map[idx]) << "\n";
     #endif
   }
+
+  nom::InputActionMapper state;
+
+  nom::EventCallback move_cursor_up( [&] ( const nom::Event& evt ) { this->moveCursorUp(); } );
+  nom::EventCallback move_cursor_down( [&] ( const nom::Event& evt ) { this->moveCursorDown(); } );
+  nom::EventCallback move_cursor_left( [&] ( const nom::Event& evt ) { this->moveCursorLeft(); } );
+  nom::EventCallback move_cursor_right( [&] ( const nom::Event& evt ) { this->moveCursorRight(); } );
+
+  nom::EventCallback delete_card( [&] ( const nom::Event& evt ) { if( this->game->hand[0].erase( this->selectedCard ) ) this->game->cursor_cancel->Play(); } );
+  nom::EventCallback select_card( [&] ( const nom::Event& evt ) { if( this->game->hand[0].push_back( this->selectedCard ) ) this->game->card_place->Play(); } );
+
+  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
+  nom::EventCallback start_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Play ); } );
+
+  state.insert( "move_cursor_up", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), move_cursor_up );
+  state.insert( "move_cursor_up", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), move_cursor_up );
+  state.insert( "move_cursor_up", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), move_cursor_up );
+
+  state.insert( "move_cursor_down", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), move_cursor_down );
+  state.insert( "move_cursor_down", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), move_cursor_down );
+  state.insert( "move_cursor_down", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), move_cursor_down );
+
+  state.insert( "move_cursor_left", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT ), move_cursor_left );
+  state.insert( "move_cursor_left", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::LEFT ), move_cursor_left );
+  state.insert( "move_cursor_left", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::LEFT ), move_cursor_left );
+
+  state.insert( "move_cursor_right", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT ), move_cursor_right );
+  state.insert( "move_cursor_right", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::RIGHT ), move_cursor_right );
+  state.insert( "move_cursor_right", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::RIGHT ), move_cursor_right );
+
+  state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
+
+  // FIXME: MouseButtonAction does not work (no idea why!)
+  state.insert( "delete_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), delete_card );
+  state.insert( "delete_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), delete_card );
+
+  state.insert( "select_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select_card );
+  state.insert( "select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), select_card );
+  state.insert( "select_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_card );
+
+  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
+  // state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+
+  state.insert( "start_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), start_game );
+  state.insert( "start_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), start_game );
+
+  this->game->input_mapper.erase( "CardsMenuState" );
+  this->game->input_mapper.insert( "CardsMenuState", state, true );
+  this->game->input_mapper.activate_only( "CardsMenuState" );
+  this->game->input_mapper.activate( "Game" );
 }
 
-void CardsMenuState::on_exit ( nom::void_ptr data )
+void CardsMenuState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void CardsMenuState::on_pause ( nom::void_ptr data )
+void CardsMenuState::on_pause( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void CardsMenuState::on_resume ( nom::void_ptr data )
+void CardsMenuState::on_resume( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  this->game->input_mapper.activate_only( "CardsMenuState" );
+  this->game->input_mapper.activate( "Game" );
 }
 
-void CardsMenuState::on_key_down( const nom::Event& ev )
-{
-  switch ( ev.key.sym )
-  {
-    default: break;
-
-    // Pause game
-    case SDLK_p:
-    {
-      this->game->set_state( Game::State::Pause );
-      break;
-    }
-
-    case SDLK_RETURN:
-    {
-      this->game->set_state( Game::State::Play );
-      break;
-    }
-
-    case SDLK_LEFT: this->moveCursorLeft(); break;
-    case SDLK_RIGHT: this->moveCursorRight(); break;
-    case SDLK_UP: this->moveCursorUp(); break;
-    case SDLK_DOWN: this->moveCursorDown(); break;
-
-    case SDLK_d: if ( this->game->hand[0].erase( this->selectedCard ) ) this->game->cursor_cancel->Play(); break;
-
-    case SDLK_SPACE:
-    {
-      if ( this->game->hand[0].push_back ( this->selectedCard ) )
-      {
-        this->game->card_place->Play();
-      }
-      break;
-    }
-  } // end switch ( key )
-}
-
-void CardsMenuState::on_joy_button_down( const nom::Event& ev )
-{
-  switch ( ev.jbutton.button )
-  {
-    default: break;
-
-    case nom::PSXBUTTON::UP: this->moveCursorUp(); break;
-    case nom::PSXBUTTON::RIGHT: this->moveCursorRight(); break;
-    case nom::PSXBUTTON::DOWN: this->moveCursorDown(); break;
-    case nom::PSXBUTTON::LEFT: this->moveCursorLeft(); break;
-
-    case nom::PSXBUTTON::TRIANGLE: /* TODO */ break;
-    case nom::PSXBUTTON::CIRCLE: if ( this->game->hand[0].erase ( this->selectedCard ) ) this->game->cursor_cancel->Play(); break;
-    case nom::PSXBUTTON::CROSS: if ( this->game->hand[0].push_back ( this->selectedCard ) ) this->game->card_place->Play(); break;
-
-    case nom::PSXBUTTON::START:
-    {
-      this->game->set_state( 1 );
-      break;
-    }
-  } // switch
-}
-
-void CardsMenuState::on_mouse_left_button_down( const nom::Event& ev )
-{
-  // TODO
-}
-
-void CardsMenuState::on_mouse_middle_button_down( const nom::Event& ev )
-{
-  if ( this->game->hand[0].push_back ( this->selectedCard ) )
-  {
-    this->game->card_place->Play();
-  }
-}
-
-void CardsMenuState::on_mouse_right_button_down( const nom::Event& ev )
-{
-  if ( this->game->hand[0].push_back ( this->selectedCard ) )
-    this->game->card_place->Play();
-}
-
-void CardsMenuState::on_mouse_wheel( const nom::Event& ev )
-{
-  // Do not check mouse wheel state unless it is a valid event; we receive
-  // invalid data here if we do not check for this.
-  if( ev.type != SDL_MOUSEWHEEL ) return;
-
-  if ( this->game->cursor.state() == 0 )
-  {
-    if ( ev.wheel.x > 0 )
-    {
-      this->moveCursorLeft();
-    }
-    else if ( ev.wheel.x < 0 )
-    {
-      this->moveCursorRight();
-    }
-    else if ( ev.wheel.y > 0 )
-    {
-      this->moveCursorUp();
-    }
-    else if ( ev.wheel.y < 0 )
-    {
-      this->moveCursorDown();
-    }
-  }
-  this->game->cursor_move->Play();
-}
-
-void CardsMenuState::on_update ( float delta_time )
+void CardsMenuState::on_update( float delta_time )
 {
   this->menu_box_window->update();
 

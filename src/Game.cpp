@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-Game::Game ( void ) :
+Game::Game() :
   audio_dev_{ nullptr },
   listener_{ nullptr },
   sound_buffers{ nullptr },
@@ -59,7 +59,7 @@ Game::Game ( void ) :
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-Game::Game ( nom::int32 argc, char* argv[] ) :
+Game::Game( nom::int32 argc, char* argv[] ) :
   // SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES | INIT_ENGINE_FONTS ),
   SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
   game { this, tt::free_game }
@@ -96,8 +96,7 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
     // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
-    // DISABLE ME BEFORE COMMIT
-    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_EVENTS, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_EVENTS, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // Disable logging of all messages from GameConfig except for fatal errs.
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, nom::LogPriority::NOM_LOG_PRIORITY_ERROR );
@@ -232,12 +231,12 @@ Game::Game ( nom::int32 argc, char* argv[] ) :
   dir.set_path (working_directory);
 }
 
-Game::~Game ( void )
+Game::~Game()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-bool Game::on_init ( void )
+bool Game::on_init( void )
 {
   nom::Rectangle rectangle  ( IntRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
                               nom::Color4i::Gray
@@ -518,125 +517,77 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     this->music_track->Pause();
   #endif
 
+  this->game->input_mapper.clear();
+
+  nom::InputActionMapper state;
+
+  nom::EventCallback quit_game( [&] ( const nom::Event& evt ) { this->on_app_quit( evt ); } );
+  nom::EventCallback on_window_resized( [&] ( const nom::Event& evt ) { this->game->on_window_resized( evt ); } );
+  nom::EventCallback fps_counter( [&] ( const nom::Event& evt ) { this->game->toggle_fps(); } );
+  nom::EventCallback pause_music( [&] ( const nom::Event& evt ) { this->game->pause_music(); } );
+  nom::EventCallback mute_volume( [&] ( const nom::Event& evt ) { this->game->mute_volume(); } );
+  nom::EventCallback save_screenshot( [&] ( const nom::Event& evt ) { this->game->save_screenshot(); } );
+  nom::EventCallback reload_config( [&] ( const nom::Event& evt ) { this->game->reload_config(); } );
+
+  // Debugging helpers
+
+  nom::EventCallback jumpto_continue_menu_state( [&] ( const nom::Event& evt )
+    {
+      this->set_state( Game::State::ContinueMenu );
+    }
+  );
+
+  nom::EventCallback jumpto_gameover_state( [&] ( const nom::Event& evt )
+    {
+      nom::uint32_ptr player1_win = new nom::uint32 (GameOverType::Won);
+      this->set_state( Game::State::GameOver, player1_win );
+    }
+  );
+  nom::EventCallback dump_board( [&] ( const nom::Event& evt ) { this->game->dump_board(); } );
+  nom::EventCallback dump_player0_hand( [&] ( const nom::Event& evt ) { this->game->dump_hand(0); } );
+  nom::EventCallback dump_player1_hand( [&] ( const nom::Event& evt ) { this->game->dump_hand(1); } );
+  nom::EventCallback dump_collection( [&] ( const nom::Event& evt ) { this->game->dump_collection(); } );
+
+  state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), quit_game );
+  state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_q ), quit_game );
+
+  #if defined( NOM_PLATFORM_OSX )
+    state.insert( "on_window_resize", nom::KeyboardAction( SDL_KEYDOWN, SDLK_f, KMOD_LGUI ), on_window_resized );
+  #else
+    state.insert( "on_window_resize", nom::KeyboardAction( SDL_KEYDOWN, SDLK_f, KMOD_LCTRL ), on_window_resized );
+  #endif
+
+  state.insert( "fps_counter", nom::KeyboardAction( SDL_KEYDOWN, SDLK_BACKSLASH ), fps_counter );
+  state.insert( "pause_music", nom::KeyboardAction( SDL_KEYDOWN, SDLK_m, KMOD_LSHIFT ), pause_music );
+  state.insert( "mute_volume", nom::KeyboardAction( SDL_KEYDOWN, SDLK_m ), mute_volume );
+  state.insert( "save_screenshot", nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 ), save_screenshot );
+  state.insert( "reload_config", nom::KeyboardAction( SDL_KEYDOWN, SDLK_r ), reload_config );
+
+  // TODO: Change to:
+  // #if ! defined( NDEBUG ) // Debug build
+  #if defined( TTCARDS_DEBUG_GAME_STATE )
+    state.insert( "jumpto_continue_menu_state", nom::KeyboardAction( SDL_KEYDOWN, SDLK_0, KMOD_LGUI ), jumpto_continue_menu_state );
+    state.insert( "jumpto_gameover_state", nom::KeyboardAction( SDL_KEYDOWN, SDLK_0 ), jumpto_gameover_state );
+
+    state.insert( "dump_player0_hand", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFTBRACKET ), dump_player0_hand );
+    state.insert( "dump_player1_hand", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHTBRACKET ), dump_player1_hand );
+    state.insert( "dump_board", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFTBRACKET, KMOD_LGUI ), dump_board );
+    state.insert( "dump_collection", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHTBRACKET, KMOD_LGUI ), dump_collection );
+  #endif
+
+  this->game->input_mapper.insert( "Game", state, true );
+
   return true;
 }
 
-void Game::on_key_down( const nom::Event& ev )
+void Game::on_event( const nom::Event& ev )
 {
-  switch ( ev.key.sym )
-  {
-    default: break;
+  // First, our own events (global key bindings):
+  SDLApp::on_event( ev );
 
-#if defined (NOM_DEBUG)
-    case SDLK_0:
-    {
-      if ( ev.key.mod == KMOD_LGUI )
-      {
-        this->set_state( Game::State::ContinueMenu );
-      }
-      else
-      {
-        nom::uint32_ptr player1_win = new nom::uint32 (GameOverType::Won);
-        this->set_state( Game::State::GameOver, player1_win );
-      }
-    }
-    break;
-#endif
-
-    case SDLK_ESCAPE:
-    case SDLK_q: this->on_app_quit( ev ); break;
-
-    // Audio control
-    case SDLK_m:
-    {
-      if ( ev.key.mod == KMOD_LSHIFT ) // Pause music
-      {
-        this->music_track->togglePause();
-        this->winning_track->togglePause();
-        break;
-      }
-
-      // Global volume level in game
-      float current_volume = this->listener_->getVolume();
-      if ( current_volume >= 100.0 )
-      {
-        this->listener_->setVolume( 0.0 );
-      }
-      else if ( current_volume <= 0.0 )
-      {
-        this->listener_->setVolume( 100.0 );
-      }
-
-      break;
-    }
-
-    case SDLK_BACKSLASH: this->toggle_fps(); break;
-
-    case SDLK_f:
-    {
-      // Platform dependent key bindings for full-screen toggling:
-      //
-      //  Mac OS X: Command + Control + F, Command + F
-      //  Linux, Windows & all other platforms: Control + F
-      #if defined ( NOM_PLATFORM_OSX )
-        if ( ev.key.mod == KMOD_LGUI || ( ev.key.mod & KMOD_LCTRL && ev.key.mod & KMOD_LGUI ) )
-        {
-          this->on_window_resized( ev );
-          break;
-        }
-      #else
-        if ( ev.key.mod == KMOD_LCTRL )
-        {
-          this->on_window_resized( ev );
-        }
-        break;
-      #endif
-
-      break;
-    }
-    case SDLK_F1:
-    {
-      nom::Path p;
-      std::string screenshot_filename = TTCARDS_DATA_DIR + p.native() + "Screenshot.png";
-
-      if ( this->window.save_screenshot( screenshot_filename ) == false )
-      {
-        NOM_LOG_ERR ( TTCARDS, "Could not save screenshot" );
-        break;
-      }
-    }
-    break;
-
-    case SDLK_r: // Start a new game
-    {
-      if ( this->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
-      {
-NOM_LOG_ERR ( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONFIG_FILENAME );
-        break;
-      }
-
-      this->set_state( Game::State::CardsMenu );
-      break;
-    }
-
-    case SDLK_LEFTBRACKET:
-    {
-      if ( ev.key.mod == KMOD_LGUI )
-        this->board.list();
-      else
-        this->debug.ListCards ( this->hand[0].cards );
-    }
-    break;
-
-    case SDLK_RIGHTBRACKET:
-    {
-      if ( ev.key.mod == KMOD_LGUI )
-        this->debug.ListCards ( this->collection.cards );
-      else
-        this->debug.ListCards ( this->hand[1].cards );
-    }
-    break;
-  }
+  // Then, key, mouse, joystick, etc. events registered for the current input
+  // context:
+  this->input_mapper.on_event( ev );
 }
 
 void Game::on_window_resized( const nom::Event& ev )
@@ -654,7 +605,7 @@ void Game::on_window_resized( const nom::Event& ev )
   #endif
 }
 
-int32_t Game::Run ( void )
+int32_t Game::Run( void )
 {
   unsigned int loops = 0;
   unsigned int next_game_tick = 0;
@@ -673,9 +624,10 @@ int32_t Game::Run ( void )
 
     while ( this->ticks() > next_game_tick && loops <= MAX_FRAMESKIP )
     {
-      while( this->poll_event( this->event ) )
+      nom::Event evt;
+      while( this->poll_event( evt ) )
       {
-        this->on_event( this->event );
+        this->on_event( evt );
       }
 
       this->fps.update();
@@ -743,6 +695,66 @@ void Game::set_state( nom::uint32 id, nom::void_ptr data )
       break;
     }
   }
+}
+
+void Game::pause_music( void )
+{
+  this->game->music_track->togglePause();
+  this->game->winning_track->togglePause();
+}
+
+void Game::mute_volume( void )
+{
+  // Global volume level
+  float current_volume = this->game->listener_->getVolume();
+
+  if( current_volume >= 100.0 )
+  {
+    this->game->listener_->setVolume( 0.0 );
+  }
+  else if( current_volume <= 0.0 )
+  {
+    this->game->listener_->setVolume( 100.0 );
+  }
+}
+
+void Game::save_screenshot( void )
+{
+  nom::Path p;
+  std::string filename = TTCARDS_DATA_DIR + p.native() + "Screenshot.png";
+
+  if( this->game->window.save_screenshot( filename ) == false )
+  {
+    NOM_LOG_ERR( TTCARDS, "Could not save screen-shot: " + filename );
+  }
+}
+
+void Game::reload_config( void )
+{
+  if( this->game->config.load( TTCARDS_CONFIG_FILENAME ) == false )
+  {
+    NOM_LOG_ERR( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONFIG_FILENAME );
+    return;
+  }
+
+  NOM_LOG_INFO( TTCARDS, "Reloaded game configuration file: " + TTCARDS_CONFIG_FILENAME );
+
+  this->set_state( Game::State::CardsMenu );
+}
+
+void Game::dump_board( void )
+{
+  this->game->board.list();
+}
+
+void Game::dump_hand( nom::uint32 player_id )
+{
+  this->game->debug.ListCards( this->game->hand[player_id].cards );
+}
+
+void Game::dump_collection( void )
+{
+  this->game->debug.ListCards( this->game->collection.cards );
 }
 
 namespace tt {

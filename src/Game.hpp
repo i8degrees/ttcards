@@ -56,20 +56,14 @@ class Game: public nom::SDLApp
   public:
     typedef std::shared_ptr<Game> SharedPtr;
 
-    Game ( void );
-    Game ( nom::int32 argc, char* argv[] );
-    ~Game ( void );
+    Game();
+    Game( nom::int32 argc, char* argv[] );
+    ~Game();
 
-    bool on_init ( void );
-
-    /// Handle key events
-    void on_key_down( const nom::Event& ev );
-
-    /// Event handler for resize app request
-    void on_window_resized( const nom::Event& ev );
+    bool on_init( void );
 
     /// Run app loop
-    nom::int32 Run ( void );
+    nom::int32 Run( void );
 
     /// \see SDLApp
     void set_state( nom::uint32 id, nom::void_ptr data = nullptr );
@@ -172,10 +166,67 @@ class Game: public nom::SDLApp
       ContinueMenu
     };
 
-  private:
-    Game::SharedPtr game;
+    nom::InputStateMapper input_mapper;
 
-    nom::Event event;
+  private:
+    /// \remarks Re-implements nom::SDLApp::on_event.
+    ///
+    /// \fixme This is currently required for GUI events processing in
+    /// ContinueMenuState, and probably can be handled better.
+    void on_event( const nom::Event& ev );
+
+    /// Event handler for resize app request
+    void on_window_resized( const nom::Event& ev );
+
+    /// \brief Method callback action for pausing the music tracks in the game.
+    ///
+    /// \see nom::InputMapper.
+    void pause_music( void );
+
+    /// \brief Method callback action for muting the global audio volume in the
+    /// game.
+    ///
+    /// \see nom::InputMapper.
+    void mute_volume( void );
+
+    /// \brief Method callback action for creating a snapshot image in the game.
+    ///
+    /// \remarks The screen-shots are saved under ~/Documents/ttcards
+    ///
+    /// \see nom::InputMapper.
+    void save_screenshot( void );
+
+    /// \brief Method callback action for reloading the configuration -- restart
+    /// the game.
+    ///
+    /// \see nom::InputMapper.
+    void reload_config( void );
+
+    /// \brief Method callback action for dumping the board data in the game.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_board( void );
+
+    /// \brief Method callback action for dumping the player's hand data.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_hand( nom::uint32 player_id );
+
+    /// \brief Method callback action for dumping the card collection.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_collection( void );
+
+    Game::SharedPtr game;
 
     /// Timer for tracking frames per second
     nom::FPS fps;

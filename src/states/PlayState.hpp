@@ -58,24 +58,21 @@ class PlayState: public nom::IState
 {
   public:
     PlayState ( const nom::SDLApp::shared_ptr& object );
-    ~PlayState ( void );
+    ~PlayState();
 
-    void on_init ( nom::void_ptr data );
-    void on_exit ( nom::void_ptr data );
-    void on_pause ( nom::void_ptr data );
-    void on_resume ( nom::void_ptr data );
+    void on_init( nom::void_ptr data );
+    void on_exit( nom::void_ptr data );
+    void on_pause( nom::void_ptr data );
+    void on_resume( nom::void_ptr data );
 
-    void on_update ( float delta_time );
+    void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
   private:
-    void on_key_down( const nom::Event& ev );
-
-    void on_mouse_left_button_down( const nom::Event& ev );
-    void on_mouse_right_button_down( const nom::Event& ev );
-    void on_mouse_wheel( const nom::Event& ev );
-
-    void on_joy_button_down( const nom::Event& ev );
+    /// \brief Method callback for mouse button actions.
+    ///
+    /// \see nom::InputMapper.
+    void on_mouse_button_down( const nom::Event& ev );
 
     unsigned int get_turn ( void );
     void player_turn ( unsigned int player );
@@ -103,6 +100,18 @@ class PlayState: public nom::IState
 
     /// Update each player's scoreboard
     void updateScore ( void );
+
+    /// \brief Method action callback to load a game.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \todo Re-enable debug load game
+    bool load_game( nom::uint32 flags );
+
+    /// \brief Method action callback to save a game.
+    ///
+    /// \see nom::InputMapper.
+    bool save_game( nom::uint32 flags );
 
     Game::SharedPtr game;
 

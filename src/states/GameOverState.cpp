@@ -45,7 +45,7 @@ GameOverState::GameOverState  ( const nom::SDLApp::shared_ptr& object,
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-GameOverState::~GameOverState ( void )
+GameOverState::~GameOverState( void )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -53,7 +53,7 @@ GameOverState::~GameOverState ( void )
   NOM_DELETE_PTR( this->card_box_window );
 }
 
-void GameOverState::on_init ( nom::void_ptr data )
+void GameOverState::on_init( nom::void_ptr data )
 {
   Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
   Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
@@ -225,16 +225,72 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
 
   // Commence the countdown on the showing of results!
   this->transistion.start();
+
+  nom::InputActionMapper state;
+
+  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
+
+  nom::EventCallback move_cursor_left( [&] ( const nom::Event& evt ) { this->cursor.move_left(); } );
+  nom::EventCallback move_cursor_right( [&] ( const nom::Event& evt ) { this->cursor.move_right(); } );
+
+  nom::EventCallback select_card( [&] ( const nom::Event& evt )
+    {
+      this->on_mouse_button_down( evt );
+    }
+  );
+
+  nom::EventCallback select_cards( [&] ( const nom::Event& evt )
+    {
+      this->selected_card = this->game->hand[1].getSelectedCard();
+      this->game->set_state( Game::State::ContinueMenu );
+    }
+  );
+
+  // Debugging aids
+  #if ! defined( NDEBUG )
+    nom::EventCallback restart_game( [&] ( const nom::Event& evt )
+      {
+        this->selected_card = this->game->hand[1].getSelectedCard();
+        this->game->set_state( Game::State::CardsMenu );
+      }
+    );
+
+    state.insert( "restart_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), restart_game );
+    state.insert( "restart_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::SELECT ), restart_game );
+  #endif // NOT defined NDEBUG
+
+  // Keyboard mappings
+  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
+  state.insert( "move_cursor_left", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT ), move_cursor_left );
+  state.insert( "move_cursor_right", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT ), move_cursor_right );
+  state.insert( "select_cards", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select_cards );
+
+  // Mouse button & mouse wheel mappings
+  state.insert( "move_cursor_left", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), move_cursor_left );
+  state.insert( "move_cursor_right", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), move_cursor_right );
+  state.insert( "select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), select_card );
+  state.insert( "select_cards", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT, 2 ), select_cards );
+
+  // Joystick button mappings
+  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+  state.insert( "move_cursor_left", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::LEFT ), move_cursor_left );
+  state.insert( "move_cursor_right", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::RIGHT ), move_cursor_right );
+  state.insert( "select_cards", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_cards );
+
+  this->game->input_mapper.erase( "GameOverState" );
+  this->game->input_mapper.insert( "GameOverState", state, true );
+  this->game->input_mapper.activate_only( "GameOverState" );
+  this->game->input_mapper.activate( "Game" );
 }
 
-void GameOverState::on_exit ( nom::void_ptr data )
+void GameOverState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->game->winning_track->Stop();
 }
 
-void GameOverState::on_pause ( nom::void_ptr data )
+void GameOverState::on_pause( nom::void_ptr data )
 {
   // Hide the cursor so that it doesn't show up during undesirable states such
   // as during the ContinueMenu or Pause states.
@@ -242,7 +298,7 @@ void GameOverState::on_pause ( nom::void_ptr data )
   this->cursor.update();
 }
 
-void GameOverState::on_resume ( nom::void_ptr data )
+void GameOverState::on_resume( nom::void_ptr data )
 {
   // Restore the rendering of the player's cursor
   this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
@@ -260,41 +316,16 @@ void GameOverState::on_resume ( nom::void_ptr data )
     ev.user.window_id = 0;
     this->event.dispatch( ev );
   }
+
+  this->game->input_mapper.activate_only( "GameOverState" );
+  this->game->input_mapper.activate( "Game" );
 }
 
-void GameOverState::on_key_down( const nom::Event& ev )
+void GameOverState::on_mouse_button_down( const nom::Event& ev )
 {
-  if( ev.type != SDL_KEYDOWN ) return;
+  // Sanity check
+  if( ev.type != SDL_MOUSEBUTTONDOWN ) return;
 
-  switch ( ev.key.sym )
-  {
-    default: /* Ignore non-mapped keys */ break;
-
-    // Pause game
-    case SDLK_p:
-    {
-      this->game->set_state( Game::State::Pause );
-      break;
-    }
-
-    case SDLK_LEFT: this->cursor.move_left(); break;
-    case SDLK_RIGHT: this->cursor.move_right(); break;
-
-    // Start a new game
-    case SDLK_RETURN: this->game->set_state( Game::State::CardsMenu ); break;
-
-    case SDLK_SPACE:
-    {
-      this->selected_card = this->game->hand[1].getSelectedCard();
-
-      this->game->set_state( Game::State::ContinueMenu );
-      break;
-    }
-  }
-}
-
-void GameOverState::on_mouse_left_button_down( const nom::Event& ev )
-{
   nom::Point2i coords ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
 
   // Player hand selection checks
@@ -330,51 +361,24 @@ void GameOverState::on_mouse_left_button_down( const nom::Event& ev )
   }
 }
 
-void GameOverState::on_mouse_middle_button_down( const nom::Event& ev )
-{
-  this->selected_card = this->game->hand[1].getSelectedCard();
-
-  this->game->set_state( Game::State::ContinueMenu );
-}
-
-void GameOverState::on_mouse_wheel( const nom::Event& ev )
-{
-  // Do not check mouse wheel state unless it is a valid event; we receive
-  // invalid data here if we do not check for this.
-  if( ev.type != SDL_MOUSEWHEEL ) return;
-
-  if ( ev.wheel.x > 0 || ev.wheel.y > 0 )
-  {
-    this->cursor.move_left();
-  }
-  else if ( ev.wheel.x < 0 || ev.wheel.y < 0 )
-  {
-    this->cursor.move_right();
-  }
-}
-
-void GameOverState::on_joy_button_down( const nom::Event& ev )
-{
-  switch ( ev.jbutton.button )
-  {
-    default: NOM_LOG_INFO ( TTCARDS, "FIXME: GameOverState needs joystick implementation!" ); break;
-  } // switch
-}
-
 void GameOverState::on_user_event( const nom::Event& ev )
 {
   // Nothing to do; not the right event type for us!
-  if ( ev.type != SDL_USEREVENT ) return;
+  if( ev.type != SDL_USEREVENT ) return;
 
-  if ( ev.user.code == GameEvent::GUIEvent )
+  if( ev.user.code == GameEvent::GUIEvent )
   {
+    NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::GUIEvent" );
+
     Card selected_card = this->game->hand[1].getSelectedCard();
     this->card_info_box->set_message_text( selected_card.getName() );
 
     this->game->cursor_move->Play();
   }
-  else if ( ev.user.code == GameEvent::AnimationEvent )
+  else if( ev.user.code == GameEvent::AnimationEvent )
   {
+    NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::AnimationEvent" );
+
     // NOTE: This should not be disabled until the total number of won cards
     // has been reached.
     this->card_info_box->disable();

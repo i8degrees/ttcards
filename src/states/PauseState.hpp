@@ -47,19 +47,16 @@ class PauseState: public nom::IState
 {
   public:
     PauseState ( const nom::SDLApp::shared_ptr& object );
-    ~PauseState ( void );
+    ~PauseState();
 
   private:
-    void on_init ( nom::void_ptr data );
-    void on_exit ( nom::void_ptr data );
+    void on_init( nom::void_ptr data );
+    void on_exit( nom::void_ptr data );
 
-    void on_pause ( nom::void_ptr data );
-    void on_resume ( nom::void_ptr data );
+    void on_pause( nom::void_ptr data );
+    void on_resume( nom::void_ptr data );
 
-    void on_key_down( const nom::Event& ev );
-    void on_joy_button_down( const nom::Event& ev );
-
-    void on_update ( float delta_time );
+    void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
     Game::SharedPtr game;

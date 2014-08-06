@@ -44,15 +44,13 @@ class ContinueMenuState: public nom::IState
 {
   public:
     ContinueMenuState ( const nom::SDLApp::shared_ptr& object );
-    ~ContinueMenuState ( void );
+    ~ContinueMenuState();
 
   private:
-    void on_init ( nom::void_ptr data );
-    void on_exit ( nom::void_ptr data );
-    void on_resume ( nom::void_ptr data );
+    void on_init( nom::void_ptr data );
+    void on_exit( nom::void_ptr data );
+    void on_resume( nom::void_ptr data );
 
-    void on_key_down( const nom::Event& ev );
-    void on_joy_button_down( const nom::Event& ev );
     void on_user_event( const nom::Event& ev );
 
     /// \remarks This is a delegate method that is used by question_box.
@@ -68,9 +66,11 @@ class ContinueMenuState: public nom::IState
     void on_gui_mouse_wheel( const nom::UIWidgetEvent& ev );
 
     /// \brief Implements optional IState::on_event interface method.
-    void on_event( const nom::Event& ev );
+    ///
+    /// \remarks This is currently required for GUI events processing.
+    bool on_event( const nom::Event& ev );
 
-    void on_update ( float delta_time );
+    void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
     /// \brief Event handler for player's choice selection.

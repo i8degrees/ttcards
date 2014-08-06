@@ -39,14 +39,14 @@ ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::shared_ptr& object ) 
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-ContinueMenuState::~ContinueMenuState ( void )
+ContinueMenuState::~ContinueMenuState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   NOM_DELETE_PTR( this->question_box_window );
 }
 
-void ContinueMenuState::on_init ( nom::void_ptr data )
+void ContinueMenuState::on_init( nom::void_ptr data )
 {
   Point2i question_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
   Size2i question_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
@@ -127,52 +127,59 @@ void ContinueMenuState::on_init ( nom::void_ptr data )
   this->cursor.move_down();
 
   this->question_box_window->insert_child( this->question_box );
-}
 
-void ContinueMenuState::on_exit ( nom::void_ptr data )
-{
-  // Stub
-}
+  nom::InputActionMapper state;
 
-void ContinueMenuState::on_resume ( nom::void_ptr data )
-{
-  // Stub
-}
+  // FIXME:
+  // nom::InputActionMapper key_bindings, gamepad_bindings;
 
-void ContinueMenuState::on_key_down( const nom::Event& ev )
-{
-  switch ( ev.key.sym )
-  {
-    default:
+  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
+  nom::EventCallback move_cursor_up( [&] ( const nom::Event& evt ) { this->cursor.move_up(); } );
+  nom::EventCallback move_cursor_down( [&] ( const nom::Event& evt ) { this->cursor.move_down(); } );
+  nom::EventCallback select_choice( [&] ( const nom::Event& ev )
     {
-      // Ignore non-mapped keys
-      break;
+      this->send_response();
     }
+  );
 
-    // Pause game
-    case SDLK_p:
+  nom::EventCallback cancel_choice( [&] ( const nom::Event& evt )
     {
-      this->game->set_state( Game::State::Pause );
-      break;
+      this->game->state()->pop_state( nullptr );
     }
+  );
 
-    // case SDLK_UP: this->cursor.move_up(); break;
-    // case SDLK_DOWN: this->cursor.move_down(); break;
+  // Keyboard mappings
+  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
 
-    // case SDLK_SPACE:
-    // {
-    //   // this->send_response();
-    //   break;
-    // }
-  } // end switch ( key )
+  // Joystick button mappings
+  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+  state.insert( "move_cursor_up", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), move_cursor_up );
+  state.insert( "move_cursor_down", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), move_cursor_down );
+  state.insert( "select_choice", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_choice );
+  state.insert( "cancel_choice", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), cancel_choice );
+
+  this->game->input_mapper.erase( "ContinueMenuState" );
+  this->game->input_mapper.insert( "ContinueMenuState", state, true );
+
+  // FIXME:
+  // this->game->input_mapper.insert( "ContinueMenuState", key_bindings, true );
+  // this->game->input_mapper.insert( "ContinueMenuState", gamepad_bindings, true );
+
+  this->game->input_mapper.activate_only( "ContinueMenuState" );
+  this->game->input_mapper.activate( "Game" );
 }
 
-void ContinueMenuState::on_joy_button_down( const nom::Event& ev )
+void ContinueMenuState::on_exit( nom::void_ptr data )
 {
-  switch ( ev.jbutton.button )
-  {
-    default: NOM_LOG_INFO ( TTCARDS, "FIXME: ContinueMenuState needs joystick implementation!" ); break;
-  } // switch
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+}
+
+void ContinueMenuState::on_resume( nom::void_ptr data )
+{
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  this->game->input_mapper.activate_only( "ContinueMenuState" );
+  this->game->input_mapper.activate( "Game" );
 }
 
 void ContinueMenuState::on_user_event( const nom::Event& ev )
@@ -323,15 +330,19 @@ void ContinueMenuState::on_gui_mouse_wheel( const nom::UIWidgetEvent& ev )
   }
 }
 
-void ContinueMenuState::on_event( const nom::Event& ev )
+bool ContinueMenuState::on_event( const nom::Event& ev )
 {
+  assert( this->question_box_window != nullptr );
+
   if( this->question_box_window != nullptr )
   {
-    this->question_box_window->process_event( ev );
+    return this->question_box_window->process_event( ev );
   }
+
+  return false;
 }
 
-void ContinueMenuState::on_update ( float delta_time )
+void ContinueMenuState::on_update( float delta_time )
 {
   this->question_box_window->update();
 
