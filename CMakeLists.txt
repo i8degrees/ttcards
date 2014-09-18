@@ -1,6 +1,18 @@
 cmake_minimum_required ( VERSION 2.6 )
 
+# TODO: Use CMake v2.8.12 OSX RPath features
+# http://www.kitware.com/blog/home/post/510
+# cmake_minimum_required ( VERSION 2.8.12 )
+
 # CMake Environment
+
+# Opt out of using CMake v3.0 PROJECT_VERSION variables management for the
+# project.
+# http://www.cmake.org/cmake/help/v3.0/command/project.html#command:project
+if( POLICY CMP0048 )
+  cmake_policy( SET CMP0048 OLD )
+endif( POLICY CMP0048 )
+
 set ( CMAKE_VERBOSE_MAKEFILE OFF CACHE PATH "Verbose Makefile" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
