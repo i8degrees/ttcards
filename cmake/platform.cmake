@@ -8,14 +8,15 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
 
   # Setup the SDK selection for backwards compatibility
   set ( SDKVER "10.7" )
-  set ( DEVROOT "/Applications/Developer/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
+  set ( DEVROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
   set ( SDKROOT "${DEVROOT}/SDKs/MacOSX${SDKVER}.sdk" )
 
   if ( EXISTS ${SDKROOT} )
     set ( CMAKE_OSX_SYSROOT "${SDKROOT}" )
     set ( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
-  else () # Mac OS X v10.5 SDK not found -- that's OK
+  else ( NOT EXISTS ${SDKROOT} )
+    # Binary compatibility will be limited to platform's version
     message ( WARNING "Warning, Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
   endif ( EXISTS ${SDKROOT} )
 
