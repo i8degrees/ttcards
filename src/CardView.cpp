@@ -43,8 +43,8 @@ CardView::CardView ( void )
   this->card.push_back( this->card_background );
   this->card.push_back( this->card_text );
 
-  this->card_background->set_size( Size2i(CARD_WIDTH - 4, CARD_HEIGHT) );
-  this->card_background->set_margins( Point2i(4, 4) );
+  this->card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
+  this->card_background->set_margins( Point2i(1,1) );
   this->card_background->set_fill_direction( nom::Gradient::FillDirection::Top );
 }
 
