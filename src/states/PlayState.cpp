@@ -852,8 +852,11 @@ void PlayState::on_update( float delta_time )
     // Only show player2 animation when we are not controlling him
     if ( this->skip_turn == false )
     {
-      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[PLAYER2].size() - 1 );
-      this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
+      // Fixes a out of bounds issue that occurs occasionally upon state phasing
+      if( this->game->hand[PLAYER2].size() > 0 ) {
+        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[PLAYER2].size() - 1 );
+        this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
+      }
     }
   }
 
@@ -884,8 +887,11 @@ void PlayState::on_update( float delta_time )
 
       nom::int32 edge_pick = nom::rand ( 0, 3 );
 
-      nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
-      this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
+      // Fixes a out of bounds issue that occurs occasionally upon state phasing
+      if( this->game->hand[PLAYER2].size() > 0 ) {
+        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
+        this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
+      }
 
       if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == BAD_CARD_ID )
       {

@@ -806,7 +806,10 @@ void Game::reload_config( void )
 
   NOM_LOG_INFO( TTCARDS, "Reloaded game configuration file: " + TTCARDS_CONFIG_FILENAME );
 
-  this->set_state( Game::State::CardsMenu );
+  // Prevents states crash
+  if( this->state() != nullptr && this->state()->current_state_id() != Game::State::CardsMenu ) {
+    this->set_state( Game::State::CardsMenu );
+  }
 }
 
 void Game::dump_board( void )
