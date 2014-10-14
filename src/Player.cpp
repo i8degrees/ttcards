@@ -28,6 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Player.hpp"
 
+// Forward declarations
+#include "CardHand.hpp"
+#include "CardView.hpp"
+
 using namespace nom;
 
 Player::Player ( void ) :

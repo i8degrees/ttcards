@@ -188,7 +188,7 @@ void CardView::draw_element (
   switch ( element_id )
   {
     default:
-    case NONE: this->card_element->set_frame ( ELEMENT_NONE ); break;
+    case ::NONE: this->card_element->set_frame ( ELEMENT_NONE ); break;
     case EARTH: this->card_element->set_frame ( ELEMENT_EARTH ); break;
     case FIRE: this->card_element->set_frame ( ELEMENT_FIRE ); break;
     case HOLY: this->card_element->set_frame ( ELEMENT_HOLY ); break;

@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 
+#include <Rocket/Debugger.h>
+
 #include "Game.hpp"
 
 #include "states/GameOverState.hpp"
@@ -72,16 +74,14 @@ Game::Game( nom::int32 argc, char* argv[] ) :
 
   //this->state_factory = new States();
 
-  // Destination directory we descend into to locate game resources
-  std::string working_directory;
   nom::File dir;
 
-  if ( nom::init_third_party(0) == false )
+  if( nom::init_third_party(0) == false )
   {
-    nom::DialogMessageBox ( "Critical Error", "Could not load third party libraries" );
+    nom::DialogMessageBox(  "Critical Error",
+                            "Could not load third party libraries" );
     exit(NOM_EXIT_FAILURE);
   }
-
   atexit(nom::quit); // Clean up memory associated with nomlib
 
   #if ! defined( NDEBUG )  // Debug target build
@@ -104,6 +104,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // Enable logging of game state function traces
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE_STATES, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_GUI, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
   #else // NDEBUG -- release target build
 
     NOM_LOG_INFO( TTCARDS, "RELEASE build" );
@@ -234,6 +235,10 @@ Game::Game( nom::int32 argc, char* argv[] ) :
 Game::~Game()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
+
+  this->gui_window_.shutdown();
+
+  nom::shutdown_librocket();
 }
 
 bool Game::on_init( void )
@@ -242,7 +247,9 @@ bool Game::on_init( void )
                               nom::Color4i::Gray
                             );
 
-  nom::uint32 video_flags = 0;
+  int render_driver = -1;
+  uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+  uint32 render_flags = SDL_RENDERER_ACCELERATED;
   /* TODO: Use me when fixed-time-step is fully implemented
   nom::uint32 renderer_flags = SDL_RENDERER_PRESENTVSYNC;
   TODO */
@@ -251,67 +258,126 @@ bool Game::on_init( void )
 
   if ( this->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
   {
-    nom::DialogMessageBox ( "Critical Error", "Could not load configuration file at: " + TTCARDS_CONFIG_FILENAME );
-    exit ( NOM_EXIT_FAILURE );
+    nom::DialogMessageBox( "Critical Error", "Could not load configuration file at: " + TTCARDS_CONFIG_FILENAME );
+    return false;
   }
 
-  // Obtain a list of available video modes so we can determine how to render
-  // the game (scale factors, positioning, etc.).
-  nom::VideoModeList modes = this->window.getVideoModes();
-
-  for ( nom::uint32 idx = 0; idx != modes.size(); idx++ )
+  if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
   {
-    std::cout << modes[idx] << std::endl;
+    NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
   }
 
-  // Original scale (384x224)
-  //this->window.create ( "TTcards", SCREEN_WIDTH * 1, SCREEN_HEIGHT * 1, video_flags );
+  if( nom::set_hint( SDL_HINT_RENDER_SCALE_QUALITY, "nearest" ) == false )
+  {
+    NOM_LOG_INFO( NOM, "Could not set scale quality to", "nearest" );
+  }
 
-  // Enhanced scaling (784x448)
-  this->window.create ( "TTcards", SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2, video_flags );
+  // We only can support a OpenGL capable rendering driver at the moment; see
+  // nom::RocketSDL2RenderInterface.
+  render_driver = nom::available_render_driver("opengl");
+  if( render_driver == -1 )
+  {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                  "Could not find an OpenGL rendering driver." );
+    return false;
+  }
 
-  // Almost-HD resolution scaling (1152x672)
-  //this->window.create ( "TTcards", SCREEN_WIDTH * 3, SCREEN_HEIGHT * 3, video_flags );
+  if( this->window.create( "TTcards", SCREEN_WIDTH, SCREEN_HEIGHT,
+      window_flags, render_driver, render_flags ) == false )
+  {
+    nom::DialogMessageBox(  "Critical Error",
+                            "Could not initialize rendering context and window." );
+    return false;
+  }
 
   this->window.set_window_icon ( this->config.getString("APP_ICON") );
 //this->window.set_window_title ( LOADING_TEXT );
 
-  this->window.set_logical_size( SCREEN_WIDTH, SCREEN_HEIGHT );
+  if( nom::RocketSDL2RenderInterface::gl_init(  this->window.size().w,
+                                                this->window.size().h ) == false )
+  {
+    nom::DialogMessageBox( "Critical Error", "Could not initialize OpenGL." );
+    return false;
+  }
 
-  // Top level (parent) widget; coordinates are relative to our game's
-  // resolution (window)
-  this->gui_window_ = new nom::UIWidget (
-                                          nom::Point2i::zero,
-                                          this->window.size()
-                                        );
+  // Allow for automatic rescaling of the output window based on the aspect
+  // ratio (i.e.: handle fullscreen resizing); this will use letterboxing
+  // when the aspect ratio is greater than what is available, or side-bars
+  // when the aspect ratio is less than.
+  this->window.set_logical_size( GAME_RESOLUTION.w, GAME_RESOLUTION.h );
 
-  // Commence the initialization of game objects
-  this->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
-  this->cursor = nom::AnimatedSprite( "images/cursors.json" );
-  this->cursor.set_position ( Point2i(MENU_CARDS_CURSOR_ORIGIN_X, MENU_CARDS_CURSOR_ORIGIN_Y) );
+  // Use pixel unit scaling; this gives us an output pixel ratio of 1:2.
+  this->window.set_scale( nom::Point2f(2) );
+
+  // Initialize libRocket; our GUI interface
+  Rocket::Core::FileInterface* fs =
+    // new nom::RocketFileInterface( "../../../../Resources/" );
+    new nom::RocketFileInterface( this->working_directory + "/" );
+
+  Rocket::Core::SystemInterface* sys =
+    new RocketSDL2SystemInterface();
+
+  if( nom::init_librocket( fs, sys ) == false )
+  {
+    nom::DialogMessageBox( "Critical Error", "Could not initialize libRocket." );
+    return false;
+  }
+
+  Rocket::Core::RenderInterface* renderer =
+    new nom::RocketSDL2RenderInterface( &this->window );
+
+  #if ! defined( NDEBUG )
+    this->gui_window_.enable_debugger();
+  #endif
+
+  if( this->gui_window_.create_context( "main",
+      this->window.size(), renderer ) == false )
+  {
+    nom::DialogMessageBox( "Critical Error", "Could not initialize GUI context." );
+    return false;
+  }
+
+  // Resize libRocket's visual debugger window to fit within our game's tiny
+  // resolution
+  #if ! defined( NDEBUG )
+    // 32 is the height of the visual debugger's menu; as per
+    // Rocket/Debugger/MenuSource.h
+    Size2i debugger_dims( 150, (this->gui_window_.size().h / 2) + 32 );
+    this->gui_window_.set_debugger_size(debugger_dims);
+  #endif
+
+  if( this->gui_window_.load_font( this->config.getString("GUI_TITLE_FONT") ) == false )
+  {
+    nom::DialogMessageBox(  "Critical Error",
+                            "Could not load font file:" +
+                            this->config.getString("GUI_TITLE_FONT") );
+    return false;
+  }
+
+  if( this->gui_window_.load_font( this->config.getString("GUI_TEXT_FONT") ) == false )
+  {
+    nom::DialogMessageBox(  "Critical Error",
+                            "Could not load font file:" +
+                            this->config.getString("GUI_TEXT_FONT") );
+    return false;
+  }
+
+  Rocket::Core::DecoratorInstancer* decorator0 = new nom::DecoratorInstancerFinalFantasyFrame();
+  Rocket::Core::Factory::RegisterDecoratorInstancer("final-fantasy-theme", decorator0 );
+  decorator0->RemoveReference();
+
+  DecoratorInstancerSprite* decorator1 = new nom::DecoratorInstancerSprite();
+  Rocket::Core::Factory::RegisterDecoratorInstancer("sprite-sheet", decorator1 );
+  decorator1->RemoveReference();
 
   // Commence the loading of game resources
-  if( this->info_text.load( this->config.getString("INFO_FONTFACE") ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INFO_FONTFACE") );
-    return false;
-  }
 
-  if( this->info_small_text.load( this->config.getString("INFO_SMALL_FONTFACE") ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INFO_SMALL_FONTFACE") );
-    return false;
-  }
+  this->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
+  this->cursor = nom::AnimatedSprite( "images/cursors.json" );
 
   if( this->card_font.load ( this->config.getString("CARD_FONTFACE") ) == false )
   {
     NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE") );
-    return false;
-  }
-
-  if( this->menu_elements.load( this->config.getString("MENU_ELEMENTS"), false, nom::Texture::Access::Streaming ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("MENU_ELEMENTS") );
     return false;
   }
 
@@ -548,7 +614,8 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   nom::EventCallback dump_player1_hand( [&] ( const nom::Event& evt ) { this->game->dump_hand(1); } );
   nom::EventCallback dump_collection( [&] ( const nom::Event& evt ) { this->game->dump_collection(); } );
 
-  state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), quit_game );
+  // Conflicts with ContinueMenuState key binding
+  // state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), quit_game );
   state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_q ), quit_game );
 
   #if defined( NOM_PLATFORM_OSX )
@@ -632,12 +699,12 @@ int32_t Game::Run( void )
 
       this->fps.update();
 
-      this->on_update ( delta_time );
+      this->on_update( delta_time );
 
       // Fix for GitHub Issue #9
       this->window.fill(nom::Color4i::Black);
 
-      this->on_draw ( this->window );
+      this->on_draw( this->window );
 
       if ( this->show_fps() )
       {

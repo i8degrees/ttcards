@@ -51,6 +51,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardRules.hpp"
 #include "GameConfig.hpp"
 
+#include "CardsPageDataSource.hpp"
+
 class Game: public nom::SDLApp
 {
   public:
@@ -107,8 +109,8 @@ class Game: public nom::SDLApp
     nom::ISoundSource* winning_track;
 
     // Font resources
-    nom::Font info_text;
-    nom::Font info_small_text;
+    // nom::Font info_text;
+    // nom::Font info_small_text;
     nom::Font card_font;
     nom::Font gameover_font;
     nom::Font scoreboard_font;
@@ -149,13 +151,34 @@ class Game: public nom::SDLApp
     /// Variable set configuration properties
     GameConfig config;
 
-    /// \brief The top-level GUI window.
+    /// \brief The top-level GUI "window" (desktop)
+    nom::UIContext gui_window_;
+
+    /// \brief The view used for paged cards list.
     ///
-    /// \remarks This is the "central" widget and should always contain the
-    /// game's native resolution (absolute coordinates). All GUI objects
-    /// (anything deriving from nom::UIWidget) can be initialized from this
-    /// one, in order to quickly & easily set coordinates properly.
-    nom::UIWidget* gui_window_;
+    /// \remarks Used in CardsMenuState.
+    std::unique_ptr<CardsPageDataSource> cards_page_model_;
+    CardStatusFormatter card_status_;
+    CardNameFormatter card_;
+
+    /// \brief UI for selection of cards.
+    ///
+    /// \remarks Used in CardsMenuState.
+    nom::UIDataViewList cards_menu_;
+
+    /// \brief UI for pause dialog.
+    ///
+    /// \remarks Used in PauseState.
+    nom::UIMessageBox pause_window_;
+
+    /// \brief UI for confirmation dialogs.
+    ///
+    /// \remarks Used in ContinueMenuState.
+    nom::UIQuestionDialogBox question_box_;
+
+    nom::UIMessageBox debug_box_;
+    nom::UIMessageBox info_box_;
+    nom::UIMessageBox card_info_box_;
 
     enum State
     {
@@ -167,6 +190,9 @@ class Game: public nom::SDLApp
     };
 
     nom::InputStateMapper input_mapper;
+
+    /// Destination directory we descend into to locate game resources
+    std::string working_directory;
 
   private:
     /// \remarks Re-implements nom::SDLApp::on_event.

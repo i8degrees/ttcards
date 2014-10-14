@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main ( int argc, char* argv[] )
 {
-  Game engine ( argc, argv );
+  Game engine( argc, argv );
 
   if ( engine.on_init() == false )
   {

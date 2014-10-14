@@ -68,6 +68,8 @@ const nom::int32 MAX_NAME = 14; // +1 padding
 class Card
 {
   public:
+    static Card null;
+
     /// FIXME: See CARDS_COLLECTION initialization issue
     static nom::int32 CARDS_COLLECTION;
 
@@ -184,6 +186,7 @@ class Card
     nom::int32 player_owner;
 };
 
+/// \todo Rename to CardList
 typedef std::vector<Card> Cards;
 typedef std::vector<Card>::iterator CardsIterator;
 

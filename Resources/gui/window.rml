@@ -1,0 +1,18 @@
+<template name="window" content="content">
+<head>
+	<link type="text/rcss" href="reset.rcss"/>
+	<link type="text/rcss" href="ttcards.rcss"/>
+</head>
+<body class="window">
+	<div id="window">
+
+		<div id="title_bar">
+			<span id="title">INFO.</span>
+		</div>
+
+		<div id="content">
+		</div>
+
+	</div>
+</body>
+</template>

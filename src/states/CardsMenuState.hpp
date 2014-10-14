@@ -39,10 +39,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "resources.hpp"
+#include "CardsPageDataSource.hpp"
 #include "Card.hpp"
-#include "CardsMenuStateCursor.hpp"
 
-#include "Game.hpp"
+// Forward declarations
+class Game;
 
 class CardsMenuState: public nom::IState
 {
@@ -52,6 +53,7 @@ class CardsMenuState: public nom::IState
 
     ~CardsMenuState();
 
+    /// \todo Change return type to bool
     void on_init( nom::void_ptr data );
     void on_exit( nom::void_ptr data );
 
@@ -62,40 +64,58 @@ class CardsMenuState: public nom::IState
     void on_draw( nom::RenderWindow& target );
 
   private:
-    void reloadDebugFile ( void );
-    void updateCursor ( void );
-    void drawCursor ( nom::IDrawable::RenderTarget& target );
-    unsigned int getCursorPos ( void );
-    void moveCursorLeft ( void );
-    void moveCursorRight ( void );
-    void moveCursorUp ( void );
-    void moveCursorDown ( void );
+    /// \brief Injection of the GUI event loop.
+    ///
+    /// \note This is the current context's event loop (libRocket).
+    bool on_event(const nom::Event& ev);
 
-    Game::SharedPtr game;
+    /// \brief GUI event callback for mouse button actions.
+    ///
+    /// \note This is processed on libRocket's event loop.
+    ///
+    /// \todo Convert to nom::Event (see ContinueMenuState)..?
+    void on_mouse_button_up(Rocket::Core::Event& ev);
 
-    std::shared_ptr<nom::UIWidget> menu_box_window;
-    nom::MessageBox* menu_box;
+    void update_cursor();
 
-    /// CardHand-derived implementation
-    Card selectedCard;
+    /// \brief Set the appropriate page arrows for the shown page.
+    void update_page_indicators();
 
-    /// Card::CARDS_COLLECTION / per_page
-    unsigned int total_pages;
+    /// \brief Get the cursor position.
+    ///
+    /// \returns The card entry's position index, relative to the shown page.
+    int cursor_position();
 
-    /// number of cards to display per menu page
-    unsigned int per_page;
+    /// \brief Set the rendering position of the game cursor.
+    ///
+    /// \param pos The position index of the game cursor, relative to the shown
+    /// page.
+    void set_cursor_position(int pos);
 
-    /// current card position
-    unsigned int current_index;
+    /// \brief Go to the previous page.
+    void prev_page();
 
-    /// height of the card name text
-    unsigned int info_text_height;
+    /// \brief Go to the next page.
+    void next_page();
 
-    /// Y coords mapping for cursor -> card position index
-    std::pair<int, int> cursor_coords_map[11];  // Should be the same value as
-                                                // the per_page instance var
+    /// \brief Move the game cursor to the previous card entry.
+    void cursor_prev();
 
-    //CardsMenuStateCursor cursor;
+    /// \brief Move the game cursor to the next card entry.
+    void cursor_next();
+
+    /// \brief Add a card to the player's hand.
+    void add_card(const Card& card);
+
+    /// \brief Remove a card from the player's hand.
+    void remove_card(Card& card);
+
+    std::shared_ptr<Game> game;
+
+    Card selected_card_;
+
+    /// \brief Bounds map for game cursor movement.
+    std::vector<nom::IntRect> cursor_coords_map_;
 
     /// Position of the player's hand (player 1)
     nom::Point2i player1_pos;
@@ -105,9 +125,6 @@ class CardsMenuState: public nom::IState
 
     /// Position of the card selection from the menu list
     nom::Point2i card_pos;
-
-    nom::Text title_text;
-    nom::Text card_text;
 };
 
 // Convenience declarations for changing state

@@ -41,7 +41,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "version.hpp"
 #include "resources.hpp"
 
-#include "Game.hpp"
+// Forward declarations
+class Game;
 
 class PauseState: public nom::IState
 {
@@ -56,16 +57,17 @@ class PauseState: public nom::IState
     void on_pause( nom::void_ptr data );
     void on_resume( nom::void_ptr data );
 
+    /// \brief Injection of the GUI event loop.
+    ///
+    /// \note This is the current context's event loop (libRocket).
+    bool on_event( const nom::Event& ev );
     void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
-    Game::SharedPtr game;
+    std::shared_ptr<Game> game;
 
     nom::Timer blink_update;
     bool blink_text;
-
-    nom::UIWidget* info_box_window;
-    nom::MessageBox* info_box;
 };
 
 // Convenience declarations for changing state

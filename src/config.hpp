@@ -34,6 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "nomlib/config.hpp"
 #include <nomlib/math.hpp>
 
+#include <cassert>
+
+#if defined(NOM_ASSERT) && ! defined(NDEBUG)
+  #undef NOM_ASSERT
+  #define NOM_ASSERT(expr) assert(expr)
+#endif
+
 #include "debug.hpp"
 /// Site-specific constants -- this is likely specific to your own local system
 /// setup; auto-generated at compile-time and therefore must recompile to modify
@@ -75,9 +82,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SCALE_FACTOR 1
 
 // Global configuration
-const nom::int32 SCREEN_WIDTH = 384 * SCALE_FACTOR;
-const nom::int32 SCREEN_HEIGHT = 224 * SCALE_FACTOR;
+const nom::int32 SCREEN_WIDTH = 768;
+const nom::int32 SCREEN_HEIGHT = 448;
 const nom::int32 SCREEN_BPP = 32;
+const nom::Size2i GAME_RESOLUTION = nom::Size2i(384,224);
 
 /// As per PSX_SCUS Final Fantasy VIII
 const nom::uint32 TICKS_PER_SECOND = 15;
@@ -98,7 +106,7 @@ const nom::int32 TOTAL_PLAYERS = 2; // +1 padding
 ///
 /// \remark Loading of the database will fail a sanity check if we fall short of
 /// this number
-const nom::uint32 MIN_COLLECTION = 10;
+const nom::uint32 MIN_COLLECTION = 7;
 
 /// Maximum number of cards in cards database (see Resources/cards.json)
 ///
@@ -182,8 +190,8 @@ const nom::int32 PLAYER2_ORIGIN_Y = BOARD_ORIGIN_Y; // 16
 const nom::int32 PLAYER1_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ) + BOARD_ORIGIN_X + ( CARD_WIDTH * 3 );
 const nom::int32 PLAYER1_ORIGIN_Y = BOARD_ORIGIN_Y;
 
-const nom::int32 CURSOR_ORIGIN_X = ( SCREEN_WIDTH - CURSOR_WIDTH ) / 2 ;
-const nom::int32 CURSOR_ORIGIN_Y = ( SCREEN_HEIGHT - CURSOR_HEIGHT ) / 2;
+const nom::int32 CURSOR_ORIGIN_X = ( GAME_RESOLUTION.w - CURSOR_WIDTH ) / 2 ;
+const nom::int32 CURSOR_ORIGIN_Y = ( GAME_RESOLUTION.h - CURSOR_HEIGHT ) / 2;
 
 const nom::int32 PLAYER2_CURSOR_ORIGIN_X = BOARD_ORIGIN_X - PLAYER2_ORIGIN_X; // 80
 const nom::int32 PLAYER2_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
@@ -226,75 +234,6 @@ const nom::int32 RANK_SOUTH_ORIGIN_Y = 20 * SCALE_FACTOR;
 const nom::int32 RANK_WEST_ORIGIN_X = 4 * SCALE_FACTOR;
 const nom::int32 RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
 
-// interface_pickOutCards() Menu
-const nom::int32 PICK_CARDS_MENU_ORIGIN_X = 60 * SCALE_FACTOR;
-const nom::int32 PICK_CARDS_MENU_ORIGIN_Y = 25 * SCALE_FACTOR;
-
-const nom::int32 PICK_CARDS_MENU_WIDTH = 164 * SCALE_FACTOR;
-const nom::int32 PICK_CARDS_MENU_HEIGHT = 196 * SCALE_FACTOR;
-
-// Starting cursor positioning
-const nom::int32 MENU_CARDS_CURSOR_ORIGIN_X = 40 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_CURSOR_ORIGIN_Y = 34 * SCALE_FACTOR;
-
-// "Cards" Title Text
-const nom::int32 MENU_CARDS_TITLE_ORIGIN_X = 64 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_TITLE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
-
-// "P" (page) number header text
-const nom::int32 MENU_CARDS_TITLE_PAGE_ORIGIN_X = 119 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_TITLE_PAGE_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
-
-// "Num" header text
-const nom::int32 MENU_CARDS_TITLE_NUM_ORIGIN_X = 184 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_TITLE_NUM_ORIGIN_Y = PICK_CARDS_MENU_ORIGIN_Y;
-
-// Field elements
-const nom::int32 MENU_CARDS_FIELD_ORIGIN_X = 64 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_FIELD_ORIGIN_Y = 30 * SCALE_FACTOR;
-
-// Card selection helper element
-const nom::int32 MENU_CARDS_HELPER_ORIGIN_X = MENU_CARDS_FIELD_ORIGIN_X;
-const nom::int32 MENU_CARDS_HELPER_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
-
-// Card name text
-const nom::int32 MENU_CARDS_NAME_ORIGIN_X = 80 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_NAME_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
-
-// Number of cards text
-const nom::int32 MENU_CARDS_NUM_ORIGIN_X = 210 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_NUM_ORIGIN_Y = MENU_CARDS_FIELD_ORIGIN_Y;
-
-const nom::int32 MENU_CARDS_PAGE_LEFT_ORIGIN_X = 58 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_PAGE_LEFT_ORIGIN_Y = 208 * SCALE_FACTOR;
-
-const nom::int32 MENU_CARDS_PAGE_RIGHT_ORIGIN_X = 210 * SCALE_FACTOR;
-const nom::int32 MENU_CARDS_PAGE_RIGHT_ORIGIN_Y = MENU_CARDS_PAGE_LEFT_ORIGIN_Y;
-
-const nom::int32 INFO_BOX_WIDTH = 176 * SCALE_FACTOR;
-const nom::int32 INFO_BOX_HEIGHT = 24 * SCALE_FACTOR;
-
-const nom::int32 INFO_BOX_ORIGIN_X = ( SCREEN_WIDTH - INFO_BOX_WIDTH ) / 2;
-const nom::int32 INFO_BOX_ORIGIN_Y = 194 * SCALE_FACTOR;
-
-const nom::int32 DEBUG_BOX_WIDTH = 88 * SCALE_FACTOR;
-const nom::int32 DEBUG_BOX_HEIGHT = 24 * SCALE_FACTOR;
-
-const nom::int32 DEBUG_BOX_ORIGIN_X = ( SCREEN_WIDTH - DEBUG_BOX_WIDTH ) / 2;
-const nom::int32 DEBUG_BOX_ORIGIN_Y = 8 * SCALE_FACTOR;
-
-const nom::int32 PAUSE_BOX_WIDTH = 176 * SCALE_FACTOR;
-const nom::int32 PAUSE_BOX_HEIGHT = 24 * SCALE_FACTOR;
-
-const nom::int32 PAUSE_BOX_ORIGIN_X = ( SCREEN_WIDTH - PAUSE_BOX_WIDTH ) / 2;
-const nom::int32 PAUSE_BOX_ORIGIN_Y = ( SCREEN_HEIGHT - PAUSE_BOX_HEIGHT ) / 2;
-
-const nom::int32 OPTION_BOX_WIDTH = 116 * SCALE_FACTOR;
-const nom::int32 OPTION_BOX_HEIGHT = 72 * SCALE_FACTOR;
-
-const nom::int32 OPTION_BOX_ORIGIN_X = ( SCREEN_WIDTH - OPTION_BOX_WIDTH ) / 2;
-const nom::int32 OPTION_BOX_ORIGIN_Y = ( SCREEN_HEIGHT - OPTION_BOX_HEIGHT ) / 2;
-
 const nom::int32 PLAYER_INDICATOR_WIDTH = 16 * SCALE_FACTOR;
 const nom::int32 PLAYER_INDICATOR_HEIGHT = 16 * SCALE_FACTOR;
 
@@ -303,8 +242,6 @@ const nom::int32 PLAYER1_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
 
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_X = 40 * SCALE_FACTOR;
 const nom::int32 PLAYER2_INDICATOR_ORIGIN_Y = 0 * SCALE_FACTOR;
-
-const nom::Color4i GrayText(195,209,228);
 
 /// Card elemental type
 enum {

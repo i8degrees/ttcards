@@ -44,7 +44,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardRules.hpp"
 #include "GameOverStateCursor.hpp"
 
-#include "Game.hpp"
+// Forward declarations
+class Game;
 
 class GameOverState: public nom::IState
 {
@@ -57,11 +58,17 @@ class GameOverState: public nom::IState
     ~GameOverState();
 
   private:
+    /// \todo Change return type to bool
     void on_init( nom::void_ptr data );
     void on_exit( nom::void_ptr data );
 
     void on_pause( nom::void_ptr data );
     void on_resume( nom::void_ptr data );
+
+    /// \brief Injection of the GUI event loop.
+    ///
+    /// \note This is the current context's event loop (libRocket).
+    bool on_event( const nom::Event& ev ) override;
 
     /// \brief Method callback for mouse button actions.
     ///
@@ -73,7 +80,7 @@ class GameOverState: public nom::IState
     void on_update ( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
-    Game::SharedPtr game;
+    std::shared_ptr<Game> game;
 
     nom::Timer transistion;
     bool show_results;
@@ -84,11 +91,6 @@ class GameOverState: public nom::IState
     GameOverStateCursor cursor;
 
     Card selected_card;
-
-    nom::UIWidget* info_box_window;
-    nom::UIWidget* card_box_window;
-    nom::MessageBox* info_box;
-    nom::MessageBox* card_info_box;
 
     /// Position of player 1 hand
     nom::Point2i player1_pos;

@@ -35,9 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 
 #include "config.hpp"
-#include "CardHand.hpp"
 #include "CardRules.hpp"
-#include "CardView.hpp"
+
+// Forward declarations
+class CardHand;
+class CardView;
 
 enum PlayerState
 {
@@ -87,7 +89,7 @@ class Player
     CardRules ruleset;
 
     /// pointer reference to player's hand; defaults to NULL.
-    CardHand::SharedPtr hand;
+    std::shared_ptr<CardHand> hand;
 
     /// x, y origin coords; defaults to Point2i::null (-1,-1).
     nom::Point2i position_;

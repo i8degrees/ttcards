@@ -28,14 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PlayState.hpp"
 
+// Forward declarations
+#include "Game.hpp"
+
 using namespace nom;
 
 PlayState::PlayState ( const nom::SDLApp::shared_ptr& object ) :
-  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
-  debug_box_window{ nullptr },
-  info_box_window{ nullptr },
-  debug_box{ nullptr },
-  info_box{ nullptr }
+  nom::IState( Game::State::Play ),
+  game( NOM_DYN_SHARED_PTR_CAST( Game, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -48,14 +48,16 @@ PlayState::PlayState ( const nom::SDLApp::shared_ptr& object ) :
 PlayState::~PlayState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  NOM_DELETE_PTR( this->debug_box_window );
-  NOM_DELETE_PTR( this->info_box_window );
 }
 
 void PlayState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  this->game->info_box_.close();
+  this->game->debug_box_.close();
+  Rocket::Core::Factory::ClearStyleSheetCache();
+  Rocket::Core::Factory::ClearTemplateCache();
 }
 
 void PlayState::on_pause( nom::void_ptr data )
@@ -73,11 +75,6 @@ void PlayState::on_resume( nom::void_ptr data )
 
 void PlayState::on_init( nom::void_ptr data )
 {
-  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
-  Point2i debug_box_origin = Point2i( DEBUG_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
-  Size2i debug_box_size = Size2i( DEBUG_BOX_WIDTH, DEBUG_BOX_HEIGHT );
-
   while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
   {
     this->game->hand[0].shuffle ( 8, 10, this->game->collection );
@@ -130,51 +127,43 @@ void PlayState::on_init( nom::void_ptr data )
     this->cursor_coords_map[idx] = nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
-  // This widget's coordinates will be relative to the top-level widget
-  this->debug_box_window = new nom::UIWidget( this->game->gui_window_ );
-
   // Northern message box
-  this->debug_box = new nom::MessageBox (
-                                          this->debug_box_window,
-                                          -1,
-                                          debug_box_origin,
-                                          debug_box_size
-                                        );
 
-  this->debug_box->set_decorator( new nom::FinalFantasyDecorator() );
+  if( this->game->debug_box_.set_context(&this->game->gui_window_) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+    // return false;
+  }
 
-  // Title label text *must* be ALL CAPITALS; the small bitmap font used only
-  // has the glyphs for the capital letters of the alphabet.
-  this->debug_box->set_title( "INFO.", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
+  if( this->game->debug_box_.load_document_file( this->game->config.getString("GUI_DEBUG") ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                  this->game->config.getString("GUI_DEBUG") );
+    // return false;
+  }
 
-  // Initialize message label text to sane defaults; see also:
-  // ::on_update_info_dialogs method.
-  this->debug_box->set_message( "", this->game->info_text, nom::DEFAULT_FONT_SIZE);
+  this->game->debug_box_.show();
 
   #if ! defined ( NOM_DEBUG )
-    this->debug_box->disable();
+    this->game->debug_box_.disable();
   #endif
 
-  // This widget's coordinates will be relative to the top-level widget
-  this->info_box_window = new nom::UIWidget( this->game->gui_window_ );
-
   // Southern message box
-  this->info_box = new nom::MessageBox  (
-                                          this->info_box_window,
-                                          -1,
-                                          info_box_origin,
-                                          info_box_size
-                                        );
 
-  this->info_box->set_decorator( new nom::FinalFantasyDecorator() );
+  if( this->game->info_box_.set_context(&this->game->gui_window_) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+    // return false;
+  }
 
-  // Title label text *must* be ALL CAPITALS; the small bitmap font used only
-  // has the glyphs for the capital letters of the alphabet.
-  this->info_box->set_title( "INFO.", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
+  if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_MBOX") ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                  this->game->config.getString("GUI_MBOX") );
+    // return false;
+  }
 
-  // Initialize message label text to sane defaults; see also:
-  // ::on_update_info_dialogs method.
-  this->info_box->set_message( "", this->game->info_text, nom::DEFAULT_FONT_SIZE );
+  this->game->info_box_.show();
 
   while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
   {
@@ -202,9 +191,6 @@ void PlayState::on_init( nom::void_ptr data )
   this->player_timer[1].setFrameRate ( 500 );
   this->cursor_blink.start();
   this->blink_cursor = false;
-
-  this->debug_box_window->insert_child( this->debug_box );
-  this->info_box_window->insert_child( this->info_box );
 
   // this->game->input_mapper.clear();
   nom::InputActionMapper state;
@@ -292,13 +278,13 @@ void PlayState::on_init( nom::void_ptr data )
 
     nom::EventCallback toggle_debug_box( [&] ( const nom::Event& evt )
       {
-        if( this->debug_box->enabled() == true )
+        if( this->game->debug_box_.enabled() == true )
         {
-          this->debug_box->disable();
+          this->game->debug_box_.disable();
         }
         else
         {
-          this->debug_box->enable();
+          this->game->debug_box_.enable();
         }
       }
     );
@@ -362,6 +348,15 @@ void PlayState::on_init( nom::void_ptr data )
   this->game->input_mapper.insert( "PlayState", state, true );
   this->game->input_mapper.activate_only( "PlayState" );
   this->game->input_mapper.activate( "Game" );
+}
+
+// Private scope
+
+bool PlayState::on_event(const nom::Event& ev)
+{
+  this->game->gui_window_.process_event(ev);
+
+  return true;
 }
 
 void PlayState::on_mouse_button_down( const nom::Event& ev )
@@ -491,10 +486,10 @@ void PlayState::on_update_info_dialogs( void )
     std::string card_name = selected_card.getName();
 
     // (Northern) debug info box
-    this->debug_box->set_message_text( card_id );
+    this->game->debug_box_.set_message_text(card_id);
 
     // (Southern) info card box
-    this->info_box->set_message_text( card_name );
+    this->game->info_box_.set_message_text(card_name);
   }
 }
 
@@ -844,6 +839,7 @@ void PlayState::on_update( float delta_time )
   this->updateCursor();
 
   this->on_update_info_dialogs();
+  this->game->gui_window_.update();
 
   this->player[0].update();
   this->player[1].update();
@@ -933,15 +929,9 @@ void PlayState::on_draw( nom::RenderWindow& target )
 
   this->player_rect.draw ( target );
 
-  this->drawCursor ( target );
+  this->drawCursor( target );
 
-  // FIXME (?):
-  if( this->debug_box->enabled() == true )
-  {
-    this->debug_box_window->draw( target );
-  }
-
-  this->info_box_window->draw( target );
+  this->game->gui_window_.draw();
 
   // Draw each player's scoreboard
   this->scoreboard_text[0].draw ( target );
@@ -974,7 +964,7 @@ void PlayState::on_draw( nom::RenderWindow& target )
     }
 
     nom::Point2i pos = nom::Point2i ( 0, 0 );
-    nom::Size2i size = nom::Size2i ( SCREEN_WIDTH, SCREEN_HEIGHT );
+    nom::Size2i size = nom::Size2i ( GAME_RESOLUTION.w, GAME_RESOLUTION.h );
 
     this->gameover_text.set_position ( pos );
     this->gameover_text.set_size ( size );
@@ -990,7 +980,7 @@ void PlayState::on_draw( nom::RenderWindow& target )
     }
     else
     {
-      nom::uint32_ptr data = new nom::uint32 ( this->gameover_state );
+      nom::uint32_ptr data = new nom::uint32(this->gameover_state);
       this->game->set_state( Game::State::GameOver, data );
     }
   }

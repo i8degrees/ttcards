@@ -1,0 +1,71 @@
+/* Top-level defaults */
+body
+{
+	font-family: Open Sans;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 12px;
+	color: white;
+
+  /* Game resolution */
+  /*width: 384px;*/
+  /*height: 224px;*/
+}
+
+/* */
+body.window {}
+
+div#title_bar
+{
+	z-index: 1;
+  /* Pause UI animation, among other things (i.e. height of message boxes),
+  breaks without absolute positioning */
+  position: absolute;
+  margin-top: -4px;
+	margin-left: 4px;
+
+	text-align: left;
+}
+
+div#title_bar span
+{
+	font-family: Delicious;
+	color: white;
+	font-size: 12px;
+	font-weight: bold;
+	outline-font-effect: outline;
+	outline-width: 1px;
+	outline-color: black;
+}
+
+div#window
+{
+	width: auto;
+	/*padding: 10px 15px;*/
+
+	background-decorator: final-fantasy-theme;
+}
+
+div#content
+{
+	z-index: 2;
+	width: auto;
+	/*height: 100%;*/
+	/*overflow: hidden auto;*/
+}
+
+/*div#document:hover
+{
+	cursor: diag-resize;
+}*/
+
+datagridheader
+{
+  font-family: Delicious;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  outline-font-effect: outline;
+  outline-width: 1px;
+  outline-color: black;
+}

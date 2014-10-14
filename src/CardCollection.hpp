@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cassert>
 
 #include <nomlib/serializers.hpp>
 
@@ -61,6 +60,9 @@ class CardCollection
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.
     bool load( const std::string& filename );
+
+    const Card& lookup_by_name( const std::string& name ) const;
+    const Card& lookup_by_id( int id ) const;
 
     /// \todo redeclare private scope
     Cards cards;

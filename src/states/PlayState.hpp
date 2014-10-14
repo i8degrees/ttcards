@@ -52,7 +52,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 //#include "cpu_player.hpp"
 
-#include "Game.hpp"
+// Forward declarations
+class Game;
 
 class PlayState: public nom::IState
 {
@@ -69,6 +70,11 @@ class PlayState: public nom::IState
     void on_draw( nom::RenderWindow& target );
 
   private:
+    /// \brief Injection of the GUI event loop.
+    ///
+    /// \note This is the current context's event loop (libRocket).
+    bool on_event(const nom::Event& ev);
+
     /// \brief Method callback for mouse button actions.
     ///
     /// \see nom::InputMapper.
@@ -113,12 +119,7 @@ class PlayState: public nom::IState
     /// \see nom::InputMapper.
     bool save_game( nom::uint32 flags );
 
-    Game::SharedPtr game;
-
-    nom::UIWidget* debug_box_window;
-    nom::UIWidget* info_box_window;
-    nom::MessageBox* debug_box;
-    nom::MessageBox* info_box;
+    std::shared_ptr<Game> game;
 
     /// In-game players (including AI)
     Player player[2];

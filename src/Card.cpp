@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Card.hpp"
 
+// Static initialization
+Card Card::null = Card();
 nom::int32 Card::CARDS_COLLECTION = 0;
 
 Card::Card ( void ) :

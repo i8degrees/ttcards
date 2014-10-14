@@ -28,13 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PauseState.hpp"
 
+// Forward declarations
+#include "Game.hpp"
+
 using namespace nom;
 
 PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
-  nom::IState{ Game::State::Pause, nom::IState::Flags::BackRender, nom::IState::Type::Child },
-  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
-  info_box_window{ nullptr },
-  info_box{ nullptr }
+  nom::IState( Game::State::Pause, nom::IState::Flags::BackRender, nom::IState::Type::Child),
+  game( NOM_DYN_SHARED_PTR_CAST( Game, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -42,35 +43,26 @@ PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
 PauseState::~PauseState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  NOM_DELETE_PTR( this->info_box_window );
 }
 
 void PauseState::on_init( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  Point2i info_box_origin = Point2i( PAUSE_BOX_ORIGIN_X, PAUSE_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( PAUSE_BOX_WIDTH, PAUSE_BOX_HEIGHT );
+  if( this->game->pause_window_.set_context(&this->game->gui_window_) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+    // return false;
+  }
 
-  // This widget's coordinates will be relative to the top-level widget
-  this->info_box_window = new nom::UIWidget( this->game->gui_window_ );
-
-  this->info_box = new nom::MessageBox  (
-                                          this->info_box_window,
-                                          -1,
-                                          info_box_origin,
-                                          info_box_size
-                                        );
-
-  this->info_box->set_decorator( new nom::FinalFantasyDecorator() );
-
-  this->info_box->set_title( "PAUSE", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
-  this->info_box->set_message( SHORT_VERSION_INFO, this->game->info_text, nom::DEFAULT_FONT_SIZE );
+  if( this->game->pause_window_.load_document_file( this->game->config.getString("GUI_PAUSE") ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                  this->game->config.getString("GUI_PAUSE") );
+    // return false;
+  }
 
   this->blink_update.start();
-
-  this->info_box_window->insert_child( this->info_box );
 
   nom::InputActionMapper state;
 
@@ -89,11 +81,19 @@ void PauseState::on_init( nom::void_ptr data )
 
   // this->game->input_mapper.disable();
   // this->game->input_mapper.activate_only( "Game" );
+
+  this->game->pause_window_.set_title_text("PAUSE");
+  this->game->pause_window_.set_message_text( SHORT_VERSION_INFO);
+  this->game->pause_window_.show();
 }
 
 void PauseState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  this->game->pause_window_.close();
+  Rocket::Core::Factory::ClearStyleSheetCache();
+  Rocket::Core::Factory::ClearTemplateCache();
 }
 
 void PauseState::on_pause( nom::void_ptr data )
@@ -106,27 +106,36 @@ void PauseState::on_resume( nom::void_ptr data )
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
+bool PauseState::on_event( const nom::Event& ev )
+{
+  this->game->gui_window_.process_event(ev);
+
+  return true;
+}
+
 void PauseState::on_update( float delta_time )
 {
-  this->info_box->set_title_text( "PAUSE" );
+  this->game->pause_window_.set_title_text("PAUSE");
 
   if ( this->blink_update.ticks() > 800 )
   {
     this->blink_update.stop();
-    this->info_box->set_title_text( "" );
+    this->game->pause_window_.set_title_text("");
     this->blink_text = true;
   }
+
+  this->game->gui_window_.update();
 
   this->game->window.update();
 }
 
 void PauseState::on_draw( nom::RenderWindow& target )
 {
-  this->info_box_window->draw( target );
+  this->game->gui_window_.draw();
 
   if ( this->blink_text )
   {
-    this->info_box->set_title_text( "" );
+    this->game->pause_window_.set_title_text("");
     this->blink_update.start();
     this->blink_text = false;
   }

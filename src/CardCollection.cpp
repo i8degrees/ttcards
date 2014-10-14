@@ -173,3 +173,33 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
 
   return true;
 }
+
+const Card& CardCollection::lookup_by_name( const std::string& name ) const
+{
+  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr )
+  {
+    if( (*itr).getName() == name )
+    {
+      // Successful match
+      return *itr;
+    }
+  }
+
+  // No match
+  return Card::null;
+}
+
+const Card& CardCollection::lookup_by_id( int id ) const
+{
+  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr )
+  {
+    if( (*itr).getID() == id )
+    {
+      // Successful match
+      return *itr;
+    }
+  }
+
+  // No match
+  return Card::null;
+}

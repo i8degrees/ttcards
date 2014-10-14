@@ -46,6 +46,9 @@ CardHand::~CardHand ( void )
 
 bool CardHand::push_back ( const Card& card )
 {
+  // FIXME: Duplicate cards are allowed. The player's selected card X offset is
+  // broken without this check; see Player.cpp for details.
+
   // No go; we already have this card somewhere in our hand
   if ( this->exists( card ) == true ) return false;
 

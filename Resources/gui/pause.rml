@@ -1,0 +1,27 @@
+<rml>
+  <head>
+    <title>PAUSE</title>
+    <link type="text/template" href="window.rml" />
+    <style>
+
+      body
+      {
+        width: 176px;
+        height: 31px;
+
+        margin: auto;
+      }
+
+      div#content
+      {
+        text-align: center;
+        padding-top: 4%;
+        /*padding-bottom: 4%;*/
+      }
+
+    </style>
+  </head>
+  <body template="window">
+    <p id="message"></p>
+  </body>
+</rml>

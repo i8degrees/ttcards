@@ -129,7 +129,29 @@ endif ( DOCS )
 # of calls to include_directories & linking of libraries.
 #
 # TODO: we should be checking for the existence of these directories beforehand!
+
+# Common dependencies (shared between all platforms)
+
+# libRocket dependency
+find_package( OpenGL REQUIRED )
+if( OPENGL_FOUND )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENGL_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${OPENGL_LIBRARY} )
+endif( OPENGL_FOUND )
+
+# This might be a short-term kludge; we are linking statically (by default) so
+# that we are able to start using both nomlib and libRocket in TTcards with a
+# minimum of packaging fuss for the project (statically linking here lets us
+# remove libRocket from the linking of TTcards, and just requires the header
+# files).
 #
+# I'm also not sure that it makes sense to abstract libRocket's higher-level
+# APIs...
+#
+# This only affects builds on OS X. Windows builds always links statically.
+set( NOM_USE_STATIC_LIBROCKET FALSE )
+set( NOM_USE_LIBROCKET_LUA FALSE )
+
 if ( PLATFORM_WINDOWS )
   # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
   # *MUST* include trailing backslash for this platform!
@@ -188,6 +210,29 @@ if ( PLATFORM_WINDOWS )
 
   set ( MSVCPP_LIBRARY_REDIST "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
 
+  # libRocket dependency
+  set ( GLEW_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/include/GL/" )
+  # Paths must be: a) absolute; b) directory; c) end with a slash
+  set ( GLEW_REDIST_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/bin/${PLATFORM_ARCH}/" )
+  set ( GLEW_LIBRARY
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/lib/${PLATFORM_ARCH}/glew32.lib"
+      )
+  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/include/GL" )
+  set ( EXTLIBS ${EXTLIBS} ${GLEW_LIBRARY} )
+
+  # libRocket dependency (GUI)
+  set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/include" )
+  # Paths must be: a) absolute; b) directory; c) end with a slash
+  set ( LIBROCKET_REDIST_DIRS
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/;${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/bin/${PLATFORM_ARCH}/" )
+  set ( LIBROCKET_LIBRARY
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketControls.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketCore.lib"
+        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketDebugger.lib"
+      )
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
+
 elseif ( PLATFORM_OSX )
 
   find_package ( nomlib REQUIRED )
@@ -195,6 +240,7 @@ elseif ( PLATFORM_OSX )
   if ( NOMLIB_FOUND )
     set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
     set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
+    message( STATUS "Found nomlib: ${NOMLIB_LIBRARY}" )
   else ( NOT NOMLIB_FOUND )
     message ( FATAL_ERROR
               "Not found: nomlib.\n"
@@ -232,6 +278,67 @@ elseif ( PLATFORM_OSX )
   set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
   set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
   #set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+
+  # libRocket dependency (FreeType2)
+  #
+  # FIXME: This file needs its RPATH modified; it is **not** being used as the
+  # library for executables yet. We are using brew's version installed at
+  # /usr/local
+  set ( FREETYPE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
+  set ( EXTLIBS ${EXTLIBS} ${FREETYPE_LIBRARY} )
+
+  # libRocket dependency
+  if( NOM_USE_LIBROCKET_LUA )
+    find_package( Lua REQUIRED )
+
+    if( LUA_FOUND )
+      set ( EXT_HEADERS ${EXT_HEADERS} ${LUA_INCLUDE_DIR} )
+      set ( EXTLIBS ${EXTLIBS} ${LUA_LIBRARY} )
+    endif( LUA_FOUND )
+  endif( NOM_USE_LIBROCKET_LUA )
+
+  # libRocket dependency (GUI)
+
+  set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/include" )
+
+  if( NOM_USE_STATIC_LIBROCKET )
+    # Note that these are built without debugging (Release) because the
+    # resulting file size was insane otherwise (+158MB).
+    set ( LIBROCKET_LIBRARY
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.a"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.a"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.a"
+        )
+
+    if( NOM_USE_LIBROCKET_LUA )
+      set ( LIBROCKET_LIBRARY
+            ${LIBROCKET_LIBRARY}
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControlsLua.a"
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCoreLua.a"
+          )
+    endif( NOM_USE_LIBROCKET_LUA )
+
+  else( NOT NOM_USE_STATIC_LIBROCKET )
+    # Debug libraries
+    set ( LIBROCKET_LIBRARY
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.1.dylib"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.1.dylib"
+          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.1.dylib"
+        )
+
+    # NOTE: Lua bindings for the dynamic library build has not been tested!
+    if( NOM_USE_LIBROCKET_LUA )
+      set ( LIBROCKET_LIBRARY
+            ${LIBROCKET_LIBRARY}
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControlsLua.1.dylib"
+            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCoreLua.1.dylib"
+          )
+    endif( NOM_USE_LIBROCKET_LUA )
+
+  endif( NOM_USE_STATIC_LIBROCKET )
+
+  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
+  set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
 
   find_library ( COCOA_LIBRARY Cocoa )
   mark_as_advanced ( COCOA_LIBRARY )
@@ -313,6 +420,16 @@ if ( PLATFORM_OSX )
               PATTERN "Headers" EXCLUDE # do not include header files
               PATTERN "CMake" EXCLUDE # do not include CMake config scripts
             )
+
+    if( NOT NOM_USE_STATIC_LIBROCKET )
+      # Bundle dynamic libraries we depend on
+      #
+      # TODO: Use "Libraries" directory for dynamic libraries.
+      install ( FILES
+                ${LIBROCKET_LIBRARY}
+                DESTINATION "${INSTALL_FRAMEWORK_PATH}"
+              )
+    endif( NOT NOM_USE_STATIC_LIBROCKET )
 
     # CPack refuses to work with me on anything other than a single dot as the
     # destination target path when we are building a package.
@@ -415,7 +532,7 @@ endif ( DOCS )
 if ( PLATFORM_WINDOWS )
   target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} ${NOMLIB_LIBRARY} )
 else ( NOT PLATFORM_WINDOWS )
-  target_link_libraries ( ${PROJECT_NAME} ${NOMLIB_LIBRARY} ) # ${EXTLIBS}
+  target_link_libraries( ${PROJECT_NAME} ${NOMLIB_LIBRARY} ${EXTLIBS} )
 endif ( PLATFORM_WINDOWS )
 
 # Auto-generated build-time variables result in modification of the built

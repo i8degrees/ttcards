@@ -28,18 +28,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverState.hpp"
 
+// Forward declarations
+#include "Game.hpp"
+
 using namespace nom;
 
 GameOverState::GameOverState  ( const nom::SDLApp::shared_ptr& object,
                                 nom::void_ptr state
                               ) :
-  nom::IState { Game::State::GameOver },
-  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
-  show_results ( false ),
-  info_box_window{ nullptr },
-  card_box_window{ nullptr },
-  info_box{ nullptr },
-  card_info_box{ nullptr }
+  nom::IState(Game::State::GameOver),
+  game( NOM_DYN_SHARED_PTR_CAST( Game, object) ),
+  show_results( false )
   /*,gameover_state { static_cast<nom::uint32_ptr>(state) }*/
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
@@ -48,19 +47,10 @@ GameOverState::GameOverState  ( const nom::SDLApp::shared_ptr& object,
 GameOverState::~GameOverState( void )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  NOM_DELETE_PTR( this->info_box_window );
-  NOM_DELETE_PTR( this->card_box_window );
 }
 
 void GameOverState::on_init( nom::void_ptr data )
 {
-  Point2i info_box_origin = Point2i( INFO_BOX_ORIGIN_X, DEBUG_BOX_ORIGIN_Y );
-  Size2i info_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
-
-  Point2i card_box_origin = Point2i( INFO_BOX_ORIGIN_X, INFO_BOX_ORIGIN_Y );
-  Size2i card_box_size = Size2i( INFO_BOX_WIDTH, INFO_BOX_HEIGHT );
-
   // Initialize interface cursor
   this->cursor = GameOverStateCursor ( "images/cursors.json" );
 
@@ -140,40 +130,41 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   // with the order of initialization?
   this->game->hand[1].front();
 
-  // This widget's coordinates will be relative to the top-level widget
-  this->info_box_window = new nom::UIWidget( this->game->gui_window_ );
+  // Northern message box
 
-  // Northern message box; (description / info help)
-  this->info_box = new nom::MessageBox  (
-                                          this->info_box_window,
-                                          -1,
-                                          info_box_origin,
-                                          info_box_size
-                                        );
+  if( this->game->info_box_.set_context(&this->game->gui_window_) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+    // return false;
+  }
 
-  this->info_box->set_decorator( new nom::FinalFantasyDecorator() );
+  if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_RULES_INFO") ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                  this->game->config.getString("GUI_GAMEOVER_RULES_INFO") );
+    // return false;
+  }
 
-  this->info_box->set_title( "INFO.", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
-  this->info_box->set_message( "Select 1 card(s) you want", this->game->info_text, nom::DEFAULT_FONT_SIZE );
-
-  // This widget's coordinates will be relative to the top-level widget
-  this->card_box_window = new nom::UIWidget( this->game->gui_window_ );
+  this->game->info_box_.set_message_text("Select 1 card(s) you want");
+  this->game->info_box_.show();
 
   // Southern message box (card name)
-  this->card_info_box = new nom::MessageBox (
-                                              this->card_box_window,
-                                              -1,
-                                              card_box_origin,
-                                              card_box_size
-                                            );
 
-  this->card_info_box->set_decorator( new nom::FinalFantasyDecorator() );
+  if( this->game->card_info_box_.set_context(&this->game->gui_window_) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+    // return false;
+  }
 
-  this->card_info_box->set_title( "INFO.", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
-  this->card_info_box->set_message( this->game->hand[1].getSelectedCard().getName(), this->game->info_text, nom::DEFAULT_FONT_SIZE );
+  if( this->game->card_info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_CARD_INFO") ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                  this->game->config.getString("GUI_GAMEOVER_CARD_INFO") );
+    // return false;
+  }
 
-  this->info_box_window->insert_child( this->info_box );
-  this->card_box_window->insert_child( card_info_box );
+  this->game->card_info_box_.set_message_text( this->game->hand[1].getSelectedCard().getName() );
+  this->game->card_info_box_.show();
 
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into each player's respective hand.
@@ -288,6 +279,11 @@ void GameOverState::on_exit( nom::void_ptr data )
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->game->winning_track->Stop();
+
+  this->game->info_box_.close();
+  this->game->card_info_box_.close();
+  Rocket::Core::Factory::ClearStyleSheetCache();
+  Rocket::Core::Factory::ClearTemplateCache();
 }
 
 void GameOverState::on_pause( nom::void_ptr data )
@@ -321,6 +317,14 @@ void GameOverState::on_resume( nom::void_ptr data )
   this->game->input_mapper.activate( "Game" );
 }
 
+bool GameOverState::on_event( const nom::Event& ev )
+{
+  // this->game->gui_window_.process_event(ev);
+
+  // Do **not** override the normal event loop (otherwise this state breaks)
+  return false;
+}
+
 void GameOverState::on_mouse_button_down( const nom::Event& ev )
 {
   // Sanity check
@@ -350,7 +354,7 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();
 
-      this->card_info_box->set_message_text( selected_card.getName() );
+      this->game->card_info_box_.set_message_text( selected_card.getName() );
 
       this->game->cursor_move->Play();
       // We must break the loop here upon the end of a matching coords check
@@ -371,7 +375,7 @@ void GameOverState::on_user_event( const nom::Event& ev )
     NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::GUIEvent" );
 
     Card selected_card = this->game->hand[1].getSelectedCard();
-    this->card_info_box->set_message_text( selected_card.getName() );
+    this->game->card_info_box_.set_message_text( selected_card.getName() );
 
     this->game->cursor_move->Play();
   }
@@ -381,13 +385,13 @@ void GameOverState::on_user_event( const nom::Event& ev )
 
     // NOTE: This should not be disabled until the total number of won cards
     // has been reached.
-    this->card_info_box->disable();
+    this->game->card_info_box_.disable();
 
     nom::int32 card_pos = this->game->hand[1].at ( selected_card );
     if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
     {
       // FIXME; should have no spacing on card printout
-      this->info_box->set_message_text( this->selected_card.getName() + " card acquired" );
+      this->game->info_box_.set_message_text( this->selected_card.getName() + " card acquired" );
 
       this->game->hand[1].cards[card_pos].setPlayerID(Card::PLAYER1);
 
@@ -395,18 +399,17 @@ void GameOverState::on_user_event( const nom::Event& ev )
     }
     else
     {
-      //this->info_box->diable();
+      //this->game->info_box_.diable();
       this->game->cursor_wrong->Play();
     }
   }
 }
 
-void GameOverState::on_update ( float delta_time )
+void GameOverState::on_update( float delta_time )
 {
-  this->info_box_window->update();
-  this->card_box_window->update();
-
   this->game->card.update();
+
+  this->game->gui_window_.update();
 
   this->cursor.update();
 
@@ -421,7 +424,7 @@ void GameOverState::on_update ( float delta_time )
 
 void GameOverState::on_draw( nom::RenderWindow& target )
 {
-  this->game->gameover_background.draw ( target );
+  this->game->gameover_background.draw(target);
 
   // Show Player 2 hand on the top
   for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
@@ -451,8 +454,7 @@ void GameOverState::on_draw( nom::RenderWindow& target )
     this->game->card.draw ( target );
   }
 
-  this->info_box_window->draw( target );
-  this->card_box_window->draw( target );
+  this->game->gui_window_.draw();
 
   this->cursor.draw ( target );
   if ( this->show_results == true )

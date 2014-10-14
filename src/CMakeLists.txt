@@ -20,15 +20,15 @@ set (
       ${SRC_DIR}/CardView.cpp
       ${SRC_DIR}/Player.cpp
       ${SRC_DIR}/Game.cpp
+      ${SRC_DIR}/CardsPageDataSource.cpp
     )
 
 # Game states logic
 set (
       TTCARDS_SOURCE_STATES
       ${STATES_DIR}/ContinueMenuStateCursor.cpp
-      ${STATES_DIR}/CardsMenuStateCursor.cpp
-      ${STATES_DIR}/GameOverStateCursor.cpp
       ${STATES_DIR}/ContinueMenuState.cpp
+      ${STATES_DIR}/GameOverStateCursor.cpp
       ${STATES_DIR}/GameOverState.cpp
       ${STATES_DIR}/PauseState.cpp
       ${STATES_DIR}/CardsMenuState.cpp

@@ -29,13 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_CONTINUE_MENU_STATE_CURSOR_HPP
 #define GAMEAPP_CONTINUE_MENU_STATE_CURSOR_HPP
 
-#include <iostream>
 #include <string>
-#include <memory>
+#include <vector>
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/math.hpp>
-#include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
@@ -43,38 +41,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class ContinueMenuStateCursor: public nom::AnimatedSprite
 {
   public:
-    ContinueMenuStateCursor ( void );
+    ContinueMenuStateCursor();
+    ~ContinueMenuStateCursor();
 
-    ~ContinueMenuStateCursor ( void );
+    ContinueMenuStateCursor( const nom::SpriteSheet& sheet );
+    ContinueMenuStateCursor( const std::string& filename );
 
-    ContinueMenuStateCursor ( const nom::SpriteSheet& sheet );
+    /// \brief Set a positioning map for this game cursor to use.
+    void set_position_map( const std::vector<nom::IntRect>& map );
 
-    ContinueMenuStateCursor ( const std::string& filename );
+    /// \brief Get the current positioning index, relative to the element index
+    /// order of the positioning map.
+    int cursor_position();
 
-    /// Set a new positioning object for this instance to use
-    void set_position_map ( const nom::Point2i& position_map );
+    /// \brief Get the beginning element position index for the map.
+    int first();
 
-    /// \brief Get the current position, relative to the card element (index) in
-    /// the player's hand.
-    int cursor_position( void );
+    /// \brief Get the last element position index for the map.
+    int last();
 
-    /// Move the cursor to the left.
+    /// \brief Move the game cursor to the previous mapped item.
     ///
-    /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 move_up ( void );
+    /// \remarks This method updates the internal rendering coordinates of the
+    /// sprite.
+    bool prev();
 
-    /// Move the cursor to the right.
+    /// \brief Move the game cursor to the next mapped item.
     ///
-    /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 move_down ( void );
+    /// \remarks This method updates the internal rendering coordinates of the
+    /// sprite.
+    bool next();
+
+    /// \brief Set the position of the game cursor.
+    ///
+    /// \param pos The position index of the game cursor, relative to the
+    /// element index order of the positioning map.
+    void set_cursor_position(int pos);
 
   private:
-    void next ( void );
-    void previous ( void );
-
-    nom::Point2i option_position;
+    std::vector<nom::IntRect> position_map_;
     int cursor_position_;
-    nom::EventDispatcher cursor_event;
 };
 
 #endif // include guard defined

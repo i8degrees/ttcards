@@ -49,8 +49,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define DEBUG_CARDS_MENU
 //#define DEBUG_CARDS_MENU_CURSOR
 
-#include "SDL.h"
-
 /// \brief The predefined logging categories.
 ///
 /// \see nom::SDL2Logger

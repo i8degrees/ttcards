@@ -38,7 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "ContinueMenuStateCursor.hpp"
-#include "Game.hpp"
+
+// Forward declarations
+class Game;
 
 class ContinueMenuState: public nom::IState
 {
@@ -47,43 +49,25 @@ class ContinueMenuState: public nom::IState
     ~ContinueMenuState();
 
   private:
+    /// \todo Change return type to bool
     void on_init( nom::void_ptr data );
     void on_exit( nom::void_ptr data );
     void on_resume( nom::void_ptr data );
 
-    void on_user_event( const nom::Event& ev );
+    // void on_user_event(const nom::Event& ev);
 
-    /// \remarks This is a delegate method that is used by question_box.
-    void on_gui_key_down( const nom::UIWidgetEvent& ev );
-
-    /// \remarks This is an event listener callback used by question_box.
-    void on_gui_mouse_down( const nom::UIWidgetEvent& ev );
-
-    /// \remarks This is an event listener callback used by question_box.
-    void on_gui_mouse_dclick( const nom::UIWidgetEvent& ev );
-
-    /// \remarks This is an event listener callback used by question_box.
-    void on_gui_mouse_wheel( const nom::UIWidgetEvent& ev );
-
-    /// \brief Implements optional IState::on_event interface method.
-    ///
-    /// \remarks This is currently required for GUI events processing.
-    bool on_event( const nom::Event& ev );
+    void on_mouse_button_up(const nom::Event& ev);
+    void on_mouse_button_dblclick(const nom::Event& ev);
 
     void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
     /// \brief Event handler for player's choice selection.
-    void send_response( void );
+    void send_response();
 
-    Game::SharedPtr game;
+    std::shared_ptr<Game> game;
 
-    nom::UIWidget* question_box_window;
-    nom::QuestionDialogBox* question_box;
-
-    ContinueMenuStateCursor cursor;
-
-    nom::Point2i position_map;
+    ContinueMenuStateCursor cursor_;
 };
 
 // Convenience declarations for changing state

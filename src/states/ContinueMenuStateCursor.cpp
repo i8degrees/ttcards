@@ -28,13 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuStateCursor.hpp"
 
-ContinueMenuStateCursor::ContinueMenuStateCursor ( void ) :
-  cursor_position_{ 0 }
+ContinueMenuStateCursor::ContinueMenuStateCursor() :
+  cursor_position_(0)
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-ContinueMenuStateCursor::~ContinueMenuStateCursor ( void )
+ContinueMenuStateCursor::~ContinueMenuStateCursor()
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
@@ -42,8 +42,8 @@ ContinueMenuStateCursor::~ContinueMenuStateCursor ( void )
 ContinueMenuStateCursor::ContinueMenuStateCursor  (
                                                     const nom::SpriteSheet& sheet
                                                   ) :
-  AnimatedSprite{ sheet },
-  cursor_position_{ 0 }
+  AnimatedSprite(sheet),
+  cursor_position_(0)
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
@@ -51,69 +51,74 @@ ContinueMenuStateCursor::ContinueMenuStateCursor  (
 ContinueMenuStateCursor::ContinueMenuStateCursor  (
                                                     const std::string& filename
                                                   ) :
-  AnimatedSprite{ filename },
-  cursor_position_{ 0 }
+  AnimatedSprite(filename),
+  cursor_position_(0)
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-void ContinueMenuStateCursor::set_position_map ( const nom::Point2i& position_map )
+void ContinueMenuStateCursor::set_position_map( const std::vector<nom::IntRect>& map )
 {
-  this->option_position = position_map;
+  this->position_map_ = map;
   this->cursor_position_ = 0;
 }
 
-int ContinueMenuStateCursor::cursor_position( void )
+int ContinueMenuStateCursor::cursor_position()
 {
   return this->cursor_position_;
 }
 
-nom::int32 ContinueMenuStateCursor::move_up ( void )
+int ContinueMenuStateCursor::first()
 {
-  if ( this->position().y > this->option_position.x )
-  {
-    this->move ( 0, -(16) );
-    this->previous();
+  return 0;
+}
+
+int ContinueMenuStateCursor::last()
+{
+  return this->position_map_.size();
+}
+
+bool ContinueMenuStateCursor::prev()
+{
+  int pos = this->cursor_position();          // Element position
+  int first_pos = this->first();
+
+  if( this->position().y > this->position_map_[first_pos].y ) {
+    this->move( 0, -(this->position_map_[pos].h) );
+    --cursor_position_;
+    return true;
   }
 
-  //NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_GUI, this->position().y );
-  return this->position().y;
+  // NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, this->position().x );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, this->position().y );
+  return false;
 }
 
-nom::int32 ContinueMenuStateCursor::move_down ( void )
+bool ContinueMenuStateCursor::next()
 {
-  if ( this->position().y < 128 /*this->option_position.y*/ ) // FIXME
+  int pos = this->cursor_position();          // Element position
+  int last_pos = this->last() - 1;
+
+  if( this->position().y < this->position_map_[last_pos].y )
   {
-    this->move ( 0, 16 );
-    this->next();
+    this->move( 0, this->position_map_[pos].h );
+    ++cursor_position_;
+    return true;
   }
 
-  //NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_GUI, this->position().y );
-  return this->position().y;
+  // NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, this->position().x );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, this->position().y );
+  return false;
 }
 
-void ContinueMenuStateCursor::next ( void )
+void ContinueMenuStateCursor::set_cursor_position(int pos)
 {
-  this->cursor_position_++;
-  //NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_GUI, this->cursor_position_);
+  NOM_ASSERT( pos <= this->last() );
 
-  nom::Event ev;
-  ev.user.code = GameEvent::AudioEvent;
-  ev.user.data1 = nullptr;
-  ev.user.data2 = nullptr;
-  ev.user.window_id = 0;
-  this->cursor_event.dispatch ( ev );
-}
+  if( pos <= this->last() ) {
+    this->cursor_position_ = pos;
 
-void ContinueMenuStateCursor::previous ( void )
-{
-  this->cursor_position_--;
-  //NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_GUI, this->cursor_position_);
-
-  nom::Event ev;
-  ev.user.code = GameEvent::AudioEvent;
-  ev.user.data1 = nullptr;
-  ev.user.data2 = nullptr;
-  ev.user.window_id = 0;
-  this->cursor_event.dispatch ( ev );
+    // Update rendering coordinates
+    this->set_position( this->position_map_[pos].position() );
+  }
 }

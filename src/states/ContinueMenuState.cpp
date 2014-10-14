@@ -28,13 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "ContinueMenuState.hpp"
 
+// Forward declarations
+#include "Game.hpp"
+
 using namespace nom;
 
 ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::shared_ptr& object ) :
-  nom::IState{ Game::State::ContinueMenu, nom::IState::Flags::BackRender, nom::IState::Type::Child },
-  game { NOM_DYN_SHARED_PTR_CAST( Game, object) },
-  question_box_window{ nullptr },
-  question_box{ nullptr }
+  nom::IState( Game::State::ContinueMenu, nom::IState::Flags::BackRender, nom::IState::Type::Child ),
+  game( NOM_DYN_SHARED_PTR_CAST( Game, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -42,53 +43,31 @@ ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::shared_ptr& object ) 
 ContinueMenuState::~ContinueMenuState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  NOM_DELETE_PTR( this->question_box_window );
 }
 
 void ContinueMenuState::on_init( nom::void_ptr data )
 {
-  Point2i question_box_origin = Point2i( OPTION_BOX_ORIGIN_X, OPTION_BOX_ORIGIN_Y );
-  Size2i question_box_size = Size2i( OPTION_BOX_WIDTH, OPTION_BOX_HEIGHT );
+  if( this->game->question_box_.set_context(&this->game->gui_window_) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+    // return false;
+  }
 
-  // This widget's coordinates will be relative to the top-level widget
-  this->question_box_window = new nom::UIWidget( this->game->gui_window_ );
+  if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX") ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                  this->game->config.getString("GUI_QBOX") );
+    // return false;
+  }
 
-  this->question_box = new nom::QuestionDialogBox (
-                                                    this->question_box_window,
-                                                    -1,
-                                                    question_box_origin,
-                                                    question_box_size
-                                                  );
+  this->game->question_box_.set_title_text("CHOICE");
 
-  this->question_box->set_decorator( new nom::FinalFantasyDecorator() );
-
-  // The font used for choice text labels
-  this->question_box->set_font( this->game->info_text );
-
-  this->question_box->set_title( "CHOICE", this->game->info_small_text, nom::DEFAULT_FONT_SIZE );
-
-  // We need to use the height of the text font later for cursor calculations.
-  this->question_box->set_message( "Are you sure?", this->game->info_text, nom::DEFAULT_FONT_SIZE );
-  this->question_box->set_message_alignment( nom::Anchor::TopCenter );
-
-  std::string yes_label( "Yes" );
-  std::string no_label( "No " );
-
-  this->question_box->append_choice( yes_label );
-  this->question_box->append_choice( no_label );
-  this->question_box->set_selection( 1 ); // Match the starting position of
-                                          // the cursor
-
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DOWN, this->on_gui_mouse_down );
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_DCLICK, this->on_gui_mouse_dclick );
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::MOUSE_WHEEL, this->on_gui_mouse_wheel );
-  NOM_CONNECT_UIWIDGET_EVENT( this->question_box, nom::UIEvent::KEY_DOWN, this->on_gui_key_down );
+  this->game->question_box_.show();
 
   // Initialize interface cursor
-  this->cursor = ContinueMenuStateCursor ( "images/cursors.json" );
+  this->cursor_ = ContinueMenuStateCursor("images/cursors.json");
 
-  if ( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
+  if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
   {
     // EPIC FAIL
     nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
@@ -97,66 +76,116 @@ void ContinueMenuState::on_init( nom::void_ptr data )
 
   if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
   {
-    this->cursor.resize( nom::Texture::ResizeAlgorithm::scale2x );
+    this->cursor_.resize( nom::Texture::ResizeAlgorithm::scale2x );
   }
   else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
   {
-    this->cursor.resize( nom::Texture::ResizeAlgorithm::hq2x );
+    this->cursor_.resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
-  this->position_map = Point2i  (
-                                  OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 ),
-                                  OPTION_BOX_ORIGIN_Y + ( OPTION_BOX_HEIGHT / 2 )
-                                  +
-                                  ( this->question_box->message_bounds().h / 2 )
-                                );
+  this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 
-  this->cursor.set_position_map ( position_map );
+  // Build offset coordinate map for the game cursor; this is necessary for
+  // syncing key, mouse wheel and joystick input.
+  Point2i cursor_offset;
+  Rocket::Core::ElementList tags;
+  Rocket::Core::Element* top =
+    this->game->question_box_.document()->GetElementById("content");
 
-  this->cursor.set_size ( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
+  NOM_ASSERT(top != nullptr);
+  if( top != nullptr ) {
+    Rocket::Core::ElementUtilities::GetElementsByTagName(tags, top, "answer");
 
-  this->cursor.set_position ( Point2i (
-                              ( OPTION_BOX_ORIGIN_X ) - CURSOR_WIDTH,
-                              ( OPTION_BOX_ORIGIN_Y ) + ( OPTION_BOX_HEIGHT / 2 )
-                                      )
-                            );
+    // NOM_DUMP( tags.size() );
+    Rocket::Core::Vector2f position;
+    Rocket::Core::Vector2f size;
+    IntRect row;
+    std::vector<IntRect> cursor_map;
+    for(auto itr = tags.begin(); itr != tags.end(); ++itr)
+    {
+      // NOM_DUMP( (*itr)->GetId().CString() );
 
-  this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
+      position = (*itr)->GetAbsoluteOffset(Rocket::Core::Box::PADDING);
+      size = (*itr)->GetBox().GetSize(Rocket::Core::Box::PADDING);
 
-  // Match starting position index of question box selection
-  this->cursor.move_down();
+      row.x = position.x - this->cursor_.size().w;
+      row.y = position.y + (size.y / 2);
+      row.w = size.x;
+      row.h = size.y;
+      cursor_map.push_back(row);
 
-  this->question_box_window->insert_child( this->question_box );
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "position_map:", row);
+    }
+
+    this->cursor_.set_position_map(cursor_map);
+
+    // Starting origin for game cursor
+    this->cursor_.set_position( cursor_map[0].position() );
+  }
+
+  // Starting game cursor offset is on the 'no' element
+  this->cursor_.set_cursor_position(1);
 
   nom::InputActionMapper state;
 
   // FIXME:
   // nom::InputActionMapper key_bindings, gamepad_bindings;
 
-  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
-  nom::EventCallback move_cursor_up( [&] ( const nom::Event& evt ) { this->cursor.move_up(); } );
-  nom::EventCallback move_cursor_down( [&] ( const nom::Event& evt ) { this->cursor.move_down(); } );
-  nom::EventCallback select_choice( [&] ( const nom::Event& ev )
-    {
-      this->send_response();
-    }
-  );
+  nom::EventCallback pause_game( [&] (const nom::Event& evt) {
+    this->game->set_state(Game::State::Pause);
+  });
 
-  nom::EventCallback cancel_choice( [&] ( const nom::Event& evt )
-    {
-      this->game->state()->pop_state( nullptr );
+  nom::EventCallback cursor_prev( [&] (const nom::Event& evt) {
+    if( this->cursor_.prev() ) {
+      this->game->cursor_move->Play();
     }
-  );
+  });
+
+  nom::EventCallback cursor_next( [&] (const nom::Event& evt) {
+    if( this->cursor_.next() ) {
+      this->game->cursor_move->Play();
+    }
+  });
+
+  nom::EventCallback select( [&] (const nom::Event& evt) {
+    this->send_response();
+  });
+
+  nom::EventCallback cancel( [&] (const nom::Event& evt) {
+    this->game->state()->pop_state(nullptr);
+  });
+
+  // Equivalent to 'cursor_prev' and 'cursor_next' actions
+  nom::EventCallback mouse_click( [&] (const nom::Event& evt) {
+    this->on_mouse_button_up(evt);
+  });
+
+  // Equivalent to 'select' action
+  nom::EventCallback mouse_select( [&] (const nom::Event& evt) {
+    this->on_mouse_button_dblclick(evt);
+  });
 
   // Keyboard mappings
   state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
+  state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
+  state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
+  state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select );
+  state.insert( "cancel", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), cancel );
+
+  // Mouse button mappings
+  state.insert( "click", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT ), mouse_click );
+  state.insert( "select", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT, 2 ), mouse_select );
+
+  // Mouse wheel mappings
+  state.insert( "cursor_prev", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), cursor_prev );
+  state.insert( "cursor_next", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), cursor_next );
 
   // Joystick button mappings
   state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
-  state.insert( "move_cursor_up", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), move_cursor_up );
-  state.insert( "move_cursor_down", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), move_cursor_down );
-  state.insert( "select_choice", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_choice );
-  state.insert( "cancel_choice", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), cancel_choice );
+  state.insert( "cursor_prev", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), cursor_prev );
+  state.insert( "cursor_next", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), cursor_next );
+  state.insert( "select", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select );
+  state.insert( "cancel", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), cancel );
 
   this->game->input_mapper.erase( "ContinueMenuState" );
   this->game->input_mapper.insert( "ContinueMenuState", state, true );
@@ -172,6 +201,10 @@ void ContinueMenuState::on_init( nom::void_ptr data )
 void ContinueMenuState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  this->game->question_box_.close();
+  Rocket::Core::Factory::ClearStyleSheetCache();
+  Rocket::Core::Factory::ClearTemplateCache();
 }
 
 void ContinueMenuState::on_resume( nom::void_ptr data )
@@ -182,183 +215,94 @@ void ContinueMenuState::on_resume( nom::void_ptr data )
   this->game->input_mapper.activate( "Game" );
 }
 
-void ContinueMenuState::on_user_event( const nom::Event& ev )
-{
-  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
+// void ContinueMenuState::on_user_event(const nom::Event& ev)
+// {
+//   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
 
-  // Nothing to do; not the right event type for us!
-  if ( ev.type != SDL_USEREVENT )
-  {
+//   // Nothing to do; not the right event type for us!
+//   if( ev.type != SDL_USEREVENT )
+//   {
+//     return;
+//   }
+
+//   if( ev.user.code == GameEvent::AudioEvent )
+//   {
+//     this->game->cursor_move->Play();
+//   }
+// }
+
+void ContinueMenuState::on_mouse_button_up(const nom::Event& ev)
+{
+  using namespace Rocket::Core;
+
+  Element* yes_response =
+    this->game->question_box_.document()->GetElementById("yes");
+  Element* no_response =
+    this->game->question_box_.document()->GetElementById("no");
+
+  NOM_ASSERT( yes_response != nullptr );
+  NOM_ASSERT( no_response != nullptr );
+
+  if( yes_response == nullptr || no_response == nullptr ) return;
+
+  Vector2f mouse_coords(ev.mouse.x, ev.mouse.y);
+
+  if( yes_response->IsPointWithinElement(mouse_coords) ) {
+    if( this->cursor_.prev() ) {
+      this->game->cursor_move->Play();
+    }
+  }
+  else if( no_response->IsPointWithinElement(mouse_coords) ) {
+    if( this->cursor_.next() ) {
+      this->game->cursor_move->Play();
+    }
+  }
+}
+
+void ContinueMenuState::on_mouse_button_dblclick(const nom::Event& ev)
+{
+  using namespace Rocket::Core;
+
+  Element* yes_response =
+    this->game->question_box_.document()->GetElementById("yes");
+  Element* no_response =
+    this->game->question_box_.document()->GetElementById("no");
+
+  NOM_ASSERT( yes_response != nullptr );
+  NOM_ASSERT( no_response != nullptr );
+
+  if( yes_response == nullptr || no_response == nullptr ) return;
+
+  Vector2f mouse_coords(ev.mouse.x, ev.mouse.y);
+
+  if( yes_response->IsPointWithinElement(mouse_coords) ) {
+    this->send_response();
     return;
   }
 
-  if ( ev.user.code == GameEvent::AudioEvent )
-  {
-    this->game->cursor_move->Play();
-  }
-}
-
-void ContinueMenuState::on_gui_key_down( const UIWidgetEvent& ev )
-{
-  nom::Event evt = ev.event();
-
-  if( evt.type != SDL_KEYDOWN ) return;
-
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
-
-  switch( ev.index() )
-  {
-    default:
-    {
-      // Do nothing
-      break;
-    }
-
-    case 0:
-    {
-      this->cursor.move_up();
-      break;
-    }
-
-    case 1:
-    {
-      this->cursor.move_down();
-      break;
-    }
-  }
-
-  if( evt.type == SDL_KEYDOWN && evt.key.sym == SDLK_SPACE )
-  {
+  if( no_response->IsPointWithinElement(mouse_coords) ) {
     this->send_response();
+    return;
   }
-}
-
-void ContinueMenuState::on_gui_mouse_down( const nom::UIWidgetEvent& ev )
-{
-  // nom::Event evt = ev.event();
-
-  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
-
-   // Obtain the option label text chosen by index.
-  switch( ev.index() )
-  {
-    default:
-    {
-      // Do nothing
-      break;
-    }
-
-    case 0:
-    {
-      this->cursor.move_up();
-      break;
-    }
-
-    case 1:
-    {
-      this->cursor.move_down();
-      break;
-    }
-  }
-}
-
-void ContinueMenuState::on_gui_mouse_dclick( const nom::UIWidgetEvent& ev )
-{
-  // nom::Event evt = ev.event();
-
-  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
-
-  // Obtain the option label text chosen by index.
-  switch( ev.index() )
-  {
-    default:
-    {
-      // Do nothing
-      break;
-    }
-
-    case 0:
-    {
-      this->send_response();
-      break;
-    }
-
-    case 1:
-    {
-      this->send_response();
-      break;
-    }
-  }
-}
-
-void ContinueMenuState::on_gui_mouse_wheel( const nom::UIWidgetEvent& ev )
-{
-  nom::Event evt = ev.event();
-
-  // Do not check mouse wheel state unless it is a valid event; we receive
-  // invalid data here if we do not check for this.
-  if( evt.type != SDL_MOUSEWHEEL ) return;
-
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.index() );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_INPUT, ev.text() );
-
-   // Obtain the option label text chosen by index.
-  switch( ev.index() )
-  {
-    default:
-    {
-      // Do nothing
-      break;
-    }
-
-    case 0:
-    {
-      this->cursor.move_up();
-      break;
-    }
-
-    case 1:
-    {
-      this->cursor.move_down();
-      break;
-    }
-  }
-}
-
-bool ContinueMenuState::on_event( const nom::Event& ev )
-{
-  assert( this->question_box_window != nullptr );
-
-  if( this->question_box_window != nullptr )
-  {
-    return this->question_box_window->process_event( ev );
-  }
-
-  return false;
 }
 
 void ContinueMenuState::on_update( float delta_time )
 {
-  this->question_box_window->update();
+  this->game->gui_window_.update();
 
-  this->cursor.update();
+  this->cursor_.update();
 
   this->game->window.update();
 }
 
 void ContinueMenuState::on_draw( nom::RenderWindow& target )
 {
-  this->question_box_window->draw( target );
+  this->game->gui_window_.draw();
 
-  this->cursor.draw ( target );
+  this->cursor_.draw(target);
 }
 
-void ContinueMenuState::send_response( void )
+void ContinueMenuState::send_response()
 {
   // We will use the positioning of the cursor to map user's response;
   //
@@ -367,17 +311,17 @@ void ContinueMenuState::send_response( void )
   //
   // We pass the response along to whomever called us (this state) as we
   // exit stage right.
-  nom::int32 choice = this->cursor.cursor_position();
+  int choice = this->cursor_.cursor_position();
 
-  if ( choice == 0 )
+  if( choice == 0 )
   {
-    nom::int32_ptr response = new nom::int32( 1 );
-    this->game->state()->pop_state( response );
+    nom::int32_ptr response = new nom::int32(1);
+    this->game->state()->pop_state(response);
   }
-  else if ( choice == 1 )
+  else if( choice == 1 )
   {
     nom::int32_ptr response = nullptr;
-    this->game->state()->pop_state( response );
+    this->game->state()->pop_state(response);
   }
   else
   {
