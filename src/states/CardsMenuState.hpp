@@ -73,7 +73,7 @@ class CardsMenuState: public nom::IState
     ///
     /// \note This is processed on libRocket's event loop.
     ///
-    /// \todo Convert to nom::Event (see ContinueMenuState)..?
+    /// \todo Convert to nom::Event; see ConfirmationDialogState::on_mouse_button_up
     void on_mouse_button_up(Rocket::Core::Event& ev);
 
     void update_cursor();

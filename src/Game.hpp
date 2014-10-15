@@ -173,7 +173,7 @@ class Game: public nom::SDLApp
 
     /// \brief UI for confirmation dialogs.
     ///
-    /// \remarks Used in ContinueMenuState.
+    /// \remarks Used in ConfirmationDialogState.
     nom::UIQuestionDialogBox question_box_;
 
     nom::UIMessageBox debug_box_;
@@ -186,7 +186,7 @@ class Game: public nom::SDLApp
       Play,
       GameOver,
       Pause,
-      ContinueMenu
+      ConfirmationDialog
     };
 
     nom::InputStateMapper input_mapper;
@@ -198,7 +198,7 @@ class Game: public nom::SDLApp
     /// \remarks Re-implements nom::SDLApp::on_event.
     ///
     /// \fixme This is currently required for GUI events processing in
-    /// ContinueMenuState, and probably can be handled better.
+    /// ConfirmationDialogState, and probably can be handled better.
     void on_event( const nom::Event& ev );
 
     /// Event handler for resize app request

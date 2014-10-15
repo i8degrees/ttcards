@@ -175,7 +175,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
 
   nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
   nom::EventCallback start_game( [&] (const nom::Event& evt) {
-    this->game->set_state( Game::State::ContinueMenu );
+    this->game->set_state( Game::State::ConfirmationDialog );
   });
 
   state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
@@ -229,7 +229,7 @@ void CardsMenuState::on_pause(nom::void_ptr data)
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   // Hide the cursor so that it doesn't show up during undesirable states such
-  // as during the ContinueMenu or Pause states.
+  // as during the ConfirmationDialogState or Pause states.
   this->game->cursor.set_frame(INTERFACE_CURSOR_NONE);
   this->game->cursor.update();
 }
@@ -245,12 +245,12 @@ void CardsMenuState::on_resume(nom::void_ptr data)
   nom::int32_ptr response = static_cast<nom::int32_ptr>(data);
 
   // User is happy with their cards -- let's play! Response from
-  // ContinueMenuState was 'yes'
+  // ConfirmationDialogState was 'yes'
   if( response != nullptr && *response == 1 ) {
     this->game->set_state(Game::State::Play);
   }
   else {
-    // Continue running this state; response from ContinueMenuState was 'no'
+    // Continue running this state; response from ConfirmationDialogState was 'no'
     this->game->input_mapper.activate_only("CardsMenuState");
     this->game->input_mapper.activate("Game");
   }

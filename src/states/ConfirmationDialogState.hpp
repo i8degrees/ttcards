@@ -26,61 +26,51 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CONTINUE_MENU_STATE_CURSOR_HPP
-#define GAMEAPP_CONTINUE_MENU_STATE_CURSOR_HPP
+#ifndef GAMEAPP_CONFIRMATION_DIALOG_STATE_HPP
+#define GAMEAPP_CONFIRMATION_DIALOG_STATE_HPP
 
+#include <iostream>
 #include <string>
-#include <vector>
+#include <memory>
 
 #include <nomlib/graphics.hpp>
-#include <nomlib/math.hpp>
-#include <nomlib/system.hpp>
+#include <nomlib/gui.hpp>
 
 #include "config.hpp"
+#include "DialogCursor.hpp"
 
-class ContinueMenuStateCursor: public nom::AnimatedSprite
+// Forward declarations
+class Game;
+
+class ConfirmationDialogState: public nom::IState
 {
   public:
-    ContinueMenuStateCursor();
-    ~ContinueMenuStateCursor();
-
-    ContinueMenuStateCursor( const nom::SpriteSheet& sheet );
-    ContinueMenuStateCursor( const std::string& filename );
-
-    /// \brief Set a positioning map for this game cursor to use.
-    void set_position_map( const std::vector<nom::IntRect>& map );
-
-    /// \brief Get the current positioning index, relative to the element index
-    /// order of the positioning map.
-    int cursor_position();
-
-    /// \brief Get the beginning element position index for the map.
-    int first();
-
-    /// \brief Get the last element position index for the map.
-    int last();
-
-    /// \brief Move the game cursor to the previous mapped item.
-    ///
-    /// \remarks This method updates the internal rendering coordinates of the
-    /// sprite.
-    bool prev();
-
-    /// \brief Move the game cursor to the next mapped item.
-    ///
-    /// \remarks This method updates the internal rendering coordinates of the
-    /// sprite.
-    bool next();
-
-    /// \brief Set the position of the game cursor.
-    ///
-    /// \param pos The position index of the game cursor, relative to the
-    /// element index order of the positioning map.
-    void set_cursor_position(int pos);
+    ConfirmationDialogState(const nom::SDLApp::shared_ptr& object);
+    virtual ~ConfirmationDialogState();
 
   private:
-    std::vector<nom::IntRect> position_map_;
-    int cursor_position_;
+    /// \todo Change return type to bool
+    void on_init( nom::void_ptr data );
+    void on_exit( nom::void_ptr data );
+    void on_resume( nom::void_ptr data );
+
+    // void on_user_event(const nom::Event& ev);
+
+    void on_mouse_button_up(const nom::Event& ev);
+    void on_mouse_button_dblclick(const nom::Event& ev);
+
+    void on_update( float delta_time );
+    void on_draw( nom::RenderWindow& target );
+
+    /// \brief Event handler for player's choice selection.
+    void send_response();
+
+    std::shared_ptr<Game> game;
+
+    DialogCursor cursor_;
 };
+
+// Convenience declarations for changing state
+typedef std::unique_ptr<ConfirmationDialogState> ConfirmationDialogStatePtr;
 
 #endif // include guard defined

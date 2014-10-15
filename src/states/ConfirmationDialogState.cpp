@@ -26,26 +26,26 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "ContinueMenuState.hpp"
+#include "ConfirmationDialogState.hpp"
 
 // Forward declarations
 #include "Game.hpp"
 
 using namespace nom;
 
-ContinueMenuState::ContinueMenuState  ( const nom::SDLApp::shared_ptr& object ) :
-  nom::IState( Game::State::ContinueMenu, nom::IState::Flags::BackRender, nom::IState::Type::Child ),
+ConfirmationDialogState::ConfirmationDialogState  ( const nom::SDLApp::shared_ptr& object ) :
+  nom::IState( Game::State::ConfirmationDialog, nom::IState::Flags::BackRender, nom::IState::Type::Child ),
   game( NOM_DYN_SHARED_PTR_CAST( Game, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-ContinueMenuState::~ContinueMenuState()
+ConfirmationDialogState::~ConfirmationDialogState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void ContinueMenuState::on_init( nom::void_ptr data )
+void ConfirmationDialogState::on_init( nom::void_ptr data )
 {
   if( this->game->question_box_.set_context(&this->game->gui_window_) == false )
   {
@@ -65,7 +65,7 @@ void ContinueMenuState::on_init( nom::void_ptr data )
   this->game->question_box_.show();
 
   // Initialize interface cursor
-  this->cursor_ = ContinueMenuStateCursor("images/cursors.json");
+  this->cursor_ = DialogCursor("images/cursors.json");
 
   if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
   {
@@ -196,18 +196,18 @@ void ContinueMenuState::on_init( nom::void_ptr data )
   state.insert( "select", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select );
   state.insert( "cancel", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), cancel );
 
-  this->game->input_mapper.erase( "ContinueMenuState" );
-  this->game->input_mapper.insert( "ContinueMenuState", state, true );
+  this->game->input_mapper.erase( "ConfirmationDialogState" );
+  this->game->input_mapper.insert( "ConfirmationDialogState", state, true );
 
   // FIXME:
-  // this->game->input_mapper.insert( "ContinueMenuState", key_bindings, true );
-  // this->game->input_mapper.insert( "ContinueMenuState", gamepad_bindings, true );
+  // this->game->input_mapper.insert( "ConfirmationDialogState", key_bindings, true );
+  // this->game->input_mapper.insert( "ConfirmationDialogState", gamepad_bindings, true );
 
-  this->game->input_mapper.activate_only( "ContinueMenuState" );
-  this->game->input_mapper.activate( "Game" );
+  this->game->input_mapper.activate_only("ConfirmationDialogState");
+  this->game->input_mapper.activate("Game");
 }
 
-void ContinueMenuState::on_exit( nom::void_ptr data )
+void ConfirmationDialogState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -216,15 +216,15 @@ void ContinueMenuState::on_exit( nom::void_ptr data )
   Rocket::Core::Factory::ClearTemplateCache();
 }
 
-void ContinueMenuState::on_resume( nom::void_ptr data )
+void ConfirmationDialogState::on_resume( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  this->game->input_mapper.activate_only( "ContinueMenuState" );
+  this->game->input_mapper.activate_only( "ConfirmationDialogState" );
   this->game->input_mapper.activate( "Game" );
 }
 
-// void ContinueMenuState::on_user_event(const nom::Event& ev)
+// void ConfirmationDialogState::on_user_event(const nom::Event& ev)
 // {
 //   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
 
@@ -240,7 +240,7 @@ void ContinueMenuState::on_resume( nom::void_ptr data )
 //   }
 // }
 
-void ContinueMenuState::on_mouse_button_up(const nom::Event& ev)
+void ConfirmationDialogState::on_mouse_button_up(const nom::Event& ev)
 {
   using namespace Rocket::Core;
 
@@ -268,7 +268,7 @@ void ContinueMenuState::on_mouse_button_up(const nom::Event& ev)
   }
 }
 
-void ContinueMenuState::on_mouse_button_dblclick(const nom::Event& ev)
+void ConfirmationDialogState::on_mouse_button_dblclick(const nom::Event& ev)
 {
   using namespace Rocket::Core;
 
@@ -295,7 +295,7 @@ void ContinueMenuState::on_mouse_button_dblclick(const nom::Event& ev)
   }
 }
 
-void ContinueMenuState::on_update( float delta_time )
+void ConfirmationDialogState::on_update( float delta_time )
 {
   this->game->gui_window_.update();
 
@@ -304,14 +304,14 @@ void ContinueMenuState::on_update( float delta_time )
   this->game->window.update();
 }
 
-void ContinueMenuState::on_draw( nom::RenderWindow& target )
+void ConfirmationDialogState::on_draw( nom::RenderWindow& target )
 {
   this->game->gui_window_.draw();
 
   this->cursor_.draw(target);
 }
 
-void ContinueMenuState::send_response()
+void ConfirmationDialogState::send_response()
 {
   // We will use the positioning of the cursor to map user's response;
   //
@@ -319,7 +319,7 @@ void ContinueMenuState::send_response()
   // otherwise the response is invalid and will be zero (nullptr).
   //
   // The state that receives the response will be the state that was in
-  // existence directly before ContinueMenuState, and must be captured in
+  // existence directly before ConfirmationDialogState, and must be captured in
   // ::on_resume.
   int choice = this->cursor_.cursor_position();
   int32_ptr response = nullptr;

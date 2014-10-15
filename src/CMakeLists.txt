@@ -26,8 +26,8 @@ set (
 # Game states logic
 set (
       TTCARDS_SOURCE_STATES
-      ${STATES_DIR}/ContinueMenuStateCursor.cpp
-      ${STATES_DIR}/ContinueMenuState.cpp
+      ${STATES_DIR}/DialogCursor.cpp
+      ${STATES_DIR}/ConfirmationDialogState.cpp
       ${STATES_DIR}/GameOverStateCursor.cpp
       ${STATES_DIR}/GameOverState.cpp
       ${STATES_DIR}/PauseState.cpp

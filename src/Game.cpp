@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Game.hpp"
 
 #include "states/GameOverState.hpp"
-#include "states/ContinueMenuState.hpp"
+#include "states/ConfirmationDialogState.hpp"
 #include "states/PauseState.hpp"
 #include "states/CardsMenuState.hpp"
 #include "states/PlayState.hpp"
@@ -601,9 +601,9 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
 
   // Debugging helpers
 
-  nom::EventCallback jumpto_continue_menu_state( [&] ( const nom::Event& evt )
+  nom::EventCallback jumpto_confirmation_dialog_state( [&] ( const nom::Event& evt )
     {
-      this->set_state( Game::State::ContinueMenu );
+      this->set_state( Game::State::ConfirmationDialog );
     }
   );
 
@@ -618,7 +618,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   nom::EventCallback dump_player1_hand( [&] ( const nom::Event& evt ) { this->game->dump_hand(1); } );
   nom::EventCallback dump_collection( [&] ( const nom::Event& evt ) { this->game->dump_collection(); } );
 
-  // Conflicts with ContinueMenuState key binding
+  // Conflicts with ConfirmationDialogState key binding
   // state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), quit_game );
   state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_q ), quit_game );
 
@@ -637,7 +637,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   // TODO: Change to:
   // #if ! defined( NDEBUG ) // Debug build
   #if defined( TTCARDS_DEBUG_GAME_STATE )
-    state.insert( "jumpto_continue_menu_state", nom::KeyboardAction( SDL_KEYDOWN, SDLK_0, KMOD_LGUI ), jumpto_continue_menu_state );
+    state.insert( "jumpto_confirmation_dialog_state", nom::KeyboardAction( SDL_KEYDOWN, SDLK_0, KMOD_LGUI ), jumpto_confirmation_dialog_state );
     state.insert( "jumpto_gameover_state", nom::KeyboardAction( SDL_KEYDOWN, SDLK_0 ), jumpto_gameover_state );
 
     state.insert( "dump_player0_hand", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFTBRACKET ), dump_player0_hand );
@@ -760,9 +760,9 @@ void Game::set_state( nom::uint32 id, nom::void_ptr data )
       break;
     }
 
-    case Game::State::ContinueMenu:
+    case Game::State::ConfirmationDialog:
     {
-      this->state()->set_state( ContinueMenuStatePtr( new ContinueMenuState( this->game ) ), data );
+      this->state()->set_state( ConfirmationDialogStatePtr( new ConfirmationDialogState( this->game ) ), data );
       break;
     }
   }

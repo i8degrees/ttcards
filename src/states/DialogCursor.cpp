@@ -26,59 +26,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "ContinueMenuStateCursor.hpp"
+#include "DialogCursor.hpp"
 
-ContinueMenuStateCursor::ContinueMenuStateCursor() :
+DialogCursor::DialogCursor() :
   cursor_position_(0)
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-ContinueMenuStateCursor::~ContinueMenuStateCursor()
+DialogCursor::~DialogCursor()
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-ContinueMenuStateCursor::ContinueMenuStateCursor  (
-                                                    const nom::SpriteSheet& sheet
-                                                  ) :
+DialogCursor::DialogCursor(const nom::SpriteSheet& sheet) :
   AnimatedSprite(sheet),
   cursor_position_(0)
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-ContinueMenuStateCursor::ContinueMenuStateCursor  (
-                                                    const std::string& filename
-                                                  ) :
+DialogCursor::DialogCursor(const std::string& filename) :
   AnimatedSprite(filename),
   cursor_position_(0)
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-void ContinueMenuStateCursor::set_position_map( const std::vector<nom::IntRect>& map )
+void DialogCursor::set_position_map( const std::vector<nom::IntRect>& map )
 {
   this->position_map_ = map;
   this->cursor_position_ = 0;
 }
 
-int ContinueMenuStateCursor::cursor_position()
+int DialogCursor::cursor_position()
 {
   return this->cursor_position_;
 }
 
-int ContinueMenuStateCursor::first()
+int DialogCursor::first()
 {
   return 0;
 }
 
-int ContinueMenuStateCursor::last()
+int DialogCursor::last()
 {
   return this->position_map_.size();
 }
 
-bool ContinueMenuStateCursor::prev()
+bool DialogCursor::prev()
 {
   int pos = this->cursor_position();          // Element position
   int first_pos = this->first();
@@ -94,7 +90,7 @@ bool ContinueMenuStateCursor::prev()
   return false;
 }
 
-bool ContinueMenuStateCursor::next()
+bool DialogCursor::next()
 {
   int pos = this->cursor_position();          // Element position
   int last_pos = this->last() - 1;
@@ -111,7 +107,7 @@ bool ContinueMenuStateCursor::next()
   return false;
 }
 
-void ContinueMenuStateCursor::set_cursor_position(int pos)
+void DialogCursor::set_cursor_position(int pos)
 {
   NOM_ASSERT( pos <= this->last() );
 

@@ -26,52 +26,61 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CONTINUE_MENU_STATE_HEADERS
-#define GAMEAPP_CONTINUE_MENU_STATE_HEADERS
+#ifndef GAMEAPP_DIALOG_CURSOR_HPP
+#define GAMEAPP_DIALOG_CURSOR_HPP
 
-#include <iostream>
 #include <string>
-#include <memory>
+#include <vector>
 
 #include <nomlib/graphics.hpp>
-#include <nomlib/gui.hpp>
+#include <nomlib/math.hpp>
+#include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "ContinueMenuStateCursor.hpp"
 
-// Forward declarations
-class Game;
-
-/// \todo Rename to ConfirmationDialogState
-class ContinueMenuState: public nom::IState
+class DialogCursor: public nom::AnimatedSprite
 {
   public:
-    ContinueMenuState ( const nom::SDLApp::shared_ptr& object );
-    ~ContinueMenuState();
+    DialogCursor();
+    ~DialogCursor();
+
+    DialogCursor( const nom::SpriteSheet& sheet );
+    DialogCursor( const std::string& filename );
+
+    /// \brief Set a positioning map for this game cursor to use.
+    void set_position_map( const std::vector<nom::IntRect>& map );
+
+    /// \brief Get the current positioning index, relative to the element index
+    /// order of the positioning map.
+    int cursor_position();
+
+    /// \brief Get the beginning element position index for the map.
+    int first();
+
+    /// \brief Get the last element position index for the map.
+    int last();
+
+    /// \brief Move the game cursor to the previous mapped item.
+    ///
+    /// \remarks This method updates the internal rendering coordinates of the
+    /// sprite.
+    bool prev();
+
+    /// \brief Move the game cursor to the next mapped item.
+    ///
+    /// \remarks This method updates the internal rendering coordinates of the
+    /// sprite.
+    bool next();
+
+    /// \brief Set the position of the game cursor.
+    ///
+    /// \param pos The position index of the game cursor, relative to the
+    /// element index order of the positioning map.
+    void set_cursor_position(int pos);
 
   private:
-    /// \todo Change return type to bool
-    void on_init( nom::void_ptr data );
-    void on_exit( nom::void_ptr data );
-    void on_resume( nom::void_ptr data );
-
-    // void on_user_event(const nom::Event& ev);
-
-    void on_mouse_button_up(const nom::Event& ev);
-    void on_mouse_button_dblclick(const nom::Event& ev);
-
-    void on_update( float delta_time );
-    void on_draw( nom::RenderWindow& target );
-
-    /// \brief Event handler for player's choice selection.
-    void send_response();
-
-    std::shared_ptr<Game> game;
-
-    ContinueMenuStateCursor cursor_;
+    std::vector<nom::IntRect> position_map_;
+    int cursor_position_;
 };
-
-// Convenience declarations for changing state
-typedef std::unique_ptr<ContinueMenuState> ContinueMenuStatePtr;
 
 #endif // include guard defined

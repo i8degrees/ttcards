@@ -233,7 +233,7 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   nom::EventCallback select_cards( [&] ( const nom::Event& evt )
     {
       this->selected_card = this->game->hand[1].getSelectedCard();
-      this->game->set_state( Game::State::ContinueMenu );
+      this->game->set_state( Game::State::ConfirmationDialog );
     }
   );
 
@@ -289,7 +289,7 @@ void GameOverState::on_exit( nom::void_ptr data )
 void GameOverState::on_pause( nom::void_ptr data )
 {
   // Hide the cursor so that it doesn't show up during undesirable states such
-  // as during the ContinueMenu or Pause states.
+  // as during the ConfirmationDialogState or Pause states.
   this->cursor.set_frame( INTERFACE_CURSOR_NONE );
   this->cursor.update();
 }
@@ -302,7 +302,7 @@ void GameOverState::on_resume( nom::void_ptr data )
   nom::int32_ptr response = static_cast<nom::int32_ptr> (data);
 
   // "Yes" to verification of choice; we expect this response to be coming from
-  // ContinueMenuState.
+  // ConfirmationDialogState.
   if( response != nullptr && *response == 1 && this->game->state()->current_state_id() == Game::State::GameOver )
   {
     nom::Event ev;
