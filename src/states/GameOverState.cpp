@@ -404,7 +404,7 @@ void GameOverState::on_user_event( const nom::Event& ev )
     else
     {
       //this->game->info_box_.diable();
-      // this->game->cursor_wrong->Play();
+      this->game->cursor_wrong->Play();
     }
   }
 }
