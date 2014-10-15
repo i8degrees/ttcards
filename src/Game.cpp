@@ -487,19 +487,19 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
 
   // Initialize audio subsystem...
   #if defined( NOM_USE_OPENAL )
-    this->audio_dev_ = new nom::AudioDevice();
-    this->listener_ = new nom::Listener();
+    this->audio_dev_.reset( new nom::AudioDevice() );
+    this->listener_.reset( new nom::Listener() );
   #else
-    this->audio_dev_ = new nom::NullAudioDevice();
-    this->listener_ = new nom::NullListener();
+    this->audio_dev_.reset( new nom::NullAudioDevice() );
+    this->listener_.reset( new nom::NullListener() );
   #endif // defined NOM_USE_OPENAL
 
   for( auto idx = 0; idx != NUM_SOUND_BUFFERS; ++idx )
   {
     #if defined( NOM_USE_OPENAL )
-      this->sound_buffers[idx] = new nom::SoundBuffer();
+      this->sound_buffers[idx].reset( new nom::SoundBuffer() );
     #else
-      this->sound_buffers[idx] = new nom::NullSoundBuffer();
+      this->sound_buffers[idx].reset( new nom::NullSoundBuffer() );
     #endif // defined NOM_USE_OPENAL
   }
 
@@ -550,15 +550,15 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   }
 
   #if defined( NOM_USE_OPENAL )
-    this->cursor_move = new nom::Sound();
-    this->cursor_cancel = new nom::Sound();
-    this->cursor_wrong = new nom::Sound();
-    this->card_place = new nom::Sound();
-    this->card_flip = new nom::Sound();
-    this->load_game = new nom::Sound();
-    this->save_game = new nom::Sound();
-    this->music_track = new nom::Music();
-    this->winning_track = new nom::Music();
+    this->cursor_move.reset( new nom::Sound() );
+    this->cursor_cancel.reset( new nom::Sound() );
+    this->cursor_wrong.reset( new nom::Sound() );
+    this->card_place.reset( new nom::Sound() );
+    this->card_flip.reset( new nom::Sound() );
+    this->load_game.reset( new nom::Sound() );
+    this->save_game.reset( new nom::Sound() );
+    this->music_track.reset( new nom::Music() );
+    this->winning_track.reset( new nom::Music() );
 
     this->cursor_move->setBuffer( *this->sound_buffers[0] );
     this->cursor_cancel->setBuffer( *this->sound_buffers[1] );
@@ -570,15 +570,15 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     this->music_track->setBuffer( *this->sound_buffers[7] );
     this->winning_track->setBuffer( *this->sound_buffers[8] );
   #else
-    this->cursor_move = new nom::NullSound();
-    this->cursor_cancel = new nom::NullSound();
-    this->cursor_wrong = new nom::NullSound();
-    this->card_place = new nom::NullSound();
-    this->card_flip = new nom::NullSound();
-    this->load_game = new nom::NullSound();
-    this->save_game = new nom::NullSound();
-    this->music_track = new nom::NullMusic();
-    this->winning_track = new nom::NullMusic();
+    this->cursor_move.reset( new nom::NullSound() );
+    this->cursor_cancel.reset( new nom::NullSound() );
+    this->cursor_wrong.reset( new nom::NullSound() );
+    this->card_place.reset( new nom::NullSound() );
+    this->card_flip.reset( new nom::NullSound() );
+    this->load_game.reset( new nom::NullSound() );
+    this->save_game.reset( new nom::NullSound() );
+    this->music_track.reset( new nom::NullMusic() );
+    this->winning_track.reset( new nom::NullMusic() );
   #endif // defined NOM_USE_OPENAL
 
   this->music_track->Play();

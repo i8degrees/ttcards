@@ -71,42 +71,42 @@ class Game: public nom::SDLApp
     void set_state( nom::uint32 id, nom::void_ptr data = nullptr );
 
     /// Audio subsystem
-    nom::IAudioDevice* audio_dev_;
+    std::unique_ptr<nom::IAudioDevice> audio_dev_;
 
     /// Master volume control
-    nom::IListener* listener_;
+    std::unique_ptr<nom::IListener> listener_;
 
     static const int NUM_SOUND_BUFFERS = 9;
 
     /// Audio buffers (one buffer per sound)
-    nom::ISoundBuffer* sound_buffers[NUM_SOUND_BUFFERS];
+    std::unique_ptr<nom::ISoundBuffer> sound_buffers[NUM_SOUND_BUFFERS];
 
     /// Cursor has been moved sound event
-    nom::ISoundSource* cursor_move;
+    std::unique_ptr<nom::ISoundSource> cursor_move;
 
     /// Action has been canceled sound event
-    nom::ISoundSource* cursor_cancel;
+    std::unique_ptr<nom::ISoundSource> cursor_cancel;
 
     /// Invalid action sound event
-    nom::ISoundSource* cursor_wrong;
+    std::unique_ptr<nom::ISoundSource> cursor_wrong;
 
     /// Card has been placed sound event
-    nom::ISoundSource* card_place;
+    std::unique_ptr<nom::ISoundSource> card_place;
 
     /// Card has been flipped sound event
-    nom::ISoundSource* card_flip;
+    std::unique_ptr<nom::ISoundSource> card_flip;
 
     /// Load saved game sound event
-    nom::ISoundSource* load_game;
+    std::unique_ptr<nom::ISoundSource> load_game;
 
     /// Save game sound event
-    nom::ISoundSource* save_game;
+    std::unique_ptr<nom::ISoundSource> save_game;
 
     /// Theme song track
-    nom::ISoundSource* music_track;
+    std::unique_ptr<nom::ISoundSource> music_track;
 
     /// Player 1 has won track
-    nom::ISoundSource* winning_track;
+    std::unique_ptr<nom::ISoundSource> winning_track;
 
     // Font resources
     // nom::Font info_text;
