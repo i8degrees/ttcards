@@ -85,7 +85,7 @@ class Card
     Card( nom::int32 id, nom::int32 level, nom::int32 type,
           nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
           std::string name, nom::int32 player_id, nom::int32 player_owner,
-          int num );
+          int num, bool face_down = false );
 
     const nom::int32 getID ( void ) const;
     const std::string get_id_string( void ) const;
@@ -104,6 +104,7 @@ class Card
     const nom::int32 getPlayerOwner ( void ) const;
 
     int num() const;
+    bool face_down() const;
 
     /// Clamps value to Card::CARDS_COLLECTION
     void setID ( nom::int32 id_ );
@@ -146,6 +147,8 @@ class Card
 
     /// \brief Set the number of cards of this type has been collected.
     void set_num(int num_cards);
+
+    void set_face_down(bool state);
 
     void increaseNorthRank ( void );
     void increaseEastRank ( void );
@@ -197,6 +200,10 @@ class Card
     /// \brief The number of cards of this instance type that has been
     /// collected.
     int num_;
+
+    /// \brief Internal state flag for whether or not the card face is to be
+    /// shown to the player.
+    bool face_down_;
 };
 
 /// \todo Rename to CardList

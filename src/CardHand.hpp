@@ -126,6 +126,10 @@ class CardHand
     /// effect!
     const Card weakest ( void );
 
+    /// \brief Toggle the rendering state of the card face for all the cards in
+    /// the player's hand.
+    void set_face_down(bool state);
+
     /// \todo Declare in private scope
     Cards cards;
 

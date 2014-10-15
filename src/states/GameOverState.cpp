@@ -214,6 +214,10 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
 */
   //this->selected_card = this->game->hand[1].getSelectedCard();
 
+  // Both player hands should **always** be shown with the card face rendered
+  this->game->hand[0].set_face_down(false);
+  this->game->hand[1].set_face_down(false);
+
   // Commence the countdown on the showing of results!
   this->transistion.start();
 

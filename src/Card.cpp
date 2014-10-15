@@ -40,7 +40,8 @@ Card::Card() :
   rank( {{0}} ),
   player_id(Card::NOPLAYER),
   player_owner(Card::NOPLAYER),
-  num_(0)
+  num_(0),
+  face_down_(false)
 {
   // ...
 }
@@ -53,7 +54,7 @@ Card::~Card()
 Card::Card( nom::int32 id, nom::int32 level, nom::int32 type,
             nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
             std::string name, nom::int32 player_id, nom::int32 player_owner,
-            int num ) :
+            int num, bool face_down ) :
   id(id),
   level(level),
   type(type),
@@ -62,7 +63,8 @@ Card::Card( nom::int32 id, nom::int32 level, nom::int32 type,
   name(name),
   player_id(player_id),
   player_owner(player_owner),
-  num_(num)
+  num_(num),
+  face_down_(face_down)
 {
   // ...
 }
@@ -141,6 +143,11 @@ const nom::int32 Card::getPlayerOwner ( void ) const
 int Card::num() const
 {
   return this->num_;
+}
+
+bool Card::face_down() const
+{
+  return this->face_down_;
 }
 
 void Card::setID ( nom::int32 id_ )
@@ -222,6 +229,11 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
 void Card::set_num(int num_cards)
 {
   this->num_ = std::min(num_cards, MAX_NUM);
+}
+
+void Card::set_face_down(bool state)
+{
+  this->face_down_ = state;
 }
 
 nom::Value Card::serialize( void ) const

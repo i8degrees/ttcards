@@ -375,6 +375,13 @@ void CardHand::set_position ( nom::int32 pos )
   this->card_position = pos;
 }
 
+void CardHand::set_face_down(bool state)
+{
+  for(auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
+    (*itr).set_face_down(state);
+  }
+}
+
 std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
 {
   for ( nom::uint32 idx = 0; idx < rhs.cards.size(); idx++ )

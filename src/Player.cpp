@@ -131,21 +131,7 @@ void Player::setScore ( unsigned int score )
 
 void Player::draw ( nom::IDrawable::RenderTarget& target )
 {
-  bool face_down = false;
-/*
-  if ( this->ruleset.getRules() != CardRules::Open )
-  {
-    face_down = true;
-#if defined (NOM_DEBUG)
-    if ( this->state() == PlayerState::Debug )
-    {
-      face_down = false;
-    }
-#endif
-  }
-*/
-
-  for ( nom::int32 idx = 0; idx < this->hand->size(); idx++ )
+  for( nom::int32 idx = 0; idx < this->hand->size(); idx++ )
   {
     // Position of Player's cards in their hand
     Point2i player_pos  ( this->position().x,
@@ -161,7 +147,6 @@ void Player::draw ( nom::IDrawable::RenderTarget& target )
       player_pos.x += 16;
       this->card->reposition ( player_pos );
       this->card->setViewCard ( this->hand->cards.at ( idx ) );
-      this->card->face ( face_down );
       this->card->draw ( target );
     }
     else if ( player_id == Card::PLAYER1 && hand_pos == idx )
@@ -170,33 +155,18 @@ void Player::draw ( nom::IDrawable::RenderTarget& target )
 
       this->card->reposition ( player_pos );
       this->card->setViewCard ( this->hand->cards.at ( idx ) );
-      this->card->face ( false );
       this->card->draw ( target );
     }
     else
     {
-      this->card->reposition ( player_pos );
-      this->card->setViewCard ( this->hand->cards[idx] );
-
-      if ( player_id == Card::PLAYER1 )
-      {
-        this->card->face ( false );
-      }
-      else if ( player_id == Card::PLAYER2 )
-      {
-        this->card->face ( face_down );
-      }
-
-      this->card->draw ( target );
+      this->card->reposition(player_pos);
+      this->card->setViewCard(this->hand->cards[idx]);
+      this->card->draw(target);
     }
   } // end for this->hand loop
-
-  // This is a lazy patch until I get around to fixing this :-)
-  this->card->face ( false ); // Turns drawing card faces down off
 }
 
 void Player::update ( void )
 {
   this->card->update();
 }
-

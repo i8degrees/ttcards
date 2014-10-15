@@ -44,6 +44,18 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   this->game->hand[0].clear();
   this->game->hand[1].clear();
 
+  // Generate a full player hand for the CPU with whatever -- don't care -- we
+  // do this only for creating a static backdrop to add to this state; see
+  // ::on_draw for details.
+  int idx = 0;
+  while( this->game->hand[1].size() < MAX_PLAYER_HAND )
+  {
+    this->game->hand[1].shuffle( 1, 1, this->game->collection);
+    this->game->hand[1].cards[idx].set_face_down(true);
+
+    ++idx;
+  }
+
   // this->game->collection is initialized for us in the main app loop
   // Borrowed from Player class; this is perhaps a hack-(ish) workaround
     /* FIXME: */
@@ -54,7 +66,7 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   //
   for ( pid = 0; pid < this->game->collection.cards.size(); pid++ )
   {
-    this->game->collection.cards[pid].setPlayerID ( Card::PLAYER1 );
+    this->game->collection.cards[pid].setPlayerID(Card::PLAYER1);
   }
 
   this->selected_card_ = this->game->collection.cards.front();
@@ -231,6 +243,10 @@ void CardsMenuState::on_exit( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
+  // Clear the CPU player's hand; it needs to be re-initialized with real data
+  // in PlayState
+  this->game->hand[1].clear();
+
   this->game->cards_menu_.close();
   Rocket::Core::Factory::ClearStyleSheetCache();
   Rocket::Core::Factory::ClearTemplateCache();
@@ -284,11 +300,8 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
 {
   this->game->background.draw(target);
 
-  // FIXME / This is a lazy patch until I get around to fixing this :-)
-  this->game->card.face ( true ); // Turn drawing of faces down on
-
-  // static player2 hand background
-  for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
+  // Static backdrop for CPU player
+  for( auto idx = 0; idx != this->game->hand[1].size(); ++idx)
   {
     this->player2_pos = Point2i (
                                   PLAYER2_ORIGIN_X,
@@ -296,15 +309,13 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
                                   ( CARD_HEIGHT / 2 ) * idx
                                 );
 
-    this->game->card.reposition ( this->player2_pos );
-    this->game->card.draw ( target );
+    this->game->card.reposition(this->player2_pos);
+    this->game->card.setViewCard(this->game->hand[1].cards[idx]);
+    this->game->card.draw(target);
   }
 
-  // FIXME / This is a lazy patch until I get around to fixing this :-)
-  this->game->card.face ( false ); // Turn drawing of faces down back off
-
   // Active player's card selection(s)
-  for ( nom::uint32 idx = 0; idx < this->game->hand[0].size(); idx++ )
+  for( nom::uint32 idx = 0; idx < this->game->hand[0].size(); idx++ )
   {
     this->player1_pos = Point2i (
                                   PLAYER1_ORIGIN_X,
@@ -312,9 +323,9 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
                                   ( CARD_HEIGHT / 2 ) * idx
                               );
 
-    this->game->card.reposition ( this->player1_pos );
-    this->game->card.setViewCard ( this->game->hand[0].cards.at ( idx ) );
-    this->game->card.draw ( target );
+    this->game->card.reposition(this->player1_pos);
+    this->game->card.setViewCard( this->game->hand[0].cards.at ( idx ) );
+    this->game->card.draw(target);
   }
 
   this->game->gui_window_.draw();

@@ -49,6 +49,11 @@ class GameConfig
     const std::string getString ( const std::string& node ) const;
     const nom::int32 getInteger ( const std::string& node ) const;
 
+    /// \returns std::vector<std::string>
+    nom::StringList string_array(const std::string& node) const;
+
+    // const nom::Value& array(const std::string& node) const;
+
     const nom::Value& setProperty ( const std::string& node, const nom::Value& value );
 
     /// Save the current board grid data to a file as a series of RFC 4627

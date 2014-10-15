@@ -40,6 +40,8 @@
     "GUI_PAUSE": "gui/pause.rml",
     "GUI_QBOX": "gui/questionbox.rml",
     "GUI_GAMEOVER_RULES_INFO": "gui/rules_info.rml",
-    "GUI_GAMEOVER_CARD_INFO": "gui/card_info.rml"
+    "GUI_GAMEOVER_CARD_INFO": "gui/card_info.rml",
+    "REGION_RULESET": [ "Open" ]
+    // "REGION_RULESET": [""]   // CPU Player hand is face down
   }
 }

@@ -74,6 +74,38 @@ const nom::int32 GameConfig::getInteger ( const std::string& node ) const
   }
 }
 
+nom::StringList GameConfig::string_array(const std::string& node) const
+{
+  nom::StringList out;
+
+  auto itr = this->config.find(node);
+
+  if( itr != this->config.end() ) {
+
+    NOM_ASSERT( itr->second.array_type() == false );
+
+    nom::Value arr = itr->second;
+
+    for( auto it = arr.begin(); it != arr.end(); ++it ) {
+      out.push_back( it->get_string() );
+    } // end for loop
+  } // end if found
+
+  return out;
+}
+
+// const nom::Value& GameConfig::array(const std::string& node) const
+// {
+//   auto itr = this->config.find(node);
+
+//   if( itr != this->config.end() ) {
+
+//     NOM_ASSERT( itr->second.array_type() == false );
+//     return itr->second;
+
+//   } // end if found
+// }
+
 const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::Value& value )
 {
   auto res = config.insert ( std::pair<std::string, nom::Value> ( node, value ) ).first;
@@ -82,13 +114,14 @@ const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::
   {
     NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + "\"" + value.get_string() + "\"" + " has been added to the cache." );
   }
-  else if ( value.int_type() )
+  else if( value.int_type() )
   {
     NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
   }
   else
   {
-    NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + " has been added to the cache." );
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG,
+                  "GameConfig: " + node + ": " + " has been added to the cache." );
   }
 
   return res->second;
@@ -214,6 +247,10 @@ bool GameConfig::load( const std::string& filename )
         else if( members->int_type() )
         {
           cfg.setProperty( key, members->get_int() );
+        }
+        else if( members->array_type() )
+        {
+          cfg.setProperty( key, members->array() );
         }
       }
     }

@@ -312,7 +312,7 @@ const nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y ) const
 
 void Board::updateStatus ( nom::int32 x, nom::int32 y, const Card& card )
 {
-  this->grid[x][y].update ( nom::Point2i( x, y ), card );
+  this->grid[x][y].update( nom::Point2i( x, y ), card );
 /*
   if ( this->grid[x][y].element() != 0 )
   {
@@ -370,17 +370,18 @@ void Board::draw ( nom::IDrawable::RenderTarget& target )
     {
       if ( this->get ( x, y ).getID() == BAD_CARD_ID ) continue;
 
+      // Board tiles should **always** be shown with the card face rendered
+      this->grid[x][y].tile_card.set_face_down(false);
+
       // Positions of the cards on the game board
       nom::Point2i board_pos  (
                                 BOARD_ORIGIN_X + ( CARD_WIDTH * x ),
                                 BOARD_ORIGIN_Y + ( CARD_HEIGHT * y )
                               );
 
-      this->card->reposition ( board_pos );
-
-      this->card->setViewCard ( this->grid[x][y].tile() );
-
-      this->card->draw ( target );
+      this->card->reposition(board_pos);
+      this->card->setViewCard( this->grid[x][y].tile() );
+      this->card->draw(target);
 
 /*
       if ( this->grid[x][y].element() != 0 )

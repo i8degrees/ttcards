@@ -60,13 +60,8 @@ class CardView
     bool load ( const GameConfig* config, const nom::Font& card_font );
 
     /// Render the complete card -- its background, face, element and text.
-    void draw (
-                nom::IDrawable::RenderTarget& target, const Card& card,
-                nom::int32 x, nom::int32 y, bool face_down = false
-              ) const;
-
-    /// Render the card's face turned away from the player (face down)
-    void draw_face_down ( nom::IDrawable::RenderTarget& target, nom::int32 x, nom::int32 y ) const;
+    void draw(  nom::IDrawable::RenderTarget& target, const Card& card,
+                nom::int32 x, nom::int32 y ) const;
 
     /// Render the card's background color
     void draw_background  (
@@ -98,9 +93,6 @@ class CardView
     /// Set new rendering coordinates for the card
     void reposition ( const nom::Point2i& pos );
 
-    /// Render the face of the card either shown to the player or not
-    void face ( bool up = false );
-
     /// Refresh the renderer (this should be done anytime after you set new
     /// values within this object's instance.
     void update ( void );
@@ -111,7 +103,6 @@ class CardView
   private:
     nom::Point2i position_;
     Card render_card;
-    bool card_face_down;
 
     DrawableList card; // TODO: Rename to cards
     std::shared_ptr<nom::Text> card_text;
