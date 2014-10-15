@@ -52,7 +52,7 @@ class CardView
     CardView ( const nom::IntRect& coords );
 
     /// Default destructor
-    ~CardView ( void );
+    virtual ~CardView ( void );
 
     /// Load the resources used in rendering a card
     ///

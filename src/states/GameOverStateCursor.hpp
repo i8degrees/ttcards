@@ -53,7 +53,7 @@ class GameOverStateCursor: public nom::AnimatedSprite
                           const std::string& filename
                         );
 
-    ~GameOverStateCursor ( void );
+    virtual ~GameOverStateCursor ( void );
 
     /// Set a new positioning object for this instance to use
     void set_position_map ( CardHand* position );

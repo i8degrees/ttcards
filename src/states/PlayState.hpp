@@ -59,7 +59,7 @@ class PlayState: public nom::IState
 {
   public:
     PlayState ( const nom::SDLApp::shared_ptr& object );
-    ~PlayState();
+    virtual ~PlayState();
 
     void on_init( nom::void_ptr data );
     void on_exit( nom::void_ptr data );

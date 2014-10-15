@@ -55,7 +55,7 @@ class GameOverState: public nom::IState
                     nom::void_ptr state
                   );
 
-    ~GameOverState();
+    virtual ~GameOverState();
 
   private:
     /// \todo Change return type to bool

@@ -51,7 +51,7 @@ class CardsMenuState: public nom::IState
     /// \todo Move most of construction init code to ::on_init.
     CardsMenuState ( const nom::SDLApp::shared_ptr& object );
 
-    ~CardsMenuState();
+    virtual ~CardsMenuState();
 
     /// \todo Change return type to bool
     void on_init( nom::void_ptr data );

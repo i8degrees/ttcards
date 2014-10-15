@@ -42,7 +42,7 @@ class DialogCursor: public nom::AnimatedSprite
 {
   public:
     DialogCursor();
-    ~DialogCursor();
+    virtual ~DialogCursor();
 
     DialogCursor( const nom::SpriteSheet& sheet );
     DialogCursor( const std::string& filename );

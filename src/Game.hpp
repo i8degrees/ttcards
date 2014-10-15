@@ -60,7 +60,7 @@ class Game: public nom::SDLApp
 
     Game();
     Game( nom::int32 argc, char* argv[] );
-    ~Game();
+    virtual ~Game();
 
     bool on_init( void );
 
