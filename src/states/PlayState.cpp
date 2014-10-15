@@ -913,8 +913,13 @@ void PlayState::on_update( float delta_time )
       {
         nom::int32 moveX = nom::rand ( 0, 2 );
         nom::int32 moveY = nom::rand ( 0, 2 );
-        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
-        this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
+
+        // Fixes a out of bounds issue that occurs occasionally upon state
+        // phasing
+        if( this->game->hand[PLAYER2].size() > 0 ) {
+          nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
+          this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
+        }
 
         this->moveTo ( moveX, moveY );
       } // end board_edges choice
