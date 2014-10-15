@@ -174,7 +174,9 @@ void CardsMenuState::on_init( nom::void_ptr data )
   nom::EventCallback select_card( [&] ( const nom::Event& evt ) { this->add_card(this->selected_card_); } );
 
   nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
-  nom::EventCallback start_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Play ); } );
+  nom::EventCallback start_game( [&] (const nom::Event& evt) {
+    this->game->set_state( Game::State::ContinueMenu );
+  });
 
   state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
   state.insert( "cursor_prev", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), cursor_prev );
@@ -222,17 +224,36 @@ void CardsMenuState::on_exit( nom::void_ptr data )
   Rocket::Core::Factory::ClearTemplateCache();
 }
 
-void CardsMenuState::on_pause( nom::void_ptr data )
+void CardsMenuState::on_pause(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  // Hide the cursor so that it doesn't show up during undesirable states such
+  // as during the ContinueMenu or Pause states.
+  this->game->cursor.set_frame(INTERFACE_CURSOR_NONE);
+  this->game->cursor.update();
 }
 
-void CardsMenuState::on_resume( nom::void_ptr data )
+void CardsMenuState::on_resume(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  this->game->input_mapper.activate_only( "CardsMenuState" );
-  this->game->input_mapper.activate( "Game" );
+  // Restore the rendering of the game cursor
+  this->game->cursor.set_frame(INTERFACE_CURSOR_RIGHT);
+
+  // Response from the previous game state
+  nom::int32_ptr response = static_cast<nom::int32_ptr>(data);
+
+  // User is happy with their cards -- let's play! Response from
+  // ContinueMenuState was 'yes'
+  if( response != nullptr && *response == 1 ) {
+    this->game->set_state(Game::State::Play);
+  }
+  else {
+    // Continue running this state; response from ContinueMenuState was 'no'
+    this->game->input_mapper.activate_only("CardsMenuState");
+    this->game->input_mapper.activate("Game");
+  }
 }
 
 void CardsMenuState::on_update( float delta_time )

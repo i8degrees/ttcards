@@ -94,7 +94,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
-    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_EVENTS, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
@@ -105,6 +105,10 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE_STATES, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_GUI, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+
+    // Game states debugging
+    nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_SYSTEM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+
   #else // NDEBUG -- release target build
 
     NOM_LOG_INFO( TTCARDS, "RELEASE build" );

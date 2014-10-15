@@ -303,7 +303,7 @@ void GameOverState::on_resume( nom::void_ptr data )
 
   // "Yes" to verification of choice; we expect this response to be coming from
   // ContinueMenuState.
-  if( response != nullptr && this->game->state()->current_state_id() == Game::State::GameOver )
+  if( response != nullptr && *response == 1 && this->game->state()->current_state_id() == Game::State::GameOver )
   {
     nom::Event ev;
     ev.user.code = GameEvent::AnimationEvent;
@@ -400,7 +400,7 @@ void GameOverState::on_user_event( const nom::Event& ev )
     else
     {
       //this->game->info_box_.diable();
-      this->game->cursor_wrong->Play();
+      // this->game->cursor_wrong->Play();
     }
   }
 }

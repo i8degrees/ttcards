@@ -42,6 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 class Game;
 
+/// \todo Rename to ConfirmationDialogState
 class ContinueMenuState: public nom::IState
 {
   public:

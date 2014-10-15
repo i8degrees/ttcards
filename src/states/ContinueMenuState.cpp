@@ -166,7 +166,12 @@ void ContinueMenuState::on_init( nom::void_ptr data )
   });
 
   // Keyboard mappings
-  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
+
+  // This state can crash the game when (I *think*) another child state is
+  // pushed onto the stack ... possibly due to the number of states in the
+  // stack at the time.
+  // state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
+
   state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
   state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
   state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select );
@@ -181,7 +186,11 @@ void ContinueMenuState::on_init( nom::void_ptr data )
   state.insert( "cursor_next", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), cursor_next );
 
   // Joystick button mappings
-  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+
+  // This state can crash the game when (I *think*) another child state is
+  // pushed onto the stack ... possibly due to the number of states in the
+  // stack at the time.
+  // state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
   state.insert( "cursor_prev", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), cursor_prev );
   state.insert( "cursor_next", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), cursor_next );
   state.insert( "select", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select );
@@ -306,26 +315,21 @@ void ContinueMenuState::send_response()
 {
   // We will use the positioning of the cursor to map user's response;
   //
-  // Position zero (0) will generate a "Yes" response.
-  // Position one (1) will generate a "No" response.
+  // When the choice is valid, the response is the cursor position plus one,
+  // otherwise the response is invalid and will be zero (nullptr).
   //
-  // We pass the response along to whomever called us (this state) as we
-  // exit stage right.
+  // The state that receives the response will be the state that was in
+  // existence directly before ContinueMenuState, and must be captured in
+  // ::on_resume.
   int choice = this->cursor_.cursor_position();
+  int32_ptr response = nullptr;
 
-  if( choice == 0 )
-  {
-    nom::int32_ptr response = new nom::int32(1);
-    this->game->state()->pop_state(response);
+  if( choice >= 0 && choice <= this->cursor_.last() ) {
+    response = new nom::int32(choice+1);
   }
-  else if( choice == 1 )
-  {
-    nom::int32_ptr response = nullptr;
-    this->game->state()->pop_state(response);
-  }
-  else
-  {
-    // This should never be heard!
+  else {  // Invalid response
     this->game->cursor_wrong->Play();
   }
+
+  this->game->state()->pop_state(response);
 }
