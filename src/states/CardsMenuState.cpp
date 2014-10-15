@@ -47,14 +47,11 @@ CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   // Generate a full player hand for the CPU with whatever -- don't care -- we
   // do this only for creating a static backdrop to add to this state; see
   // ::on_draw for details.
-  int idx = 0;
   while( this->game->hand[1].size() < MAX_PLAYER_HAND )
   {
     this->game->hand[1].shuffle( 1, 1, this->game->collection);
-    this->game->hand[1].cards[idx].set_face_down(true);
-
-    ++idx;
   }
+  this->game->hand[1].set_face_down(true);
 
   // this->game->collection is initialized for us in the main app loop
   // Borrowed from Player class; this is perhaps a hack-(ish) workaround

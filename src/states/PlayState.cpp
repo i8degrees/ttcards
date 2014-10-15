@@ -165,20 +165,16 @@ void PlayState::on_init( nom::void_ptr data )
 
   this->game->info_box_.show();
 
-  int idx = 0;
   while( this->game->hand[1].size() < MAX_PLAYER_HAND )
   {
     this->game->hand[1].shuffle( 1, 10, this->game->collection );
+  }
 
-    nom::StringList ruleset = this->game->config.string_array("REGION_RULESET");
-
-    for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
-      if( (*itr) != "Open" ) {
-        this->game->hand[1].cards[idx].set_face_down(true);
-      }
+  nom::StringList ruleset = this->game->config.string_array("REGION_RULESET");
+  for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
+    if( (*itr) != "Open" ) {
+      this->game->hand[1].set_face_down(true);
     }
-
-    ++idx;
   }
 
   // Initialize player cards to their respective defaults; this lets us know not
