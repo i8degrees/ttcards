@@ -106,8 +106,12 @@ Game::Game( nom::int32 argc, char* argv[] ) :
 
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_GUI, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
-    // Game states debugging
-    nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_SYSTEM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+    // Game states debugging (engine scope)
+    // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_SYSTEM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+
+    // Game states debugging (game scope)
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+
 
   #else // NDEBUG -- release target build
 

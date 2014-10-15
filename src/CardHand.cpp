@@ -50,7 +50,7 @@ bool CardHand::push_back ( const Card& card )
   // broken without this check; see Player.cpp for details.
 
   // No go; we already have this card somewhere in our hand
-  if ( this->exists( card ) == true ) return false;
+  // if ( this->exists( card ) == true ) return false;
 
   // No go -- we are out of space!
   if ( this->size() > ( MAX_PLAYER_HAND - 1 ) ) return false;

@@ -65,28 +65,21 @@ void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::C
     {
       if( columns[i] == "status" && row_index < row_end )
       {
-        // TODO:
-        // if( row_index < row_end && this->db_[row_offset].num() < 1 )
-        if( row_index < row_end )
-        {
-          // Unavailable
-          // row.push_back("0");
+        if( row_index < row_end && this->db_[row_offset].num() < 1 ) {
+          row.push_back("0"); // Unavailable
         }
-        // else
-        // {
-        //   // Available
-          row.push_back("1");
-        // }
+        else {
+          row.push_back("1"); // Available
+        }
       }
       else if( row_index < row_end && columns[i] == "available" )
       {
         String card_class =
           "unavailable-card";
 
-        // TODO:
-        // if( this->db_[row_offset].num() > 0 ) {
+        if( this->db_[row_offset].num() > 0 ) {
           card_class = "available-card";
-        // }
+        }
 
         row.push_back(card_class);
       }
@@ -107,8 +100,7 @@ void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::C
       else if( row_index < row_end && columns[i] == "num" )
       {
         String card_num =
-          // std::to_string( this->db_[row_offset].num() ).c_str();
-          "1";
+          std::to_string( this->db_[row_offset].num() ).c_str();
 
         row.push_back(card_num);
       }
@@ -365,13 +357,13 @@ std::string CardsPageDataSource::dump()
     os
     // ID && card name
     << (*itr).getID()
-    << " "
+    << " : "
     << (*itr).getName()
 
     // Number of cards
-    << "\t"
-    // TODO
-    // << (*itr).num()
+    << " ["
+    << (*itr).num()
+    << "]"
     << std::endl;
   }
 

@@ -32,30 +32,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Card Card::null = Card();
 nom::int32 Card::CARDS_COLLECTION = 0;
 
-Card::Card ( void ) :
-  id ( BAD_CARD_ID ),
-  level ( 0 ),
-  type ( 0 ),
-  element ( NONE ),
-  rank( { { 0 } } ),
-  player_id ( Card::NOPLAYER ),
-  player_owner ( Card::NOPLAYER )
+Card::Card() :
+  id(BAD_CARD_ID),
+  level(0),
+  type(0),
+  element(NONE),
+  rank( {{0}} ),
+  player_id(Card::NOPLAYER),
+  player_owner(Card::NOPLAYER),
+  num_(0)
 {
   // ...
 }
 
-Card::Card  (
-              nom::int32 id, nom::int32 level, nom::int32 type,
-              nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
-              std::string name, nom::int32 player_id, nom::int32 player_owner
-            ) : id ( id ), level ( level ), type ( type ), element ( element ),
-            rank { { rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] } },
-            name ( name ), player_id ( player_id ), player_owner ( player_owner )
+Card::~Card()
 {
   // ...
 }
 
-Card::~Card ( void )
+Card::Card( nom::int32 id, nom::int32 level, nom::int32 type,
+            nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
+            std::string name, nom::int32 player_id, nom::int32 player_owner,
+            int num ) :
+  id(id),
+  level(level),
+  type(type),
+  element(element),
+  rank({{ rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] }}),
+  name(name),
+  player_id(player_id),
+  player_owner(player_owner),
+  num_(num)
 {
   // ...
 }
@@ -129,6 +136,11 @@ const nom::int32 Card::getPlayerID ( void ) const
 const nom::int32 Card::getPlayerOwner ( void ) const
 {
   return this->player_owner;
+}
+
+int Card::num() const
+{
+  return this->num_;
 }
 
 void Card::setID ( nom::int32 id_ )
@@ -207,6 +219,11 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
   this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
 }
 
+void Card::set_num(int num_cards)
+{
+  this->num_ = std::min(num_cards, MAX_NUM);
+}
+
 nom::Value Card::serialize( void ) const
 {
   nom::Value obj;
@@ -225,6 +242,8 @@ nom::Value Card::serialize( void ) const
 
     obj["ranks"].push_back( val );
   }
+
+  obj["num"] = this->num_;
 
   return obj;
 }
@@ -245,6 +264,8 @@ void Card::unserialize( nom::Value& obj )
     this->rank[idx] = it->get_int();
     ++idx;
   }
+
+  this->set_num( obj["num"].get_int() );
 }
 
 void Card::increaseNorthRank ( void )
@@ -325,7 +346,9 @@ std::ostream& operator << ( std::ostream& os, const Card& rhs )
       << card_delimiter
       << rhs.getPlayerID()
       << card_delimiter
-      << rhs.getPlayerOwner();
+      << rhs.getPlayerOwner()
+      << card_delimiter
+      << rhs.num();
 
   return os;
 }
@@ -340,7 +363,8 @@ bool operator == ( const Card& lhs, const Card& rhs )
           ( lhs.getEastRank() == rhs.getEastRank() )          &&
           ( lhs.getSouthRank() == rhs.getSouthRank() )        &&
           ( lhs.getWestRank() == rhs.getWestRank() )          &&
-          ( lhs.getName() == rhs.getName() );
+          ( lhs.getName() == rhs.getName() );                 //&&
+          // ( lhs.num() == rhs.num() );
 }
 
 bool operator != ( const Card& lhs, const Card& rhs )

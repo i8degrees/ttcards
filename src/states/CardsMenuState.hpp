@@ -108,7 +108,7 @@ class CardsMenuState: public nom::IState
     void add_card(const Card& card);
 
     /// \brief Remove a card from the player's hand.
-    void remove_card(Card& card);
+    void remove_card(const Card& card);
 
     std::shared_ptr<Game> game;
 

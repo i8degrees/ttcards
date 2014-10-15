@@ -102,12 +102,6 @@ const nom::uint32 FRAMES_PER_SECOND = 15;
 /// Maximum number of players -- both human & AI
 const nom::int32 TOTAL_PLAYERS = 2; // +1 padding
 
-/// Minimum number of cards in cards database (see Resources/cards.json)
-///
-/// \remark Loading of the database will fail a sanity check if we fall short of
-/// this number
-const nom::uint32 MIN_COLLECTION = 7;
-
 /// Maximum number of cards in cards database (see Resources/cards.json)
 ///
 /// \remark Loading of the database will fail a sanity check if we go beyond
@@ -117,8 +111,7 @@ const nom::int32 MAX_COLLECTION = 220;
 /// Variable number of cards found in the cards database
 /// (see Resources/cards.json)
 ///
-/// \remark This number cannot exceed MAX_COLLECTION or fall under
-/// MIN_COLLECTION
+/// \remark This number cannot exceed MAX_COLLECTION.
 ///
 /// \FIXME We have this defined in the Card class as a workaround patch, until
 /// we figure out how we want to approach the initialization order issues.

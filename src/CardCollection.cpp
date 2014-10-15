@@ -81,12 +81,6 @@ bool CardCollection::save( const std::string& filename )
   nom::Value obj( nom::Value::ObjectValues );
   nom::Value arr( nom::Value::ArrayValues );
 
-  if ( this->cards.size() < MIN_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MIN_COLLECTION sanity check before saving: " + filename );
-    return false;
-  }
-
   if ( this->cards.size() > MAX_COLLECTION ) // Sanity check
   {
     NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check before saving: " + filename );
@@ -149,12 +143,6 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     card.setPlayerOwner( Card::NOPLAYER );  // placeholder
 
     cards_buffer.push_back( card );
-  }
-
-  if ( cards_buffer.size() < MIN_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MIN_COLLECTION sanity check after loading: " + filename );
-    return false;
   }
 
   if ( cards_buffer.size() > MAX_COLLECTION ) // Sanity check

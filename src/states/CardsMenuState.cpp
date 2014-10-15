@@ -96,25 +96,40 @@ void CardsMenuState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  std::vector<Card> deck;
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
+                "---Deck from collection---" );
 
-  // int idx = 0;
-
-  // Create the card pages with the existing collection
+  // Create the card pages with an existing collection
+  Cards deck;
   for(  auto itr = this->game->collection.cards.begin();
         itr != this->game->collection.cards.end(); ++itr )
   {
-    // FIXME:
-    // if( idx > MIN_COLLECTION ) break;
+    // FIXME: This breaks card lookup, rendering, etc. due to the fact that up
+    // to this point, we've been depending on the ID of the card matching the
+    // array index.
+    // Options I've thought of: experiment with the idea of modeling the data
+    // with std::map<int,Card>, keeping a copy of the position index with the
+    // card or model (yuck!) ...
+    // if( (*itr).num() > 0 ) {
+      deck.push_back( (*itr) );
+    // }
 
-    deck.push_back( (*itr) );
-    // ++idx;
+      NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
+                    (*itr).getID(), ":", (*itr).getName(),
+                    "[", (*itr).num(), "]" );
   }
 
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
   if( this->game->cards_page_model_ != nullptr ) {
     this->game->cards_page_model_->insert_cards(0, deck);
   }
+
+  // Build card row data
+  this->game->gui_window_.update();
+
+  NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
+                  "---Cards page model---",
+                  this->game->cards_page_model_->dump() );
 
   // Event listener for mouse button clicks
   this->game->cards_menu_.register_event_listener(
@@ -123,9 +138,6 @@ void CardsMenuState::on_init( nom::void_ptr data )
       this->on_mouse_button_up(ev);
     })
   );
-
-  // Build card row data
-  this->game->gui_window_.update();
 
   // Build offset coordinate map for the game cursor; this is necessary for
   // syncing key, mouse wheel and joystick input.
@@ -565,7 +577,8 @@ void CardsMenuState::add_card(const Card& card)
   if( this->game->cards_page_model_ == nullptr ) return;
 
   page = this->game->cards_page_model_->page();
-  pos = card.getID();
+  Card c = card;
+  pos = c.getID();
 
   // Card logic for adding a card to the player's hand
   //
@@ -576,14 +589,14 @@ void CardsMenuState::add_card(const Card& card)
   // 5. Queue audio clip
 
   // TODO:
-  // if( card.num() > 0 )
+  if( c.num() > 0 )
   {
-    // card.set_num( card.num() - 1 );
+    c.set_num( c.num() - 1 );
 
-    this->game->cards_page_model_->insert_card(pos, card);
+    this->game->cards_page_model_->insert_card(pos, c);
 
-    if( this->game->hand[0].push_back(card) ) {
-      this->selected_card_ = card;
+    if( this->game->hand[0].push_back(c) ) {
+      this->selected_card_ = c;
 
       // Get the position, relative to current page, from model for
       // updating game cursor position
@@ -596,7 +609,7 @@ void CardsMenuState::add_card(const Card& card)
   }
 }
 
-void CardsMenuState::remove_card(Card& card)
+void CardsMenuState::remove_card(const Card& card)
 {
   using namespace Rocket::Core;
 
@@ -608,7 +621,8 @@ void CardsMenuState::remove_card(Card& card)
   if( this->game->cards_page_model_ == nullptr ) return;
 
   page = this->game->cards_page_model_->page();
-  pos = card.getID();
+  Card c = card;
+  pos = c.getID();
 
   // Compare the selected card from the current model with the game
   // database; we rely on the game database to be the "safe" -- read-only.
@@ -623,13 +637,13 @@ void CardsMenuState::remove_card(Card& card)
   // 5. Queue audio clip
 
   // TODO:
-  // if( card.num() < ref_card.num() )
+  if( c.num() < ref_card.num() )
   {
-    // card.set_num( card.num() + 1 );
+    c.set_num( c.num() + 1 );
 
-    this->game->cards_page_model_->insert_card(pos, card);
+    this->game->cards_page_model_->insert_card(pos, c);
 
-    if( this->game->hand[0].erase(card) ) {
+    if( this->game->hand[0].erase(c) ) {
       this->selected_card_ = card;
 
       // Get the position, relative to current page, from model for

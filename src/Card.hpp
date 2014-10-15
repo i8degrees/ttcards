@@ -65,6 +65,12 @@ const nom::int32 MAX_RANKS = 4;
 /// Maximum name length a card can contain -- "Chubby Chocobo" (without quotes)
 const nom::int32 MAX_NAME = 14; // +1 padding
 
+/// \brief The minimum number of cards of a type you can collect.
+const int MIN_NUM = 0;
+
+/// \brief The maximum number of cards of a type you can collect.
+const int MAX_NUM = 99;
+
 class Card
 {
   public:
@@ -73,15 +79,13 @@ class Card
     /// FIXME: See CARDS_COLLECTION initialization issue
     static nom::int32 CARDS_COLLECTION;
 
-    Card ( void );
+    Card();
+    ~Card();
 
-    Card  (
-            nom::int32 id, nom::int32 level, nom::int32 type,
-            nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
-            std::string name, nom::int32 player_id, nom::int32 player_owner
-          );
-
-    ~Card ( void );
+    Card( nom::int32 id, nom::int32 level, nom::int32 type,
+          nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
+          std::string name, nom::int32 player_id, nom::int32 player_owner,
+          int num );
 
     const nom::int32 getID ( void ) const;
     const std::string get_id_string( void ) const;
@@ -98,6 +102,8 @@ class Card
 
     const nom::int32 getPlayerID ( void ) const;
     const nom::int32 getPlayerOwner ( void ) const;
+
+    int num() const;
 
     /// Clamps value to Card::CARDS_COLLECTION
     void setID ( nom::int32 id_ );
@@ -137,6 +143,9 @@ class Card
 
     /// Clamps value to TOTAL_PLAYERS
     void setPlayerOwner ( nom::int32 player_owner_ );
+
+    /// \brief Set the number of cards of this type has been collected.
+    void set_num(int num_cards);
 
     void increaseNorthRank ( void );
     void increaseEastRank ( void );
@@ -184,6 +193,10 @@ class Card
 
     /// Additional field; original owner of the card
     nom::int32 player_owner;
+
+    /// \brief The number of cards of this instance type that has been
+    /// collected.
+    int num_;
 };
 
 /// \todo Rename to CardList
