@@ -72,9 +72,10 @@ class CardsMenuState: public nom::IState
     /// \brief GUI event callback for mouse button actions.
     ///
     /// \note This is processed on libRocket's event loop.
-    ///
-    /// \todo Convert to nom::Event; see ConfirmationDialogState::on_mouse_button_up
     void on_mouse_button_up(Rocket::Core::Event& ev);
+
+    // void on_left_mouse_button_up(const nom::Event& ev);
+    // void on_right_mouse_button_up(const nom::Event& ev);
 
     void update_cursor();
 

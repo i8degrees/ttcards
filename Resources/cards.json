@@ -898,7 +898,7 @@
       "id" : 89,
       "level" : 9,
       "name" : "Diablos",
-      "num" : 0,
+      "num" : 1,
       "ranks" : [ 5, 10, 8, 3 ],
       "type" : 3
     },

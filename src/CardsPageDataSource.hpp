@@ -38,14 +38,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 #include "CardCollection.hpp"
 
-/// \brief Mock model of the CardsMenu player's hand selection widget in TTcards
+/// \brief Paged cards model view for holding the game's card collection in a
+/// tabular format.
 ///
 /// \see http://librocket.com/wiki/documentation/C%2B%2BManual/Controls/DataGrid
 /// \see http://librocket.com/wiki/documentation/tutorials/Datagrid
-///
-/// \remarks This interface should **not** be used outside of unit tests; for
-/// starters, assertion macros are disabled for running under this particular
-/// testing environment.
 ///
 /// \note This interface only supports using one table per data source.
 class CardsPageDataSource: public Rocket::Controls::DataSource
@@ -206,9 +203,7 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     int page_;
 };
 
-/// \remarks This interface should **not** be used outside of unit tests; for
-/// starters, assertion macros are disabled for running under this particular
-/// testing environment.
+/// \brief Column zero (0) styling
 class CardStatusFormatter: public Rocket::Controls::DataFormatter
 {
   public:
@@ -228,9 +223,7 @@ class CardStatusFormatter: public Rocket::Controls::DataFormatter
                       const Rocket::Core::StringList& raw_data );
 };
 
-/// \remarks This interface should **not** be used outside of unit tests; for
-/// starters, assertion macros are disabled for running under this particular
-/// testing environment.
+/// \brief Column one (1) styling
 class CardNameFormatter: public Rocket::Controls::DataFormatter
 {
   public:

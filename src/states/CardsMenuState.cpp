@@ -145,8 +145,8 @@ void CardsMenuState::on_init( nom::void_ptr data )
 
   // Event listener for mouse button clicks
   this->game->cards_menu_.register_event_listener(
-    this->game->cards_menu_.document(), "mouseup", new nom::UIEventListener
-    ( [&] ( Rocket::Core::Event& ev ) {
+    this->game->cards_menu_.document(), "mouseup",
+    new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) {
       this->on_mouse_button_up(ev);
     })
   );
@@ -197,6 +197,9 @@ void CardsMenuState::on_init( nom::void_ptr data )
   nom::EventCallback delete_card( [&] ( const nom::Event& evt ) { this->remove_card(this->selected_card_); } );
   nom::EventCallback select_card( [&] ( const nom::Event& evt ) { this->add_card(this->selected_card_); } );
 
+  // nom::EventCallback click_delete_card( [&] ( const nom::Event& evt ) { this->on_right_mouse_button_up(evt); } );
+  // nom::EventCallback click_select_card( [&] ( const nom::Event& evt ) { this->on_left_mouse_button_up(evt); } );
+
   nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
   nom::EventCallback start_game( [&] (const nom::Event& evt) {
     this->game->set_state( Game::State::ConfirmationDialog );
@@ -230,6 +233,10 @@ void CardsMenuState::on_init( nom::void_ptr data )
 
   state.insert( "start_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), start_game );
   state.insert( "start_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), start_game );
+
+  // Mouse button mappings
+  // state.insert( "click_delete_card", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_RIGHT ), click_delete_card );
+  // state.insert( "click_select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT ), click_select_card );
 
   this->game->input_mapper.erase( "CardsMenuState" );
   this->game->input_mapper.insert( "CardsMenuState", state, true );
@@ -376,6 +383,52 @@ void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_TEST, target->GetInnerRML().CString() );
   } // end if mouseup event
 }
+
+// void CardsMenuState::on_left_mouse_button_up(const nom::Event& ev)
+// {
+//   using namespace Rocket::Core;
+//   Vector2f mouse_coords(ev.mouse.x, ev.mouse.y);
+
+//   Element* target =
+//     this->game->cards_menu_.document()->GetElementById("datagridrow");
+//   NOM_ASSERT( target != nullptr );
+//   if( target == nullptr ) return;
+
+//   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
+//   if( this->game->cards_page_model_ == nullptr ) return;
+
+//   Card card =
+//     this->game->cards_page_model_->lookup_by_name( target->GetInnerRML().CString() );
+
+//   if( target->IsPointWithinElement(mouse_coords) ) {
+//       this->add_card(card);
+//   } // end if target is within mouse hit test
+
+//   NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_TEST, target->GetInnerRML().CString() );
+// }
+
+// void CardsMenuState::on_right_mouse_button_up(const nom::Event& ev)
+// {
+//   using namespace Rocket::Core;
+//   Vector2f mouse_coords(ev.mouse.x, ev.mouse.y);
+
+//   Element* target =
+//     this->game->cards_menu_.document()->GetElementById("datagridrow");
+//   NOM_ASSERT( target != nullptr );
+//   if( target == nullptr ) return;
+
+//   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
+//   if( this->game->cards_page_model_ == nullptr ) return;
+
+//   Card card =
+//     this->game->cards_page_model_->lookup_by_name( target->GetInnerRML().CString() );
+
+//   if( target->IsPointWithinElement(mouse_coords) ) {
+//       this->remove_card(card);
+//   } // end if target is within mouse hit test
+
+//   NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_TEST, target->GetInnerRML().CString() );
+// }
 
 void CardsMenuState::update_cursor()
 {
@@ -595,18 +648,16 @@ void CardsMenuState::add_card(const Card& card)
   //
   // 1. Decrease available card count by one
   // 2. Sync the cards model to reflect modified card count (-1)
-  // 3. Update player hand w/ a copy of the reference card
+  // 3. Update player hand w/ modified card.
   // 4. Update game cursor position.
   // 5. Queue audio clip
-
-  // TODO:
   if( c.num() > 0 )
   {
     c.set_num( c.num() - 1 );
 
-    this->game->cards_page_model_->insert_card(pos, c);
+    if( this->game->hand[0].push_back(c) == true ) {
 
-    if( this->game->hand[0].push_back(c) ) {
+      this->game->cards_page_model_->insert_card(pos, c);
       this->selected_card_ = c;
 
       // Get the position, relative to current page, from model for
@@ -635,26 +686,24 @@ void CardsMenuState::remove_card(const Card& card)
   Card c = card;
   pos = c.getID();
 
-  // Compare the selected card from the current model with the game
-  // database; we rely on the game database to be the "safe" -- read-only.
+  // Used to compare the selected card from the current model with the game
+  // cards collection (number of cards to return)
   Card ref_card = this->game->collection.cards.at(pos);
 
   // Card logic for removing a card from the player's hand
   //
   // 1. Increase available card count by one
   // 2. Sync the cards model to reflect modified card count (+1)
-  // 3. Remove the card from the player's hand
+  // 3. Remove the card from the player's hand.
   // 4. Update game cursor position.
   // 5. Queue audio clip
-
-  // TODO:
   if( c.num() < ref_card.num() )
   {
     c.set_num( c.num() + 1 );
 
-    this->game->cards_page_model_->insert_card(pos, c);
+    if( this->game->hand[0].erase(c) == true ) {
 
-    if( this->game->hand[0].erase(c) ) {
+      this->game->cards_page_model_->insert_card(pos, c);
       this->selected_card_ = card;
 
       // Get the position, relative to current page, from model for
