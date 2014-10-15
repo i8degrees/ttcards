@@ -79,14 +79,20 @@ void Board::initialize ( void )
   for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     this->grid[x].resize ( BOARD_GRID_WIDTH );
 
+  nom::uint32 seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::default_random_engine rand_generator(seed);
+  std::uniform_int_distribution<int> distribution(1, MAX_ELEMENT);
+
   nom::int32 idx = 0;
-  for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
-  {
-    for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
-    {
-      nom::uint32 random_element = nom::rand ( 0, MAX_ELEMENT );
-      this->grid[x][y] = BoardTile ( Card(), this->board_map[idx], random_element );
+  int random_element = 0;
+  for( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
+    for( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ ) {
+      random_element = distribution(rand_generator);
+
+      this->grid[x][y] = BoardTile( Card(), this->board_map[idx], random_element );
       idx++; // this->board_map[0..8]
+
+      // NOM_DUMP(random_element);
     }
   }
 }
@@ -364,14 +370,8 @@ void Board::update ( void )
 
 void Board::draw ( nom::IDrawable::RenderTarget& target )
 {
-  for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
-  {
-    for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
-    {
-      if ( this->get ( x, y ).getID() == BAD_CARD_ID ) continue;
-
-      // Board tiles should **always** be shown with the card face rendered
-      this->grid[x][y].tile_card.set_face_down(false);
+  for( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
+    for( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ ) {
 
       // Positions of the cards on the game board
       nom::Point2i board_pos  (
@@ -379,24 +379,31 @@ void Board::draw ( nom::IDrawable::RenderTarget& target )
                                 BOARD_ORIGIN_Y + ( CARD_HEIGHT * y )
                               );
 
-      this->card->reposition(board_pos);
-      this->card->setViewCard( this->grid[x][y].tile() );
-      this->card->draw(target);
+      if( this->get ( x, y ).getID() != BAD_CARD_ID ) {
 
-/*
-      if ( this->grid[x][y].element() != 0 )
-      {
-        nom::IntRect element_pos (
-                                  board_pos.x + ELEMENT_WIDTH,
-                                  board_pos.y + ELEMENT_HEIGHT
-                                );
+        // Board tiles should **always** be shown with the card face rendered
+        this->grid[x][y].tile_card.set_face_down(false);
 
-        this->card->draw_element  (
-                                    video_buffer, this->grid[x][y].element(),
-                                    element_pos.x, element_pos.y
-                                  );
+        this->card->reposition(board_pos);
+        this->card->setViewCard( this->grid[x][y].tile() );
+        this->card->draw(target);
       }
-*/
+
+      // if( this->grid[x][y].element() != 0 ) {
+
+      //   nom::IntRect element_pos (
+      //                             board_pos.x + ELEMENT_WIDTH,
+      //                             board_pos.y + ELEMENT_HEIGHT,
+      //                             ELEMENT_WIDTH,
+      //                             ELEMENT_HEIGHT
+      //                           );
+
+      //   this->card->draw_element  (
+      //                               target, this->grid[x][y].element(),
+      //                               element_pos.x, element_pos.y
+      //                             );
+      // }
+
     } // end for loop rows
   } // end for loop cols
 }
