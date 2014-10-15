@@ -99,7 +99,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_EVENTS, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // Disable logging of all messages from GameConfig except for fatal errs.
-    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, nom::LogPriority::NOM_LOG_PRIORITY_ERROR );
+    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
 
     // Enable logging of game state function traces
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE_STATES, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
@@ -107,10 +107,10 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_GUI, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // Game states debugging (engine scope)
-    // nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_SYSTEM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+    nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_SYSTEM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // Game states debugging (game scope)
-    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
 
   #else // NDEBUG -- release target build
@@ -317,10 +317,25 @@ bool Game::on_init( void )
   // Use pixel unit scaling; this gives us an output pixel ratio of 1:2.
   this->window.set_scale( nom::Point2f(2) );
 
-  // Initialize libRocket; our GUI interface
-  Rocket::Core::FileInterface* fs =
-    // new nom::RocketFileInterface( "../../../../Resources/" );
-    new nom::RocketFileInterface( this->working_directory + "/" );
+  // Initialize libRocket's file interface
+  Rocket::Core::FileInterface* fs = nullptr;
+
+  // Use Resources from the project root instead of the application bundle when
+  // in our native development environment; this is to let us
+  // quickly reload modified configurations (RML, RCSS) with no bullshit, i.e.:
+  // forgetting to copy or 'make install'.
+  //
+  // This will have to do until I get around to cleaning up the build system...
+  //
+  // Note that Resources/config.json is not taken care of by the configuration
+  // here -- still points to ~/Documents/ttcards/.... I've decided to give
+  // [fswatch](https://github.com/emcrisostomo/fswatch) a try for automatic
+  // copying of this file. See also: bin/fswatch.sh
+  #if defined(NOM_PLATFORM_OSX) && ! defined(NDEBUG)
+    fs = new nom::RocketFileInterface( "../../../../Resources/" );
+  #else
+    fs = new nom::RocketFileInterface( this->working_directory + "/" );
+  #endif
 
   Rocket::Core::SystemInterface* sys =
     new RocketSDL2SystemInterface();
