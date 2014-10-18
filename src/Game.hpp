@@ -115,9 +115,6 @@ class Game: public nom::SDLApp
     nom::Font gameover_font;
     nom::Font scoreboard_font;
 
-    /// Menu elements
-    nom::SpriteBatch menu_elements;
-
     /// Game board
     Board board;
 

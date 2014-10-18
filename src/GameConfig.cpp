@@ -157,7 +157,6 @@ bool GameConfig::save( const std::string& filename )
   }
 
   // Order in which we save node paths does not matter
-  object["root"]["SCALE_ALGORITHM"] = this->getString("SCALE_ALGORITHM");
 
   // Fonts
   object["root"]["SCORE_FONTFACE"] = this->getString("SCORE_FONTFACE");
@@ -171,7 +170,6 @@ bool GameConfig::save( const std::string& filename )
   object["root"]["GAMEOVER_BACKGROUND"] =  this->getString("GAMEOVER_BACKGROUND");
   object["root"]["CARD_ELEMENTS"] = this->getString("CARD_ELEMENTS");
   object["root"]["CARD_FACES"] = this->getString("CARD_FACES");
-  object["root"]["CARD_BACKGROUNDS"] = this->getString("CARD_BACKGROUNDS");
   object["root"]["INTERFACE_CURSOR"] = this->getString("INTERFACE_CURSOR");
   object["root"]["MENU_ELEMENTS"] = this->getString("MENU_ELEMENTS");
 

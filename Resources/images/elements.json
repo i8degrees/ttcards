@@ -1,75 +1,80 @@
-[
+{
+  "frames":
+  {
+    "0":
     {
-        "ID" : 0,
-        "x" : 0,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 0,
+      "y": 0,
+      "width": 16,
+      "height": 16
     },
+    "1":
     {
-        "ID" : 1,
-        "x" : 16,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 16,
+      "y": 0,
+      "width": 16,
+      "height": 16
     },
+    "2":
     {
-        "ID" : 2,
-        "x" : 32,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 32,
+      "y": 0,
+      "width": 16,
+      "height": 16
     },
+    "3":
     {
-        "ID" : 3,
-        "x" : 48,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 48,
+      "y": 0,
+      "width": 16,
+      "height": 16
     },
+    "4":
     {
-        "ID" : 4,
-        "x" : 64,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 0,
+      "y": 16,
+      "width": 16,
+      "height": 16
     },
+    "5":
     {
-        "ID" : 5,
-        "x" : 80,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 16,
+      "y": 16,
+      "width": 16,
+      "height": 16
     },
+    "6":
     {
-        "ID" : 6,
-        "x" : 96,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 32,
+      "y": 16,
+      "width": 16,
+      "height": 16
     },
+    "7":
     {
-        "ID" : 7,
-        "x" : 112,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
+      "x": 48,
+      "y": 16,
+      "width": 16,
+      "height": 16
     },
+    "8":
     {
-        "ID" : 8,
-        "x" : 128,
-        "y" : 0,
-        "width" : 16,
-        "height" : 16
-    },
-    {
-        "sheet_filename" : "elements.png",
-        "sheet_sprites" : 9,
-        "sheet_spacing" : 0,
-        "sheet_padding" : 0,
-        "sheet_width" : 144,
-        "sheet_height" : 16,
-        "sheet_version" : "0.1.0",
-        "Last Modified" : "Tue Sep 10 16:13:06 2013\n"
+      "x": 0,
+      "y": 32,
+      "width": 16,
+      "height": 16
     }
-]
+  },
+  "metadata":
+  {
+    "filename": "elements.png",
+    "version": "0.4.0",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "spacing": 0,
+    "scale": 1,
+    "pixel_format": "RGBA8888",
+    "smartupdate": "$TexturePacker:SmartUpdate:8cff78699db77a1bc65caeff1cb18ce4:f0571d59c766be1338662fb53d6e129b:5b2f3c13e8b86e4c74f43dc8b276d9b9$"
+  }
+}

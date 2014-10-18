@@ -3,12 +3,15 @@
   //"comment": "Default configuration values for TTcards"
   "root" :
   {
+    // nearest, linear or best
+    "RENDER_SCALE_QUALITY": "linear",
     "APP_ICON" : "icon.png",
     "BOARD_BACKGROUND" : "images/board.png",
     "CARDS_DB" : "cards.json",
-    "CARD_BACKGROUNDS" : "images/backgrounds.png",
     "CARD_ELEMENTS" : "images/elements.png",
+    "CARD_ELEMENTS_ATLAS" : "images/elements.json",
     "CARD_FACES" : "images/faces.png",
+    "CARD_FACES_ATLAS" : "images/faces.json",
     "CARD_FLIP" : "audio/card_flip.wav",
     "CARD_FONTFACE" : "fonts/VIII_cards.png",
     "CARD_PLACE" : "audio/card_place.wav",
@@ -20,12 +23,11 @@
     "INFO_FONTFACE" : "fonts/VIII.png",
     "INFO_SMALL_FONTFACE" : "fonts/VIII_small.png",
     "INTERFACE_CURSOR" : "images/cursors.png",
+    "INTERFACE_CURSOR_ATLAS" : "images/cursors.json",
     "MENU_ELEMENTS" : "images/menu_elements.png",
+    "MENU_ELEMENTS_ATLAS" : "images/menu_elements.json",
     "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
     "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
-    "SCALE_ALGORITHM" : "",
-    // "SCALE_ALGORITHM" : "scale2x",
-    // "SCALE_ALGORITHM" : "hqx",
     "SCORE_FONTFACE" : "fonts/TimesNewRoman.ttf",
     "GUI_TITLE_FONT" : "fonts/Delicious-Bold.otf",
     "GUI_TEXT_FONT" : "fonts/OpenSans-Regular.ttf",

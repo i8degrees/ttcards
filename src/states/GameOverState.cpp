@@ -52,19 +52,11 @@ GameOverState::~GameOverState( void )
 void GameOverState::on_init( nom::void_ptr data )
 {
   // Initialize interface cursor
-  this->cursor = GameOverStateCursor ( "images/cursors.json" );
+  this->cursor =
+    GameOverStateCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
 
   if ( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == true )
   {
-    if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
-    {
-      this->cursor.resize( nom::Texture::ResizeAlgorithm::scale2x );
-    }
-    else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
-    {
-      this->cursor.resize( nom::Texture::ResizeAlgorithm::hq2x );
-    }
-
     this->cursor.set_position_map ( &this->game->hand[1] );
     this->cursor.set_size ( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
     this->cursor.set_position ( Point2i (

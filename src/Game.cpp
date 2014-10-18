@@ -275,9 +275,10 @@ bool Game::on_init( void )
     NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
   }
 
-  if( nom::set_hint( SDL_HINT_RENDER_SCALE_QUALITY, "nearest" ) == false )
+  if( nom::set_hint(  SDL_HINT_RENDER_SCALE_QUALITY,
+                      this->config.getString("RENDER_SCALE_QUALITY") ) == false )
   {
-    NOM_LOG_INFO( NOM, "Could not set scale quality to", "nearest" );
+    NOM_LOG_INFO( NOM, "Could not set rendering scale quality." );
   }
 
   // We only can support a OpenGL capable rendering driver at the moment; see
@@ -321,9 +322,15 @@ bool Game::on_init( void )
   Rocket::Core::FileInterface* fs = nullptr;
 
   // Use Resources from the project root instead of the application bundle when
-  // in our native development environment; this is to let us
-  // quickly reload modified configurations (RML, RCSS) with no bullshit, i.e.:
-  // forgetting to copy or 'make install'.
+  // in our native development environment; this is to let us quickly reload
+  // modified configuration files (RML, RCSS) without the need to remember to
+  // copy the files manually or 'make install'.
+  //
+  // The game uses resources from its application bundle, which are copied over
+  // from the Resources directory during the build process ('make install').
+  // The resources from the application bundle should be regarded as temporary,
+  // as they are potentially overwritten with each new build, so they should not
+  // be modified.
   //
   // This will have to do until I get around to cleaning up the build system...
   //
@@ -395,8 +402,8 @@ bool Game::on_init( void )
 
   // Commence the loading of game resources
 
-  this->menu_elements = nom::SpriteBatch ( "images/menu_elements.json" );
-  this->cursor = nom::AnimatedSprite( "images/cursors.json" );
+  this->cursor =
+    nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS") );
 
   if( this->card_font.load ( this->config.getString("CARD_FONTFACE") ) == false )
   {
@@ -411,15 +418,6 @@ bool Game::on_init( void )
   }
   else
   {
-    if ( this->config.getString("SCALE_ALGORITHM") == "scale2x" )
-    {
-      this->background.resize( nom::Texture::ResizeAlgorithm::scale2x );
-    }
-    else if ( this->config.getString("SCALE_ALGORITHM") == "hqx" )
-    {
-      this->background.resize( nom::Texture::ResizeAlgorithm::hq2x );
-    }
-
 //this->background.draw( this->window );
   }
 
@@ -475,30 +473,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString
   {
 NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     return false;
-  }
-
-  // Rescale our game resources if necessary.
-  if ( this->config.getString("SCALE_ALGORITHM") == "scale2x" )
-  {
-    // FIXME: (see nomlib's "feature/Image_Resize" branch):
-    // this->info_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    // this->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-    // this->info_small_text.resize ( nom::Texture::ResizeAlgorithm::scale2x );
-
-    this->cursor.resize( nom::Texture::ResizeAlgorithm::scale2x );
-    this->menu_elements.resize( nom::Texture::ResizeAlgorithm::scale2x );
-    this->gameover_background.resize( nom::Texture::ResizeAlgorithm::scale2x );
-  }
-  else if ( this->config.getString("SCALE_ALGORITHM") == "hqx" )
-  {
-    // FIXME: (see nomlib's "feature/Image_Resize" branch):
-    // this->info_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    // this->info_text_gray.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-    // this->info_small_text.resize ( nom::Texture::ResizeAlgorithm::hq2x );
-
-    this->cursor.resize( nom::Texture::ResizeAlgorithm::hq2x );
-    this->menu_elements.resize( nom::Texture::ResizeAlgorithm::hq2x );
-    this->gameover_background.resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   // Quick and dirty method of toggling the use of nomlib's audio subsystem

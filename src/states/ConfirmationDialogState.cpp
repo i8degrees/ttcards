@@ -65,22 +65,14 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
   this->game->question_box_.show();
 
   // Initialize interface cursor
-  this->cursor_ = DialogCursor("images/cursors.json");
+  this->cursor_ =
+    DialogCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
 
   if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
   {
     // EPIC FAIL
     nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
     exit ( NOM_EXIT_FAILURE );
-  }
-
-  if ( this->game->config.getString("SCALE_ALGORITHM") == "scale2x" )
-  {
-    this->cursor_.resize( nom::Texture::ResizeAlgorithm::scale2x );
-  }
-  else if ( this->game->config.getString("SCALE_ALGORITHM") == "hqx" )
-  {
-    this->cursor_.resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);

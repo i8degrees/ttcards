@@ -36,8 +36,11 @@ CardView::CardView ( void )
 
   this->render_card = Card();
 
-  this->card_background = std::shared_ptr<nom::Gradient> ( new nom::Gradient() );
-  this->card_text = std::shared_ptr<nom::Text> ( new nom::Text() );
+  this->card_background =
+    std::make_shared<nom::Gradient>( nom::Gradient() );
+
+  this->card_text =
+    std::make_shared<nom::Text>( nom::Text() );
 
   this->card.push_back( this->card_background );
   this->card.push_back( this->card_text );
@@ -62,11 +65,15 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
   // Any file resources must be initialized *after* construction of this class;
   // our working directory where we load resources from is not set at the time
   // of CardView construction.
-  this->card_face = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/faces.json" ) );
-  this->card_element = std::shared_ptr<nom::SpriteBatch> ( new nom::SpriteBatch ( "images/elements.json" ) );
+  this->card_face =
+    std::make_shared<nom::SpriteBatch>( nom::SpriteBatch ( config->getString("CARD_FACES_ATLAS") ) );
 
-  this->card.push_back ( this->card_face );
-  this->card.push_back ( this->card_element );
+  this->card_element =
+    std::make_shared<nom::SpriteBatch>( nom::SpriteBatch( config->getString("CARD_ELEMENTS_ATLAS") ) );
+
+  this->card.push_back(this->card_face);
+
+  this->card.push_back(this->card_element);
 
   if ( config == nullptr ) return false;
 
@@ -90,25 +97,6 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
   {
     NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
     return false;
-  }
-
-  // Rescale our game resources if necessary.
-  if ( config->getString("SCALE_ALGORITHM") == "scale2x" )
-  {
-    // FIXME: (see nomlib's "feature/Image_Resize" branch):
-    // this->card_text->resize( nom::Texture::ResizeAlgorithm::scale2x );
-
-    this->card_face->resize( nom::Texture::ResizeAlgorithm::scale2x );
-    this->card_element->resize( nom::Texture::ResizeAlgorithm::scale2x );
-  }
-  else if ( config->getString("SCALE_ALGORITHM") == "hqx" )
-  {
-    // FIXME: (see nomlib's "feature/Image_Resize" branch):
-    // this->card_text->resize( nom::Texture::ResizeAlgorithm::hq2x );
-
-    this->card_face->resize( nom::Texture::ResizeAlgorithm::hq2x );
-    // this->card_background->resize( nom::Texture::ResizeAlgorithm::hq2x );
-    this->card_element->resize( nom::Texture::ResizeAlgorithm::hq2x );
   }
 
   return true;
