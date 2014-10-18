@@ -4,6 +4,8 @@
   "root" :
   {
     // nearest, linear or best
+    // nearest improves the card face rendering, at the cost of the text (font)
+    // rendering
     "RENDER_SCALE_QUALITY": "nearest",
     "APP_ICON" : "icon.png",
     "BOARD_BACKGROUND" : "images/board.png",

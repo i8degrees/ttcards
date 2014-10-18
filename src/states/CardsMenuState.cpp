@@ -179,12 +179,21 @@ void CardsMenuState::on_init( nom::void_ptr data )
       size = (*itr)->GetBox().GetSize(Rocket::Core::Box::PADDING);
 
       row.x = position.x - this->game->cursor.size().w;
-      row.y = position.y + (size.y / 4);
+      row.y = position.y + this->game->cursor.size().h / 2;
       row.w = size.x;
+
+      // This value correlates with the line-height RCSS property value in
+      // gui/dataview.rml and must **not** be fractional, or else we accumulate
+      // rounding err with each cursor offset row that results in mis-placement
+      // of the cursor. This can ultimately break its intended Y-axis bounds.
       row.h = size.y;
+
       this->cursor_coords_map_.push_back(row);
 
       NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_coords_map_:", row);
+
+      // Check the value of row.h to ensure non-fractional
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "datagridrow:", position.x, ",", position.y, ",", size.x, ",", size.y );
     }
   }
 
@@ -526,6 +535,7 @@ int CardsMenuState::cursor_position()
 void CardsMenuState::set_cursor_position(int pos)
 {
   this->game->cursor.set_position( this->cursor_coords_map_.at(pos).position() );
+  NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_pos:", this->game->cursor.position() );
 }
 
 void CardsMenuState::prev_page()
@@ -596,7 +606,7 @@ void CardsMenuState::cursor_prev()
     if( this->game->cursor.position().y > this->cursor_coords_map_.at(0).y )
     {
       this->game->cursor.move ( 0, -( this->cursor_coords_map_.at(pos).h ) );
-
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor.position().y );
       row_index = this->cursor_position();
 
       pos = this->game->cards_page_model_->map_row(row_index);
@@ -617,14 +627,17 @@ void CardsMenuState::cursor_next()
   if( this->game->cards_page_model_ != nullptr ) {
     // Next to last card
     max_per_page = this->game->cards_page_model_->per_page() - 1;
+    NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.at(max_per_page).y:", this->cursor_coords_map_.at(max_per_page).y );
   }
 
   if( this->game->cursor.state() == 0 ) {
 
     // Move down if the game cursor is not at the last card entry of the page
-    if( this->game->cursor.position().y < this->cursor_coords_map_.at(max_per_page).y ) {
-      this->game->cursor.move( 0, this->cursor_coords_map_.at(pos).h );
+    if( this->game->cursor.position().y >= this->cursor_coords_map_.at(0).y &&
+        this->game->cursor.position().y < this->cursor_coords_map_.at(max_per_page).y ) {
 
+      this->game->cursor.move( 0, this->cursor_coords_map_.at(pos).h );
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor.position().y );
       row_index = this->cursor_position();
 
       pos = this->game->cards_page_model_->map_row(row_index);

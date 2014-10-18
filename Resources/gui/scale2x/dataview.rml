@@ -11,7 +11,12 @@
         left: 122px;
         top: 50px;
         font-size: 22px;
-        line-height: 0.90;
+        /* This value has the potential to screw up cursor positioning offsets;
+        the resulting size should **not** be fractional, as this will accumulate
+        rounding err over each cursor row offset.
+        Symptoms of the bug include cursor position jumping upon card selection
+        or removal. See also: CardsMenuState.cpp */
+        line-height: 26px;
         width: 328px;
       }
 
@@ -50,7 +55,7 @@
 
         /* Account for the datagridrow text font size (height) for vertical
         alignment */
-        margin-top: -20px;
+        margin-top: -18px;
       }
 
       /* Default state */

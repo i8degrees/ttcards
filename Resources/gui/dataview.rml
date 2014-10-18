@@ -11,6 +11,11 @@
         left: 61;
         top: 25;
         font-size: 12px;
+        /* This value has the potential to screw up cursor positioning offsets;
+        the resulting size should **not** be fractional, as this will accumulate
+        rounding err over each cursor row offset.
+        Symptoms of the bug include cursor position jumping upon card selection
+        or removal. See also: CardsMenuState.cpp */
         line-height: 0.90;
         width: 164px;
       }
