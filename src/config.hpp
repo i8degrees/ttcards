@@ -47,45 +47,32 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// said constants.
 #include "version.hpp"
 
-/// Scale factor of graphics; only a scaling factor of 1..3 is supported at the
-/// moment. Resource data is not scaled in real-time (yet), so you must also
-/// have the accompanying resource files.
+/// Scale factor of rendered graphics
 ///
 /// Scale factor is used in computing width, height and origin positioning for
-/// applicable resources at compile-time.
+/// the game data used at the time of the compile.
 ///
-/// Resources are scaled up using either the scale2x [1] or hq2x [2] algorithm.
+/// It is also used to determine which resource files are loaded from
+/// Resources/config.json.
 ///
-/// If left undefined or if set to one (1), this will trigger the default of
-/// the original scaling of resource data (low resolution).
+/// If set to one (1), this will use the original resource data, which is quite
+/// low in resolution (384x224).
 ///
-/// Scale factor of 2..3 scales up by said factor to produce high resolution
-/// graphics for display.
-///
-/// I do not support anything above a scale factor of 3 due to hardware
-/// limitations; my native resolution only goes up to 1440x900.
-///
-/// 1. http://scale2x.sourceforge.net/
-///
-/// Note that our current implementation of the hq2x algorithm is far less
-/// efficient than the scale2x one and therefore expect to see a considerable
-/// difference in load times in addition to memory usage.
-///
-/// On my system -- mid 2011 MacBook Air -- hq2x requires ~65MB more than
-/// scale2x and requires roughly 2..3 seconds compared to scale2x being almost
-/// instant (~1s or less) for the initial scaling computations and caching
-/// to complete.
-///
-/// To be fair, I am rescaling several of the images well beyond the recommended
-/// 256x256 guidelines and do not know how the algorithms compare on equal
-/// ground.
-#define SCALE_FACTOR 1
+/// If set to two (2), this will use the rescaled resource data (using Scale2X
+/// algorithm), giving us a game resolution of 768x448. This is the preferred
+/// default.
+#define SCALE_FACTOR 2
 
 // Global configuration
 const nom::int32 SCREEN_WIDTH = 768;
 const nom::int32 SCREEN_HEIGHT = 448;
 const nom::int32 SCREEN_BPP = 32;
-const nom::Size2i GAME_RESOLUTION = nom::Size2i(384,224);
+
+#if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+  const nom::Size2i GAME_RESOLUTION = nom::Size2i(384,224);
+#else
+  const nom::Size2i GAME_RESOLUTION = nom::Size2i(768,448);
+#endif
 
 /// As per PSX_SCUS Final Fantasy VIII
 const nom::uint32 TICKS_PER_SECOND = 15;

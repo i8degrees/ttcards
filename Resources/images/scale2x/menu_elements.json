@@ -1,0 +1,45 @@
+{
+  "frames":
+  {
+    "0":
+    {
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    "1":
+    {
+      "x": 32,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    "2":
+    {
+      "x": 0,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    },
+    "3":
+    {
+      "x": 32,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    }
+  },
+  "metadata":
+  {
+    "filename": "menu_elements.png",
+    "version": "0.4.0",
+    "width": 64,
+    "height": 64,
+    "padding": 0,
+    "spacing": 0,
+    "scale": 2,
+    "pixel_format": "RGBA8888",
+    "smartupdate": "$TexturePacker:SmartUpdate:6debd805ad1ecb0740e56ff938dfd483:a59574d3cefb7582639b96b8d7e0df4e:6e763ce8b365f8707a9a277cfe03a798$"
+  }
+}

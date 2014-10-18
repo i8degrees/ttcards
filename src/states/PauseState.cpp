@@ -55,12 +55,21 @@ void PauseState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  if( this->game->pause_window_.load_document_file( this->game->config.getString("GUI_PAUSE") ) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                  this->game->config.getString("GUI_PAUSE") );
-    // return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->game->pause_window_.load_document_file( this->game->config.getString("GUI_PAUSE") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_PAUSE") );
+      // return false;
+    }
+  #else
+    if( this->game->pause_window_.load_document_file( this->game->config.getString("GUI_PAUSE_SCALE2X") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_PAUSE_SCALE2X") );
+      // return false;
+    }
+  #endif
 
   this->blink_update.start();
 

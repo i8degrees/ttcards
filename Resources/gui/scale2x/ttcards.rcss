@@ -1,0 +1,67 @@
+/* Top-level defaults */
+body
+{
+	font-family: Open Sans;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	color: white;
+}
+
+/* */
+body.window {}
+
+div#title_bar
+{
+	z-index: 1;
+  /* Pause UI animation, among other things (i.e. height of message boxes),
+  breaks without absolute positioning */
+  position: absolute;
+  margin-top: -8px;
+	margin-left: 8px;
+
+	text-align: left;
+}
+
+div#title_bar span
+{
+	font-family: Delicious;
+	color: white;
+	font-size: 24px;
+	font-weight: bold;
+	outline-font-effect: outline;
+	outline-width: 2px;
+	outline-color: black;
+}
+
+div#window
+{
+	width: auto;
+	/*padding: 20px 30px;*/
+
+	background-decorator: final-fantasy-theme;
+}
+
+div#content
+{
+	z-index: 2;
+	width: auto;
+	/*height: 100%;*/
+	/*overflow: hidden auto;*/
+}
+
+/*div#document:hover
+{
+	cursor: diag-resize;
+}*/
+
+datagridheader
+{
+  font-family: Delicious;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  outline-font-effect: outline;
+  outline-width: 2px;
+  outline-color: black;
+}

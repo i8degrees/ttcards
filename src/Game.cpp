@@ -99,7 +99,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_EVENTS, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     // Disable logging of all messages from GameConfig except for fatal errs.
-    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+    nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CFG, nom::LogPriority::NOM_LOG_PRIORITY_WARN );
 
     // Enable logging of game state function traces
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE_STATES, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
@@ -251,10 +251,6 @@ Game::~Game()
 
 bool Game::on_init( void )
 {
-  nom::Rectangle rectangle  ( IntRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
-                              nom::Color4i::Gray
-                            );
-
   int render_driver = -1;
   uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
   uint32 render_flags = SDL_RENDERER_ACCELERATED;
@@ -300,7 +296,6 @@ bool Game::on_init( void )
   }
 
   this->window.set_window_icon ( this->config.getString("APP_ICON") );
-//this->window.set_window_title ( LOADING_TEXT );
 
   if( nom::RocketSDL2RenderInterface::gl_init(  this->window.size().w,
                                                 this->window.size().h ) == false )
@@ -315,8 +310,11 @@ bool Game::on_init( void )
   // when the aspect ratio is less than.
   this->window.set_logical_size( GAME_RESOLUTION.w, GAME_RESOLUTION.h );
 
-  // Use pixel unit scaling; this gives us an output pixel ratio of 1:2.
-  this->window.set_scale( nom::Point2f(2,2) );
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->window.set_scale( nom::Point2f(2,2) );
+  #else
+    this->window.set_scale( nom::Point2f(1,1) );
+  #endif
 
   // Initialize libRocket's file interface
   Rocket::Core::FileInterface* fs = nullptr;
@@ -370,10 +368,16 @@ bool Game::on_init( void )
   // Resize libRocket's visual debugger window to fit within our game's tiny
   // resolution
   #if ! defined( NDEBUG )
-    // 32 is the height of the visual debugger's menu; as per
-    // Rocket/Debugger/MenuSource.h
-    Size2i debugger_dims( 150, (this->gui_window_.size().h / 2) + 32 );
-    this->gui_window_.set_debugger_size(debugger_dims);
+
+    // Visual debugger is too large when we are dealing with the original game
+    // resolution
+    #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+      // 32 is the height of the visual debugger's menu; as per
+      // Rocket/Debugger/MenuSource.h
+      Size2i debugger_dims( 150, (this->gui_window_.size().h / 2) + 32 );
+      this->gui_window_.set_debugger_size(debugger_dims);
+    #endif
+
   #endif
 
   if( this->gui_window_.load_font( this->config.getString("GUI_TITLE_FONT") ) == false )
@@ -402,66 +406,79 @@ bool Game::on_init( void )
 
   // Commence the loading of game resources
 
-  this->cursor =
-    nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS") );
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->cursor =
+      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS") );
 
-  if( this->card_font.load ( this->config.getString("CARD_FONTFACE") ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE") );
-    return false;
-  }
+    if( this->card_font.load ( this->config.getString("CARD_FONTFACE") ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE") );
+      return false;
+    }
+  #else
+    this->cursor =
+      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
 
-  if( this->background.load( this->config.getString("BOARD_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("BOARD_BACKGROUND") );
-    rectangle.draw ( this->window );
-  }
-  else
-  {
-//this->background.draw( this->window );
-  }
+    if( this->card_font.load ( this->config.getString("CARD_FONTFACE_SCALE2X") ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE_SCALE2X") );
+      return false;
+    }
+  #endif
 
-//this->window.update();
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->background.load( this->config.getString("BOARD_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("BOARD_BACKGROUND") );
+    }
+  #else
+    if( this->background.load( this->config.getString("BOARD_BACKGROUND_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("BOARD_BACKGROUND_SCALE2X") );
+    }
+  #endif
 
-  // Possible bug in SDL for OS X
-  //
-  // We are not able to see the screen update of anything we do here unless we
-  // poll for an events afterwards. Oddly enough, this issue only happens when
-  // we are launching from an application bundle under OS X -- normal binaries
-  // do not need this workaround.
-//this->PollEvents( &event );
-
-  if( this->scoreboard_font.load( this->config.getString("SCORE_FONTFACE") ) == true )
-  {
-    this->scoreboard_font.set_outline ( 1 );
-  }
-  else
+  if( this->scoreboard_font.load( this->config.getString("SCORE_FONTFACE") ) == false )
   {
     NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("SCORE_FONTFACE") );
     return false;
   }
+  this->scoreboard_font.set_outline(1);
 
-  if( this->gameover_font.load( this->config.getString("GAMEOVER_FONTFACE") ) == true )
-  {
-    this->gameover_font.set_outline ( 1 );
-  }
-  else
+  if( this->gameover_font.load( this->config.getString("GAMEOVER_FONTFACE") ) == false )
   {
     NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_FONTFACE") );
     return false;
   }
+  this->gameover_font.set_outline(1);
 
-  if ( this->gameover_background.load( this->config.getString("GAMEOVER_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_BACKGROUND") );
-    return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->gameover_background.load( this->config.getString("GAMEOVER_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_BACKGROUND") );
+      return false;
+    }
+  #else
+    if( this->gameover_background.load( this->config.getString("GAMEOVER_BACKGROUND_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_BACKGROUND_SCALE2X") );
+      return false;
+    }
+  #endif
 
-  if ( this->cursor.load( this->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR") );
-    return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->cursor.load( this->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR") );
+      return false;
+    }
+  #else
+    if( this->cursor.load( this->config.getString("INTERFACE_CURSOR_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR_SCALE2X") );
+      return false;
+    }
+  #endif
 
   if ( this->collection.load( this->config.getString("CARDS_DB") ) == false )
   {

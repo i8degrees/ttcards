@@ -98,12 +98,21 @@ void CardsMenuState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  if( this->game->cards_menu_.load_document_file( this->game->config.getString("GUI_CARDS_MENU") ) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                  this->game->config.getString("GUI_CARDS_MENU") );
-    // return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->game->cards_menu_.load_document_file( this->game->config.getString("GUI_CARDS_MENU") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_CARDS_MENU") );
+      // return false;
+    }
+  #else
+    if( this->game->cards_menu_.load_document_file( this->game->config.getString("GUI_CARDS_MENU_SCALE2X") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_CARDS_MENU_SCALE2X") );
+      // return false;
+    }
+  #endif
 
   NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
                 "---Deck from collection---" );
@@ -175,7 +184,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
       row.h = size.y;
       this->cursor_coords_map_.push_back(row);
 
-      // NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_coords_map_:", row);
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_coords_map_:", row);
     }
   }
 

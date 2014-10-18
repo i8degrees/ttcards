@@ -1,0 +1,33 @@
+<rml>
+  <head>
+    <title>INFO.</title>
+    <link type="text/template" href="window.rml" />
+    <style>
+
+      body
+      {
+        width: 176px;
+
+        /* The actual height is ultimately determined by the font size */
+        height: 48px;
+
+        /* Horizontal center */
+        margin-right: auto;
+        margin-left: auto;
+
+        /* Top center */
+        margin-top: 8;
+        margin-bottom: auto;
+      }
+
+      div#content
+      {
+        text-align: center;
+      }
+
+    </style>
+  </head>
+  <body template="window">
+    <p id="message"></p>
+  </body>
+</rml>

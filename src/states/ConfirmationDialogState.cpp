@@ -53,27 +53,48 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX") ) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                  this->game->config.getString("GUI_QBOX") );
-    // return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_QBOX") );
+      // return false;
+    }
+  #else
+    if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX_SCALE2X") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_QBOX_SCALE2X") );
+      // return false;
+    }
+  #endif
 
   this->game->question_box_.set_title_text("CHOICE");
 
   this->game->question_box_.show();
 
   // Initialize interface cursor
-  this->cursor_ =
-    DialogCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->cursor_ =
+      DialogCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
 
-  if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
-  {
-    // EPIC FAIL
-    nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
-    exit ( NOM_EXIT_FAILURE );
-  }
+    if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      // EPIC FAIL
+      nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
+      // return false
+    }
+  #else
+    this->cursor_ =
+      DialogCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
+
+    if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      // EPIC FAIL
+      nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR_SCALE2X") );
+      // return false
+    }
+  #endif
 
   this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 

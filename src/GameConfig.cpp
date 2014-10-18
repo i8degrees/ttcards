@@ -162,8 +162,6 @@ bool GameConfig::save( const std::string& filename )
   object["root"]["SCORE_FONTFACE"] = this->getString("SCORE_FONTFACE");
   object["root"]["GAMEOVER_FONTFACE"] = this->getString("GAMEOVER_FONTFACE");
   object["root"]["CARD_FONTFACE"] = this->getString("CARD_FONTFACE");
-  object["root"]["INFO_FONTFACE"] = this->getString("INFO_FONTFACE");
-  object["root"]["INFO_SMALL_FONTFACE"] = this->getString("INFO_SMALL_FONTFACE");
 
   // Sprites & static backgrounds
   object["root"]["BOARD_BACKGROUND"] = this->getString("BOARD_BACKGROUND");
@@ -171,7 +169,6 @@ bool GameConfig::save( const std::string& filename )
   object["root"]["CARD_ELEMENTS"] = this->getString("CARD_ELEMENTS");
   object["root"]["CARD_FACES"] = this->getString("CARD_FACES");
   object["root"]["INTERFACE_CURSOR"] = this->getString("INTERFACE_CURSOR");
-  object["root"]["MENU_ELEMENTS"] = this->getString("MENU_ELEMENTS");
 
   // Audio effects
   object["root"]["CURSOR_MOVE"] = this->getString("CURSOR_MOVE");

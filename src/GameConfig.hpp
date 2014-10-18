@@ -58,7 +58,11 @@ class GameConfig
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
-    bool save ( const std::string& filename );
+    ///
+    /// \deprecated This method is out-dated as-is and will probably be removed
+    /// in a future version. Use the config.json file(s) found in the Resources
+    /// directory.
+    bool save( const std::string& filename );
 
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.

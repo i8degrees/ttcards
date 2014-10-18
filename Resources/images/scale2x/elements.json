@@ -1,0 +1,80 @@
+{
+  "frames":
+  {
+    "0":
+    {
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    "1":
+    {
+      "x": 32,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    "2":
+    {
+      "x": 64,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    "3":
+    {
+      "x": 96,
+      "y": 0,
+      "width": 32,
+      "height": 32
+    },
+    "4":
+    {
+      "x": 0,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    },
+    "5":
+    {
+      "x": 32,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    },
+    "6":
+    {
+      "x": 64,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    },
+    "7":
+    {
+      "x": 96,
+      "y": 32,
+      "width": 32,
+      "height": 32
+    },
+    "8":
+    {
+      "x": 0,
+      "y": 64,
+      "width": 32,
+      "height": 32
+    }
+  },
+  "metadata":
+  {
+    "filename": "elements.png",
+    "version": "0.4.0",
+    "width": 128,
+    "height": 128,
+    "padding": 0,
+    "spacing": 0,
+    "scale": 2,
+    "pixel_format": "RGBA8888",
+    "smartupdate": "$TexturePacker:SmartUpdate:dcf551abe46ec43cc26116e997b14256:f0571d59c766be1338662fb53d6e129b:5b2f3c13e8b86e4c74f43dc8b276d9b9$"
+  }
+}

@@ -135,12 +135,21 @@ void PlayState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  if( this->game->debug_box_.load_document_file( this->game->config.getString("GUI_DEBUG") ) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                  this->game->config.getString("GUI_DEBUG") );
-    // return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->game->debug_box_.load_document_file( this->game->config.getString("GUI_DEBUG") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_DEBUG") );
+      // return false;
+    }
+  #else
+    if( this->game->debug_box_.load_document_file( this->game->config.getString("GUI_DEBUG_SCALE2X") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_DEBUG_SCALE2X") );
+      // return false;
+    }
+  #endif
 
   this->game->debug_box_.show();
 
@@ -156,12 +165,21 @@ void PlayState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_MBOX") ) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                  this->game->config.getString("GUI_MBOX") );
-    // return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_MBOX") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_MBOX") );
+      // return false;
+    }
+  #else
+    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_MBOX_SCALE2X") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_MBOX_SCALE2X") );
+      // return false;
+    }
+  #endif
 
   this->game->info_box_.show();
 

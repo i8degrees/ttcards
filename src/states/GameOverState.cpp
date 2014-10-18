@@ -52,29 +52,33 @@ GameOverState::~GameOverState( void )
 void GameOverState::on_init( nom::void_ptr data )
 {
   // Initialize interface cursor
-  this->cursor =
-    GameOverStateCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->cursor =
+      GameOverStateCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
 
-  if ( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == true )
-  {
-    this->cursor.set_position_map ( &this->game->hand[1] );
-    this->cursor.set_size ( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
-    this->cursor.set_position ( Point2i (
-                                PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
-                                PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
-                                        )
-                              );
-    this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
-  }
-  else // EPIC FAIL
-  {
-#if defined (NOM_DEBUG)
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
-#else
-    nom::DialogMessageBox ( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
-#endif
-    exit ( NOM_EXIT_FAILURE );
-  }
+    if( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      nom::DialogMessageBox( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
+      // return false;
+    }
+  #else
+    this->cursor =
+      GameOverStateCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
+
+    if( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      nom::DialogMessageBox( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR_SCALE2X") );
+      // return false;
+    }
+  #endif
+
+  this->cursor.set_position_map(&this->game->hand[1]);
+  this->cursor.set_size( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
+  this->cursor.set_position(  Point2i (
+                                        PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
+                                        PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
+                                      ));
+  this->cursor.set_frame(INTERFACE_CURSOR_RIGHT);
 
 /*
   if ( this->gameover_state == 0 ) // Draw
@@ -130,12 +134,21 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
     // return false;
   }
 
-  if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_RULES_INFO") ) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                  this->game->config.getString("GUI_GAMEOVER_RULES_INFO") );
-    // return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_RULES_INFO") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_GAMEOVER_RULES_INFO") );
+      // return false;
+    }
+  #else
+    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_RULES_INFO_SCALE2X") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_GAMEOVER_RULES_INFO_SCALE2X") );
+      // return false;
+    }
+  #endif
 
   this->game->info_box_.set_message_text("Select 1 card(s) you want");
   this->game->info_box_.show();
@@ -148,12 +161,21 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
     // return false;
   }
 
-  if( this->game->card_info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_CARD_INFO") ) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                  this->game->config.getString("GUI_GAMEOVER_CARD_INFO") );
-    // return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->game->card_info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_CARD_INFO") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_GAMEOVER_CARD_INFO") );
+      // return false;
+    }
+  #else
+    if( this->game->card_info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_CARD_INFO_SCALE2X") ) == false )
+    {
+      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
+                    this->game->config.getString("GUI_GAMEOVER_CARD_INFO_SCALE2X") );
+      // return false;
+    }
+  #endif
 
   this->game->card_info_box_.set_message_text( this->game->hand[1].getSelectedCard().getName() );
   this->game->card_info_box_.show();

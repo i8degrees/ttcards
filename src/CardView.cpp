@@ -45,8 +45,14 @@ CardView::CardView ( void )
   this->card.push_back( this->card_background );
   this->card.push_back( this->card_text );
 
-  this->card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
-  this->card_background->set_margins( Point2i(1,1) );
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
+    this->card_background->set_margins( Point2i(1,1) );
+  #else
+    this->card_background->set_size( Size2i(CARD_WIDTH-4, CARD_HEIGHT-4) );
+    this->card_background->set_margins( Point2i(2,2) );
+  #endif
+
   this->card_background->set_fill_direction( nom::Gradient::FillDirection::Top );
 }
 
@@ -65,11 +71,21 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
   // Any file resources must be initialized *after* construction of this class;
   // our working directory where we load resources from is not set at the time
   // of CardView construction.
-  this->card_face =
-    std::make_shared<nom::SpriteBatch>( nom::SpriteBatch ( config->getString("CARD_FACES_ATLAS") ) );
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->card_face =
+      std::make_shared<nom::SpriteBatch>( nom::SpriteBatch ( config->getString("CARD_FACES_ATLAS") ) );
+  #else
+    this->card_face =
+      std::make_shared<nom::SpriteBatch>( nom::SpriteBatch ( config->getString("CARD_FACES_ATLAS_SCALE2X") ) );
+  #endif
 
-  this->card_element =
-    std::make_shared<nom::SpriteBatch>( nom::SpriteBatch( config->getString("CARD_ELEMENTS_ATLAS") ) );
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->card_element =
+      std::make_shared<nom::SpriteBatch>( nom::SpriteBatch( config->getString("CARD_ELEMENTS_ATLAS") ) );
+  #else
+    this->card_element =
+      std::make_shared<nom::SpriteBatch>( nom::SpriteBatch( config->getString("CARD_ELEMENTS_ATLAS_SCALE2X") ) );
+  #endif
 
   this->card.push_back(this->card_face);
 
@@ -87,17 +103,33 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
     return false;
   }
 
-  if( this->card_face->load( config->getString("CARD_FACES"), false, nom::Texture::Access::Streaming ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
-    return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->card_face->load( config->getString("CARD_FACES"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES") );
+      return false;
+    }
+  #else
+    if( this->card_face->load( config->getString("CARD_FACES_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_FACES_SCALE2X") );
+      return false;
+    }
+  #endif
 
-  if( this->card_element->load( config->getString("CARD_ELEMENTS"), false, nom::Texture::Access::Streaming ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
-    return false;
-  }
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->card_element->load( config->getString("CARD_ELEMENTS"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS") );
+      return false;
+    }
+  #else
+    if( this->card_element->load( config->getString("CARD_ELEMENTS_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + config->getString("CARD_ELEMENTS_SCALE2X") );
+      return false;
+    }
+  #endif
 
   return true;
 }

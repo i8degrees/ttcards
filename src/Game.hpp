@@ -109,8 +109,6 @@ class Game: public nom::SDLApp
     std::unique_ptr<nom::ISoundSource> winning_track;
 
     // Font resources
-    // nom::Font info_text;
-    // nom::Font info_small_text;
     nom::Font card_font;
     nom::Font gameover_font;
     nom::Font scoreboard_font;

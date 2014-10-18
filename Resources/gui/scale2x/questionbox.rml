@@ -1,0 +1,53 @@
+<rml>
+  <head>
+    <title>CHOICE</title>
+    <link type="text/template" href="window.rml" />
+    <style>
+
+      body
+      {
+        /* Required for alignment */
+        width: 200px;
+
+        /* The actual height is ultimately determined by the font size and
+        padding */
+        height: 182px;
+
+        /* Horizontal center */
+        margin-right: auto;
+        margin-left: auto;
+
+        /* Vertical center */
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+
+      div#content
+      {
+        text-align: center;
+        padding-top: 16%;
+        padding-bottom: 16%;
+      }
+
+      button
+      {
+        display: block;
+      }
+
+    </style>
+  </head>
+  <body template="window">
+    <p id='question'>Are you sure?</p>
+
+    <!-- Answer tag provides easy access to acquiring text origins -->
+    <form id='response'>
+      <button>
+        <answer id='yes'>Yes</answer>
+      </button>
+      <button>
+        <answer id='no'>No</answer>
+      </button>
+    </form>
+
+  </body>
+</rml>
