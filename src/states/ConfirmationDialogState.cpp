@@ -188,6 +188,7 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
   state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
   state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
   state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select );
+  state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), select );
   state.insert( "cancel", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), cancel );
 
   // Mouse button mappings
