@@ -39,12 +39,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+/// \brief Simple, convenient file-based settings interface
+///
+/// \remarks This interface does not allow duplicate key (node) members to be
+/// added.
 class GameConfig
 {
   public:
-    GameConfig( void );
-    GameConfig ( const std::string& filename );
-    ~GameConfig( void );
+    GameConfig();
+    GameConfig( const std::string& filename);
+    ~GameConfig();
 
     const std::string getString ( const std::string& node ) const;
     const nom::int32 getInteger ( const std::string& node ) const;
@@ -55,14 +59,6 @@ class GameConfig
     // const nom::Value& array(const std::string& node) const;
 
     const nom::Value& setProperty ( const std::string& node, const nom::Value& value );
-
-    /// Save the current board grid data to a file as a series of RFC 4627
-    /// compliant JSON objects.
-    ///
-    /// \deprecated This method is out-dated as-is and will probably be removed
-    /// in a future version. Use the config.json file(s) found in the Resources
-    /// directory.
-    bool save( const std::string& filename );
 
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.

@@ -178,39 +178,39 @@ Game::Game( nom::int32 argc, char* argv[] ) :
           exit ( NOM_EXIT_SUCCESS );
         }
       } // end export cards option
-      else if ( std::string(argv[opt]) == "--config" ) // Save configuration opt
-      {
-        if ( argv[opt + 1] == nullptr )
-        {
-          NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
-          exit ( NOM_EXIT_FAILURE );
-        }
-      #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
-        else if ( dir.exists ( argv[opt + 1] ) == true )
-        {
-          NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
-          exit ( NOM_EXIT_FAILURE );
-        }
-      #endif
+      // else if ( std::string(argv[opt]) == "--config" ) // Save configuration opt
+      // {
+      //   if ( argv[opt + 1] == nullptr )
+      //   {
+      //     NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
+      //     exit ( NOM_EXIT_FAILURE );
+      //   }
+      // #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
+      //   else if ( dir.exists ( argv[opt + 1] ) == true )
+      //   {
+      //     NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
+      //     exit ( NOM_EXIT_FAILURE );
+      //   }
+      // #endif
 
-        GameConfig cfg;
-        if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
-        {
-          NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
-          exit ( NOM_EXIT_FAILURE );
-        }
+      //   GameConfig cfg;
+      //   if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
+      //   {
+      //     NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
+      //     exit ( NOM_EXIT_FAILURE );
+      //   }
 
-        if ( cfg.save ( argv[opt + 1] ) == false )
-        {
-          NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
-          exit ( NOM_EXIT_FAILURE );
-        }
-        else
-        {
-          NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
-          exit ( NOM_EXIT_SUCCESS );
-        }
-      } // end save config option
+      //   if ( cfg.save ( argv[opt + 1] ) == false )
+      //   {
+      //     NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
+      //     exit ( NOM_EXIT_FAILURE );
+      //   }
+      //   else
+      //   {
+      //     NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
+      //     exit ( NOM_EXIT_SUCCESS );
+      //   }
+      // } // end save config option
       else if ( std::string(argv[opt]) == "-v" || std::string(argv[opt]) == "--version" )
       {
         std::cout << ttcards_version.str() << std::endl;

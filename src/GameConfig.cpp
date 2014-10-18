@@ -28,14 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameConfig.hpp"
 
-GameConfig::GameConfig ( void )
+GameConfig::GameConfig()
 {
   //
 }
 
-GameConfig::GameConfig ( const std::string& filename )
+GameConfig::GameConfig(const std::string& filename)
 {
-  if ( this->load ( filename ) == false )
+  if( this->load(filename) == false )
   {
     NOM_LOG_ERR ( TTCARDS_LOG_CATEGORY_CFG, "Could not parse input file: " + filename );
   }
@@ -106,7 +106,8 @@ nom::StringList GameConfig::string_array(const std::string& node) const
 //   } // end if found
 // }
 
-const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::Value& value )
+const nom::Value& GameConfig::setProperty(  const std::string& node,
+                                            const nom::Value& value )
 {
   auto res = config.insert ( std::pair<std::string, nom::Value> ( node, value ) ).first;
 
@@ -118,6 +119,12 @@ const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::
   {
     NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
   }
+  else if( value.bool_type() )
+  {
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG,
+                  "GameConfig: ", node, ":", std::to_string( value.get_bool() ),
+                  " has been added to the cache." );
+  }
   else
   {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG,
@@ -125,81 +132,6 @@ const nom::Value& GameConfig::setProperty ( const std::string& node, const nom::
   }
 
   return res->second;
-}
-
-bool GameConfig::save( const std::string& filename )
-{
-  // High-level JSON interface
-  nom::IValueSerializer* fp;
-
-  // Temporary buffer used to collect data to be
-  // stored and processed.
-  nom::Value object;
-
-  fp = new nom::JsonCppSerializer();
-
-  for ( auto it = this->config.begin(); it != this->config.end(); ++it )
-  {
-    NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, it->first, ":" );
-
-    if ( it->second.string_type() )
-    {
-      NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, it->second.get_string() );
-    }
-    else if ( it->second.int_type() )
-    {
-      NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, it->second.get_int() );
-    }
-    else
-    {
-      NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, "null" );
-    }
-  }
-
-  // Order in which we save node paths does not matter
-
-  // Fonts
-  object["root"]["SCORE_FONTFACE"] = this->getString("SCORE_FONTFACE");
-  object["root"]["GAMEOVER_FONTFACE"] = this->getString("GAMEOVER_FONTFACE");
-  object["root"]["CARD_FONTFACE"] = this->getString("CARD_FONTFACE");
-
-  // Sprites & static backgrounds
-  object["root"]["BOARD_BACKGROUND"] = this->getString("BOARD_BACKGROUND");
-  object["root"]["GAMEOVER_BACKGROUND"] =  this->getString("GAMEOVER_BACKGROUND");
-  object["root"]["CARD_ELEMENTS"] = this->getString("CARD_ELEMENTS");
-  object["root"]["CARD_FACES"] = this->getString("CARD_FACES");
-  object["root"]["INTERFACE_CURSOR"] = this->getString("INTERFACE_CURSOR");
-
-  // Audio effects
-  object["root"]["CURSOR_MOVE"] = this->getString("CURSOR_MOVE");
-  object["root"]["CURSOR_CANCEL"] = this->getString("CURSOR_CANCEL");
-  object["root"]["CURSOR_WRONG"] = this->getString("CURSOR_WRONG");
-  object["root"]["CARD_FLIP"] = this->getString("CARD_FLIP");
-  object["root"]["CARD_PLACE"] = this->getString("CARD_PLACE");
-  object["root"]["SFX_LOAD_GAME"] = this->getString("SFX_LOAD_GAME");
-  object["root"]["SFX_SAVE_GAME"] = this->getString("SFX_SAVE_GAME");
-  object["root"]["MUSIC_TRACK"] = this->getString("MUSIC_TRACK");
-  object["root"]["MUSIC_WIN_TRACK"] = this->getString("MUSIC_WIN_TRACK");
-
-  // Miscellaneous
-  object["root"]["APP_ICON"] = this->getString("APP_ICON");
-  object["root"]["CARDS_DB"] = this->getString("CARDS_DB");
-
-  object["root"]["USER_BOARD_FILENAME"] = this->getString("USER_BOARD_FILENAME");
-  object["root"]["USER_PLAYER1_FILENAME"] = this->getString("USER_PLAYER1_FILENAME");
-  object["root"]["USER_PLAYER2_FILENAME"] = this->getString("USER_PLAYER2_FILENAME");
-
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, object );
-
-  // Commit data to our top-level node object; this creates a top-level JSON
-  // object called "root" to store everything under.
-  if( fp->save( object, filename ) == false )
-  {
-    NOM_LOG_ERR( TTCARDS, "Failed to serialize JSON in file: " + filename );
-    return false;
-  }
-
-  return true;
 }
 
 bool GameConfig::load( const std::string& filename )
@@ -233,7 +165,7 @@ bool GameConfig::load( const std::string& filename )
         nom::Value::ConstIterator members( it );
         std::string key = members.key();
 
-        NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, key );
+        NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG, key );
 
         if( members->string_type() )
         {
@@ -243,9 +175,17 @@ bool GameConfig::load( const std::string& filename )
         {
           cfg.setProperty( key, members->get_int() );
         }
+        else if( members->bool_type() )
+        {
+          cfg.setProperty(key, members->get_bool() );
+        }
         else if( members->array_type() )
         {
-          cfg.setProperty( key, members->array() );
+          cfg.setProperty(key, members->array() );
+        }
+        else if( members->object_type() )
+        {
+          cfg.setProperty(key, members->object() );
         }
       }
     }
