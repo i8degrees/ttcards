@@ -11,7 +11,6 @@ set (
       ${SRC_DIR}/GameConfig.cpp
       ${SRC_DIR}/Board.cpp
       ${SRC_DIR}/BoardTile.cpp
-      #${SRC_DIR}/cpu_player.cpp
       ${SRC_DIR}/Card.cpp
       ${SRC_DIR}/CardCollection.cpp
       ${SRC_DIR}/CardDebug.cpp
@@ -19,6 +18,7 @@ set (
       ${SRC_DIR}/CardRules.cpp
       ${SRC_DIR}/CardView.cpp
       ${SRC_DIR}/Player.cpp
+      ${SRC_DIR}/CPU_Player.cpp
       ${SRC_DIR}/Game.cpp
       ${SRC_DIR}/CardsPageDataSource.cpp
     )

@@ -75,24 +75,27 @@ void PlayState::on_resume( nom::void_ptr data )
 
 void PlayState::on_init( nom::void_ptr data )
 {
-  while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+  while( this->game->hand[0].size() < MAX_PLAYER_HAND )
   {
-    this->game->hand[0].shuffle ( 8, 10, this->game->collection );
+    // this->game->hand[0].shuffle(8, 10, this->game->collection);
+    this->game->hand[0].shuffle(1, 1, this->game->collection);
   }
 
-  // Clear CPUPlayer's hand (we will initialize it here soon enough
+  // Clear CPUPlayer's hand (we will initialize it here soon enough)
   this->game->hand[1].clear();
 
-  // Random seeding for picking out whose turn it is initially
-  nom::int32 seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::default_random_engine rand_generator ( seed );
-  std::uniform_int_distribution<nom::int32> distribution ( 0, TOTAL_PLAYERS - 1 );
+  while( this->game->hand[1].size() < MAX_PLAYER_HAND )
+  {
+    // this->game->hand[1].shuffle(1, 10, this->game->collection);
+    this->game->hand[1].shuffle(1, 1, this->game->collection);
+  }
 
   this->game->cursor.set_position ( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
   this->game->cursor.set_frame ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->game->cursor.set_state ( 0 ); // default state; player hand select
 
-  this->game->rules.setRules ( 1 );
+  // this->game->rules.setRules(1);
+  this->game->rules.setRules(0);
   this->game->board = Board ( this->game->rules, &this->game->card );
 
   this->player[0] = Player ( &this->game->hand[0], &this->game->card, this->game->rules );
@@ -183,11 +186,6 @@ void PlayState::on_init( nom::void_ptr data )
 
   this->game->info_box_.show();
 
-  while( this->game->hand[1].size() < MAX_PLAYER_HAND )
-  {
-    this->game->hand[1].shuffle( 1, 10, this->game->collection );
-  }
-
   nom::StringList ruleset = this->game->config.string_array("REGION_RULESET");
   for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
     if( (*itr) != "Open" ) {
@@ -210,12 +208,24 @@ void PlayState::on_init( nom::void_ptr data )
 
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
-  this->player_turn ( nom::rand ( 0, TOTAL_PLAYERS - 1 ) );
+  std::default_random_engine pick_player_gen( nom::ticks() );
+  std::uniform_int_distribution<uint> distribution( 0, TOTAL_PLAYERS - 1 );
+  this->player_turn(distribution(pick_player_gen) );
 
   // Initialize our animation state timers
   this->player_timer[1].setFrameRate ( 500 );
   this->cursor_blink.start();
   this->blink_cursor = false;
+
+  CPU_Player::action_callback
+    cpu_player_action_callback( [&] (BoardTile& tile) {
+      this->moveTo( tile.bounds().x, tile.bounds().y );
+    });
+
+  this->cpu_player_.initialize( CPU_Player::Difficulty::Easy,
+                                &this->game->board,
+                                &this->game->hand[1],
+                                cpu_player_action_callback );
 
   // this->game->input_mapper.clear();
   nom::InputActionMapper state;
@@ -683,6 +693,7 @@ void PlayState::moveTo ( unsigned int x, unsigned int y )
         }
       }
 
+      // Combo rule is in effect
       if ( this->game->rules.getRules() != 0 )
       {
         for ( nom::int32 g = 0; g < grid.size(); g++ )
@@ -894,61 +905,10 @@ void PlayState::on_update( float delta_time )
     this->player_rect = nom::Rectangle ( nom::IntRect( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT), nom::Color4i( 222, 196, 205 ) );
 
     // Skipping a turn like this is only available in debug versions
-    if ( this->skip_turn == false )
-    {
-      nom::IntRect board_edges[4];
-
-      board_edges[0].x = 0;
-      board_edges[0].y = 0;
-
-      board_edges[1].x = 2;
-      board_edges[1].y = 0;
-
-      board_edges[2].x = 0;
-      board_edges[2].y = 2;
-
-      board_edges[3].x = 2;
-      board_edges[3].y = 2;
-
-      nom::int32 edge_pick = nom::rand ( 0, 3 );
-
-      // Fixes a out of bounds issue that occurs occasionally upon state phasing
-      if( this->game->hand[PLAYER2].size() > 0 ) {
-        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
-        this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
-      }
-
-      if ( this->game->board.getStatus ( board_edges[0].x, board_edges[0].y ) == BAD_CARD_ID )
-      {
-        this->moveTo ( board_edges[ edge_pick ].x, board_edges[ edge_pick ].y );
-      }
-      else if ( this->game->board.getStatus ( board_edges[1].x, board_edges[1].y ) == BAD_CARD_ID )
-      {
-        this->moveTo ( board_edges[1].x, board_edges[1].y );
-      }
-      else if ( this->game->board.getStatus ( board_edges[2].x, board_edges[2].y ) == BAD_CARD_ID )
-      {
-        this->moveTo ( board_edges[2].x, board_edges[2].y );
-      }
-      else if ( this->game->board.getStatus ( board_edges[3].x, board_edges[3].y ) == BAD_CARD_ID )
-      {
-        this->moveTo ( board_edges[3].x, board_edges[3].y );
-      }
-      else
-      {
-        nom::int32 moveX = nom::rand ( 0, 2 );
-        nom::int32 moveY = nom::rand ( 0, 2 );
-
-        // Fixes a out of bounds issue that occurs occasionally upon state
-        // phasing
-        if( this->game->hand[PLAYER2].size() > 0 ) {
-          nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[1].size() - 1 );
-          this->game->hand[1].selectCard ( this->game->hand[1].cards[ rand_pick ] );
-        }
-
-        this->moveTo ( moveX, moveY );
-      } // end board_edges choice
+    if ( this->skip_turn == false ) {
+      this->cpu_player_.update(delta_time);
     } // player2
+
   } // end player1
 
   this->game->window.update();

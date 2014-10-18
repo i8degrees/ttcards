@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "BoardTile.hpp"
 
+// Static initialization
+const BoardTile BoardTile::null = BoardTile();
+
 BoardTile::BoardTile ( void ) : tile_element ( 0 ) {}
 
 BoardTile::BoardTile  ( const Card& card,
@@ -51,9 +54,14 @@ const Card& BoardTile::tile ( void ) const
   return this->tile_card;
 }
 
-const nom::IntRect& BoardTile::bounds ( void ) const
+const nom::IntRect& BoardTile::bounds() const
 {
   return this->bounds_;
+}
+
+void BoardTile::set_bounds(const nom::IntRect& bounds)
+{
+  this->bounds_ = bounds;
 }
 
 nom::uint32 BoardTile::element ( void ) const
@@ -66,4 +74,17 @@ void BoardTile::update ( const nom::Point2i& pos, const Card& card )
   this->tile_card = card;
   //this->bounds_.x = pos.x;
   //this->bounds_.y = pos.y;
+}
+
+bool operator ==(const BoardTile& lhs, const BoardTile& rhs)
+{
+  return  ( lhs.tile() == rhs.tile() )        &&
+          ( lhs.bounds() == rhs.bounds() )    &&
+          ( lhs.element() == rhs.element() );
+          // ( lhs.board_tile == rhs.board_tile );
+}
+
+bool operator !=( const BoardTile& lhs, const BoardTile& rhs )
+{
+  return !( lhs == rhs );
 }

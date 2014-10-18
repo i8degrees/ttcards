@@ -126,6 +126,8 @@ class Board
 
     const nom::int32 operator() ( const nom::int32 x, const nom::int32 y );
 
+    // std::vector<BoardTile> free_tiles() const;
+
   private:
     void initialize ( void );
 

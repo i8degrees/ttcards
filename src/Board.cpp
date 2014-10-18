@@ -533,3 +533,24 @@ void Board::list ( void )
   }
   std::cout << "\n";
 }
+
+// std::vector<BoardTile> Board::free_tiles() const
+// {
+//   std::vector<BoardTile> out;
+//   int status = 0;
+
+//   for( int y = 0; y != BOARD_GRID_HEIGHT; y++ )
+//   {
+//     for( int x = 0; x != BOARD_GRID_WIDTH; x++ )
+//     {
+//       status = this->getStatus(x, y);
+
+//       // Available tile
+//       if( status == BAD_CARD_ID ) {
+//         out.push_back( BoardTile( Card(), nom::IntRect(x,y,-1,-1), -1) );
+//       }
+//     }
+//   }
+
+//   return out;
+// }

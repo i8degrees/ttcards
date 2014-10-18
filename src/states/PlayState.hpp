@@ -50,7 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "resources.hpp"
 #include "Player.hpp"
 #include "Card.hpp"
-//#include "cpu_player.hpp"
+#include "CPU_Player.hpp"
 
 // Forward declarations
 class Game;
@@ -123,6 +123,7 @@ class PlayState: public nom::IState
 
     /// In-game players (including AI)
     Player player[2];
+    CPU_Player cpu_player_;
 
     /// x, y coords mapping for player1, player2 cursor starting position
     nom::Point2i player_cursor_coords[2];

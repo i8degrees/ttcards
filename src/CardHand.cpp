@@ -204,7 +204,7 @@ bool CardHand::exists ( const Card& card ) const
   return false;
 }
 
-void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling )
+void CardHand::shuffle( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling )
 {
   // Cards are picked out using our random number equal distribution generator;
   // this needs to be a value between 0..Card::CARDS_COLLECTION in order to yield a
@@ -216,24 +216,28 @@ void CardHand::shuffle ( nom::int32 level_min, nom::int32 level_max, const CardC
   // results for player2 hand
   nom::int32 seed = seedling;
 
+  NOM_ASSERT( level_min >= LEVEL_MIN );
+  NOM_ASSERT( level_max <= LEVEL_MAX );
+
   if ( seed == 0 )
   {
     seed = std::chrono::system_clock::now().time_since_epoch().count();
   }
 
-  std::default_random_engine rand_generator ( seed );
+  std::default_random_engine rand_generator(seed);
 
-  std::uniform_int_distribution<nom::int32> distribution ( 0, Card::CARDS_COLLECTION );
+  // The last ID is reserved for the no face sprite frame
+  std::uniform_int_distribution<nom::int32> distribution( 0, Card::CARDS_COLLECTION - 1);
 
-  card_id = distribution ( rand_generator );
+  card_id = distribution(rand_generator);
 
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "card_id: ", card_id );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "CARDS_COLLECTION: ", Card::CARDS_COLLECTION );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "Random Generator Seed: ", seed );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CARD_HAND, "card_id: ", card_id );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CARD_HAND, "CARDS_COLLECTION: ", Card::CARDS_COLLECTION );
+  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CARD_HAND, "Random Generator Seed: ", seed );
 
-  if ( db.cards[card_id].getLevel() <= LEVEL_MAX && db.cards[card_id].getLevel() >= LEVEL_MIN )
+  if( db.cards[card_id].getLevel() <= level_max && db.cards[card_id].getLevel() >= level_min )
   {
-    if ( this->push_back ( db.cards[card_id] ) ) num_cards++;
+    if( this->push_back(db.cards[card_id]) ) num_cards++;
   }
 }
 

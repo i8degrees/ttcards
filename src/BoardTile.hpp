@@ -42,6 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class BoardTile
 {
   public:
+    static const BoardTile null;
+
     /// Default constructor
     BoardTile ( void );
 
@@ -60,6 +62,8 @@ class BoardTile
     /// Getter for tile_pos instance var
     const nom::IntRect& bounds ( void ) const;
 
+    void set_bounds(const nom::IntRect& bounds);
+
     /// Getter for tile_element instance var
     nom::uint32 element ( void ) const;
 
@@ -71,7 +75,10 @@ class BoardTile
     Card tile_card;
     nom::IntRect bounds_;
     nom::uint32 tile_element;
-    enum BoardPosition board_tile;
+    // enum BoardPosition board_tile;
 };
+
+bool operator ==(const BoardTile& lhs, const BoardTile& rhs);
+bool operator !=(const BoardTile& lhs, const BoardTile& rhs);
 
 #endif // include guard defined
