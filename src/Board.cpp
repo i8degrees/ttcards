@@ -79,15 +79,12 @@ void Board::initialize ( void )
   for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
     this->grid[x].resize ( BOARD_GRID_WIDTH );
 
-  nom::uint32 seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::default_random_engine rand_generator(seed);
-  std::uniform_int_distribution<int> distribution(1, MAX_ELEMENT);
-
   nom::int32 idx = 0;
   int random_element = 0;
   for( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
     for( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ ) {
-      random_element = distribution(rand_generator);
+
+      random_element = nom::uniform_int_rand<int>(1, MAX_ELEMENT);
 
       this->grid[x][y] = BoardTile( Card(), this->board_map[idx], random_element );
       idx++; // this->board_map[0..8]

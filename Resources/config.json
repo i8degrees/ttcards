@@ -7,6 +7,20 @@
     // nearest improves the card face rendering, at the cost of the text (font)
     // rendering
     "RENDER_SCALE_QUALITY": "nearest",
+    // The amount of time to sleep; this gives spare CPU cycles back to the OS
+    // scheduler, which in turn, can yield lower CPU usage.
+    //
+    // On my development system -- MacBook Air mid 2011 model -- this drops the
+    // CPU usage from 99% to ~20..40%. The only reason why I care whatsoever
+    // for this effect is because it makes a significant difference in how well
+    // I'm able to multi-task (i.e.: edit this configuration file) during a
+    // game run.
+    //
+    // On slower systems, such as my ancient windev box -- AMD64 Single Core,
+    // GeForce 6200 -- you may want to tweak this value down to zero or so.
+    //
+    // TODO: This value should probably be ignored in release builds?
+    "DELAY_TIME": 50,
     "APP_ICON" : "icon.png",
     "BOARD_BACKGROUND" : "images/board.png",
     "BOARD_BACKGROUND_SCALE2X" : "images/scale2x/board.png",

@@ -208,9 +208,7 @@ void PlayState::on_init( nom::void_ptr data )
 
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
-  std::default_random_engine pick_player_gen( nom::ticks() );
-  std::uniform_int_distribution<uint> distribution( 0, TOTAL_PLAYERS - 1 );
-  this->player_turn(distribution(pick_player_gen) );
+  this->player_turn( nom::uniform_int_rand<nom::uint>(0, TOTAL_PLAYERS - 1) );
 
   // Initialize our animation state timers
   this->player_timer[1].setFrameRate ( 500 );
@@ -890,7 +888,7 @@ void PlayState::on_update( float delta_time )
     {
       // Fixes a out of bounds issue that occurs occasionally upon state phasing
       if( this->game->hand[PLAYER2].size() > 0 ) {
-        nom::uint32 rand_pick = nom::rand ( 0, this->game->hand[PLAYER2].size() - 1 );
+        nom::uint32 rand_pick = nom::uniform_int_rand<uint32>(0, this->game->hand[PLAYER2].size() - 1);
         this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
       }
     }

@@ -46,7 +46,6 @@ using namespace nom;
 Game::Game() :
   audio_dev_{ nullptr },
   listener_{ nullptr },
-  sound_buffers{ nullptr },
   cursor_move{ nullptr },
   cursor_cancel{ nullptr },
   cursor_wrong{ nullptr },
@@ -83,6 +82,8 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     exit(NOM_EXIT_FAILURE);
   }
   atexit(nom::quit); // Clean up memory associated with nomlib
+
+  // nom::init_rand( nom::hires_counter() );
 
   #if ! defined( NDEBUG )  // Debug target build
     NOM_LOG_INFO( TTCARDS, "DEBUG build" );
@@ -338,8 +339,11 @@ bool Game::on_init( void )
   // copying of this file. See also: bin/fswatch.sh
   #if defined(NOM_PLATFORM_OSX) && ! defined(NDEBUG)
     fs = new nom::RocketFileInterface( "../../../../Resources/" );
+  #elif defined(NOM_PLATFORM_WINDOWS) && ! defined(NDEBUG)
+    fs = new nom::RocketFileInterface( this->working_directory + "\\" );
   #else
-    fs = new nom::RocketFileInterface( this->working_directory + "/" );
+    // Stub code
+    fs = new nom::RocketFileInterface( this->working_directory + "/Resources/" );
   #endif
 
   Rocket::Core::SystemInterface* sys =
@@ -674,16 +678,6 @@ void Game::on_event( const nom::Event& ev )
 void Game::on_window_resized( const nom::Event& ev )
 {
   this->window.toggle_fullscreen();
-
-  // FIXME: This is a temporary patch until we figure out why our window does
-  // not automatically resize itself to previous dimensions after entering
-  // full-screen.
-  //
-  // This particular bug only happens on the Windows platform, and does nothing
-  // on OS X! Could this be related to GitHub Issue #9 ..?
-  #if defined (NOM_PLATFORM_WINDOWS)
-    this->window.set_size ( SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2 );
-  #endif
 }
 
 int32_t Game::Run( void )
@@ -691,6 +685,7 @@ int32_t Game::Run( void )
   unsigned int loops = 0;
   unsigned int next_game_tick = 0;
   nom::uint32 delta_time = 0;
+  nom::uint32 delay_time = this->config.getInteger("DELAY_TIME");
 
   this->fps.start();
 
@@ -703,7 +698,7 @@ int32_t Game::Run( void )
     loops = 0;
     delta_time = this->ticks();
 
-    while ( this->ticks() > next_game_tick && loops <= MAX_FRAMESKIP )
+    while( delta_time > next_game_tick && loops <= MAX_FRAMESKIP )
     {
       nom::Event evt;
       while( this->poll_event( evt ) )
@@ -732,8 +727,12 @@ int32_t Game::Run( void )
       next_game_tick += SKIP_TICKS;
       loops++;
 
-      // Sleep away the spare ticks (improves CPU usage dramatically)
-      nom::sleep(50);
+      // Sleep away spare tick; improve CPU usage dramatically.
+      //
+      // See config.json notes on DELAY_TIME.
+      if( this->fps.fps() >= TICKS_PER_SECOND ) {
+        nom::sleep(delay_time);
+      }
     }
   }
 

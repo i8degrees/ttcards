@@ -61,6 +61,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// If set to two (2), this will use the rescaled resource data (using Scale2X
 /// algorithm), giving us a game resolution of 768x448. This is the preferred
 /// default.
+///
+/// On an older system (i.e.: a AMD64 ~1.8Ghz Single Core, GeForce 6200), you
+/// may need to drop this down to one (1), in order to get decent frame-rate,
+/// as per my experience on the alpha builds of TTcards for WindowsOS. This will
+/// hopefully slowly improve as I find time for optimizations!
 #define SCALE_FACTOR 2
 
 // Global configuration

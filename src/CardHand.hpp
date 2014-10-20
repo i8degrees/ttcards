@@ -97,11 +97,11 @@ class CardHand
     nom::int32 at ( Card& card );
 
     /// Creates a randomized player hand with the preferred minimum & maximum
-    /// level ranges in mind, with no duplicate cards present.
+    /// level ranges in mind, ~~with no duplicate cards present~~.
     ///
     /// Do not forget to set the proper player ID on your new card objects
     /// before heading off into battle!
-    void shuffle( nom::int32 level_min, nom::int32 level_max, const CardCollection& db, nom::int32 seedling = 0 );
+    void shuffle( nom::int32 level_min, nom::int32 level_max, const CardCollection& db);
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
     /// compliant objects.

@@ -60,8 +60,8 @@ BoardTile CPU_Player::random_move()
 {
   BoardTile tile;
 
-  int moveX = std::rand() % BOARD_GRID_WIDTH;
-  int moveY = std::rand() % BOARD_GRID_HEIGHT;
+  int moveX = nom::uniform_int_rand<int>(0, BOARD_GRID_WIDTH - 1);
+  int moveY = nom::uniform_int_rand<int>(0, BOARD_GRID_HEIGHT - 1);
 
   if( this->hand_->size() > 0 ) {
 

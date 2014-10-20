@@ -46,11 +46,6 @@ if ( DEBUG )
   else ( PLATFORM_WINDOWS )
     # TODO: split these options up like we have for other platforms
     set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D NOM_DEBUG /D NOM_DEBUG_ASSERT" )
-
-    # FIXME: _ITERATOR_DEBUG_LEVEL is intended as a *temporary* patch to get
-    # around a GameOverState crash involving vector or iterator access; we still
-    # need to hunt down the bugs and eliminate them...
-    set ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=0" )
   endif ( NOT PLATFORM_WINDOWS )
 
   set ( CMAKE_BUILD_TYPE "Debug" )
