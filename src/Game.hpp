@@ -113,6 +113,9 @@ class Game: public nom::SDLApp
     nom::Font gameover_font;
     nom::Font scoreboard_font;
 
+    nom::Text scoreboard_text[2];
+    nom::Text gameover_text;
+
     /// Game board
     Board board;
 

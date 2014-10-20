@@ -456,6 +456,19 @@ bool Game::on_init( void )
   }
   this->gameover_font.set_outline(1);
 
+  // Set both player's scoreboard fonts
+  for( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx )
+  {
+    this->scoreboard_text[idx].set_font(&this->game->scoreboard_font);
+    this->scoreboard_text[idx].set_text_size(48 * SCALE_FACTOR);
+    this->scoreboard_text[idx].set_style(nom::Text::Style::Italic);
+  }
+
+  // Initialize game over text
+  this->gameover_text.set_font(&this->game->gameover_font);
+  this->gameover_text.set_text_size(48 * SCALE_FACTOR);
+  this->gameover_text.set_style(nom::Text::Style::Italic);
+
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
     if( this->gameover_background.load( this->config.getString("GAMEOVER_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
     {

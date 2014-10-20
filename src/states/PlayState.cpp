@@ -112,19 +112,6 @@ void PlayState::on_init( nom::void_ptr data )
   this->player_scoreboard[0] = Point2i( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
   this->player_scoreboard[1] = Point2i( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
 
-  // Set both player's scoreboard fonts
-  for ( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx )
-  {
-    this->scoreboard_text[idx].set_font( &this->game->scoreboard_font );
-    this->scoreboard_text[idx].set_text_size ( 48 * SCALE_FACTOR );
-    this->scoreboard_text[idx].set_style ( nom::Text::Style::Italic );
-  }
-
-  // Initialize game over text
-  this->gameover_text.set_font( &this->game->gameover_font );
-  this->gameover_text.set_text_size( 48 * SCALE_FACTOR );
-  this->gameover_text.set_style( nom::Text::Style::Italic );
-
   for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
     this->cursor_coords_map[idx] = nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
@@ -861,8 +848,8 @@ void PlayState::updateScore ( void )
     this->player[players].setScore ( board_count + hand_count );
 
     // Update the font responsible for rendering the score
-    this->scoreboard_text[players].set_text ( this->player[players].getScoreAsString() );
-    this->scoreboard_text[players].set_position ( nom::Point2i (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
+    this->game->scoreboard_text[players].set_text ( this->player[players].getScoreAsString() );
+    this->game->scoreboard_text[players].set_position ( nom::Point2i (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
   }
 }
 
@@ -928,8 +915,8 @@ void PlayState::on_draw( nom::RenderWindow& target )
   this->game->gui_window_.draw();
 
   // Draw each player's scoreboard
-  this->scoreboard_text[0].draw ( target );
-  this->scoreboard_text[1].draw ( target );
+  this->game->scoreboard_text[0].draw(target);
+  this->game->scoreboard_text[1].draw(target);
 
   // FIXME: We keep game over check logic here in order to allow for the last
   // card placed to be shown to the player
@@ -941,29 +928,29 @@ void PlayState::on_draw( nom::RenderWindow& target )
     if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Won;
-      this->gameover_text.set_color ( nom::Color4i::White );
-      this->gameover_text.set_text ( "You win!" );
+      this->game->gameover_text.set_color ( nom::Color4i::White );
+      this->game->gameover_text.set_text ( "You win!" );
     }
     else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
     {
       this->gameover_state = GameOverType::Lost;
-      this->gameover_text.set_color ( nom::Color4i::White );
-      this->gameover_text.set_text ( "You lose..." );
+      this->game->gameover_text.set_color ( nom::Color4i::White );
+      this->game->gameover_text.set_text ( "You lose..." );
     }
     else // Assume a draw
     {
       this->gameover_state = GameOverType::Tie;
-      this->gameover_text.set_color ( nom::Color4i::White );
-      this->gameover_text.set_text ( "Tie!" );
+      this->game->gameover_text.set_color ( nom::Color4i::White );
+      this->game->gameover_text.set_text ( "Tie!" );
     }
 
     nom::Point2i pos = nom::Point2i ( 0, 0 );
     nom::Size2i size = nom::Size2i ( GAME_RESOLUTION.w, GAME_RESOLUTION.h );
 
-    this->gameover_text.set_position ( pos );
-    this->gameover_text.set_size ( size );
-    this->gameover_text.set_alignment ( nom::Anchor::MiddleCenter );
-    this->gameover_text.draw ( target );
+    this->game->gameover_text.set_position ( pos );
+    this->game->gameover_text.set_size ( size );
+    this->game->gameover_text.set_alignment ( nom::Anchor::MiddleCenter );
+    this->game->gameover_text.draw ( target );
     this->game->window.update();
 
     // Chill for a second

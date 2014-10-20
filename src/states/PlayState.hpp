@@ -152,9 +152,6 @@ class PlayState: public nom::IState
     bool skip_turn;
 
     enum GameOverType gameover_state;
-
-    nom::Text scoreboard_text[2];
-    nom::Text gameover_text;
 };
 
 // Convenience declarations for changing state
