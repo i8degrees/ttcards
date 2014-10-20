@@ -192,6 +192,9 @@ class Game: public nom::SDLApp
     /// Destination directory we descend into to locate game resources
     std::string working_directory;
 
+    /// visual indication of which player's turn it is
+    nom::SpriteBatch triad_;
+
   private:
     /// \remarks Re-implements nom::SDLApp::on_event.
     ///

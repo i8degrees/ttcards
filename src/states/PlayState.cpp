@@ -881,13 +881,11 @@ void PlayState::on_update( float delta_time )
     }
   }
 
-  if ( this->get_turn() == 0 ) // player1
-  {
-    this->player_rect = nom::Rectangle ( nom::IntRect( PLAYER1_INDICATOR_ORIGIN_X, PLAYER1_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT), nom::Color4i( 188, 203, 236 ) );
+  if ( this->get_turn() == 0 ) {// player1
+    this->game->triad_.set_position(PLAYER1_TRIAD_ORIGIN);
   }
-  else // player2
-  {
-    this->player_rect = nom::Rectangle ( nom::IntRect( PLAYER2_INDICATOR_ORIGIN_X, PLAYER2_INDICATOR_ORIGIN_Y, PLAYER_INDICATOR_WIDTH, PLAYER_INDICATOR_HEIGHT), nom::Color4i( 222, 196, 205 ) );
+  else { // player2
+    this->game->triad_.set_position(PLAYER2_TRIAD_ORIGIN);
 
     // Skipping a turn like this is only available in debug versions
     if ( this->skip_turn == false ) {
@@ -908,7 +906,7 @@ void PlayState::on_draw( nom::RenderWindow& target )
   this->player[0].draw ( target );
   this->player[1].draw ( target );
 
-  this->player_rect.draw ( target );
+  this->game->triad_.draw(target);
 
   this->drawCursor( target );
 
@@ -954,7 +952,7 @@ void PlayState::on_draw( nom::RenderWindow& target )
     this->game->window.update();
 
     // Chill for a second
-    nom::sleep ( 1000 );
+    // nom::sleep ( 1000 );
     if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
     {
       this->game->set_state( Game::State::CardsMenu );

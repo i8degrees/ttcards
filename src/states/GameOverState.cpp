@@ -38,8 +38,8 @@ GameOverState::GameOverState  ( const nom::SDLApp::shared_ptr& object,
                               ) :
   nom::IState(Game::State::GameOver),
   game( NOM_DYN_SHARED_PTR_CAST( Game, object) ),
-  show_results( false )
-  /*,gameover_state { static_cast<nom::uint32_ptr>(state) }*/
+  show_results( false ),
+  gameover_state( *static_cast<nom::uint32_ptr>(state) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -80,44 +80,48 @@ void GameOverState::on_init( nom::void_ptr data )
                                       ));
   this->cursor.set_frame(INTERFACE_CURSOR_RIGHT);
 
-/*
-  if ( this->gameover_state == 0 ) // Draw
+  if( this->gameover_state == 0 ) // NotOver
   {
+    // ???
   }
-  else if ( this->gameover_state == 1 ) // Player 1 won
+  else if( this->gameover_state == 1 ) // Draw
   {
-*/
-
-
-  //} // end gameover_state == 1
-/*
-  else if ( this->gameover_state == 2 ) // Player 2 won
-  {
-    this->cursor.setPosition  (
-                                PLAYER1_GAMEOVER_ORIGIN_X,
-                                PLAYER1_GAMEOVER_ORIGIN_Y * 2
-                              );
-
-    this->cursor.setSheetID ( INTERFACE_CURSOR_LEFT );
+    NOM_DUMP("Draw...");
   }
-*/
+  else if( this->gameover_state == 2 ) // Player 1 won
+  {
+    NOM_DUMP("You won!");
+    // ...
+  } // end gameover_state == 1
+
+  else if( this->gameover_state == 3 ) // Player 2 won
+  {
+    NOM_DUMP("You lost!");
+    // Point2i offset( PLAYER1_GAMEOVER_ORIGIN_X,
+    //                 // PLAYER1_GAMEOVER_ORIGIN_Y * 2 );
+    //                 PLAYER1_GAMEOVER_ORIGIN_Y );
+
+    // this->cursor.set_position(offset);
+    // this->cursor.set_frame(INTERFACE_CURSOR_LEFT);
+  }
 
   // REMOVE ME
-  while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+  // while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
+  // {
+  //   this->game->hand[0].shuffle ( 8, 10, this->game->collection );
+  // }
+
+  // while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
+  // {
+  //   this->game->hand[1].shuffle ( 1, 7, this->game->collection );
+  // }
+
+  for( auto idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    this->game->hand[0].shuffle ( 8, 10, this->game->collection );
+    this->game->hand[0].cards[idx].setPlayerID(Card::PLAYER1);
+    this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
   }
 
-  while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
-  {
-    this->game->hand[1].shuffle ( 1, 7, this->game->collection );
-  }
-
-for ( auto idx = 0; idx < MAX_PLAYER_HAND; idx++ )
-{
-this->game->hand[0].cards[idx].setPlayerID(Card::PLAYER1);
-this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
-}
   // Reset the player's hand back to the front, so our cursor tracking is
   // always accurate.
   //
@@ -204,28 +208,28 @@ this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
       }
     }
   }
-/*
+
   if ( this->gameover_state == 0 ) // Draw
   {
     // Do stuff related to game tie
   }
   else if ( this->gameover_state == 1 ) // You won!
   {
-*/
     // Play "You won!" music track
     this->game->music_track->Stop();
-#if ! defined (NOM_DEBUG)
-    this->game->winning_track->Play();
-#endif
 
-  //}
-/*
-  else if ( this->gameover_state == 2 ) // You lost
+    #if ! defined (NOM_DEBUG)
+      this->game->winning_track->Play();
+    #endif
+
+  }
+
+  else if( this->gameover_state == 3 ) // You lost
   {
     //nom::int32 rand_pick = nom::randomInteger ( 0, this->game->hand[0].size() );
     this->game->hand[0].front();
   }
-*/
+
   //this->selected_card = this->game->hand[1].getSelectedCard();
 
   // Both player hands should **always** be shown with the card face rendered

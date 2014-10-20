@@ -85,7 +85,7 @@ class GameOverState: public nom::IState
     nom::Timer transistion;
     bool show_results;
 
-    //nom::void_ptr gameover_state;
+    nom::uint32 gameover_state;
 
     /// Interface cursor
     GameOverStateCursor cursor;

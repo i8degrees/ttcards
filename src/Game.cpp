@@ -509,6 +509,27 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     return false;
   }
 
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->triad_.load_sheet_file( this->game->config.getString("TRIAD_SPINNER_ATLAS" ) );
+
+    if( this->triad_.load( this->config.getString("TRIAD_SPINNER") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load resource file: ",
+                    this->config.getString("TRIAD_SPINNER") );
+      return false;
+    }
+  #else
+    this->triad_.load_sheet_file( this->game->config.getString("TRIAD_SPINNER_ATLAS_SCALE2X" ) );
+
+    if( this->triad_.load( this->config.getString("TRIAD_SPINNER_SCALE2X") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load resource file: ",
+                    this->config.getString("TRIAD_SPINNER_SCALE2X") );
+      return false;
+    }
+  #endif
+  this->game->triad_.set_frame( this->game->config.getInteger("TRIAD_START_FRAME") );
+
   // Quick and dirty method of toggling the use of nomlib's audio subsystem
   // #undef NOM_USE_OPENAL
 

@@ -137,9 +137,6 @@ class PlayState: public nom::IState
     /// locks cursor state to board placement
     bool cursor_locked;
 
-    /// visual indication of which player's turn it is
-    nom::Rectangle player_rect;
-
     /// Animation "blink" timer for visual notification when interface cursor
     /// is locked on a card (board drop mode).
     nom::Timer cursor_blink;

@@ -22,6 +22,11 @@
     // TODO: This value should probably be ignored in release builds?
     "DELAY_TIME": 50,
     "APP_ICON" : "icon.png",
+    "TRIAD_SPINNER": "images/triad.png",
+    "TRIAD_SPINNER_SCALE2X": "images/scale2x/triad.png",
+    "TRIAD_SPINNER_ATLAS": "images/triad.json",
+    "TRIAD_SPINNER_ATLAS_SCALE2X": "images/scale2x/triad.json",
+    "TRIAD_START_FRAME": 22,
     "BOARD_BACKGROUND" : "images/board.png",
     "BOARD_BACKGROUND_SCALE2X" : "images/scale2x/board.png",
     "CARDS_DB" : "cards.json",
