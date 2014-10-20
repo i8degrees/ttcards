@@ -411,18 +411,12 @@ bool Game::on_init( void )
   // Commence the loading of game resources
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    this->cursor =
-      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS") );
-
     if( this->card_font.load ( this->config.getString("CARD_FONTFACE") ) == false )
     {
       NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE") );
       return false;
     }
   #else
-    this->cursor =
-      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
-
     if( this->card_font.load ( this->config.getString("CARD_FONTFACE_SCALE2X") ) == false )
     {
       NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FONTFACE_SCALE2X") );
@@ -484,12 +478,18 @@ bool Game::on_init( void )
   #endif
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    this->cursor =
+      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS") );
+
     if( this->cursor.load( this->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
     {
       NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR") );
       return false;
     }
   #else
+    this->cursor =
+      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
+
     if( this->cursor.load( this->config.getString("INTERFACE_CURSOR_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
     {
       NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR_SCALE2X") );
