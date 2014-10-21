@@ -142,7 +142,7 @@ class Game: public nom::SDLApp
 
     /// interface cursor
     nom::Texture cursor_tex_;
-    nom::AnimatedSprite cursor;
+    nom::AnimatedSprite cursor_;
 
     /// our public / visible display context handle
     nom::RenderWindow window;

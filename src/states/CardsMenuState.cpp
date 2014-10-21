@@ -179,8 +179,8 @@ void CardsMenuState::on_init( nom::void_ptr data )
       position = (*itr)->GetAbsoluteOffset(Rocket::Core::Box::PADDING);
       size = (*itr)->GetBox().GetSize(Rocket::Core::Box::PADDING);
 
-      row.x = position.x - this->game->cursor.size().w;
-      row.y = position.y + this->game->cursor.size().h / 2;
+      row.x = position.x - this->game->cursor_.size().w;
+      row.y = position.y + this->game->cursor_.size().h / 2;
       row.w = size.x;
 
       // This value correlates with the line-height RCSS property value in
@@ -199,8 +199,8 @@ void CardsMenuState::on_init( nom::void_ptr data )
   }
 
   // Starting origin for game cursor
-  this->game->cursor.set_position( this->cursor_coords_map_[0].position() );
-  this->game->cursor.set_frame(INTERFACE_CURSOR_RIGHT); // default cursor image
+  this->game->cursor_.set_position( this->cursor_coords_map_[0].position() );
+  this->game->cursor_.set_frame(INTERFACE_CURSOR_RIGHT); // default cursor image
 
   this->cursor_state_ = 0;  // default state for navigating card menu
 
@@ -282,7 +282,7 @@ void CardsMenuState::on_pause(nom::void_ptr data)
 
   // Hide the cursor so that it doesn't show up during undesirable states such
   // as during the ConfirmationDialogState or Pause states.
-  this->game->cursor.set_frame(INTERFACE_CURSOR_NONE);
+  this->game->cursor_.set_frame(INTERFACE_CURSOR_NONE);
 }
 
 void CardsMenuState::on_resume(nom::void_ptr data)
@@ -290,7 +290,7 @@ void CardsMenuState::on_resume(nom::void_ptr data)
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   // Restore the rendering of the game cursor
-  this->game->cursor.set_frame(INTERFACE_CURSOR_RIGHT);
+  this->game->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 
   // Response from the previous game state
   nom::int32_ptr response = static_cast<nom::int32_ptr>(data);
@@ -352,7 +352,7 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
   }
 
   this->game->gui_window_.draw();
-  this->game->cursor.draw(target);
+  this->game->cursor_.draw(target);
 
   this->game->card.setViewCard(this->selected_card_);
   this->game->card.reposition(this->card_pos);
@@ -453,7 +453,7 @@ void CardsMenuState::update_cursor()
 
   if( this->cursor_state_ == 0 )
   {
-    this->game->cursor.set_frame(INTERFACE_CURSOR_RIGHT);
+    this->game->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 
     row_index = this->cursor_position();
 
@@ -517,7 +517,7 @@ int CardsMenuState::cursor_position()
 
     for(auto idx = 0; idx < this->game->cards_page_model_->per_page(); ++idx)
     {
-      if( this->game->cursor.position().y <= this->cursor_coords_map_.at(idx).y ) {
+      if( this->game->cursor_.position().y <= this->cursor_coords_map_.at(idx).y ) {
         return idx;
       }
       else { // catch all safety switch
@@ -533,8 +533,8 @@ int CardsMenuState::cursor_position()
 
 void CardsMenuState::set_cursor_position(int pos)
 {
-  this->game->cursor.set_position( this->cursor_coords_map_.at(pos).position() );
-  NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_pos:", this->game->cursor.position() );
+  this->game->cursor_.set_position( this->cursor_coords_map_.at(pos).position() );
+  NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_pos:", this->game->cursor_.position() );
 }
 
 void CardsMenuState::prev_page()
@@ -602,10 +602,10 @@ void CardsMenuState::cursor_prev()
   if( this->cursor_state_ == 0 ) {
 
     // Move up if the game cursor is before the first card entry of the page
-    if( this->game->cursor.position().y > this->cursor_coords_map_.at(0).y )
+    if( this->game->cursor_.position().y > this->cursor_coords_map_.at(0).y )
     {
-      this->game->cursor.move ( 0, -( this->cursor_coords_map_.at(pos).h ) );
-      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor.position().y );
+      this->game->cursor_.move ( 0, -( this->cursor_coords_map_.at(pos).h ) );
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_.position().y );
       row_index = this->cursor_position();
 
       pos = this->game->cards_page_model_->map_row(row_index);
@@ -632,11 +632,11 @@ void CardsMenuState::cursor_next()
   if( this->cursor_state_ == 0 ) {
 
     // Move down if the game cursor is not at the last card entry of the page
-    if( this->game->cursor.position().y >= this->cursor_coords_map_.at(0).y &&
-        this->game->cursor.position().y < this->cursor_coords_map_.at(max_per_page).y ) {
+    if( this->game->cursor_.position().y >= this->cursor_coords_map_.at(0).y &&
+        this->game->cursor_.position().y < this->cursor_coords_map_.at(max_per_page).y ) {
 
-      this->game->cursor.move( 0, this->cursor_coords_map_.at(pos).h );
-      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor.position().y );
+      this->game->cursor_.move( 0, this->cursor_coords_map_.at(pos).h );
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_.position().y );
       row_index = this->cursor_position();
 
       pos = this->game->cards_page_model_->map_row(row_index);

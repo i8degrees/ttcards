@@ -91,8 +91,8 @@ void PlayState::on_init( nom::void_ptr data )
     this->game->hand[1].shuffle(1, 1, this->game->collection);
   }
 
-  this->game->cursor.set_position ( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
-  this->game->cursor.set_frame ( INTERFACE_CURSOR_NONE ); // default cursor image
+  this->game->cursor_.set_position ( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
+  this->game->cursor_.set_frame ( INTERFACE_CURSOR_NONE ); // default cursor image
   this->cursor_state_ = CursorState::PLAYER;
 
   // this->game->rules.setRules(1);
@@ -293,7 +293,7 @@ void PlayState::on_init( nom::void_ptr data )
         uint player_turn = this->get_turn();
 
         this->game->hand[player_turn].erase( this->game->hand[player_turn].getSelectedCard() );
-        this->game->cursor.set_position( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
+        this->game->cursor_.set_position( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
       }
     );
 
@@ -420,7 +420,7 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
       // 3. Play sound event
       this->game->hand[ player_turn ].selectCard ( this->game->hand[ player_turn ].cards[ idx ] );
 
-      this->game->cursor.set_position ( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
+      this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
 
       this->game->cursor_move->Play();
 
@@ -484,7 +484,7 @@ void PlayState::on_update_info_dialogs( void )
   // Board selection state
   if ( this->isCursorLocked() == true )
   {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor.position().x, this->game->cursor.position().y );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor_.position().x, this->game->cursor_.position().y );
     if ( coords != nom::IntRect::null )
     {
       selected_card = this->game->board.get ( coords.x, coords.y );
@@ -539,13 +539,13 @@ void PlayState::resetCursor ( void )
   this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
 
   this->cursor_state_ = CursorState::PLAYER;
-  this->game->cursor.set_position ( Point2i(this->player_cursor_coords[0].x, this->player_cursor_coords[0].y) );
+  this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[0].x, this->player_cursor_coords[0].y) );
 
   // Only set the position of the game interface cursor for player2 when we are
   // controlling him
   if ( this->skip_turn == true )
   {
-    this->game->cursor.set_position ( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
+    this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
   }
 }
 
@@ -572,18 +572,18 @@ void PlayState::lockSelectedCard ( void )
   {
     if ( get_turn() == 0 )
     {
-      this->game->cursor.set_position ( Point2i(CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y) ); // FIXME
+      this->game->cursor_.set_position ( Point2i(CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y) ); // FIXME
     }
     else if ( get_turn() == 1 )
     {
-      this->game->cursor.set_position ( Point2i(CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y) ); // FIXME
+      this->game->cursor_.set_position ( Point2i(CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y) ); // FIXME
     }
 
     this->lockCursor ( true );
   }
   else
   {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor.position().x, this->game->cursor.position().y );
+    coords = this->game->board.getGlobalBounds ( this->game->cursor_.position().x, this->game->cursor_.position().y );
 
     if ( coords != nom::IntRect::null )
     {
@@ -723,7 +723,7 @@ unsigned int PlayState::getCursorPos ( void )
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    if ( this->game->cursor.position().y <= this->cursor_coords_map[idx].y )
+    if ( this->game->cursor_.position().y <= this->cursor_coords_map[idx].y )
       return this->cursor_coords_map[idx].x;
     else // catch all safety switch
       // assume we are at the last position in the index when all else fails
@@ -737,8 +737,8 @@ void PlayState::moveCursorLeft ( void )
 {
   if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.position().x > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
-      this->game->cursor.move ( -( CARD_WIDTH ), 0 );
+    if ( this->game->cursor_.position().x > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
+      this->game->cursor_.move ( -( CARD_WIDTH ), 0 );
   }
   this->game->cursor_move->Play();
 }
@@ -747,8 +747,8 @@ void PlayState::moveCursorRight ( void )
 {
   if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.position().x < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
-      this->game->cursor.move ( ( CARD_WIDTH ), 0 );
+    if ( this->game->cursor_.position().x < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
+      this->game->cursor_.move ( ( CARD_WIDTH ), 0 );
   }
   this->game->cursor_move->Play();
 }
@@ -760,9 +760,9 @@ void PlayState::moveCursorUp ( void )
 
   if ( this->cursor_state_ == CursorState::PLAYER )
   {
-    if ( this->game->cursor.position().y > PLAYER1_CURSOR_ORIGIN_Y )
+    if ( this->game->cursor_.position().y > PLAYER1_CURSOR_ORIGIN_Y )
     {
-      this->game->cursor.move ( 0, -( CARD_HEIGHT / 2 ) );
+      this->game->cursor_.move ( 0, -( CARD_HEIGHT / 2 ) );
 
       pos = this->getCursorPos();
       this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards[pos] );
@@ -770,8 +770,8 @@ void PlayState::moveCursorUp ( void )
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.position().y > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
-      this->game->cursor.move ( 0, -( CARD_HEIGHT ) );
+    if ( this->game->cursor_.position().y > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
+      this->game->cursor_.move ( 0, -( CARD_HEIGHT ) );
   }
   this->game->cursor_move->Play();
 }
@@ -783,9 +783,9 @@ void PlayState::moveCursorDown ( void )
 
   if ( this->cursor_state_ == CursorState::PLAYER )
   {
-    if ( this->game->cursor.position().y < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
+    if ( this->game->cursor_.position().y < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
     {
-      this->game->cursor.move ( 0, ( CARD_HEIGHT / 2 ) );
+      this->game->cursor_.move ( 0, ( CARD_HEIGHT / 2 ) );
 
       pos = this->getCursorPos();
       this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards[pos] );
@@ -793,8 +793,8 @@ void PlayState::moveCursorDown ( void )
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if ( this->game->cursor.position().y < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
-      this->game->cursor.move ( 0, ( CARD_HEIGHT ) );
+    if ( this->game->cursor_.position().y < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
+      this->game->cursor_.move ( 0, ( CARD_HEIGHT ) );
   }
   this->game->cursor_move->Play();
 }
@@ -806,29 +806,29 @@ void PlayState::updateCursor ( void )
     if ( this->cursor_blink.ticks() > 192 ) // Blinky blink!
     {
       this->cursor_blink.stop();
-      this->game->cursor.set_frame ( INTERFACE_CURSOR_NONE );
+      this->game->cursor_.set_frame ( INTERFACE_CURSOR_NONE );
       this->blink_cursor = true;
     }
   }
 
   if ( this->get_turn() == PLAYER1 && this->blink_cursor == false ) // player1
   {
-    this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
+    this->game->cursor_.set_frame ( INTERFACE_CURSOR_RIGHT );
   }
   // Only show interface cursor for player2 when we are controlling him
   else if ( this->skip_turn == true && this->get_turn() == PLAYER2 && this->blink_cursor == false )
   {
-    this->game->cursor.set_frame ( INTERFACE_CURSOR_LEFT );
+    this->game->cursor_.set_frame ( INTERFACE_CURSOR_LEFT );
   }
 }
 
 void PlayState::drawCursor ( nom::IDrawable::RenderTarget& target )
 {
-  this->game->cursor.draw ( target );
+  this->game->cursor_.draw ( target );
 
   if ( this->blink_cursor )
   {
-    this->game->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
+    this->game->cursor_.set_frame ( INTERFACE_CURSOR_RIGHT );
     this->cursor_blink.start();
     this->blink_cursor = false;
   }

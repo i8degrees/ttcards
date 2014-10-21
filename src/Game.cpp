@@ -510,8 +510,8 @@ bool Game::on_init( void )
     }
   #endif
 
-  this->cursor.set_texture(this->cursor_tex_);
-  this->cursor.set_sprite_sheet(cursor_frames);
+  this->cursor_.set_texture(this->cursor_tex_);
+  this->cursor_.set_sprite_sheet(cursor_frames);
 
   if ( this->collection.load( this->config.getString("CARDS_DB") ) == false )
   {
