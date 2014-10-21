@@ -40,7 +40,7 @@ GameOverStateCursor::~GameOverStateCursor ( void )
 
 void GameOverStateCursor::set_position_map ( CardHand* position )
 {
-  this->card_position.reset ( position, Free_CardHand );
+  this->card_position = position;
 }
 
 int GameOverStateCursor::cursor_position( void )

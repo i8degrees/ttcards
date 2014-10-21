@@ -340,7 +340,8 @@ void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )
   this->cards.insert ( pos, selected );
 
   // Update the player's selected card
-  this->selectCard ( selected );
+  // this->set_position( this->at(selected) );
+  this->selectCard(selected);
 }
 
 const Card CardHand::strongest ( void )
@@ -401,9 +402,4 @@ std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
   }
 
   return os;
-}
-
-void Free_CardHand ( CardHand* ptr )
-{
-  // Do nothing custom (smart pointer) deleter
 }

@@ -28,6 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardView.hpp"
 
+// Forward declarations
+#include "GameConfig.hpp"
+
+// Private headers
+#include "resources.hpp"
+
 using namespace nom;
 
 CardView::CardView ( void )
@@ -41,9 +47,6 @@ CardView::CardView ( void )
 
   this->card_text =
     std::make_shared<nom::Text>( nom::Text() );
-
-  this->card.push_back( this->card_background );
-  this->card.push_back( this->card_text );
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
     this->card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
@@ -142,9 +145,6 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
 
   this->card_element->set_texture(this->element_tex_);
   this->card_element->set_sprite_sheet(element_frames);
-
-  this->card.push_back(this->card_face);
-  this->card.push_back(this->card_element);
 
   if ( config == nullptr ) return false;
 

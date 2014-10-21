@@ -58,6 +58,9 @@ class CardHand
 
     void clearSelectedCard ( void );
     Card& getSelectedCard ( void );
+
+    /// \deprecated Use the provided iterators ::previous, ::next,
+    /// ::set_position, etc.
     void selectCard ( Card& card );
 
     bool exists ( const Card& card ) const;
@@ -112,6 +115,8 @@ class CardHand
     bool load ( const std::string& filename );
 
     /// Modify card rank values.
+    ///
+    /// \fixme This method breaks when we use ::set_position && friends
     void modifyCardRank ( bool modifier, nom::uint32 direction );
 
     /// Getter for obtaining the strongest card in the player's hand.
@@ -144,7 +149,5 @@ class CardHand
 /// Pretty print the the card attributes.
 ///
 std::ostream& operator << ( std::ostream& os, const CardHand& rhs );
-
-void Free_CardHand ( CardHand* ptr );
 
 #endif // GAMEAPP_CARD_HAND_HEADERS defined
