@@ -44,9 +44,6 @@ class DialogCursor: public nom::AnimatedSprite
     DialogCursor();
     virtual ~DialogCursor();
 
-    DialogCursor( const nom::SpriteSheet& sheet );
-    DialogCursor( const std::string& filename );
-
     /// \brief Set a positioning map for this game cursor to use.
     void set_position_map( const std::vector<nom::IntRect>& map );
 

@@ -118,6 +118,11 @@ class CardsMenuState: public nom::IState
     /// \brief Bounds map for game cursor movement.
     std::vector<nom::IntRect> cursor_coords_map_;
 
+    /// \brief Cursor state
+    ///
+    /// \remarks Not implemented
+    nom::uint32 cursor_state_;
+
     /// Position of the player's hand (player 1)
     nom::Point2i player1_pos;
 

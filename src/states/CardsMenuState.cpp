@@ -35,7 +35,8 @@ using namespace nom;
 
 CardsMenuState::CardsMenuState ( const nom::SDLApp::shared_ptr& object ) :
   nom::IState( Game::State::CardsMenu ),
-  game( NOM_DYN_SHARED_PTR_CAST( Game, object) )
+  game( NOM_DYN_SHARED_PTR_CAST( Game, object) ),
+  cursor_state_(0)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -198,9 +199,10 @@ void CardsMenuState::on_init( nom::void_ptr data )
   }
 
   // Starting origin for game cursor
-  this->game->cursor.set_position(this->cursor_coords_map_[0].position());
-  this->game->cursor.set_frame(INTERFACE_CURSOR_RIGHT ); // default cursor image
-  this->game->cursor.set_state(0); // default state for navigating card menu
+  this->game->cursor.set_position( this->cursor_coords_map_[0].position() );
+  this->game->cursor.set_frame(INTERFACE_CURSOR_RIGHT); // default cursor image
+
+  this->cursor_state_ = 0;  // default state for navigating card menu
 
   nom::InputActionMapper state;
 
@@ -281,7 +283,6 @@ void CardsMenuState::on_pause(nom::void_ptr data)
   // Hide the cursor so that it doesn't show up during undesirable states such
   // as during the ConfirmationDialogState or Pause states.
   this->game->cursor.set_frame(INTERFACE_CURSOR_NONE);
-  this->game->cursor.update();
 }
 
 void CardsMenuState::on_resume(nom::void_ptr data)
@@ -450,7 +451,7 @@ void CardsMenuState::update_cursor()
   int row_index = 0;      // Card position index as per cards model
   int pos = 0;            // The card's position index (as per CardCollection)
 
-  if( this->game->cursor.state() == 0 )
+  if( this->cursor_state_ == 0 )
   {
     this->game->cursor.set_frame(INTERFACE_CURSOR_RIGHT);
 
@@ -460,8 +461,6 @@ void CardsMenuState::update_cursor()
     pos = this->game->cards_page_model_->map_row(row_index);
     this->selected_card_ = this->game->cards_page_model_->lookup_by_id(pos);
   }
-
-  this->game->cursor.update();
 }
 
 void CardsMenuState::update_page_indicators()
@@ -544,7 +543,7 @@ void CardsMenuState::prev_page()
 
   int page = 0;
 
-  if( this->game->cursor.state() == 0 ) {
+  if( this->cursor_state_ == 0 ) {
 
     NOM_ASSERT( this->game->cards_page_model_ != nullptr );
     if( this->game->cards_page_model_ == nullptr ) return;
@@ -572,7 +571,7 @@ void CardsMenuState::next_page()
   int page = 0;
   int num_pages = 0;
 
-  if( this->game->cursor.state() == 0 ) {
+  if( this->cursor_state_ == 0 ) {
 
     NOM_ASSERT( this->game->cards_page_model_ != nullptr );
     if( this->game->cards_page_model_ == nullptr ) return;
@@ -600,7 +599,7 @@ void CardsMenuState::cursor_prev()
   int row_index = 0;      // Card position index as per cards model
   int pos = 0;            // The card's position index (as per CardCollection)
 
-  if( this->game->cursor.state() == 0 ) {
+  if( this->cursor_state_ == 0 ) {
 
     // Move up if the game cursor is before the first card entry of the page
     if( this->game->cursor.position().y > this->cursor_coords_map_.at(0).y )
@@ -630,7 +629,7 @@ void CardsMenuState::cursor_next()
     NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.at(max_per_page).y:", this->cursor_coords_map_.at(max_per_page).y );
   }
 
-  if( this->game->cursor.state() == 0 ) {
+  if( this->cursor_state_ == 0 ) {
 
     // Move down if the game cursor is not at the last card entry of the page
     if( this->game->cursor.position().y >= this->cursor_coords_map_.at(0).y &&

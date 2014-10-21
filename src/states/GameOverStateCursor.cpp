@@ -33,20 +33,6 @@ GameOverStateCursor::GameOverStateCursor ( void )
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-GameOverStateCursor::GameOverStateCursor  (
-                                            const nom::SpriteSheet& sheet
-                                          ) : AnimatedSprite{ sheet }
-{
-  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
-}
-
-GameOverStateCursor::GameOverStateCursor  (
-                                            const std::string& filename
-                                          ) : AnimatedSprite{ filename }
-{
-  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
-}
-
 GameOverStateCursor::~GameOverStateCursor ( void )
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
@@ -71,9 +57,13 @@ int GameOverStateCursor::cursor_position( void )
 
 nom::int32 GameOverStateCursor::move_left ( void )
 {
-  if ( this->position().x > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) )
-  {
-    this->move ( -(CARD_WIDTH), 0 );
+  if ( this->position().x > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) ) {
+
+    nom::Point2i offset;
+    offset.x = this->position().x - CARD_WIDTH;
+    offset.y = this->position().y;
+    this->set_position(offset);
+
     this->previous();
   }
 
@@ -82,9 +72,13 @@ nom::int32 GameOverStateCursor::move_left ( void )
 
 nom::int32 GameOverStateCursor::move_right ( void )
 {
-  if ( this->position().x < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) )
-  {
-    this->move ( (CARD_WIDTH), 0 );
+  if ( this->position().x < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) ) {
+
+    nom::Point2i offset;
+    offset.x = this->position().x + CARD_WIDTH;
+    offset.y = this->position().y;
+    this->set_position(offset);
+
     this->next();
   }
 

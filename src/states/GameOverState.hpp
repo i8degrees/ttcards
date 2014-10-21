@@ -88,7 +88,7 @@ class GameOverState: public nom::IState
     nom::uint32 gameover_state;
 
     /// Interface cursor
-    GameOverStateCursor cursor;
+    GameOverStateCursor cursor_;
 
     Card selected_card;
 

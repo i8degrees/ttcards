@@ -45,14 +45,6 @@ class GameOverStateCursor: public nom::AnimatedSprite
   public:
     GameOverStateCursor ( void );
 
-    GameOverStateCursor (
-                          const nom::SpriteSheet& sheet
-                        );
-
-    GameOverStateCursor (
-                          const std::string& filename
-                        );
-
     virtual ~GameOverStateCursor ( void );
 
     /// Set a new positioning object for this instance to use

@@ -134,6 +134,18 @@ class PlayState: public nom::IState
 
     nom::uint32 turn; // FIXME: player1 = 0, player2 = 1
 
+    enum CursorState
+    {
+      /// \brief Player hand
+      PLAYER = 0,
+
+      /// \brief Board positions
+      BOARD
+    };
+
+    /// \brief Cursor state
+    enum CursorState cursor_state_;
+
     /// locks cursor state to board placement
     bool cursor_locked;
 

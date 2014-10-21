@@ -39,20 +39,6 @@ DialogCursor::~DialogCursor()
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-DialogCursor::DialogCursor(const nom::SpriteSheet& sheet) :
-  AnimatedSprite(sheet),
-  cursor_position_(0)
-{
-  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
-}
-
-DialogCursor::DialogCursor(const std::string& filename) :
-  AnimatedSprite(filename),
-  cursor_position_(0)
-{
-  // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
-}
-
 void DialogCursor::set_position_map( const std::vector<nom::IntRect>& map )
 {
   this->position_map_ = map;
@@ -80,7 +66,12 @@ bool DialogCursor::prev()
   int first_pos = this->first();
 
   if( this->position().y > this->position_map_[first_pos].y ) {
-    this->move( 0, -(this->position_map_[pos].h) );
+
+    nom::Point2i offset;
+    offset.x = this->position().x;
+    offset.y = this->position().y - this->position_map_[pos].h;
+    this->set_position(offset);
+
     --cursor_position_;
     return true;
   }
@@ -95,9 +86,13 @@ bool DialogCursor::next()
   int pos = this->cursor_position();          // Element position
   int last_pos = this->last() - 1;
 
-  if( this->position().y < this->position_map_[last_pos].y )
-  {
-    this->move( 0, this->position_map_[pos].h );
+  if( this->position().y < this->position_map_[last_pos].y ) {
+
+    nom::Point2i offset;
+    offset.x = this->position().x;
+    offset.y = this->position().y + this->position_map_[pos].h;
+    this->set_position(offset);
+
     ++cursor_position_;
     return true;
   }

@@ -47,6 +47,8 @@ ConfirmationDialogState::~ConfirmationDialogState()
 
 void ConfirmationDialogState::on_init( nom::void_ptr data )
 {
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
   if( this->game->question_box_.set_context(&this->game->gui_window_) == false )
   {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
@@ -73,29 +75,27 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
 
   this->game->question_box_.show();
 
+  nom::SpriteSheet frames;
+
   // Initialize interface cursor
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    this->cursor_ =
-      DialogCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
-
-    if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      // EPIC FAIL
-      nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
-      // return false
+    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load sprite sheet:",
+                    this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
+      // return false;
     }
   #else
-    this->cursor_ =
-      DialogCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
-
-    if( this->cursor_.load( this->game->config.getString("INTERFACE_CURSOR_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      // EPIC FAIL
-      nom::DialogMessageBox ( "Critical Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR_SCALE2X") );
-      // return false
+    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load sprite sheet:",
+                    this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
+      // return false;
     }
   #endif
 
+  this->cursor_.set_texture(this->game->cursor_tex_);
+  this->cursor_.set_sprite_sheet(frames);
   this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 
   // Build offset coordinate map for the game cursor; this is necessary for
@@ -312,8 +312,6 @@ void ConfirmationDialogState::on_mouse_button_dblclick(const nom::Event& ev)
 void ConfirmationDialogState::on_update( float delta_time )
 {
   this->game->gui_window_.update();
-
-  this->cursor_.update();
 
   this->game->window.update();
 }

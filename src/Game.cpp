@@ -477,25 +477,41 @@ bool Game::on_init( void )
     }
   #endif
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    this->cursor =
-      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS") );
+  nom::SpriteSheet cursor_frames;
 
-    if( this->cursor.load( this->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR") );
+  // Initialize interface cursor
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( cursor_frames.load_file( this->config.getString("INTERFACE_CURSOR_ATLAS") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load sprite sheet:",
+                    this->config.getString("INTERFACE_CURSOR_ATLAS") );
+      return false;
+    }
+
+    if( this->cursor_tex_.load( this->config.getString("INTERFACE_CURSOR") ) == false ) {
+
+      nom::DialogMessageBox( "Critical Error", "Could not load resource file: " +
+                              this->config.getString("INTERFACE_CURSOR") );
       return false;
     }
   #else
-    this->cursor =
-      nom::AnimatedSprite( this->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
+    if( cursor_frames.load_file( this->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load sprite sheet:",
+                    this->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
+      return false;
+    }
 
-    if( this->cursor.load( this->config.getString("INTERFACE_CURSOR_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.getString("INTERFACE_CURSOR_SCALE2X") );
+    if( this->cursor_tex_.load( this->config.getString("INTERFACE_CURSOR_SCALE2X") ) == false ) {
+
+      nom::DialogMessageBox(  "Critical Error", "Could not load resource file: " +
+                              this->config.getString("INTERFACE_CURSOR_SCALE2X") );
       return false;
     }
   #endif
+
+  this->cursor.set_texture(this->cursor_tex_);
+  this->cursor.set_sprite_sheet(cursor_frames);
 
   if ( this->collection.load( this->config.getString("CARDS_DB") ) == false )
   {
@@ -509,27 +525,40 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     return false;
   }
 
+  nom::SpriteSheet triad_frames;
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    this->triad_.load_sheet_file( this->game->config.getString("TRIAD_SPINNER_ATLAS" ) );
-
-    if( this->triad_.load( this->config.getString("TRIAD_SPINNER") ) == false ) {
+    if( triad_frames.load_file( this->game->config.getString("TRIAD_SPINNER_ATLAS" ) ) == false ) {
       NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load resource file: ",
+                    "Could not load sprite sheet file:",
+                    this->config.getString("TRIAD_SPINNER") );
+      return false;
+    }
+
+    if( this->triad_tex_.load( this->config.getString("TRIAD_SPINNER") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load texture file: ",
                     this->config.getString("TRIAD_SPINNER") );
       return false;
     }
   #else
-    this->triad_.load_sheet_file( this->game->config.getString("TRIAD_SPINNER_ATLAS_SCALE2X" ) );
-
-    if( this->triad_.load( this->config.getString("TRIAD_SPINNER_SCALE2X") ) == false ) {
+    if( triad_frames.load_file( this->game->config.getString("TRIAD_SPINNER_ATLAS_SCALE2X" ) ) == false ) {
       NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load resource file: ",
+                    "Could not load sprite sheet file:",
+                    this->config.getString("TRIAD_SPINNER_ATLAS_SCALE2X") );
+      return false;
+    }
+
+    if( this->triad_tex_.load( this->config.getString("TRIAD_SPINNER_SCALE2X") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load texture file: ",
                     this->config.getString("TRIAD_SPINNER_SCALE2X") );
       return false;
     }
   #endif
-  this->game->triad_.set_frame( this->game->config.getInteger("TRIAD_START_FRAME") );
 
+  this->triad_.set_texture(this->triad_tex_);
+  this->triad_.set_sprite_sheet(triad_frames);
+  this->triad_.set_frame( this->game->config.getInteger("TRIAD_START_FRAME") );
 
   // Initialize audio subsystem...
   if( this->game->config.get_bool("AUDIO_SFX") ||

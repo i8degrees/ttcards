@@ -51,34 +51,35 @@ GameOverState::~GameOverState( void )
 
 void GameOverState::on_init( nom::void_ptr data )
 {
+  nom::SpriteSheet frames;
+
   // Initialize interface cursor
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    this->cursor =
-      GameOverStateCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
-
-    if( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      nom::DialogMessageBox( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR") );
+    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load sprite sheet:",
+                    this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
       // return false;
     }
   #else
-    this->cursor =
-      GameOverStateCursor( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
-
-    if( this->cursor.load( this->game->config.getString("INTERFACE_CURSOR_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      nom::DialogMessageBox( "Error", "Could not load resource file: " + this->game->config.getString("INTERFACE_CURSOR_SCALE2X") );
+    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") ) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not load sprite sheet:",
+                    this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
       // return false;
     }
   #endif
 
-  this->cursor.set_position_map(&this->game->hand[1]);
-  this->cursor.set_size( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
-  this->cursor.set_position(  Point2i (
+  this->cursor_.set_texture(this->game->cursor_tex_);
+  this->cursor_.set_sprite_sheet(frames);
+
+  this->cursor_.set_position_map(&this->game->hand[1]);
+  this->cursor_.set_size( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
+  this->cursor_.set_position(  Point2i (
                                         PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
                                         PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
                                       ));
-  this->cursor.set_frame(INTERFACE_CURSOR_RIGHT);
+  this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 
   if( this->gameover_state == 0 ) // NotOver
   {
@@ -101,8 +102,8 @@ void GameOverState::on_init( nom::void_ptr data )
     //                 // PLAYER1_GAMEOVER_ORIGIN_Y * 2 );
     //                 PLAYER1_GAMEOVER_ORIGIN_Y );
 
-    // this->cursor.set_position(offset);
-    // this->cursor.set_frame(INTERFACE_CURSOR_LEFT);
+    // this->cursor_.set_position(offset);
+    // this->cursor_.set_frame(INTERFACE_CURSOR_LEFT);
   }
 
   // REMOVE ME
@@ -243,8 +244,8 @@ void GameOverState::on_init( nom::void_ptr data )
 
   nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
 
-  nom::EventCallback move_cursor_left( [&] ( const nom::Event& evt ) { this->cursor.move_left(); } );
-  nom::EventCallback move_cursor_right( [&] ( const nom::Event& evt ) { this->cursor.move_right(); } );
+  nom::EventCallback move_cursor_left( [&] ( const nom::Event& evt ) { this->cursor_.move_left(); } );
+  nom::EventCallback move_cursor_right( [&] ( const nom::Event& evt ) { this->cursor_.move_right(); } );
 
   nom::EventCallback select_card( [&] ( const nom::Event& evt )
     {
@@ -312,14 +313,13 @@ void GameOverState::on_pause( nom::void_ptr data )
 {
   // Hide the cursor so that it doesn't show up during undesirable states such
   // as during the ConfirmationDialogState or Pause states.
-  this->cursor.set_frame( INTERFACE_CURSOR_NONE );
-  this->cursor.update();
+  this->cursor_.set_frame(INTERFACE_CURSOR_NONE);
 }
 
 void GameOverState::on_resume( nom::void_ptr data )
 {
   // Restore the rendering of the player's cursor
-  this->cursor.set_frame ( INTERFACE_CURSOR_RIGHT );
+  this->cursor_.set_frame ( INTERFACE_CURSOR_RIGHT );
 
   nom::int32_ptr response = static_cast<nom::int32_ptr> (data);
 
@@ -371,7 +371,7 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
       // 4. Play sound event
 
       this->game->hand[1].set_position ( idx );
-      this->cursor.set_position( Point2i(PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor.position().y ) );
+      this->cursor_.set_position( Point2i(PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor_.position().y ) );
 
       this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
       Card selected_card = this->game->hand[1].getSelectedCard();
@@ -433,8 +433,6 @@ void GameOverState::on_update( float delta_time )
 
   this->game->gui_window_.update();
 
-  this->cursor.update();
-
   if ( this->transistion.ticks() > 1500 )
   {
     this->transistion.stop();
@@ -478,7 +476,7 @@ void GameOverState::on_draw( nom::RenderWindow& target )
 
   this->game->gui_window_.draw();
 
-  this->cursor.draw ( target );
+  this->cursor_.draw(target);
   if ( this->show_results == true )
   {
     //Card lost_card = this->game->hand[0].getSelectedCard();

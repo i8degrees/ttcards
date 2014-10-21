@@ -141,6 +141,7 @@ class Game: public nom::SDLApp
     nom::Texture gameover_background;
 
     /// interface cursor
+    nom::Texture cursor_tex_;
     nom::AnimatedSprite cursor;
 
     /// our public / visible display context handle
@@ -193,6 +194,7 @@ class Game: public nom::SDLApp
     std::string working_directory;
 
     /// visual indication of which player's turn it is
+    nom::Texture triad_tex_;
     nom::SpriteBatch triad_;
 
   private:

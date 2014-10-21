@@ -106,8 +106,12 @@ class CardView
 
     DrawableList card; // TODO: Rename to cards
     std::shared_ptr<nom::Text> card_text;
+
+    nom::Texture face_tex_;
+    nom::Texture element_tex_;
     std::shared_ptr<nom::SpriteBatch> card_face;
     std::shared_ptr<nom::SpriteBatch> card_element;
+
     std::shared_ptr<nom::Gradient> card_background;
 };
 
