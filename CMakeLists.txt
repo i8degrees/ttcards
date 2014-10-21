@@ -25,7 +25,7 @@ endif ( NOT CMAKE_INSTALL_PREFIX )
 
 # Project configuration
 set ( PROJECT_VERSION_MAJOR 0 )
-set ( PROJECT_VERSION_MINOR 10 )
+set ( PROJECT_VERSION_MINOR 11 )
 set ( PROJECT_VERSION_PATCH 0 )
 
 # Project options
