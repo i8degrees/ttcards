@@ -26,82 +26,40 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_PLAYER_HEADERS
-#define GAMEAPP_PLAYER_HEADERS
+#ifndef GAMEAPP_IPLAYER_HPP
+#define GAMEAPP_IPLAYER_HPP
 
-#include <iostream>
 #include <string>
 
-#include <nomlib/math.hpp>
+#include <nomlib/math/Point2.hpp>
 
 #include "config.hpp"
-#include "CardRules.hpp"
 
-// Forward declarations
-class CardHand;
-class CardView;
-
-enum PlayerState
-{
-  Debug = 0,
-  Reserved
-};
-
-class Player
+class IPlayer
 {
   public:
-    Player ( void );
+    IPlayer();
+    virtual ~IPlayer();
 
-    ~Player ( void );
+    const nom::Point2i& position() const;
+    void set_position(const nom::Point2i& pos);
 
-    Player  (
-              CardHand* player_cards,
-              CardView* view,
-              const CardRules& ruleset
-            );
+    virtual nom::uint32 player_id() const = 0;
+    virtual void set_player_id(nom::uint32 id) = 0;
 
-    const nom::Point2i& position ( void ) const;
-    void set_position ( const nom::Point2i& pos );
+    nom::uint score() const;
+    std::string score_string() const;
+    void set_score(nom::uint score);
 
-    unsigned int getID ( void );
-    void setID ( unsigned int id_ );
-
-    /// Obtain the player's current state
-    enum PlayerState state ( void );
-
-    /// Set the player's state.
-    void set_state ( enum PlayerState state );
-
-    // TODO: Consider branching this into Score class
-    nom::uint32 getScore ( void ) const;
-    const std::string getScoreAsString ( void ) const;
-
-    void setScore ( unsigned int score );
-
-    void update ( void );
-    void draw ( nom::IDrawable::RenderTarget& target );
+    virtual void update() = 0;
+    virtual void draw(nom::IDrawable::RenderTarget& target) /*const*/ = 0;
 
   private:
-    /// Card rendering; defaults to NULL.
-    CardView* card;
-
-    /// Ruleset in use; defaults to CardRules::NoRules.
-    CardRules ruleset;
-
-    /// pointer reference to player's hand; defaults to NULL.
-    std::shared_ptr<CardHand> hand;
-
-    /// x, y origin coords; defaults to Point2i::null (-1,-1).
+    /// \brief Rendering coordinates of the player's hand
     nom::Point2i position_;
 
-    /// unique identifier for tracking each player in game; defaults to 0.
-    unsigned int id;
-
-    /// player's scoreboard; defaults to 0.
-    unsigned int score;
-
-    /// Player's state; defaults to PlayerState::Reserved
-    enum PlayerState player_state;
+    /// \brief The player's score.
+    nom::uint score_;
 };
 
 #endif // GAMEAPP_PLAYER_HEADERS defined

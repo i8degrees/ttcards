@@ -17,7 +17,8 @@ set (
       ${SRC_DIR}/CardHand.cpp
       ${SRC_DIR}/CardRules.cpp
       ${SRC_DIR}/CardView.cpp
-      ${SRC_DIR}/Player.cpp
+      ${SRC_DIR}/IPlayer.cpp
+      ${SRC_DIR}/HumanPlayer.cpp
       ${SRC_DIR}/CPU_Player.cpp
       ${SRC_DIR}/Game.cpp
       ${SRC_DIR}/CardsPageDataSource.cpp

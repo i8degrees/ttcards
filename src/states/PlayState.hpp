@@ -46,12 +46,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "version.hpp"
 #include "resources.hpp"
-#include "Player.hpp"
 #include "Card.hpp"
-#include "CPU_Player.hpp"
 
 // Forward declarations
 class Game;
+class IPlayer;
 
 class PlayState: public nom::IState
 {
@@ -119,9 +118,8 @@ class PlayState: public nom::IState
 
     std::shared_ptr<Game> game;
 
-    /// In-game players (including AI)
-    Player player[2];
-    CPU_Player cpu_player_;
+    /// \brief Game players
+    std::unique_ptr<IPlayer> players_[TOTAL_PLAYERS];
 
     /// x, y coords mapping for player1, player2 cursor starting position
     nom::Point2i player_cursor_coords[2];

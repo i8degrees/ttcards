@@ -35,13 +35,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 
 #include "config.hpp"
+#include "IPlayer.hpp"
 
 // Forward declarations
 class CardHand;
 class Board;
 class BoardTile;
+class CardView;
 
-class CPU_Player
+class CPU_Player: public IPlayer
 {
   public:
     enum Difficulty
@@ -53,23 +55,33 @@ class CPU_Player
 
     typedef std::function<void(BoardTile&)> action_callback;
 
-    CPU_Player();
-    ~CPU_Player();
+    virtual ~CPU_Player();
 
-    void initialize(  Difficulty difficulty,
-                      Board* board,
-                      CardHand* hand,
-                      const action_callback& action);
+    CPU_Player( Difficulty difficulty, Board* board, CardHand* hand,
+                CardView* view, const action_callback& action);
 
+    virtual nom::uint32 player_id() const override;
+    virtual void set_player_id(nom::uint32 id) override;
+
+    /// \brief Calculate the best possible move for the CPU player followed by
+    /// execution of said move with the specified action callback.
+    ///
+    /// \remarks The CPU player plays the following strategy, in the order of
+    /// success (non-NULL result); 1. best_move; 2. edge_move; 3. random_move.
+    virtual void update() override;
+
+    virtual void draw(nom::IDrawable::RenderTarget& target) override;
+
+  protected:
     /// \brief Random play.
     ///
     /// \returns BoardTile::null on failure to pick an un-used tile.
-    BoardTile random_move();
+    virtual BoardTile random_move();
 
     /// \brief Defensive play.
     ///
     /// \returns BoardTile::null on failure to find an empty board edge.
-    BoardTile edge_move();
+    virtual BoardTile edge_move();
 
     /// \brief Calculate a winning play for the CPU player.
     ///
@@ -78,16 +90,7 @@ class CPU_Player
     /// \remarks Iterates through each board position with every card in its
     /// hand until a winning play is found (if any). This is entirely
     /// brute-force (has no true hindsight / strategy).
-    BoardTile best_move();
-
-    /// \brief Calculate the best possible move for the CPU player followed by
-    /// execution of said move with the specified action callback.
-    ///
-    /// \params delta Not implemented.
-    ///
-    /// \remarks The CPU player plays the following strategy, in the order of
-    /// success (non-NULL result); 1. best_move; 2. edge_move; 3. random_move.
-    void update(float delta);
+    virtual BoardTile best_move();
 
   private:
     /// \brief Not implemented; how challenging the CPU player is.
@@ -103,9 +106,15 @@ class CPU_Player
     /// \remarks This object pointer is **not** owned by us; do not free.
     CardHand* hand_;
 
+    /// \remarks This object pointer is **not** owned by us; do not free.
+    CardView* card_renderer_;
+
     /// \brief The assigned function to perform when the CPU player is ready to
     /// execute its turn (place a card down).
     action_callback action_;
+
+    /// \brief The unique identifier for the player.
+    nom::uint32 player_id_;
 };
 
 #endif // CPU_PLAYERS_HEADERS defined
