@@ -68,7 +68,7 @@ class GameOverStateCursor: public nom::AnimatedSprite
     void next ( void );
     void previous ( void );
 
-    CardHand::SharedPtr card_position;
+    CardHand* card_position;
     nom::EventDispatcher cursor_event;
 };
 

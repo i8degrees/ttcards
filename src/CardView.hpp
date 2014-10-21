@@ -36,11 +36,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 
 #include "config.hpp"
-#include "resources.hpp"
-#include "GameConfig.hpp"
 #include "Card.hpp"
 
-// class CardView: public nom::IDrawable
+// Forward declarations
+class GameConfig;
+
 class CardView
 {
   public:
@@ -103,8 +103,6 @@ class CardView
   private:
     nom::Point2i position_;
     Card render_card;
-
-    DrawableList card; // TODO: Rename to cards
     std::shared_ptr<nom::Text> card_text;
 
     nom::Texture face_tex_;
