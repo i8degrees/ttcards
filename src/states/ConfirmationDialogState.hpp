@@ -45,7 +45,7 @@ class Game;
 class ConfirmationDialogState: public nom::IState
 {
   public:
-    ConfirmationDialogState(const nom::SDLApp::shared_ptr& object);
+    ConfirmationDialogState(nom::SDLApp* object);
     virtual ~ConfirmationDialogState();
 
   private:
@@ -65,7 +65,7 @@ class ConfirmationDialogState: public nom::IState
     /// \brief Event handler for player's choice selection.
     void send_response();
 
-    std::shared_ptr<Game> game;
+    Game* game;
 
     DialogCursor cursor_;
 };

@@ -48,8 +48,7 @@ class Game;
 class CardsMenuState: public nom::IState
 {
   public:
-    /// \todo Move most of construction init code to ::on_init.
-    CardsMenuState ( const nom::SDLApp::shared_ptr& object );
+    CardsMenuState(nom::SDLApp* object);
 
     virtual ~CardsMenuState();
 
@@ -111,7 +110,7 @@ class CardsMenuState: public nom::IState
     /// \brief Remove a card from the player's hand.
     void remove_card(const Card& card);
 
-    std::shared_ptr<Game> game;
+    Game* game;
 
     Card selected_card_;
 

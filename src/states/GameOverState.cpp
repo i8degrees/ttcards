@@ -33,11 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-GameOverState::GameOverState  ( const nom::SDLApp::shared_ptr& object,
-                                nom::void_ptr state
-                              ) :
+GameOverState::GameOverState(nom::SDLApp* object, nom::void_ptr state) :
   nom::IState(Game::State::GameOver),
-  game( NOM_DYN_SHARED_PTR_CAST( Game, object) ),
+  game( NOM_SCAST(Game*, object) ),
   show_results( false ),
   gameover_state( *static_cast<nom::uint32_ptr>(state) )
 {

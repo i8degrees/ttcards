@@ -33,9 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-ConfirmationDialogState::ConfirmationDialogState  ( const nom::SDLApp::shared_ptr& object ) :
+ConfirmationDialogState::ConfirmationDialogState(nom::SDLApp* object) :
   nom::IState( Game::State::ConfirmationDialog, nom::IState::Flags::BackRender, nom::IState::Type::Child ),
-  game( NOM_DYN_SHARED_PTR_CAST( Game, object) )
+  game( NOM_SCAST(Game*, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
