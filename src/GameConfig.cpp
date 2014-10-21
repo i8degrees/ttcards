@@ -74,6 +74,18 @@ const nom::int32 GameConfig::getInteger ( const std::string& node ) const
   }
 }
 
+bool GameConfig::get_bool(const std::string& node) const
+{
+  auto itr = config.find(node);
+
+  if( itr == config.end() ) {
+    return false;
+  }
+  else {
+    return itr->second.get_bool();
+  }
+}
+
 nom::StringList GameConfig::string_array(const std::string& node) const
 {
   nom::StringList out;

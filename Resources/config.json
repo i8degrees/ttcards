@@ -76,7 +76,10 @@
     "GUI_GAMEOVER_RULES_INFO_SCALE2X": "gui/scale2x/rules_info.rml",
     "GUI_GAMEOVER_CARD_INFO": "gui/card_info.rml",
     "GUI_GAMEOVER_CARD_INFO_SCALE2X": "gui/scale2x/card_info.rml",
-    "REGION_RULESET": [ "Open" ]
+    "REGION_RULESET": [ "Open" ],
     // "REGION_RULESET": [""]   // CPU Player hand is face down
+
+    "AUDIO_SFX": true,
+    "AUDIO_TRACKS": true
   }
 }

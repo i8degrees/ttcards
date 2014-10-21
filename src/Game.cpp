@@ -530,83 +530,76 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
   #endif
   this->game->triad_.set_frame( this->game->config.getInteger("TRIAD_START_FRAME") );
 
-  // Quick and dirty method of toggling the use of nomlib's audio subsystem
-  // #undef NOM_USE_OPENAL
 
   // Initialize audio subsystem...
-  #if defined( NOM_USE_OPENAL )
-    this->audio_dev_.reset( new nom::AudioDevice() );
-    this->listener_.reset( new nom::Listener() );
-  #else
-    this->audio_dev_.reset( new nom::NullAudioDevice() );
-    this->listener_.reset( new nom::NullListener() );
-  #endif // defined NOM_USE_OPENAL
+  if( this->game->config.get_bool("AUDIO_SFX") ||
+      this->game->config.get_bool("AUDIO_TRACKS") ) {
 
-  for( auto idx = 0; idx != NUM_SOUND_BUFFERS; ++idx )
-  {
-    #if defined( NOM_USE_OPENAL )
-      this->sound_buffers[idx].reset( new nom::SoundBuffer() );
-    #else
-      this->sound_buffers[idx].reset( new nom::NullSoundBuffer() );
+    #if defined(NOM_USE_OPENAL)
+      this->audio_dev_.reset( new nom::AudioDevice() );
+      this->listener_.reset( new nom::Listener() );
+
+      for( auto idx = 0; idx != NUM_SOUND_BUFFERS; ++idx ) {
+        this->sound_buffers[idx].reset( new nom::SoundBuffer() );
+      }
     #endif // defined NOM_USE_OPENAL
   }
+  else {
+    this->audio_dev_.reset( new nom::NullAudioDevice() );
+    this->listener_.reset( new nom::NullListener() );
 
-  // Load optional audio resources
-  if ( this->sound_buffers[0]->load( this->config.getString("CURSOR_MOVE") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_MOVE") );
+    for( auto idx = 0; idx != NUM_SOUND_BUFFERS; ++idx ) {
+      this->sound_buffers[idx].reset( new nom::NullSoundBuffer() );
+    }
   }
 
-  if ( this->sound_buffers[1]->load( this->config.getString("CURSOR_CANCEL") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_CANCEL") );
-  }
+  // Load audio resources
+  if( this->game->config.get_bool("AUDIO_SFX") ) {
 
-  if ( this->sound_buffers[2]->load( this->config.getString("CURSOR_WRONG") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_WRONG") );
-  }
+    if ( this->sound_buffers[0]->load( this->config.getString("CURSOR_MOVE") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_MOVE") );
+    }
 
-  if ( this->sound_buffers[3]->load( this->config.getString("CARD_PLACE") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_PLACE") );
-  }
+    if ( this->sound_buffers[1]->load( this->config.getString("CURSOR_CANCEL") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_CANCEL") );
+    }
 
-  if ( this->sound_buffers[4]->load( this->config.getString("CARD_FLIP") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FLIP") );
-  }
+    if ( this->sound_buffers[2]->load( this->config.getString("CURSOR_WRONG") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CURSOR_WRONG") );
+    }
 
-  if ( this->sound_buffers[5]->load( this->config.getString("SFX_LOAD_GAME") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("SFX_LOAD_GAME") );
-  }
+    if ( this->sound_buffers[3]->load( this->config.getString("CARD_PLACE") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_PLACE") );
+    }
 
-  if ( this->sound_buffers[6]->load( this->config.getString("SFX_SAVE_GAME") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("SFX_SAVE_GAME") );
-  }
+    if ( this->sound_buffers[4]->load( this->config.getString("CARD_FLIP") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("CARD_FLIP") );
+    }
 
-  if ( this->sound_buffers[7]->load( this->config.getString("MUSIC_TRACK") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("MUSIC_TRACK") );
-  }
+    if ( this->sound_buffers[5]->load( this->config.getString("SFX_LOAD_GAME") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("SFX_LOAD_GAME") );
+    }
 
-  if ( this->sound_buffers[8]->load( this->config.getString("MUSIC_WIN_TRACK") ) == false )
-  {
-    NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("MUSIC_WIN_TRACK") );
-  }
+    if ( this->sound_buffers[6]->load( this->config.getString("SFX_SAVE_GAME") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("SFX_SAVE_GAME") );
+    }
 
-  #if defined( NOM_USE_OPENAL )
-    this->cursor_move.reset( new nom::Sound() );
-    this->cursor_cancel.reset( new nom::Sound() );
-    this->cursor_wrong.reset( new nom::Sound() );
-    this->card_place.reset( new nom::Sound() );
-    this->card_flip.reset( new nom::Sound() );
-    this->load_game.reset( new nom::Sound() );
-    this->save_game.reset( new nom::Sound() );
-    this->music_track.reset( new nom::Music() );
-    this->winning_track.reset( new nom::Music() );
+    #if defined(NOM_USE_OPENAL)
+      this->cursor_move.reset( new nom::Sound() );
+      this->cursor_cancel.reset( new nom::Sound() );
+      this->cursor_wrong.reset( new nom::Sound() );
+      this->card_place.reset( new nom::Sound() );
+      this->card_flip.reset( new nom::Sound() );
+      this->load_game.reset( new nom::Sound() );
+      this->save_game.reset( new nom::Sound() );
+    #endif // defined NOM_USE_OPENAL
 
     this->cursor_move->setBuffer( *this->sound_buffers[0] );
     this->cursor_cancel->setBuffer( *this->sound_buffers[1] );
@@ -615,9 +608,8 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     this->card_flip->setBuffer( *this->sound_buffers[4] );
     this->load_game->setBuffer( *this->sound_buffers[5] );
     this->save_game->setBuffer( *this->sound_buffers[6] );
-    this->music_track->setBuffer( *this->sound_buffers[7] );
-    this->winning_track->setBuffer( *this->sound_buffers[8] );
-  #else
+  } // end if AUDIO_SFX
+  else {
     this->cursor_move.reset( new nom::NullSound() );
     this->cursor_cancel.reset( new nom::NullSound() );
     this->cursor_wrong.reset( new nom::NullSound() );
@@ -625,9 +617,32 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     this->card_flip.reset( new nom::NullSound() );
     this->load_game.reset( new nom::NullSound() );
     this->save_game.reset( new nom::NullSound() );
+  }
+
+  if( this->game->config.get_bool("AUDIO_TRACKS") ) {
+
+    if ( this->sound_buffers[7]->load( this->config.getString("MUSIC_TRACK") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("MUSIC_TRACK") );
+    }
+
+    if ( this->sound_buffers[8]->load( this->config.getString("MUSIC_WIN_TRACK") ) == false )
+    {
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.getString("MUSIC_WIN_TRACK") );
+    }
+
+    #if defined(NOM_USE_OPENAL)
+      this->music_track.reset( new nom::Music() );
+      this->winning_track.reset( new nom::Music() );
+    #endif // defined NOM_USE_OPENAL
+
+    this->music_track->setBuffer( *this->sound_buffers[7] );
+    this->winning_track->setBuffer( *this->sound_buffers[8] );
+  } // end if AUDIO_TRACKS
+  else {
     this->music_track.reset( new nom::NullMusic() );
     this->winning_track.reset( new nom::NullMusic() );
-  #endif // defined NOM_USE_OPENAL
+  }
 
   this->music_track->Play();
 

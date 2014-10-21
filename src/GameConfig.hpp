@@ -52,6 +52,7 @@ class GameConfig
 
     const std::string getString ( const std::string& node ) const;
     const nom::int32 getInteger ( const std::string& node ) const;
+    bool get_bool(const std::string& node) const;
 
     /// \returns std::vector<std::string>
     nom::StringList string_array(const std::string& node) const;
