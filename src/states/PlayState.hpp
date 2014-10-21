@@ -55,7 +55,7 @@ class IPlayer;
 class PlayState: public nom::IState
 {
   public:
-    PlayState ( const nom::SDLApp::shared_ptr& object );
+    PlayState(nom::SDLApp* object);
     virtual ~PlayState();
 
     void on_init( nom::void_ptr data );
@@ -116,7 +116,7 @@ class PlayState: public nom::IState
     /// \see nom::InputMapper.
     bool save_game( nom::uint32 flags );
 
-    std::shared_ptr<Game> game;
+    Game* game;
 
     /// \brief Game players
     std::unique_ptr<IPlayer> players_[TOTAL_PLAYERS];

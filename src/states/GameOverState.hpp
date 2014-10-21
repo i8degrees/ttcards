@@ -50,10 +50,7 @@ class Game;
 class GameOverState: public nom::IState
 {
   public:
-    GameOverState (
-                    const nom::SDLApp::shared_ptr& object,
-                    nom::void_ptr state
-                  );
+    GameOverState(nom::SDLApp* object, nom::void_ptr state);
 
     virtual ~GameOverState();
 
@@ -80,7 +77,7 @@ class GameOverState: public nom::IState
     void on_update ( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
-    std::shared_ptr<Game> game;
+    Game* game;
 
     nom::Timer transistion;
     bool show_results;

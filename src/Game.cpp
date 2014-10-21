@@ -55,7 +55,7 @@ Game::Game() :
   save_game{ nullptr },
   music_track{ nullptr },
   winning_track{ nullptr },
-  game { this, tt::free_game }
+  game(this)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
@@ -63,7 +63,7 @@ Game::Game() :
 Game::Game( nom::int32 argc, char* argv[] ) :
   // SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES | INIT_ENGINE_FONTS ),
   SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
-  game { this, tt::free_game }
+  game(this)
 {
   std::ostringstream ttcards_version;
 

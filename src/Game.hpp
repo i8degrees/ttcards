@@ -56,8 +56,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Game: public nom::SDLApp
 {
   public:
-    typedef std::shared_ptr<Game> SharedPtr;
-
     Game();
     Game( nom::int32 argc, char* argv[] );
     virtual ~Game();
@@ -255,18 +253,10 @@ class Game: public nom::SDLApp
     /// flags.
     void dump_collection( void );
 
-    Game::SharedPtr game;
+    Game* game;
 
     /// Timer for tracking frames per second
     nom::FPS fps;
 };
-
-namespace tt {
-
-/// Custom deleter for std::shared_ptr<Game> object; fix for double delete
-/// issues.
-void free_game ( Game* game );
-
-}
 
 #endif // include guard defined

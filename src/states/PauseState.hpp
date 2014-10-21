@@ -47,8 +47,8 @@ class Game;
 class PauseState: public nom::IState
 {
   public:
-    PauseState ( const nom::SDLApp::shared_ptr& object );
-    ~PauseState();
+    PauseState(nom::SDLApp* object);
+    virtual ~PauseState();
 
   private:
     void on_init( nom::void_ptr data );
@@ -64,7 +64,7 @@ class PauseState: public nom::IState
     void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 
-    std::shared_ptr<Game> game;
+    Game* game;
 
     nom::Timer blink_update;
     bool blink_text;

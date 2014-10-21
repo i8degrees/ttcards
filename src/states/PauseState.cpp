@@ -33,9 +33,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-PauseState::PauseState ( const nom::SDLApp::shared_ptr& object ) :
+PauseState::PauseState(nom::SDLApp* object) :
   nom::IState( Game::State::Pause, nom::IState::Flags::BackRender, nom::IState::Type::Child),
-  game( NOM_DYN_SHARED_PTR_CAST( Game, object) )
+  game( NOM_SCAST(Game*, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }

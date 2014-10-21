@@ -35,9 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-PlayState::PlayState ( const nom::SDLApp::shared_ptr& object ) :
+PlayState::PlayState(nom::SDLApp* object) :
   nom::IState( Game::State::Play ),
-  game( NOM_DYN_SHARED_PTR_CAST( Game, object) ),
+  game( NOM_SCAST(Game*, object) ),
   cursor_state_(CursorState::PLAYER)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
