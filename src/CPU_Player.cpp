@@ -32,33 +32,61 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardHand.hpp"
 #include "Board.hpp"
 #include "BoardTile.hpp"
-
-CPU_Player::CPU_Player()
-{
-  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
-
-  this->difficulty_ = Easy;
-}
+#include "CardView.hpp"
 
 CPU_Player::~CPU_Player()
 {
-  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
+  // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-void CPU_Player::initialize(  Difficulty difficulty,
-                              Board* board,
-                              CardHand* hand,
-                              const action_callback& action)
+CPU_Player::CPU_Player( Difficulty difficulty, Board* board, CardHand* hand,
+                        CardView* view, const action_callback& action)
 {
+  // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
+
   this->difficulty_ = difficulty;
   this->board_ = board;
   this->hand_ = hand;
+  this->card_renderer_ = view;
   this->action_ = action;
+  this->player_id_ = 1;
+
+  NOM_ASSERT(this->hand_ != nullptr);
+  NOM_ASSERT(this->board_ != nullptr);
+  NOM_ASSERT(this->card_renderer_ != nullptr);
+}
+
+nom::uint32 CPU_Player::player_id() const
+{
+  return this->player_id_;
+}
+
+// Maps the player's (card) hand with their respective ID; this keeps track of
+// who's card is which and is used in CardView -- the rendering the card
+// background -- and most importantly, in the Board class where we compare cards
+// placed to determine whom's card to flip over to the respective player.
+//
+// card.player_owner is the *original* player owner of a card and should never be
+// altered once set initially here.
+//
+void CPU_Player::set_player_id(nom::uint32 id)
+{
+  this->player_id_ = id;
+
+  NOM_ASSERT(this->hand_ != nullptr);
+  for( nom::uint32 pid = 0; pid < this->hand_->cards.size(); pid++ )
+  {
+    this->hand_->cards[pid].setPlayerID(id);
+    this->hand_->cards[pid].setPlayerOwner(id);
+  }
 }
 
 BoardTile CPU_Player::random_move()
 {
   BoardTile tile;
+
+  NOM_ASSERT(this->hand_ != nullptr);
+  NOM_ASSERT(this->board_ != nullptr);
 
   int moveX = nom::uniform_int_rand<int>(0, BOARD_GRID_WIDTH - 1);
   int moveY = nom::uniform_int_rand<int>(0, BOARD_GRID_HEIGHT - 1);
@@ -79,6 +107,9 @@ BoardTile CPU_Player::random_move()
 BoardTile CPU_Player::edge_move()
 {
   BoardTile tile;
+
+  NOM_ASSERT(this->hand_ != nullptr);
+  NOM_ASSERT(this->board_ != nullptr);
 
   // int rand_choice = 0;
   nom::IntRect board_edges[4];
@@ -146,6 +177,9 @@ BoardTile CPU_Player::edge_move()
 BoardTile CPU_Player::best_move()
 {
   BoardTile tile;
+
+  NOM_ASSERT(this->hand_ != nullptr);
+  NOM_ASSERT(this->board_ != nullptr);
 
   for( auto y = 0; y != BOARD_GRID_HEIGHT; ++y ) {
     for( auto x = 0; x != BOARD_GRID_WIDTH; ++x ) {
@@ -267,7 +301,7 @@ BoardTile CPU_Player::best_move()
   return tile;
 }
 
-void CPU_Player::update(float delta)
+void CPU_Player::update()
 {
   BoardTile tile;
 
@@ -288,4 +322,27 @@ void CPU_Player::update(float delta)
   if( tile != BoardTile::null ) {
     this->action_.operator()(tile);
   }
+}
+
+void CPU_Player::draw(nom::IDrawable::RenderTarget& target)
+{
+  nom::Point2i pos(nom::Point2i::zero);
+
+  NOM_ASSERT(this->hand_ != nullptr);
+  NOM_ASSERT(this->card_renderer_ != nullptr);
+  for( nom::int32 idx = 0; idx < this->hand_->size(); idx++ ) {
+
+    // Position of Player's cards in their hand
+    pos.x = this->position().x;
+    pos.y = this->position().y + ( CARD_HEIGHT / 2 ) * idx;
+
+    if( this->hand_->position() == idx) {
+      pos.x += 16;
+    }
+
+    this->card_renderer_->reposition(pos);
+    this->card_renderer_->setViewCard( this->hand_->cards.at(idx) );
+    this->card_renderer_->draw(target);
+
+  } // end for this->hand loop
 }

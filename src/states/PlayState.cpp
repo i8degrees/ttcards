@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "Game.hpp"
+#include "HumanPlayer.hpp"
+#include "CPU_Player.hpp"
 
 using namespace nom;
 
@@ -76,6 +78,11 @@ void PlayState::on_resume( nom::void_ptr data )
 
 void PlayState::on_init( nom::void_ptr data )
 {
+  CPU_Player::action_callback
+    cpu_player_action_callback( [&] (BoardTile& tile) {
+      this->moveTo( tile.bounds().x, tile.bounds().y );
+    });
+
   while( this->game->hand[0].size() < MAX_PLAYER_HAND )
   {
     // this->game->hand[0].shuffle(8, 10, this->game->collection);
@@ -99,11 +106,20 @@ void PlayState::on_init( nom::void_ptr data )
   this->game->rules.setRules(0);
   this->game->board = Board ( this->game->rules, &this->game->card );
 
-  this->player[0] = Player ( &this->game->hand[0], &this->game->card, this->game->rules );
-  this->player[0].set_position( Point2i( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y ) );
+  this->players_[0].reset( new HumanPlayer(&this->game->hand[0], &this->game->card) );
+  // this->players_[0].reset( new CPU_Player( CPU_Player::Difficulty::Easy,
+  //                                   &this->game->board,
+  //                                   &this->game->hand[0],
+  //                                   &this->game->card,
+  //                                   cpu_player_action_callback ) );
+  this->players_[0]->set_position( Point2i( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y ) );
 
-  this->player[1] = Player ( &this->game->hand[1], &this->game->card, this->game->rules );
-  this->player[1].set_position( Point2i( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y ) );
+  this->players_[1].reset( new CPU_Player(  CPU_Player::Difficulty::Easy,
+                                          &this->game->board,
+                                          &this->game->hand[1],
+                                          &this->game->card,
+                                          cpu_player_action_callback ) );
+  this->players_[1]->set_position( Point2i( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y ) );
 
   // player1, player2 cursor X, Y coords
   this->player_cursor_coords[0] = nom::Point2i( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
@@ -184,8 +200,9 @@ void PlayState::on_init( nom::void_ptr data )
   // Initialize player cards to their respective defaults; this lets us know not
   // only whose cards they are originally but also presently -- critical in card
   // flipping, scoreboard keeping and end of game tallying logic.
-  this->player[0].setID ( Card::PLAYER1 );
-  this->player[1].setID ( Card::PLAYER2 );
+  for( auto idx = 0; idx != TOTAL_PLAYERS; ++idx ) {
+    this->players_[idx]->set_player_id(idx+1);
+  }
 
   // Update both player scores now that we have the player scoreboard X, Y
   // origins calculated for rendering.
@@ -202,16 +219,6 @@ void PlayState::on_init( nom::void_ptr data )
   this->player_timer[1].setFrameRate ( 500 );
   this->cursor_blink.start();
   this->blink_cursor = false;
-
-  CPU_Player::action_callback
-    cpu_player_action_callback( [&] (BoardTile& tile) {
-      this->moveTo( tile.bounds().x, tile.bounds().y );
-    });
-
-  this->cpu_player_.initialize( CPU_Player::Difficulty::Easy,
-                                &this->game->board,
-                                &this->game->hand[1],
-                                cpu_player_action_callback );
 
   // this->game->input_mapper.clear();
   nom::InputActionMapper state;
@@ -274,7 +281,6 @@ void PlayState::on_init( nom::void_ptr data )
       {
         // FIXME: Why are these inversed???
         this->skip_turn = true;
-        this->player[1].set_state( PlayerState::Debug );
         this->endTurn();
       }
     );
@@ -283,7 +289,6 @@ void PlayState::on_init( nom::void_ptr data )
       {
         // FIXME: Why are these inversed???
         this->skip_turn = false;
-        this->player[1].set_state( PlayerState::Reserved );
         this->endTurn();
       }
     );
@@ -387,7 +392,7 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
   uint32 player_turn = this->get_turn(); // Ignore player2 mouse input
 
   // Player cursor positioning
-  Point2i player_pos = this->player[player_turn].position();
+  Point2i player_pos = this->players_[player_turn]->position();
 
   // mouse input coordinates
   Point2i mouse_input( ev.mouse.x, ev.mouse.y );
@@ -404,7 +409,7 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
   // Player hand selection checks; we must calculate the valid bounds of any
   // given card in the player's hand -- the current player position combined
   // with the known card size yields rectangular coordinates we can compare.
-  for ( nom::int32 idx = 0; idx < this->game->hand[ player_turn ].size(); idx++ )
+  for ( nom::int32 idx = 0; idx < this->game->hand[player_turn].size(); idx++ )
   {
     card_bounds = IntRect ( player_pos.x,
                             player_pos.y,
@@ -418,7 +423,7 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
       // 1. Update player's selected card
       // 2. Update cursor position
       // 3. Play sound event
-      this->game->hand[ player_turn ].selectCard ( this->game->hand[ player_turn ].cards[ idx ] );
+      this->game->hand[player_turn].set_position(idx);
 
       this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
 
@@ -536,7 +541,7 @@ void PlayState::resetCursor ( void )
 {
   unsigned int player_turn = get_turn();
 
-  this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards.front() );
+  this->game->hand[player_turn].front();
 
   this->cursor_state_ = CursorState::PLAYER;
   this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[0].x, this->player_cursor_coords[0].y) );
@@ -765,7 +770,7 @@ void PlayState::moveCursorUp ( void )
       this->game->cursor_.move ( 0, -( CARD_HEIGHT / 2 ) );
 
       pos = this->getCursorPos();
-      this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards[pos] );
+      this->game->hand[player_turn].previous();
     }
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
@@ -788,7 +793,7 @@ void PlayState::moveCursorDown ( void )
       this->game->cursor_.move ( 0, ( CARD_HEIGHT / 2 ) );
 
       pos = this->getCursorPos();
-      this->game->hand[player_turn].selectCard ( this->game->hand[player_turn].cards[pos] );
+      this->game->hand[player_turn].next();
     }
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
@@ -844,11 +849,11 @@ void PlayState::updateScore ( void )
     // Number of cards player has remaining
     nom::uint32 hand_count = this->game->hand[players].size();
 
-    this->player[players].setScore ( board_count + hand_count );
+    this->players_[players]->set_score(board_count + hand_count);
 
     // Update the font responsible for rendering the score
-    this->game->scoreboard_text[players].set_text ( this->player[players].getScoreAsString() );
-    this->game->scoreboard_text[players].set_position ( nom::Point2i (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
+    this->game->scoreboard_text[players].set_text( this->players_[players]->score_string() );
+    this->game->scoreboard_text[players].set_position( nom::Point2i (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
   }
 }
 
@@ -861,8 +866,7 @@ void PlayState::on_update( float delta_time )
   this->on_update_info_dialogs();
   this->game->gui_window_.update();
 
-  this->player[0].update();
-  this->player[1].update();
+  this->players_[0]->update();
 
   // Player two animation effect
   if ( ! ( this->player_timer[1].ticks() + this->player_timer[1].framerate() >= delta_time ) )
@@ -870,12 +874,12 @@ void PlayState::on_update( float delta_time )
     this->player_timer[1].start();
 
     // Only show player2 animation when we are not controlling him
-    if ( this->skip_turn == false )
-    {
+    if ( this->skip_turn == false ) {
+
       // Fixes a out of bounds issue that occurs occasionally upon state phasing
       if( this->game->hand[PLAYER2].size() > 0 ) {
         nom::uint32 rand_pick = nom::uniform_int_rand<uint32>(0, this->game->hand[PLAYER2].size() - 1);
-        this->game->hand[PLAYER2].selectCard ( this->game->hand[PLAYER2].cards[ rand_pick ] );
+        this->game->hand[PLAYER2].set_position(rand_pick);
       }
     }
   }
@@ -888,7 +892,7 @@ void PlayState::on_update( float delta_time )
 
     // Skipping a turn like this is only available in debug versions
     if ( this->skip_turn == false ) {
-      this->cpu_player_.update(delta_time);
+      this->players_[1]->update();
     } // player2
 
   } // end player1
@@ -902,8 +906,9 @@ void PlayState::on_draw( nom::RenderWindow& target )
 
   this->game->board.draw ( target );
 
-  this->player[0].draw ( target );
-  this->player[1].draw ( target );
+  for(auto idx = 0; idx != TOTAL_PLAYERS; ++idx ) {
+    this->players_[idx]->draw(target);
+  }
 
   this->game->triad_.draw(target);
 
@@ -922,13 +927,13 @@ void PlayState::on_draw( nom::RenderWindow& target )
   // game / round is over when board card count >= 9
   if ( this->game->board.getCount () >= 9 || this->game->hand[ PLAYER1 ].size() == 0 || this->game->hand[ PLAYER2 ].size() == 0 )
   {
-    if ( this->player[ PLAYER1 ].getScore() > this->player[ PLAYER2 ].getScore() )
+    if( this->players_[PLAYER1]->score() > this->players_[PLAYER2]->score() )
     {
       this->gameover_state = GameOverType::Won;
       this->game->gameover_text.set_color ( nom::Color4i::White );
       this->game->gameover_text.set_text ( "You win!" );
     }
-    else if ( this->player[ PLAYER1 ].getScore() < this->player[ PLAYER2 ].getScore() )
+    else if( this->players_[PLAYER1]->score() < this->players_[PLAYER2]->score() )
     {
       this->gameover_state = GameOverType::Lost;
       this->game->gameover_text.set_color ( nom::Color4i::White );

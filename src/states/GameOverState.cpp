@@ -370,12 +370,10 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
       // 3. Update the card info message box
       // 4. Play sound event
 
-      this->game->hand[1].set_position ( idx );
+      this->game->hand[1].set_position(idx);
       this->cursor_.set_position( Point2i(PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor_.position().y ) );
 
-      this->game->hand[1].selectCard ( this->game->hand[1].cards[ idx ] );
-      Card selected_card = this->game->hand[1].getSelectedCard();
-
+      Card selected_card = this->game->hand[1].cards[idx];
       this->game->card_info_box_.set_message_text( selected_card.getName() );
 
       this->game->cursor_move->Play();
