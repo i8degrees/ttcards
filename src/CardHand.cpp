@@ -137,11 +137,6 @@ nom::int32 CardHand::at ( Card& card )
 void CardHand::front()
 {
   this->set_position(0);
-
-  if( this->cards.size() > 0 ) {
-    // Deprecated
-    this->selectedCard = this->cards[0];
-  }
 }
 
 nom::size_type CardHand::position()
@@ -160,9 +155,6 @@ void CardHand::next()
     pos = pos + 1;
     this->set_position(pos);
   }
-
-  // Deprecated
-  this->selectedCard = this->cards[pos];
 }
 
 void CardHand::previous()
@@ -176,9 +168,6 @@ void CardHand::previous()
     pos = pos - 1;
     this->set_position(pos);
   }
-
-  // Deprecated
-  this->selectedCard = this->cards[pos];
 }
 
 void CardHand::clear ( void )
@@ -362,7 +351,13 @@ const Card CardHand::weakest ( void )
 
 void CardHand::set_position(nom::size_type pos)
 {
+  NOM_ASSERT( pos <= this->size() );
+
   this->position_ = pos;
+
+  if( this->size() > 0 && pos < this->size() ) {
+    this->selectedCard = this->cards[pos];
+  }
 }
 
 void CardHand::set_face_down(bool state)
