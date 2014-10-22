@@ -89,6 +89,8 @@ void CardsMenuState::on_init( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
+  this->game->music_track->Play();
+
   // Reset the state of the cards model to ensure no persistent state; this
   // can lead to subtle bugs or worse if we don't do this
   this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );

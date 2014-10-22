@@ -80,6 +80,6 @@
     // "REGION_RULESET": [""]   // CPU Player hand is face down
 
     "AUDIO_SFX": true,
-    "AUDIO_TRACKS": true
+    "AUDIO_TRACKS": false
   }
 }

@@ -673,12 +673,6 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     this->winning_track.reset( new nom::NullMusic() );
   }
 
-  this->music_track->Play();
-
-  #if defined (NOM_DEBUG)
-    this->music_track->Pause();
-  #endif
-
   this->game->input_mapper.clear();
 
   nom::InputActionMapper state;

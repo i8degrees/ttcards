@@ -90,7 +90,11 @@ void GameOverState::on_init( nom::void_ptr data )
   else if( this->gameover_state == 2 ) // Player 1 won
   {
     NOM_DUMP("You won!");
-    // ...
+
+    // Play "You won!" music track
+    this->game->music_track->Stop();
+    this->game->winning_track->Play();
+
   } // end gameover_state == 1
 
   else if( this->gameover_state == 3 ) // Player 2 won
