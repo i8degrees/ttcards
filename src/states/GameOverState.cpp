@@ -115,12 +115,6 @@ void GameOverState::on_init( nom::void_ptr data )
   //   this->game->hand[1].shuffle ( 1, 7, this->game->collection );
   // }
 
-  for( auto idx = 0; idx < MAX_PLAYER_HAND; idx++ )
-  {
-    this->game->hand[0].cards[idx].setPlayerID(Card::PLAYER1);
-    this->game->hand[1].cards[idx].setPlayerID(Card::PLAYER2);
-  }
-
   // Reset the player's hand back to the front, so our cursor tracking is
   // always accurate.
   //
@@ -405,7 +399,7 @@ void GameOverState::on_user_event( const nom::Event& ev )
     // has been reached.
     this->game->card_info_box_.disable();
 
-    nom::int32 card_pos = this->game->hand[1].position();
+    nom::size_type card_pos = this->game->hand[1].position();
     if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
     {
       // FIXME; should have no spacing on card printout

@@ -134,53 +134,51 @@ nom::int32 CardHand::at ( Card& card )
   return pos;
 }
 
-void CardHand::front ( void )
+void CardHand::front()
 {
-  this->set_position ( 0 );
-  this->selectCard ( this->cards.front() );
-}
+  this->set_position(0);
 
-nom::int32 CardHand::position ( void )
-{
-  return this->card_position;
-}
-
-void CardHand::next ( void )
-{
-  nom::int32 pos = this->position();
-  CardsIterator itr;
-
-  if ( itr == this->cards.end() )
-  {
-    this->set_position ( 0 );
+  if( this->cards.size() > 0 ) {
+    // Deprecated
+    this->selectedCard = this->cards[0];
   }
-  else
-  {
+}
+
+nom::size_type CardHand::position()
+{
+  return this->position_;
+}
+
+void CardHand::next()
+{
+  nom::size_type pos = this->position();
+
+  if( pos >= this->cards.size() ) {
+    this->set_position(0);
+  }
+  else {
     pos = pos + 1;
-    this->set_position ( pos );
+    this->set_position(pos);
   }
 
-  itr = this->cards.begin()+pos;
-  this->selectedCard = *itr;
+  // Deprecated
+  this->selectedCard = this->cards[pos];
 }
 
-void CardHand::previous ( void )
+void CardHand::previous()
 {
-  nom::int32 pos = this->position();
-  CardsIterator itr;
+  nom::size_type pos = this->position();
 
-  if ( itr == this->cards.end() || itr == this->cards.begin() )
-  {
-    this->set_position ( 0 );
+  if( pos >= this->cards.size() || pos == 0) {
+    this->set_position(0);
   }
-  else
-  {
+  else {
     pos = pos - 1;
-    this->set_position ( pos );
+    this->set_position(pos);
   }
 
-  itr = this->cards.begin()+pos;
-  this->selectedCard = *itr;
+  // Deprecated
+  this->selectedCard = this->cards[pos];
 }
 
 void CardHand::clear ( void )
@@ -362,9 +360,9 @@ const Card CardHand::weakest ( void )
   return weakest_cards.front();
 }
 
-void CardHand::set_position ( nom::int32 pos )
+void CardHand::set_position(nom::size_type pos)
 {
-  this->card_position = pos;
+  this->position_ = pos;
 }
 
 void CardHand::set_face_down(bool state)

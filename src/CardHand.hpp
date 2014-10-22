@@ -68,13 +68,13 @@ class CardHand
     /// Make selected card the first element in stack
     ///
     /// The current card position is reset to zero.
-    void front ( void );
+    void front();
 
     /// Obtain the current position we are at in the cards vector
     ///
     /// Returns a number between zero and the maximum card element in the
     /// vector.
-    nom::int32 position ( void );
+    nom::size_type position();
 
     /// Increment the position we are at in the cards vector by one.
     ///
@@ -82,7 +82,7 @@ class CardHand
     /// zero.
     ///
     /// We always update the selected card to this calculated position.
-    void next ( void );
+    void next();
 
     /// Decrement the position we are at in the cards vector by one.
     ///
@@ -90,10 +90,10 @@ class CardHand
     /// the position to zero.
     ///
     /// We always update the selected card to this calculated position.
-    void previous ( void );
+    void previous();
 
     /// Sets the position we are at in the cards vector
-    void set_position ( nom::int32 pos );
+    void set_position(nom::size_type pos);
 
     void clear ( void );
     nom::uint32 size ( void ) const;
@@ -140,7 +140,7 @@ class CardHand
 
   private:
     /// Track the current position we are at in the cards vector
-    nom::int32 card_position;
+    nom::size_type position_;
 
     /// Player's active card
     Card selectedCard;
