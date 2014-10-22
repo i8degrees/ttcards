@@ -52,8 +52,8 @@ CardView::CardView ( void )
     this->card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
     this->card_background->set_margins( Point2i(1,1) );
   #else
-    this->card_background->set_size( Size2i(CARD_WIDTH-4, CARD_HEIGHT-4) );
-    this->card_background->set_margins( Point2i(2,2) );
+    this->card_background->set_size( Size2i(CARD_WIDTH-6, CARD_HEIGHT-6) );
+    this->card_background->set_margins( Point2i(3,2) );
   #endif
 
   this->card_background->set_fill_direction( nom::Gradient::FillDirection::Top );
