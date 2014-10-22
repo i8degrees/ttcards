@@ -105,10 +105,10 @@ void GameOverState::on_init( nom::void_ptr data )
   this->game->hand[0].set_face_down(false);
   this->game->hand[1].set_face_down(false);
 
-  if( this->gameover_state_ == 1 ) { // Draw
+  if( this->gameover_state_ == GameOverType::Tie ) {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "Draw...");
   }
-  else if( this->gameover_state_ == 2 ) { // Player 1 won
+  else if( this->gameover_state_ == GameOverType::Won ) {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "You win!");
 
     // Play "You won!" music track
@@ -116,7 +116,7 @@ void GameOverState::on_init( nom::void_ptr data )
     this->game->winning_track->Play();
 
   }
-  else if( this->gameover_state_ == 3 ) { // Player 2 won
+  else if( this->gameover_state_ == GameOverType::Lost ) {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "You lose...");
 
     // Stub logic
@@ -129,7 +129,7 @@ void GameOverState::on_init( nom::void_ptr data )
                     "Lost", strongest_card.getName() );
     }
   }
-  else {
+  else {  // GameOverType::NotOver
     // We shouldn't ever see this
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Game was not over:",

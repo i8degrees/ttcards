@@ -82,9 +82,6 @@ class GameOverState: public nom::IState
     nom::Timer transistion;
     bool show_results;
 
-    /// \todo Use GameOverType
-    ///
-    /// see config.hpp, PlayState
     nom::uint32 gameover_state_;
 
     /// Interface cursor
