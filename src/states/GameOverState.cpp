@@ -405,7 +405,7 @@ void GameOverState::on_user_event( const nom::Event& ev )
     // has been reached.
     this->game->card_info_box_.disable();
 
-    nom::int32 card_pos = this->game->hand[1].at ( selected_card );
+    nom::int32 card_pos = this->game->hand[1].position();
     if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
     {
       // FIXME; should have no spacing on card printout
