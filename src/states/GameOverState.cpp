@@ -37,7 +37,7 @@ GameOverState::GameOverState(nom::SDLApp* object, nom::void_ptr state) :
   nom::IState(Game::State::GameOver),
   game( NOM_SCAST(Game*, object) ),
   show_results( false ),
-  gameover_state( *static_cast<nom::uint32_ptr>(state) )
+  gameover_state_( *static_cast<nom::uint32_ptr>(state) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -79,52 +79,69 @@ void GameOverState::on_init( nom::void_ptr data )
                                       ));
   this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 
-  if( this->gameover_state == 0 ) // NotOver
-  {
-    // ???
+  // Fully reconstruct the player's hand by adding the cards placed on the board
+  // back into each player's respective hand.
+  //
+  // 1. Make a a copy of each player's hand as it existed (on the board).
+  // 2. Reset each player card found back to their original color.
+  //
+  for( auto y = 0; y != BOARD_GRID_HEIGHT; ++y) {
+    for( auto x = 0; x != BOARD_GRID_WIDTH; ++x) {
+
+      Card card = this->game->board.get ( x, y );
+
+      if( card.getPlayerOwner() == Card::PLAYER1 ) {
+        card.setPlayerID(Card::PLAYER1);
+        this->game->hand[0].push_back(card);
+      }
+      else if( card.getPlayerOwner() == Card::PLAYER2 ) {
+        card.setPlayerID(Card::PLAYER2);
+        this->game->hand[1].push_back(card);
+      }
+    }
   }
-  else if( this->gameover_state == 1 ) // Draw
-  {
-    NOM_DUMP("Draw...");
+
+  // Both player hands should **always** be shown with the card face rendered
+  this->game->hand[0].set_face_down(false);
+  this->game->hand[1].set_face_down(false);
+
+  if( this->gameover_state_ == 1 ) { // Draw
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "Draw...");
   }
-  else if( this->gameover_state == 2 ) // Player 1 won
-  {
-    NOM_DUMP("You won!");
+  else if( this->gameover_state_ == 2 ) { // Player 1 won
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "You win!");
 
     // Play "You won!" music track
     this->game->music_track->Stop();
     this->game->winning_track->Play();
 
-  } // end gameover_state == 1
+  }
+  else if( this->gameover_state_ == 3 ) { // Player 2 won
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "You lose...");
 
-  else if( this->gameover_state == 3 ) // Player 2 won
-  {
-    NOM_DUMP("You lost!");
-    // Point2i offset( PLAYER1_GAMEOVER_ORIGIN_X,
-    //                 // PLAYER1_GAMEOVER_ORIGIN_Y * 2 );
-    //                 PLAYER1_GAMEOVER_ORIGIN_Y );
+    // Stub logic
+    NOM_ASSERT( this->game->hand[0].empty() == false );
+    if( this->game->hand[0].size() > 0 ) {
 
-    // this->cursor_.set_position(offset);
-    // this->cursor_.set_frame(INTERFACE_CURSOR_LEFT);
+      Card strongest_card = this->game->hand[0].strongest();
+      this->game->hand[0].selectCard(strongest_card);
+      NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE,
+                    "Lost", strongest_card.getName() );
+    }
+  }
+  else {
+    // We shouldn't ever see this
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Game was not over:",
+                  "state should not have been brought into existence?!");
+    // this->game->set_state(Game::State::CardsMenu);
+
+    // So we know something is up
+    exit(NOM_EXIT_FAILURE);
   }
 
-  // REMOVE ME
-  // while ( this->game->hand[0].size() < MAX_PLAYER_HAND )
-  // {
-  //   this->game->hand[0].shuffle ( 8, 10, this->game->collection );
-  // }
-
-  // while ( this->game->hand[1].size() < MAX_PLAYER_HAND )
-  // {
-  //   this->game->hand[1].shuffle ( 1, 7, this->game->collection );
-  // }
-
   // Reset the player's hand back to the front, so our cursor tracking is
-  // always accurate.
-  //
-  // POSSIBLE BUG; if we try to do this before we initialize the game cursor,
-  // we crash for some strange reason! I think it may have something to do
-  // with the order of initialization?
+  // accurate.
   this->game->hand[1].front();
 
   // Northern message box
@@ -180,58 +197,6 @@ void GameOverState::on_init( nom::void_ptr data )
 
   this->game->card_info_box_.set_message_text( this->game->hand[1].getSelectedCard().getName() );
   this->game->card_info_box_.show();
-
-  // Fully reconstruct the player's hand by adding the cards placed on the board
-  // back into each player's respective hand.
-  //
-  // 1. Make a a copy of each player's hand as it existed (on the board).
-  // 2. Reset each player card found back to their original color.
-  //
-  for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
-  {
-    for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
-    {
-      Card card = this->game->board.get ( x, y );
-
-      if ( card.getPlayerOwner() == Card::PLAYER1 )
-      {
-        card.setPlayerID( Card::PLAYER1 );
-        this->game->hand[0].push_back ( card );
-      }
-      else if ( card.getPlayerOwner() == Card::PLAYER2 )
-      {
-        card.setPlayerID( Card::PLAYER2 );
-        this->game->hand[1].push_back ( card );
-      }
-    }
-  }
-
-  if ( this->gameover_state == 0 ) // Draw
-  {
-    // Do stuff related to game tie
-  }
-  else if ( this->gameover_state == 1 ) // You won!
-  {
-    // Play "You won!" music track
-    this->game->music_track->Stop();
-
-    #if ! defined (NOM_DEBUG)
-      this->game->winning_track->Play();
-    #endif
-
-  }
-
-  else if( this->gameover_state == 3 ) // You lost
-  {
-    //nom::int32 rand_pick = nom::randomInteger ( 0, this->game->hand[0].size() );
-    this->game->hand[0].front();
-  }
-
-  //this->selected_card = this->game->hand[1].getSelectedCard();
-
-  // Both player hands should **always** be shown with the card face rendered
-  this->game->hand[0].set_face_down(false);
-  this->game->hand[1].set_face_down(false);
 
   // Commence the countdown on the showing of results!
   this->transistion.start();

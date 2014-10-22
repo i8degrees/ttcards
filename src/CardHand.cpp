@@ -109,6 +109,11 @@ void CardHand::selectCard ( Card& card )
 #endif
 }
 
+bool CardHand::empty() const
+{
+  return this->cards.empty();
+}
+
 nom::uint32 CardHand::size ( void ) const
 {
   return this->cards.size();

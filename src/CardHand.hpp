@@ -96,6 +96,7 @@ class CardHand
     void set_position(nom::size_type pos);
 
     void clear ( void );
+    bool empty() const;
     nom::uint32 size ( void ) const;
     nom::int32 at ( Card& card );
 
