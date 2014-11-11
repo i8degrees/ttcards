@@ -148,13 +148,10 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
 
   if ( config == nullptr ) return false;
 
-  if ( card_font.valid() )
-  {
-    this->card_text->set_font( card_font );
-  }
-  else
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not assign card text font" );
+  if( card_font->valid() ) {
+    this->card_text->set_font(card_font);
+  } else {
+    NOM_LOG_ERR( TTCARDS, "Could not assign card text font" );
     return false;
   }
 
