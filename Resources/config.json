@@ -47,14 +47,18 @@
     "CURSOR_WRONG" : "audio/cursor_wrong.wav",
     "GAMEOVER_BACKGROUND" : "images/game-over_background.png",
     "GAMEOVER_BACKGROUND_SCALE2X" : "images/scale2x/game-over_background.png",
-    "GAMEOVER_FONTFACE" : "fonts/TimesNewRoman.ttf",
+    // TODO
+    "GAMEOVER_FONTFACE" : "fonts/gameover.fnt",
+    "GAMEOVER_FONTFACE_SCALE2X" : "fonts/scale2x/gameover.fnt",
     "INTERFACE_CURSOR" : "images/cursors.png",
     "INTERFACE_CURSOR_SCALE2X" : "images/scale2x/cursors.png",
     "INTERFACE_CURSOR_ATLAS" : "images/cursors.json",
     "INTERFACE_CURSOR_ATLAS_SCALE2X" : "images/scale2x/cursors.json",
     "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
     "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
-    "SCORE_FONTFACE" : "fonts/TimesNewRoman.ttf",
+    // TODO
+    "SCORE_FONTFACE" : "fonts/scoreboard.fnt",
+    "SCORE_FONTFACE_SCALE2X": "fonts/scale2x/scoreboard.fnt",
     "GUI_TITLE_FONT" : "fonts/Delicious-Bold.otf",
     "GUI_TEXT_FONT" : "fonts/OpenSans-Regular.ttf",
     "SFX_LOAD_GAME" : "audio/load_game.wav",
@@ -79,7 +83,7 @@
     "REGION_RULESET": [ "Open" ],
     // "REGION_RULESET": [""]   // CPU Player hand is face down
 
-    "AUDIO_SFX": true,
+    "AUDIO_SFX": false,
     "AUDIO_TRACKS": false
   }
 }

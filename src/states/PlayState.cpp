@@ -931,32 +931,31 @@ void PlayState::on_draw( nom::RenderWindow& target )
     {
       this->gameover_state = GameOverType::Won;
       this->game->gameover_text.set_color ( nom::Color4i::White );
-      this->game->gameover_text.set_text ( "You win!" );
+      this->game->gameover_text.set_text ( "You Win!" );
     }
     else if( this->players_[PLAYER1]->score() < this->players_[PLAYER2]->score() )
     {
       this->gameover_state = GameOverType::Lost;
       this->game->gameover_text.set_color ( nom::Color4i::White );
-      this->game->gameover_text.set_text ( "You lose..." );
+      this->game->gameover_text.set_text ( "You Lose..." );
     }
     else // Assume a draw
     {
       this->gameover_state = GameOverType::Tie;
       this->game->gameover_text.set_color ( nom::Color4i::White );
-      this->game->gameover_text.set_text ( "Tie!" );
+      this->game->gameover_text.set_text ( "Draw" );
     }
 
-    nom::Point2i pos = nom::Point2i ( 0, 0 );
-    nom::Size2i size = nom::Size2i ( GAME_RESOLUTION.w, GAME_RESOLUTION.h );
+    this->game->gameover_text.set_position( nom::Point2i(0,0) );
+    nom::set_alignment( &this->game->gameover_text,
+                        Size2i(GAME_RESOLUTION.w, GAME_RESOLUTION.h),
+                        nom::Anchor::MiddleCenter );
 
-    this->game->gameover_text.set_position ( pos );
-    this->game->gameover_text.set_size ( size );
-    this->game->gameover_text.set_alignment ( nom::Anchor::MiddleCenter );
-    this->game->gameover_text.draw ( target );
+    this->game->gameover_text.draw(target);
     this->game->window.update();
 
     // Chill for a second
-    // nom::sleep ( 1000 );
+    nom::sleep(1000);
     if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
     {
       this->game->set_state( Game::State::CardsMenu );

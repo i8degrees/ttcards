@@ -320,6 +320,7 @@ bool Game::on_init( void )
 
   // Initialize libRocket's file interface
   Rocket::Core::FileInterface* fs = nullptr;
+  std::string fs_root;
 
   // Use Resources from the project root instead of the application bundle when
   // in our native development environment; this is to let us quickly reload
@@ -339,13 +340,21 @@ bool Game::on_init( void )
   // [fswatch](https://github.com/emcrisostomo/fswatch) a try for automatic
   // copying of this file. See also: bin/fswatch.sh
   #if defined(NOM_PLATFORM_OSX) && ! defined(NDEBUG)
-    fs = new nom::RocketFileInterface( "../../../../Resources/" );
+    fs_root = "../../../../Resources/";
   #elif defined(NOM_PLATFORM_WINDOWS) && ! defined(NDEBUG)
-    fs = new nom::RocketFileInterface( this->working_directory + "\\" );
+    fs_root = this->working_directory + "\\";
   #else
     // Stub code
-    fs = new nom::RocketFileInterface( this->working_directory + "/Resources/" );
+    fs_root = this->working_directory + "/Resources/";
   #endif
+
+  // Used by both internal and external libRocket interfaces; decorators,
+  // libRocket-rendered fonts and so forth
+  fs = new nom::RocketFileInterface( fs_root.c_str() );
+
+  // Used by nom::BMFont interface (wholly unrelated to libRocket); this sets
+  // the relative file root for filenames given in .FNT files to be loaded from
+  nom::set_file_root(fs_root);
 
   Rocket::Core::SystemInterface* sys =
     new RocketSDL2SystemInterface();
@@ -437,32 +446,41 @@ bool Game::on_init( void )
     }
   #endif
 
-  if( this->scoreboard_font.load( this->config.getString("SCORE_FONTFACE") ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("SCORE_FONTFACE") );
-    return false;
-  }
-  this->scoreboard_font.set_outline(1);
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->scoreboard_font.load( this->config.getString("SCORE_FONTFACE") ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("SCORE_FONTFACE") );
+      return false;
+    }
+  #else
+    if( this->scoreboard_font.load( this->config.getString("SCORE_FONTFACE_SCALE2X") ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("SCORE_FONTFACE_SCALE2X") );
+      return false;
+    }
+  #endif
 
-  if( this->gameover_font.load( this->config.getString("GAMEOVER_FONTFACE") ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_FONTFACE") );
-    return false;
-  }
-  this->gameover_font.set_outline(1);
+  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+    if( this->gameover_font.load( this->config.getString("GAMEOVER_FONTFACE") ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_FONTFACE") );
+      return false;
+    }
+  #else
+    if( this->gameover_font.load( this->config.getString("GAMEOVER_FONTFACE_SCALE2X") ) == false )
+    {
+      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("GAMEOVER_FONTFACE_SCALE2X") );
+      return false;
+    }
+  #endif
 
   // Set both player's scoreboard fonts
-  for( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx )
-  {
+  for( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx ) {
     this->scoreboard_text[idx].set_font(&this->game->scoreboard_font);
-    this->scoreboard_text[idx].set_text_size(48 * SCALE_FACTOR);
-    this->scoreboard_text[idx].set_style(nom::Text::Style::Italic);
   }
 
   // Initialize game over text
   this->gameover_text.set_font(&this->game->gameover_font);
-  this->gameover_text.set_text_size(48 * SCALE_FACTOR);
-  this->gameover_text.set_style(nom::Text::Style::Italic);
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
     if( this->gameover_background.load( this->config.getString("GAMEOVER_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
