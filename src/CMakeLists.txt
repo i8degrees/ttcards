@@ -2,6 +2,11 @@
 
 set ( STATES_DIR "${SRC_DIR}/states" )
 
+# Where to find development header files
+include_directories(  ${SRC_DIR} ${NOMLIB_INCLUDE_DIR}
+                      ${NOMLIB_EXTERNAL_INCLUDE_DIRS}
+)
+
 # Core game infrastructure
 set (
       TTCARDS_SOURCE
@@ -40,6 +45,3 @@ set ( TTCARDS_SOURCE
       ${TTCARDS_SOURCE}
       ${TTCARDS_SOURCE_STATES}
     )
-
-# Include internal project header files
-include_directories ( ${SRC_DIR} )

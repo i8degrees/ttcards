@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 
-#include "nomlib/config.hpp"
+#include <nomlib/config.hpp>
 #include <nomlib/math.hpp>
 
 #include <cassert>

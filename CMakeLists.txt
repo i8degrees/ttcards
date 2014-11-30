@@ -13,7 +13,6 @@ if( POLICY CMP0048 )
   cmake_policy( SET CMP0048 OLD )
 endif( POLICY CMP0048 )
 
-set ( CMAKE_VERBOSE_MAKEFILE OFF CACHE PATH "Verbose Makefile" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
 
@@ -74,9 +73,6 @@ set ( SRC_DIR "src" )
 # Relative path from project root to header files
 set ( TTCARDS_HEADERS_DIR "include" )
 
-# Relative path from project root to the external dependencies directory
-set ( EXTERNAL_DEPS_DIR "third-party" )
-
 # Relative path from the from project root to game resources
 set ( TTCARDS_RESOURCES_DIR "Resources" )
 
@@ -117,248 +113,81 @@ if ( DOCS ) # Generation of documentation via doxygen option
   include ( "${PROJECT_SOURCE_DIR}/cmake/doxygen.cmake" )
 endif ( DOCS )
 
-# Required Dependencies
-#
-# We gather up all of the library & header search paths in two separate
-# variables -- EXT_HEADERS & EXTLIBS -- so we can then make a minimal number
-# of calls to include_directories & linking of libraries.
-#
-# TODO: we should be checking for the existence of these directories beforehand!
+# Third-party dependencies
 
-# Common dependencies (shared between all platforms)
+if( PLATFORM_WINDOWS )
 
-# libRocket dependency
-find_package( OpenGL REQUIRED )
-if( OPENGL_FOUND )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENGL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${OPENGL_LIBRARY} )
-endif( OPENGL_FOUND )
+  # Set the search path for where to find nomlib's CMake package script
+  if( PLATFORM_ARCH STREQUAL "x86" )
+    set( NOMLIB_ROOT "$ENV{SystemDrive}/Program Files (x86)/nomlib" )
+  elseif( PLATFORM_ARCH STREQUAL "x64" )
+    set( NOMLIB_ROOT "$ENV{SystemDrive}/Program Files/nomlib" )
+  endif( PLATFORM_ARCH STREQUAL "x86" )
 
-# This might be a short-term kludge; we are linking statically (by default) so
-# that we are able to start using both nomlib and libRocket in TTcards with a
-# minimum of packaging fuss for the project (statically linking here lets us
-# remove libRocket from the linking of TTcards, and just requires the header
-# files).
-#
-# I'm also not sure that it makes sense to abstract libRocket's higher-level
-# APIs...
-#
-# This only affects builds on OS X. Windows builds always links statically.
-set( NOM_USE_STATIC_LIBROCKET FALSE )
-set( NOM_USE_LIBROCKET_LUA FALSE )
+endif( PLATFORM_WINDOWS )
 
-if ( PLATFORM_WINDOWS )
-  # Header and library paths -- *INCLUDE_DIR and *LIBRARY_DIR, respectively --
-  # *MUST* include trailing backslash for this platform!
-  #
-  # *LIBRARY_DIR variables are used to ease the install of run-time dependencies.
-  # You should have only DLL and LIB file types in the library directories, in
-  # order for our file filtering to weed out the proper ones during installation.
-  #
-  # FIXME: We shouldn't be linking SDL2, Open(AL|GL) or libsndfile dependencies
-  # here. It is intended that nomlib satisfies these dependencies for us!
-  # (We should be matching OS X dependency variables below, more or less).
-  # 2013-11-18
-  set ( NOMLIB_INCLUDE_DIR "C:/Users/jeff/Projects/nomlib.git/include/" )
-  set ( NOMLIB_LIBRARY "C:/Users/jeff/Projects/nomlib.git/build/Debug/nomlib-d.lib" )
-  set ( NOMLIB_LIBRARY_DIR "C:/Users/jeff/Projects/nomlib.git/build/Debug/" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
+# External dependencies prefix (absolute path to nomlib's third-party directory)
+if( NOT NOMLIB_DEPS_PREFIX )
+  message( FATAL_ERROR "The location of the third-party dependencies must be set. See README.md for details." )
+else()
+  # Used by nomlib's find module
+  set(  NOMLIB_DEPS_ROOT ${NOMLIB_DEPS_PREFIX} CACHE PATH
+        "nomlib's third-party dependencies path" )
+  message( STATUS "NOMLIB_DEPS_ROOT: ${NOMLIB_DEPS_PREFIX}" )
+endif()
 
-  # SDL2 dependency
-  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/include/" )
-  set ( SDL2_LIBRARY
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/${PLATFORM_ARCH}/SDL2.lib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/${PLATFORM_ARCH}/SDL2main.lib"
-      )
-  set ( SDL2_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2/lib/${PLATFORM_ARCH}/" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
+find_package( nomlib COMPONENTS
+              core file math system graphics gui ptree serializers REQUIRED
+              OPTIONAL_COMPONENTS audio
+)
 
-  # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/include/" )
-  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/${PLATFORM_ARCH}/SDL2_image.lib" )
-  set ( SDL2_IMAGE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_image/lib/${PLATFORM_ARCH}/" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
+if( PLATFORM_WINDOWS )
+  # Redistribution paths must be absolute, a directory and end with a trailing
+  # slash character (these are fed to CMake's install command). Only filenames
+  # with the extension of '.dll' (case-insensitive) will be copied.
 
-  # SDL2_ttf dependency
-  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/include/" )
-  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/${PLATFORM_ARCH}/SDL2_ttf.lib" )
-  set ( SDL2_TTF_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/SDL2_ttf/lib/${PLATFORM_ARCH}/" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
+  set( SDL2_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/SDL2/lib/${PLATFORM_ARCH}/" )
+  set( SDL2_IMAGE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/SDL2_image/lib/${PLATFORM_ARCH}/" )
+  set( SDL2_TTF_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/SDL2_ttf/lib/${PLATFORM_ARCH}/" )
 
-  # OpenAL dependency
-  set ( OPENAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/include/" )
-  set ( OPENAL_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/${PLATFORM_ARCH}/OpenAL32.lib" )
-  set ( OPENAL_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/OpenAL/lib/${PLATFORM_ARCH}/" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
+  if( PLATFORM_ARCH STREQUAL "x86" )
+    set( OPENAL_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/OpenAL/libs/Win32/" )
+  elseif( PLATFORM_ARCH STREQUAL "x64" )
+    set( OPENAL_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/OpenAL/libs/Win64/" )
+  endif( PLATFORM_ARCH STREQUAL "x86" )
 
-  # libsndfile dependency
-  set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/include/" )
-  set ( LIBSNDFILE_LIBRARY_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/${PLATFORM_ARCH}/" )
-  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libsndfile/lib/${PLATFORM_ARCH}/libsndfile-1.lib" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
+  set( LIBSNDFILE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/libsndfile/lib/${PLATFORM_ARCH}/" )
+  set( LIBROCKET_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/libRocket/lib/${PLATFORM_ARCH}/" )
+  set( LIBROCKET_FREETYPE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/libRocket/bin/${PLATFORM_ARCH}/" )
+  set( MSVCPP_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/msvcpp2013/${PLATFORM_ARCH}/" )
 
-  set ( MSVCPP_LIBRARY_REDIST "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/msvcpp2013/${PLATFORM_ARCH}/" )
+elseif( PLATFORM_OSX )
 
-  # libRocket dependency
-  set ( GLEW_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/include/GL/" )
-  # Paths must be: a) absolute; b) directory; c) end with a slash
-  set ( GLEW_REDIST_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/bin/${PLATFORM_ARCH}/" )
-  set ( GLEW_LIBRARY
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/lib/${PLATFORM_ARCH}/glew32.lib"
-      )
-  set ( EXT_HEADERS ${EXT_HEADERS} "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/glew/include/GL" )
-  set ( EXTLIBS ${EXTLIBS} ${GLEW_LIBRARY} )
-
-  # libRocket dependency (GUI)
-  set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/include" )
-  # Paths must be: a) absolute; b) directory; c) end with a slash
-  set ( LIBROCKET_REDIST_DIRS
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/;${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/bin/${PLATFORM_ARCH}/" )
-  set ( LIBROCKET_LIBRARY
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketControls.lib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketCore.lib"
-        "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/windows/libRocket/lib/${PLATFORM_ARCH}/RocketDebugger.lib"
-      )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
-
-elseif ( PLATFORM_OSX )
-
-  find_package ( nomlib REQUIRED )
-
-  if ( NOMLIB_FOUND )
-    set ( EXT_HEADERS ${EXT_HEADERS} ${NOMLIB_INCLUDE_DIR} )
-    set ( EXTLIBS ${EXTLIBS} ${NOMLIB_LIBRARY} )
-    message( STATUS "Found nomlib: ${NOMLIB_LIBRARY}" )
-  else ( NOT NOMLIB_FOUND )
-    message ( FATAL_ERROR
-              "Not found: nomlib.\n"
-              "\nNOMLIB_INCLUDE_DIR: ${NOMLIB_INCLUDE_DIR}"
-              "\nNOMLIB_LIBRARY: ${NOMLIB_LIBRARY}"
-            )
-  endif ( NOMLIB_FOUND )
-
-  # SDL2 dependency
-  set ( SDL2_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework/Headers" )
-  set ( SDL2_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2.framework" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_INCLUDE_DIR} )
-  #set ( EXTLIBS ${EXTLIBS} ${SDL2_LIBRARY} )
-
-  # SDL2_image dependency
-  set ( SDL2_IMAGE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework/Headers" )
-  set ( SDL2_IMAGE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_image.framework" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_IMAGE_INCLUDE_DIR} )
-  #set ( EXTLIBS ${EXTLIBS} ${SDL2_IMAGE_LIBRARY} )
-
-  # SDL2_ttf dependency
-  set ( SDL2_TTF_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework/Headers" )
-  set ( SDL2_TTF_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/SDL2_ttf.framework" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${SDL2_TTF_INCLUDE_DIR} )
-  #set ( EXTLIBS ${EXTLIBS} ${SDL2_TTF_LIBRARY} )
-
-  # OpenAL dependency
-  set ( OPENAL_INCLUDE_DIR "/System/Library/Frameworks/OpenAL.framework" )
-  set ( OPENAL_LIBRARY "/System/Library/Frameworks/OpenAL.framework" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${OPENAL_INCLUDE_DIR} )
-  #set ( EXTLIBS ${EXTLIBS} ${OPENAL_LIBRARY} )
-
-  # libsndfile dependency
-  set ( LIBSNDFILE_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework/Headers" )
-  set ( LIBSNDFILE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/sndfile.framework" )
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBSNDFILE_INCLUDE_DIR} )
-  #set ( EXTLIBS ${EXTLIBS} ${LIBSNDFILE_LIBRARY} )
-
-  # libRocket dependency (FreeType2)
-  #
   # FIXME: This file needs its RPATH modified; it is **not** being used as the
   # library for executables yet. We are using brew's version installed at
   # /usr/local
-  set ( FREETYPE_LIBRARY "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/bin/libfreetype.6.dylib" )
-  set ( EXTLIBS ${EXTLIBS} ${FREETYPE_LIBRARY} )
+  set( LIBROCKET_FREETYPE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/librocket/bin/libfreetype.6.dylib" )
 
-  # libRocket dependency
-  if( NOM_USE_LIBROCKET_LUA )
-    find_package( Lua REQUIRED )
-
-    if( LUA_FOUND )
-      set ( EXT_HEADERS ${EXT_HEADERS} ${LUA_INCLUDE_DIR} )
-      set ( EXTLIBS ${EXTLIBS} ${LUA_LIBRARY} )
-    endif( LUA_FOUND )
-  endif( NOM_USE_LIBROCKET_LUA )
-
-  # libRocket dependency (GUI)
-
-  set ( LIBROCKET_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/include" )
-
-  if( NOM_USE_STATIC_LIBROCKET )
-    # Note that these are built without debugging (Release) because the
-    # resulting file size was insane otherwise (+158MB).
-    set ( LIBROCKET_LIBRARY
-          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.a"
-          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.a"
-          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.a"
-        )
-
-    if( NOM_USE_LIBROCKET_LUA )
-      set ( LIBROCKET_LIBRARY
-            ${LIBROCKET_LIBRARY}
-            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControlsLua.a"
-            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCoreLua.a"
-          )
-    endif( NOM_USE_LIBROCKET_LUA )
-
-  else( NOT NOM_USE_STATIC_LIBROCKET )
-    # Debug libraries
-    set ( LIBROCKET_LIBRARY
-          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControls.1.dylib"
-          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCore.1.dylib"
-          "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketDebugger.1.dylib"
-        )
-
-    # NOTE: Lua bindings for the dynamic library build has not been tested!
-    if( NOM_USE_LIBROCKET_LUA )
-      set ( LIBROCKET_LIBRARY
-            ${LIBROCKET_LIBRARY}
-            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketControlsLua.1.dylib"
-            "${PROJECT_SOURCE_DIR}/${EXTERNAL_DEPS_DIR}/osx/librocket/lib/libRocketCoreLua.1.dylib"
-          )
-    endif( NOM_USE_LIBROCKET_LUA )
-
-  endif( NOM_USE_STATIC_LIBROCKET )
-
-  set ( EXT_HEADERS ${EXT_HEADERS} ${LIBROCKET_INCLUDE_DIR} )
-  set ( EXTLIBS ${EXTLIBS} ${LIBROCKET_LIBRARY} )
-
-  find_library ( COCOA_LIBRARY Cocoa )
-  mark_as_advanced ( COCOA_LIBRARY )
-  set ( EXTLIBS ${EXTLIBS} ${COCOA_LIBRARY} )
-
-elseif ( PLATFORM_LINUX )
+elseif( PLATFORM_LINUX )
   # TODO
-endif ( PLATFORM_WINDOWS )
+endif( PLATFORM_WINDOWS )
 
-# External header files inclusion
-include_directories (
-                      ${EXT_HEADERS}
-                    )
-
-# List of our source code to be compiled
-include ( "${SRC_DIR}/CMakeLists.txt" )
+# Project source tree to build
+include( "${SRC_DIR}/CMakeLists.txt" )
 
 # Installation phase
 if ( PLATFORM_OSX )
 
   # CMAKE_INSTALL_PREFIX = ttcards.app
 
-  # Set the path of our library dependencies to search within our app bundle
-  set ( INSTALL_NAME_PATH
+  # Set the run-time library search path for where to find external library
+  # dependencies
+  set ( RUNTIME_LIBRARIES_SEARCH_PATH
         "@executable_path/../Frameworks"
+        "@executable_path/../Frameworks/nomlib-core.framework/Frameworks"
+        "@executable_path/../Frameworks/nomlib-system.framework/Frameworks"
+        "@executable_path/../Frameworks/nomlib-audio.framework/Frameworks"
+        "@executable_path/../Frameworks/nomlib-gui.framework/Libraries"
       )
 
   if ( OSXAPP )
@@ -404,33 +233,19 @@ if ( PLATFORM_OSX )
                             "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
                           )
 
-    add_rpath ( "${INSTALL_NAME_PATH}" "${INSTALL_BINARY_PATH}" )
+    add_rpath ( "${RUNTIME_LIBRARIES_SEARCH_PATH}" "${INSTALL_BINARY_PATH}" )
 
-    # Install our external dependencies into our application bundle
-    install ( DIRECTORY
-              "${NOMLIB_LIBRARY}" # nomlib.framework
-              "${SDL2_LIBRARY}" # SDL.framework v2.0.0
+    # Bundle our dependencies into our application bundle
+    install(  DIRECTORY
+              ${NOMLIB_LIBRARIES} # nomlib-component.framework
               DESTINATION "${INSTALL_FRAMEWORK_PATH}"
               PATTERN ".*" EXCLUDE # do not include dotfiles
-              PATTERN "Headers" EXCLUDE # do not include header files
-              PATTERN "CMake" EXCLUDE # do not include CMake config scripts
-            )
-
-    if( NOT NOM_USE_STATIC_LIBROCKET )
-      # Bundle dynamic libraries we depend on
-      #
-      # TODO: Use "Libraries" directory for dynamic libraries.
-      install ( FILES
-                ${LIBROCKET_LIBRARY}
-                DESTINATION "${INSTALL_FRAMEWORK_PATH}"
-              )
-    endif( NOT NOM_USE_STATIC_LIBROCKET )
+    )
 
     # CPack refuses to work with me on anything other than a single dot as the
     # destination target path when we are building a package.
     install ( TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}" )
     #set ( INSTALL_APP_PATH "${CMAKE_INSTALL_PREFIX}" )
-
 
     install ( FILES
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config.json"
@@ -467,12 +282,14 @@ elseif ( PLATFORM_WINDOWS )
 
   # Install library dependencies into binary output directory
   install ( DIRECTORY
-            "${SDL2_LIBRARY_DIR}"
-            "${SDL2_IMAGE_LIBRARY_DIR}"
-            "${SDL2_TTF_LIBRARY_DIR}"
-            "${OPENAL_LIBRARY_DIR}"
-            "${LIBSNDFILE_LIBRARY_DIR}"
-            "${MSVCPP_LIBRARY_REDIST}"
+            "${SDL2_REDIST_DIR}"
+            "${SDL2_IMAGE_REDIST_DIR}"
+            "${SDL2_TTF_REDIST_DIR}"
+            "${OPENAL_REDIST_DIR}"
+            "${LIBSNDFILE_REDIST_DIR}"
+            "${MSVCPP_REDIST_DIR}"
+            "${LIBROCKET_REDIST_DIR}"
+            "${LIBROCKET_FREETYPE_REDIST_DIR}"
             DESTINATION
             "${INSTALL_APP_PATH}"
             FILES_MATCHING PATTERN "*.dll"
@@ -523,12 +340,10 @@ if ( DOCS )
           )
 endif ( DOCS )
 
-# Linking phase -- issue link with all defined external dependencies
-if ( PLATFORM_WINDOWS )
-  target_link_libraries ( ${PROJECT_NAME} ${EXTLIBS} ${NOMLIB_LIBRARY} )
-else ( NOT PLATFORM_WINDOWS )
-  target_link_libraries( ${PROJECT_NAME} ${NOMLIB_LIBRARY} ${EXTLIBS} )
-endif ( PLATFORM_WINDOWS )
+# Linking phase
+target_link_libraries(  ${PROJECT_NAME} ${NOMLIB_LIBRARIES}
+                        ${NOMLIB_DEPENDENCIES}
+)
 
 # Auto-generated build-time variables result in modification of the built
 # binary's run-time execution.

@@ -6,19 +6,17 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   option ( OSXAPP "Enable building OS X Application Bundle" on )
   option ( UNIVERSAL "Enable building OSX Universal Application" off )
 
-  # Setup the SDK selection for backwards compatibility
-  set ( SDKVER "10.7" )
-  set ( DEVROOT "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer" )
-  set ( SDKROOT "${DEVROOT}/SDKs/MacOSX${SDKVER}.sdk" )
-
-  if ( EXISTS ${SDKROOT} )
-    set ( CMAKE_OSX_SYSROOT "${SDKROOT}" )
-    set ( CMAKE_OSX_DEPLOYMENT_TARGET "${SDKVER}" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=${SDKVER}" )
-  else ( NOT EXISTS ${SDKROOT} )
-    # Binary compatibility will be limited to platform's version
-    message ( WARNING "Warning, Mac OS X ${SDKVER} SDK path not found: ${SDKROOT}" )
-  endif ( EXISTS ${SDKROOT} )
+  # This variable influences the system header files version we build against,
+  # which in turn determines the **minimum** version of OS X this build will
+  # be binary compatible with (run on).
+  #
+  # Internally, this influences the search paths for system header files and
+  # also instructs CMake to pass -mmacosx-version-min to the compiler.
+  #
+  # To modify this variable's resulting value, you should pass
+  # -DCMAKE_OSX_DEPLOYMENT_TARGET=<ver> to CMake at the time of project files
+  # generation -- 'cmake ..' from your out-of-source build directory.
+  message( STATUS "Using SDK: ${CMAKE_OSX_SYSROOT}" )
 
   # libc++ requires OSX v10.7+
   set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++" )
