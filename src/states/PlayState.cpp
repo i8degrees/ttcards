@@ -740,21 +740,39 @@ unsigned int PlayState::getCursorPos ( void )
 
 void PlayState::moveCursorLeft ( void )
 {
-  if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
-  {
-    if ( this->game->cursor_.position().x > BOARD_ORIGIN_X + ( CARD_WIDTH * 1 ) )
-      this->game->cursor_.move ( -( CARD_WIDTH ), 0 );
+  Point2i move_to_offset(Point2i::zero);
+
+  // locked cursor to board select mode
+  if( this->cursor_state_ == CursorState::BOARD ) {
+
+    if( this->game->cursor_.position().x >
+        BOARD_ORIGIN_X + (CARD_WIDTH * 1) )
+    {
+      move_to_offset.x = -(CARD_WIDTH);
+      move_to_offset.y = 0;
+      this->game->cursor_.translate(move_to_offset);
+    }
   }
+
   this->game->cursor_move->Play();
 }
 
 void PlayState::moveCursorRight ( void )
 {
-  if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
-  {
-    if ( this->game->cursor_.position().x < BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ) )
-      this->game->cursor_.move ( ( CARD_WIDTH ), 0 );
+  Point2i move_to_offset(Point2i::zero);
+
+  // locked cursor to board select mode
+  if( this->cursor_state_ == CursorState::BOARD ) {
+
+    if( this->game->cursor_.position().x <
+        BOARD_ORIGIN_X + (CARD_WIDTH * 2) )
+    {
+      move_to_offset.x = CARD_WIDTH;
+      move_to_offset.y = 0;
+      this->game->cursor_.translate(move_to_offset);
+    }
   }
+
   this->game->cursor_move->Play();
 }
 
@@ -762,12 +780,14 @@ void PlayState::moveCursorUp ( void )
 {
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
+  Point2i move_to_offset(Point2i::zero);
 
   if ( this->cursor_state_ == CursorState::PLAYER )
   {
-    if ( this->game->cursor_.position().y > PLAYER1_CURSOR_ORIGIN_Y )
-    {
-      this->game->cursor_.move ( 0, -( CARD_HEIGHT / 2 ) );
+    if( this->game->cursor_.position().y > PLAYER1_CURSOR_ORIGIN_Y ) {
+      move_to_offset.x = 0;
+      move_to_offset.y = -(CARD_HEIGHT / 2);
+      this->game->cursor_.translate(move_to_offset);
 
       pos = this->getCursorPos();
       this->game->hand[player_turn].previous();
@@ -775,8 +795,13 @@ void PlayState::moveCursorUp ( void )
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if ( this->game->cursor_.position().y > BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
-      this->game->cursor_.move ( 0, -( CARD_HEIGHT ) );
+    if( this->game->cursor_.position().y >
+        BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
+    {
+      move_to_offset.x = 0;
+      move_to_offset.y = -(CARD_HEIGHT);
+      this->game->cursor_.translate(move_to_offset);
+    }
   }
   this->game->cursor_move->Play();
 }
@@ -785,12 +810,16 @@ void PlayState::moveCursorDown ( void )
 {
   unsigned int pos = 0;
   unsigned int player_turn = get_turn();
+  Point2i move_to_offset(Point2i::zero);
 
   if ( this->cursor_state_ == CursorState::PLAYER )
   {
-    if ( this->game->cursor_.position().y < ( CARD_HEIGHT / 2 ) * ( this->game->hand[player_turn].size() ) )
+    if( this->game->cursor_.position().y <
+        (CARD_HEIGHT / 2) * ( this->game->hand[player_turn].size() ) )
     {
-      this->game->cursor_.move ( 0, ( CARD_HEIGHT / 2 ) );
+      move_to_offset.x = 0;
+      move_to_offset.y = (CARD_HEIGHT / 2);
+      this->game->cursor_.translate(move_to_offset);
 
       pos = this->getCursorPos();
       this->game->hand[player_turn].next();
@@ -798,8 +827,13 @@ void PlayState::moveCursorDown ( void )
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if ( this->game->cursor_.position().y < BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
-      this->game->cursor_.move ( 0, ( CARD_HEIGHT ) );
+    if( this->game->cursor_.position().y <
+        BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
+    {
+      move_to_offset.x = 0;
+      move_to_offset.y = CARD_HEIGHT;
+      this->game->cursor_.translate(move_to_offset);
+    }
   }
   this->game->cursor_move->Play();
 }
@@ -946,8 +980,7 @@ void PlayState::on_draw( nom::RenderWindow& target )
       this->game->gameover_text.set_text ( "Draw" );
     }
 
-    this->game->gameover_text.set_position( nom::Point2i(0,0) );
-    nom::set_alignment( &this->game->gameover_text,
+    nom::set_alignment( &this->game->gameover_text, Point2i(0,0),
                         Size2i(GAME_RESOLUTION.w, GAME_RESOLUTION.h),
                         nom::Anchor::MiddleCenter );
 

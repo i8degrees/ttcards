@@ -600,13 +600,17 @@ void CardsMenuState::cursor_prev()
 {
   int row_index = 0;      // Card position index as per cards model
   int pos = 0;            // The card's position index (as per CardCollection)
+  Point2i move_to_offset(Point2i::zero);
 
   if( this->cursor_state_ == 0 ) {
 
     // Move up if the game cursor is before the first card entry of the page
-    if( this->game->cursor_.position().y > this->cursor_coords_map_.at(0).y )
-    {
-      this->game->cursor_.move ( 0, -( this->cursor_coords_map_.at(pos).h ) );
+    if( this->game->cursor_.position().y > this->cursor_coords_map_.at(0).y ) {
+
+      move_to_offset.x = 0;
+      move_to_offset.y = -(this->cursor_coords_map_.at(pos).h);
+      this->game->cursor_.translate(move_to_offset);
+
       NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_.position().y );
       row_index = this->cursor_position();
 
@@ -623,6 +627,7 @@ void CardsMenuState::cursor_next()
   int row_index = 0;      // Card position index as per cards model
   int pos = 0;            // The card's position index (as per CardCollection)
   int max_per_page = 0;   // maximum number of cards per one page
+  Point2i move_to_offset(Point2i::zero);
 
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
   if( this->game->cards_page_model_ != nullptr ) {
@@ -635,9 +640,12 @@ void CardsMenuState::cursor_next()
 
     // Move down if the game cursor is not at the last card entry of the page
     if( this->game->cursor_.position().y >= this->cursor_coords_map_.at(0).y &&
-        this->game->cursor_.position().y < this->cursor_coords_map_.at(max_per_page).y ) {
+        this->game->cursor_.position().y < this->cursor_coords_map_.at(max_per_page).y )
+    {
+      move_to_offset.x = 0;
+      move_to_offset.y = this->cursor_coords_map_.at(pos).h;
+      this->game->cursor_.translate(move_to_offset);
 
-      this->game->cursor_.move( 0, this->cursor_coords_map_.at(pos).h );
       NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_.position().y );
       row_index = this->cursor_position();
 
