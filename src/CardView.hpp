@@ -49,8 +49,6 @@ class CardView
     /// Default constructor
     CardView ( void );
 
-    CardView ( const nom::IntRect& coords );
-
     /// Default destructor
     virtual ~CardView ( void );
 
@@ -110,7 +108,7 @@ class CardView
     std::shared_ptr<nom::SpriteBatch> card_face;
     std::shared_ptr<nom::SpriteBatch> card_element;
 
-    std::shared_ptr<nom::Gradient> card_background;
+    std::unique_ptr<nom::Gradient> card_background_[TOTAL_PLAYERS+2];
 };
 
 #endif // GAMEAPP_CARD_VIEW_HEADERS defined

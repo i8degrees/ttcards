@@ -36,32 +36,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+static void
+init_card_background(Gradient* card_background, const Color4iColors& colors)
+{
+  card_background->set_colors(colors);
+
+#if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+  card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
+  card_background->set_margins( Point2i(1,1) );
+#else
+  card_background->set_size( Size2i(CARD_WIDTH-6, CARD_HEIGHT-6) );
+  card_background->set_margins( Point2i(3,2) );
+#endif
+
+  nom::Gradient::FillDirection fill_dir =
+    nom::Gradient::FillDirection::Top;
+  card_background->set_fill_direction(fill_dir);
+}
+
 CardView::CardView ( void )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 
   this->render_card = Card();
 
-  this->card_background =
-    std::make_shared<nom::Gradient>( nom::Gradient() );
-
+  // Initialize text renderer for the cards
   this->card_text =
     std::make_shared<nom::Text>( nom::Text() );
-
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    this->card_background->set_size( Size2i(CARD_WIDTH-2, CARD_HEIGHT-2) );
-    this->card_background->set_margins( Point2i(1,1) );
-  #else
-    this->card_background->set_size( Size2i(CARD_WIDTH-6, CARD_HEIGHT-6) );
-    this->card_background->set_margins( Point2i(3,2) );
-  #endif
-
-  this->card_background->set_fill_direction( nom::Gradient::FillDirection::Top );
-}
-
-CardView::CardView ( const nom::IntRect& coords )
-{
-  // Stub
+  NOM_ASSERT(this->card_text != nullptr);
 }
 
 CardView::~CardView ( void )
@@ -72,6 +74,31 @@ CardView::~CardView ( void )
 bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
 {
   nom::SpriteSheet face_frames, element_frames;
+
+  // Initialize rendering of the card backgrounds for each player
+  this->card_background_[PLAYER1] =
+    nom::make_unique<nom::Gradient>();
+  NOM_ASSERT(this->card_background_[PLAYER1] != nullptr);
+  if( this->card_background_[PLAYER1] != nullptr ) {
+    init_card_background( this->card_background_[PLAYER1].get(),
+                          CARD_BG_PLAYER1 );
+  }
+
+  this->card_background_[PLAYER2] =
+    nom::make_unique<nom::Gradient>();
+  NOM_ASSERT(this->card_background_[PLAYER2] != nullptr);
+  if( this->card_background_[PLAYER2] != nullptr ) {
+    init_card_background( this->card_background_[PLAYER2].get(),
+                          CARD_BG_PLAYER2 );
+  }
+
+  this->card_background_[TOTAL_PLAYERS+1] =
+    nom::make_unique<nom::Gradient>();
+  NOM_ASSERT(this->card_background_[TOTAL_PLAYERS+1] != nullptr);
+  if( this->card_background_[TOTAL_PLAYERS+1] != nullptr ) {
+    init_card_background( this->card_background_[TOTAL_PLAYERS+1].get(),
+                          CARD_BG_NO_PLAYER );
+  }
 
   // Any file resources must be initialized *after* construction of this class;
   // our working directory where we load resources from is not set at the time
@@ -106,6 +133,7 @@ bool CardView::load ( const GameConfig* config, const nom::Font& card_font )
 
   this->card_face =
     std::make_shared<nom::SpriteBatch>( nom::SpriteBatch() );
+  NOM_ASSERT(this->card_face != nullptr);
 
   this->card_face->set_texture(this->face_tex_);
   this->card_face->set_sprite_sheet(face_frames);
@@ -163,46 +191,37 @@ void CardView::draw_background  (
                                   nom::int32 x, nom::int32 y
                                 ) const
 {
+  Point2i offset(x, y);
 
-  switch ( player_id )
+  NOM_ASSERT(this->card_background_ != nullptr);
+  if( this->card_background_ == nullptr ) {
+    return;
+  }
+
+  switch(player_id)
   {
     case Card::NOPLAYER:
     default:
     {
-      nom::Color4iColors player0_grad_bg = {
-                                                nom::Color4i( 197, 197, 197 ),
-                                                nom::Color4i( 84, 84, 84 )
-                                              };
-
-      this->card_background->set_colors( player0_grad_bg );
+      this->card_background_[TOTAL_PLAYERS+1]->set_position(offset);
+      this->card_background_[TOTAL_PLAYERS+1]->draw(target);
       break;
     }
 
     case Card::PLAYER1:
     {
-      nom::Color4iColors player1_grad_bg = {
-                                                nom::Color4i( 208, 223, 255 ),
-                                                nom::Color4i( 50, 59, 114 )
-                                              };
-
-      this->card_background->set_colors( player1_grad_bg );
+      this->card_background_[PLAYER1]->set_position(offset);
+      this->card_background_[PLAYER1]->draw(target);
       break;
     }
 
     case Card::PLAYER2:
     {
-      nom::Color4iColors player2_grad_bg = {
-                                                nom::Color4i( 251, 222, 232 ),
-                                                nom::Color4i( 114, 66, 66 )
-                                              };
-
-      this->card_background->set_colors( player2_grad_bg );
+      this->card_background_[PLAYER2]->set_position(offset);
+      this->card_background_[PLAYER2]->draw(target);
       break;
     }
   }
-
-  this->card_background->set_position( nom::Point2i(x, y) );
-  this->card_background->draw( target );
 }
 
 void CardView::draw_face  (

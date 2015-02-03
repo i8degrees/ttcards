@@ -293,4 +293,21 @@ enum GameEvent: nom::int32
   NUM_EVENTS
 };
 
+// The gradient colors used to render card backgrounds.
+
+const nom::Color4iColors CARD_BG_PLAYER1 = {{
+  // light to dark blue
+  nom::Color4i( 208, 223, 255 ), nom::Color4i( 50, 59, 114 )
+}};
+
+const nom::Color4iColors CARD_BG_PLAYER2 = {{
+  // light to dark pink
+  nom::Color4i( 251, 222, 232 ), nom::Color4i( 114, 66, 66 )
+}};
+
+const nom::Color4iColors CARD_BG_NO_PLAYER = {{
+  // light to dark gray
+  nom::Color4i( 197, 197, 197 ), nom::Color4i( 84, 84, 84 )
+}};
+
 #endif // GAMEAPP_CFG_HEADERS defined
