@@ -217,19 +217,17 @@ Game::Game( nom::int32 argc, char* argv[] ) :
       {
         std::cout << ttcards_version.str() << std::endl;
         // TODO: Copyright info
-      } // end version option
-      else // -h, --help
-      {
+        std::exit(NOM_EXIT_SUCCESS);
+      } else if( std::string(argv[opt]) == "-h" || std::string(argv[opt]) == "--help" ) {
+
         std::cout << APP_NAME << " usage options:" << std::endl;
         std::cout << "[ --export <input_filename> <output_filename> ]" << std::endl;
         std::cout << "[ --config <output_filename> ]" << std::endl;
         std::cout << "[ -h, --help ]" << std::endl;
         std::cout << "[ -v, --version ]" << std::endl;
+        std::exit(NOM_EXIT_SUCCESS);
       } // end help option
     } // end for argv[opt] loop
-
-    // If we have got this far, we assume command execution was successful
-    exit(NOM_EXIT_SUCCESS);
   } // end argc > 1
 
   working_directory = dir.resource_path();
@@ -318,35 +316,19 @@ bool Game::on_init( void )
     this->window.set_scale( nom::Point2f(1,1) );
   #endif
 
-  // Initialize libRocket's file interface
+  // Initialize file roots for nomlib && libRocket to base file access from
   Rocket::Core::FileInterface* fs = nullptr;
   std::string fs_root;
+  nom::File dir;
 
-  // Use Resources from the project root instead of the application bundle when
-  // in our native development environment; this is to let us quickly reload
-  // modified configuration files (RML, RCSS) without the need to remember to
-  // copy the files manually or 'make install'.
-  //
-  // The game uses resources from its application bundle, which are copied over
-  // from the Resources directory during the build process ('make install').
-  // The resources from the application bundle should be regarded as temporary,
-  // as they are potentially overwritten with each new build, so they should not
-  // be modified.
-  //
-  // This will have to do until I get around to cleaning up the build system...
-  //
-  // Note that Resources/config.json is not taken care of by the configuration
-  // here -- still points to ~/Documents/ttcards/.... I've decided to give
-  // [fswatch](https://github.com/emcrisostomo/fswatch) a try for automatic
-  // copying of this file. See also: bin/fswatch.sh
-  #if defined(NOM_PLATFORM_OSX) && ! defined(NDEBUG)
-    fs_root = "../../../../Resources/";
-  #elif defined(NOM_PLATFORM_WINDOWS) && ! defined(NDEBUG)
+#if defined(NOM_PLATFORM_OSX)
+    fs_root = dir.resource_path() + "/";
+#elif defined(NOM_PLATFORM_WINDOWS)
     fs_root = this->working_directory + "\\";
-  #else
-    // Stub code
+#else
+    // Has not been tested!
     fs_root = this->working_directory + "/Resources/";
-  #endif
+#endif
 
   // Used by both internal and external libRocket interfaces; decorators,
   // libRocket-rendered fonts and so forth

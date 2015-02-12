@@ -195,7 +195,7 @@ if ( PLATFORM_OSX )
 
     add_executable  ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
 
-    set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
+    set ( INSTALL_APP_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${BUNDLE_NAME}.app" )
 
     set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
 
@@ -233,23 +233,16 @@ if ( PLATFORM_OSX )
                             "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
                           )
 
-    add_rpath ( "${RUNTIME_LIBRARIES_SEARCH_PATH}" "${INSTALL_BINARY_PATH}" )
+    add_rpath("${RUNTIME_LIBRARIES_SEARCH_PATH}" "${INSTALL_BINARY_PATH}")
 
     # Bundle our dependencies into our application bundle
     install(  DIRECTORY
               ${NOMLIB_LIBRARIES} # nomlib-component.framework
               DESTINATION "${INSTALL_FRAMEWORK_PATH}"
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-    )
-
-    # CPack refuses to work with me on anything other than a single dot as the
-    # destination target path when we are building a package.
-    install ( TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}" )
-    #set ( INSTALL_APP_PATH "${CMAKE_INSTALL_PREFIX}" )
+              PATTERN ".*" EXCLUDE ) # do not include dotfiles
 
     install ( FILES
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config.json"
-              # DESTINATION "${INSTALL_APP_PATH}/Resources"
               DESTINATION "$ENV{HOME}/Documents/ttcards"
             )
   endif ( OSXAPP )
