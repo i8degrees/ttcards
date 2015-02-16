@@ -45,40 +45,54 @@ class BoardTile
     static const BoardTile null;
 
     /// Default constructor
-    BoardTile ( void );
+    BoardTile();
 
     /// Destructor
-    ~BoardTile ( void );
+    ~BoardTile();
 
     /// Construct a new board tile
-    BoardTile ( const Card& card,
-                const nom::IntRect& bounds,
-                const nom::uint32 element
-              );
+    BoardTile(  const Card& card, const nom::IntRect& bounds,
+                const nom::uint32 element );
 
     /// Getter for tile_card instance var
     const Card& tile ( void ) const;
 
+    /// \brief Get the tile's X and Y coordinate.
+    nom::Point2i position() const;
+
     /// Getter for tile_pos instance var
     const nom::IntRect& bounds ( void ) const;
+
+    void set_position(const nom::Point2i& pos);
 
     void set_bounds(const nom::IntRect& bounds);
 
     /// Getter for tile_element instance var
     nom::uint32 element ( void ) const;
 
+    void set_element(nom::uint32 element);
+
     /// Update an existing tile
-    void update ( const nom::Point2i& pos, const Card& card );
+    void set_tile(const Card& card);
 
   private:
     friend class Board;
     Card tile_card;
     nom::IntRect bounds_;
-    nom::uint32 tile_element;
+    nom::uint32 element_;
     // enum BoardPosition board_tile;
 };
 
 bool operator ==(const BoardTile& lhs, const BoardTile& rhs);
 bool operator !=(const BoardTile& lhs, const BoardTile& rhs);
+
+struct BoardResult
+{
+  BoardTile tile;
+  nom::uint32 applied_rule = 0;
+};
+
+typedef std::vector<BoardTile> board_tiles;
+typedef std::vector<BoardResult> board_tiles_result;
 
 #endif // include guard defined

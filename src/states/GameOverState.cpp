@@ -28,6 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverState.hpp"
 
+// Private headers
+#include "CardRenderer.hpp"
+#include "Board.hpp"
+#include "CardRules.hpp"
+
 // Forward declarations
 #include "Game.hpp"
 
@@ -49,27 +54,9 @@ GameOverState::~GameOverState( void )
 
 void GameOverState::on_init( nom::void_ptr data )
 {
-  nom::SpriteSheet frames;
-
-  // Initialize interface cursor
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
-      // return false;
-    }
-  #else
-    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
-      // return false;
-    }
-  #endif
-
   this->cursor_.set_texture(this->game->cursor_tex_);
-  this->cursor_.set_sprite_sheet(frames);
+  this->cursor_.set_sprite_sheet(this->game->right_cursor_frames_);
+  this->cursor_.set_frame(INTERFACE_CURSOR_SHOWN);
 
   this->cursor_.set_position_map(&this->game->hand[1]);
   this->cursor_.set_size( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
@@ -77,7 +64,6 @@ void GameOverState::on_init( nom::void_ptr data )
                                         PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
                                         PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y
                                       ));
-  this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
 
   // Fully reconstruct the player's hand by adding the cards placed on the board
   // back into each player's respective hand.
@@ -88,35 +74,69 @@ void GameOverState::on_init( nom::void_ptr data )
   for( auto y = 0; y != BOARD_GRID_HEIGHT; ++y) {
     for( auto x = 0; x != BOARD_GRID_WIDTH; ++x) {
 
-      Card card = this->game->board.get ( x, y );
+      Card pcard = this->game->board_->get(x, y);
+      pcard.set_face_down(false);
 
-      if( card.getPlayerOwner() == Card::PLAYER1 ) {
-        card.setPlayerID(Card::PLAYER1);
-        this->game->hand[0].push_back(card);
-      }
-      else if( card.getPlayerOwner() == Card::PLAYER2 ) {
-        card.setPlayerID(Card::PLAYER2);
-        this->game->hand[1].push_back(card);
+      if( pcard.getPlayerOwner() == Card::PLAYER1 ) {
+        pcard.setPlayerID(Card::PLAYER1);
+
+        // Render the new card background based on the new owner
+        pcard.set_card_renderer( create_card_renderer(this->game->card_res_.get(), pcard) );
+        NOM_ASSERT(pcard.card_renderer() != nullptr);
+        NOM_ASSERT(pcard.card_renderer()->valid() == true);
+
+        this->game->hand[PLAYER1].push_back(pcard);
+      } else if( pcard.getPlayerOwner() == Card::PLAYER2 ) {
+        pcard.setPlayerID(Card::PLAYER2);
+
+        // Render the new card background based on the new owner
+        pcard.set_card_renderer( create_card_renderer(this->game->card_res_.get(), pcard) );
+        NOM_ASSERT(pcard.card_renderer() != nullptr);
+        NOM_ASSERT(pcard.card_renderer()->valid() == true);
+
+        this->game->hand[PLAYER2].push_back(pcard);
       }
     }
   }
 
-  // Both player hands should **always** be shown with the card face rendered
-  this->game->hand[0].set_face_down(false);
-  this->game->hand[1].set_face_down(false);
+  auto p1_hand = this->game->hand[PLAYER1];
+  auto p2_hand = this->game->hand[PLAYER2];
+
+  auto p2_hand_idx = 0;
+  Point2i p2_pos(Point2i::zero);
+  for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
+
+   p2_pos.x = PLAYER2_GAMEOVER_ORIGIN_X + (CARD_WIDTH * p2_hand_idx);
+   p2_pos.y = PLAYER2_GAMEOVER_ORIGIN_Y;
+   ++p2_hand_idx;
+
+    auto card_renderer =
+      itr->card_renderer();
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->set_position(p2_pos);
+    }
+  }
+
+  auto p1_hand_idx = 0;
+  Point2i p1_pos(Point2i::zero);
+  for( auto itr = p1_hand.begin(); itr != p1_hand.end(); ++itr ) {
+
+   p1_pos.x = PLAYER1_GAMEOVER_ORIGIN_X + (CARD_WIDTH * p1_hand_idx);
+   p1_pos.y = PLAYER1_GAMEOVER_ORIGIN_Y;
+   ++p1_hand_idx;
+
+    auto card_renderer =
+      itr->card_renderer();
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->set_position(p1_pos);
+    }
+  }
 
   if( this->gameover_state_ == GameOverType::Tie ) {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "Draw...");
-  }
-  else if( this->gameover_state_ == GameOverType::Won ) {
+  } else if( this->gameover_state_ == GameOverType::Won ) {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "You win!");
-
-    // Play "You won!" music track
-    this->game->music_track->Stop();
-    this->game->winning_track->Play();
-
-  }
-  else if( this->gameover_state_ == GameOverType::Lost ) {
+  } else if( this->gameover_state_ == GameOverType::Lost ) {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "You lose...");
 
     // Stub logic
@@ -128,8 +148,7 @@ void GameOverState::on_init( nom::void_ptr data )
       NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE,
                     "Lost", strongest_card.getName() );
     }
-  }
-  else {  // GameOverType::NotOver
+  } else {  // GameOverType::NotOver
     // We shouldn't ever see this
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Game was not over:",
@@ -274,13 +293,13 @@ void GameOverState::on_pause( nom::void_ptr data )
 {
   // Hide the cursor so that it doesn't show up during undesirable states such
   // as during the ConfirmationDialogState or Pause states.
-  this->cursor_.set_frame(INTERFACE_CURSOR_NONE);
+  this->cursor_.set_frame(INTERFACE_CURSOR_HIDDEN);
 }
 
 void GameOverState::on_resume( nom::void_ptr data )
 {
   // Restore the rendering of the player's cursor
-  this->cursor_.set_frame ( INTERFACE_CURSOR_RIGHT );
+  this->cursor_.set_frame(INTERFACE_CURSOR_SHOWN);
 
   nom::int32_ptr response = static_cast<nom::int32_ptr> (data);
 
@@ -374,7 +393,26 @@ void GameOverState::on_user_event( const nom::Event& ev )
       // FIXME; should have no spacing on card printout
       this->game->info_box_.set_message_text( this->selected_card.getName() + " card acquired" );
 
-      this->game->hand[1].cards[card_pos].setPlayerID(Card::PLAYER1);
+      this->game->hand[PLAYER2].cards[card_pos].setPlayerID(Card::PLAYER1);
+
+      Card& pcard = this->game->hand[PLAYER2].cards[card_pos];
+
+      // Render a new card background based on the owner flip
+      auto old_renderer =
+        pcard.card_renderer();
+      NOM_ASSERT(old_renderer != nullptr);
+      NOM_ASSERT(old_renderer->valid() == true);
+
+      auto old_renderer_pos =
+        old_renderer->position();
+
+      auto new_renderer =
+        create_card_renderer(this->game->card_res_.get(), pcard);
+      NOM_ASSERT(new_renderer != nullptr);
+      NOM_ASSERT(new_renderer->valid() == true);
+
+      pcard.set_card_renderer(new_renderer);
+      new_renderer->set_position(old_renderer_pos);
 
       this->game->card_flip->Play();
     }
@@ -388,8 +426,6 @@ void GameOverState::on_user_event( const nom::Event& ev )
 
 void GameOverState::on_update( float delta_time )
 {
-  this->game->card.update();
-
   this->game->gui_window_.update();
 
   if ( this->transistion.ticks() > 1500 )
@@ -405,32 +441,40 @@ void GameOverState::on_draw( nom::RenderWindow& target )
 {
   this->game->gameover_background.draw(target);
 
-  // Show Player 2 hand on the top
-  for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
+  // Render top view
+  auto p2_hand_idx = 0;
+  Point2i p2_pos(Point2i::zero);
+  for(  auto itr = this->game->hand[PLAYER2].begin();
+        itr != this->game->hand[PLAYER2].end();
+        ++itr )
   {
-    this->player2_pos = nom::Point2i (  PLAYER2_GAMEOVER_ORIGIN_X
-                                        +
-                                        ( CARD_WIDTH * idx ),
-                                        PLAYER2_GAMEOVER_ORIGIN_Y
-                                      );
+     p2_pos.x = PLAYER2_GAMEOVER_ORIGIN_X + (CARD_WIDTH * p2_hand_idx);
+     p2_pos.y = PLAYER2_GAMEOVER_ORIGIN_Y;
+     ++p2_hand_idx;
 
-    this->game->card.reposition ( this->player2_pos );
-    this->game->card.setViewCard ( this->game->hand[1].cards.at( idx ) );
-    this->game->card.draw ( target );
+    auto card_renderer =
+      itr->card_renderer();
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->render(target);
+    }
   }
 
-  // Show Player 1 hand on the bottom
-  for ( nom::int32 idx = 0; idx < this->game->hand[0].size(); idx++ )
+  // Render bottom view
+  auto p1_hand_idx = 0;
+  Point2i p1_pos(Point2i::zero);
+  for(  auto itr = this->game->hand[PLAYER1].begin();
+        itr != this->game->hand[PLAYER1].end();
+        ++itr )
   {
-    this->player1_pos = nom::Point2i  ( PLAYER1_GAMEOVER_ORIGIN_X
-                                        +
-                                        ( CARD_WIDTH * idx ),
-                                        PLAYER1_GAMEOVER_ORIGIN_Y
-                                      );
+     p1_pos.x = PLAYER1_GAMEOVER_ORIGIN_X + (CARD_WIDTH * p1_hand_idx);
+     p1_pos.y = PLAYER1_GAMEOVER_ORIGIN_Y;
+     ++p1_hand_idx;
 
-    this->game->card.reposition ( this->player1_pos );
-    this->game->card.setViewCard ( this->game->hand[0].cards.at( idx ) );
-    this->game->card.draw ( target );
+    auto card_renderer =
+      itr->card_renderer();
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->render(target);
+    }
   }
 
   this->game->gui_window_.draw();

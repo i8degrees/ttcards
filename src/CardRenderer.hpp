@@ -26,54 +26,65 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_GAME_CONFIG_HEADERS
-#define GAMEAPP_GAME_CONFIG_HEADERS
+#ifndef TTCARDS_CARD_RENDERER_HPP
+#define TTCARDS_CARD_RENDERER_HPP
 
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <map>
+#include <memory>
 
-#include "nomlib/config.hpp"
-#include <nomlib/serializers.hpp>
+#include <nomlib/graphics.hpp>
 
 #include "config.hpp"
 
-/// \brief Simple, convenient file-based settings interface
-///
-/// \remarks This interface does not allow duplicate key (node) members to be
-/// added.
-class GameConfig
+// Forward declarations
+class Card;
+class CardResourceLoader;
+
+class CardRenderer
 {
   public:
-    GameConfig();
-    GameConfig( const std::string& filename);
-    ~GameConfig();
+    // TODO (?): Should we pre-render an invalid and/or face down sprite for
+    // every card rendering instance, or keep with rendering on the fly?
+    // static std::unique_ptr<nom::Sprite> INVALID_CARD;
+    // static std::unique_ptr<nom::Sprite> FACE_DOWN_CARD;
 
-    const std::string getString ( const std::string& node ) const;
-    const nom::int32 getInteger ( const std::string& node ) const;
-    bool get_bool(const std::string& node) const;
+    // ...Card::null && face down cards...
+    //
+    // TODO: Consider using another ID for the face down ID! We currently pass
+    // Card::null (BAD_CARD_ID) to signify to the renderer to draw the face
+    // down sprite for us -- I'm worried about future usage conflicts; i.e.:
+    // what if we wish to start rendering Card::null with a debug rendering
+    // texture?
 
-    /// \returns std::vector<std::string>
-    nom::StringList string_array(const std::string& node) const;
+    // TODO: Object-pooling?
 
-    // const nom::Value& array(const std::string& node) const;
+    CardRenderer();
+    ~CardRenderer();
 
-    nom::real32 get_real32(const std::string& node) const;
-    nom::real64 get_real64(const std::string& node) const;
+    CardRenderer(std::unique_ptr<nom::Sprite> sprite);
 
-    const nom::Value& setProperty ( const std::string& node, const nom::Value& value );
+    bool valid() const;
 
-    /// Load saved board grid data from a file encoded as RFC 4627 compliant
-    /// JSON objects.
-    ///
-    /// \todo Restore the current configuration if we fail to parse config and
-    /// have cleared the
-    bool load ( const std::string& filename );
+    std::unique_ptr<nom::Sprite> rendered_card();
+
+    const nom::Point2i& position() const;
+    const nom::Size2i& size() const;
+
+    void set_position(const nom::Point2i& pos);
+    void set_size(const nom::Size2i& dims);
+
+    void set_rendered_card(std::unique_ptr<nom::Sprite> sprite);
+
+    bool render(nom::RenderTarget& target) const;
 
   private:
-    std::map<std::string, nom::Value> config;
+    std::unique_ptr<nom::Sprite> rendered_card_;
+    nom::Point2i position_;
+    nom::Size2i size_;
 };
 
+CardRenderer* create_placeholder_card_renderer();
+
+CardRenderer*
+create_card_renderer(const CardResourceLoader* res, const Card& card);
 
 #endif // include guard defined

@@ -41,7 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class CardHand;
 class Board;
 class BoardTile;
-class CardView;
 
 class CPU_Player: public IPlayer
 {
@@ -55,10 +54,10 @@ class CPU_Player: public IPlayer
 
     typedef std::function<void(BoardTile&)> action_callback;
 
-    virtual ~CPU_Player();
-
     CPU_Player( Difficulty difficulty, Board* board, CardHand* hand,
-                CardView* view, const action_callback& action);
+                const action_callback& action );
+
+    virtual ~CPU_Player();
 
     virtual nom::uint32 player_id() const override;
     virtual void set_player_id(nom::uint32 id) override;
@@ -68,7 +67,7 @@ class CPU_Player: public IPlayer
     ///
     /// \remarks The CPU player plays the following strategy, in the order of
     /// success (non-NULL result); 1. best_move; 2. edge_move; 3. random_move.
-    virtual void update() override;
+    virtual void update(nom::real32 delta_time) override;
 
     virtual void draw(nom::IDrawable::RenderTarget& target) override;
 
@@ -77,6 +76,11 @@ class CPU_Player: public IPlayer
     ///
     /// \returns BoardTile::null on failure to pick an un-used tile.
     virtual BoardTile random_move();
+
+    /// \brief Free tile play.
+    ///
+    /// \returns BoardTile::null on failure to pick an un-used tile.
+    virtual BoardTile free_tile_move();
 
     /// \brief Defensive play.
     ///
@@ -105,9 +109,6 @@ class CPU_Player: public IPlayer
     ///
     /// \remarks This object pointer is **not** owned by us; do not free.
     CardHand* hand_;
-
-    /// \remarks This object pointer is **not** owned by us; do not free.
-    CardView* card_renderer_;
 
     /// \brief The assigned function to perform when the CPU player is ready to
     /// execute its turn (place a card down).

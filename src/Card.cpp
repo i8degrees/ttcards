@@ -28,45 +28,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Card.hpp"
 
+// Forward declarations
+#include "CardRenderer.hpp"
+
 // Static initialization
 Card Card::null = Card();
 nom::int32 Card::CARDS_COLLECTION = 0;
+
+using namespace nom;
 
 Card::Card() :
   id(BAD_CARD_ID),
   level(0),
   type(0),
-  element(NONE),
+  element(::NONE),
   rank( {{0}} ),
-  player_id(Card::NOPLAYER),
-  player_owner(Card::NOPLAYER),
+  name("INVALID"),
+  player_id(Card::NO_PLAYER),
+  player_owner(Card::NO_PLAYER),
   num_(0),
-  face_down_(false)
+  face_down_(false),
+  card_renderer_(nullptr)
 {
-  // ...
+  // NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
 Card::~Card()
 {
-  // ...
-}
-
-Card::Card( nom::int32 id, nom::int32 level, nom::int32 type,
-            nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
-            std::string name, nom::int32 player_id, nom::int32 player_owner,
-            int num, bool face_down ) :
-  id(id),
-  level(level),
-  type(type),
-  element(element),
-  rank({{ rank[NORTH], rank[EAST], rank[SOUTH], rank[WEST] }}),
-  name(name),
-  player_id(player_id),
-  player_owner(player_owner),
-  num_(num),
-  face_down_(face_down)
-{
-  // ...
+  // NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
 const nom::int32 Card::getID ( void ) const
@@ -150,11 +139,26 @@ bool Card::face_down() const
   return this->face_down_;
 }
 
+nom::int32 Card::strength ( void )
+{
+  nom::int32 total_strength_value = 0;
+
+  total_strength_value += this->getNorthRank();
+  total_strength_value += this->getEastRank();
+  total_strength_value += this->getWestRank();
+  total_strength_value += this->getSouthRank();
+
+  return total_strength_value;
+}
+
+std::shared_ptr<CardRenderer>& Card::card_renderer()
+{
+  return this->card_renderer_;
+}
+
 void Card::setID ( nom::int32 id_ )
 {
   this->id = id_;
-  // FIXME:
-  //this->id = std::min ( id_, Card::CARDS_COLLECTION );
 }
 
 void Card::setLevel ( nom::int32 level_ )
@@ -218,12 +222,12 @@ void Card::setName ( std::string name_ )
 
 void Card::setPlayerID ( nom::int32 player_id_ )
 {
-  this->player_id = std::min ( player_id_, TOTAL_PLAYERS );
+  this->player_id = player_id_;
 }
 
 void Card::setPlayerOwner ( nom::int32 player_owner_ )
 {
-  this->player_owner = std::min ( player_owner_, TOTAL_PLAYERS );
+  this->player_owner = player_owner_;
 }
 
 void Card::set_num(int num_cards)
@@ -324,16 +328,11 @@ void Card::decreaseWestRank ( void )
   this->setWestRank ( modified_rank );
 }
 
-nom::int32 Card::strength ( void )
+void Card::set_card_renderer(CardRenderer* renderer)
 {
-  nom::int32 total_strength_value = 0;
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 
-  total_strength_value += this->getNorthRank();
-  total_strength_value += this->getEastRank();
-  total_strength_value += this->getWestRank();
-  total_strength_value += this->getSouthRank();
-
-  return total_strength_value;
+  this->card_renderer_.reset(renderer);
 }
 
 std::ostream& operator << ( std::ostream& os, const Card& rhs )
@@ -394,10 +393,20 @@ bool operator >= ( const Card& lhs, const Card& rhs )
   return ! ( lhs < rhs );
 }
 
-bool operator < ( const Card& lhs, const Card& rhs )
+bool operator <(const Card& lhs, const Card& rhs)
 {
-  nom::uint32 lhs_total_strengths = 0;
-  nom::uint32 rhs_total_strengths = 0;
+  return( lhs.getID() < rhs.getID() );
+}
+
+bool operator >(const Card& lhs, const Card& rhs)
+{
+  return( rhs.getID() > lhs.getID() );
+}
+
+bool strongest_card(const Card& lhs, const Card& rhs)
+{
+  nom::int32 lhs_total_strengths = 0;
+  nom::int32 rhs_total_strengths = 0;
 
   lhs_total_strengths += lhs.getNorthRank();
   lhs_total_strengths += lhs.getEastRank();
@@ -409,20 +418,17 @@ bool operator < ( const Card& lhs, const Card& rhs )
   rhs_total_strengths += rhs.getWestRank();
   rhs_total_strengths += rhs.getSouthRank();
 
-  if ( lhs_total_strengths == rhs_total_strengths )
-  {
-    return lhs_total_strengths < rhs_total_strengths;
-  }
-  else
-  {
-    return lhs_total_strengths < rhs_total_strengths;
+  if( rhs_total_strengths == lhs_total_strengths ) {
+    return( rhs.getID() < lhs.getID() );
+  } else {
+    return(rhs_total_strengths < lhs_total_strengths);
   }
 }
 
-bool operator > ( const Card& lhs, const Card& rhs )
+bool weakest_card(const Card& lhs, const Card& rhs)
 {
-  nom::uint32 lhs_total_strengths = 0;
-  nom::uint32 rhs_total_strengths = 0;
+  nom::int32 lhs_total_strengths = 0;
+  nom::int32 rhs_total_strengths = 0;
 
   lhs_total_strengths += lhs.getNorthRank();
   lhs_total_strengths += lhs.getEastRank();
@@ -434,5 +440,9 @@ bool operator > ( const Card& lhs, const Card& rhs )
   rhs_total_strengths += rhs.getWestRank();
   rhs_total_strengths += rhs.getSouthRank();
 
-  return rhs_total_strengths < lhs_total_strengths;
+  if( lhs_total_strengths == rhs_total_strengths ) {
+    return( lhs.getID() < rhs.getID() );
+  } else {
+    return(lhs_total_strengths < rhs_total_strengths);
+  }
 }

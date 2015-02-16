@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
-class DialogCursor: public nom::AnimatedSprite
+class DialogCursor: public nom::SpriteBatch
 {
   public:
     DialogCursor();

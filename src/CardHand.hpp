@@ -29,39 +29,54 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_CARD_HAND_HEADERS
 #define GAMEAPP_CARD_HAND_HEADERS
 
-#include <iostream>
-#include <string>
 #include <vector>
-#include <chrono>
 #include <random>
 #include <algorithm>
-#include <functional>
 #include <memory>
 
 #include <nomlib/config.hpp>
 #include <nomlib/serializers.hpp>
 
 #include "Card.hpp"
-#include "CardCollection.hpp"
 #include "config.hpp"
 
+// Forward declarations
+class CardCollection;
+class CardResourceLoader;
+
+// TODO: Rename ::reinit to ::update..?
 class CardHand
 {
   public:
-    typedef std::shared_ptr<CardHand> SharedPtr;
+    CardHand();
+    ~CardHand();
 
-    CardHand ( void );
-    ~CardHand ( void );
+    bool init(CardResourceLoader* res);
 
-    bool push_back ( const Card& card );
+    /// \brief Re-render the card renderings in the player's hand using the
+    /// stored card attributes at the time of this call.
+    ///
+    /// \remarks This method should not normally be necessary as the rendering
+    /// of the card is intended to be taken care of internally by the game.
+    bool reinit(CardResourceLoader* res = nullptr);
+
+    /// \brief Append a card to the player's hand.
+    ///
+    /// \remarks If the card is successfully able to be added to the player's
+    /// hand, the card rendering is done on-the-fly at this time with the
+    /// attributes of that card.
+    ///
+    /// \see ::reinit
+    bool push_back(const Card& card);
+
     bool erase ( Card& card );
 
     void clearSelectedCard ( void );
-    Card& getSelectedCard ( void );
+    const Card& getSelectedCard ( void );
 
     /// \deprecated Use the provided iterators ::previous, ::next,
     /// ::set_position, etc.
-    void selectCard ( Card& card );
+    void selectCard(const Card& card);
 
     bool exists ( const Card& card ) const;
 
@@ -115,26 +130,23 @@ class CardHand
     /// objects.
     bool load ( const std::string& filename );
 
-    /// Modify card rank values.
-    ///
-    /// \fixme This method breaks when we use ::set_position && friends
-    void modifyCardRank ( bool modifier, nom::uint32 direction );
-
     /// Getter for obtaining the strongest card in the player's hand.
     ///
     /// Note that this does not take into account game rules that may be in
     /// effect!
-    const Card strongest ( void );
+    Card strongest();
 
     /// Getter for obtaining the weakest card in the player's hand.
     ///
     /// Note that this does not take into account game rules that may be in
     /// effect!
-    const Card weakest ( void );
+    Card weakest();
 
-    /// \brief Toggle the rendering state of the card face for all the cards in
-    /// the player's hand.
-    void set_face_down(bool state);
+    CardsIterator begin();
+    CardsIterator end();
+
+    ConstCardsIterator begin() const;
+    ConstCardsIterator end() const;
 
     /// \todo Declare in private scope
     Cards cards;
@@ -145,6 +157,11 @@ class CardHand
 
     /// Player's active card
     Card selectedCard;
+
+    /// \brief Our reference to the cards resource loader.
+    ///
+    /// \remarks We do not own this pointer, so we **must not** free it!
+    CardResourceLoader* card_res_;
 };
 
 /// Pretty print the the card attributes.

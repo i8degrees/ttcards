@@ -75,28 +75,9 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
 
   this->game->question_box_.show();
 
-  nom::SpriteSheet frames;
-
-  // Initialize interface cursor
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
-      // return false;
-    }
-  #else
-    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
-      // return false;
-    }
-  #endif
-
   this->cursor_.set_texture(this->game->cursor_tex_);
-  this->cursor_.set_sprite_sheet(frames);
-  this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
+  this->cursor_.set_sprite_sheet(this->game->right_cursor_frames_);
+  this->cursor_.set_frame(INTERFACE_CURSOR_SHOWN);
 
   // Build offset coordinate map for the game cursor; this is necessary for
   // syncing key, mouse wheel and joystick input.

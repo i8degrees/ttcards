@@ -28,34 +28,109 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardHand.hpp"
 
-CardHand::CardHand ( void )
-{
-  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
+// Private headers
+#include "CardRenderer.hpp"
 
-  this->set_position ( 0 );
-  this->clear();
+// Forward declarations
+#include "CardCollection.hpp"
+#include "CardResourceLoader.hpp"
+
+CardHand::CardHand()
+{
+  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
+
+  this->set_position(0);
   this->selectedCard = Card();
 }
 
-CardHand::~CardHand ( void )
+CardHand::~CardHand()
 {
-  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
-
-  this->clear();
+  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-bool CardHand::push_back ( const Card& card )
+bool CardHand::init(CardResourceLoader* res)
 {
-  // FIXME: Duplicate cards are allowed. The player's selected card X offset is
-  // broken without this check; see Player.cpp for details.
+  this->cards.reserve(MAX_PLAYER_HAND);
 
-  // No go; we already have this card somewhere in our hand
-  // if ( this->exists( card ) == true ) return false;
+  this->card_res_ = res;
+
+  NOM_ASSERT(this->card_res_ != nullptr);
+  if( this->card_res_ != nullptr) {
+    return true;
+  }
+
+  return false;
+}
+
+bool CardHand::reinit(CardResourceLoader* res)
+{
+  if( res != nullptr ) {
+    this->card_res_ = res;
+  }
+
+  NOM_ASSERT(this->card_res_ != nullptr);
+  if( this->card_res_ == nullptr) {
+    // TODO: logging
+    return false;
+  }
+
+  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
+
+    Card& pcard = *itr;
+    pcard.set_card_renderer( create_card_renderer(this->card_res_, pcard) );
+
+    NOM_ASSERT(pcard.card_renderer() != nullptr);
+    NOM_ASSERT(pcard.card_renderer()->valid() == true);
+    if( pcard.card_renderer() == nullptr ) {
+      // TODO: logging &&  handle err
+      return false;
+    }
+
+    if( pcard.card_renderer()->valid() == false ) {
+      // TODO: logging &&  handle err
+      return false;
+    }
+  } // end for loop
+
+  // Reset the player's selected card to the top
+  this->set_position(0);
+
+  return true;
+}
+
+bool CardHand::push_back(const Card& card)
+{
+  Card pcard = card;
 
   // No go -- we are out of space!
-  if ( this->size() > ( MAX_PLAYER_HAND - 1 ) ) return false;
+  if( this->size() > (MAX_PLAYER_HAND - 1) ) {
+    return false;
+  }
 
-  this->cards.push_back ( card );
+  if( pcard.face_down() == true ) {
+    pcard.set_card_renderer( create_card_renderer(this->card_res_, Card::null) );
+  } else {
+    pcard.set_card_renderer( create_card_renderer(this->card_res_, pcard) );
+  }
+
+  NOM_ASSERT(pcard.card_renderer() != nullptr);
+  NOM_ASSERT(pcard.card_renderer()->valid() == true);
+
+  if( pcard.card_renderer() == nullptr ) {
+    // TODO: logging && handle err
+    return false;
+  }
+
+  if( pcard.card_renderer()->valid() == false ) {
+    // TODO: logging && handle err
+    return false;
+  }
+
+  this->cards.push_back(pcard);
+
+  // Reset the player's selected card to the top
+  this->set_position(0);
+
   return true;
 }
 
@@ -77,7 +152,10 @@ bool CardHand::erase ( Card& card )
 
   previous_id = this->cards[position].getID();
   previous_name = this->cards[position].getName();
-  this->cards.erase ( this->cards.begin() + position );
+
+  auto itr = this->cards.begin() + position;
+  this->cards.erase(itr);
+
 #ifdef DEBUG_CARD_HAND
   std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
 #endif
@@ -92,12 +170,12 @@ void CardHand::clearSelectedCard ( void )
   this->selectedCard = Card();
 }
 
-Card & CardHand::getSelectedCard ( void )
+const Card& CardHand::getSelectedCard()
 {
   return this->selectedCard;
 }
 
-void CardHand::selectCard ( Card& card )
+void CardHand::selectCard(const Card& card)
 {
   if ( this->exists ( card ) )
   {
@@ -213,17 +291,21 @@ void CardHand::shuffle( nom::int32 level_min, nom::int32 level_max, const CardCo
   NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CARD_HAND, "card_id: ", card_id );
   NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CARD_HAND, "CARDS_COLLECTION: ", Card::CARDS_COLLECTION );
 
-  if( db.cards[card_id].getLevel() <= level_max &&
-      db.cards[card_id].getLevel() >= level_min ) {
+  Card c = db.find(card_id);
 
-    if( this->push_back(db.cards[card_id]) ) num_cards++;
+  if( c.getLevel() <= level_max && c.getLevel() >= level_min ) {
+
+    if( this->push_back(c) ) {
+      num_cards++;
+    }
   }
 }
 
 bool CardHand::save ( const std::string& filename )
 {
    // High-level file I/O interface
-  nom::IValueSerializer* fp = new nom::JsonCppSerializer();
+  std::unique_ptr<nom::IValueSerializer> fp =
+    nom::make_unique<nom::JsonCppSerializer>();
 
   nom::Value value(nom::Value::ArrayValues);
   nom::Value card(nom::Value::ObjectValues);
@@ -259,7 +341,8 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 bool CardHand::load ( const std::string& filename )
 {
    // High-level file I/O interface
-  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
+  std::unique_ptr<nom::IValueDeserializer> fp =
+    nom::make_unique<nom::JsonCppDeserializer>();
   nom::Value values;
 
   // The card attributes we are loading in will be stored in here temporarily.
@@ -297,59 +380,26 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
   // All is well, let us make it permanent
   this->cards = cards_buffer;
 
+  // Render cards in the player's hand
+  this->reinit();
+
   return true;
 }
 
-void CardHand::modifyCardRank ( bool modifier, nom::uint32 direction )
+Card CardHand::strongest()
 {
-  Card selected = this->getSelectedCard();
-  std::array<nom::int32, MAX_RANKS> ranks = {{ 0 }}; // card ranks container
-  CardsIterator pos = this->cards.begin();
+  Cards strongest_cards(this->cards);
 
-  // First, obtain current rank attributes of the selected card; validation is
-  // done for us by the Card class.
-  ranks = selected.getRanks();
-
-  if ( modifier ) // increase
-  {
-    ranks [ direction ] = ranks [ direction ] + 1;
-    selected.setRanks ( ranks );
-  }
-  else // assume a decrease
-  {
-    // This clamps the decreased attribute to not falling below one (1).
-    ranks [ direction ] = std::max ( ranks [ direction ] - 1, 1 );
-    selected.setRanks ( ranks );
-  }
-
-  // Get the position of the selected card before we erase it so we can
-  // reposition the new card at the same index.
-  pos = pos + this->at ( selected );
-
-  this->erase ( selected );
-
-  // Update the player hand with our modified card attributes
-  this->cards.insert ( pos, selected );
-
-  // Update the player's selected card
-  // this->set_position( this->at(selected) );
-  this->selectCard(selected);
-}
-
-const Card CardHand::strongest ( void )
-{
-  Cards strongest_cards ( this->cards );
-
-  std::sort ( strongest_cards.begin(), strongest_cards.end(), std::greater<Card>() );
+  std::sort(strongest_cards.begin(), strongest_cards.end(), strongest_card);
 
   return strongest_cards.front();
 }
 
-const Card CardHand::weakest ( void )
+Card CardHand::weakest()
 {
-  Cards weakest_cards ( this->cards );
+  Cards weakest_cards(this->cards);
 
-  std::sort ( weakest_cards.begin(), weakest_cards.end(), std::less<Card>() );
+  std::sort(weakest_cards.begin(), weakest_cards.end(), weakest_card);
 
   return weakest_cards.front();
 }
@@ -365,11 +415,24 @@ void CardHand::set_position(nom::size_type pos)
   }
 }
 
-void CardHand::set_face_down(bool state)
+CardsIterator CardHand::begin()
 {
-  for(auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
-    (*itr).set_face_down(state);
-  }
+  return this->cards.begin();
+}
+
+CardsIterator CardHand::end()
+{
+  return this->cards.end();
+}
+
+ConstCardsIterator CardHand::begin() const
+{
+  return this->cards.begin();
+}
+
+ConstCardsIterator CardHand::end() const
+{
+  return this->cards.end();
 }
 
 std::ostream& operator << ( std::ostream& os, const CardHand& rhs )

@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameConfig.hpp"
 
+using namespace nom;
+
 GameConfig::GameConfig()
 {
   //
@@ -118,6 +120,28 @@ nom::StringList GameConfig::string_array(const std::string& node) const
 //   } // end if found
 // }
 
+real32 GameConfig::get_real32(const std::string& node) const
+{
+  auto itr = config.find(node);
+
+  if( itr == config.end() ) {
+    return -1.0f;
+  } else {
+    return itr->second.get_float();
+  }
+}
+
+real64 GameConfig::get_real64(const std::string& node) const
+{
+  auto itr = config.find(node);
+
+  if( itr == config.end() ) {
+    return -1.0f;
+  } else {
+    return itr->second.get_double();
+  }
+}
+
 const nom::Value& GameConfig::setProperty(  const std::string& node,
                                             const nom::Value& value )
 {
@@ -130,6 +154,13 @@ const nom::Value& GameConfig::setProperty(  const std::string& node,
   else if( value.int_type() )
   {
     NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
+  }
+  else if( value.double_type() )
+  {
+    std::string value_as_string =
+      std::to_string( value.get_double() );
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG, "GameConfig:", node, ":",
+                  value_as_string, "has been added to the cache." );
   }
   else if( value.bool_type() )
   {
@@ -149,7 +180,8 @@ const nom::Value& GameConfig::setProperty(  const std::string& node,
 bool GameConfig::load( const std::string& filename )
 {
   // High-level file I/O interface
-  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
+  std::unique_ptr<nom::IValueDeserializer> fp =
+    nom::make_unique<nom::JsonCppDeserializer>();
   std::string key;
   nom::Value objects;
 
@@ -186,6 +218,10 @@ bool GameConfig::load( const std::string& filename )
         else if( members->int_type() )
         {
           cfg.setProperty( key, members->get_int() );
+        }
+        else if( members->double_type() )
+        {
+          cfg.setProperty(key, members->get_double() );
         }
         else if( members->bool_type() )
         {

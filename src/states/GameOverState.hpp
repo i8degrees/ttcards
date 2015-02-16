@@ -29,10 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_GAMEOVER_HEADERS
 #define GAMEAPP_GAMEOVER_HEADERS
 
-#include <iostream>
-#include <string>
 #include <memory>
-#include <vector>
 
 #include <nomlib/graphics.hpp>
 #include <nomlib/gui.hpp>
@@ -41,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "resources.hpp"
 #include "Card.hpp"
-#include "CardRules.hpp"
 #include "GameOverStateCursor.hpp"
 
 // Forward declarations

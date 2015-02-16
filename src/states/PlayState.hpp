@@ -30,27 +30,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GAMEAPP_PLAYSTATE_HEADERS
 
 #include <string>
-#include <iostream>
 #include <memory>
-#include <algorithm>
 
-#ifdef EMSCRIPTEN
-  #include <emscripten.h>
-#endif
-
-#include <nomlib/audio.hpp>
-#include <nomlib/gui.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "version.hpp"
-#include "resources.hpp"
-#include "Card.hpp"
 
 // Forward declarations
 class Game;
 class IPlayer;
+class Card;
 
 class PlayState: public nom::IState
 {
@@ -77,16 +67,24 @@ class PlayState: public nom::IState
     /// \see nom::InputMapper.
     void on_mouse_button_down( const nom::Event& ev );
 
-    unsigned int get_turn ( void );
-    void player_turn ( unsigned int player );
-    void endTurn ( void );
+    nom::uint32 turn();
+    void set_player_turn(nom::uint32 player_id);
+
+    // Helper method for incrementing to next player's turn
+    void end_turn();
 
     bool isCursorLocked ( void );
     void lockCursor ( bool lock );
     void resetCursor ( void );
     void unlockSelectedCard ( void );
     void lockSelectedCard ( void );
-    void moveTo ( unsigned int x, unsigned int y );
+
+    /// \brief Helper method for updating board with player's selected card.
+    void move_to(const nom::Point2i& rel_board_pos);
+
+    void
+    flip_cards( const nom::Point2i& rel_board_pos,
+                const std::function<void()>& on_completion_func );
 
     unsigned int getCursorPos ( void );
     void moveCursorLeft ( void );
@@ -97,24 +95,14 @@ class PlayState: public nom::IState
     /// Interface Helper method; shows Card's ID number in a message box for
     /// both cursor states; player's hand and placed board cards -- debug
     /// handling included.
-    void on_update_info_dialogs( void );
+    void on_update_info_dialogs();
     void updateCursor ( void );
-    void drawCursor ( nom::IDrawable::RenderTarget& target );
 
     /// Update each player's scoreboard
     void updateScore ( void );
 
-    /// \brief Method action callback to load a game.
-    ///
-    /// \see nom::InputMapper.
-    ///
-    /// \todo Re-enable debug load game
-    bool load_game( nom::uint32 flags );
-
-    /// \brief Method action callback to save a game.
-    ///
-    /// \see nom::InputMapper.
-    bool save_game( nom::uint32 flags );
+    bool save_game();
+    bool load_game();
 
     Game* game;
 
@@ -130,7 +118,9 @@ class PlayState: public nom::IState
     /// y coords mapping for cursor -> card position index
     nom::Point2i cursor_coords_map[5];
 
-    nom::uint32 turn; // FIXME: player1 = 0, player2 = 1
+    // TODO: We probably ought to be using the value of Card::NOPLAYER,
+    // Card::PLAYER1, Card::PLAYER2 here!
+    nom::uint32 turn_;
 
     enum CursorState
     {
@@ -147,18 +137,45 @@ class PlayState: public nom::IState
     /// locks cursor state to board placement
     bool cursor_locked;
 
-    /// Animation "blink" timer for visual notification when interface cursor
-    /// is locked on a card (board drop mode).
-    nom::Timer cursor_blink;
-    bool blink_cursor;
+    nom::uint32 last_delta_ = 0;
 
-    /// Simulate an AI player taking their time in thought about the next move
-    nom::AnimationTimer player_timer[2];
+    /// \brief Simulates the CPU player spending time in thought about their
+    /// next action.
+    nom::real32 cpu_hand_delay_seconds_ = 0.0f;
 
     /// Debug option -- when toggled on, we are able to control both players.
     bool skip_turn;
 
-    enum GameOverType gameover_state;
+    /// \brief Toggle for debugging features.
+    ///
+    /// \see config.json
+    bool debug_game_;
+
+    enum GameOverType gameover_state_;
+
+    std::shared_ptr<nom::Sprite> move_card_up_sprite_;
+    std::shared_ptr<nom::Sprite> flip_card_sprite_;
+
+    std::shared_ptr<nom::Sprite> text_action_sprite_;
+    std::shared_ptr<nom::Sprite> gameover_text_action_sprite_;
+
+    typedef std::function<void(const Card& card)> move_card_up_action_callback;
+
+    void
+    move_card_up_action(  const nom::Point2i& rel_board_pos,
+                          const move_card_up_action_callback&
+                          on_completion_func );
+
+    void
+    flip_card_action(const nom::Point2i& rel_board_pos);
+
+    void check_gameover_conditions();
+
+    std::shared_ptr<nom::IActionObject>
+    create_gameover_text_action(  GameOverType type,
+                                  const std::string& action_name );
+
+    void initialize_cpu_player_turn();
 };
 
 // Convenience declarations for changing state

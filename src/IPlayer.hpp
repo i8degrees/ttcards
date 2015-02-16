@@ -42,7 +42,7 @@ class IPlayer
     virtual ~IPlayer();
 
     const nom::Point2i& position() const;
-    void set_position(const nom::Point2i& pos);
+    virtual void set_position(const nom::Point2i& pos);
 
     virtual nom::uint32 player_id() const = 0;
     virtual void set_player_id(nom::uint32 id) = 0;
@@ -51,13 +51,14 @@ class IPlayer
     std::string score_string() const;
     void set_score(nom::uint score);
 
-    virtual void update() = 0;
+    virtual void update(nom::real32 delta_time) = 0;
     virtual void draw(nom::IDrawable::RenderTarget& target) /*const*/ = 0;
 
-  private:
+  protected:
     /// \brief Rendering coordinates of the player's hand
     nom::Point2i position_;
 
+  private:
     /// \brief The player's score.
     nom::uint score_;
 };

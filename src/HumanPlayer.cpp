@@ -28,24 +28,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "HumanPlayer.hpp"
 
+// Private headers
+#include "CardRenderer.hpp"
+
 // Forward declarations
 #include "CardHand.hpp"
-#include "CardView.hpp"
+
+using namespace nom;
+
+HumanPlayer::HumanPlayer(CardHand* hand)
+{
+  //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
+
+  this->hand_ = hand;
+  this->player_id_ = Card::PLAYER1;
+
+  NOM_ASSERT(this->hand_ != nullptr);
+}
 
 HumanPlayer::~HumanPlayer()
 {
   // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
-}
-
-HumanPlayer::HumanPlayer(CardHand* hand, CardView* view) :
-  hand_(hand),
-  card_renderer_(view),
-  player_id_(0)
-{
-  //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
-
-  NOM_ASSERT(this->hand_ != nullptr);
-  NOM_ASSERT(this->card_renderer_ != nullptr);
 }
 
 nom::uint32 HumanPlayer::player_id() const
@@ -53,50 +56,43 @@ nom::uint32 HumanPlayer::player_id() const
   return this->player_id_;
 }
 
-// Maps the player's (card) hand with their respective ID; this keeps track of
-// who's card is which and is used in CardView -- the rendering the card
-// background -- and most importantly, in the Board class where we compare cards
-// placed to determine whom's card to flip over to the respective player.
-//
-// card.player_owner is the *original* player owner of a card and should never be
-// altered once set initially here.
-//
 void HumanPlayer::set_player_id(nom::uint32 id)
 {
   this->player_id_ = id;
-
-  NOM_ASSERT(this->hand_ != nullptr);
-  for( nom::uint32 pid = 0; pid < this->hand_->cards.size(); pid++ )
-  {
-    this->hand_->cards[pid].setPlayerID(id);
-    this->hand_->cards[pid].setPlayerOwner(id);
-  }
 }
 
-void HumanPlayer::update()
+void HumanPlayer::update(nom::real32 delta_time)
 {
-  // this->card_renderer_->update();
+  // Stub
 }
 
 void HumanPlayer::draw(nom::IDrawable::RenderTarget& target)
 {
-  nom::Point2i pos(nom::Point2i::zero);
-
   NOM_ASSERT(this->hand_ != nullptr);
-  NOM_ASSERT(this->card_renderer_ != nullptr);
-  for( nom::int32 idx = 0; idx < this->hand_->size(); idx++ ) {
+  if( this->hand_ == nullptr ) {
+    return;
+  }
 
-    // Position of Player's cards in their hand
+  auto hand_idx = 0;
+  nom::Point2i pos(nom::Point2i::zero);
+  for( auto itr = this->hand_->begin(); itr != this->hand_->end(); ++itr ) {
+
     pos.x = this->position().x;
-    pos.y = this->position().y + ( CARD_HEIGHT / 2 ) * idx;
+    pos.y = this->position().y + ( CARD_HEIGHT / 2 ) * hand_idx;
 
-    if( this->hand_->position() == idx) {
+    if( this->hand_->position() == hand_idx) {
       pos.x -= 16;
     }
 
-    this->card_renderer_->reposition(pos);
-    this->card_renderer_->setViewCard( this->hand_->cards.at(idx) );
-    this->card_renderer_->draw(target);
+    ++hand_idx;
 
+    auto card_renderer =
+      itr->card_renderer();
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      // TODO: Update the element position only when we need to -- this will
+      // help ease further integration of animations!
+      card_renderer->set_position(pos);
+      card_renderer->render(target);
+    }
   } // end for this->hand loop
 }

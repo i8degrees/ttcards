@@ -28,29 +28,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PlayState.hpp"
 
+// Private headers
+#include "CardRenderer.hpp"
+#include "Board.hpp"
+#include "helpers.hpp"
+#include "version.hpp"
+#include "resources.hpp"
+
 // Forward declarations
 #include "Game.hpp"
 #include "HumanPlayer.hpp"
 #include "CPU_Player.hpp"
+#include "Card.hpp"
 
 using namespace nom;
+using namespace ttcards;
 
 PlayState::PlayState(nom::SDLApp* object) :
   nom::IState( Game::State::Play ),
-  game( NOM_SCAST(Game*, object) ),
-  cursor_state_(CursorState::PLAYER)
+  game( NOM_SCAST(Game*, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  this->turn = 0;
-  this->cursor_locked = false;
-  this->skip_turn = false;
-  this->gameover_state = GameOverType::NotOver;
 }
 
 PlayState::~PlayState()
 {
-  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE_STATES);
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_TRACE_STATES, "num_actions:",
+                  this->game->actions_.num_actions() );
 }
 
 void PlayState::on_exit( nom::void_ptr data )
@@ -61,6 +67,8 @@ void PlayState::on_exit( nom::void_ptr data )
   this->game->debug_box_.close();
   Rocket::Core::Factory::ClearStyleSheetCache();
   Rocket::Core::Factory::ClearTemplateCache();
+
+  this->game->actions_.cancel_actions();
 }
 
 void PlayState::on_pause( nom::void_ptr data )
@@ -78,47 +86,85 @@ void PlayState::on_resume( nom::void_ptr data )
 
 void PlayState::on_init( nom::void_ptr data )
 {
-  CPU_Player::action_callback
-    cpu_player_action_callback( [&] (BoardTile& tile) {
-      this->moveTo( tile.bounds().x, tile.bounds().y );
-    });
+  this->debug_game_ =
+    this->game->config.get_bool("DEBUG_GAME");
 
-  while( this->game->hand[0].size() < MAX_PLAYER_HAND )
-  {
-    // this->game->hand[0].shuffle(8, 10, this->game->collection);
-    this->game->hand[0].shuffle(1, 1, this->game->collection);
-  }
+  NOM_ASSERT(this->game != nullptr);
 
-  // Clear CPUPlayer's hand (we will initialize it here soon enough)
-  this->game->hand[1].clear();
+  this->game->board_.reset( new Board() );
+  NOM_ASSERT(this->game->board_ != nullptr);
 
-  while( this->game->hand[1].size() < MAX_PLAYER_HAND )
-  {
-    // this->game->hand[1].shuffle(1, 10, this->game->collection);
-    this->game->hand[1].shuffle(1, 1, this->game->collection);
-  }
-
-  this->game->cursor_.set_position ( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
-  this->game->cursor_.set_frame ( INTERFACE_CURSOR_NONE ); // default cursor image
+  this->gameover_state_ = GameOverType::NotOver;
+  this->cursor_state_ = CursorState::PLAYER;
+  this->turn_ = PLAYER1;
+  this->cursor_locked = false;
+  this->skip_turn = false;
   this->cursor_state_ = CursorState::PLAYER;
 
-  // this->game->rules.setRules(1);
-  this->game->rules.setRules(0);
-  this->game->board = Board ( this->game->rules, &this->game->card );
+  this->text_action_sprite_ =
+    std::make_shared<Sprite>();
+  NOM_ASSERT(text_action_sprite_ != nullptr);
 
-  this->players_[0].reset( new HumanPlayer(&this->game->hand[0], &this->game->card) );
+  auto p1_db = this->game->cards_db_[PLAYER1].get();
+  auto p2_db = this->game->cards_db_[PLAYER2].get();
+  NOM_ASSERT(p1_db != nullptr);
+  NOM_ASSERT(p2_db != nullptr);
+
+  CPU_Player::
+  action_callback cpu_player_action_callback( [=](BoardTile& tile) {
+    this->move_to( tile.bounds().position() );
+  });
+
+  // TODO: Finish implementing CardRules interface -- bitwise flags!
+  bool open_ruleset = false;
+  bool elemental_ruleset = false;
+  nom::StringList ruleset = this->game->config.string_array("REGION_RULESET");
+  for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
+
+    if( (*itr) == "Open" ) {
+      open_ruleset = true;
+    }
+
+    if( (*itr) == "Elemental" ) {
+      elemental_ruleset = true;
+    }
+  }
+
+  // The open region rule set is not enabled, so no peeking at the opponent's
+  // cards! =P
+  if( open_ruleset == false ) {
+    set_face_down(&this->game->hand[PLAYER2], true);
+  } else {
+    set_face_down(&this->game->hand[PLAYER2], false);
+  }
+
+  while( this->game->hand[PLAYER1].size() < MAX_PLAYER_HAND ) {
+    // this->game->hand[PLAYER1].shuffle(8, 10, this->game->collection);
+    this->game->hand[PLAYER1].shuffle(1, 1, *p1_db);
+  }
+
+  this->game->board_->initialize(&this->game->rules, this->game->card_res_.get() );
+
+  if( elemental_ruleset == true ) {
+    this->game->board_->initialize_board_elements();
+  }
+
+  this->game->cursor_->set_position( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
+  this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
+
+  this->players_[0].reset( new HumanPlayer(&this->game->hand[0]) );
   // this->players_[0].reset( new CPU_Player( CPU_Player::Difficulty::Easy,
   //                                   &this->game->board,
   //                                   &this->game->hand[0],
-  //                                   &this->game->card,
   //                                   cpu_player_action_callback ) );
+
   this->players_[0]->set_position( Point2i( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y ) );
 
   this->players_[1].reset( new CPU_Player(  CPU_Player::Difficulty::Easy,
-                                          &this->game->board,
-                                          &this->game->hand[1],
-                                          &this->game->card,
-                                          cpu_player_action_callback ) );
+                                            this->game->board_.get(),
+                                            &this->game->hand[1],
+                                            cpu_player_action_callback ) );
+
   this->players_[1]->set_position( Point2i( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y ) );
 
   // player1, player2 cursor X, Y coords
@@ -160,9 +206,9 @@ void PlayState::on_init( nom::void_ptr data )
 
   this->game->debug_box_.show();
 
-  #if ! defined ( NOM_DEBUG )
+  if( this->debug_game_ == false ) {
     this->game->debug_box_.disable();
-  #endif
+  }
 
   // Southern message box
 
@@ -190,20 +236,6 @@ void PlayState::on_init( nom::void_ptr data )
 
   this->game->info_box_.show();
 
-  nom::StringList ruleset = this->game->config.string_array("REGION_RULESET");
-  for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
-    if( (*itr) != "Open" ) {
-      this->game->hand[1].set_face_down(true);
-    }
-  }
-
-  // Initialize player cards to their respective defaults; this lets us know not
-  // only whose cards they are originally but also presently -- critical in card
-  // flipping, scoreboard keeping and end of game tallying logic.
-  for( auto idx = 0; idx != TOTAL_PLAYERS; ++idx ) {
-    this->players_[idx]->set_player_id(idx+1);
-  }
-
   // Update both player scores now that we have the player scoreboard X, Y
   // origins calculated for rendering.
   //
@@ -213,36 +245,69 @@ void PlayState::on_init( nom::void_ptr data )
 
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
-  this->player_turn( nom::uniform_int_rand<nom::uint>(0, TOTAL_PLAYERS - 1) );
+  uint32 random_choice =
+    nom::uniform_int_rand<nom::uint32>(0, TOTAL_PLAYERS - 1);
+  this->set_player_turn(random_choice);
 
-  // Initialize our animation state timers
-  this->player_timer[1].setFrameRate ( 500 );
-  this->cursor_blink.start();
-  this->blink_cursor = false;
+  if( this->turn() == PLAYER2 ) {
+    this->initialize_cpu_player_turn();
+  }
+
+  this->cpu_hand_delay_seconds_ =
+    this->game->config.get_real32("CPU_HAND_DELAY_SECONDS");
+  NOM_ASSERT(this->cpu_hand_delay_seconds_ >= 0.0f);
+
+  // Convert to milliseconds
+  this->cpu_hand_delay_seconds_ = this->cpu_hand_delay_seconds_ * 1000;
 
   // this->game->input_mapper.clear();
   nom::InputActionMapper state;
 
-  // Create input action mappings for player 1 key bindings
-  state.insert( "moveto_1", nom::KeyboardAction( SDL_KEYDOWN, SDLK_1 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 0, 0 ); } ) );
-  state.insert( "moveto_2", nom::KeyboardAction( SDL_KEYDOWN, SDLK_2 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 1, 0 ); } ) );
-  state.insert( "moveto_3", nom::KeyboardAction( SDL_KEYDOWN, SDLK_3 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 2, 0 ); } ) );
-  state.insert( "moveto_4", nom::KeyboardAction( SDL_KEYDOWN, SDLK_4 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 0, 1 ); } ) );
-  state.insert( "moveto_5", nom::KeyboardAction( SDL_KEYDOWN, SDLK_5 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 1, 1 ); } ) );
-  state.insert( "moveto_6", nom::KeyboardAction( SDL_KEYDOWN, SDLK_6 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 2, 1 ); } ) );
-  state.insert( "moveto_7", nom::KeyboardAction( SDL_KEYDOWN, SDLK_7 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 0, 2 ); } ) );
-  state.insert( "moveto_8", nom::KeyboardAction( SDL_KEYDOWN, SDLK_8 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 1, 2 ); } ) );
-  state.insert( "moveto_9", nom::KeyboardAction( SDL_KEYDOWN, SDLK_9 ), nom::EventCallback( [&] ( const nom::Event& evt ) { /*if( this->get_turn() != PLAYER2 )*/ this->moveTo( 2, 2 ); } ) );
+  // TODO:
+  /*if( this->turn() != PLAYER2 )*/
+
+  // Create key bindings for for player 1
+  #define MOVE_TO_KEY_BINDING(var_name, x, y) \
+    nom::event_callback var_name( [&] (const nom::Event& evt) { \
+      this->move_to( nom::Point2i(x, y) ); \
+    });
+
+  MOVE_TO_KEY_BINDING(move_to_1, 0, 0);
+  MOVE_TO_KEY_BINDING(move_to_2, 1, 0);
+  MOVE_TO_KEY_BINDING(move_to_3, 2, 0);
+  MOVE_TO_KEY_BINDING(move_to_4, 0, 1);
+  MOVE_TO_KEY_BINDING(move_to_5, 1, 1);
+  MOVE_TO_KEY_BINDING(move_to_6, 2, 1);
+  MOVE_TO_KEY_BINDING(move_to_7, 0, 2);
+  MOVE_TO_KEY_BINDING(move_to_8, 1, 2);
+  MOVE_TO_KEY_BINDING(move_to_9, 2, 2);
+
+  state.insert( "moveto_1", nom::KeyboardAction(SDL_KEYDOWN, SDLK_1),
+                move_to_1 );
+  state.insert( "moveto_2", nom::KeyboardAction(SDL_KEYDOWN, SDLK_2),
+                move_to_2 );
+  state.insert( "moveto_3", nom::KeyboardAction(SDL_KEYDOWN, SDLK_3),
+                move_to_3 );
+  state.insert( "moveto_4", nom::KeyboardAction(SDL_KEYDOWN, SDLK_4),
+                move_to_4 );
+  state.insert( "moveto_5", nom::KeyboardAction(SDL_KEYDOWN, SDLK_5),
+                move_to_5 );
+  state.insert( "moveto_6", nom::KeyboardAction(SDL_KEYDOWN, SDLK_6),
+                move_to_6 );
+  state.insert( "moveto_7", nom::KeyboardAction(SDL_KEYDOWN, SDLK_7),
+                move_to_7 );
+  state.insert( "moveto_8", nom::KeyboardAction(SDL_KEYDOWN, SDLK_8),
+                move_to_8 );
+  state.insert( "moveto_9", nom::KeyboardAction(SDL_KEYDOWN, SDLK_9),
+                move_to_9 );
 
   // Register event callbacks for our input actions
   nom::EventCallback unlock_selected_card( [&] ( const nom::Event& evt ) { this->unlockSelectedCard(); } );
   nom::EventCallback lock_selected_card( [&] ( const nom::Event& evt ) { this->lockSelectedCard(); } );
 
-  nom::EventCallback select_card( [&] ( const nom::Event& evt )
-    {
-      this->on_mouse_button_down( evt );
-    }
-  );
+  nom::event_callback select_card( [&] (const nom::Event& evt) {
+    this->on_mouse_button_down(evt);
+  });
 
   nom::EventCallback move_cursor_up( [&] ( const nom::Event& evt ) { this->moveCursorUp(); } );
   nom::EventCallback move_cursor_down( [&] ( const nom::Event& evt ) { this->moveCursorDown(); } );
@@ -250,8 +315,8 @@ void PlayState::on_init( nom::void_ptr data )
   nom::EventCallback move_cursor_right( [&] ( const nom::Event& evt ) { this->moveCursorRight(); } );
   nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
 
-  nom::EventCallback load_game( [&] ( const nom::Event& evt ) { this->load_game( 0 ); } );
-  nom::EventCallback save_game( [&] ( const nom::Event& evt ) { this->save_game( 0 ); } );
+  nom::EventCallback load_game( [&] ( const nom::Event& evt ) { this->load_game(); } );
+  nom::EventCallback save_game( [&] ( const nom::Event& evt ) { this->save_game(); } );
 
   state.insert( "unlock_selected_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_x ), unlock_selected_card );
   state.insert( "lock_selected_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), lock_selected_card );
@@ -264,93 +329,6 @@ void PlayState::on_init( nom::void_ptr data )
 
   state.insert( "move_cursor_left", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT ), move_cursor_left );
   state.insert( "move_cursor_right", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT ), move_cursor_right );
-
-  // TODO: Declare a debug_state nom::InputMapper var so we can insert said
-  // state only when the applicable debug flags are toggled on -- for sake of
-  // cleanliness:
-  //
-  // debug_state.insert( "action", action, action_callback );
-  // // ...and so on
-  //
-  // #if defined( TTCARDS_DEBUG_PLAY_STATE )
-  //  this->game->input_mapper.insert( "DebugPlayState", debug_state, true );
-  // #endif
-  //
-  #if ! defined( NDEBUG ) // Debug build
-    nom::EventCallback control_turn( [&] ( const nom::Event& evt )
-      {
-        // FIXME: Why are these inversed???
-        this->skip_turn = true;
-        this->endTurn();
-      }
-    );
-
-    nom::EventCallback skip_turn( [&] ( const nom::Event& evt )
-      {
-        // FIXME: Why are these inversed???
-        this->skip_turn = false;
-        this->endTurn();
-      }
-    );
-
-    nom::EventCallback delete_card( [&] ( const nom::Event& evt )
-      {
-        uint player_turn = this->get_turn();
-
-        this->game->hand[player_turn].erase( this->game->hand[player_turn].getSelectedCard() );
-        this->game->cursor_.set_position( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
-      }
-    );
-
-    nom::EventCallback toggle_debug_box( [&] ( const nom::Event& evt )
-      {
-        if( this->game->debug_box_.enabled() == true )
-        {
-          this->game->debug_box_.disable();
-        }
-        else
-        {
-          this->game->debug_box_.enable();
-        }
-      }
-    );
-
-    state.insert( "control_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e, KMOD_LGUI ), control_turn );
-    state.insert( "skip_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e ), skip_turn );
-    state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
-    state.insert( "toggle_debug_box", nom::KeyboardAction( SDL_KEYDOWN, SDLK_i ), toggle_debug_box );
-
-  #endif // NOT defined NDEBUG
-
-  #if defined( TTCARDS_DEBUG_PLAY_STATE ) // Debug build
-    nom::EventCallback increase_north_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( true, NORTH ); } );
-    nom::EventCallback decrease_north_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( false, NORTH ); } );
-    // nom::EventCallback increase_north_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( true, NORTH ); this->moveCursorDown(); } );
-    // nom::EventCallback decrease_north_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( false, NORTH ); this->moveCursorDown(); } );
-
-    nom::EventCallback increase_south_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( true, SOUTH ); } );
-    nom::EventCallback decrease_south_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( false, SOUTH ); } );
-    // nom::EventCallback increase_south_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( true, SOUTH ); this->moveCursorUp(); } );
-    // nom::EventCallback decrease_south_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( false, SOUTH ); this->moveCursorUp(); } );
-
-    nom::EventCallback increase_west_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( true, WEST ); } );
-    nom::EventCallback decrease_west_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( false, WEST ); } );
-
-    nom::EventCallback increase_east_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( true, EAST ); } );
-    nom::EventCallback decrease_east_rank( [&] ( const nom::Event& evt ) { this->game->hand[ this->get_turn() ].modifyCardRank( false, EAST ); } );
-
-    state.insert( "increase_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LSHIFT ), increase_north_rank );
-    state.insert( "decrease_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LCTRL ), decrease_north_rank );
-
-    state.insert( "increase_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LSHIFT ), increase_south_rank );
-    state.insert( "decrease_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LCTRL ), decrease_south_rank );
-
-    state.insert( "increase_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LSHIFT ), increase_west_rank );
-    state.insert( "decrease_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LCTRL ), decrease_west_rank );
-
-    state.insert( "increase_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LSHIFT ), increase_east_rank );
-    state.insert( "decrease_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LCTRL ), decrease_east_rank );
-  #endif // defined TTCARDS_DEBUG_PLAY_STATE
 
   state.insert( "select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), select_card );
   state.insert( "select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), select_card );
@@ -370,10 +348,122 @@ void PlayState::on_init( nom::void_ptr data )
   state.insert( "load_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_l ), load_game );
   state.insert( "save_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_s ), save_game );
 
+  // TODO: Declare a debug_state nom::InputMapper var so we can insert said
+  // state only when the applicable debug flags are toggled on -- for sake of
+  // cleanliness:
+  //
+  // debug_state.insert( "action", action, action_callback );
+  // // ...and so on
+  //
+  // #if defined( TTCARDS_DEBUG_PLAY_STATE )
+  //  this->game->input_mapper.insert( "DebugPlayState", debug_state, true );
+  // #endif
+  //
+#if ! defined(NDEBUG) // Debug build
+  nom::event_callback control_turn( [&](const nom::Event& evt) {
+    // FIXME: Why are these inversed???
+    this->skip_turn = true;
+    this->end_turn();
+  });
+
+  nom::event_callback skip_turn( [&](const nom::Event& evt) {
+      // FIXME: Why are these inversed???
+      this->skip_turn = false;
+      this->end_turn();
+  });
+
+  nom::event_callback delete_card( [&](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    Point2i cursor_pos;
+    cursor_pos.x = this->player_cursor_coords[pturn].x;
+    cursor_pos.y = this->player_cursor_coords[pturn].y;
+
+    Card selected_card = this->game->hand[pturn].getSelectedCard();
+
+    this->game->hand[pturn].erase(selected_card);
+    this->game->cursor_->set_position(cursor_pos);
+  });
+
+  state.insert( "control_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e, KMOD_LGUI ), control_turn );
+  state.insert( "skip_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e ), skip_turn );
+  state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
+
+  event_callback increase_north_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                true, NORTH );
+  });
+
+  event_callback decrease_north_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                false, NORTH );
+  });
+
+  nom::event_callback increase_south_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                true, SOUTH );
+  });
+
+  nom::event_callback decrease_south_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                false, SOUTH );
+  });
+
+  nom::event_callback increase_west_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                true, WEST );
+  });
+
+  nom::event_callback decrease_west_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                false, WEST );
+  });
+
+  nom::event_callback increase_east_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                true, EAST );
+  });
+
+  nom::event_callback decrease_east_rank( [=](const nom::Event& evt) {
+    uint32 pturn = this->turn();
+    ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                &this->game->hand[pturn],
+                                false, EAST );
+  });
+
+  state.insert( "increase_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LSHIFT ), increase_north_rank );
+  state.insert( "decrease_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LCTRL ), decrease_north_rank );
+
+  state.insert( "increase_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LSHIFT ), increase_south_rank );
+  state.insert( "decrease_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LCTRL ), decrease_south_rank );
+
+  state.insert( "increase_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LSHIFT ), increase_west_rank );
+  state.insert( "decrease_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LCTRL ), decrease_west_rank );
+
+  state.insert( "increase_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LSHIFT ), increase_east_rank );
+  state.insert( "decrease_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LCTRL ), decrease_east_rank );
+#endif // defined as a debug build(NOT NDEBUG)
+
   this->game->input_mapper.erase( "PlayState" );
   this->game->input_mapper.insert( "PlayState", state, true );
   this->game->input_mapper.activate_only( "PlayState" );
   this->game->input_mapper.activate( "Game" );
+
+  this->game->triad_->set_frame(0);
+  this->game->actions_.run_action(this->game->triad_action_, "triad_action");
 }
 
 // Private scope
@@ -389,7 +479,11 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
 {
   if( ev.type != SDL_MOUSEBUTTONDOWN ) return;
 
-  uint32 player_turn = this->get_turn(); // Ignore player2 mouse input
+  if( this->game->actions_.action_running("move_card_up") == true ) {
+    return;
+  }
+
+  uint32 player_turn = this->turn(); // Ignore player2 mouse input
 
   // Player cursor positioning
   Point2i player_pos = this->players_[player_turn]->position();
@@ -401,9 +495,10 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
   IntRect card_bounds;
 
   // Disable mouse input if we are not controlling the other player
-  if ( this->skip_turn == false )
-  {
-    if ( this->get_turn() != 0 ) return;
+  if( this->skip_turn == false ) {
+    if( this->turn() != 0 ) {
+      return;
+    }
   }
 
   // Player hand selection checks; we must calculate the valid bounds of any
@@ -425,7 +520,7 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
       // 3. Play sound event
       this->game->hand[player_turn].set_position(idx);
 
-      this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
+      this->game->cursor_->set_position( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
 
       this->game->cursor_move->Play();
 
@@ -438,83 +533,98 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
 
   // Board grid coords check; player is attempting to place a card on the board
   // when the player hand coords check above comes back false
-  IntRect mouse_map = this->game->board.getGlobalBounds( ev.mouse.x, ev.mouse.y );
+  IntRect mouse_map =
+    this->game->board_->getGlobalBounds( ev.mouse.x, ev.mouse.y );
 
   // Attempts to move card onto board; validity checking is performed within
   // the following method call
-  if ( mouse_map != nom::IntRect::null ) // undefined if -1, -1
-  {
-    this->moveTo ( mouse_map.x, mouse_map.y );
+  if( mouse_map != nom::IntRect::null ) {
+    this->move_to( mouse_map.position() );
   }
 }
 
-unsigned int PlayState::get_turn ( void )
+nom::uint32 PlayState::turn()
 {
-  return this->turn;
+  return this->turn_;
 }
 
-void PlayState::player_turn ( unsigned int player )
+void PlayState::set_player_turn(nom::uint32 player_id)
 {
-  this->turn = player;
+  this->turn_ = player_id;
 
   this->resetCursor();
 }
 
-// Helper method for incrementing to next player's turn
-void PlayState::endTurn ( void )
+void PlayState::end_turn()
 {
-  this->updateScore();
-
   this->unlockSelectedCard();
 
   this->game->hand[PLAYER1].clearSelectedCard();
   this->game->hand[PLAYER2].clearSelectedCard();
 
-  if ( this->get_turn() == PLAYER1 )
-  {
-    this->player_turn ( PLAYER2 );
+  if( this->turn() == PLAYER1 ) {
+    this->set_player_turn(PLAYER2);
+
+    this->initialize_cpu_player_turn();
   }
-  else if ( this->get_turn() == PLAYER2 )
-  {
-    this->player_turn ( PLAYER1 );
+  else if( this->turn() == PLAYER2 ) {
+    this->set_player_turn(PLAYER1);
   }
 }
 
-void PlayState::on_update_info_dialogs( void )
+void PlayState::on_update_info_dialogs()
 {
-  nom::uint32 player_turn = get_turn();
-  Card selected_card; // temp container var to hold our card info (ID, name)
-  nom::IntRect coords; // temp container var to hold cursor pos mapping coords
+  nom::uint32 player_turn = this->turn();
+  Card selected_card;
+  nom::Point2i cursor_pos;
+  nom::IntRect board_pos;
+  std::stringstream os;
 
-  // Board selection state
-  if ( this->isCursorLocked() == true )
-  {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor_.position().x, this->game->cursor_.position().y );
-    if ( coords != nom::IntRect::null )
-    {
-      selected_card = this->game->board.get ( coords.x, coords.y );
+  cursor_pos = this->game->cursor_->position();
+  board_pos = this->game->board_->getGlobalBounds(cursor_pos.x, cursor_pos.y);
+
+  if( this->isCursorLocked() == true ) {
+
+    // ...Board select state...
+    selected_card = this->game->board_->get(board_pos.x, board_pos.y);
+  } else {
+    // ...player hand select state...
+
+    if( this->debug_game_ == true ) {
+      // Watch both player's card data stream in debug builds
+      selected_card = this->game->hand[player_turn].getSelectedCard();
     }
   }
-  else // Player hand selection state
-  {
-    // Allow watching both players make their card selections for DEBUG
-    // (think: development) builds.
-    #if defined ( NOM_DEBUG )
-        selected_card = this->game->hand[player_turn].getSelectedCard();
-    #else // Do not show the actions of other players
-        selected_card = this->game->hand[PLAYER1].getSelectedCard();
-    #endif
+
+  if( this->debug_game_ == true ) {
+
+    // Additional card info
+    int32 card_id = selected_card.getID();
+    int32 player_id = selected_card.getPlayerID();
+    int32 player_owner = selected_card.getPlayerOwner();
+
+    os << card_id << "/" << player_id << " " << "[" << player_owner << "]";
+  } else {
+    selected_card = this->game->hand[PLAYER1].getSelectedCard();
   }
 
-  if ( selected_card.getID() != BAD_CARD_ID )
-  {
-    std::string card_id = selected_card.get_id_string();
+  if( selected_card == Card::null ) {
+    this->game->debug_box_.hide();
+    this->game->info_box_.hide();
+  } else {
+
+    if( this->debug_game_ == true ) {
+      this->game->debug_box_.show();
+    }
+
+    this->game->info_box_.show();
+
     std::string card_name = selected_card.getName();
 
-    // (Northern) debug info box
-    this->game->debug_box_.set_message_text(card_id);
+    // Northern info window (debug info)
+    this->game->debug_box_.set_message_text( os.str() );
 
-    // (Southern) info card box
+    // Southern info window (always shown)
     this->game->info_box_.set_message_text(card_name);
   }
 }
@@ -539,19 +649,24 @@ void PlayState::lockCursor ( bool lock )
 // Helper method for resetting cursor related input
 void PlayState::resetCursor ( void )
 {
-  unsigned int player_turn = get_turn();
+  Point2i cursor_pos(Point2i::zero);
+  uint32 player_turn = this->turn();
 
   this->game->hand[player_turn].front();
 
   this->cursor_state_ = CursorState::PLAYER;
-  this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[0].x, this->player_cursor_coords[0].y) );
 
-  // Only set the position of the game interface cursor for player2 when we are
-  // controlling him
-  if ( this->skip_turn == true )
-  {
-    this->game->cursor_.set_position ( Point2i(this->player_cursor_coords[player_turn].x, this->player_cursor_coords[player_turn].y) );
+  // Only set the position of the game interface cursor for the opponent when
+  // we are controlling him (debug builds)
+  if( this->skip_turn == true ) {
+    cursor_pos.x = this->player_cursor_coords[player_turn].x;
+    cursor_pos.y = this->player_cursor_coords[player_turn].y;
+  } else {
+    cursor_pos.x = this->player_cursor_coords[0].x;
+    cursor_pos.y = this->player_cursor_coords[0].y;
   }
+
+  this->game->cursor_->set_position(cursor_pos);
 }
 
 // helper method for cursor input selection
@@ -575,141 +690,308 @@ void PlayState::lockSelectedCard ( void )
 
   if ( this->isCursorLocked() == false )
   {
-    if ( get_turn() == 0 )
-    {
-      this->game->cursor_.set_position ( Point2i(CURSOR_ORIGIN_X-16, CURSOR_ORIGIN_Y) ); // FIXME
+    if( this->turn() == 0 ) {
+      Point2i cursor_pos;
+      cursor_pos.x = CURSOR_ORIGIN_X-16;  // FIXME
+      cursor_pos.y = CURSOR_ORIGIN_Y;
+      this->game->cursor_->set_position(cursor_pos);
     }
-    else if ( get_turn() == 1 )
-    {
-      this->game->cursor_.set_position ( Point2i(CURSOR_ORIGIN_X+16, CURSOR_ORIGIN_Y) ); // FIXME
+    else if( this->turn() == 1 ) {
+      Point2i cursor_pos;
+      cursor_pos.x = CURSOR_ORIGIN_X+16;  // FIXME
+      cursor_pos.y = CURSOR_ORIGIN_Y;
+      this->game->cursor_->set_position(cursor_pos);
     }
 
     this->lockCursor ( true );
   }
   else
   {
-    coords = this->game->board.getGlobalBounds ( this->game->cursor_.position().x, this->game->cursor_.position().y );
+    int cursor_x = this->game->cursor_->position().x;
+    int cursor_y = this->game->cursor_->position().y;
 
-    if ( coords != nom::IntRect::null )
-    {
-      this->moveTo ( coords.x, coords.y );
+    coords = this->game->board_->getGlobalBounds(cursor_x, cursor_y);
+    if ( coords != nom::IntRect::null ) {
+      this->move_to( coords.position() );
     }
 
     this->unlockSelectedCard();
   }
 }
 
-// Helper method for updating board with player's selected card
-void PlayState::moveTo ( unsigned int x, unsigned int y )
+void PlayState::move_to(const nom::Point2i& rel_board_pos)
 {
-  Card selected;
-  nom::uint32 player_turn = this->get_turn();
+  nom::uint32 player_turn = this->turn();
 
-  selected = this->game->hand[ player_turn ].getSelectedCard();
-
-  if ( player_turn == PLAYER1 )
-  {
-    std::vector<BoardTile> adj = this->game->board.find_adjacent ( x, y );
-
-    // Dump returned list of cards
-    nom::uint32 line_number = 1;
-    for ( auto idx = 0; idx < adj.size(); idx++ )
-    {
-      Card tile = adj[idx].tile();
-
-      if ( tile.getPlayerID() != Card::PLAYER1 )
-      {
-        nom::IntRect pos = adj[idx].bounds();
-        nom::uint32 element = adj[idx].element();
-
-        std::cout << line_number
-                  << ". "
-                  << tile.getName()
-                  << " is at pos "
-                  << pos.x
-                  << ", "
-                  << pos.y
-                  << " ("
-                  << pos.w
-                  << "x"
-                  << pos.h
-                  << ") "
-                  << " with an element ID of "
-                  << element
-                  << "."
-                  << "\n";
-
-        line_number++;
-      }
-    }
-
-    /*
-        for ( nom::int32 cols = y; cols < BOARD_GRID_HEIGHT; cols++ )
-        {
-          for ( nom::int32 rows = x; rows < BOARD_GRID_WIDTH; rows++ )
-          {
-            if ( rows != 0 )
-            {
-
-            }
-          }
-        }
-        */
+  Card selected_card = this->game->hand[player_turn].getSelectedCard();
+  if( selected_card.getID() == BAD_CARD_ID ) {
+    NOM_LOG_ERR( TTCARDS, "Sanity check failed: the selected card is invalid!" );
+    return; // Do not end turn
   }
 
-  //std::cout << "\n";
+  // Audible indicator that the move is **not** allowed
+  if( this->game->board_->status(rel_board_pos) != BAD_CARD_ID ) {
+    // Move is not allowed; card exists
+    this->game->cursor_wrong->Play();
+    return; // Do not end turn
+  }
 
-  if ( selected.getID() != BAD_CARD_ID )
-  {
-    if ( player_turn == PLAYER1 && this->game->board ( x, y ) != BAD_CARD_ID )
-    {
-      this->game->cursor_wrong->Play();
+  if( this->game->actions_.action_running("move_card_up") == true ) {
+    return;
+  }
+
+  if( this->game->board_->status(rel_board_pos) == BAD_CARD_ID ) {
+
+    // ...Move is allowed...
+
+    // Animation for the card leaving the player's hand and landing onto the
+    // board
+    this->move_card_up_action(rel_board_pos, [=](const Card& card) {
+
+      Card selected_card = card;
+      this->game->board_->update(rel_board_pos, selected_card);
+      this->game->hand[player_turn].erase(selected_card);
+
+      this->flip_cards(rel_board_pos, [=]() {
+        this->end_turn();
+      });
+    }); // end move_card_up_action callback
+  } // end if game board position is open
+}
+
+void
+PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
+                        const std::function<void()>& on_completion_func )
+{
+  uint32 player_turn = this->turn();
+
+  // Check for flippable cards
+  board_tiles_result grid =
+    this->game->board_->check_board(rel_board_pos);
+  for( auto itr = grid.begin(); itr != grid.end(); ++itr ) {
+
+    int gpos0 = itr->tile.position().x;
+    int gpos1 = itr->tile.position().y;
+    Point2i gpos(gpos0, gpos1);
+    uint32 applied_rule = itr->applied_rule;
+
+    if( applied_rule == CardRules::Same ) {
+      this->text_action_sprite_ = this->game->same_text_sprite_;
+    } else {
+      this->text_action_sprite_ = nullptr;
     }
 
-    if ( this->game->board ( x, y ) == BAD_CARD_ID )
-    {
-      this->game->board.updateStatus ( x, y, this->game->hand[ player_turn ].getSelectedCard() );
-      this->game->hand[ player_turn ].erase ( this->game->hand[ player_turn ].getSelectedCard() );
+    auto flip_text_action = std::make_shared<MoveByAction>(
+      this->text_action_sprite_, Point2i(-GAME_RESOLUTION.w, 0), 1.0f);
+    NOM_ASSERT(flip_text_action != nullptr);
 
-      this->game->card_place->Play();
+    // NOTE: This action has two separate action sprites given to it, and thus
+    // the card flipping animation will occur in either condition
+    if( applied_rule == CardRules::Same ) {
+      // Render the "Same!" scrolling text animation
+      flip_text_action->set_name("same_text_action");
+    } else {
+      // Render the card flipping animation
+      flip_text_action->set_name("flip_card");
+    }
 
-      std::vector<std::pair<int, int>> grid = this->game->board.checkBoard ( x, y );
+    // Reset position for action to translate from
+    if( this->text_action_sprite_ != nullptr ) {
+      nom::set_alignment( this->text_action_sprite_.get(), Point2i::zero,
+                          GAME_RESOLUTION, nom::Anchor::MiddleRight );
+    }
 
-      if ( grid.empty() == false )
-      {
-        if ( this->game->rules.getRules() == 0 )
-        {
-          this->game->board.flipCard ( grid[0].first, grid[0].second, player_turn + 1 );
-          this->game->card_flip->Play();
-        }
-      }
+    this->game->actions_.run_action(flip_text_action, [=]() {
 
-      // Combo rule is in effect
-      if ( this->game->rules.getRules() != 0 )
-      {
-        for ( nom::int32 g = 0; g < grid.size(); g++ )
-        {
-          this->game->board.flipCard ( grid[g].first, grid[g].second, player_turn + 1 );
-          this->game->card_flip->Play();
+      this->flip_card_action(gpos);
 
-          std::vector<std::pair<int, int>> tgrid = this->game->board.checkBoard ( grid[g].first, grid[g].second );
+      this->game->board_->flip_card(gpos, player_turn + 1);
 
-          // temporary workaround until a more proper solution is found
-          if ( this->game->rules.getRules() == 2 || this->game->rules.getRules() == 4 )
-            continue;
-          else
-          {
-            for ( nom::int32 tg = 0; tg < tgrid.size(); tg++ )
-            {
-              this->game->board.flipCard( tgrid[tg].first, tgrid[tg].second, player_turn + 1 );
-              this->game->card_flip->Play();
-            }
-          }
-        }
-      }
-      this->endTurn();
+      this->updateScore();
+      this->game->card_flip->Play();
+
+      if( this->game->rules.getRules() != CardRules::NoRules ) {
+
+        // Do a second round of flippable cards check for the COMBO rule-set
+        board_tiles_result tgrid =
+          this->game->board_->check_board(gpos);
+
+        for( auto itr = tgrid.begin(); itr != tgrid.end(); ++itr ) {
+          int tgpos0 = itr->tile.position().x;
+          int tgpos1 = itr->tile.position().y;
+          Point2i tgpos(tgpos0, tgpos1);
+          // uint32 applied_rule = itr->applied_rule;
+
+          this->text_action_sprite_ = this->game->combo_text_sprite_;
+
+          auto combo_action = std::make_shared<MoveByAction>(
+            this->text_action_sprite_, Point2i(-GAME_RESOLUTION.w, 0), 1.0f);
+          NOM_ASSERT(combo_action != nullptr);
+          combo_action->set_name("combo_text_action");
+
+          // Reset position for action to translate from
+          nom::set_alignment( this->text_action_sprite_.get(),
+                              Point2i::zero, GAME_RESOLUTION,
+                              nom::Anchor::MiddleRight );
+
+          this->game->actions_.run_action(combo_action, [=]() {
+
+            this->flip_card_action(tgpos);
+
+            this->game->board_->flip_card(tgpos, player_turn + 1);
+
+            this->updateScore();
+            this->game->card_flip->Play();
+          });
+        } // end inner for loop (additional flips)
+      } // end if combo rule is in effect
+    }); // end outer callback
+  } // end outer for loop (flippable cards)
+
+  NOM_ASSERT(on_completion_func != nullptr);
+  on_completion_func.operator()();
+}
+
+// TODO: In order to resolve the cursor / card selection synchronization issue,
+// we need to ensure that we do **not** update the selection anytime this
+// action is enqueued.
+void
+PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
+                                const move_card_up_action_callback&
+                                on_completion_func )
+{
+  uint32 pturn = this->turn();
+
+  this->game->actions_.cancel_action("move_card_up");
+
+  Card pcard =
+    this->game->hand[pturn].getSelectedCard();
+
+  std::shared_ptr<CardRenderer> card_renderer =
+    pcard.card_renderer();
+
+  this->move_card_up_sprite_ =
+    card_renderer->rendered_card();
+  NOM_ASSERT(this->move_card_up_sprite_ != nullptr);
+  NOM_ASSERT(this->move_card_up_sprite_->valid() == true);
+
+  Point2i player_pos = this->players_[pturn]->position();
+
+  // We begin the animation by moving the selected card from the player's hand
+  // upward, so we need to apply the offset that is rendered in IPlayer::draw
+
+  // TODO: Perhaps we should just apply the rendering offset to the player's
+  // position getter???
+  player_pos.y += (CARD_HEIGHT / 2 ) * this->game->hand[pturn].position();
+  if( pturn == 0 ) {
+    player_pos.x -= 16;
+  } else if( pturn == 1 ) {
+    player_pos.x += 16;
+  }
+
+  this->move_card_up_sprite_->set_position(player_pos);
+
+  auto move_card_up =
+    std::make_shared<MoveByAction>( this->move_card_up_sprite_,
+                                    Point2i(0, -GAME_RESOLUTION.h), 1.0f);
+  NOM_ASSERT(move_card_up != nullptr);
+  move_card_up->set_timing_mode(nom::Expo::ease_out);
+
+  // Global (screen) coordinates
+  Point2i board_pos;
+  board_pos.x =
+    this->game->board_->tile(rel_board_pos.x, rel_board_pos.y).bounds().size().w;
+  board_pos.y =
+    this->game->board_->tile(rel_board_pos.x, rel_board_pos.y).bounds().size().h;
+
+  // We must reverse the board position coordinates for 2, y and 0, y
+  if( pturn == PLAYER1 ) {
+    if( rel_board_pos.x == 2 ) {
+      board_pos.x = BOARD_ORIGIN_X;
+    } else if( rel_board_pos.x == 0 ) {
+      board_pos.x = BOARD_ORIGIN_X + (CARD_WIDTH * 2);
     }
   }
+
+  // The off-screen animation delta for moving along the X-axis
+  Point2i delta(board_pos.x, 0);
+
+  if( pturn == PLAYER1 ) {
+    // Subtract away the player's card rendering offset; this undoes the
+    // player_pos calculation done above to get us the actual board position
+    delta.x -= 48;
+    // We are going right to left here, from the player's origin point
+    delta.x = -delta.x;
+    delta.y = 0;
+  }
+
+  // The opponent requires no special delta calculation because we do not need
+  // to compute the board position from right to left as we do with the player
+
+  auto move_card_along =
+    std::make_shared<MoveByAction>( this->move_card_up_sprite_,
+                                    delta, 0.1f );
+  NOM_ASSERT(move_card_along != nullptr);
+
+  auto move_card_down =
+    std::make_shared<MoveByAction>( this->move_card_up_sprite_,
+                                    Point2i(0, board_pos.y), 0.3f);
+  NOM_ASSERT(move_card_down != nullptr);
+  move_card_down->set_timing_mode(nom::Expo::ease_out);
+
+  auto move_card_sequence =
+    nom::create_action<SequenceAction>( { move_card_up, move_card_along,
+                                          move_card_down }, "move_card_up" );
+  NOM_ASSERT(move_card_sequence != nullptr);
+
+  this->game->card_place->Play();
+
+  this->game->actions_.run_action(move_card_sequence, [=]() {
+
+    NOM_ASSERT(on_completion_func != nullptr);
+    on_completion_func.operator()(pcard);
+  });
+}
+
+// This works by alpha blending a sprite of the player's card on top of the
+// flip (new owner) -- the sprite is rendered only until the action is
+// completed.
+void PlayState::flip_card_action(const nom::Point2i& rel_board_pos)
+{
+  Card pcard =
+    this->game->board_->get(rel_board_pos.x, rel_board_pos.y);
+
+  std::shared_ptr<CardRenderer> card_renderer =
+    pcard.card_renderer();
+  NOM_ASSERT(card_renderer != nullptr);
+
+  this->flip_card_sprite_ =
+    card_renderer->rendered_card();
+  NOM_ASSERT(this->flip_card_sprite_ != nullptr);
+  this->flip_card_sprite_->set_alpha(Color4i::ALPHA_OPAQUE);
+
+  const real32 FLIP_CARD_FADE_DURATION =
+    this->game->config.get_real32("FLIP_CARD_FADE_DURATION");
+
+  auto flip_card_action0 =
+    nom::create_action<FadeOutAction>(  this->flip_card_sprite_,
+                                        FLIP_CARD_FADE_DURATION );
+  NOM_ASSERT(flip_card_action0 != nullptr);
+  flip_card_action0->set_name("flip_card");
+
+  // auto flip_card_action1 =
+    // nom::create_action<FadeInAction>( this->flip_card_sprite_,
+                                      // FLIP_CARD_FADE_DURATION );
+  // NOM_ASSERT(flip_card_action1 != nullptr);
+  // flip_card_action0->set_name("flip_card");
+
+  this->game->actions_.run_action(flip_card_action0, [=]() {
+
+    // this->game->actions_.run_action(flip_card_action1, [=]() {
+    //   NOM_DUMP( this->flip_card_sprite_->position() );
+    //   NOM_DUMP( (int)this->flip_card_sprite_->alpha() );
+    // });
+  });
 }
 
 // Helper method for obtaining card hand index position based off given origin
@@ -728,7 +1010,7 @@ unsigned int PlayState::getCursorPos ( void )
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    if ( this->game->cursor_.position().y <= this->cursor_coords_map[idx].y )
+    if( this->game->cursor_->position().y <= this->cursor_coords_map[idx].y )
       return this->cursor_coords_map[idx].x;
     else // catch all safety switch
       // assume we are at the last position in the index when all else fails
@@ -745,12 +1027,12 @@ void PlayState::moveCursorLeft ( void )
   // locked cursor to board select mode
   if( this->cursor_state_ == CursorState::BOARD ) {
 
-    if( this->game->cursor_.position().x >
+    if( this->game->cursor_->position().x >
         BOARD_ORIGIN_X + (CARD_WIDTH * 1) )
     {
       move_to_offset.x = -(CARD_WIDTH);
       move_to_offset.y = 0;
-      this->game->cursor_.translate(move_to_offset);
+      this->game->cursor_->translate(move_to_offset);
     }
   }
 
@@ -764,12 +1046,12 @@ void PlayState::moveCursorRight ( void )
   // locked cursor to board select mode
   if( this->cursor_state_ == CursorState::BOARD ) {
 
-    if( this->game->cursor_.position().x <
+    if( this->game->cursor_->position().x <
         BOARD_ORIGIN_X + (CARD_WIDTH * 2) )
     {
       move_to_offset.x = CARD_WIDTH;
       move_to_offset.y = 0;
-      this->game->cursor_.translate(move_to_offset);
+      this->game->cursor_->translate(move_to_offset);
     }
   }
 
@@ -779,15 +1061,19 @@ void PlayState::moveCursorRight ( void )
 void PlayState::moveCursorUp ( void )
 {
   unsigned int pos = 0;
-  unsigned int player_turn = get_turn();
+  unsigned int player_turn = this->turn();
   Point2i move_to_offset(Point2i::zero);
+
+  if( this->game->actions_.action_running("move_card_up") ) {
+    return;
+  }
 
   if ( this->cursor_state_ == CursorState::PLAYER )
   {
-    if( this->game->cursor_.position().y > PLAYER1_CURSOR_ORIGIN_Y ) {
+    if( this->game->cursor_->position().y > PLAYER1_CURSOR_ORIGIN_Y ) {
       move_to_offset.x = 0;
       move_to_offset.y = -(CARD_HEIGHT / 2);
-      this->game->cursor_.translate(move_to_offset);
+      this->game->cursor_->translate(move_to_offset);
 
       pos = this->getCursorPos();
       this->game->hand[player_turn].previous();
@@ -795,12 +1081,12 @@ void PlayState::moveCursorUp ( void )
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if( this->game->cursor_.position().y >
+    if( this->game->cursor_->position().y >
         BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) )
     {
       move_to_offset.x = 0;
       move_to_offset.y = -(CARD_HEIGHT);
-      this->game->cursor_.translate(move_to_offset);
+      this->game->cursor_->translate(move_to_offset);
     }
   }
   this->game->cursor_move->Play();
@@ -809,17 +1095,21 @@ void PlayState::moveCursorUp ( void )
 void PlayState::moveCursorDown ( void )
 {
   unsigned int pos = 0;
-  unsigned int player_turn = get_turn();
+  unsigned int player_turn = this->turn();
   Point2i move_to_offset(Point2i::zero);
+
+  if( this->game->actions_.action_running("move_card_up") ) {
+    return;
+  }
 
   if ( this->cursor_state_ == CursorState::PLAYER )
   {
-    if( this->game->cursor_.position().y <
+    if( this->game->cursor_->position().y <
         (CARD_HEIGHT / 2) * ( this->game->hand[player_turn].size() ) )
     {
       move_to_offset.x = 0;
       move_to_offset.y = (CARD_HEIGHT / 2);
-      this->game->cursor_.translate(move_to_offset);
+      this->game->cursor_->translate(move_to_offset);
 
       pos = this->getCursorPos();
       this->game->hand[player_turn].next();
@@ -827,49 +1117,43 @@ void PlayState::moveCursorDown ( void )
   }
   else if ( this->cursor_state_ == CursorState::BOARD ) // locked cursor to board select mode
   {
-    if( this->game->cursor_.position().y <
+    if( this->game->cursor_->position().y <
         BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) )
     {
       move_to_offset.x = 0;
       move_to_offset.y = CARD_HEIGHT;
-      this->game->cursor_.translate(move_to_offset);
+      this->game->cursor_->translate(move_to_offset);
     }
   }
   this->game->cursor_move->Play();
 }
 
-void PlayState::updateCursor ( void )
+void PlayState::updateCursor()
 {
-  if ( this->cursor_state_ == CursorState::BOARD )
-  {
-    if ( this->cursor_blink.ticks() > 192 ) // Blinky blink!
-    {
-      this->cursor_blink.stop();
-      this->game->cursor_.set_frame ( INTERFACE_CURSOR_NONE );
-      this->blink_cursor = true;
+  uint32 player_turn = this->turn();
+  bool blinking_cursor_action =
+    this->game->actions_.action_running("blinking_cursor_action");
+
+  if( this->cursor_state_ == CursorState::BOARD ) {
+
+    if( blinking_cursor_action == false ) {
+      this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
+      this->game->actions_.run_action(  this->game->blinking_cursor_action_,
+                                        "blinking_cursor_action" );
     }
-  }
+  } else {  // this->cursor_state_ != CursorState::BOARD
 
-  if ( this->get_turn() == PLAYER1 && this->blink_cursor == false ) // player1
-  {
-    this->game->cursor_.set_frame ( INTERFACE_CURSOR_RIGHT );
-  }
-  // Only show interface cursor for player2 when we are controlling him
-  else if ( this->skip_turn == true && this->get_turn() == PLAYER2 && this->blink_cursor == false )
-  {
-    this->game->cursor_.set_frame ( INTERFACE_CURSOR_LEFT );
-  }
-}
+    this->game->actions_.cancel_action("blinking_cursor_action");
 
-void PlayState::drawCursor ( nom::IDrawable::RenderTarget& target )
-{
-  this->game->cursor_.draw ( target );
+    if( player_turn == PLAYER1 ) {
 
-  if ( this->blink_cursor )
-  {
-    this->game->cursor_.set_frame ( INTERFACE_CURSOR_RIGHT );
-    this->cursor_blink.start();
-    this->blink_cursor = false;
+      this->game->cursor_->set_sprite_sheet(this->game->right_cursor_frames_);
+      this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
+    } else if( this->skip_turn == true && player_turn == PLAYER2 ) {
+
+      this->game->cursor_->set_sprite_sheet(this->game->left_cursor_frames_);
+      this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
+    }
   }
 }
 
@@ -878,7 +1162,7 @@ void PlayState::updateScore ( void )
   for ( nom::uint32 players = 0; players < TOTAL_PLAYERS; players++ )
   {
     // Number of cards player owns on the board
-    nom::uint32 board_count = this->game->board.getPlayerCount ( players + 1 );
+    nom::uint32 board_count = this->game->board_->getPlayerCount(players + 1);
 
     // Number of cards player has remaining
     nom::uint32 hand_count = this->game->hand[players].size();
@@ -891,62 +1175,73 @@ void PlayState::updateScore ( void )
   }
 }
 
-void PlayState::on_update( float delta_time )
+void PlayState::on_update(nom::real32 delta_time)
 {
-  this->game->board.update();
+  uint32 player_turn = this->turn();
 
   this->updateCursor();
 
   this->on_update_info_dialogs();
   this->game->gui_window_.update();
 
-  this->players_[0]->update();
+  this->players_[0]->update(delta_time);
 
-  // Player two animation effect
-  if ( ! ( this->player_timer[1].ticks() + this->player_timer[1].framerate() >= delta_time ) )
-  {
-    this->player_timer[1].start();
+  // CPU player's hand animation
+  if( delta_time >= this->last_delta_ + this->cpu_hand_delay_seconds_ ) {
+    last_delta_ = delta_time;
 
-    // Only show player2 animation when we are not controlling him
-    if ( this->skip_turn == false ) {
+    // Only show the animation when we are not controlling him (debug builds)
+    if( this->skip_turn == false ) {
 
-      // Fixes a out of bounds issue that occurs occasionally upon state phasing
+      // Fixes a out of bounds issue that occurs occasionally upon state
+      // phasing
       if( this->game->hand[PLAYER2].size() > 0 ) {
-        nom::uint32 rand_pick = nom::uniform_int_rand<uint32>(0, this->game->hand[PLAYER2].size() - 1);
+        nom::uint32 rand_pick =
+          nom::uniform_int_rand<uint32>(0, this->game->hand[PLAYER2].size() - 1);
         this->game->hand[PLAYER2].set_position(rand_pick);
       }
     }
   }
 
-  if ( this->get_turn() == 0 ) {// player1
-    this->game->triad_.set_position(PLAYER1_TRIAD_ORIGIN);
-  }
-  else { // player2
-    this->game->triad_.set_position(PLAYER2_TRIAD_ORIGIN);
+  if( player_turn == PLAYER1 ) {
+
+    this->game->triad_->set_position(PLAYER1_TRIAD_ORIGIN);
+  } else if( player_turn == PLAYER2 ) {
+
+    this->game->triad_->set_position(PLAYER2_TRIAD_ORIGIN);
 
     // Skipping a turn like this is only available in debug versions
-    if ( this->skip_turn == false ) {
-      this->players_[1]->update();
-    } // player2
+    if( this->skip_turn == false ) {
 
-  } // end player1
+      if( this->game->actions_.action_running("cpu_move_delay") == false &&
+          this->game->actions_.action_running("move_card_up") == false )
+      {
+        this->players_[PLAYER2]->update(delta_time);
+      }
+    } // end if skip_turn == FALSE
+  } else {
+    NOM_ASSERT("PlayState::update(): player_turn > PLAYER2");
+  }
 
   this->game->window.update();
+
+  this->check_gameover_conditions();
 }
 
 void PlayState::on_draw( nom::RenderWindow& target )
 {
   this->game->background.draw ( target );
 
-  this->game->board.draw ( target );
+  this->game->board_->draw(target);
 
-  for(auto idx = 0; idx != TOTAL_PLAYERS; ++idx ) {
-    this->players_[idx]->draw(target);
+  this->players_[PLAYER1]->draw(target);
+  this->players_[PLAYER2]->draw(target);
+
+  this->game->triad_->draw(target);
+
+  if( this->game->cursor_ != nullptr && this->game->cursor_->valid() ) {
+    this->game->cursor_->draw(target);
   }
-
-  this->game->triad_.draw(target);
-
-  this->drawCursor( target );
 
   this->game->gui_window_.draw();
 
@@ -954,132 +1249,209 @@ void PlayState::on_draw( nom::RenderWindow& target )
   this->game->scoreboard_text[0].draw(target);
   this->game->scoreboard_text[1].draw(target);
 
-  // FIXME: We keep game over check logic here in order to allow for the last
-  // card placed to be shown to the player
-  //
-  // Game Over States
-  // game / round is over when board card count >= 9
-  if ( this->game->board.getCount () >= 9 || this->game->hand[ PLAYER1 ].size() == 0 || this->game->hand[ PLAYER2 ].size() == 0 )
-  {
-    if( this->players_[PLAYER1]->score() > this->players_[PLAYER2]->score() )
+  if( this->game->actions_.action_running("same_text_action") == true ) {
+    if( this->text_action_sprite_ != nullptr &&
+        this->text_action_sprite_->valid() == true )
     {
-      this->gameover_state = GameOverType::Won;
-      this->game->gameover_text.set_color ( nom::Color4i::White );
-      this->game->gameover_text.set_text ( "You Win!" );
-    }
-    else if( this->players_[PLAYER1]->score() < this->players_[PLAYER2]->score() )
-    {
-      this->gameover_state = GameOverType::Lost;
-      this->game->gameover_text.set_color ( nom::Color4i::White );
-      this->game->gameover_text.set_text ( "You Lose..." );
-    }
-    else // Assume a draw
-    {
-      this->gameover_state = GameOverType::Tie;
-      this->game->gameover_text.set_color ( nom::Color4i::White );
-      this->game->gameover_text.set_text ( "Draw" );
-    }
-
-    nom::set_alignment( &this->game->gameover_text, Point2i(0,0),
-                        Size2i(GAME_RESOLUTION.w, GAME_RESOLUTION.h),
-                        nom::Anchor::MiddleCenter );
-
-    this->game->gameover_text.draw(target);
-    this->game->window.update();
-
-    // Chill for a second
-    nom::sleep(1000);
-    if ( this->gameover_state == GameOverType::Tie && this->game->rules.getRules() != CardRules::SuddenDeath )
-    {
-      this->game->set_state( Game::State::CardsMenu );
-    }
-    else
-    {
-      nom::uint32_ptr data = new nom::uint32(this->gameover_state);
-      this->game->set_state( Game::State::GameOver, data );
+      this->text_action_sprite_->draw(target);
     }
   }
+
+  if( this->game->actions_.action_running("combo_text_action") == true ) {
+    if( this->text_action_sprite_ != nullptr &&
+        this->text_action_sprite_->valid() == true )
+    {
+      this->text_action_sprite_->draw(target);
+    }
+  }
+
+  if( this->game->actions_.action_running("gameover_action") == true ) {
+    if( this->gameover_text_action_sprite_ != nullptr &&
+        this->gameover_text_action_sprite_->valid() == true )
+    {
+      this->gameover_text_action_sprite_->draw(target);
+    }
+  }
+
+#if 1
+  if( this->game->actions_.action_running("move_card_up") == true ) {
+    if( this->move_card_up_sprite_ != nullptr &&
+        this->move_card_up_sprite_->valid() == true )
+    {
+      this->move_card_up_sprite_->draw(target);
+    }
+  }
+#endif
+
+#if 1
+  if( this->game->actions_.action_running("flip_card") == true ) {
+    if( this->flip_card_sprite_ != nullptr &&
+        this->flip_card_sprite_->valid() == true )
+    {
+      this->flip_card_sprite_->draw(target);
+    }
+  }
+#endif
 }
 
-bool PlayState::load_game( nom::uint32 flags )
+bool PlayState::save_game()
 {
-  // if ( ev.key.mod == KMOD_LGUI ) // Special game load (player1 always wins!)
-  if( flags != 0 )
-  {
-    if ( this->game->hand[0].load ( "Debug" + path.native() + "player1_unbeatable.json" ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + std::string("player1_unbeatable.json") );
-      this->game->cursor_wrong->Play();
-      return false;
-    }
-    NOM_LOG_INFO ( TTCARDS, "Loaded player 1 data from: " + std::string("player1_unbeatable.json") );
-  }
-  else // Normal game load for player1
-  {
-    if ( this->game->hand[0].load( USER_PLAYER1_FILENAME ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_PLAYER1_FILENAME );
-      this->game->cursor_wrong->Play();
-      return false;
-    }
-    NOM_LOG_INFO ( TTCARDS, "Loaded player 1 data from: " + std::string(USER_PLAYER1_FILENAME) );
-  }
-  if ( this->game->hand[1].load( USER_PLAYER2_FILENAME ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_PLAYER2_FILENAME );
-    this->game->cursor_wrong->Play();
-    return false;
-  }
-  NOM_LOG_INFO ( TTCARDS, "Loaded player 2 data from: " + std::string(USER_PLAYER2_FILENAME) );
-
-  if ( this->game->board.load( USER_BOARD_FILENAME ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Unable to load game data from: " + USER_BOARD_FILENAME );
+  if( ttcards::save_game(this->game->board_.get(), this->game->hand) == false ) {
     this->game->cursor_wrong->Play();
     return false;
   }
 
-  NOM_LOG_INFO ( TTCARDS, "Loaded board data from: " + std::string(USER_BOARD_FILENAME) );
+  // Success!
+  this->game->save_game->Play();
+  return true;
+}
 
-  // Successful load of saved game!
+bool PlayState::load_game()
+{
+  if( ttcards::load_game(this->game->board_.get(), this->game->hand) == false ) {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+
+  // Success!
   this->updateScore();
   this->resetCursor();
 
   this->game->load_game->Play();
-
   return true;
 }
 
-bool PlayState::save_game( nom::uint32 flags )
+void PlayState::check_gameover_conditions()
 {
-  if ( this->game->hand[0].save( USER_PLAYER1_FILENAME ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER1_FILENAME );
-    this->game->cursor_wrong->Play();
-    return false;
+  auto board_count = this->game->board_->getCount();
+  NOM_ASSERT(board_count <= BOARD_COUNT_MAX);
+
+  auto player1_score = this->players_[PLAYER1]->score();
+  auto player1_num_cards = this->game->hand[PLAYER1].size();
+
+  auto player2_score = this->players_[PLAYER2]->score();
+  auto player2_num_cards = this->game->hand[PLAYER2].size();
+
+  auto rule_set = this->game->rules.getRules();
+
+  if( this->game->actions_.action_running("move_card_up") == true ) {
+    return;
   }
 
-  NOM_LOG_INFO ( TTCARDS, "Saved player 1 hand data at: " + std::string(USER_PLAYER1_FILENAME) );
-
-  if ( this->game->hand[1].save( USER_PLAYER2_FILENAME ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_PLAYER2_FILENAME );
-    this->game->cursor_wrong->Play();
-    return false;
+  if( this->game->actions_.action_running("flip_card") == true ) {
+    return;
   }
 
-  NOM_LOG_INFO ( TTCARDS, "Saved player 2 hand data at: " + std::string(USER_PLAYER2_FILENAME) );
-
-  if ( this->game->board.save( USER_BOARD_FILENAME ) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Unable to save game data at: " + USER_BOARD_FILENAME );
-    this->game->cursor_wrong->Play();
-    return false;
+  if( this->game->actions_.action_running("same_text_action") == true ) {
+    return;
   }
 
-  NOM_LOG_INFO ( TTCARDS, "Saved board data at: " + std::string(USER_BOARD_FILENAME) );
+  if( this->game->actions_.action_running("combo_text_action") == true ) {
+    return;
+  }
 
-  this->game->save_game->Play(); // Successful saved game!
+  if( board_count == BOARD_COUNT_MAX || player1_num_cards == 0 ||
+      player2_num_cards == 0 )
+  {
+    if( this->gameover_state_ != GameOverType::NotOver ) {
+      this->game->actions_.cancel_actions();
 
-  return true;
+      // TODO: Implement CardRules::SuddenDeath
+      if( this->gameover_state_ == GameOverType::Tie &&
+          rule_set != CardRules::SuddenDeath )
+      {
+        this->game->set_state(Game::State::CardsMenu);
+      } else {
+        this->game->set_state(Game::State::GameOver, &this->gameover_state_);
+      }
+    }
+
+    if( this->game->actions_.action_running("gameover_action") == true ) {
+      return;
+    }
+
+    if( player1_score > player2_score ) {
+
+      auto gameover_text_action =
+        create_gameover_text_action(GameOverType::Won, "gameover_action");
+
+      if( this->game->winning_track->getStatus() != Playing ) {
+        this->game->music_track->Stop();
+        this->game->winning_track->Play();
+      }
+
+      this->game->actions_.run_action(gameover_text_action, [=]() {
+        this->gameover_state_ = GameOverType::Won;
+      });
+    } else if( player1_score < player2_score ) {
+
+      auto gameover_text_action =
+        create_gameover_text_action(GameOverType::Lost, "gameover_action");
+
+      this->game->actions_.run_action(gameover_text_action, [=]() {
+        this->gameover_state_ = GameOverType::Lost;
+      });
+    } else {
+
+      auto gameover_text_action =
+        create_gameover_text_action(GameOverType::Tie, "gameover_action");
+
+      this->game->actions_.run_action(gameover_text_action, [=]() {
+        this->gameover_state_ = GameOverType::Tie;
+      });
+    }
+  } // end game over conditions check
+}
+
+std::shared_ptr<nom::IActionObject>
+PlayState::create_gameover_text_action( GameOverType type,
+                                        const std::string& action_name )
+{
+  const real32 GAMEOVER_TEXT_FADE_DURATION =
+    this->game->config.get_real32("GAMEOVER_TEXT_FADE_DURATION");
+  NOM_ASSERT(GAMEOVER_TEXT_FADE_DURATION > 0.0f);
+
+  auto transition_delay_action =
+    std::make_shared<WaitForDurationAction>(GAMEOVER_TEXT_FADE_DURATION);
+  NOM_ASSERT(transition_delay_action != nullptr);
+
+  if( type == GameOverType::Won ) {
+    this->gameover_text_action_sprite_ = this->game->won_text_sprite_;
+  } else if( type == GameOverType::Lost ) {
+    this->gameover_text_action_sprite_ = this->game->lost_text_sprite_;
+  } else if( type == GameOverType::Tie ) {
+    this->gameover_text_action_sprite_ = this->game->tied_text_sprite_;
+  } else {
+    this->gameover_text_action_sprite_ = nullptr;
+  }
+
+  // Reset the action's internal state
+  this->gameover_text_action_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+
+  auto gameover_text_fade_in_action =
+    std::make_shared<FadeInAction>( this->gameover_text_action_sprite_,
+                                    GAMEOVER_TEXT_FADE_DURATION );
+  NOM_ASSERT(gameover_text_fade_in_action != nullptr);
+
+  nom::action_list sequence_list = {  gameover_text_fade_in_action,
+                                      transition_delay_action };
+  auto gameover_text_action =
+    nom::create_action<SequenceAction>(sequence_list, action_name);
+  NOM_ASSERT(gameover_text_action != nullptr);
+
+  return gameover_text_action;
+}
+
+void PlayState::initialize_cpu_player_turn()
+{
+  const real32 CPU_MOVE_DELAY_SECONDS =
+    this->game->config.get_real32("CPU_MOVE_DELAY_SECONDS");
+
+  auto cpu_move_delay_timer =
+    std::make_shared<WaitForDurationAction>(CPU_MOVE_DELAY_SECONDS);
+  NOM_ASSERT(cpu_move_delay_timer != nullptr);
+
+  if( cpu_move_delay_timer != nullptr ) {
+    this->game->actions_.run_action(cpu_move_delay_timer, "cpu_move_delay");
+  }
 }

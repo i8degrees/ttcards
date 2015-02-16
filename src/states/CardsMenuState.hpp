@@ -122,14 +122,8 @@ class CardsMenuState: public nom::IState
     /// \remarks Not implemented
     nom::uint32 cursor_state_;
 
-    /// Position of the player's hand (player 1)
-    nom::Point2i player1_pos;
-
-    /// Position of the opponent's hand (player 2)
-    nom::Point2i player2_pos;
-
-    /// Position of the card selection from the menu list
-    nom::Point2i card_pos;
+    /// \brief The position origin of the card selection from the menu window.
+    nom::Point2i selected_card_pos_;
 };
 
 // Convenience declarations for changing state

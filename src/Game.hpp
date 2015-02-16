@@ -42,16 +42,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "version.hpp"
 #include "resources.hpp"
-
-#include "Board.hpp"
-#include "CardCollection.hpp"
 #include "CardDebug.hpp"
 #include "CardHand.hpp"
-#include "CardView.hpp"
 #include "CardRules.hpp"
 #include "GameConfig.hpp"
-
 #include "CardsPageDataSource.hpp"
+
+// Forward declarations
+class CardCollection;
+class Board;
+class CardResourceLoader;
 
 class Game: public nom::SDLApp
 {
@@ -101,6 +101,7 @@ class Game: public nom::SDLApp
     std::unique_ptr<nom::ISoundSource> save_game;
 
     /// Theme song track
+    /// TODO: Rename to theme_track_
     std::unique_ptr<nom::ISoundSource> music_track;
 
     /// Player 1 has won track
@@ -115,13 +116,13 @@ class Game: public nom::SDLApp
     nom::Text gameover_text;
 
     /// Game board
-    Board board;
+    std::unique_ptr<Board> board_;
 
     /// Rules logic
     CardRules rules;
 
-    /// Cards database
-    CardCollection collection;
+    /// \brief The card pool of playable cards.
+    std::unique_ptr<CardCollection> cards_db_[TOTAL_PLAYERS];
 
     /// Debug support for card attributes
     CardDebug debug;
@@ -129,8 +130,8 @@ class Game: public nom::SDLApp
     /// Player hands
     CardHand hand[2];
 
-    /// Card rendering
-    CardView card;
+    /// \brief Card resources container; background, face, elements, text
+    std::unique_ptr<CardResourceLoader> card_res_;
 
     /// Board background image
     nom::Texture background;
@@ -139,8 +140,11 @@ class Game: public nom::SDLApp
     nom::Texture gameover_background;
 
     /// interface cursor
+    nom::SpriteSheet right_cursor_frames_;
+    nom::SpriteSheet left_cursor_frames_;
     nom::Texture cursor_tex_;
-    nom::AnimatedSprite cursor_;
+    std::shared_ptr<nom::SpriteBatch> cursor_;
+    std::shared_ptr<nom::IActionObject> blinking_cursor_action_;
 
     /// our public / visible display context handle
     nom::RenderWindow window;
@@ -192,8 +196,20 @@ class Game: public nom::SDLApp
     std::string working_directory;
 
     /// visual indication of which player's turn it is
-    nom::Texture triad_tex_;
-    nom::SpriteBatch triad_;
+    std::shared_ptr<nom::SpriteBatch> triad_;
+
+    std::shared_ptr<nom::IActionObject> triad_action_;
+
+    nom::ActionPlayer actions_;
+
+    std::shared_ptr<nom::Sprite> won_text_sprite_;
+    std::shared_ptr<nom::Sprite> lost_text_sprite_;
+    std::shared_ptr<nom::Sprite> tied_text_sprite_;
+
+    std::shared_ptr<nom::Sprite> combo_text_sprite_;
+    std::shared_ptr<nom::Sprite> same_text_sprite_;
+    std::shared_ptr<nom::IActionObject> combo_text_action_;
+    std::shared_ptr<nom::IActionObject> same_text_action_;
 
   private:
     /// \remarks Re-implements nom::SDLApp::on_event.

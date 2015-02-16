@@ -26,61 +26,28 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_COLLECTION_HEADERS
-#define GAMEAPP_CARD_COLLECTION_HEADERS
+#ifndef TTCARDS_CARD_RESOURCE_LOADER_HPP
+#define TTCARDS_CARD_RESOURCE_LOADER_HPP
 
-#include <array>
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
+#include <memory>
 
-#include <nomlib/serializers.hpp>
+#include <nomlib/graphics.hpp>
 
-#include "Card.hpp"
-#include "CardDebug.hpp"
 #include "config.hpp"
 
-class CardCollection
+// Forward declarations
+class GameConfig;
+
+class CardResourceLoader
 {
   public:
-    CardCollection();
-    ~CardCollection();
+    /// \brief Load the resources used in rendering cards from a collection.
+    bool load_file(const GameConfig* config, const nom::Font& card_font);
 
-    void clear();
-    nom::size_type size() const;
-
-    /// \returns The first card in the container on success, or Card::null on
-    /// failure, such as when the container is empty.
-    const Card& front() const;
-
-    /// Save the current board grid data to a file as a series of RFC 4627
-    /// compliant JSON objects.
-    bool save( const std::string& filename );
-
-    /// Load saved board grid data from a file encoded as RFC 4627 compliant
-    /// JSON objects.
-    bool load( const std::string& filename );
-
-    /// \returns The resulting card by its name on success, or Card::null on
-    /// failure to find a card by the given name.
-    const Card& find(const std::string& card_name) const;
-
-    /// \returns The resulting card by its ID on success, or Card::null on
-    /// failure to find a card by the given ID.
-    const Card& find(nom::int32 card_id) const;
-
-    ConstCardsIterator begin() const;
-    ConstCardsIterator end() const;
-
-    CardsIterator begin();
-    CardsIterator end();
-
-  private:
-    Cards cards;
-
-    /// debug support for card attributes
-    CardDebug debug;
+    std::unique_ptr<nom::Gradient> card_backgrounds_[TOTAL_PLAYERS+1];
+    std::unique_ptr<nom::SpriteBatch> card_faces_;
+    std::unique_ptr<nom::SpriteBatch> card_elements_;
+    std::unique_ptr<nom::Text> card_text_;
 };
 
-#endif // GAMEAPP_CARD_COLLECTION_HEADERS defined
+#endif // include guard defined

@@ -26,13 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include <iostream>
-#include <string>
-
-#include <Rocket/Debugger.h>
-
 #include "Game.hpp"
 
+// Private headers
+#include <Rocket/Debugger.h>
+
+// Forward declarations
+#include "CardCollection.hpp"
+#include "CardResourceLoader.hpp"
+#include "Board.hpp"
 #include "states/GameOverState.hpp"
 #include "states/ConfirmationDialogState.hpp"
 #include "states/PauseState.hpp"
@@ -83,7 +85,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
   }
   atexit(nom::quit); // Clean up memory associated with nomlib
 
-  // nom::init_rand( nom::hires_counter() );
+  nom::init_rand( time(0) );
 
   #if ! defined( NDEBUG )  // Debug target build
     NOM_LOG_INFO( TTCARDS, "DEBUG build" );
@@ -91,8 +93,13 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // Enable info log level and greater for our engine (deprecated)
     nom::SDL2Logger::set_logging_priority( NOM, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
+    nom::SDL2Logger::set_logging_priority( NOM_LOG_CATEGORY_APPLICATION, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
+
     // Enable logging of all messages in the game
     nom::SDL2Logger::set_logging_priority( TTCARDS, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
+
+    nom::SDL2Logger::set_logging_priority(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                                            LogPriority::NOM_LOG_PRIORITY_INFO );
 
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
@@ -115,6 +122,23 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CPU_PLAYER, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+
+    // Extended diagnostics of the rendering subsystem; i.e.: allocation
+    // counters, etc.
+    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_RENDER, nom::NOM_LOG_PRIORITY_DEBUG);
+
+    // Animation subsystem
+    nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_INFO);
+    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_DEBUG);
+    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_DEBUG);
+
+    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_VERBOSE);
+    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_VERBOSE);
+    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_VERBOSE);
+
+    // Extended call stack diagnostics (i.e.: number of initialized Card objects)
+    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
+
   #else // NDEBUG -- release target build
 
     NOM_LOG_INFO( TTCARDS, "RELEASE build" );
@@ -246,7 +270,8 @@ Game::~Game()
 
   this->gui_window_.shutdown();
 
-  nom::shutdown_librocket();
+  // FIXME: The game crashes here for some reason
+  // nom::shutdown_librocket();
 }
 
 bool Game::on_init( void )
@@ -462,7 +487,7 @@ bool Game::on_init( void )
   }
 
   // Initialize game over text
-  this->gameover_text.set_font(&this->game->gameover_font);
+  this->game->gameover_text.set_font(&this->game->gameover_font);
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
     if( this->gameover_background.load( this->config.getString("GAMEOVER_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
@@ -511,22 +536,110 @@ bool Game::on_init( void )
     }
   #endif
 
-  this->cursor_.set_texture(this->cursor_tex_);
-  this->cursor_.set_sprite_sheet(cursor_frames);
+  IntRect cursor_bounds(IntRect::zero);
 
-  if ( this->collection.load( this->config.getString("CARDS_DB") ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.getString("CARDS_DB") );
+  //
+
+  cursor_bounds = cursor_frames.dimensions(SHEET_CURSOR_NONE);
+  this->game->left_cursor_frames_.append_frame(cursor_bounds);
+
+  cursor_bounds = cursor_frames.dimensions(SHEET_CURSOR_LEFT);
+  this->game->left_cursor_frames_.append_frame(cursor_bounds);
+
+  //
+
+  cursor_bounds = cursor_frames.dimensions(SHEET_CURSOR_NONE);
+  this->game->right_cursor_frames_.append_frame(cursor_bounds);
+
+  cursor_bounds = cursor_frames.dimensions(SHEET_CURSOR_RIGHT);
+  this->game->right_cursor_frames_.append_frame(cursor_bounds);
+
+  //
+
+  this->game->cursor_ =
+    std::make_shared<SpriteBatch>();
+  NOM_ASSERT(this->game->cursor_ != nullptr);
+  this->game->cursor_->set_texture(this->game->cursor_tex_);
+  this->game->cursor_->set_sprite_sheet(this->game->right_cursor_frames_);
+  this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
+
+  // blinking cursor animation
+  const real32 CURSOR_BLINK_INTERVAL =
+    this->game->config.get_real32("CURSOR_BLINK_INTERVAL");
+  NOM_ASSERT(CURSOR_BLINK_INTERVAL > 0.0f);
+
+  auto cursor_action =
+    nom::create_action<SpriteBatchAction>(
+      this->game->cursor_, CURSOR_BLINK_INTERVAL);
+  NOM_ASSERT(cursor_action != nullptr);
+  cursor_action->set_name("cursor_action");
+
+  this->game->blinking_cursor_action_ =
+    nom::create_action<RepeatForeverAction>(cursor_action);
+  NOM_ASSERT(this->game->blinking_cursor_action_ != nullptr);
+
+  // Initialize both player's card deck
+
+  const std::string CARDS_DB =
+    this->config.getString("CARDS_DB");
+
+  this->game->cards_db_[PLAYER1].reset( new CardCollection() );
+  if( this->game->cards_db_[PLAYER1] == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load the player's cards:",
+                  "memory allocation failure." );
     return false;
   }
 
-  if ( this->card.load( &this->config, this->card_font ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
+  if( this->game->cards_db_[PLAYER1]->load(CARDS_DB) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load the cards database for player 1 from:",
+                  CARDS_DB );
+    return false;
+  }
+
+  this->game->cards_db_[PLAYER2].reset( new CardCollection() );
+  if( this->game->cards_db_[PLAYER2] == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load the opponent's cards:",
+                  "memory allocation failure." );
+    return false;
+  }
+
+  if( this->game->cards_db_[PLAYER2]->load(CARDS_DB) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load the cards database for player 2 from:",
+                  CARDS_DB );
+    return false;
+  }
+
+  auto p1_db = this->game->cards_db_[PLAYER1].get();
+  auto p2_db = this->game->cards_db_[PLAYER2].get();
+
+  // Initialize the player's deck
+  for( auto itr = p1_db->begin(); itr != p1_db->end(); ++itr ) {
+    itr->setPlayerID(Card::PLAYER1);
+    itr->setPlayerOwner(Card::PLAYER1);
+  }
+
+  // Initialize the opponent's deck
+  for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
+    itr->setPlayerID(Card::PLAYER2);
+    itr->setPlayerOwner(Card::PLAYER2);
+  }
+
+  this->game->card_res_.reset( new CardResourceLoader() );
+  NOM_ASSERT(this->game->card_res_ != nullptr);
+  if( this->card_res_->load_file(&this->config, this->card_font) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not bootstrap card resources." );
     return false;
   }
 
   nom::SpriteSheet triad_frames;
+  nom::Texture* triad_tex = new nom::Texture();
+  NOM_ASSERT(triad_tex != nullptr);
+
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
     if( triad_frames.load_file( this->game->config.getString("TRIAD_SPINNER_ATLAS" ) ) == false ) {
       NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -535,7 +648,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
       return false;
     }
 
-    if( this->triad_tex_.load( this->config.getString("TRIAD_SPINNER") ) == false ) {
+    if( triad_tex->load( this->config.getString("TRIAD_SPINNER") ) == false ) {
       NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                     "Could not load texture file: ",
                     this->config.getString("TRIAD_SPINNER") );
@@ -549,7 +662,7 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
       return false;
     }
 
-    if( this->triad_tex_.load( this->config.getString("TRIAD_SPINNER_SCALE2X") ) == false ) {
+    if( triad_tex->load( this->config.getString("TRIAD_SPINNER_SCALE2X") ) == false ) {
       NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                     "Could not load texture file: ",
                     this->config.getString("TRIAD_SPINNER_SCALE2X") );
@@ -557,9 +670,75 @@ NOM_LOG_ERR ( TTCARDS, "Could not load CardView renderer" );
     }
   #endif
 
-  this->triad_.set_texture(this->triad_tex_);
-  this->triad_.set_sprite_sheet(triad_frames);
-  this->triad_.set_frame( this->game->config.getInteger("TRIAD_START_FRAME") );
+  this->game->triad_ =
+    std::make_shared<SpriteBatch>();
+  NOM_ASSERT(this->game->triad_ != nullptr);
+
+  this->game->triad_->set_texture(triad_tex);
+  this->game->triad_->set_sprite_sheet(triad_frames);
+  this->game->triad_->set_frame( this->game->config.getInteger("TRIAD_START_FRAME") );
+
+  // actions init
+
+  // blinking cursor animation
+  const real32 TRIAD_FRAME_INTERVAL =
+    this->game->config.get_real32("TRIAD_FRAME_INTERVAL");
+  NOM_ASSERT(TRIAD_FRAME_INTERVAL > 0.0f);
+
+  auto triad_action =
+    nom::create_action<SpriteBatchAction>(
+      this->game->triad_, TRIAD_FRAME_INTERVAL);
+  NOM_ASSERT(triad_action != nullptr);
+
+  this->game->triad_action_ =
+    nom::create_action<RepeatForeverAction>(triad_action);
+  NOM_ASSERT(this->game->triad_action_ != nullptr);
+
+  // win, lose, draw text actions
+
+  this->game->gameover_text.set_text("You Win!");
+  this->game->won_text_sprite_ =
+    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+  NOM_ASSERT(this->game->won_text_sprite_ != nullptr);
+
+  nom::set_alignment( this->game->won_text_sprite_.get(), Point2i::zero,
+                      GAME_RESOLUTION, Anchor::MiddleCenter );
+  this->game->won_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+
+  this->game->gameover_text.set_text("You Lose...");
+  this->game->lost_text_sprite_ =
+    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+  NOM_ASSERT(this->game->lost_text_sprite_ != nullptr);
+
+  nom::set_alignment( this->game->lost_text_sprite_.get(), Point2i::zero,
+                      GAME_RESOLUTION, Anchor::MiddleCenter );
+  this->game->lost_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+
+  this->game->gameover_text.set_text("Draw");
+  this->game->tied_text_sprite_ =
+    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+  NOM_ASSERT(this->game->tied_text_sprite_ != nullptr);
+
+  nom::set_alignment( this->game->tied_text_sprite_.get(), Point2i::zero,
+                      GAME_RESOLUTION, Anchor::MiddleCenter );
+  this->game->tied_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+
+  // Combo && Same flip text sprites
+  this->game->gameover_text.set_text("Combo!");
+  this->game->combo_text_sprite_ =
+    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+  NOM_ASSERT(this->game->combo_text_sprite_ != nullptr);
+
+  nom::set_alignment( this->game->combo_text_sprite_.get(), Point2i::zero,
+                      GAME_RESOLUTION, Anchor::MiddleRight );
+
+  this->game->gameover_text.set_text("Same!");
+  this->game->same_text_sprite_ =
+    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+  NOM_ASSERT(this->game->same_text_sprite_ != nullptr);
+
+  nom::set_alignment( this->game->same_text_sprite_.get(), Point2i::zero,
+                      GAME_RESOLUTION, Anchor::MiddleRight );
 
   // Initialize audio subsystem...
   if( this->game->config.get_bool("AUDIO_SFX") ||
@@ -783,6 +962,8 @@ int32_t Game::Run( void )
 
       this->on_update( delta_time );
 
+      this->game->actions_.update(delta_time);
+
       // Fix for GitHub Issue #9
       this->window.fill(nom::Color4i::Black);
 
@@ -900,7 +1081,9 @@ void Game::reload_config( void )
 
 void Game::dump_board( void )
 {
-  this->game->board.list();
+  if( this->game->board_ != nullptr ) {
+    this->game->board_->dump_values();
+  }
 }
 
 void Game::dump_hand( nom::uint32 player_id )
@@ -910,7 +1093,16 @@ void Game::dump_hand( nom::uint32 player_id )
 
 void Game::dump_collection( void )
 {
-  this->game->debug.ListCards( this->game->collection.cards );
+  if( this->game->cards_db_[PLAYER1] != nullptr ) {
+
+    for(  auto itr = this->game->cards_db_[PLAYER1]->begin();
+          itr != this->game->cards_db_[PLAYER1]->end();
+          ++itr )
+    {
+      NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION, "FIXME" );
+      // this->game->debug.ListCards(*itr);
+    }
+  }
 }
 
 namespace tt {

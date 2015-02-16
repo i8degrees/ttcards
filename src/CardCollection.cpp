@@ -30,47 +30,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-CardCollection::CardCollection ( void )
+CardCollection::CardCollection()
 {
   NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-CardCollection::~CardCollection ( void )
+CardCollection::~CardCollection()
 {
   NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-void CardCollection::clear ( void )
+void CardCollection::clear()
 {
   this->cards.clear();
 }
 
-nom::uint32 CardCollection::size ( void ) const
+nom::size_type CardCollection::size() const
 {
   return this->cards.size();
 }
 
-Card& CardCollection::getCards ( unsigned int idx )
+const Card& CardCollection::front() const
 {
-  return this->cards[idx];
-}
-
-Cards CardCollection::getCards ( void )
-{
-  Cards temp_cards; // temp var for return passing
-
-  for ( nom::uint32 idx = 0; idx < this->cards.size(); idx++ )
-  {
-    temp_cards.push_back ( this->cards[idx] );
+  if( this->cards.size() > 0 ) {
+    return this->cards.front();
+  } else {
+    return Card::null;
   }
-
-  return temp_cards;
 }
 
 bool CardCollection::save( const std::string& filename )
 {
   // High-level file I/O interface
-  nom::IValueSerializer* fp = new nom::JsonCppSerializer();
+  std::unique_ptr<nom::IValueSerializer> fp =
+    nom::make_unique<nom::JsonCppSerializer>();
 
   // Our JSON output will be a JSON object enclosing an array keyed "cards",
   // of which holds each of our individual, unnamed JSON objects.
@@ -111,7 +104,8 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
 bool CardCollection::load( const std::string& filename )
 {
   // High-level file I/O interface
-  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
+  std::unique_ptr<nom::IValueDeserializer> fp =
+    nom::make_unique<nom::JsonCppDeserializer>();
   nom::Value value;
 
   // The card attributes we are loading in will be stored in here, and once a
@@ -139,8 +133,8 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     card.unserialize( val );
 
     // Additional attributes
-    card.setPlayerID( Card::NOPLAYER );     // placeholder
-    card.setPlayerOwner( Card::NOPLAYER );  // placeholder
+    card.setPlayerID(Card::NO_PLAYER);
+    card.setPlayerOwner(Card::NO_PLAYER);
 
     cards_buffer.push_back( card );
   }
@@ -162,12 +156,11 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
   return true;
 }
 
-const Card& CardCollection::lookup_by_name( const std::string& name ) const
+const Card& CardCollection::find(const std::string& card_name) const
 {
-  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr )
-  {
-    if( (*itr).getName() == name )
-    {
+  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
+
+    if( (*itr).getName() == card_name ) {
       // Successful match
       return *itr;
     }
@@ -177,12 +170,11 @@ const Card& CardCollection::lookup_by_name( const std::string& name ) const
   return Card::null;
 }
 
-const Card& CardCollection::lookup_by_id( int id ) const
+const Card& CardCollection::find(int32 card_id) const
 {
-  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr )
-  {
-    if( (*itr).getID() == id )
-    {
+  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
+
+    if( (*itr).getID() == card_id ) {
       // Successful match
       return *itr;
     }
@@ -190,4 +182,24 @@ const Card& CardCollection::lookup_by_id( int id ) const
 
   // No match
   return Card::null;
+}
+
+ConstCardsIterator CardCollection::begin() const
+{
+  return this->cards.begin();
+}
+
+ConstCardsIterator CardCollection::end() const
+{
+  return this->cards.end();
+}
+
+CardsIterator CardCollection::begin()
+{
+  return this->cards.begin();
+}
+
+CardsIterator CardCollection::end()
+{
+  return this->cards.end();
 }

@@ -61,11 +61,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// If set to two (2), this will use the rescaled resource data (using Scale2X
 /// algorithm), giving us a game resolution of 768x448. This is the preferred
 /// default.
-///
-/// On an older system (i.e.: a AMD64 ~1.8Ghz Single Core, GeForce 6200), you
-/// may need to drop this down to one (1), in order to get decent frame-rate,
-/// as per my experience on the alpha builds of TTcards for WindowsOS. This will
-/// hopefully slowly improve as I find time for optimizations!
 #define SCALE_FACTOR 2
 
 // Global configuration
@@ -80,7 +75,7 @@ const nom::int32 SCREEN_BPP = 32;
 #endif
 
 /// As per PSX_SCUS Final Fantasy VIII
-const nom::uint32 TICKS_PER_SECOND = 15;
+const nom::uint32 TICKS_PER_SECOND = 30;
 
 /// Calculation used to determine how many ticks to wait between updating
 const nom::uint32 SKIP_TICKS = 1000 / TICKS_PER_SECOND;
@@ -89,7 +84,7 @@ const nom::uint32 SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 const nom::uint32 MAX_FRAMESKIP = 5;
 
 /// \todo Not implemented; this is what TICKS_PER_SECOND is set at
-const nom::uint32 FRAMES_PER_SECOND = 15;
+const nom::uint32 FRAMES_PER_SECOND = 30;
 
 /// Maximum number of players -- both human & AI
 const nom::int32 TOTAL_PLAYERS = 2; // +1 padding
@@ -124,6 +119,7 @@ const nom::int32 MAX_PLAYER_HAND = 5;
 // Board grid is a dynamically generated 2D array
 const nom::int32 BOARD_GRID_WIDTH = 3;
 const nom::int32 BOARD_GRID_HEIGHT = 3;
+const nom::uint16 BOARD_COUNT_MAX = BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT;
 
 /// Sprite sheet: elements.json
 const nom::int32 ELEMENT_NONE = 0;
@@ -140,11 +136,12 @@ const nom::int32 ELEMENT_WIND = 8;
 const nom::int32 NOFACE_ID = 110;
 
 /// Sprite sheet: cursors.json
-const nom::int32 INTERFACE_CURSOR_NONE = 0;
-const nom::int32 INTERFACE_CURSOR_LEFT = 1;
-const nom::int32 INTERFACE_CURSOR_LEFT_BLINK = 2;
-const nom::int32 INTERFACE_CURSOR_RIGHT = 3;
-const nom::int32 INTERFACE_CURSOR_RIGHT_BLINK = 4;
+const nom::int32 SHEET_CURSOR_NONE = 0;
+const nom::int32 SHEET_CURSOR_LEFT = 1;
+const nom::int32 SHEET_CURSOR_RIGHT = 3;
+
+const nom::int32 INTERFACE_CURSOR_HIDDEN = 0;
+const nom::int32 INTERFACE_CURSOR_SHOWN = 1;
 
 /// Sprite sheet: menu_elements.json
 const nom::int32 INTERFACE_MENU_ELEMENT = 0;
@@ -204,20 +201,20 @@ const nom::int32 PLAYER2_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 3 
 const nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_X = PLAYER2_GAMEOVER_ORIGIN_X;
 const nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y = PLAYER2_GAMEOVER_ORIGIN_Y * 2;
 
-const nom::int32 ELEMENT_ORIGIN_X = 42 * SCALE_FACTOR;
-const nom::int32 ELEMENT_ORIGIN_Y = 5 * SCALE_FACTOR;
+const nom::Point2i ELEMENT_ORIGIN =
+  nom::Point2i(42 * SCALE_FACTOR, 5 * SCALE_FACTOR);
 
-const nom::int32 RANK_NORTH_ORIGIN_X = 8 * SCALE_FACTOR;
-const nom::int32 RANK_NORTH_ORIGIN_Y = 3 * SCALE_FACTOR;
+const nom::Point2i RANK_NORTH_ORIGIN =
+  nom::Point2i(8 * SCALE_FACTOR, 3 * SCALE_FACTOR);
 
-const nom::int32 RANK_EAST_ORIGIN_X = 12 * SCALE_FACTOR;
-const nom::int32 RANK_EAST_ORIGIN_Y = 11 * SCALE_FACTOR;
+const nom::Point2i RANK_EAST_ORIGIN =
+  nom::Point2i(12 * SCALE_FACTOR, 11 * SCALE_FACTOR);
 
-const nom::int32 RANK_SOUTH_ORIGIN_X = RANK_NORTH_ORIGIN_X;
-const nom::int32 RANK_SOUTH_ORIGIN_Y = 20 * SCALE_FACTOR;
+const nom::Point2i RANK_SOUTH_ORIGIN =
+  nom::Point2i(RANK_NORTH_ORIGIN.x, 20 * SCALE_FACTOR);
 
-const nom::int32 RANK_WEST_ORIGIN_X = 4 * SCALE_FACTOR;
-const nom::int32 RANK_WEST_ORIGIN_Y = RANK_EAST_ORIGIN_Y;
+const nom::Point2i RANK_WEST_ORIGIN =
+  nom::Point2i(4 * SCALE_FACTOR, RANK_EAST_ORIGIN.y);
 
 const nom::Point2i PLAYER1_TRIAD_ORIGIN =
   nom::Point2i(320 * SCALE_FACTOR, 0 * SCALE_FACTOR);

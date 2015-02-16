@@ -9,18 +9,7 @@
     "RENDER_SCALE_QUALITY": "nearest",
     // The amount of time to sleep; this gives spare CPU cycles back to the OS
     // scheduler, which in turn, can yield lower CPU usage.
-    //
-    // On my development system -- MacBook Air mid 2011 model -- this drops the
-    // CPU usage from 99% to ~20..40%. The only reason why I care whatsoever
-    // for this effect is because it makes a significant difference in how well
-    // I'm able to multi-task (i.e.: edit this configuration file) during a
-    // game run.
-    //
-    // On slower systems, such as my ancient windev box -- AMD64 Single Core,
-    // GeForce 6200 -- you may want to tweak this value down to zero or so.
-    //
-    // TODO: This value should probably be ignored in release builds?
-    "DELAY_TIME": 50,
+    "DELAY_TIME": 10, // milliseconds
     "APP_ICON" : "icon.png",
     "TRIAD_SPINNER": "images/triad.png",
     "TRIAD_SPINNER_SCALE2X": "images/scale2x/triad.png",
@@ -47,7 +36,7 @@
     "CURSOR_WRONG" : "audio/cursor_wrong.wav",
     "GAMEOVER_BACKGROUND" : "images/game-over_background.png",
     "GAMEOVER_BACKGROUND_SCALE2X" : "images/scale2x/game-over_background.png",
-    // TODO
+    // TODO: Generate 384x224 variant
     "GAMEOVER_FONTFACE" : "fonts/gameover.fnt",
     "GAMEOVER_FONTFACE_SCALE2X" : "fonts/scale2x/gameover.fnt",
     "INTERFACE_CURSOR" : "images/cursors.png",
@@ -56,7 +45,7 @@
     "INTERFACE_CURSOR_ATLAS_SCALE2X" : "images/scale2x/cursors.json",
     "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
     "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
-    // TODO
+    // TODO: Generate 384x224 variant
     "SCORE_FONTFACE" : "fonts/scoreboard.fnt",
     "SCORE_FONTFACE_SCALE2X": "fonts/scale2x/scoreboard.fnt",
     "GUI_TITLE_FONT" : "fonts/Delicious-Bold.otf",
@@ -80,10 +69,27 @@
     "GUI_GAMEOVER_RULES_INFO_SCALE2X": "gui/scale2x/rules_info.rml",
     "GUI_GAMEOVER_CARD_INFO": "gui/card_info.rml",
     "GUI_GAMEOVER_CARD_INFO_SCALE2X": "gui/scale2x/card_info.rml",
-    "REGION_RULESET": [ "Open" ],
-    // "REGION_RULESET": [""]   // CPU Player hand is face down
+    // "REGION_RULESET": [ "Open" ],
+    "REGION_RULESET": [ "Open", "Combo", "Elemental", "Same" ],
+    // "REGION_RULESET": [ "Open", "Combo", "Same" ],
 
-    "AUDIO_SFX": false,
-    "AUDIO_TRACKS": false
+    "AUDIO_SFX": true,
+    "AUDIO_TRACKS": false,
+
+    // animations
+
+    "CURSOR_BLINK_INTERVAL": 0.100, // ~100 ms blink rate
+    "TRIAD_FRAME_INTERVAL": 0.100, // 100 ms per frame
+    "GAMEOVER_TEXT_FADE_DURATION": 1.0, // seconds
+    "FLIP_CARD_FADE_DURATION": 1.0, // seconds
+
+    // How long to wait before animating the CPU player's hand
+    "CPU_HAND_DELAY_SECONDS": 1.0, // seconds
+
+    // Minimum time before CPU player executes a move
+    "CPU_MOVE_DELAY_SECONDS": 4.0, // seconds
+
+    // Toggle showing the opponent's hand in CardsMenuState
+    "DEBUG_GAME": true
   }
 }

@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "CardHand.hpp"
 
-class GameOverStateCursor: public nom::AnimatedSprite
+class GameOverStateCursor: public nom::SpriteBatch
 {
   public:
     GameOverStateCursor ( void );

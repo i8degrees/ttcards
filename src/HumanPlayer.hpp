@@ -36,27 +36,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 class CardHand;
-class CardView;
 
 class HumanPlayer: public IPlayer
 {
   public:
-    virtual ~HumanPlayer();
+    HumanPlayer(CardHand* hand);
 
-    HumanPlayer(CardHand* hand, CardView* view);
+    virtual ~HumanPlayer();
 
     virtual nom::uint32 player_id() const override;
     virtual void set_player_id(nom::uint32 id) override;
 
-    void update() override;
+    void update(nom::real32 delta_time) override;
     void draw(nom::IDrawable::RenderTarget& target) override;
 
   private:
     /// \remarks This object pointer is **not** owned by us; do not free.
     CardHand* hand_;
-
-    /// \remarks This object pointer is **not** owned by us; do not free.
-    CardView* card_renderer_;
 
     /// \brief The unique identifier for the player.
     nom::uint32 player_id_;

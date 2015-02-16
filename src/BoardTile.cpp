@@ -28,23 +28,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "BoardTile.hpp"
 
+using namespace nom;
+
 // Static initialization
 const BoardTile BoardTile::null = BoardTile();
 
-BoardTile::BoardTile ( void ) : tile_element ( 0 ) {}
-
-BoardTile::BoardTile  ( const Card& card,
-                        const nom::IntRect& bounds,
-                        nom::uint32 element
-                      ) :
-  tile_card ( card ),
-  bounds_ ( bounds ),
-  tile_element ( element )
+BoardTile::BoardTile() :
+  element_(::NONE)
 {
   //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-BoardTile::~BoardTile ( void )
+BoardTile::~BoardTile()
+{
+  //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
+}
+
+BoardTile::BoardTile( const Card& card, const nom::IntRect& bounds,
+                      nom::uint32 element ) :
+  tile_card(card),
+  bounds_(bounds),
+  element_(element)
 {
   //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
@@ -54,9 +58,22 @@ const Card& BoardTile::tile ( void ) const
   return this->tile_card;
 }
 
+Point2i BoardTile::position() const
+{
+  return this->bounds_.position();
+}
+
 const nom::IntRect& BoardTile::bounds() const
 {
   return this->bounds_;
+}
+
+void BoardTile::set_position(const Point2i& pos)
+{
+  this->bounds_.x = pos.x;
+  this->bounds_.y = pos.y;
+  // this->bounds_.w = CARD_WIDTH;
+  // this->bounds_.h = CARD_HEIGHT;
 }
 
 void BoardTile::set_bounds(const nom::IntRect& bounds)
@@ -64,16 +81,19 @@ void BoardTile::set_bounds(const nom::IntRect& bounds)
   this->bounds_ = bounds;
 }
 
-nom::uint32 BoardTile::element ( void ) const
+nom::uint32 BoardTile::element() const
 {
-  return this->tile_element;
+  return this->element_;
 }
 
-void BoardTile::update ( const nom::Point2i& pos, const Card& card )
+void BoardTile::set_element(nom::uint32 element)
+{
+  this->element_ = element;
+}
+
+void BoardTile::set_tile(const Card& card)
 {
   this->tile_card = card;
-  //this->bounds_.x = pos.x;
-  //this->bounds_.y = pos.y;
 }
 
 bool operator ==(const BoardTile& lhs, const BoardTile& rhs)

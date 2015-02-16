@@ -71,6 +71,9 @@ const int MIN_NUM = 0;
 /// \brief The maximum number of cards of a type you can collect.
 const int MAX_NUM = 99;
 
+// Forward declarations
+class CardRenderer;
+
 class Card
 {
   public:
@@ -81,11 +84,6 @@ class Card
 
     Card();
     ~Card();
-
-    Card( nom::int32 id, nom::int32 level, nom::int32 type,
-          nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
-          std::string name, nom::int32 player_id, nom::int32 player_owner,
-          int num, bool face_down = false );
 
     const nom::int32 getID ( void ) const;
     const std::string get_id_string( void ) const;
@@ -105,6 +103,15 @@ class Card
 
     int num() const;
     bool face_down() const;
+
+    /// The total strength value of any given card is determined by adding the
+    /// sum of all the card rank values together.
+    ///
+    /// Note that this does not take into account game rules that may be in
+    /// effect!
+    nom::int32 strength ( void );
+
+    std::shared_ptr<CardRenderer>& card_renderer();
 
     /// Clamps value to Card::CARDS_COLLECTION
     void setID ( nom::int32 id_ );
@@ -160,17 +167,12 @@ class Card
     void decreaseSouthRank ( void );
     void decreaseWestRank ( void );
 
-    /// The total strength value of any given card is determined by adding the
-    /// sum of all the card rank values together.
-    ///
-    /// Note that this does not take into account game rules that may be in
-    /// effect!
-    nom::int32 strength ( void );
+    void set_card_renderer(CardRenderer* renderer);
 
     /// card.player_id AKA owner tag
     enum
     {
-      NOPLAYER=0,
+      NO_PLAYER=0,
       PLAYER1=1,
       PLAYER2=2
     };
@@ -204,11 +206,14 @@ class Card
     /// \brief Internal state flag for whether or not the card face is to be
     /// shown to the player.
     bool face_down_;
+
+    std::shared_ptr<CardRenderer> card_renderer_;
 };
 
 /// \todo Rename to CardList
 typedef std::vector<Card> Cards;
 typedef std::vector<Card>::iterator CardsIterator;
+typedef std::vector<Card>::const_iterator ConstCardsIterator;
 
 /// Pretty print the the card attributes.
 ///
@@ -231,5 +236,15 @@ bool operator <= ( const Card& lhs, const Card& rhs );
 
 /// Compare two cards for greater-than or equal to equality
 bool operator >= ( const Card& lhs, const Card& rhs );
+
+/// \brief Card strength greater-than comparison.
+///
+/// \see CardHand
+bool strongest_card(const Card& lhs, const Card& rhs);
+
+/// \brief Card strength lesser-than comparison.
+///
+/// \see CardHand
+bool weakest_card(const Card& lhs, const Card& rhs);
 
 #endif // GAMEAPP_CARD_HEADERS defined
