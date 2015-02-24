@@ -7,6 +7,7 @@
     // nearest improves the card face rendering, at the cost of the text (font)
     // rendering
     "RENDER_SCALE_QUALITY": "nearest",
+    "ENABLE_VSYNC": false,
     // The amount of time to sleep; this gives spare CPU cycles back to the OS
     // scheduler, which in turn, can yield lower CPU usage.
     "DELAY_TIME": 10, // milliseconds

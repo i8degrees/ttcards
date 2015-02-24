@@ -222,36 +222,26 @@ void GameOverState::on_init( nom::void_ptr data )
 
   nom::InputActionMapper state;
 
-  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
+  auto pause_game( [=](const nom::Event& evt) {
+    this->game->set_state(Game::State::Pause);
+  });
 
-  nom::EventCallback move_cursor_left( [&] ( const nom::Event& evt ) { this->cursor_.move_left(); } );
-  nom::EventCallback move_cursor_right( [&] ( const nom::Event& evt ) { this->cursor_.move_right(); } );
+  auto move_cursor_left( [=](const nom::Event& evt) {
+    this->cursor_.move_left();
+  });
 
-  nom::EventCallback select_card( [&] ( const nom::Event& evt )
-    {
-      this->on_mouse_button_down( evt );
-    }
-  );
+  auto move_cursor_right( [=](const nom::Event& evt) {
+    this->cursor_.move_right();
+  });
 
-  nom::EventCallback select_cards( [&] ( const nom::Event& evt )
-    {
-      this->selected_card = this->game->hand[1].getSelectedCard();
-      this->game->set_state( Game::State::ConfirmationDialog );
-    }
-  );
+  auto select_card( [=](const nom::Event& evt) {
+    this->on_mouse_button_down(evt);
+  });
 
-  // Debugging aids
-  #if ! defined( NDEBUG )
-    nom::EventCallback restart_game( [&] ( const nom::Event& evt )
-      {
-        this->selected_card = this->game->hand[1].getSelectedCard();
-        this->game->set_state( Game::State::CardsMenu );
-      }
-    );
-
-    state.insert( "restart_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), restart_game );
-    state.insert( "restart_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::SELECT ), restart_game );
-  #endif // NOT defined NDEBUG
+  auto select_cards( [=](const nom::Event& evt) {
+    this->selected_card = this->game->hand[1].getSelectedCard();
+    this->game->set_state( Game::State::ConfirmationDialog );
+  });
 
   // Keyboard mappings
   state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
@@ -270,6 +260,16 @@ void GameOverState::on_init( nom::void_ptr data )
   state.insert( "move_cursor_left", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::LEFT ), move_cursor_left );
   state.insert( "move_cursor_right", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::RIGHT ), move_cursor_right );
   state.insert( "select_cards", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_cards );
+
+  if( this->game->debug_game_ == true ) {
+    auto restart_game( [=](const nom::Event& evt) {
+      this->selected_card = this->game->hand[1].getSelectedCard();
+      this->game->set_state(Game::State::CardsMenu);
+    });
+
+    state.insert( "restart_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), restart_game );
+    state.insert( "restart_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::SELECT ), restart_game );
+  } // end if DEBUG_GAME
 
   this->game->input_mapper.erase( "GameOverState" );
   this->game->input_mapper.insert( "GameOverState", state, true );

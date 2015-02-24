@@ -54,6 +54,12 @@ class GameConfig
     const nom::int32 getInteger ( const std::string& node ) const;
     bool get_bool(const std::string& node) const;
 
+    /// \brief Get a boolean configuration value.
+    ///
+    /// \returns The boolean value as an integer on success, or negative one
+    /// (-1) on failure, such as when the specified node does not exist.
+    int get_bool32(const std::string& node) const;
+
     /// \returns std::vector<std::string>
     nom::StringList string_array(const std::string& node) const;
 

@@ -75,10 +75,18 @@ void PauseState::on_init( nom::void_ptr data )
 
   nom::InputActionMapper state;
 
-  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->state()->pop_state( nullptr ); } );
+  auto pause_game( [=](const nom::Event& evt) {
+    this->game->state()->pop_state(nullptr);
+  });
 
-  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
-  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+  state.insert( "pause_game",
+                nom::KeyboardAction(SDL_KEYDOWN, SDLK_p),
+                pause_game );
+
+  state.insert( "pause_game",
+                nom::JoystickButtonAction(  0, SDL_JOYBUTTONDOWN,
+                                            nom::PSXBUTTON::START ),
+                pause_game );
 
   this->game->input_mapper.erase( "PauseState" );
   this->game->input_mapper.insert( "PauseState", state, true );

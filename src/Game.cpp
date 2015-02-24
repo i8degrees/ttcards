@@ -274,32 +274,39 @@ Game::~Game()
   // nom::shutdown_librocket();
 }
 
-bool Game::on_init( void )
+bool Game::on_init()
 {
   int render_driver = -1;
-  uint32 window_flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+  uint32 window_flags = SDL_WINDOW_OPENGL;
   uint32 render_flags = SDL_RENDERER_ACCELERATED;
-  /* TODO: Use me when fixed-time-step is fully implemented
-  nom::uint32 renderer_flags = SDL_RENDERER_PRESENTVSYNC;
-  TODO */
 
   this->set_state_machine( new nom::StateMachine() );
 
-  if ( this->config.load ( TTCARDS_CONFIG_FILENAME ) == false )
-  {
-    nom::DialogMessageBox( "Critical Error", "Could not load configuration file at: " + TTCARDS_CONFIG_FILENAME );
+  if( this->config.load(TTCARDS_CONFIG_FILENAME) == false ) {
+    nom::DialogMessageBox(  "Critical Error",
+                            "Could not load configuration file at: " +
+                            TTCARDS_CONFIG_FILENAME );
     return false;
   }
 
-  if( nom::set_hint( SDL_HINT_RENDER_VSYNC, "0" ) == false )
-  {
-    NOM_LOG_INFO( NOM, "Could not disable vertical refresh." );
+  this->game->debug_game_ =
+    this->game->config.get_bool("DEBUG_GAME");
+  const std::string ENABLE_VSYNC =
+    std::to_string( this->config.get_bool32("ENABLE_VSYNC") );
+  const std::string RENDER_SCALE_QUALITY =
+    this->config.getString("RENDER_SCALE_QUALITY");
+
+  if( nom::set_hint(SDL_HINT_RENDER_VSYNC, ENABLE_VSYNC) == false ) {
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not enable VSYNC." );
   }
 
   if( nom::set_hint(  SDL_HINT_RENDER_SCALE_QUALITY,
-                      this->config.getString("RENDER_SCALE_QUALITY") ) == false )
+                      RENDER_SCALE_QUALITY) == false )
   {
-    NOM_LOG_INFO( NOM, "Could not set rendering scale quality." );
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not set the renderer's scale quality to",
+                  RENDER_SCALE_QUALITY );
   }
 
   // We only can support a OpenGL capable rendering driver at the moment; see
@@ -853,39 +860,95 @@ bool Game::on_init( void )
     this->winning_track.reset( new nom::NullMusic() );
   }
 
-  this->game->input_mapper.clear();
+  // ...Initialize our global input action bindings...
 
+  // TODO: Most all of the input action bindings here should be re-initialized
+  // at the start of a new game!
+
+  this->game->input_mapper.clear();
   nom::InputActionMapper state;
 
-  nom::EventCallback quit_game( [&] ( const nom::Event& evt ) { this->on_app_quit( evt ); } );
-  nom::EventCallback on_window_resized( [&] ( const nom::Event& evt ) { this->game->on_window_resized( evt ); } );
-  nom::EventCallback fps_counter( [&] ( const nom::Event& evt ) { this->game->toggle_fps(); } );
-  nom::EventCallback pause_music( [&] ( const nom::Event& evt ) { this->game->pause_music(); } );
-  nom::EventCallback mute_volume( [&] ( const nom::Event& evt ) { this->game->mute_volume(); } );
-  nom::EventCallback save_screenshot( [&] ( const nom::Event& evt ) { this->game->save_screenshot(); } );
-  nom::EventCallback reload_config( [&] ( const nom::Event& evt ) { this->game->reload_config(); } );
+  auto quit_game( [=](const nom::Event& evt) {
+    this->on_app_quit(evt);
+  });
 
-  // Debugging helpers
+  auto on_window_resized( [=](const nom::Event& evt) {
+    this->game->on_window_resized(evt);
+  });
 
-  nom::EventCallback jumpto_confirmation_dialog_state( [&] ( const nom::Event& evt )
-    {
-      this->set_state( Game::State::ConfirmationDialog );
-    }
-  );
+  auto fps_counter( [=](const nom::Event& evt) {
+    this->game->toggle_fps();
+  });
 
-  nom::EventCallback jumpto_gameover_state( [&] ( const nom::Event& evt )
-    {
-      nom::uint32_ptr player1_win = new nom::uint32 (GameOverType::Won);
-      this->set_state( Game::State::GameOver, player1_win );
-    }
-  );
-  nom::EventCallback dump_board( [&] ( const nom::Event& evt ) { this->game->dump_board(); } );
-  nom::EventCallback dump_player0_hand( [&] ( const nom::Event& evt ) { this->game->dump_hand(0); } );
-  nom::EventCallback dump_player1_hand( [&] ( const nom::Event& evt ) { this->game->dump_hand(1); } );
-  nom::EventCallback dump_collection( [&] ( const nom::Event& evt ) { this->game->dump_collection(); } );
+  auto pause_music( [=](const nom::Event& evt) {
+    this->game->pause_music();
+  });
+
+  auto mute_volume( [=](const nom::Event& evt) {
+    this->game->mute_volume();
+  });
+
+  auto save_screenshot( [=](const nom::Event& evt) {
+    this->game->save_screenshot();
+  });
+
+  auto reload_config( [=](const nom::Event& evt) {
+    this->game->reload_config();
+  });
+
+  if( this->game->debug_game_ == true ) {
+    auto jumpto_confirmation_dialog_state( [=](const nom::Event& evt) {
+      this->set_state(Game::State::ConfirmationDialog);
+    });
+
+    auto jumpto_gameover_state( [=](const nom::Event& evt) {
+      auto player1_win = new nom::uint32(GameOverType::Won);
+      this->set_state(Game::State::GameOver, player1_win);
+    });
+
+    auto dump_board( [=](const nom::Event& evt) {
+      this->game->dump_board();
+    });
+
+    auto dump_player0_hand( [=](const nom::Event& evt) {
+      this->game->dump_hand(0);
+    });
+
+    auto dump_player1_hand( [=](const nom::Event& evt) {
+      this->game->dump_hand(1);
+    });
+
+    auto dump_collection( [=](const nom::Event& evt) {
+      this->game->dump_collection();
+    });
+
+    state.insert( "jumpto_confirmation_dialog_state",
+                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_0, KMOD_LGUI),
+                  jumpto_confirmation_dialog_state );
+
+    state.insert( "jumpto_gameover_state",
+                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_0),
+                  jumpto_gameover_state );
+
+    state.insert( "dump_board",
+                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_LEFTBRACKET, KMOD_LGUI),
+                  dump_board );
+
+    state.insert( "dump_player0_hand",
+                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_LEFTBRACKET),
+                  dump_player0_hand );
+
+    state.insert( "dump_player1_hand",
+                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_RIGHTBRACKET),
+                  dump_player1_hand );
+
+    state.insert( "dump_collection",
+                  nom::KeyboardAction(  SDL_KEYDOWN, SDLK_RIGHTBRACKET,
+                                        KMOD_LGUI ),
+                  dump_collection );
+  } // end if DEBUG_GAME
 
   // Conflicts with ConfirmationDialogState key binding
-  // state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), quit_game );
   state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_q ), quit_game );
 
   #if defined( NOM_PLATFORM_OSX )
@@ -899,18 +962,6 @@ bool Game::on_init( void )
   state.insert( "mute_volume", nom::KeyboardAction( SDL_KEYDOWN, SDLK_m ), mute_volume );
   state.insert( "save_screenshot", nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 ), save_screenshot );
   state.insert( "reload_config", nom::KeyboardAction( SDL_KEYDOWN, SDLK_r ), reload_config );
-
-  // TODO: Change to:
-  // #if ! defined( NDEBUG ) // Debug build
-  #if defined( TTCARDS_DEBUG_GAME_STATE )
-    state.insert( "jumpto_confirmation_dialog_state", nom::KeyboardAction( SDL_KEYDOWN, SDLK_0, KMOD_LGUI ), jumpto_confirmation_dialog_state );
-    state.insert( "jumpto_gameover_state", nom::KeyboardAction( SDL_KEYDOWN, SDLK_0 ), jumpto_gameover_state );
-
-    state.insert( "dump_player0_hand", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFTBRACKET ), dump_player0_hand );
-    state.insert( "dump_player1_hand", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHTBRACKET ), dump_player1_hand );
-    state.insert( "dump_board", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFTBRACKET, KMOD_LGUI ), dump_board );
-    state.insert( "dump_collection", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHTBRACKET, KMOD_LGUI ), dump_collection );
-  #endif
 
   this->game->input_mapper.insert( "Game", state, true );
 
@@ -1063,20 +1114,28 @@ void Game::save_screenshot( void )
   }
 }
 
-void Game::reload_config( void )
+void Game::reload_config()
 {
-  if( this->game->config.load( TTCARDS_CONFIG_FILENAME ) == false )
-  {
-    NOM_LOG_ERR( TTCARDS, "Could not reload configuration file at: " + TTCARDS_CONFIG_FILENAME );
+  if( this->game->config.load(TTCARDS_CONFIG_FILENAME) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not reload configuration file at:",
+                  TTCARDS_CONFIG_FILENAME );
     return;
   }
 
-  NOM_LOG_INFO( TTCARDS, "Reloaded game configuration file: " + TTCARDS_CONFIG_FILENAME );
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                "Reloaded game configuration file:",
+                TTCARDS_CONFIG_FILENAME );
 
-  // Prevents states crash
-  if( this->state() != nullptr && this->state()->current_state_id() != Game::State::CardsMenu ) {
-    this->set_state( Game::State::CardsMenu );
+  NOM_ASSERT(this->state() != nullptr);
+
+  // NOTE: Prevents states crash
+  if( this->state()->current_state_id() != Game::State::CardsMenu ) {
+    this->set_state(Game::State::CardsMenu);
   }
+
+  this->game->debug_game_ =
+    this->game->config.get_bool("DEBUG_GAME");
 }
 
 void Game::dump_board( void )

@@ -146,11 +146,6 @@ class PlayState: public nom::IState
     /// Debug option -- when toggled on, we are able to control both players.
     bool skip_turn;
 
-    /// \brief Toggle for debugging features.
-    ///
-    /// \see config.json
-    bool debug_game_;
-
     enum GameOverType gameover_state_;
 
     std::shared_ptr<nom::Sprite> move_card_up_sprite_;

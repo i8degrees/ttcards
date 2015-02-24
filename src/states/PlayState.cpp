@@ -41,6 +41,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CPU_Player.hpp"
 #include "Card.hpp"
 
+// Create keyboard bindings for a game board position
+#define CREATE_MOVE_TO_KEY_BINDING(var_name, x, y) \
+  auto var_name( [=](const nom::Event& evt) { \
+    auto pturn = this->turn(); \
+    if( this->game->debug_game_ == true ) { \
+      this->move_to( nom::Point2i(x, y) ); \
+    } else if( this->game->debug_game_ == false && pturn != PLAYER2 ) { \
+      this->move_to( nom::Point2i(x, y) ); \
+    } \
+  });
+
 using namespace nom;
 using namespace ttcards;
 
@@ -86,9 +97,6 @@ void PlayState::on_resume( nom::void_ptr data )
 
 void PlayState::on_init( nom::void_ptr data )
 {
-  this->debug_game_ =
-    this->game->config.get_bool("DEBUG_GAME");
-
   NOM_ASSERT(this->game != nullptr);
 
   this->game->board_.reset( new Board() );
@@ -206,7 +214,7 @@ void PlayState::on_init( nom::void_ptr data )
 
   this->game->debug_box_.show();
 
-  if( this->debug_game_ == false ) {
+  if( this->game->debug_game_ == false ) {
     this->game->debug_box_.disable();
   }
 
@@ -263,24 +271,15 @@ void PlayState::on_init( nom::void_ptr data )
   // this->game->input_mapper.clear();
   nom::InputActionMapper state;
 
-  // TODO:
-  /*if( this->turn() != PLAYER2 )*/
-
-  // Create key bindings for for player 1
-  #define MOVE_TO_KEY_BINDING(var_name, x, y) \
-    nom::event_callback var_name( [&] (const nom::Event& evt) { \
-      this->move_to( nom::Point2i(x, y) ); \
-    });
-
-  MOVE_TO_KEY_BINDING(move_to_1, 0, 0);
-  MOVE_TO_KEY_BINDING(move_to_2, 1, 0);
-  MOVE_TO_KEY_BINDING(move_to_3, 2, 0);
-  MOVE_TO_KEY_BINDING(move_to_4, 0, 1);
-  MOVE_TO_KEY_BINDING(move_to_5, 1, 1);
-  MOVE_TO_KEY_BINDING(move_to_6, 2, 1);
-  MOVE_TO_KEY_BINDING(move_to_7, 0, 2);
-  MOVE_TO_KEY_BINDING(move_to_8, 1, 2);
-  MOVE_TO_KEY_BINDING(move_to_9, 2, 2);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_1, 0, 0);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_2, 1, 0);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_3, 2, 0);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_4, 0, 1);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_5, 1, 1);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_6, 2, 1);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_7, 0, 2);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_8, 1, 2);
+  CREATE_MOVE_TO_KEY_BINDING(move_to_9, 2, 2);
 
   state.insert( "moveto_1", nom::KeyboardAction(SDL_KEYDOWN, SDLK_1),
                 move_to_1 );
@@ -302,21 +301,44 @@ void PlayState::on_init( nom::void_ptr data )
                 move_to_9 );
 
   // Register event callbacks for our input actions
-  nom::EventCallback unlock_selected_card( [&] ( const nom::Event& evt ) { this->unlockSelectedCard(); } );
-  nom::EventCallback lock_selected_card( [&] ( const nom::Event& evt ) { this->lockSelectedCard(); } );
+  auto unlock_selected_card( [=](const nom::Event& evt) {
+    this->unlockSelectedCard();
+  });
+  auto lock_selected_card( [=](const nom::Event& evt) {
+    this->lockSelectedCard();
+  });
 
-  nom::event_callback select_card( [&] (const nom::Event& evt) {
+  auto select_card( [=](const nom::Event& evt) {
     this->on_mouse_button_down(evt);
   });
 
-  nom::EventCallback move_cursor_up( [&] ( const nom::Event& evt ) { this->moveCursorUp(); } );
-  nom::EventCallback move_cursor_down( [&] ( const nom::Event& evt ) { this->moveCursorDown(); } );
-  nom::EventCallback move_cursor_left( [&] ( const nom::Event& evt ) { this->moveCursorLeft(); } );
-  nom::EventCallback move_cursor_right( [&] ( const nom::Event& evt ) { this->moveCursorRight(); } );
-  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
+  auto move_cursor_up( [=](const nom::Event& evt) {
+    this->moveCursorUp();
+  });
 
-  nom::EventCallback load_game( [&] ( const nom::Event& evt ) { this->load_game(); } );
-  nom::EventCallback save_game( [&] ( const nom::Event& evt ) { this->save_game(); } );
+  auto move_cursor_down( [=](const nom::Event& evt) {
+    this->moveCursorDown();
+  });
+
+  auto move_cursor_left( [=](const nom::Event& evt) {
+    this->moveCursorLeft();
+  });
+
+  auto move_cursor_right( [=](const nom::Event& evt) {
+    this->moveCursorRight();
+  });
+
+  auto pause_game( [=](const nom::Event& evt) {
+    this->game->set_state( Game::State::Pause );
+  });
+
+  auto load_game( [=](const nom::Event& evt) {
+    this->load_game();
+  });
+
+  auto save_game( [=](const nom::Event& evt) {
+    this->save_game();
+  });
 
   state.insert( "unlock_selected_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_x ), unlock_selected_card );
   state.insert( "lock_selected_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), lock_selected_card );
@@ -359,22 +381,22 @@ void PlayState::on_init( nom::void_ptr data )
   //  this->game->input_mapper.insert( "DebugPlayState", debug_state, true );
   // #endif
   //
-  if( this->debug_game_ == true ) {
+  if( this->game->debug_game_ == true ) {
 
-    nom::event_callback control_turn( [&](const nom::Event& evt) {
+    auto control_turn( [=](const nom::Event& evt) {
       // FIXME: Why are these inversed???
       this->skip_turn = true;
       this->end_turn();
     });
 
-    nom::event_callback skip_turn( [&](const nom::Event& evt) {
+    auto skip_turn( [=](const nom::Event& evt) {
         // FIXME: Why are these inversed???
         this->skip_turn = false;
         this->end_turn();
     });
 
-    nom::event_callback delete_card( [&](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto delete_card( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       Point2i cursor_pos;
       cursor_pos.x = this->player_cursor_coords[pturn].x;
       cursor_pos.y = this->player_cursor_coords[pturn].y;
@@ -389,57 +411,57 @@ void PlayState::on_init( nom::void_ptr data )
     state.insert( "skip_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e ), skip_turn );
     state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
 
-    event_callback increase_north_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto increase_north_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, NORTH );
     });
 
-    event_callback decrease_north_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto decrease_north_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, NORTH );
     });
 
-    nom::event_callback increase_south_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto increase_south_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, SOUTH );
     });
 
-    nom::event_callback decrease_south_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto decrease_south_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, SOUTH );
     });
 
-    nom::event_callback increase_west_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto increase_west_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, WEST );
     });
 
-    nom::event_callback decrease_west_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto decrease_west_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, WEST );
     });
 
-    nom::event_callback increase_east_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto increase_east_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, EAST );
     });
 
-    nom::event_callback decrease_east_rank( [=](const nom::Event& evt) {
-      uint32 pturn = this->turn();
+    auto decrease_east_rank( [=](const nom::Event& evt) {
+      auto pturn = this->turn();
       ttcards::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, EAST );
@@ -456,7 +478,7 @@ void PlayState::on_init( nom::void_ptr data )
 
     state.insert( "increase_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LSHIFT ), increase_east_rank );
     state.insert( "decrease_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LCTRL ), decrease_east_rank );
-  } // if this->debug_game_ == true
+  } // end if DEBUG_GAME
 
   this->game->input_mapper.erase( "PlayState" );
   this->game->input_mapper.insert( "PlayState", state, true );
@@ -591,13 +613,13 @@ void PlayState::on_update_info_dialogs()
   } else {
     // ...player hand select state...
 
-    if( this->debug_game_ == true ) {
+    if( this->game->debug_game_ == true ) {
       // Watch both player's card data stream in debug builds
       selected_card = this->game->hand[player_turn].getSelectedCard();
     }
   }
 
-  if( this->debug_game_ == true ) {
+  if( this->game->debug_game_ == true ) {
 
     // Additional card info
     int32 card_id = selected_card.getID();
@@ -614,7 +636,7 @@ void PlayState::on_update_info_dialogs()
     this->game->info_box_.hide();
   } else {
 
-    if( this->debug_game_ == true ) {
+    if( this->game->debug_game_ == true ) {
       this->game->debug_box_.show();
     }
 

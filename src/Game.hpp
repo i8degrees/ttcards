@@ -60,7 +60,7 @@ class Game: public nom::SDLApp
     Game( nom::int32 argc, char* argv[] );
     virtual ~Game();
 
-    bool on_init( void );
+    bool on_init();
 
     /// Run app loop
     nom::int32 Run( void );
@@ -211,6 +211,11 @@ class Game: public nom::SDLApp
     std::shared_ptr<nom::IActionObject> combo_text_action_;
     std::shared_ptr<nom::IActionObject> same_text_action_;
 
+    /// \brief Toggle switch for in-game debugging features.
+    ///
+    /// \see config.json
+    mutable bool debug_game_;
+
   private:
     /// \remarks Re-implements nom::SDLApp::on_event.
     ///
@@ -239,11 +244,15 @@ class Game: public nom::SDLApp
     /// \see nom::InputMapper.
     void save_screenshot( void );
 
-    /// \brief Method callback action for reloading the configuration -- restart
-    /// the game.
+    /// \brief Callback action for reloading the game's configuration file --
+    /// config.json.
     ///
-    /// \see nom::InputMapper.
-    void reload_config( void );
+    /// \todo Support hot-loading the configuration file without resetting the
+    /// game state.
+    ///
+    /// \todo Finish reloading of all the applicable game variables in here --
+    /// i.e.: animations -- we only do DEBUG_GAME at the moment!
+    void reload_config();
 
     /// \brief Method callback action for dumping the board data in the game.
     ///

@@ -104,12 +104,9 @@ void CardsMenuState::on_init( nom::void_ptr data )
   NOM_ASSERT(p1_db != nullptr);
   NOM_ASSERT(p2_db != nullptr);
 
-  const bool DEBUG_GAME =
-    this->game->config.get_bool("DEBUG_GAME");
-
   for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
 
-    if( DEBUG_GAME == false ) {
+    if( this->game->debug_game_ == false ) {
       itr->set_face_down(true);
     } else {
       itr->set_face_down(false);
@@ -284,20 +281,32 @@ void CardsMenuState::on_init( nom::void_ptr data )
 
   nom::InputActionMapper state;
 
-  nom::EventCallback cursor_prev( [&] ( const nom::Event& evt ) { this->cursor_prev(); } );
-  nom::EventCallback cursor_next( [&] ( const nom::Event& evt ) { this->cursor_next(); } );
-  nom::EventCallback prev_page( [&] ( const nom::Event& evt ) { this->prev_page(); } );
-  nom::EventCallback next_page( [&] ( const nom::Event& evt ) { this->next_page(); } );
+  auto cursor_prev( [=](const nom::Event& evt) {
+    this->cursor_prev();
+  });
 
-  nom::EventCallback delete_card( [&] ( const nom::Event& evt ) { this->remove_card(this->selected_card_); } );
-  nom::EventCallback select_card( [&] ( const nom::Event& evt ) { this->add_card(this->selected_card_); } );
+  auto cursor_next( [=](const nom::Event& evt) {
+    this->cursor_next();
+  });
 
-  // nom::EventCallback click_delete_card( [&] ( const nom::Event& evt ) { this->on_right_mouse_button_up(evt); } );
-  // nom::EventCallback click_select_card( [&] ( const nom::Event& evt ) { this->on_left_mouse_button_up(evt); } );
+  auto prev_page( [=](const nom::Event& evt) {
+    this->prev_page();
+  });
 
-  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
-  nom::EventCallback start_game( [&] (const nom::Event& evt) {
-    this->game->set_state( Game::State::ConfirmationDialog );
+  auto next_page( [=](const nom::Event& evt) {
+    this->next_page();
+  });
+
+  auto delete_card( [=](const nom::Event& evt) {
+    this->remove_card(this->selected_card_);
+  });
+
+  auto select_card( [=](const nom::Event& evt) {
+    this->add_card(this->selected_card_);
+  });
+
+  auto start_game( [=](const nom::Event& evt) {
+    this->game->set_state(Game::State::ConfirmationDialog);
   });
 
   state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
@@ -323,15 +332,8 @@ void CardsMenuState::on_init( nom::void_ptr data )
   state.insert( "select_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select_card );
   state.insert( "select_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_card );
 
-  // state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
-  // state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
-
   state.insert( "start_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), start_game );
   state.insert( "start_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), start_game );
-
-  // Mouse button mappings
-  // state.insert( "click_delete_card", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_RIGHT ), click_delete_card );
-  // state.insert( "click_select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT ), click_select_card );
 
   this->game->input_mapper.erase( "CardsMenuState" );
   this->game->input_mapper.insert( "CardsMenuState", state, true );

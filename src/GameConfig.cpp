@@ -88,6 +88,19 @@ bool GameConfig::get_bool(const std::string& node) const
   }
 }
 
+int GameConfig::get_bool32(const std::string& node) const
+{
+  int result = -1;
+  auto res = this->config.find(node);
+
+  if( res == this->config.end() ) {
+    return(result);
+  } else {
+    result = NOM_SCAST(int, res->second.get_bool() );
+    return(result);
+  }
+}
+
 nom::StringList GameConfig::string_array(const std::string& node) const
 {
   nom::StringList out;

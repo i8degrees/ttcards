@@ -125,37 +125,37 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
   // FIXME:
   // nom::InputActionMapper key_bindings, gamepad_bindings;
 
-  nom::EventCallback pause_game( [&] (const nom::Event& evt) {
+  auto pause_game( [=](const nom::Event& evt) {
     this->game->set_state(Game::State::Pause);
   });
 
-  nom::EventCallback cursor_prev( [&] (const nom::Event& evt) {
+  auto cursor_prev( [=](const nom::Event& evt) {
     if( this->cursor_.prev() ) {
       this->game->cursor_move->Play();
     }
   });
 
-  nom::EventCallback cursor_next( [&] (const nom::Event& evt) {
+  auto cursor_next( [=](const nom::Event& evt) {
     if( this->cursor_.next() ) {
       this->game->cursor_move->Play();
     }
   });
 
-  nom::EventCallback select( [&] (const nom::Event& evt) {
+  auto select( [=](const nom::Event& evt) {
     this->send_response();
   });
 
-  nom::EventCallback cancel( [&] (const nom::Event& evt) {
+  auto cancel( [=](const nom::Event& evt) {
     this->game->state()->pop_state(nullptr);
   });
 
   // Equivalent to 'cursor_prev' and 'cursor_next' actions
-  nom::EventCallback mouse_click( [&] (const nom::Event& evt) {
+  auto mouse_click( [=](const nom::Event& evt) {
     this->on_mouse_button_up(evt);
   });
 
   // Equivalent to 'select' action
-  nom::EventCallback mouse_select( [&] (const nom::Event& evt) {
+  auto mouse_select( [=](const nom::Event& evt) {
     this->on_mouse_button_dblclick(evt);
   });
 
