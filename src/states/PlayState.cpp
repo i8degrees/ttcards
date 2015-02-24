@@ -359,103 +359,104 @@ void PlayState::on_init( nom::void_ptr data )
   //  this->game->input_mapper.insert( "DebugPlayState", debug_state, true );
   // #endif
   //
-#if ! defined(NDEBUG) // Debug build
-  nom::event_callback control_turn( [&](const nom::Event& evt) {
-    // FIXME: Why are these inversed???
-    this->skip_turn = true;
-    this->end_turn();
-  });
+  if( this->debug_game_ == true ) {
 
-  nom::event_callback skip_turn( [&](const nom::Event& evt) {
+    nom::event_callback control_turn( [&](const nom::Event& evt) {
       // FIXME: Why are these inversed???
-      this->skip_turn = false;
+      this->skip_turn = true;
       this->end_turn();
-  });
+    });
 
-  nom::event_callback delete_card( [&](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    Point2i cursor_pos;
-    cursor_pos.x = this->player_cursor_coords[pturn].x;
-    cursor_pos.y = this->player_cursor_coords[pturn].y;
+    nom::event_callback skip_turn( [&](const nom::Event& evt) {
+        // FIXME: Why are these inversed???
+        this->skip_turn = false;
+        this->end_turn();
+    });
 
-    Card selected_card = this->game->hand[pturn].getSelectedCard();
+    nom::event_callback delete_card( [&](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      Point2i cursor_pos;
+      cursor_pos.x = this->player_cursor_coords[pturn].x;
+      cursor_pos.y = this->player_cursor_coords[pturn].y;
 
-    this->game->hand[pturn].erase(selected_card);
-    this->game->cursor_->set_position(cursor_pos);
-  });
+      Card selected_card = this->game->hand[pturn].getSelectedCard();
 
-  state.insert( "control_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e, KMOD_LGUI ), control_turn );
-  state.insert( "skip_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e ), skip_turn );
-  state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
+      this->game->hand[pturn].erase(selected_card);
+      this->game->cursor_->set_position(cursor_pos);
+    });
 
-  event_callback increase_north_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                true, NORTH );
-  });
+    state.insert( "control_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e, KMOD_LGUI ), control_turn );
+    state.insert( "skip_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e ), skip_turn );
+    state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
 
-  event_callback decrease_north_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                false, NORTH );
-  });
+    event_callback increase_north_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  true, NORTH );
+    });
 
-  nom::event_callback increase_south_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                true, SOUTH );
-  });
+    event_callback decrease_north_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  false, NORTH );
+    });
 
-  nom::event_callback decrease_south_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                false, SOUTH );
-  });
+    nom::event_callback increase_south_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  true, SOUTH );
+    });
 
-  nom::event_callback increase_west_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                true, WEST );
-  });
+    nom::event_callback decrease_south_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  false, SOUTH );
+    });
 
-  nom::event_callback decrease_west_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                false, WEST );
-  });
+    nom::event_callback increase_west_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  true, WEST );
+    });
 
-  nom::event_callback increase_east_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                true, EAST );
-  });
+    nom::event_callback decrease_west_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  false, WEST );
+    });
 
-  nom::event_callback decrease_east_rank( [=](const nom::Event& evt) {
-    uint32 pturn = this->turn();
-    ttcards::modify_card_rank(  this->game->card_res_.get(),
-                                &this->game->hand[pturn],
-                                false, EAST );
-  });
+    nom::event_callback increase_east_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  true, EAST );
+    });
 
-  state.insert( "increase_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LSHIFT ), increase_north_rank );
-  state.insert( "decrease_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LCTRL ), decrease_north_rank );
+    nom::event_callback decrease_east_rank( [=](const nom::Event& evt) {
+      uint32 pturn = this->turn();
+      ttcards::modify_card_rank(  this->game->card_res_.get(),
+                                  &this->game->hand[pturn],
+                                  false, EAST );
+    });
 
-  state.insert( "increase_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LSHIFT ), increase_south_rank );
-  state.insert( "decrease_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LCTRL ), decrease_south_rank );
+    state.insert( "increase_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LSHIFT ), increase_north_rank );
+    state.insert( "decrease_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LCTRL ), decrease_north_rank );
 
-  state.insert( "increase_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LSHIFT ), increase_west_rank );
-  state.insert( "decrease_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LCTRL ), decrease_west_rank );
+    state.insert( "increase_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LSHIFT ), increase_south_rank );
+    state.insert( "decrease_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LCTRL ), decrease_south_rank );
 
-  state.insert( "increase_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LSHIFT ), increase_east_rank );
-  state.insert( "decrease_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LCTRL ), decrease_east_rank );
-#endif // defined as a debug build(NOT NDEBUG)
+    state.insert( "increase_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LSHIFT ), increase_west_rank );
+    state.insert( "decrease_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LCTRL ), decrease_west_rank );
+
+    state.insert( "increase_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LSHIFT ), increase_east_rank );
+    state.insert( "decrease_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LCTRL ), decrease_east_rank );
+  } // if this->debug_game_ == true
 
   this->game->input_mapper.erase( "PlayState" );
   this->game->input_mapper.insert( "PlayState", state, true );
