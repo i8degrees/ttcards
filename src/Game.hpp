@@ -62,8 +62,10 @@ class Game: public nom::SDLApp
 
     bool on_init();
 
-    /// Run app loop
-    nom::int32 Run( void );
+    /// \brief Te main game loop.
+    ///
+    /// \see main.cpp
+    int Run();
 
     /// \see SDLApp
     void set_state( nom::uint32 id, nom::void_ptr data = nullptr );
@@ -200,6 +202,9 @@ class Game: public nom::SDLApp
 
     std::shared_ptr<nom::IActionObject> triad_action_;
 
+    /// \brief Game animations.
+    ///
+    /// \remarks This is globally shared across states.
     nom::ActionPlayer actions_;
 
     std::shared_ptr<nom::Sprite> won_text_sprite_;
@@ -214,7 +219,7 @@ class Game: public nom::SDLApp
     /// \brief Toggle switch for in-game debugging features.
     ///
     /// \see config.json
-    mutable bool debug_game_;
+    bool debug_game_;
 
   private:
     /// \remarks Re-implements nom::SDLApp::on_event.
@@ -280,8 +285,7 @@ class Game: public nom::SDLApp
 
     Game* game;
 
-    /// Timer for tracking frames per second
-    nom::FPS fps;
+    nom::uint32 frame_interval_ = 0;
 };
 
 #endif // include guard defined

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardCollection.hpp"
 #include "CardResourceLoader.hpp"
 #include "Board.hpp"
+#include "helpers.hpp"
 #include "states/GameOverState.hpp"
 #include "states/ConfirmationDialogState.hpp"
 #include "states/PauseState.hpp"
@@ -46,17 +47,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace nom;
 
 Game::Game() :
-  audio_dev_{ nullptr },
-  listener_{ nullptr },
-  cursor_move{ nullptr },
-  cursor_cancel{ nullptr },
-  cursor_wrong{ nullptr },
-  card_place{ nullptr },
-  card_flip{ nullptr },
-  load_game{ nullptr },
-  save_game{ nullptr },
-  music_track{ nullptr },
-  winning_track{ nullptr },
+  audio_dev_(nullptr),
+  listener_(nullptr),
+  cursor_move(nullptr),
+  cursor_cancel(nullptr),
+  cursor_wrong(nullptr),
+  card_place(nullptr),
+  card_flip(nullptr),
+  load_game(nullptr),
+  save_game(nullptr),
+  music_track(nullptr),
+  winning_track(nullptr),
   game(this)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
@@ -280,8 +281,6 @@ bool Game::on_init()
   uint32 window_flags = SDL_WINDOW_OPENGL;
   uint32 render_flags = SDL_RENDERER_ACCELERATED;
 
-  this->set_state_machine( new nom::StateMachine() );
-
   if( this->config.load(TTCARDS_CONFIG_FILENAME) == false ) {
     nom::DialogMessageBox(  "Critical Error",
                             "Could not load configuration file at: " +
@@ -291,12 +290,18 @@ bool Game::on_init()
 
   this->game->debug_game_ =
     this->game->config.get_bool("DEBUG_GAME");
-  const std::string ENABLE_VSYNC =
-    std::to_string( this->config.get_bool32("ENABLE_VSYNC") );
+  const bool ENABLE_VSYNC =
+    this->config.get_bool32("ENABLE_VSYNC");
+  const std::string ENABLE_VSYNC_STR =
+    std::to_string(ENABLE_VSYNC);
+
   const std::string RENDER_SCALE_QUALITY =
     this->config.getString("RENDER_SCALE_QUALITY");
+  const int VIDEO_DISPLAY_INDEX =
+    this->config.getInteger("VIDEO_DISPLAY_INDEX");
+  NOM_ASSERT(VIDEO_DISPLAY_INDEX >= 0);
 
-  if( nom::set_hint(SDL_HINT_RENDER_VSYNC, ENABLE_VSYNC) == false ) {
+  if( nom::set_hint(SDL_HINT_RENDER_VSYNC, ENABLE_VSYNC_STR) == false ) {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not enable VSYNC." );
   }
@@ -319,9 +324,11 @@ bool Game::on_init()
     return false;
   }
 
-  if( this->window.create( "TTcards", SCREEN_WIDTH, SCREEN_HEIGHT,
-      window_flags, render_driver, render_flags ) == false )
-  {
+  auto window_ret =
+    this->window.create(  APP_NAME, RenderWindow::WINDOW_POS_CENTERED,
+                          VIDEO_DISPLAY_INDEX, SCREEN_RESOLUTION, window_flags,
+                          render_driver, render_flags );
+  if( window_ret == false ) {
     nom::DialogMessageBox(  "Critical Error",
                             "Could not initialize rendering context and window." );
     return false;
@@ -347,6 +354,19 @@ bool Game::on_init()
   #else
     this->window.set_scale( nom::Point2f(1,1) );
   #endif
+
+  // Try to set a sensible (optimal) refresh rate based on the display
+  // capabilities when VSYNC is enabled.
+  if( ENABLE_VSYNC == true ) {
+    auto display_refresh_rate =
+      this->window.refresh_rate();
+    if( display_refresh_rate > 0 ) {
+      this->frame_interval_ = display_refresh_rate;
+    } else {
+      // ...fall back to using the default value specified in our configuration
+      this->frame_interval_ = this->config.getInteger("FRAME_RATE");
+    }
+  }
 
   // Initialize file roots for nomlib && libRocket to base file access from
   Rocket::Core::FileInterface* fs = nullptr;
@@ -431,6 +451,8 @@ bool Game::on_init()
   DecoratorInstancerSprite* decorator1 = new nom::DecoratorInstancerSprite();
   Rocket::Core::Factory::RegisterDecoratorInstancer("sprite-sheet", decorator1 );
   decorator1->RemoveReference();
+
+  this->set_state_machine( new nom::StateMachine() );
 
   // Commence the loading of game resources
 
@@ -983,63 +1005,60 @@ void Game::on_window_resized( const nom::Event& ev )
   this->window.toggle_fullscreen();
 }
 
-int32_t Game::Run( void )
+int Game::Run()
 {
-  unsigned int loops = 0;
-  unsigned int next_game_tick = 0;
-  nom::uint32 delta_time = 0;
-  nom::uint32 delay_time = this->config.getInteger("DELAY_TIME");
+  auto delta_time = 0;
+  auto elapsed_frames = 0;
+  const std::string WINDOW_TITLE(APP_NAME);
+  std::stringstream fps_title_prefix;
+  std::stringstream fps_title_suffix;
 
-  this->fps.start();
+  this->set_state(Game::State::CardsMenu);
 
-  next_game_tick = this->ticks();
+  fps_title_prefix << WINDOW_TITLE << " " << "-" << " ";
 
-  this->set_state( Game::State::CardsMenu );
+  nom::Event evt;
+  while( this->running() == true ) {
 
-  while ( this->running() == true )
-  {
-    loops = 0;
-    delta_time = this->ticks();
+    delta_time = nom::ticks();
 
-    while( delta_time > next_game_tick && loops <= MAX_FRAMESKIP )
-    {
-      nom::Event evt;
-      while( this->poll_event( evt ) )
-      {
-        this->on_event( evt );
-      }
-
-      this->fps.update();
-
-      this->on_update( delta_time );
-
-      this->game->actions_.update(delta_time);
-
-      // Fix for GitHub Issue #9
-      this->window.fill(nom::Color4i::Black);
-
-      this->on_draw( this->window );
-
-      if ( this->show_fps() )
-      {
-        this->window.set_window_title ( APP_NAME + " " + "-" + " " + ( this->fps.asString() ) + " " + "fps" );
-      }
-      else
-      {
-        this->window.set_window_title ( APP_NAME );
-      }
-
-      next_game_tick += SKIP_TICKS;
-      loops++;
-
-      // Sleep away spare tick; improve CPU usage dramatically.
-      //
-      // See config.json notes on DELAY_TIME.
-      if( this->fps.fps() >= TICKS_PER_SECOND ) {
-        nom::sleep(delay_time);
-      }
+    while( this->poll_event(evt) ) {
+      this->on_event(evt);
     }
-  }
+
+    this->on_update(delta_time);
+    this->game->actions_.update(delta_time);
+
+    // Fix for GitHub Issue #9
+    this->window.fill(nom::Color4i::Black);
+
+    this->on_draw(this->window);
+
+    if( this->show_fps() ) {
+
+      // TODO: Update frame rate counter at one second intervals
+
+      // TODO: Look into our FPS counter possibly being inaccurate -- why can
+      // we never reach within the last ~5..7 frames of the set frame
+      // interval??? Perhaps it has something to do with our sleep
+      // granularity...?
+      real32 frame_interval =
+        elapsed_frames / (delta_time / 1000.0f);
+      fps_title_suffix.str("");
+      fps_title_suffix.precision(1);
+
+      fps_title_suffix  << fps_title_prefix.str()
+                        << std::fixed << frame_interval << " " << "FPS";
+      this->window.set_window_title( fps_title_suffix.str() );
+    } else {
+      // Use the default window title string
+      this->window.set_window_title(WINDOW_TITLE);
+    }
+
+    ++elapsed_frames;
+
+    ttcards::set_frame_interval(this->frame_interval_);
+  } // end while game is running
 
   return NOM_EXIT_SUCCESS;
 }

@@ -90,6 +90,8 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
 
 void set_face_down(CardHand* player_hand, bool face_down);
 
+void set_frame_interval(nom::uint32 interval);
+
 } // namespace ttcards
 
 #endif // include guard defined

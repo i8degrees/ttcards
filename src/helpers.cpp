@@ -414,4 +414,36 @@ void set_face_down(CardHand* player_hand, bool face_down)
   player_hand->reinit();
 }
 
+// NOTE: This implementation derives from [Handmade Hero](https://www.handmadehero.org/)'s
+// "Enforcing a Video Frame Rate" (Week 4). It is currently assumed that
+// "granular sleep" AKA high-resolution timing is properly supported by the
+// platform -- this might come back to bite us in the ass someday!
+void set_frame_interval(nom::uint32 interval)
+{
+  real32 target_seconds_per_frame =
+    1.0f / (real32)interval;
+  uint64 last_delta = 0;
+  HighResolutionTimer anim_timer;
+
+  // Abort our frame capping logic when explicitly requested
+  if( interval == 0 ) {
+    return;
+  }
+
+  anim_timer.start();
+  last_delta = anim_timer.ticks();
+
+  real32 elapsed_delta =
+    HighResolutionTimer::elapsed_ticks(last_delta, anim_timer.ticks() );
+
+  if(elapsed_delta < target_seconds_per_frame) {
+
+    uint32 sleep_ms =
+      (uint32)(1000.0f * (target_seconds_per_frame - elapsed_delta) );
+    if(sleep_ms > 0) {
+      nom::sleep(sleep_ms);
+    }
+  }
+}
+
 } // namespace ttcards

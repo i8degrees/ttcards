@@ -66,25 +66,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Global configuration
 const nom::int32 SCREEN_WIDTH = 768;
 const nom::int32 SCREEN_HEIGHT = 448;
-const nom::int32 SCREEN_BPP = 32;
+const auto SCREEN_RESOLUTION =
+  nom::Size2i(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
   const nom::Size2i GAME_RESOLUTION = nom::Size2i(384,224);
 #else
   const nom::Size2i GAME_RESOLUTION = nom::Size2i(768,448);
 #endif
-
-/// As per PSX_SCUS Final Fantasy VIII
-const nom::uint32 TICKS_PER_SECOND = 30;
-
-/// Calculation used to determine how many ticks to wait between updating
-const nom::uint32 SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-
-/// Max amount of frames we can skip when the frame-rate is unstable / variable
-const nom::uint32 MAX_FRAMESKIP = 5;
-
-/// \todo Not implemented; this is what TICKS_PER_SECOND is set at
-const nom::uint32 FRAMES_PER_SECOND = 30;
 
 /// Maximum number of players -- both human & AI
 const nom::int32 TOTAL_PLAYERS = 2; // +1 padding
