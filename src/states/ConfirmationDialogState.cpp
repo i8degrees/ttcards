@@ -56,17 +56,17 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
   }
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX") ) == false )
+    if( this->game->question_box_.load_document_file( this->game->config.get_string("GUI_QBOX") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_QBOX") );
+                    this->game->config.get_string("GUI_QBOX") );
       // return false;
     }
   #else
-    if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX_SCALE2X") ) == false )
+    if( this->game->question_box_.load_document_file( this->game->config.get_string("GUI_QBOX_SCALE2X") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_QBOX_SCALE2X") );
+                    this->game->config.get_string("GUI_QBOX_SCALE2X") );
       // return false;
     }
   #endif

@@ -172,17 +172,17 @@ void GameOverState::on_init( nom::void_ptr data )
   }
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_RULES_INFO") ) == false )
+    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_RULES_INFO") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_GAMEOVER_RULES_INFO") );
+                    this->game->config.get_string("GUI_GAMEOVER_RULES_INFO") );
       // return false;
     }
   #else
-    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_RULES_INFO_SCALE2X") ) == false )
+    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_RULES_INFO_SCALE2X") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_GAMEOVER_RULES_INFO_SCALE2X") );
+                    this->game->config.get_string("GUI_GAMEOVER_RULES_INFO_SCALE2X") );
       // return false;
     }
   #endif
@@ -199,17 +199,17 @@ void GameOverState::on_init( nom::void_ptr data )
   }
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->card_info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_CARD_INFO") ) == false )
+    if( this->game->card_info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_CARD_INFO") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_GAMEOVER_CARD_INFO") );
+                    this->game->config.get_string("GUI_GAMEOVER_CARD_INFO") );
       // return false;
     }
   #else
-    if( this->game->card_info_box_.load_document_file( this->game->config.getString("GUI_GAMEOVER_CARD_INFO_SCALE2X") ) == false )
+    if( this->game->card_info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_CARD_INFO_SCALE2X") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_GAMEOVER_CARD_INFO_SCALE2X") );
+                    this->game->config.get_string("GUI_GAMEOVER_CARD_INFO_SCALE2X") );
       // return false;
     }
   #endif

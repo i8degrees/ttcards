@@ -55,7 +55,7 @@
     "INTERFACE_CURSOR_SCALE2X" : "images/scale2x/cursors.png",
     "INTERFACE_CURSOR_ATLAS" : "images/cursors.json",
     "INTERFACE_CURSOR_ATLAS_SCALE2X" : "images/scale2x/cursors.json",
-    "MUSIC_TRACK" : "audio/ShuffleOrBoogie.ogg",
+    "MUSIC_THEME_TRACK" : "audio/ShuffleOrBoogie.ogg",
     "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
     // TODO: Generate 384x224 variant
     "SCORE_FONTFACE" : "fonts/scoreboard.fnt",

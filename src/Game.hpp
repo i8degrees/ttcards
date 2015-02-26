@@ -56,7 +56,6 @@ class CardResourceLoader;
 class Game: public nom::SDLApp
 {
   public:
-    Game();
     Game( nom::int32 argc, char* argv[] );
     virtual ~Game();
 
@@ -102,9 +101,7 @@ class Game: public nom::SDLApp
     /// Save game sound event
     std::unique_ptr<nom::ISoundSource> save_game;
 
-    /// Theme song track
-    /// TODO: Rename to theme_track_
-    std::unique_ptr<nom::ISoundSource> music_track;
+    std::unique_ptr<nom::ISoundSource> theme_track_;
 
     /// Player 1 has won track
     std::unique_ptr<nom::ISoundSource> winning_track;

@@ -146,17 +146,17 @@ void CardsMenuState::on_init( nom::void_ptr data )
   }
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->cards_menu_.load_document_file( this->game->config.getString("GUI_CARDS_MENU") ) == false )
+    if( this->game->cards_menu_.load_document_file( this->game->config.get_string("GUI_CARDS_MENU") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_CARDS_MENU") );
+                    this->game->config.get_string("GUI_CARDS_MENU") );
       // return false;
     }
   #else
-    if( this->game->cards_menu_.load_document_file( this->game->config.getString("GUI_CARDS_MENU_SCALE2X") ) == false )
+    if( this->game->cards_menu_.load_document_file( this->game->config.get_string("GUI_CARDS_MENU_SCALE2X") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_CARDS_MENU_SCALE2X") );
+                    this->game->config.get_string("GUI_CARDS_MENU_SCALE2X") );
       // return false;
     }
   #endif
@@ -343,7 +343,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
   this->game->cards_menu_.show();
 
   // Yeah buddy!
-  this->game->music_track->Play();
+  this->game->theme_track_->Play();
 }
 
 void CardsMenuState::on_exit( nom::void_ptr data )

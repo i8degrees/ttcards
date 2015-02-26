@@ -39,7 +39,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace ttcards;
 using namespace nom;
 
-Board::Board()
+Board::Board() :
+  rules_(nullptr),
+  card_res_(nullptr)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }

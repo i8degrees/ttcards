@@ -28,7 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Game.hpp"
 
-int main ( int argc, char* argv[] )
+using namespace nom;
+
+int main(int argc, char* argv[])
 {
   Game engine( argc, argv );
 
@@ -39,7 +41,4 @@ int main ( int argc, char* argv[] )
   }
 
   return engine.Run();
-
-  // This is past the point of execution; all execution must reside within our
-  // Game class
 }

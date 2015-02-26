@@ -57,7 +57,11 @@ using namespace ttcards;
 
 PlayState::PlayState(nom::SDLApp* object) :
   nom::IState( Game::State::Play ),
-  game( NOM_SCAST(Game*, object) )
+  game( NOM_SCAST(Game*, object) ),
+  turn_(PLAYER1),
+  cursor_state_(CursorState::PLAYER),
+  cursor_locked(false),
+  skip_turn(false)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -107,7 +111,6 @@ void PlayState::on_init( nom::void_ptr data )
   this->turn_ = PLAYER1;
   this->cursor_locked = false;
   this->skip_turn = false;
-  this->cursor_state_ = CursorState::PLAYER;
 
   this->text_action_sprite_ =
     std::make_shared<Sprite>();
@@ -197,17 +200,17 @@ void PlayState::on_init( nom::void_ptr data )
   }
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->debug_box_.load_document_file( this->game->config.getString("GUI_DEBUG") ) == false )
+    if( this->game->debug_box_.load_document_file( this->game->config.get_string("GUI_DEBUG") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_DEBUG") );
+                    this->game->config.get_string("GUI_DEBUG") );
       // return false;
     }
   #else
-    if( this->game->debug_box_.load_document_file( this->game->config.getString("GUI_DEBUG_SCALE2X") ) == false )
+    if( this->game->debug_box_.load_document_file( this->game->config.get_string("GUI_DEBUG_SCALE2X") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_DEBUG_SCALE2X") );
+                    this->game->config.get_string("GUI_DEBUG_SCALE2X") );
       // return false;
     }
   #endif
@@ -227,17 +230,17 @@ void PlayState::on_init( nom::void_ptr data )
   }
 
   #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_MBOX") ) == false )
+    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_MBOX") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_MBOX") );
+                    this->game->config.get_string("GUI_MBOX") );
       // return false;
     }
   #else
-    if( this->game->info_box_.load_document_file( this->game->config.getString("GUI_MBOX_SCALE2X") ) == false )
+    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_MBOX_SCALE2X") ) == false )
     {
       NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_MBOX_SCALE2X") );
+                    this->game->config.get_string("GUI_MBOX_SCALE2X") );
       // return false;
     }
   #endif
@@ -1399,7 +1402,7 @@ void PlayState::check_gameover_conditions()
         create_gameover_text_action(GameOverType::Won, "gameover_action");
 
       if( this->game->winning_track->getStatus() != Playing ) {
-        this->game->music_track->Stop();
+        this->game->theme_track_->Stop();
         this->game->winning_track->Play();
       }
 
@@ -1467,11 +1470,14 @@ PlayState::create_gameover_text_action( GameOverType type,
 
 void PlayState::initialize_cpu_player_turn()
 {
-  const real32 CPU_MOVE_DELAY_SECONDS =
+  real32 cpu_move_delay_seconds =
     this->game->config.get_real32("CPU_MOVE_DELAY_SECONDS");
+  if( cpu_move_delay_seconds < 0.0f ) {
+    cpu_move_delay_seconds = 1.0f;
+  }
 
   auto cpu_move_delay_timer =
-    std::make_shared<WaitForDurationAction>(CPU_MOVE_DELAY_SECONDS);
+    std::make_shared<WaitForDurationAction>(cpu_move_delay_seconds);
   NOM_ASSERT(cpu_move_delay_timer != nullptr);
 
   if( cpu_move_delay_timer != nullptr ) {
