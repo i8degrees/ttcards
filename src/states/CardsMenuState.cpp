@@ -72,7 +72,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
   bool open_ruleset = false;
   bool combo_ruleset = false;
   bool same_ruleset = false;
-  nom::StringList ruleset = this->game->config.string_array("REGION_RULESET");
+  nom::StringList ruleset = this->game->config_->string_array("REGION_RULESET");
   for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
 
     if( (*itr) == "Open" ) {
@@ -139,27 +139,22 @@ void CardsMenuState::on_init( nom::void_ptr data )
   // can lead to subtle bugs or worse if we don't do this
   this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );
 
-  if( this->game->cards_menu_.set_context(&this->game->gui_window_) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+  if( this->game->cards_menu_.set_context(&this->game->gui_window_) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could set GUI desktop." );
+    exit(NOM_EXIT_FAILURE);
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->cards_menu_.load_document_file( this->game->config.get_string("GUI_CARDS_MENU") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_CARDS_MENU") );
-      // return false;
-    }
-  #else
-    if( this->game->cards_menu_.load_document_file( this->game->config.get_string("GUI_CARDS_MENU_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_CARDS_MENU_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_CARDS_MENU =
+    this->game->res_cfg_->get_string("GUI_CARDS_MENU");
+  if( this->game->cards_menu_.load_document_file(GUI_CARDS_MENU) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:",
+                  GUI_CARDS_MENU );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
   NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
                 "---Deck from collection---" );

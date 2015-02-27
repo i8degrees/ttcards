@@ -34,6 +34,7 @@ const nom::Path path;
 nom::File fp;
 
 // Data folder for game storage (screenshots, card dumps, ...)
+// TODO: Consider using ::user_app_support_path for configuration files
 #if defined (NOM_PLATFORM_WINDOWS) || defined (NOM_PLATFORM_OSX)
   const std::string TTCARDS_DATA_DIR = fp.user_documents_path() + path.native() + "ttcards";
 #else
@@ -41,10 +42,23 @@ nom::File fp;
   working_directory = TTCARDS_INSTALL_PREFIX + path.native() + "share" + path.native() + "ttcards" + path.native() + "Resources";
 #endif
 
-const std::string USER_PLAYER1_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player1.json";
-const std::string USER_PLAYER2_FILENAME =   TTCARDS_DATA_DIR + path.native() + "player2.json";
-const std::string USER_BOARD_FILENAME =     TTCARDS_DATA_DIR + path.native() + "board.json";
-const std::string TTCARDS_CONFIG_FILENAME = TTCARDS_DATA_DIR + path.native() + "config.json";
+const std::string USER_PLAYER1_FILENAME =
+  TTCARDS_DATA_DIR + path.native() + "player1.json";
+
+const std::string USER_PLAYER2_FILENAME =
+  TTCARDS_DATA_DIR + path.native() + "player2.json";
+
+const std::string USER_BOARD_FILENAME =
+  TTCARDS_DATA_DIR + path.native() + "board.json";
+
+const std::string TTCARDS_CONFIG_GAME_FILENAME =
+  TTCARDS_DATA_DIR + path.native() + "config_game.json";
+
+const std::string TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME =
+  TTCARDS_DATA_DIR + path.native() + "config_assets-low-res.json";
+
+const std::string TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME =
+  TTCARDS_DATA_DIR + path.native() + "config_assets-hi-res.json";
 
 // Localization strings
 

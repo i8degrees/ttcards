@@ -243,7 +243,9 @@ if ( PLATFORM_OSX )
               PATTERN ".*" EXCLUDE ) # do not include dotfiles
 
     install ( FILES
-              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_game.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-low-res.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-hi-res.json"
               DESTINATION "$ENV{HOME}/Documents/ttcards"
             )
   endif ( OSXAPP )

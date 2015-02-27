@@ -1,0 +1,62 @@
+
+{
+  // Default configuration values for TTcards
+  "root" :
+  {
+    // nearest, linear or best
+    // nearest improves the card face rendering, at the cost of the text (font)
+    // rendering
+    "RENDER_SCALE_QUALITY": "nearest",
+
+    // target frame rate
+    // A frame interval value of zero (0) disables fixed time stepping,
+    // effectively removing the artificial frame capping
+    "FRAME_RATE": 30,
+
+    // This will override the FRAME_RATE configuration variable when a sensible
+    // value for the display's vertical refresh rate can be determined.
+    "ENABLE_VSYNC": true,
+
+    // The default video display to use in placing the game window. The order
+    // of the video display(s) is platform specific, but typically your primary
+    // display will be indexed as zero (0).
+    "VIDEO_DISPLAY_INDEX": 0,
+
+    "APP_ICON" : "icon.png",
+    "CARDS_DB" : "cards.json",
+
+    // "REGION_RULESET": [ "Open" ],
+    "REGION_RULESET": [ "Open", "Combo", "Elemental", "Same" ],
+    // "REGION_RULESET": [ "Open", "Combo", "Same" ],
+
+    // animations
+
+    "TRIAD_START_FRAME": 22,
+    "CURSOR_BLINK_INTERVAL": 0.100, // ~100 ms blink rate
+    "TRIAD_FRAME_INTERVAL": 0.100, // 100 ms per frame
+    "GAMEOVER_TEXT_FADE_DURATION": 1.0, // seconds
+    "FLIP_CARD_FADE_DURATION": 1.0, // seconds
+
+    // How long to wait before animating the CPU player's hand
+    "CPU_HAND_DELAY_SECONDS": 1.0, // seconds
+
+    // Minimum time before CPU player executes a move
+    "CPU_MOVE_DELAY_SECONDS": 4.0, // seconds
+
+    // Toggle showing the opponent's hand in CardsMenuState
+    "DEBUG_GAME": true,
+
+    "AUDIO_SFX": true,
+    "AUDIO_TRACKS": false,
+
+    "CARD_FLIP" : "audio/card_flip.wav",
+    "CARD_PLACE" : "audio/card_place.wav",
+    "CURSOR_CANCEL" : "audio/cursor_cancel.wav",
+    "CURSOR_MOVE" : "audio/cursor_move.wav",
+    "CURSOR_WRONG" : "audio/cursor_wrong.wav",
+    "SFX_LOAD_GAME" : "audio/load_game.wav",
+    "SFX_SAVE_GAME" : "audio/save_game.wav",
+    "MUSIC_THEME_TRACK" : "audio/ShuffleOrBoogie.ogg",
+    "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg"
+  }
+}

@@ -171,21 +171,14 @@ void GameOverState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_RULES_INFO") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_GAMEOVER_RULES_INFO") );
-      // return false;
-    }
-  #else
-    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_RULES_INFO_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_GAMEOVER_RULES_INFO_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_GAMEOVER_RULES_INFO =
+    this->game->res_cfg_->get_string("GUI_GAMEOVER_RULES_INFO");
+  if( this->game->info_box_.load_document_file(GUI_GAMEOVER_RULES_INFO) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource file:", GUI_GAMEOVER_RULES_INFO );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
   this->game->info_box_.set_message_text("Select 1 card(s) you want");
   this->game->info_box_.show();
@@ -198,21 +191,14 @@ void GameOverState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->card_info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_CARD_INFO") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_GAMEOVER_CARD_INFO") );
-      // return false;
-    }
-  #else
-    if( this->game->card_info_box_.load_document_file( this->game->config.get_string("GUI_GAMEOVER_CARD_INFO_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_GAMEOVER_CARD_INFO_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_GAMEOVER_CARD_INFO =
+    this->game->res_cfg_->get_string("GUI_GAMEOVER_CARD_INFO");
+  if( this->game->card_info_box_.load_document_file(GUI_GAMEOVER_CARD_INFO) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource file:", GUI_GAMEOVER_CARD_INFO );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
   this->game->card_info_box_.set_message_text( this->game->hand[1].getSelectedCard().getName() );
   this->game->card_info_box_.show();

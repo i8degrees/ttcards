@@ -26,8 +26,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_RESOURCES_HEADERS
-#define GAMEAPP_RESOURCES_HEADERS
+#ifndef TTCARDS_RESOURCES_HPP
+#define TTCARDS_RESOURCES_HPP
 
 #include <string>
 
@@ -49,7 +49,10 @@ extern const std::string TTCARDS_DATA_DIR;
 extern const std::string USER_PLAYER1_FILENAME;
 extern const std::string USER_PLAYER2_FILENAME;
 extern const std::string USER_BOARD_FILENAME;
-extern const std::string TTCARDS_CONFIG_FILENAME;
+
+extern const std::string TTCARDS_CONFIG_GAME_FILENAME;
+extern const std::string TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME;
+extern const std::string TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME;
 
 /// Localization strings
 extern const std::string LOADING_TEXT;

@@ -129,7 +129,7 @@ void PlayState::on_init( nom::void_ptr data )
   // TODO: Finish implementing CardRules interface -- bitwise flags!
   bool open_ruleset = false;
   bool elemental_ruleset = false;
-  nom::StringList ruleset = this->game->config.string_array("REGION_RULESET");
+  nom::StringList ruleset = this->game->config_->string_array("REGION_RULESET");
   for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
 
     if( (*itr) == "Open" ) {
@@ -199,21 +199,14 @@ void PlayState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->debug_box_.load_document_file( this->game->config.get_string("GUI_DEBUG") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_DEBUG") );
-      // return false;
-    }
-  #else
-    if( this->game->debug_box_.load_document_file( this->game->config.get_string("GUI_DEBUG_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_DEBUG_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_DEBUG =
+    this->game->res_cfg_->get_string("GUI_DEBUG");
+  if( this->game->debug_box_.load_document_file(GUI_DEBUG) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:", GUI_DEBUG );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
   this->game->debug_box_.show();
 
@@ -229,21 +222,14 @@ void PlayState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_MBOX") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_MBOX") );
-      // return false;
-    }
-  #else
-    if( this->game->info_box_.load_document_file( this->game->config.get_string("GUI_MBOX_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_MBOX_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_MBOX =
+    this->game->res_cfg_->get_string("GUI_MBOX");
+  if( this->game->info_box_.load_document_file(GUI_MBOX) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:", GUI_MBOX );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
   this->game->info_box_.show();
 
@@ -265,7 +251,7 @@ void PlayState::on_init( nom::void_ptr data )
   }
 
   this->cpu_hand_delay_seconds_ =
-    this->game->config.get_real32("CPU_HAND_DELAY_SECONDS");
+    this->game->config_->get_real32("CPU_HAND_DELAY_SECONDS");
   NOM_ASSERT(this->cpu_hand_delay_seconds_ >= 0.0f);
 
   // Convert to milliseconds
@@ -997,7 +983,7 @@ void PlayState::flip_card_action(const nom::Point2i& rel_board_pos)
   this->flip_card_sprite_->set_alpha(Color4i::ALPHA_OPAQUE);
 
   const real32 FLIP_CARD_FADE_DURATION =
-    this->game->config.get_real32("FLIP_CARD_FADE_DURATION");
+    this->game->config_->get_real32("FLIP_CARD_FADE_DURATION");
 
   auto flip_card_action0 =
     nom::create_action<FadeOutAction>(  this->flip_card_sprite_,
@@ -1434,7 +1420,7 @@ PlayState::create_gameover_text_action( GameOverType type,
                                         const std::string& action_name )
 {
   const real32 GAMEOVER_TEXT_FADE_DURATION =
-    this->game->config.get_real32("GAMEOVER_TEXT_FADE_DURATION");
+    this->game->config_->get_real32("GAMEOVER_TEXT_FADE_DURATION");
   NOM_ASSERT(GAMEOVER_TEXT_FADE_DURATION > 0.0f);
 
   auto transition_delay_action =
@@ -1471,7 +1457,7 @@ PlayState::create_gameover_text_action( GameOverType type,
 void PlayState::initialize_cpu_player_turn()
 {
   real32 cpu_move_delay_seconds =
-    this->game->config.get_real32("CPU_MOVE_DELAY_SECONDS");
+    this->game->config_->get_real32("CPU_MOVE_DELAY_SECONDS");
   if( cpu_move_delay_seconds < 0.0f ) {
     cpu_move_delay_seconds = 1.0f;
   }

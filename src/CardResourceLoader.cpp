@@ -86,35 +86,24 @@ init_card_elements(const GameConfig* config)
     return nullptr;
   }
 
-#if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-  if( frames.load_file( config->get_string("CARD_ELEMENTS_ATLAS") ) == false ) {
+  const auto CARD_ELEMENTS_ATLAS =
+    config->get_string("CARD_ELEMENTS_ATLAS");
+  const auto CARD_ELEMENTS =
+    config->get_string("CARD_ELEMENTS");
+
+  if( frames.load_file(CARD_ELEMENTS_ATLAS) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load sprite sheet:",
-                  config->get_string("CARD_ELEMENTS_ATLAS") );
+                  "Could not load sprite sheet from file:",
+                  CARD_ELEMENTS_ATLAS );
     return nullptr;
   }
 
-  if( tex->load( config->get_string("CARD_ELEMENTS") ) == false ) {
+  if( tex->load(CARD_ELEMENTS) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load sprite sheet:",
-                  config->get_string("CARD_ELEMENTS") );
+                  "Could not load sprite sheet from file:",
+                  CARD_ELEMENTS );
     return nullptr;
   }
-#else
-  if( frames.load_file( config->get_string("CARD_ELEMENTS_ATLAS_SCALE2X") ) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load sprite sheet:",
-                  config->get_string("CARD_ELEMENTS_ATLAS_SCALE2X") );
-    return nullptr;
-  }
-
-  if( tex->load( config->get_string("CARD_ELEMENTS_SCALE2X") ) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load sprite sheet:",
-                  config->get_string("CARD_ELEMENTS_SCALE2X") );
-    return nullptr;
-  }
-#endif
 
   card_elements->set_texture(tex);
   card_elements->set_sprite_sheet(frames);
@@ -142,33 +131,25 @@ init_card_faces(const GameConfig* config)
     return nullptr;
   }
 
-#if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-  if( frames.load_file( config->get_string("CARD_FACES_ATLAS") ) == false ) {
+  const auto CARD_FACES_ATLAS =
+    config->get_string("CARD_FACES_ATLAS");
+
+  const auto CARD_FACES =
+    config->get_string("CARD_FACES");
+
+  if( frames.load_file(CARD_FACES_ATLAS) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load sprite sheet:",
-                  config->get_string("CARD_FACES_ATLAS") );
+                  "Could not load sprite sheet from file:",
+                  CARD_FACES_ATLAS );
     return nullptr;
   }
 
-  if( tex->load( config->get_string("CARD_FACES") ) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,  "Could not load texture:",
-                  config->get_string("CARD_FACES") );
-    return nullptr;
-  }
-#else
-  if( frames.load_file( config->get_string("CARD_FACES_ATLAS_SCALE2X") ) == false ) {
+  if( tex->load(CARD_FACES) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load sprite sheet:",
-                  config->get_string("CARD_FACES_ATLAS_SCALE2X") );
+                  "Could not load texture from file:",
+                  CARD_FACES );
     return nullptr;
   }
-
-  if( tex->load( config->get_string("CARD_FACES_SCALE2X") ) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,  "Could not load texture:",
-                  config->get_string("CARD_FACES_SCALE2X") );
-    return nullptr;
-  }
-#endif
 
   card_faces->set_texture(tex);
   card_faces->set_sprite_sheet(frames);

@@ -29,10 +29,15 @@ FSWATCH_BIN=/usr/local/bin/fswatch
 CP_BIN="/usr/local/opt/coreutils/libexec/gnubin/cp"
 
 # source path to watch for file mods
-WATCH_PATH=${HOME}/Projects/ttcards.git/Resources/config.json
+BASE_WATCH_PATCH=${HOME}/Projects/ttcards.git/Resources
+CONFIG_GAME_WATCH_PATH=${BASE_WATCH_PATCH}/config_game.json
+CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH=${BASE_WATCH_PATCH}/config_assets-low-res.json
+CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH=${BASE_WATCH_PATCH}/config_assets-hi-res.json
 
 # destination path to copy modified file to
-DEST_PATH=${HOME}/Documents/ttcards/config.json
+CONFIG_GAME_DEST_PATH=${HOME}/Documents/ttcards/config_game.json
+CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH=${HOME}/Documents/ttcards/config_assets-low-res.json
+CONFIG_GAME_ASSETS_HI_RES_DEST_PATH=${HOME}/Documents/ttcards/config_assets-hi-res.json
 
 # Enable debug output logging to a file path
 # LOGFILE=$HOME/Library/Logs/org.ttcards.fswatch.log
@@ -45,10 +50,12 @@ if [[ ${LOGFILE} != "" ]]; then
   ${CP_BIN} --version >> ${LOGFILE}
 fi
 
-echo "${0}: Watching ${WATCH_PATH} for file modifications"
+echo "${0}: Watching ${CONFIG_GAME_WATCH_PATH} for file modifications"
+echo "${0}: Watching ${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH} for file modifications"
+echo "${0}: Watching ${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH} for file modifications"
 
 WATCHING=true
-${FSWATCH_BIN} -0 "${WATCH_PATH}" | while [ $WATCHING == true ]
+${FSWATCH_BIN} -0 "${CONFIG_GAME_WATCH_PATH}" | while [ $WATCHING == true ]
 do
   read -d "" EVENT
 
@@ -56,10 +63,41 @@ do
 
     # Output command results to debug log if LOGFILE is set (see above)
     if [[ ${LOGFILE} == "" ]]; then
-      ${CP_BIN} -v ${WATCH_PATH} ${DEST_PATH}
+      ${CP_BIN} -v ${CONFIG_GAME_WATCH_PATH} ${CONFIG_GAME_DEST_PATH}
     else
-      ${CP_BIN} -v ${WATCH_PATH} ${DEST_PATH} >> ${LOGFILE}
+      ${CP_BIN} -v ${CONFIG_GAME_WATCH_PATH} ${CONFIG_GAME_DEST_PATH} >> ${LOGFILE}
     fi
   fi
+done
 
+WATCHING=true
+${FSWATCH_BIN} -0 "${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH}" | while [ $WATCHING == true ]
+do
+  read -d "" EVENT
+
+  if [[ ${EVENT} != "" ]]; then
+
+    # Output command results to debug log if LOGFILE is set (see above)
+    if [[ ${LOGFILE} == "" ]]; then
+      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH}
+    else
+      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH} >> ${LOGFILE}
+    fi
+  fi
+done
+
+WATCHING=true
+${FSWATCH_BIN} -0 "${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH}" | while [ $WATCHING == true ]
+do
+  read -d "" EVENT
+
+  if [[ ${EVENT} != "" ]]; then
+
+    # Output command results to debug log if LOGFILE is set (see above)
+    if [[ ${LOGFILE} == "" ]]; then
+      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_HI_RES_DEST_PATH}
+    else
+      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_HI_RES_DEST_PATH} >> ${LOGFILE}
+    fi
+  fi
 done

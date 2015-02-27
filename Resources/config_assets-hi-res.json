@@ -1,0 +1,41 @@
+
+{
+  // High resolution game resource paths for TTcards
+  // See config.hpp: SCALE_FACTOR > 1
+  "root" :
+  {
+    "BOARD_BACKGROUND" : "images/scale2x/board.png",
+    "GAMEOVER_BACKGROUND" : "images/scale2x/game-over_background.png",
+
+    "TRIAD_SPINNER_ATLAS": "images/scale2x/triad.json",
+    "TRIAD_SPINNER": "images/scale2x/triad.png",
+
+    "CARD_FONTFACE" : "fonts/scale2x/VIII_cards.png",
+    "SCORE_FONTFACE" : "fonts/scale2x/scoreboard.fnt",
+    "GAMEOVER_FONTFACE" : "fonts/scale2x/gameover.fnt",
+
+    "CARD_FACES_ATLAS" : "images/scale2x/faces.json",
+    "CARD_FACES" : "images/scale2x/faces.png",
+
+    "CARD_ELEMENTS_ATLAS" : "images/scale2x/elements.json",
+    "CARD_ELEMENTS" : "images/scale2x/elements.png",
+
+    "INTERFACE_CURSOR_ATLAS" : "images/scale2x/cursors.json",
+    "INTERFACE_CURSOR" : "images/scale2x/cursors.png",
+
+    "GUI_TITLE_FONT" : "fonts/Delicious-Bold.otf",
+    "GUI_TEXT_FONT" : "fonts/OpenSans-Regular.ttf",
+
+    "GUI_CARDS_MENU": "gui/scale2x/dataview.rml",
+
+    "GUI_DEBUG": "gui/scale2x/debug.rml",
+    "GUI_MBOX": "gui/scale2x/messagebox.rml",
+
+    "GUI_PAUSE": "gui/scale2x/pause.rml",
+
+    "GUI_QBOX": "gui/scale2x/questionbox.rml",
+
+    "GUI_GAMEOVER_RULES_INFO": "gui/scale2x/rules_info.rml",
+    "GUI_GAMEOVER_CARD_INFO": "gui/scale2x/card_info.rml"
+  }
+}

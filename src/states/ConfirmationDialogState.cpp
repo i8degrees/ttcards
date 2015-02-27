@@ -55,21 +55,14 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->question_box_.load_document_file( this->game->config.get_string("GUI_QBOX") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_QBOX") );
-      // return false;
-    }
-  #else
-    if( this->game->question_box_.load_document_file( this->game->config.get_string("GUI_QBOX_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.get_string("GUI_QBOX_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_QBOX =
+    this->game->res_cfg_->get_string("GUI_QBOX");
+  if( this->game->question_box_.load_document_file(GUI_QBOX) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource file:", GUI_QBOX );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
   this->game->question_box_.set_title_text("CHOICE");
 

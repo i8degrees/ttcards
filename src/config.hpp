@@ -52,8 +52,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// Scale factor is used in computing width, height and origin positioning for
 /// the game data used at the time of the compile.
 ///
-/// It is also used to determine which resource files are loaded from
-/// Resources/config.json.
+/// It is also used to determine which game assets configuration file to use to
+/// locate the resource files from.
 ///
 /// If set to one (1), this will use the original resource data, which is quite
 /// low in resolution (384x224).

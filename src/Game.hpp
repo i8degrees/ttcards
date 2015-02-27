@@ -107,7 +107,7 @@ class Game: public nom::SDLApp
     std::unique_ptr<nom::ISoundSource> winning_track;
 
     // Font resources
-    nom::Font card_font;
+    nom::Font card_font_;
     nom::Font gameover_font;
     nom::Font scoreboard_font;
 
@@ -148,8 +148,11 @@ class Game: public nom::SDLApp
     /// our public / visible display context handle
     nom::RenderWindow window;
 
-    /// Variable set configuration properties
-    GameConfig config;
+    /// \brief General game configuration.
+    std::unique_ptr<GameConfig> config_;
+
+    /// \brief Game resource file paths.
+    std::unique_ptr<GameConfig> res_cfg_;
 
     /// \brief The top-level GUI "window" (desktop)
     nom::UIContext gui_window_;
@@ -214,8 +217,6 @@ class Game: public nom::SDLApp
     std::shared_ptr<nom::IActionObject> same_text_action_;
 
     /// \brief Toggle switch for in-game debugging features.
-    ///
-    /// \see config.json
     bool debug_game_;
 
   private:
@@ -246,8 +247,7 @@ class Game: public nom::SDLApp
     /// \see nom::InputMapper.
     void save_screenshot( void );
 
-    /// \brief Callback action for reloading the game's configuration file --
-    /// config.json.
+    /// \brief Callback action for reloading the game's configuration files.
     ///
     /// \todo Support hot-loading the configuration file without resetting the
     /// game state.

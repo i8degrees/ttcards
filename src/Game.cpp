@@ -60,6 +60,8 @@ Game::Game( nom::int32 argc, char* argv[] ) :
   save_game(nullptr),
   theme_track_(nullptr),
   winning_track(nullptr),
+  config_(nullptr),
+  res_cfg_(nullptr),
   debug_game_(false),
   game(this)
 {
@@ -209,42 +211,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
           NOM_LOG_INFO ( TTCARDS, "Game cards successfully saved at: " + std::string(argv[opt + 2]) );
           exit ( NOM_EXIT_SUCCESS );
         }
-      } // end export cards option
-      // else if ( std::string(argv[opt]) == "--config" ) // Save configuration opt
-      // {
-      //   if ( argv[opt + 1] == nullptr )
-      //   {
-      //     NOM_LOG_ERR ( TTCARDS, "Missing parameter <output_filename> for config argument." );
-      //     exit ( NOM_EXIT_FAILURE );
-      //   }
-      // #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
-      //   else if ( dir.exists ( argv[opt + 1] ) == true )
-      //   {
-      //     NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 1]) );
-      //     exit ( NOM_EXIT_FAILURE );
-      //   }
-      // #endif
-
-      //   GameConfig cfg;
-      //   if ( cfg.load ( TTCARDS_CONFIG_FILENAME ) == false )
-      //   {
-      //     NOM_LOG_ERR ( TTCARDS, "Could not load game configuration from file at: " + TTCARDS_CONFIG_FILENAME );
-      //     exit ( NOM_EXIT_FAILURE );
-      //   }
-
-      //   if ( cfg.save ( argv[opt + 1] ) == false )
-      //   {
-      //     NOM_LOG_ERR ( TTCARDS, "Could not save game configuration to file at: " + std::string(argv[opt + 1]) );
-      //     exit ( NOM_EXIT_FAILURE );
-      //   }
-      //   else
-      //   {
-      //     NOM_LOG_INFO ( TTCARDS, "Game configuration successfully saved at: " + std::string(argv[opt + 1]) );
-      //     exit ( NOM_EXIT_SUCCESS );
-      //   }
-      // } // end save config option
-      else if ( std::string(argv[opt]) == "-v" || std::string(argv[opt]) == "--version" )
-      {
+      } else if( std::string(argv[opt]) == "-v" || std::string(argv[opt]) == "--version" ) {
         std::cout << ttcards_version.str() << std::endl;
         // TODO: Copyright info
         std::exit(NOM_EXIT_SUCCESS);
@@ -291,24 +258,56 @@ bool Game::on_init()
     nom::make_unique<nom::JsonCppDeserializer>();
   NOM_ASSERT(fp != nullptr);
 
-  if( this->config.load_file(TTCARDS_CONFIG_FILENAME, fp.get() ) == false ) {
-    nom::DialogMessageBox(  "Critical Error",
-                            "Could not load configuration file at: " +
-                            TTCARDS_CONFIG_FILENAME );
+  // ...General game logic configuration file...
+
+  this->game->config_ = nom::make_unique<GameConfig>();
+  NOM_ASSERT(this->game->config_ != nullptr);
+  if( this->game->config_->load_file( TTCARDS_CONFIG_GAME_FILENAME,
+      fp.get() ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource configuration file:",
+                  TTCARDS_CONFIG_GAME_FILENAME );
     return false;
   }
 
+  // ...Game assets configuration file for locating resource paths...
+
+#if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
+  this->game->res_cfg_ = nom::make_unique<GameConfig>();
+  NOM_ASSERT(this->game->res_cfg_ != nullptr);
+  if( this->game->res_cfg_->load_file(  TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME,
+      fp.get() ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource configuration file:",
+                  TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME );
+    return false;
+  }
+#else
+  this->game->res_cfg_ = nom::make_unique<GameConfig>();
+  NOM_ASSERT(this->game->res_cfg_ != nullptr);
+  if( this->game->res_cfg_->load_file(  TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME,
+      fp.get() ) == false )
+  {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource configuration file:",
+                  TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME );
+    return false;
+  }
+#endif
+
   this->game->debug_game_ =
-    this->game->config.get_bool("DEBUG_GAME");
+    this->game->config_->get_bool("DEBUG_GAME");
   const bool ENABLE_VSYNC =
-    this->config.get_bool32("ENABLE_VSYNC");
+    this->config_->get_bool32("ENABLE_VSYNC");
   const std::string ENABLE_VSYNC_STR =
     std::to_string(ENABLE_VSYNC);
 
   const std::string RENDER_SCALE_QUALITY =
-    this->config.get_string("RENDER_SCALE_QUALITY");
+    this->config_->get_string("RENDER_SCALE_QUALITY");
   const int VIDEO_DISPLAY_INDEX =
-    this->config.get_int("VIDEO_DISPLAY_INDEX");
+    this->config_->get_int("VIDEO_DISPLAY_INDEX");
   NOM_ASSERT(VIDEO_DISPLAY_INDEX >= 0);
 
   if( nom::set_hint(SDL_HINT_RENDER_VSYNC, ENABLE_VSYNC_STR) == false ) {
@@ -344,7 +343,7 @@ bool Game::on_init()
     return false;
   }
 
-  this->window.set_window_icon ( this->config.get_string("APP_ICON") );
+  this->window.set_window_icon ( this->config_->get_string("APP_ICON") );
 
   if( nom::RocketSDL2RenderInterface::gl_init(  this->window.size().w,
                                                 this->window.size().h ) == false )
@@ -374,7 +373,7 @@ bool Game::on_init()
       this->frame_interval_ = display_refresh_rate;
     } else {
       // ...fall back to using the default value specified in our configuration
-      this->frame_interval_ = this->config.get_int("FRAME_RATE");
+      this->frame_interval_ = this->config_->get_int("FRAME_RATE");
       NOM_ASSERT(this->frame_interval_ > 0);
     }
   }
@@ -439,19 +438,19 @@ bool Game::on_init()
 
   #endif
 
-  if( this->gui_window_.load_font( this->config.get_string("GUI_TITLE_FONT") ) == false )
-  {
-    nom::DialogMessageBox(  "Critical Error",
-                            "Could not load font file:" +
-                            this->config.get_string("GUI_TITLE_FONT") );
+  const auto GUI_TITLE_FONT =
+    this->game->res_cfg_->get_string("GUI_TITLE_FONT");
+  if( this->gui_window_.load_font(GUI_TITLE_FONT) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource file:", GUI_TITLE_FONT );
     return false;
   }
 
-  if( this->gui_window_.load_font( this->config.get_string("GUI_TEXT_FONT") ) == false )
-  {
-    nom::DialogMessageBox(  "Critical Error",
-                            "Could not load font file:" +
-                            this->config.get_string("GUI_TEXT_FONT") );
+  const auto GUI_TEXT_FONT =
+    this->game->res_cfg_->get_string("GUI_TEXT_FONT");
+  if( this->gui_window_.load_font(GUI_TEXT_FONT) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource file:", GUI_TEXT_FONT );
     return false;
   }
 
@@ -467,59 +466,42 @@ bool Game::on_init()
 
   // Commence the loading of game resources
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->card_font.load ( this->config.get_string("CARD_FONTFACE") ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.get_string("CARD_FONTFACE") );
-      return false;
-    }
-  #else
-    if( this->card_font.load ( this->config.get_string("CARD_FONTFACE_SCALE2X") ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.get_string("CARD_FONTFACE_SCALE2X") );
-      return false;
-    }
-  #endif
+  const auto CARD_FONTFACE =
+    this->game->res_cfg_->get_string("CARD_FONTFACE");
+  if( this->game->card_font_.load(CARD_FONTFACE) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:",
+                  CARD_FONTFACE );
+    return false;
+  }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->background.load( this->config.get_string("BOARD_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("BOARD_BACKGROUND") );
-    }
-  #else
-    if( this->background.load( this->config.get_string("BOARD_BACKGROUND_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("BOARD_BACKGROUND_SCALE2X") );
-    }
-  #endif
+  const auto BOARD_BACKGROUND =
+    this->game->res_cfg_->get_string("BOARD_BACKGROUND");
+  if( this->background.load(BOARD_BACKGROUND, false,
+      nom::Texture::Access::Static) == false ) {
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:",
+                  BOARD_BACKGROUND );
+  return false;
+  }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->scoreboard_font.load( this->config.get_string("SCORE_FONTFACE") ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.get_string("SCORE_FONTFACE") );
-      return false;
-    }
-  #else
-    if( this->scoreboard_font.load( this->config.get_string("SCORE_FONTFACE_SCALE2X") ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.get_string("SCORE_FONTFACE_SCALE2X") );
-      return false;
-    }
-  #endif
+  auto SCORE_FONTFACE =
+    this->game->res_cfg_->get_string("SCORE_FONTFACE");
+  if( this->scoreboard_font.load(SCORE_FONTFACE) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:", SCORE_FONTFACE );
+    return false;
+  }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->gameover_font.load( this->config.get_string("GAMEOVER_FONTFACE") ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.get_string("GAMEOVER_FONTFACE") );
-      return false;
-    }
-  #else
-    if( this->gameover_font.load( this->config.get_string("GAMEOVER_FONTFACE_SCALE2X") ) == false )
-    {
-      NOM_LOG_ERR ( TTCARDS, "Could not load resource file: " + this->config.get_string("GAMEOVER_FONTFACE_SCALE2X") );
-      return false;
-    }
-  #endif
+  auto GAMEOVER_FONTFACE =
+    this->game->res_cfg_->get_string("GAMEOVER_FONTFACE");
+
+  if( this->gameover_font.load(GAMEOVER_FONTFACE) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:",
+                  GAMEOVER_FONTFACE );
+    return false;
+  }
 
   // Set both player's scoreboard fonts
   for( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx ) {
@@ -529,52 +511,39 @@ bool Game::on_init()
   // Initialize game over text
   this->game->gameover_text.set_font(&this->game->gameover_font);
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->gameover_background.load( this->config.get_string("GAMEOVER_BACKGROUND"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.get_string("GAMEOVER_BACKGROUND") );
-      return false;
-    }
-  #else
-    if( this->gameover_background.load( this->config.get_string("GAMEOVER_BACKGROUND_SCALE2X"), false, nom::Texture::Access::Streaming ) == false )
-    {
-      NOM_LOG_ERR( TTCARDS, "Could not load resource file: " + this->config.get_string("GAMEOVER_BACKGROUND_SCALE2X") );
-      return false;
-    }
-  #endif
-
-  nom::SpriteSheet cursor_frames;
+  const auto GAMEOVER_BACKGROUND =
+    this->game->res_cfg_->get_string("GAMEOVER_BACKGROUND");
+  if( this->gameover_background.load(GAMEOVER_BACKGROUND, false,
+      nom::Texture::Access::Static) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:",
+                  GAMEOVER_BACKGROUND );
+    return false;
+  }
 
   // Initialize interface cursor
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( cursor_frames.load_file( this->config.get_string("INTERFACE_CURSOR_ATLAS") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->config.get_string("INTERFACE_CURSOR_ATLAS") );
-      return false;
-    }
 
-    if( this->cursor_tex_.load( this->config.get_string("INTERFACE_CURSOR") ) == false ) {
+  nom::SpriteSheet cursor_frames;
+  const auto INTERFACE_CURSOR_ATLAS =
+    this->game->res_cfg_->get_string("INTERFACE_CURSOR_ATLAS");
 
-      nom::DialogMessageBox( "Critical Error", "Could not load resource file: " +
-                              this->config.get_string("INTERFACE_CURSOR") );
-      return false;
-    }
-  #else
-    if( cursor_frames.load_file( this->config.get_string("INTERFACE_CURSOR_ATLAS_SCALE2X") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->config.get_string("INTERFACE_CURSOR_ATLAS_SCALE2X") );
-      return false;
-    }
+  const auto INTERFACE_CURSOR =
+    this->game->res_cfg_->get_string("INTERFACE_CURSOR");
 
-    if( this->cursor_tex_.load( this->config.get_string("INTERFACE_CURSOR_SCALE2X") ) == false ) {
+  if( cursor_frames.load_file(INTERFACE_CURSOR_ATLAS) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load sprite sheet from file:",
+                  INTERFACE_CURSOR_ATLAS );
+    return false;
+  }
 
-      nom::DialogMessageBox(  "Critical Error", "Could not load resource file: " +
-                              this->config.get_string("INTERFACE_CURSOR_SCALE2X") );
-      return false;
-    }
-  #endif
+  if( this->cursor_tex_.load(INTERFACE_CURSOR) == false ) {
+
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:",
+                  INTERFACE_CURSOR );
+    return false;
+  }
 
   IntRect cursor_bounds(IntRect::zero);
 
@@ -605,7 +574,7 @@ bool Game::on_init()
 
   // blinking cursor animation
   const real32 CURSOR_BLINK_INTERVAL =
-    this->game->config.get_real32("CURSOR_BLINK_INTERVAL");
+    this->game->config_->get_real32("CURSOR_BLINK_INTERVAL");
   NOM_ASSERT(CURSOR_BLINK_INTERVAL > 0.0f);
 
   auto cursor_action =
@@ -621,7 +590,7 @@ bool Game::on_init()
   // Initialize both player's card deck
 
   const std::string CARDS_DB =
-    this->config.get_string("CARDS_DB");
+    this->config_->get_string("CARDS_DB");
 
   this->game->cards_db_[PLAYER1].reset( new CardCollection() );
   if( this->game->cards_db_[PLAYER1] == nullptr ) {
@@ -670,7 +639,9 @@ bool Game::on_init()
 
   this->game->card_res_.reset( new CardResourceLoader() );
   NOM_ASSERT(this->game->card_res_ != nullptr);
-  if( this->card_res_->load_file(&this->config, this->card_font) == false ) {
+  if( this->card_res_->load_file( this->game->res_cfg_.get(),
+      this->game->card_font_) == false )
+  {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not bootstrap card resources." );
     return false;
@@ -680,38 +651,26 @@ bool Game::on_init()
   nom::Texture* triad_tex = new nom::Texture();
   NOM_ASSERT(triad_tex != nullptr);
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( triad_frames.load_file( this->game->config.get_string("TRIAD_SPINNER_ATLAS" ) ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet file:",
-                    this->config.get_string("TRIAD_SPINNER") );
-      return false;
-    }
+  auto TRIAD_SPINNER_ATLAS =
+    this->game->res_cfg_->get_string("TRIAD_SPINNER_ATLAS" );
+  auto TRIAD_SPINNER =
+    this->game->res_cfg_->get_string("TRIAD_SPINNER" );
 
-    if( triad_tex->load( this->config.get_string("TRIAD_SPINNER") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load texture file: ",
-                    this->config.get_string("TRIAD_SPINNER") );
-      return false;
-    }
-  #else
-    if( triad_frames.load_file( this->game->config.get_string("TRIAD_SPINNER_ATLAS_SCALE2X" ) ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet file:",
-                    this->config.get_string("TRIAD_SPINNER_ATLAS_SCALE2X") );
-      return false;
-    }
+  if( triad_frames.load_file(TRIAD_SPINNER_ATLAS) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load sprite sheet from file:",
+                  TRIAD_SPINNER_ATLAS );
+    return false;
+  }
 
-    if( triad_tex->load( this->config.get_string("TRIAD_SPINNER_SCALE2X") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load texture file: ",
-                    this->config.get_string("TRIAD_SPINNER_SCALE2X") );
-      return false;
-    }
-  #endif
+  if( triad_tex->load(TRIAD_SPINNER) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load texture from file:", TRIAD_SPINNER );
+    return false;
+  }
 
   auto triad_start_frame =
-    this->game->config.get_int("TRIAD_START_FRAME");
+    this->game->config_->get_int("TRIAD_START_FRAME");
   if( triad_start_frame < 0 ) {
     triad_start_frame = 0;
   }
@@ -728,7 +687,7 @@ bool Game::on_init()
 
   // blinking cursor animation
   const real32 TRIAD_FRAME_INTERVAL =
-    this->game->config.get_real32("TRIAD_FRAME_INTERVAL");
+    this->game->config_->get_real32("TRIAD_FRAME_INTERVAL");
   NOM_ASSERT(TRIAD_FRAME_INTERVAL > 0.0f);
 
   auto triad_action =
@@ -787,8 +746,8 @@ bool Game::on_init()
                       GAME_RESOLUTION, Anchor::MiddleRight );
 
   // Initialize audio subsystem...
-  if( this->game->config.get_bool("AUDIO_SFX") ||
-      this->game->config.get_bool("AUDIO_TRACKS") ) {
+  if( this->game->config_->get_bool("AUDIO_SFX") ||
+      this->game->config_->get_bool("AUDIO_TRACKS") ) {
 
     #if defined(NOM_USE_OPENAL)
       this->audio_dev_.reset( new nom::AudioDevice() );
@@ -809,41 +768,41 @@ bool Game::on_init()
   }
 
   // Load audio resources
-  if( this->game->config.get_bool("AUDIO_SFX") ) {
+  if( this->game->config_->get_bool("AUDIO_SFX") ) {
 
-    if ( this->sound_buffers[0]->load( this->config.get_string("CURSOR_MOVE") ) == false )
+    if ( this->sound_buffers[0]->load( this->config_->get_string("CURSOR_MOVE") ) == false )
     {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("CURSOR_MOVE") );
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CURSOR_MOVE") );
     }
 
-    if ( this->sound_buffers[1]->load( this->config.get_string("CURSOR_CANCEL") ) == false )
+    if ( this->sound_buffers[1]->load( this->config_->get_string("CURSOR_CANCEL") ) == false )
     {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("CURSOR_CANCEL") );
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CURSOR_CANCEL") );
     }
 
-    if ( this->sound_buffers[2]->load( this->config.get_string("CURSOR_WRONG") ) == false )
+    if ( this->sound_buffers[2]->load( this->config_->get_string("CURSOR_WRONG") ) == false )
     {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("CURSOR_WRONG") );
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CURSOR_WRONG") );
     }
 
-    if ( this->sound_buffers[3]->load( this->config.get_string("CARD_PLACE") ) == false )
+    if ( this->sound_buffers[3]->load( this->config_->get_string("CARD_PLACE") ) == false )
     {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("CARD_PLACE") );
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CARD_PLACE") );
     }
 
-    if ( this->sound_buffers[4]->load( this->config.get_string("CARD_FLIP") ) == false )
+    if ( this->sound_buffers[4]->load( this->config_->get_string("CARD_FLIP") ) == false )
     {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("CARD_FLIP") );
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CARD_FLIP") );
     }
 
-    if ( this->sound_buffers[5]->load( this->config.get_string("SFX_LOAD_GAME") ) == false )
+    if ( this->sound_buffers[5]->load( this->config_->get_string("SFX_LOAD_GAME") ) == false )
     {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("SFX_LOAD_GAME") );
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("SFX_LOAD_GAME") );
     }
 
-    if ( this->sound_buffers[6]->load( this->config.get_string("SFX_SAVE_GAME") ) == false )
+    if ( this->sound_buffers[6]->load( this->config_->get_string("SFX_SAVE_GAME") ) == false )
     {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config.get_string("SFX_SAVE_GAME") );
+      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("SFX_SAVE_GAME") );
     }
 
     #if defined(NOM_USE_OPENAL)
@@ -874,12 +833,12 @@ bool Game::on_init()
     this->save_game.reset( new nom::NullSound() );
   }
 
-  if( this->game->config.get_bool("AUDIO_TRACKS") ) {
+  if( this->game->config_->get_bool("AUDIO_TRACKS") ) {
 
     const std::string MUSIC_THEME_TRACK =
-      this->config.get_string("MUSIC_THEME_TRACK");
+      this->config_->get_string("MUSIC_THEME_TRACK");
     const std::string MUSIC_WIN_TRACK =
-      this->config.get_string("MUSIC_WIN_TRACK");
+      this->config_->get_string("MUSIC_WIN_TRACK");
 
     if( this->sound_buffers[7]->load(MUSIC_THEME_TRACK) == false ) {
       NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1162,16 +1121,14 @@ void Game::reload_config()
     nom::make_unique<nom::JsonCppDeserializer>();
   NOM_ASSERT(fp != nullptr);
 
-  if( this->game->config.load_file(TTCARDS_CONFIG_FILENAME, fp.get() ) == false ) {
+  if( this->game->config_->load_file( TTCARDS_CONFIG_GAME_FILENAME,
+      fp.get() ) == false )
+  {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not reload configuration file at:",
-                  TTCARDS_CONFIG_FILENAME );
+                  "Could not reload configuration file:",
+                  TTCARDS_CONFIG_GAME_FILENAME );
     return;
   }
-
-  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
-                "Reloaded game configuration file:",
-                TTCARDS_CONFIG_FILENAME );
 
   NOM_ASSERT(this->state() != nullptr);
 
@@ -1181,7 +1138,7 @@ void Game::reload_config()
   }
 
   this->game->debug_game_ =
-    this->game->config.get_bool("DEBUG_GAME");
+    this->game->config_->get_bool("DEBUG_GAME");
 }
 
 void Game::dump_board( void )
