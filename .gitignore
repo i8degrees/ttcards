@@ -19,7 +19,6 @@ install_options
 hires
 
 # auto-generated
-src/version.cpp
 src/version.hpp
 
 # EMCC

@@ -92,6 +92,8 @@ void set_face_down(CardHand* player_hand, bool face_down);
 
 void set_frame_interval(nom::uint32 interval);
 
+std::string version_string();
+
 } // namespace ttcards
 
 #endif // include guard defined

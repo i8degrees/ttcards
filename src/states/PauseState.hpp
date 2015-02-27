@@ -38,8 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "version.hpp"
-#include "resources.hpp"
 
 // Forward declarations
 class Game;

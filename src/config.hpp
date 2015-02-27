@@ -42,10 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include "debug.hpp"
-/// Site-specific constants -- this is likely specific to your own local system
-/// setup; auto-generated at compile-time and therefore must recompile to modify
-/// said constants.
-#include "version.hpp"
 
 /// Scale factor of rendered graphics
 ///

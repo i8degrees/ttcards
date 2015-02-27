@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "helpers.hpp"
 
 // Private headers
+#include "version.hpp"
 #include "resources.hpp"
 #include "CardRenderer.hpp"
 
@@ -50,32 +51,34 @@ namespace ttcards {
 bool
 save_game(Board* game_board, CardHand* player_hand)
 {
-  if( player_hand[PLAYER1].save(USER_PLAYER1_FILENAME) == false ) {
+  if( player_hand[PLAYER1].save(TTCARDS_PLAYER1_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to save player 1 hand at:", USER_PLAYER1_FILENAME );
+                  "Unable to save player 1 hand at:",
+                  TTCARDS_PLAYER1_FILENAME );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION, "Player 1 hand saved at:",
-                  USER_PLAYER1_FILENAME );
+                  TTCARDS_PLAYER1_FILENAME );
 
-  if( player_hand[PLAYER2].save(USER_PLAYER2_FILENAME) == false ) {
+  if( player_hand[PLAYER2].save(TTCARDS_PLAYER2_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to save player 2 hand at:", USER_PLAYER2_FILENAME );
+                  "Unable to save player 2 hand at:",
+                  TTCARDS_PLAYER2_FILENAME );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION, "Player 2 hand saved at:",
-                  USER_PLAYER2_FILENAME );
+                  TTCARDS_PLAYER2_FILENAME );
 
-  if( game_board->save(USER_BOARD_FILENAME) == false ) {
+  if( game_board->save(TTCARDS_BOARD_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to save game board at:", USER_BOARD_FILENAME );
+                  "Unable to save game board at:", TTCARDS_BOARD_FILENAME );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION, "Game board saved at:",
-                  USER_BOARD_FILENAME );
+                  TTCARDS_BOARD_FILENAME );
 
   // Success!
   return true;
@@ -84,32 +87,33 @@ save_game(Board* game_board, CardHand* player_hand)
 bool
 load_game(Board* game_board, CardHand* player_hand)
 {
-  if( player_hand[PLAYER1].load(USER_PLAYER1_FILENAME) == false ) {
+  if( player_hand[PLAYER1].load(TTCARDS_PLAYER1_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to load player 1 hand from:", USER_PLAYER1_FILENAME );
+                  "Unable to load player 1 hand from:",
+                  TTCARDS_PLAYER1_FILENAME );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Player 1 hand loaded from:", USER_PLAYER1_FILENAME );
+                  "Player 1 hand loaded from:", TTCARDS_PLAYER1_FILENAME );
 
-  if( player_hand[PLAYER2].load(USER_PLAYER2_FILENAME) == false ) {
+  if( player_hand[PLAYER2].load(TTCARDS_PLAYER2_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to load player 2 hand from:", USER_PLAYER2_FILENAME );
+                  "Unable to load player 2 hand from:", TTCARDS_PLAYER2_FILENAME );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Player 2 hand loaded from:", USER_PLAYER2_FILENAME );
+                  "Player 2 hand loaded from:", TTCARDS_PLAYER2_FILENAME );
 
-  if( game_board->load(USER_BOARD_FILENAME) == false ) {
+  if( game_board->load(TTCARDS_BOARD_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to load game board from:", USER_BOARD_FILENAME );
+                  "Unable to load game board from:", TTCARDS_BOARD_FILENAME );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION, "Game board loaded from:",
-                  USER_BOARD_FILENAME );
+                  TTCARDS_BOARD_FILENAME );
 
   // Success!
   return true;
@@ -444,6 +448,22 @@ void set_frame_interval(nom::uint32 interval)
       nom::sleep(sleep_ms);
     }
   }
+}
+
+std::string version_string()
+{
+  std::stringstream version_str;
+
+  version_str << APP_NAME << " " << "v"
+              << TTCARDS_VERSION_MAJOR << "."
+              << TTCARDS_VERSION_MINOR << "."
+              << TTCARDS_VERSION_PATCH;
+
+#if ! defined(NDEBUG)
+  version_str << "-Debug";
+#endif
+
+  return version_str.str();
 }
 
 } // namespace ttcards

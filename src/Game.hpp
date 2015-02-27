@@ -40,8 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "version.hpp"
-#include "resources.hpp"
 #include "CardDebug.hpp"
 #include "CardHand.hpp"
 #include "CardRules.hpp"
@@ -245,7 +243,7 @@ class Game: public nom::SDLApp
     /// \remarks The screen-shots are saved under ~/Documents/ttcards
     ///
     /// \see nom::InputMapper.
-    void save_screenshot( void );
+    void save_screenshot();
 
     /// \brief Callback action for reloading the game's configuration files.
     ///

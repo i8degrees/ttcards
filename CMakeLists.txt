@@ -242,12 +242,16 @@ if ( PLATFORM_OSX )
               DESTINATION "${INSTALL_FRAMEWORK_PATH}"
               PATTERN ".*" EXCLUDE ) # do not include dotfiles
 
-    install ( FILES
+    install(  FILES
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_game.json"
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-low-res.json"
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-hi-res.json"
-              DESTINATION "$ENV{HOME}/Documents/ttcards"
-            )
+              DESTINATION "$ENV{HOME}/Library/Application\ Support/TTcards" )
+
+    file( MAKE_DIRECTORY
+          "$ENV{HOME}/Library/Application\ Support/TTcards/SavedGames"
+          "$ENV{HOME}/Library/Application\ Support/TTcards/Screenshots" )
+
   endif ( OSXAPP )
 
 # ...PLATFORM_OSX...
@@ -288,8 +292,18 @@ elseif ( PLATFORM_WINDOWS )
             "${LIBROCKET_FREETYPE_REDIST_DIR}"
             DESTINATION
             "${INSTALL_APP_PATH}"
-            FILES_MATCHING PATTERN "*.dll"
-          )
+            FILES_MATCHING PATTERN "*.dll" )
+
+    # NOTE: The LOCALAPPDATA environment variable does not exist on Windows XP
+    install(  FILES
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_game.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-low-res.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-hi-res.json"
+              DESTINATION "$ENV{LOCALAPPDATA}/TTcards" )
+
+    file( MAKE_DIRECTORY
+          "$ENV{LOCALAPPDATA}/TTcards/SavedGames"
+          "$ENV{LOCALAPPDATA}/TTcards/Screenshots" )
 
 elseif ( PLATFORM_LINUX ) # POSIX install layout
   # TODO: set paths, etc. like we do above with OSX & Windows platforms
@@ -340,26 +354,6 @@ endif ( DOCS )
 target_link_libraries(  ${PROJECT_NAME} ${NOMLIB_LIBRARIES}
                         ${NOMLIB_DEPENDENCIES}
 )
-
-# Auto-generated build-time variables result in modification of the built
-# binary's run-time execution.
-#
-# CMake dependency variables (of which control the location of this insert)
-#
-#   a) PROJECT_VERSION_*
-#   b) CMAKE_INSTALL_PREFIX
-#
-# This means that we must include this configured file *AFTER* any and all
-# modifications -- that matter to us -- occur in this build script.
-
-configure_file  (
-                  "${CMAKE_TEMPLATE_PATH}/version.cpp.in"
-                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.cpp"
-                )
-
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
-                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
-                )
 
 # TODO: Windows platform support
 if ( NOT PLATFORM_WINDOWS )

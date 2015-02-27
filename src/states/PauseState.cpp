@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PauseState.hpp"
 
+#include "helpers.hpp"
+
 // Forward declarations
 #include "Game.hpp"
 
@@ -93,7 +95,7 @@ void PauseState::on_init( nom::void_ptr data )
   // this->game->input_mapper.activate_only( "Game" );
 
   this->game->pause_window_.set_title_text("PAUSE");
-  this->game->pause_window_.set_message_text( SHORT_VERSION_INFO);
+  this->game->pause_window_.set_message_text( ttcards::version_string() );
   this->game->pause_window_.show();
 }
 

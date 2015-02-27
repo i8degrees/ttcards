@@ -35,9 +35,12 @@ CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH=${BASE_WATCH_PATCH}/config_assets-low-res.
 CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH=${BASE_WATCH_PATCH}/config_assets-hi-res.json
 
 # destination path to copy modified file to
-CONFIG_GAME_DEST_PATH=${HOME}/Documents/ttcards/config_game.json
-CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH=${HOME}/Documents/ttcards/config_assets-low-res.json
-CONFIG_GAME_ASSETS_HI_RES_DEST_PATH=${HOME}/Documents/ttcards/config_assets-hi-res.json
+CONFIG_DIR_BASE=${HOME}/Library/Application\ Support/TTcards
+CONFIG_GAME_DEST_PATH=${CONFIG_DIR_BASE}/config_game.json
+
+# FIXME: These paths do not work ... I don't know why
+CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH=${CONFIG_DIR_BASE}/config_assets-low-res.json
+CONFIG_GAME_ASSETS_HI_RES_DEST_PATH=${CONFIG_DIR_BASE}/config_assets-hi-res.json
 
 # Enable debug output logging to a file path
 # LOGFILE=$HOME/Library/Logs/org.ttcards.fswatch.log
@@ -63,9 +66,9 @@ do
 
     # Output command results to debug log if LOGFILE is set (see above)
     if [[ ${LOGFILE} == "" ]]; then
-      ${CP_BIN} -v ${CONFIG_GAME_WATCH_PATH} ${CONFIG_GAME_DEST_PATH}
+      ${CP_BIN} -v "${CONFIG_GAME_WATCH_PATH}" "${CONFIG_GAME_DEST_PATH}"
     else
-      ${CP_BIN} -v ${CONFIG_GAME_WATCH_PATH} ${CONFIG_GAME_DEST_PATH} >> ${LOGFILE}
+      ${CP_BIN} -v "${CONFIG_GAME_WATCH_PATH}" "${CONFIG_GAME_DEST_PATH}" >> ${LOGFILE}
     fi
   fi
 done
@@ -79,9 +82,9 @@ do
 
     # Output command results to debug log if LOGFILE is set (see above)
     if [[ ${LOGFILE} == "" ]]; then
-      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH}
+      ${CP_BIN} -v "${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH}" "${CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH}"
     else
-      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH} >> ${LOGFILE}
+      ${CP_BIN} -v "${CONFIG_GAME_ASSETS_LOW_RES_WATCH_PATH}" "${CONFIG_GAME_ASSETS_LOW_RES_DEST_PATH}" >> ${LOGFILE}
     fi
   fi
 done
@@ -95,9 +98,9 @@ do
 
     # Output command results to debug log if LOGFILE is set (see above)
     if [[ ${LOGFILE} == "" ]]; then
-      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_HI_RES_DEST_PATH}
+      ${CP_BIN} -v "${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH}" "${CONFIG_GAME_ASSETS_HI_RES_DEST_PATH}"
     else
-      ${CP_BIN} -v ${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH} ${CONFIG_GAME_ASSETS_HI_RES_DEST_PATH} >> ${LOGFILE}
+      ${CP_BIN} -v "${CONFIG_GAME_ASSETS_HI_RES_WATCH_PATH}" "${CONFIG_GAME_ASSETS_HI_RES_DEST_PATH}" >> ${LOGFILE}
     fi
   fi
 done

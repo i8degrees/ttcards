@@ -31,6 +31,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include <Rocket/Debugger.h>
 
+#include "version.hpp"
+#include "resources.hpp"
+
 // Forward declarations
 #include "CardCollection.hpp"
 #include "CardResourceLoader.hpp"
@@ -1103,14 +1106,15 @@ void Game::mute_volume( void )
   }
 }
 
-void Game::save_screenshot( void )
+void Game::save_screenshot()
 {
   nom::Path p;
-  std::string filename = TTCARDS_DATA_DIR + p.native() + "Screenshot.png";
+  std::string filename =
+    TTCARDS_SCREEN_SHOTS_DIR + p.native() + "Screenshot.png";
 
-  if( this->game->window.save_screenshot( filename ) == false )
-  {
-    NOM_LOG_ERR( TTCARDS, "Could not save screen-shot: " + filename );
+  if( this->game->window.save_screenshot(filename) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not dump the screen shot to:", filename );
   }
 }
 

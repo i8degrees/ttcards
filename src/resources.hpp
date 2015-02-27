@@ -30,33 +30,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define TTCARDS_RESOURCES_HPP
 
 #include <string>
+#include <nomlib/system/Path.hpp>
 
-/// Cross-platform support files
-#include <nomlib/system.hpp>
+const nom::Path p;
+const nom::File fp;
 
-/// Site-specific constants -- this is likely specific to your own local system
-/// setup; auto-generated at compile-time and therefore must recompile to modify
-/// said constants.
-#include "version.hpp"
+const std::string APP_NAME = "TTcards";
 
-/// Platform-dependent paths
+// Data folder for game storage -- configuration, screen-shots, saved games and
+// so forth.
+const std::string TTCARDS_DATA_DIR =
+  fp.user_app_support_path() + p.native() + APP_NAME;
 
-extern const nom::Path path;
+// Base paths
+const std::string TTCARDS_CONFIG_DIR = TTCARDS_DATA_DIR;
 
-// Data folder for game storage (screenshots, card dumps, ...)
-extern const std::string TTCARDS_DATA_DIR;
+const std::string TTCARDS_SAVED_GAME_DIR =
+  TTCARDS_DATA_DIR + p.native() + "SavedGames";
 
-extern const std::string USER_PLAYER1_FILENAME;
-extern const std::string USER_PLAYER2_FILENAME;
-extern const std::string USER_BOARD_FILENAME;
+const std::string TTCARDS_SCREEN_SHOTS_DIR =
+  TTCARDS_DATA_DIR + p.native() + "Screenshots";
 
-extern const std::string TTCARDS_CONFIG_GAME_FILENAME;
-extern const std::string TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME;
-extern const std::string TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME;
+// Absolute file paths
 
-/// Localization strings
-extern const std::string LOADING_TEXT;
-extern const std::string SHORT_VERSION_INFO;
+const std::string TTCARDS_PLAYER1_FILENAME =
+  TTCARDS_SAVED_GAME_DIR + p.native() + "player1.json";
 
+const std::string TTCARDS_PLAYER2_FILENAME =
+  TTCARDS_SAVED_GAME_DIR + p.native() + "player2.json";
+
+const std::string TTCARDS_BOARD_FILENAME =
+  TTCARDS_SAVED_GAME_DIR + p.native() + "board.json";
+
+const std::string TTCARDS_CONFIG_GAME_FILENAME =
+  TTCARDS_CONFIG_DIR + p.native() + "config_game.json";
+
+const std::string TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME =
+  TTCARDS_CONFIG_DIR + p.native() + "config_assets-low-res.json";
+
+const std::string TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME =
+  TTCARDS_CONFIG_DIR + p.native() + "config_assets-hi-res.json";
 
 #endif // include guard defined

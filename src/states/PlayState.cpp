@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardRenderer.hpp"
 #include "Board.hpp"
 #include "helpers.hpp"
-#include "version.hpp"
 #include "resources.hpp"
 
 // Forward declarations

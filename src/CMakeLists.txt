@@ -15,9 +15,7 @@ include_directories( ${NOMLIB_EXTERNAL_INCLUDE_DIRS} )
 # Core game logic
 set(  TTCARDS_SOURCE
       ${SRC_DIR}/config.hpp
-      ${SRC_DIR}/version.cpp
       ${SRC_DIR}/version.hpp
-      ${SRC_DIR}/resources.cpp
       ${SRC_DIR}/resources.hpp
       ${SRC_DIR}/main.cpp
       ${SRC_DIR}/GameConfig.cpp
@@ -73,3 +71,9 @@ set(  TTCARDS_SOURCE_STATES
 set(  TTCARDS_SOURCE
       ${TTCARDS_SOURCE}
       ${TTCARDS_SOURCE_STATES} )
+
+# Auto-generate a header file for tracking the project software version
+# NOTE: These rely on PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR and
+# PROJECT_VERSION_PATCH being defined.
+configure_file( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
+                "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp" )
