@@ -144,9 +144,6 @@ const nom::int32 ELEMENT_HEIGHT = 16 * SCALE_FACTOR;
 const nom::int32 CURSOR_WIDTH = 26 * SCALE_FACTOR;
 const nom::int32 CURSOR_HEIGHT = 16 * SCALE_FACTOR;
 
-const nom::int32 MENU_ELEMENT_WIDTH = 16 * SCALE_FACTOR;
-const nom::int32 MENU_ELEMENT_HEIGHT = 16 * SCALE_FACTOR;
-
 // top-left of board grid
 const nom::int32 BOARD_ORIGIN_X = 96 * SCALE_FACTOR;
 const nom::int32 BOARD_ORIGIN_Y = 16 * SCALE_FACTOR;
