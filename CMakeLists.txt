@@ -172,8 +172,9 @@ elseif( PLATFORM_LINUX )
   # TODO
 endif( PLATFORM_WINDOWS )
 
-# Project source tree to build
+# Project source tree
 include( "${SRC_DIR}/CMakeLists.txt" )
+# add_subdirectory( ${SRC_DIR} )
 
 # Installation phase
 if ( PLATFORM_OSX )
