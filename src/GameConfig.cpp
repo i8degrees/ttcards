@@ -108,7 +108,7 @@ real64 GameConfig::get_real64(const std::string& node) const
   }
 }
 
-nom::StringList GameConfig::string_array(const std::string& node) const
+nom::StringList GameConfig::get_array(const std::string& node) const
 {
   nom::StringList out;
 
@@ -116,7 +116,8 @@ nom::StringList GameConfig::string_array(const std::string& node) const
 
   if( res != this->config_.end() ) {
 
-    NOM_ASSERT( res->second.array_type() == false );
+    NOM_ASSERT( res->second.array_type() == true ||
+                res->second.object_type() == true );
 
     nom::Value arr = res->second;
 

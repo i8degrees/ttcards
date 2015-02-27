@@ -72,7 +72,7 @@ class GameConfig
     /// nom::real64_min on failure, such as when the node does not exist.
     nom::real64 get_real64(const std::string& node) const;
 
-    nom::StringList string_array(const std::string& node) const;
+    nom::StringList get_array(const std::string& node) const;
 
     bool has_property(const std::string& node);
 

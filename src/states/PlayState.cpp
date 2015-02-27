@@ -128,7 +128,7 @@ void PlayState::on_init( nom::void_ptr data )
   // TODO: Finish implementing CardRules interface -- bitwise flags!
   bool open_ruleset = false;
   bool elemental_ruleset = false;
-  nom::StringList ruleset = this->game->config_->string_array("REGION_RULESET");
+  nom::StringList ruleset = this->game->config_->get_array("REGION_RULESET");
   for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
 
     if( (*itr) == "Open" ) {

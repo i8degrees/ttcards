@@ -72,7 +72,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
   bool open_ruleset = false;
   bool combo_ruleset = false;
   bool same_ruleset = false;
-  nom::StringList ruleset = this->game->config_->string_array("REGION_RULESET");
+  nom::StringList ruleset = this->game->config_->get_array("REGION_RULESET");
   for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
 
     if( (*itr) == "Open" ) {
