@@ -465,6 +465,12 @@ bool Game::on_init()
   Rocket::Core::Factory::RegisterDecoratorInstancer("sprite-sheet", decorator1 );
   decorator1->RemoveReference();
 
+  const auto WINDOW_FULLSCREEN =
+    this->game->config_->get_bool("WINDOW_FULLSCREEN");
+  if( WINDOW_FULLSCREEN == true ) {
+    this->window.toggle_fullscreen();
+  }
+
   this->set_state_machine( new nom::StateMachine() );
 
   // Commence the loading of game resources

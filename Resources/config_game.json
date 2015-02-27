@@ -22,6 +22,9 @@
     // display will be indexed as zero (0).
     "VIDEO_DISPLAY_INDEX": 0,
 
+    // Whether to start the game window full-screen or as a window.
+    "WINDOW_FULLSCREEN": false,
+
     "APP_ICON" : "icon.png",
     "CARDS_DB" : "cards.json",
 
