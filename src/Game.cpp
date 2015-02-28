@@ -102,7 +102,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
     nom::SDL2Logger::set_logging_priority(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                                            LogPriority::NOM_LOG_PRIORITY_INFO );
+                                            LogPriority::NOM_LOG_PRIORITY_DEBUG );
 
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
