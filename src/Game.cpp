@@ -363,17 +363,21 @@ bool Game::on_init()
     this->window.set_scale( nom::Point2f(1,1) );
   #endif
 
+  // Target frame rate default
+  this->frame_interval_ = this->config_->get_int("FRAME_RATE");
+  NOM_ASSERT(this->frame_interval_ >= 0);
+
   // Try to set a sensible (optimal) refresh rate based on the display
-  // capabilities when VSYNC is enabled.
+  // capabilities
   if( ENABLE_VSYNC == true ) {
     auto display_refresh_rate =
       this->window.refresh_rate();
     if( display_refresh_rate > 0 ) {
-      this->frame_interval_ = display_refresh_rate;
+      // Disable frame rate governor; the effective frame rate will be
+      // determined by updating the display at the display's refresh rate
+      this->frame_interval_ = 0;
     } else {
-      // ...fall back to using the default value specified in our configuration
-      this->frame_interval_ = this->config_->get_int("FRAME_RATE");
-      NOM_ASSERT(this->frame_interval_ > 0);
+      // ...Use the default frame rate setting
     }
   }
 
@@ -993,20 +997,24 @@ void Game::on_window_resized( const nom::Event& ev )
 
 int Game::Run()
 {
-  auto delta_time = 0;
-  auto elapsed_frames = 0;
+  real32 delta_time = 0.0f;
+  real32 elapsed_frames = 0.0f;
+  Timer fps_time;
+  Timer game_time;
   const std::string WINDOW_TITLE(APP_NAME);
   std::stringstream fps_title_prefix;
   std::stringstream fps_title_suffix;
 
   this->set_state(Game::State::CardsMenu);
 
+  game_time.start();
+  fps_time.start();
   fps_title_prefix << WINDOW_TITLE << " " << "-" << " ";
 
   nom::Event evt;
   while( this->running() == true ) {
 
-    delta_time = nom::ticks();
+    delta_time = game_time.ticks();
 
     while( this->poll_event(evt) ) {
       this->on_event(evt);
@@ -1017,31 +1025,27 @@ int Game::Run()
 
     // Fix for GitHub Issue #9
     this->window.fill(nom::Color4i::Black);
-
     this->on_draw(this->window);
+
+    ++elapsed_frames;
 
     if( this->show_fps() ) {
 
-      // TODO: Update frame rate counter at one second intervals
+      if( fps_time.ticks() >= 1000 ) {
+        real32 frame_interval = elapsed_frames;
 
-      // TODO: Look into our FPS counter possibly being inaccurate -- why can
-      // we never reach within the last ~5..7 frames of the set frame
-      // interval??? Perhaps it has something to do with our sleep
-      // granularity...?
-      real32 frame_interval =
-        elapsed_frames / (delta_time / 1000.0f);
-      fps_title_suffix.str("");
-      fps_title_suffix.precision(1);
-
-      fps_title_suffix  << fps_title_prefix.str()
-                        << std::fixed << frame_interval << " " << "FPS";
-      this->window.set_window_title( fps_title_suffix.str() );
+        fps_title_suffix.str("");
+        fps_title_suffix.precision(1);
+        fps_title_suffix  << fps_title_prefix.str()
+                          << std::fixed << frame_interval << " " << "FPS";
+        this->window.set_window_title( fps_title_suffix.str() );
+        fps_time.restart();
+        elapsed_frames = 0;
+      }
     } else {
       // Use the default window title string
       this->window.set_window_title(WINDOW_TITLE);
     }
-
-    ++elapsed_frames;
 
     ttcards::set_frame_interval(this->frame_interval_);
   } // end while game is running

@@ -8,7 +8,9 @@
     // rendering
     "RENDER_SCALE_QUALITY": "nearest",
 
-    // target frame rate
+    // Target frame rate; this is the maximum frame rate of the game, and will
+    // effect smoothness of things like input responsiveness and animation
+    // fluidity.
     // A frame interval value of zero (0) disables fixed time stepping,
     // effectively removing the artificial frame capping
     "FRAME_RATE": 30,
