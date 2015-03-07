@@ -906,7 +906,7 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
     std::make_shared<MoveByAction>( this->move_card_up_sprite_,
                                     Point2i(0, -GAME_RESOLUTION.h), 1.0f);
   NOM_ASSERT(move_card_up != nullptr);
-  move_card_up->set_timing_mode(nom::Expo::ease_out);
+  move_card_up->set_timing_curve(nom::Expo::ease_out);
 
   // Global (screen) coordinates
   Point2i board_pos;
@@ -948,7 +948,7 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
     std::make_shared<MoveByAction>( this->move_card_up_sprite_,
                                     Point2i(0, board_pos.y), 0.3f);
   NOM_ASSERT(move_card_down != nullptr);
-  move_card_down->set_timing_mode(nom::Expo::ease_out);
+  move_card_down->set_timing_curve(nom::Expo::ease_out);
 
   auto move_card_sequence =
     nom::create_action<SequenceAction>( { move_card_up, move_card_along,

@@ -139,13 +139,9 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_RENDER, nom::NOM_LOG_PRIORITY_DEBUG);
 
     // Animation subsystem
-    nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_INFO);
+    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION, nom::NOM_LOG_PRIORITY_DEBUG);
     // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_DEBUG);
     // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_DEBUG);
-
-    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ANIMATION, nom::NOM_LOG_PRIORITY_VERBOSE);
-    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_QUEUE, nom::NOM_LOG_PRIORITY_VERBOSE);
-    // nom::SDL2Logger::set_logging_priority(NOM_LOG_CATEGORY_ACTION_PLAYER, nom::NOM_LOG_PRIORITY_VERBOSE);
 
     // Extended call stack diagnostics (i.e.: number of initialized Card objects)
     // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
