@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/serializers.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
 
 /// \brief Simple, convenient file-based settings interface
 ///
@@ -52,8 +53,8 @@ class GameConfig
 
     std::string get_string(const std::string& node) const;
 
-    /// \returns The de-serialized integer value on success, or nom::int_min
-    /// on failure, such as when the node does not exist.
+    /// \returns The de-serialized integer value on success, or
+    /// nom::NOM_INT_MIN on failure, such as when the node does not exist.
     nom::int32 get_int(const std::string& node) const;
 
     bool get_bool(const std::string& node) const;
@@ -65,14 +66,14 @@ class GameConfig
     int get_bool32(const std::string& node) const;
 
     /// \returns The de-serialized floating-point value on success, or
-    /// nom::real32_min on failure, such as when the node does not exist.
+    /// nom::NOM_REAL32_MIN on failure, such as when the node does not exist.
     nom::real32 get_real32(const std::string& node) const;
 
     /// \returns The de-serialized floating-point value on success, or
-    /// nom::real64_min on failure, such as when the node does not exist.
+    /// nom::NOM_REAL64_MIN on failure, such as when the node does not exist.
     nom::real64 get_real64(const std::string& node) const;
 
-    nom::StringList get_array(const std::string& node) const;
+    ttcards::string_list get_array(const std::string& node) const;
 
     bool has_property(const std::string& node);
 

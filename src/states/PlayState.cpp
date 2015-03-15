@@ -128,7 +128,7 @@ void PlayState::on_init( nom::void_ptr data )
   // TODO: Finish implementing CardRules interface -- bitwise flags!
   bool open_ruleset = false;
   bool elemental_ruleset = false;
-  nom::StringList ruleset = this->game->config_->get_array("REGION_RULESET");
+  string_list ruleset = this->game->config_->get_array("REGION_RULESET");
   for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
 
     if( (*itr) == "Open" ) {
@@ -474,7 +474,7 @@ void PlayState::on_init( nom::void_ptr data )
   this->game->input_mapper.activate( "Game" );
 
   this->game->triad_->set_frame(0);
-  this->game->actions_.run_action(this->game->triad_action_, "triad_action");
+  this->game->actions_.run_action(this->game->triad_action_);
 }
 
 // Private scope
@@ -952,8 +952,9 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
 
   auto move_card_sequence =
     nom::create_action<SequenceAction>( { move_card_up, move_card_along,
-                                          move_card_down }, "move_card_up" );
+                                          move_card_down } );
   NOM_ASSERT(move_card_sequence != nullptr);
+  move_card_sequence->set_name("move_card_up");
 
   this->game->card_place->Play();
 
@@ -1149,8 +1150,7 @@ void PlayState::updateCursor()
 
     if( blinking_cursor_action == false ) {
       this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
-      this->game->actions_.run_action(  this->game->blinking_cursor_action_,
-                                        "blinking_cursor_action" );
+      this->game->actions_.run_action(this->game->blinking_cursor_action_);
     }
   } else {  // this->cursor_state_ != CursorState::BOARD
 
@@ -1447,8 +1447,9 @@ PlayState::create_gameover_text_action( GameOverType type,
   nom::action_list sequence_list = {  gameover_text_fade_in_action,
                                       transition_delay_action };
   auto gameover_text_action =
-    nom::create_action<SequenceAction>(sequence_list, action_name);
+    nom::create_action<SequenceAction>(sequence_list);
   NOM_ASSERT(gameover_text_action != nullptr);
+  gameover_text_action->set_name(action_name);
 
   return gameover_text_action;
 }
@@ -1464,8 +1465,9 @@ void PlayState::initialize_cpu_player_turn()
   auto cpu_move_delay_timer =
     std::make_shared<WaitForDurationAction>(cpu_move_delay_seconds);
   NOM_ASSERT(cpu_move_delay_timer != nullptr);
+  cpu_move_delay_timer->set_name("cpu_move_delay");
 
   if( cpu_move_delay_timer != nullptr ) {
-    this->game->actions_.run_action(cpu_move_delay_timer, "cpu_move_delay");
+    this->game->actions_.run_action(cpu_move_delay_timer);
   }
 }

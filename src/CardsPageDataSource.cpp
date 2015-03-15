@@ -137,10 +137,9 @@ nom::size_type CardsPageDataSource::num_rows() const
   return this->db_.size();
 }
 
-void CardsPageDataSource::row(  nom::StringList& row,
-                                // const std::string& table,
-                                int row_index,
-                                const nom::StringList& columns )
+void
+CardsPageDataSource::row( ttcards::string_list& row, int row_index,
+                          const ttcards::string_list& columns )
 {
   Rocket::Core::StringList ret_rows;
   Rocket::Core::StringList ret_columns;

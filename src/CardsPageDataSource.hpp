@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "nomlib/config.hpp"
 
+#include "types.hpp"
 #include "Card.hpp"
 #include "CardCollection.hpp"
 
@@ -89,8 +90,8 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     /// \param columns    The columns within the row to grab results for.
     ///
     /// \remarks Convenience alias for ::GetRow.
-    // void row( nom::StringList& row, const std::string& table, int row_index, const StringList& columns );
-    void row( nom::StringList& row, int row_index, const nom::StringList& columns );
+    void row( ttcards::string_list& row, int row_index,
+              const ttcards::string_list& columns );
 
     int insert_card( int pos, const Card& card );
 

@@ -595,6 +595,7 @@ bool Game::on_init()
   this->game->blinking_cursor_action_ =
     nom::create_action<RepeatForeverAction>(cursor_action);
   NOM_ASSERT(this->game->blinking_cursor_action_ != nullptr);
+  this->game->blinking_cursor_action_->set_name("blinking_cursor_action");
 
   // Initialize both player's card deck
 
@@ -707,6 +708,7 @@ bool Game::on_init()
   this->game->triad_action_ =
     nom::create_action<RepeatForeverAction>(triad_action);
   NOM_ASSERT(this->game->triad_action_ != nullptr);
+  this->game->triad_action_->set_name("triad_action");
 
   // win, lose, draw text actions
 

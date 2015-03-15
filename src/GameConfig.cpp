@@ -56,7 +56,7 @@ nom::int32 GameConfig::get_int(const std::string& node) const
   auto res = this->config_.find(node);
 
   if( res == this->config_.end() ) {
-    return nom::int_min;
+    return nom::NOM_INT_MIN;
   } else {
     return res->second.get_int();
   }
@@ -91,7 +91,7 @@ real32 GameConfig::get_real32(const std::string& node) const
   auto res = this->config_.find(node);
 
   if( res == this->config_.end() ) {
-    return nom::real32_min;
+    return nom::NOM_REAL32_MIN;
   } else {
     return res->second.get_float();
   }
@@ -102,15 +102,16 @@ real64 GameConfig::get_real64(const std::string& node) const
   auto res = this->config_.find(node);
 
   if( res == this->config_.end() ) {
-    return nom::real64_min;
+    return nom::NOM_REAL64_MIN;
   } else {
     return res->second.get_double();
   }
 }
 
-nom::StringList GameConfig::get_array(const std::string& node) const
+ttcards::string_list
+GameConfig::get_array(const std::string& node) const
 {
-  nom::StringList out;
+  ttcards::string_list out;
 
   auto res = this->config_.find(node);
 

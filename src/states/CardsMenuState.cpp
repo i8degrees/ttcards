@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Game.hpp"
 
 using namespace nom;
+using namespace ttcards;
 
 CardsMenuState::CardsMenuState(nom::SDLApp* object) :
   nom::IState( Game::State::CardsMenu ),
@@ -72,7 +73,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
   bool open_ruleset = false;
   bool combo_ruleset = false;
   bool same_ruleset = false;
-  nom::StringList ruleset = this->game->config_->get_array("REGION_RULESET");
+  string_list ruleset = this->game->config_->get_array("REGION_RULESET");
   for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
 
     if( (*itr) == "Open" ) {
