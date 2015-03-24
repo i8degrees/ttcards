@@ -136,10 +136,14 @@ else()
   message( STATUS "NOMLIB_DEPS_ROOT: ${NOMLIB_DEPS_PREFIX}" )
 endif()
 
+# TODO: When building on Windows, if the end-user has both Debug and Release
+# build targets of nomlib installed, we need to modify the component names to
+# reflect which library name to use ('-d' postfix for debug). Hint: I think
+# that our nomlib-config.cmake script should be able to handle this for us
+# automatically.
 find_package( nomlib COMPONENTS
               core file math system graphics gui ptree serializers REQUIRED
-              OPTIONAL_COMPONENTS audio
-)
+              OPTIONAL_COMPONENTS audio )
 
 if( PLATFORM_WINDOWS )
   # Redistribution paths must be absolute, a directory and end with a trailing
@@ -294,6 +298,11 @@ elseif ( PLATFORM_WINDOWS )
             "${INSTALL_APP_PATH}"
             FILES_MATCHING PATTERN "*.dll" )
 
+    # TODO: Use the APPDATA environment variable for the base prefix
+    # installation path of configuration files; it appears to be the most
+    # "universal" default games are using. If we decide to go with this change,
+    # we'll want to probably update nom::WinFile::user_app_support_path, too...
+    #
     # NOTE: The LOCALAPPDATA environment variable does not exist on Windows XP
     install(  FILES
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_game.json"

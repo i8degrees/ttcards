@@ -221,6 +221,11 @@ void CardsMenuState::on_init( nom::void_ptr data )
                   this->game->cards_page_model_->dump() );
 
   // Event listener for mouse button clicks
+
+  // TODO: This is currently a leaked resource -- no body is freeing it, and it
+  // is our responsibility! I'm not sure whose responsibility it should be,
+  // though -- should it be nom::UIEventListener, nom::UIWidget or
+  // application-level..?
   this->game->cards_menu_.register_event_listener(
     this->game->cards_menu_.document(), "mouseup",
     new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) {
