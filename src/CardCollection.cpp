@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardCollection.hpp"
 
+// Private headers
+#include <nomlib/serializers.hpp>
+
 using namespace nom;
 
 CardCollection::CardCollection()
@@ -59,12 +62,8 @@ const Card& CardCollection::front() const
   }
 }
 
-bool CardCollection::save( const std::string& filename )
+bool CardCollection::save(const std::string& filename)
 {
-  // High-level file I/O interface
-  std::unique_ptr<nom::IValueSerializer> fp =
-    nom::make_unique<nom::JsonCppSerializer>();
-
   // Our JSON output will be a JSON object enclosing an array keyed "cards",
   // of which holds each of our individual, unnamed JSON objects.
   //
@@ -73,6 +72,13 @@ bool CardCollection::save( const std::string& filename )
   // until we figure these things out is going to have to be this!
   nom::Value obj( nom::Value::ObjectValues );
   nom::Value arr( nom::Value::ArrayValues );
+
+  auto fp = nom::make_unique_json_serializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   if ( this->cards.size() > MAX_COLLECTION ) // Sanity check
   {
@@ -101,11 +107,8 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
   return true;
 }
 
-bool CardCollection::load( const std::string& filename )
+bool CardCollection::load(const std::string& filename)
 {
-  // High-level file I/O interface
-  std::unique_ptr<nom::IValueDeserializer> fp =
-    nom::make_unique<nom::JsonCppDeserializer>();
   nom::Value value;
 
   // The card attributes we are loading in will be stored in here, and once a
@@ -113,6 +116,13 @@ bool CardCollection::load( const std::string& filename )
   // CardCollection's Card vector.
   Card card;
   Cards cards_buffer;
+
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   if ( fp->load( filename, value ) == false )
   {

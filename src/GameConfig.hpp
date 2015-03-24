@@ -32,11 +32,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <map>
 
-#include "nomlib/config.hpp"
-#include <nomlib/serializers.hpp>
+#include <nomlib/config.hpp>
 
 #include "config.hpp"
 #include "types.hpp"
+
+// Forward declarations
+namespace nom {
+
+class IValueDeserializer;
+
+} // namespace nom
 
 /// \brief Simple, convenient file-based settings interface
 ///
@@ -90,7 +96,7 @@ class GameConfig
     ///
     /// \todo Restore the current configuration if we fail to parse config and
     /// have cleared the?
-    bool load_file( const std::string& filename, nom::IValueDeserializer* fp);
+    bool load_file(const std::string& filename, nom::IValueDeserializer* fp);
 
     /// \brief Diagnostics output.
     std::string dump_tree() const;

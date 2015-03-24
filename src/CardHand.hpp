@@ -35,7 +35,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include <nomlib/config.hpp>
-#include <nomlib/serializers.hpp>
 
 #include "Card.hpp"
 #include "config.hpp"
@@ -124,11 +123,11 @@ class CardHand
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
     /// compliant objects.
-    bool save ( const std::string& filename );
+    bool save(const std::string& filename);
 
     /// Load saved player hand from a file encoded as RFC 4627 compliant JSON
     /// objects.
-    bool load ( const std::string& filename );
+    bool load(const std::string& filename);
 
     /// Getter for obtaining the strongest card in the player's hand.
     ///

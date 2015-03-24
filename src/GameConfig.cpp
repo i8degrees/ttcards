@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameConfig.hpp"
 
+// Forward declarations
+#include <nomlib/serializers.hpp>
+
 using namespace nom;
 
 GameConfig::GameConfig()

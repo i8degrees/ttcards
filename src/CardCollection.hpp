@@ -29,13 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_CARD_COLLECTION_HEADERS
 #define GAMEAPP_CARD_COLLECTION_HEADERS
 
-#include <array>
 #include <fstream>
-#include <iostream>
 #include <string>
-#include <vector>
-
-#include <nomlib/serializers.hpp>
 
 #include "Card.hpp"
 #include "CardDebug.hpp"
@@ -56,11 +51,11 @@ class CardCollection
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
-    bool save( const std::string& filename );
+    bool save(const std::string& filename);
 
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.
-    bool load( const std::string& filename );
+    bool load(const std::string& filename);
 
     /// \returns The resulting card by its name on success, or Card::null on
     /// failure to find a card by the given name.

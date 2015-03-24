@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "CardRenderer.hpp"
 
+#include <nomlib/serializers.hpp>
+
 // Forward declarations
 #include "CardCollection.hpp"
 #include "CardResourceLoader.hpp"
@@ -301,14 +303,17 @@ void CardHand::shuffle( nom::int32 level_min, nom::int32 level_max, const CardCo
   }
 }
 
-bool CardHand::save ( const std::string& filename )
+bool CardHand::save(const std::string& filename)
 {
-   // High-level file I/O interface
-  std::unique_ptr<nom::IValueSerializer> fp =
-    nom::make_unique<nom::JsonCppSerializer>();
-
   nom::Value value(nom::Value::ArrayValues);
   nom::Value card(nom::Value::ObjectValues);
+
+  auto fp = nom::make_unique_json_serializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   // Sanity check
   if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND )
@@ -338,17 +343,21 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
   return true;
 }
 
-bool CardHand::load ( const std::string& filename )
+bool CardHand::load(const std::string& filename)
 {
-   // High-level file I/O interface
-  std::unique_ptr<nom::IValueDeserializer> fp =
-    nom::make_unique<nom::JsonCppDeserializer>();
   nom::Value values;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
+
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   if ( fp->load( filename, values ) == false )
   {

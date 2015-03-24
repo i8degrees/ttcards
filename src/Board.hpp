@@ -36,9 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <fstream>
 
-#include "nomlib/config.hpp"
+#include <nomlib/config.hpp>
 #include <nomlib/math.hpp>
-#include <nomlib/serializers.hpp>
 
 #include "config.hpp"
 #include "resources.hpp"
@@ -134,11 +133,11 @@ class Board
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
-    bool save ( const std::string& filename );
+    bool save(const std::string& filename);
 
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.
-    bool load ( const std::string& filename );
+    bool load(const std::string& filename);
 
     /// \brief Get the unoccupied tiles on the board.
     board_tiles free_tiles() const;

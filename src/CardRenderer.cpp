@@ -122,12 +122,8 @@ CardRenderer* create_placeholder_card_renderer()
     std::make_shared<nom::Rectangle>(placeholder_bounds, Color4i::Magenta);
   NOM_ASSERT(rect != nullptr);
 
-  auto texture =
-    std::shared_ptr<Texture>( rect->texture() );
-  NOM_ASSERT(texture != nullptr);
-
   auto card_sprite =
-    nom::make_unique<Sprite>(texture);
+    nom::make_unique_sprite( rect->texture() );
   NOM_ASSERT(card_sprite != nullptr);
 
   return( new CardRenderer( std::move(card_sprite) ) );
@@ -221,7 +217,6 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
   }
 
   auto card_sprite =
-    nom::make_unique<Sprite>(texture);
-
+    nom::make_unique_sprite(texture);
   return( new CardRenderer( std::move(card_sprite) ) );
 }

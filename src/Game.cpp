@@ -29,10 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Game.hpp"
 
 // Private headers
-#include <Rocket/Debugger.h>
-
 #include "version.hpp"
 #include "resources.hpp"
+
+#include <Rocket/Debugger.h>
+#include <nomlib/serializers.hpp>
 
 // Forward declarations
 #include "CardCollection.hpp"
@@ -252,10 +253,12 @@ bool Game::on_init()
   uint32 window_flags = SDL_WINDOW_OPENGL;
   uint32 render_flags = SDL_RENDERER_ACCELERATED;
 
-  // High-level file I/O interface for configuration files
-  std::unique_ptr<nom::IValueDeserializer> fp =
-    nom::make_unique<nom::JsonCppDeserializer>();
-  NOM_ASSERT(fp != nullptr);
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   // ...General game logic configuration file...
 
@@ -714,7 +717,7 @@ bool Game::on_init()
 
   this->game->gameover_text.set_text("You Win!");
   this->game->won_text_sprite_ =
-    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
   NOM_ASSERT(this->game->won_text_sprite_ != nullptr);
 
   nom::set_alignment( this->game->won_text_sprite_.get(), Point2i::zero,
@@ -723,7 +726,7 @@ bool Game::on_init()
 
   this->game->gameover_text.set_text("You Lose...");
   this->game->lost_text_sprite_ =
-    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
   NOM_ASSERT(this->game->lost_text_sprite_ != nullptr);
 
   nom::set_alignment( this->game->lost_text_sprite_.get(), Point2i::zero,
@@ -732,7 +735,7 @@ bool Game::on_init()
 
   this->game->gameover_text.set_text("Draw");
   this->game->tied_text_sprite_ =
-    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
   NOM_ASSERT(this->game->tied_text_sprite_ != nullptr);
 
   nom::set_alignment( this->game->tied_text_sprite_.get(), Point2i::zero,
@@ -742,7 +745,7 @@ bool Game::on_init()
   // Combo && Same flip text sprites
   this->game->gameover_text.set_text("Combo!");
   this->game->combo_text_sprite_ =
-    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
   NOM_ASSERT(this->game->combo_text_sprite_ != nullptr);
 
   nom::set_alignment( this->game->combo_text_sprite_.get(), Point2i::zero,
@@ -750,7 +753,7 @@ bool Game::on_init()
 
   this->game->gameover_text.set_text("Same!");
   this->game->same_text_sprite_ =
-    std::make_shared<Sprite>( this->game->gameover_text.clone_texture() );
+    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
   NOM_ASSERT(this->game->same_text_sprite_ != nullptr);
 
   nom::set_alignment( this->game->same_text_sprite_.get(), Point2i::zero,
@@ -1128,10 +1131,12 @@ void Game::save_screenshot()
 
 void Game::reload_config()
 {
-  // High-level file I/O interface for configuration files
-  std::unique_ptr<nom::IValueDeserializer> fp =
-    nom::make_unique<nom::JsonCppDeserializer>();
-  NOM_ASSERT(fp != nullptr);
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return;
+  }
 
   if( this->game->config_->load_file( TTCARDS_CONFIG_GAME_FILENAME,
       fp.get() ) == false )

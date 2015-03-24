@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private helpers
 #include "helpers.hpp"
 
+#include <nomlib/serializers.hpp>
+
 // Forward declarations
 #include "CardRules.hpp"
 #include "CardResourceLoader.hpp"
@@ -660,14 +662,17 @@ void Board::draw ( nom::IDrawable::RenderTarget& target )
   } // end for loop cols
 }
 
-bool Board::save ( const std::string& filename )
+bool Board::save(const std::string& filename)
 {
-  // High-level file I/O interface
-  std::unique_ptr<nom::IValueSerializer> fp =
-    nom::make_unique<nom::JsonCppSerializer>();
-
   nom::Value value(nom::Value::ArrayValues);
   nom::Value card(nom::Value::ObjectValues);
+
+  auto fp = nom::make_unique_json_serializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   for ( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; y++ )
   {
@@ -693,17 +698,21 @@ NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
   return true;
 }
 
-bool Board::load ( const std::string& filename )
+bool Board::load(const std::string& filename)
 {
-  // High-level file I/O interface
-  std::unique_ptr<nom::IValueDeserializer> fp =
-    nom::make_unique<nom::JsonCppDeserializer>();
   nom::Value values;
 
   // The card attributes we are loading in will be stored in here temporarily.
   // This will become the data to load onto the board if all goes well..!
   Card card;
   Cards cards_buffer;
+
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
 
   if ( fp->load( filename, values ) == false )
   {
