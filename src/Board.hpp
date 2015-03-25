@@ -46,7 +46,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardDebug.hpp"
 
 // Forward declarations
-class CardRules;
+namespace ttcards {
+struct RegionRuleSet;
+}
+
 class CardResourceLoader;
 
 /// \brief The game board
@@ -69,9 +72,8 @@ class Board
     /// \remarks The game board has two prerequisite dependencies before
     /// successful construction -- both the card rule-sets and card rendering
     /// components must be fully constructed.
-    bool initialize(CardRules* ruleset, CardResourceLoader* res);
-
-    void initialize_board_elements();
+    bool
+    initialize(ttcards::RegionRuleSet* ruleset, CardResourceLoader* res);
 
     /// \brief Empty the board of its stored cards.
     void clear();
@@ -146,10 +148,12 @@ class Board
     void dump_values();
 
   private:
-    /// \brief Card rule logic.
+    void initialize_board_elements();
+
+    /// \brief The current game rules in effect.
     ///
     /// \note This is a non-owned pointer, so we **must not** free it!
-    CardRules* rules_;
+    ttcards::RegionRuleSet* rules_;
 
     /// \brief Card rendering.
     ///

@@ -68,6 +68,9 @@ class Game: public nom::SDLApp
     /// \see SDLApp
     void set_state( nom::uint32 id, nom::void_ptr data = nullptr );
 
+    bool
+    init_game_rules(const GameConfig* config, ttcards::RegionRuleSet& region);
+
     /// Audio subsystem
     std::unique_ptr<nom::IAudioDevice> audio_dev_;
 
@@ -116,8 +119,8 @@ class Game: public nom::SDLApp
     /// Game board
     std::unique_ptr<Board> board_;
 
-    /// Rules logic
-    CardRules rules;
+    /// \brief The current game rules in effect.
+    ttcards::RegionRuleSet rules_;
 
     /// \brief The card pool of playable cards.
     std::unique_ptr<CardCollection> cards_db_[TOTAL_PLAYERS];

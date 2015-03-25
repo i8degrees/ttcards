@@ -89,7 +89,7 @@ bool operator !=(const BoardTile& lhs, const BoardTile& rhs);
 struct BoardResult
 {
   BoardTile tile;
-  nom::uint32 applied_rule = 0;
+  nom::uint32 applied_ruleset = 0;
 };
 
 typedef std::vector<BoardTile> board_tiles;

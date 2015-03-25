@@ -48,6 +48,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#include "states/States.hpp" // StateFactory
 
+using namespace ttcards;
 using namespace nom;
 
 Game::Game( nom::int32 argc, char* argv[] ) :
@@ -134,6 +135,9 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_CPU_PLAYER, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+
+    nom::SDL2Logger::set_logging_priority(  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
+                                            NOM_LOG_PRIORITY_DEBUG );
 
     // Extended diagnostics of the rendering subsystem; i.e.: allocation
     // counters, etc.
@@ -1092,6 +1096,57 @@ void Game::set_state( nom::uint32 id, nom::void_ptr data )
       break;
     }
   }
+}
+
+bool Game::
+init_game_rules(const GameConfig* config, ttcards::RegionRuleSet& region)
+{
+  if( config == nullptr ) {
+    NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not initialize game rules; config was NULL." );
+    return false;
+  }
+
+  ttcards::clear_card_rulesets(&region);
+
+  ttcards::string_list region_cfg =
+    config->get_array("REGION_RULESET");
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
+                  "Initializing game rules from existing configuration file..." );
+
+  for( auto itr = region_cfg.begin(); itr != region_cfg.end(); ++itr ) {
+
+    uint32 ruleset = CardRuleset::NO_RULESET;
+    if( (*itr) == "Open" ) {
+
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
+                      "Setting up game rule OPEN_RULESET" );
+      ruleset = CardRuleset::OPEN_RULESET;
+
+    } else if( (*itr) == "Combo" ) {
+
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
+                      "Setting up game rule COMBO_RULESET" );
+      ruleset = CardRuleset::COMBO_RULESET;
+
+    } else if( (*itr) == "Elemental" ) {
+
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
+                      "Setting up game rule ELEMENTAL_RULESET" );
+      ruleset = CardRuleset::ELEMENTAL_RULESET;
+
+    } else if( (*itr) == "Same" ) {
+
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
+                      "Setting up game rule SAME_RULESET" );
+      ruleset = CardRuleset::SAME_RULESET;
+    }
+
+    ttcards::append_card_ruleset(&region, ruleset);
+  }
+
+  return true;
 }
 
 void Game::pause_music( void )

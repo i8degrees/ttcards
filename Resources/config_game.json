@@ -30,9 +30,7 @@
     "APP_ICON" : "icon.png",
     "CARDS_DB" : "cards.json",
 
-    // "REGION_RULESET": [ "Open" ],
-    "REGION_RULESET": [ "Open", "Combo", "Elemental", "Same" ],
-    // "REGION_RULESET": [ "Open", "Combo", "Same" ],
+    "REGION_RULESET": [ "Open", "Elemental", "Same" ],
 
     // animations
 

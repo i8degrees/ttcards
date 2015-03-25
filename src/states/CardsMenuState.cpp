@@ -66,36 +66,11 @@ void CardsMenuState::on_init( nom::void_ptr data )
   this->game->hand[PLAYER1].clear();
   this->game->hand[PLAYER2].clear();
 
-  // Default rule set
-  this->game->rules.setRules(0);
+  // ...Initialize game rules...
 
-  // TODO: Finish implementing CardRules interface -- bitwise flags!
-  bool open_ruleset = false;
-  bool combo_ruleset = false;
-  bool same_ruleset = false;
-  string_list ruleset = this->game->config_->get_array("REGION_RULESET");
-  for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
-
-    if( (*itr) == "Open" ) {
-      open_ruleset = true;
-    }
-
-    if( (*itr) == "Combo" ) {
-      combo_ruleset = true;
-    }
-
-    if( (*itr) == "Same" ) {
-      same_ruleset = true;
-    }
-  }
-
-  if( combo_ruleset == true ) {
-    this->game->rules.setRules(CardRules::Combo);
-  }
-
-  if( same_ruleset == true ) {
-    this->game->rules.setRules(CardRules::Same);
-  }
+  auto& rules = this->game->rules_;
+  auto cfg = this->game->config_.get();
+  this->game->init_game_rules(cfg, rules);
 
   this->game->hand[PLAYER1].init(this->game->card_res_.get() );
   this->game->hand[PLAYER2].init(this->game->card_res_.get() );

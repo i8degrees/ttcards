@@ -53,7 +53,8 @@ Board::~Board()
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-bool Board::initialize(CardRules* ruleset, CardResourceLoader* res)
+bool
+Board::initialize(ttcards::RegionRuleSet* ruleset, CardResourceLoader* res)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 
@@ -145,97 +146,13 @@ bool Board::initialize(CardRules* ruleset, CardResourceLoader* res)
 
   this->clear();
 
+  bool elemental_ruleset =
+    ttcards::is_card_rule_set(this->rules_, CardRuleset::ELEMENTAL_RULESET);
+  if( elemental_ruleset == true ) {
+    this->initialize_board_elements();
+  }
+
   return true;
-}
-
-void Board::initialize_board_elements()
-{
-  const uint32 MAXIMUM_ELEMENT_TYPE_COUNT = 2;
-  const uint32 MAXIMUM_BOARD_ELEMENTS = 4;
-  const uint32 MAXIMUM_RAND_NUMBER = 25;
-  uint32 num_elements = 0;
-  uint32 max_element_type_count[MAX_ELEMENT+1] = {0};
-
-  while( num_elements < MAXIMUM_BOARD_ELEMENTS ) {
-
-    for( auto y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
-      for( auto x = 0; x < BOARD_GRID_WIDTH; x++ ) {
-
-        uint32 random_element =
-          nom::uniform_int_rand<uint32>(0, MAXIMUM_RAND_NUMBER);
-
-        if( random_element == ELEMENT_EARTH &&
-            max_element_type_count[ELEMENT_EARTH] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_EARTH )
-        {
-          ++max_element_type_count[ELEMENT_EARTH];
-          ++num_elements;
-        }
-
-        if( random_element == ELEMENT_FIRE &&
-            max_element_type_count[ELEMENT_FIRE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_FIRE )
-        {
-          ++max_element_type_count[ELEMENT_FIRE];
-          ++num_elements;
-        }
-
-        if( random_element == ELEMENT_HOLY &&
-            max_element_type_count[ELEMENT_HOLY] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_HOLY )
-        {
-          ++max_element_type_count[ELEMENT_HOLY];
-          ++num_elements;
-        }
-
-        if( random_element == ELEMENT_ICE &&
-            max_element_type_count[ELEMENT_ICE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_ICE )
-        {
-          ++max_element_type_count[ELEMENT_ICE];
-          ++num_elements;
-        }
-
-        if( random_element == ELEMENT_POISON &&
-            max_element_type_count[ELEMENT_POISON] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_POISON )
-        {
-          ++max_element_type_count[ELEMENT_POISON];
-          ++num_elements;
-        }
-
-        if( random_element == ELEMENT_THUNDER &&
-            max_element_type_count[ELEMENT_THUNDER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_THUNDER )
-        {
-          ++max_element_type_count[ELEMENT_THUNDER];
-          ++num_elements;
-        }
-
-        if( random_element == ELEMENT_WATER &&
-            max_element_type_count[ELEMENT_WATER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_WATER )
-        {
-          ++max_element_type_count[ELEMENT_WATER];
-          ++num_elements;
-        }
-
-        if( random_element == ELEMENT_WIND &&
-            max_element_type_count[ELEMENT_WIND] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_WIND )
-        {
-          ++max_element_type_count[ELEMENT_WIND];
-          ++num_elements;
-        }
-
-        if( random_element > MAX_ELEMENT ) {
-          random_element = ::NONE;
-        }
-
-        this->grid[x][y].set_element(random_element);
-      } // end for x loop
-    } // end for y loop
-  } // end while num_elements < MAXIMUM_BOARD_ELEMENTS
 }
 
 void Board::clear()
@@ -342,6 +259,9 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
   BoardResult result;
   board_tiles_result coords;
 
+  bool same_rule_applied =
+    ttcards::is_card_rule_set(this->rules_, CardRuleset::SAME_RULESET);
+
   coords.clear(); // initialize a fresh new coords list
 
   for( cols = y; y < BOARD_GRID_HEIGHT; y++ ) {
@@ -352,16 +272,15 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != BAD_CARD_ID )
         {
-          if ( this->rules_->getRules() == CardRules::Same )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.getWestRank() ==
+              this->grid[rows - 1][cols].tile_card.getEastRank() )
           {
-            if ( this->grid[rows][cols].tile_card.getWestRank() == grid[rows - 1][cols].tile_card.getEastRank() )
-            {
-              same_count += 1;
-              if( same_count < 2 && coords.size() < 2 ) {
-                result.tile = this->grid[rows - 1][cols];
-                result.applied_rule = CardRules::Same;
-                coords.push_back(result);
-              }
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows - 1][cols];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
 
@@ -372,7 +291,7 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
             #endif
 
             result.tile = this->grid[rows - 1][cols];
-            result.applied_rule = CardRules::NoRules;
+            result.applied_ruleset = CardRuleset::NO_RULESET;
             coords.push_back(result);
           }
         }
@@ -383,16 +302,15 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != BAD_CARD_ID )
         {
-          if ( this->rules_->getRules() == CardRules::Same )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.getSouthRank() ==
+              this->grid[rows][cols + 1].tile_card.getNorthRank() )
           {
-            if ( this->grid[rows][cols].tile_card.getSouthRank() == grid[rows][cols + 1].tile_card.getNorthRank() )
-            {
-              same_count += 1;
-              if( same_count < 2 && coords.size() < 2 ) {
-                result.tile = this->grid[rows][cols + 1];
-                result.applied_rule = CardRules::Same;
-                coords.push_back(result);
-              }
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows][cols + 1];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
 
@@ -403,7 +321,7 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
             #endif
 
             result.tile = this->grid[rows][cols + 1];
-            result.applied_rule = CardRules::NoRules;
+            result.applied_ruleset = CardRuleset::NO_RULESET;
             coords.push_back(result);
           }
         }
@@ -414,16 +332,15 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != BAD_CARD_ID )
         {
-          if ( this->rules_->getRules() == CardRules::Same )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.getEastRank() ==
+              this->grid[rows + 1][cols].tile_card.getWestRank() )
           {
-            if ( this->grid[rows][cols].tile_card.getEastRank() == this->grid[rows + 1][cols].tile_card.getWestRank() )
-            {
-              same_count += 1;
-              if( same_count < 2 && coords.size() < 2 ) {
-                result.tile = this->grid[rows + 1][cols];
-                result.applied_rule = CardRules::Same;
-                coords.push_back(result);
-              }
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows + 1][cols];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
 
@@ -434,7 +351,7 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
             #endif
 
             result.tile = this->grid[rows + 1][cols];
-            result.applied_rule = CardRules::NoRules;
+            result.applied_ruleset = CardRuleset::NO_RULESET;
             coords.push_back(result);
           }
         }
@@ -445,16 +362,15 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
       {
         if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != BAD_CARD_ID )
         {
-          if ( this->rules_->getRules() == CardRules::Same )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.getNorthRank() ==
+              this->grid[rows][cols - 1].tile_card.getSouthRank() )
           {
-            if ( this->grid[rows][cols].tile_card.getNorthRank() == grid[rows][cols - 1].tile_card.getSouthRank() )
-            {
-              same_count += 1;
-              if( same_count < 2 && coords.size() < 2 ) {
-                result.tile = this->grid[rows][cols - 1];
-                result.applied_rule = CardRules::Same;
-                coords.push_back(result);
-              }
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows][cols - 1];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
 
@@ -465,7 +381,7 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
             #endif
 
             result.tile = this->grid[rows][cols - 1];
-            result.applied_rule = CardRules::NoRules;
+            result.applied_ruleset = CardRuleset::NO_RULESET;
             coords.push_back(result);
           }
         }
@@ -810,4 +726,96 @@ void Board::dump_values()
     }
   }
   std::cout << "\n";
+}
+
+// Private scope
+
+void Board::initialize_board_elements()
+{
+  const uint32 MAXIMUM_ELEMENT_TYPE_COUNT = 2;
+  const uint32 MAXIMUM_BOARD_ELEMENTS = 4;
+  const uint32 MAXIMUM_RAND_NUMBER = 25;
+  uint32 num_elements = 0;
+  uint32 max_element_type_count[MAX_ELEMENT+1] = {0};
+
+  while( num_elements < MAXIMUM_BOARD_ELEMENTS ) {
+
+    for( auto y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
+      for( auto x = 0; x < BOARD_GRID_WIDTH; x++ ) {
+
+        uint32 random_element =
+          nom::uniform_int_rand<uint32>(0, MAXIMUM_RAND_NUMBER);
+
+        if( random_element == ELEMENT_EARTH &&
+            max_element_type_count[ELEMENT_EARTH] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_EARTH )
+        {
+          ++max_element_type_count[ELEMENT_EARTH];
+          ++num_elements;
+        }
+
+        if( random_element == ELEMENT_FIRE &&
+            max_element_type_count[ELEMENT_FIRE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_FIRE )
+        {
+          ++max_element_type_count[ELEMENT_FIRE];
+          ++num_elements;
+        }
+
+        if( random_element == ELEMENT_HOLY &&
+            max_element_type_count[ELEMENT_HOLY] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_HOLY )
+        {
+          ++max_element_type_count[ELEMENT_HOLY];
+          ++num_elements;
+        }
+
+        if( random_element == ELEMENT_ICE &&
+            max_element_type_count[ELEMENT_ICE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_ICE )
+        {
+          ++max_element_type_count[ELEMENT_ICE];
+          ++num_elements;
+        }
+
+        if( random_element == ELEMENT_POISON &&
+            max_element_type_count[ELEMENT_POISON] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_POISON )
+        {
+          ++max_element_type_count[ELEMENT_POISON];
+          ++num_elements;
+        }
+
+        if( random_element == ELEMENT_THUNDER &&
+            max_element_type_count[ELEMENT_THUNDER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_THUNDER )
+        {
+          ++max_element_type_count[ELEMENT_THUNDER];
+          ++num_elements;
+        }
+
+        if( random_element == ELEMENT_WATER &&
+            max_element_type_count[ELEMENT_WATER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_WATER )
+        {
+          ++max_element_type_count[ELEMENT_WATER];
+          ++num_elements;
+        }
+
+        if( random_element == ELEMENT_WIND &&
+            max_element_type_count[ELEMENT_WIND] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != ELEMENT_WIND )
+        {
+          ++max_element_type_count[ELEMENT_WIND];
+          ++num_elements;
+        }
+
+        if( random_element > MAX_ELEMENT ) {
+          random_element = ::NONE;
+        }
+
+        this->grid[x][y].set_element(random_element);
+      } // end for x loop
+    } // end for y loop
+  } // end while num_elements < MAXIMUM_BOARD_ELEMENTS
 }

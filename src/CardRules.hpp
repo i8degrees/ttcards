@@ -2,7 +2,7 @@
 
   TTcards - Triple Triad remake
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+Copyright (c) 2013, 2014, 2015 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -26,65 +26,81 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_RULES_HEADERS
-#define GAMEAPP_CARD_RULES_HEADERS
+#ifndef TTCARDS_CARD_RULES_HPP
+#define TTCARDS_CARD_RULES_HPP
 
-#include <iostream>
-#include <string>
+#include <nomlib/config.hpp>
 
-#include "Card.hpp"
+// See also: Resources/Documentation/rules.md
 
-// combo: plus, same, wall
-// elemental
+namespace ttcards {
 
-class CardRules
+enum CardRule: nom::uint32
 {
-  public:
-
-    /// Default constructor (no game rule-set)
-    CardRules ( void );
-
-    /// Destructor
-    ~CardRules ( void );
-
-    CardRules ( nom::uint32 ruleset );
-
-    nom::uint32 getRules ( void );
-    void setRules ( nom::uint32 type );
-
-    bool compareCards ( unsigned int r1, unsigned int r2 );
-
-    /// Combo ruleset applies automatically when Same, SameWall or Plus or
-    /// has been triggered.
-    enum
-    {
-      NoRules = 0,  // Default (enables opponent's card face down)
-      Open,         // Inverse of the default above; show the opponent's cards
-      Elemental,
-      Same,
-      SameWall,
-      Plus,
-      Combo,
-      SuddenDeath,
-      LoserWinner,
-      Random // Random choice from this list
-    };
-
-    enum TradeRules
-    {
-
-      One=1, // Winner takes any one of the opponent's cards!
-      // Winner takes as many cards as there is a difference between yours
-      // and theirs (of flipped cards).
-      Diff,
-      // Winner takes cards that are their color at the end of the game
-      Direct,
-
-      All // Winner takes all..!
-    };
-
-  private:
-    nom::uint32 rules; // stores our card game rules in use
+  NO_RULE = 0,
+  OPEN_RULE = 1,
+  RANDOM_RULE = 2,
+  ELEMENTAL_RULE = 4,
+  COMBO_RULE = 8,
+  SAME_RULE = 16,
+  SAME_WALL_RULE = 32,
+  PLUS_RULE = 64,
+  SUDDEN_DEATH_RULE = 128,
 };
 
-#endif // GAMEAPP_CARD_RULES_HEADERS defined
+enum CardRuleset: nom::uint32
+{
+  NO_RULESET = NO_RULE,
+  OPEN_RULESET = OPEN_RULE,
+  RANDOM_RULESET = RANDOM_RULE,
+  ELEMENTAL_RULESET = ELEMENTAL_RULE,
+  COMBO_RULESET = COMBO_RULE,
+  SAME_RULESET = (COMBO_RULE | SAME_RULE),
+  SAME_WALL_RULESET = (COMBO_RULE | SAME_WALL_RULE),
+  PLUS_RULESET = (COMBO_RULE | PLUS_RULE),
+  SUDDEN_DEATH_RULESET = SUDDEN_DEATH_RULE,
+};
+
+enum CardTradeRule: nom::uint32
+{
+  NO_TRADE_RULE = 0,
+  ONE_TRADE_RULE,
+  DIFF_TRADE_RULE,
+  DIRECT_TRADE_RULE,
+  ALL_TRADE_RULE,
+  LOSER_WINNER_TRADE_RULE,
+};
+
+/// \brief The current rule sets in effect for a game.
+struct RegionRuleSet
+{
+  nom::uint32 rule_set = CardRuleset::NO_RULESET;
+  nom::uint32 trade_rule = CardTradeRule::NO_TRADE_RULE;
+};
+
+bool
+is_card_rule_set(const RegionRuleSet* region, nom::uint32 rule);
+
+void
+append_card_ruleset(RegionRuleSet* region, nom::uint32 rule);
+
+void
+remove_card_ruleset(RegionRuleSet* region, nom::uint32 rule);
+
+void
+clear_card_rulesets(RegionRuleSet* region);
+
+//
+
+bool
+is_trade_rule_set(const RegionRuleSet* region, nom::uint32 rule);
+
+void
+set_trade_rule(RegionRuleSet* region, nom::uint32 rule);
+
+void
+clear_trade_rule(RegionRuleSet* region);
+
+} // namespace ttcards
+
+#endif // defined include guard

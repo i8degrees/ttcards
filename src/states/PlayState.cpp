@@ -115,6 +115,9 @@ void PlayState::on_init( nom::void_ptr data )
     std::make_shared<Sprite>();
   NOM_ASSERT(text_action_sprite_ != nullptr);
 
+  // ...Initialize player hands...
+
+  auto& rules = this->game->rules_;
   auto p1_db = this->game->cards_db_[PLAYER1].get();
   auto p2_db = this->game->cards_db_[PLAYER2].get();
   NOM_ASSERT(p1_db != nullptr);
@@ -125,27 +128,11 @@ void PlayState::on_init( nom::void_ptr data )
     this->move_to( tile.bounds().position() );
   });
 
-  // TODO: Finish implementing CardRules interface -- bitwise flags!
-  bool open_ruleset = false;
-  bool elemental_ruleset = false;
-  string_list ruleset = this->game->config_->get_array("REGION_RULESET");
-  for( auto itr = ruleset.begin(); itr != ruleset.end(); ++itr ) {
-
-    if( (*itr) == "Open" ) {
-      open_ruleset = true;
-    }
-
-    if( (*itr) == "Elemental" ) {
-      elemental_ruleset = true;
-    }
-  }
-
-  // The open region rule set is not enabled, so no peeking at the opponent's
-  // cards! =P
-  if( open_ruleset == false ) {
-    set_face_down(&this->game->hand[PLAYER2], true);
+  if( ttcards::is_card_rule_set(&rules, CardRuleset::OPEN_RULESET) == false ) {
+    // ...No peeking at the opponent's cards!!
+    ttcards::set_face_down(&this->game->hand[PLAYER2], true);
   } else {
-    set_face_down(&this->game->hand[PLAYER2], false);
+    ttcards::set_face_down(&this->game->hand[PLAYER2], false);
   }
 
   while( this->game->hand[PLAYER1].size() < MAX_PLAYER_HAND ) {
@@ -153,11 +140,10 @@ void PlayState::on_init( nom::void_ptr data )
     this->game->hand[PLAYER1].shuffle(1, 1, *p1_db);
   }
 
-  this->game->board_->initialize(&this->game->rules, this->game->card_res_.get() );
+  // ...Initialize game board...
 
-  if( elemental_ruleset == true ) {
-    this->game->board_->initialize_board_elements();
-  }
+  this->game->board_->initialize( &rules,
+                                  this->game->card_res_.get() );
 
   this->game->cursor_->set_position( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
   this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
@@ -775,6 +761,7 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
                         const std::function<void()>& on_completion_func )
 {
   uint32 player_turn = this->turn();
+  auto& rules = this->game->rules_;
 
   // Check for flippable cards
   board_tiles_result grid =
@@ -784,9 +771,9 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
     int gpos0 = itr->tile.position().x;
     int gpos1 = itr->tile.position().y;
     Point2i gpos(gpos0, gpos1);
-    uint32 applied_rule = itr->applied_rule;
+    uint32 applied_rule = itr->applied_ruleset;
 
-    if( applied_rule == CardRules::Same ) {
+    if( applied_rule == CardRuleset::SAME_RULESET ) {
       this->text_action_sprite_ = this->game->same_text_sprite_;
     } else {
       this->text_action_sprite_ = nullptr;
@@ -798,7 +785,7 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
 
     // NOTE: This action has two separate action sprites given to it, and thus
     // the card flipping animation will occur in either condition
-    if( applied_rule == CardRules::Same ) {
+    if( applied_rule == CardRuleset::SAME_RULESET ) {
       // Render the "Same!" scrolling text animation
       flip_text_action->set_name("same_text_action");
     } else {
@@ -821,7 +808,7 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
       this->updateScore();
       this->game->card_flip->Play();
 
-      if( this->game->rules.getRules() != CardRules::NoRules ) {
+      if( ttcards::is_card_rule_set(&rules, CardRule::COMBO_RULE) == true ) {
 
         // Do a second round of flippable cards check for the COMBO rule-set
         board_tiles_result tgrid =
@@ -831,7 +818,7 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
           int tgpos0 = itr->tile.position().x;
           int tgpos1 = itr->tile.position().y;
           Point2i tgpos(tgpos0, tgpos1);
-          // uint32 applied_rule = itr->applied_rule;
+          // uint32 applied_rule = itr->applied_ruleset;
 
           this->text_action_sprite_ = this->game->combo_text_sprite_;
 
@@ -1343,7 +1330,9 @@ void PlayState::check_gameover_conditions()
   auto player2_score = this->players_[PLAYER2]->score();
   auto player2_num_cards = this->game->hand[PLAYER2].size();
 
-  auto rule_set = this->game->rules.getRules();
+  auto& rules = this->game->rules_;
+  bool sudden_death_rule_applied =
+    ttcards::is_card_rule_set(&rules, CardRuleset::SUDDEN_DEATH_RULESET);
 
   if( this->game->actions_.action_running("move_card_up") == true ) {
     return;
@@ -1369,7 +1358,7 @@ void PlayState::check_gameover_conditions()
 
       // TODO: Implement CardRules::SuddenDeath
       if( this->gameover_state_ == GameOverType::Tie &&
-          rule_set != CardRules::SuddenDeath )
+          sudden_death_rule_applied == false )
       {
         this->game->set_state(Game::State::CardsMenu);
       } else {

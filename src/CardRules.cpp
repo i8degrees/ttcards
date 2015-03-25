@@ -2,7 +2,7 @@
 
   TTcards - Triple Triad remake
 
-Copyright (c) 2013, 2014 Jeffrey Carpenter <i8degrees@gmail.com>
+Copyright (c) 2013, 2014, 2015 Jeffrey Carpenter <i8degrees@gmail.com>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -28,86 +28,77 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardRules.hpp"
 
+// Private headers
+#include "debug.hpp"
+
 using namespace nom;
 
-CardRules::CardRules ( void ) :
-  rules ( 0 )
-{
-  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
-}
+namespace ttcards {
 
-CardRules::~CardRules ( void )
+bool
+is_card_rule_set(const RegionRuleSet* region, nom::uint32 rule)
 {
-  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
-}
+  bool result = false;
 
-CardRules::CardRules ( uint32 ruleset ) :
-  rules ( ruleset )
-{
-  //NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
-}
-
-nom::uint32 CardRules::getRules ( void )
-{
-  return this->rules;
-}
-
-void CardRules::setRules ( nom::uint32 type )
-{
-  this->rules = type;
-}
-
-bool CardRules::compareCards ( unsigned int r1, unsigned int r2 )
-{
-  if ( this->getRules() == 0 ) // NONE
-  {
-    if ( r1 > r2 )
-    {
-      return true;
-    }
-  }
-  else if ( this->getRules() == 1 ) // COMBO
-  {
-    if ( r1 > r2 )
-    {
-      return true;
-    }
-  }
-  else if ( this->getRules() == 2 ) // SAME
-  {
-    if ( r1 > r2 )
-    {
-      return true;
-    }
-  }
-  else if ( this->getRules() == 3 ) // WALL
-  {
-    if ( r1 > r2 )
-    {
-      return true;
-    }
-  }
-  else if ( this->getRules() == 4 ) // PLUS
-  {
-    if ( r1 > r2 )
-    {
-      return true;
-    }
-  }
-  else if ( this->getRules() == 5 ) // ELEMENTAL
-  {
-    if ( r1 > r2 )
-    {
-      return true;
-    }
-  }
-  else if ( this->getRules() == 6 ) // LOSER_WINNER
-  {
-    if ( r1 < r2 )
-    {
-      return true;
-    }
+  if( region != nullptr && rule != 0 ) {
+    result = ( (region->rule_set & rule) == rule);
   }
 
-  return false;
+  return result;
 }
+
+void
+append_card_ruleset(RegionRuleSet* region, nom::uint32 rule)
+{
+  if( region != nullptr ) {
+    region->rule_set |= rule;
+  }
+}
+
+void
+remove_card_ruleset(RegionRuleSet* region, nom::uint32 rule)
+{
+  if( region != nullptr ) {
+    region->rule_set &= ~rule;
+  }
+}
+
+void
+clear_card_rulesets(RegionRuleSet* region)
+{
+  if( region != nullptr ) {
+    region->rule_set = CardRuleset::NO_RULESET;
+  }
+}
+
+//
+
+bool
+is_trade_rule_set(const RegionRuleSet* region, nom::uint32 rule)
+{
+  bool result = false;
+
+  if( region != nullptr ) {
+    result = region->trade_rule;
+  }
+
+  return result;
+}
+
+void
+set_trade_rule(RegionRuleSet* region, nom::uint32 rule)
+{
+  if( region != nullptr ) {
+    region->trade_rule = rule;
+  }
+}
+
+void
+remove_trade_rules(RegionRuleSet* region)
+{
+  if( region != nullptr ) {
+    region->trade_rule = CardTradeRule::NO_TRADE_RULE;
+  }
+}
+
+} // namespace ttcards
