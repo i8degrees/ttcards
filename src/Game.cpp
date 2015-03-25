@@ -242,9 +242,7 @@ Game::~Game()
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 
   this->gui_window_.shutdown();
-
-  // FIXME: The game crashes here for some reason
-  // nom::shutdown_librocket();
+  nom::shutdown_librocket();
 }
 
 bool Game::on_init()
