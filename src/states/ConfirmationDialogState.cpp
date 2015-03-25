@@ -118,10 +118,6 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
   // FIXME:
   // nom::InputActionMapper key_bindings, gamepad_bindings;
 
-  auto pause_game( [=](const nom::Event& evt) {
-    this->game->set_state(Game::State::Pause);
-  });
-
   auto cursor_prev( [=](const nom::Event& evt) {
     if( this->cursor_.prev() ) {
       this->game->cursor_move->Play();
@@ -154,11 +150,6 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
 
   // Keyboard mappings
 
-  // This state can crash the game when (I *think*) another child state is
-  // pushed onto the stack ... possibly due to the number of states in the
-  // stack at the time.
-  // state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
-
   state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
   state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
   state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select );
@@ -175,10 +166,6 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
 
   // Joystick button mappings
 
-  // This state can crash the game when (I *think*) another child state is
-  // pushed onto the stack ... possibly due to the number of states in the
-  // stack at the time.
-  // state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
   state.insert( "cursor_prev", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), cursor_prev );
   state.insert( "cursor_next", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), cursor_next );
   state.insert( "select", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select );
