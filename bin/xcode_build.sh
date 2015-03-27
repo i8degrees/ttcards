@@ -28,4 +28,3 @@ else
   echo "${0} ERROR: JSON validation failure has prevented building the project."
   exit 1
 fi
-fi
