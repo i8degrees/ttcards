@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 PauseState::PauseState(nom::SDLApp* object) :
   nom::IState( Game::State::Pause, nom::IState::Flags::BackRender, nom::IState::Type::Child),
   game( NOM_SCAST(Game*, object) )
@@ -95,7 +97,7 @@ void PauseState::on_init( nom::void_ptr data )
   // this->game->input_mapper.activate_only( "Game" );
 
   this->game->pause_window_.set_title_text("PAUSE");
-  this->game->pause_window_.set_message_text( ttcards::version_string() );
+  this->game->pause_window_.set_message_text( tt::version_string() );
   this->game->pause_window_.show();
 }
 
@@ -152,3 +154,5 @@ void PauseState::on_draw( nom::RenderWindow& target )
     this->blink_text = false;
   }
 }
+
+} // namespace tt

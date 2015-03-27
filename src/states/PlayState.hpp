@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Game;
 class IPlayer;
@@ -176,5 +178,7 @@ class PlayState: public nom::IState
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<PlayState> PlayStatePtr;
+
+} // namespace tt
 
 #endif // include guard defined

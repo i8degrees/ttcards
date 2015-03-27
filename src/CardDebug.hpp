@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 #include "config.hpp"
 
+namespace tt {
+
 class CardDebug
 {
   public:
@@ -47,5 +49,7 @@ class CardDebug
   private:
     // ...
 };
+
+} // namespace tt
 
 #endif // GAMEAPP_CARD_DEBUG_HEADERS defined

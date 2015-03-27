@@ -35,13 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Card;
 class CardResourceLoader;
 class Board;
 class CardHand;
-
-namespace ttcards {
 
 bool save_game(Board* game_board, CardHand* player_hand);
 bool load_game(Board* game_board, CardHand* player_hand);
@@ -94,6 +94,6 @@ void set_frame_interval(nom::uint32 interval);
 
 std::string version_string();
 
-} // namespace ttcards
+} // namespace tt
 
 #endif // include guard defined

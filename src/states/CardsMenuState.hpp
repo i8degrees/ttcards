@@ -42,6 +42,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardsPageDataSource.hpp"
 #include "Card.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Game;
 
@@ -128,5 +130,7 @@ class CardsMenuState: public nom::IState
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<CardsMenuState> CardsMenuStatePtr;
+
+} // namespace tt
 
 #endif // GAMEAPP_CARDS_MENU_HEADERS defined

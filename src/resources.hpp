@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 const nom::Path p;
 const nom::File fp;
 
+namespace tt {
+
 const std::string APP_NAME = "TTcards";
 
 // Data folder for game storage -- configuration, screen-shots, saved games and
@@ -70,5 +72,7 @@ const std::string TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME =
 
 const std::string TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME =
   TTCARDS_CONFIG_DIR + p.native() + "config_assets-hi-res.json";
+
+} // namespace tt
 
 #endif // include guard defined

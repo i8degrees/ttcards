@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardDebug.hpp"
 
+namespace tt {
+
 CardDebug::CardDebug ( void ) {}
 
 CardDebug::~CardDebug ( void ) {}
@@ -82,3 +84,5 @@ void CardDebug::ListCards ( Cards& cards )
 
   std::cout << "\n";
 }
+
+} // namespace tt

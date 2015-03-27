@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 // Static initialization
 const BoardTile BoardTile::null = BoardTile();
 
@@ -108,3 +110,5 @@ bool operator !=( const BoardTile& lhs, const BoardTile& rhs )
 {
   return !( lhs == rhs );
 }
+
+} // namespace tt

@@ -47,6 +47,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameConfig.hpp"
 #include "CardsPageDataSource.hpp"
 
+namespace tt {
+
 // Forward declarations
 class CardCollection;
 class Board;
@@ -69,7 +71,7 @@ class Game: public nom::SDLApp
     void set_state( nom::uint32 id, nom::void_ptr data = nullptr );
 
     bool
-    init_game_rules(const GameConfig* config, ttcards::RegionRuleSet& region);
+    init_game_rules(const GameConfig* config, tt::RegionRuleSet& region);
 
     /// Audio subsystem
     std::unique_ptr<nom::IAudioDevice> audio_dev_;
@@ -120,7 +122,7 @@ class Game: public nom::SDLApp
     std::unique_ptr<Board> board_;
 
     /// \brief The current game rules in effect.
-    ttcards::RegionRuleSet rules_;
+    tt::RegionRuleSet rules_;
 
     /// \brief The card pool of playable cards.
     std::unique_ptr<CardCollection> cards_db_[TOTAL_PLAYERS];
@@ -286,5 +288,7 @@ class Game: public nom::SDLApp
 
     nom::uint32 frame_interval_ = 0;
 };
+
+} // namespace tt
 
 #endif // include guard defined

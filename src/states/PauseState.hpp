@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Game;
 
@@ -70,5 +72,7 @@ class PauseState: public nom::IState
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<PauseState> PauseStatePtr;
+
+} // namespace tt
 
 #endif // include guard defined

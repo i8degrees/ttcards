@@ -45,11 +45,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 #include "CardDebug.hpp"
 
-// Forward declarations
-namespace ttcards {
-struct RegionRuleSet;
-}
+namespace tt {
 
+// Forward declarations
+struct RegionRuleSet;
 class CardResourceLoader;
 
 /// \brief The game board
@@ -73,7 +72,7 @@ class Board
     /// successful construction -- both the card rule-sets and card rendering
     /// components must be fully constructed.
     bool
-    initialize(ttcards::RegionRuleSet* ruleset, CardResourceLoader* res);
+    initialize(tt::RegionRuleSet* ruleset, CardResourceLoader* res);
 
     /// \brief Empty the board of its stored cards.
     void clear();
@@ -153,7 +152,7 @@ class Board
     /// \brief The current game rules in effect.
     ///
     /// \note This is a non-owned pointer, so we **must not** free it!
-    ttcards::RegionRuleSet* rules_;
+    tt::RegionRuleSet* rules_;
 
     /// \brief Card rendering.
     ///
@@ -173,5 +172,7 @@ class Board
     /// detection with mouse input.
     nom::IntRect board_mouse_map_[9];
 };
+
+} // namespace tt
 
 #endif // GAMEAPP_BOARD_HEADERS defined

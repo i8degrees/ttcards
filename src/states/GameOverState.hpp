@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 #include "GameOverStateCursor.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Game;
 
@@ -96,5 +98,7 @@ class GameOverState: public nom::IState
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<GameOverState> GameOverStatePtr;
+
+} // namespace tt
 
 #endif // GAMEAPP_GAMEOVER_HEADERS defined

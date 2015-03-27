@@ -35,7 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Game.hpp"
 
 using namespace nom;
-using namespace ttcards;
+
+namespace tt {
 
 CardsMenuState::CardsMenuState(nom::SDLApp* object) :
   nom::IState( Game::State::CardsMenu ),
@@ -810,3 +811,5 @@ void CardsMenuState::remove_card(const Card& card)
     } // end if successful removal
   }
 }
+
+} // namespace tt

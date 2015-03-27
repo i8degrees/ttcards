@@ -46,7 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-namespace ttcards {
+namespace tt {
 
 bool
 save_game(Board* game_board, CardHand* player_hand)
@@ -466,4 +466,4 @@ std::string version_string()
   return version_str.str();
 }
 
-} // namespace ttcards
+} // namespace tt

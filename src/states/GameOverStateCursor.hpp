@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "CardHand.hpp"
 
+namespace tt {
+
 class GameOverStateCursor: public nom::SpriteBatch
 {
   public:
@@ -71,5 +73,7 @@ class GameOverStateCursor: public nom::SpriteBatch
     CardHand* card_position;
     nom::EventDispatcher cursor_event;
 };
+
+} // namespace tt
 
 #endif // include guard defined

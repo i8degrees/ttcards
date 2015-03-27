@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Card;
 class CardResourceLoader;
@@ -86,5 +88,7 @@ CardRenderer* create_placeholder_card_renderer();
 
 CardRenderer*
 create_card_renderer(const CardResourceLoader* res, const Card& card);
+
+} // namespace tt
 
 #endif // include guard defined

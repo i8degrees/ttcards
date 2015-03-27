@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+namespace tt {
+
 // Forward declarations
 class GameConfig;
 
@@ -49,5 +51,7 @@ class CardResourceLoader
     std::unique_ptr<nom::SpriteBatch> card_elements_;
     std::unique_ptr<nom::Text> card_text_;
 };
+
+} // namespace tt
 
 #endif // include guard defined

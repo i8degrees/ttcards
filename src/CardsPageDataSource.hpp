@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 #include "CardCollection.hpp"
 
+namespace tt {
+
 /// \brief Paged cards model view for holding the game's card collection in a
 /// tabular format.
 ///
@@ -90,8 +92,8 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     /// \param columns    The columns within the row to grab results for.
     ///
     /// \remarks Convenience alias for ::GetRow.
-    void row( ttcards::string_list& row, int row_index,
-              const ttcards::string_list& columns );
+    void row( tt::string_list& row, int row_index,
+              const tt::string_list& columns );
 
     int insert_card( int pos, const Card& card );
 
@@ -243,5 +245,7 @@ class CardNameFormatter: public Rocket::Controls::DataFormatter
     void FormatData(  Rocket::Core::String& formatted_data,
                       const Rocket::Core::StringList& raw_data );
 };
+
+} // namespace tt
 
 #endif // include guard defined

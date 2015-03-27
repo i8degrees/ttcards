@@ -36,7 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "helpers.hpp"
 
 using namespace nom;
-using namespace ttcards;
+
+namespace tt {
 
 static std::unique_ptr<nom::Gradient>
 init_card_background(const Color4iColors& colors)
@@ -228,3 +229,5 @@ load_file(const GameConfig* config, const nom::Font& card_font)
 
   return true;
 }
+
+} // namespace tt

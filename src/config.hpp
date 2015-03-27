@@ -59,6 +59,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /// default.
 #define SCALE_FACTOR 2
 
+namespace tt {
+
 // Global configuration
 const nom::int32 SCREEN_WIDTH = 768;
 const nom::int32 SCREEN_HEIGHT = 448;
@@ -288,5 +290,7 @@ const nom::Color4iColors CARD_BG_NO_PLAYER = {{
   // light to dark gray
   nom::Color4i( 197, 197, 197 ), nom::Color4i( 84, 84, 84 )
 }};
+
+} // namespace tt
 
 #endif // GAMEAPP_CFG_HEADERS defined

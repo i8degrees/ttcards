@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 #include "CardDebug.hpp"
 
+namespace tt {
+
 class BoardTile
 {
   public:
@@ -94,5 +96,7 @@ struct BoardResult
 
 typedef std::vector<BoardTile> board_tiles;
 typedef std::vector<BoardResult> board_tiles_result;
+
+} // namespace tt
 
 #endif // include guard defined

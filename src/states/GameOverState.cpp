@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 GameOverState::GameOverState(nom::SDLApp* object, nom::void_ptr state) :
   nom::IState(Game::State::GameOver),
   game( NOM_SCAST(Game*, object) ),
@@ -479,3 +481,5 @@ void GameOverState::on_draw( nom::RenderWindow& target )
     this->show_results = true;
   } // end if update
 }
+
+} // namespace tt

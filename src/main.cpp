@@ -32,11 +32,11 @@ using namespace nom;
 
 int main(int argc, char* argv[])
 {
-  Game engine( argc, argv );
+  tt::Game engine(argc, argv);
 
-  if ( engine.on_init() == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not initialize game." );
+  if( engine.on_init() == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not initialize game." );
     return NOM_EXIT_FAILURE;
   }
 

@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverStateCursor.hpp"
 
+namespace tt {
+
 GameOverStateCursor::GameOverStateCursor ( void )
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
@@ -114,3 +116,5 @@ void GameOverStateCursor::previous ( void )
     this->cursor_event.dispatch ( ev );
   }
 }
+
+} // namespace tt

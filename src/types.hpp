@@ -32,13 +32,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 
-namespace ttcards {
+namespace tt {
 
 // TODO: Relocate enums, (and perhaps colors) from config.hpp over to this
 // file
 
 typedef std::vector<std::string> string_list;
 
-} // namespace ttcards
+} // namespace tt
 
 #endif // defined include guard

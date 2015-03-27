@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 CardCollection::CardCollection()
 {
   NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
@@ -213,3 +215,5 @@ CardsIterator CardCollection::end()
 {
   return this->cards.end();
 }
+
+} // namespace tt

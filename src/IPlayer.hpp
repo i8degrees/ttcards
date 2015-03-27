@@ -35,6 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+namespace tt {
+
 class IPlayer
 {
   public:
@@ -62,5 +64,7 @@ class IPlayer
     /// \brief The player's score.
     nom::uint score_;
 };
+
+} // namespace tt
 
 #endif // GAMEAPP_PLAYER_HEADERS defined

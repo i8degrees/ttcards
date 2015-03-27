@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 CPU_Player::CPU_Player( Difficulty difficulty, Board* board, CardHand* hand,
                         const action_callback& action )
 {
@@ -369,3 +371,5 @@ void CPU_Player::draw(nom::IDrawable::RenderTarget& target)
     }
   } // end for this->hand loop
 }
+
+} // namespace tt

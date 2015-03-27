@@ -52,7 +52,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   });
 
 using namespace nom;
-using namespace ttcards;
+
+namespace tt {
 
 PlayState::PlayState(nom::SDLApp* object) :
   nom::IState( Game::State::Play ),
@@ -128,11 +129,11 @@ void PlayState::on_init( nom::void_ptr data )
     this->move_to( tile.bounds().position() );
   });
 
-  if( ttcards::is_card_rule_set(&rules, CardRuleset::OPEN_RULESET) == false ) {
+  if( tt::is_card_rule_set(&rules, CardRuleset::OPEN_RULESET) == false ) {
     // ...No peeking at the opponent's cards!!
-    ttcards::set_face_down(&this->game->hand[PLAYER2], true);
+    tt::set_face_down(&this->game->hand[PLAYER2], true);
   } else {
-    ttcards::set_face_down(&this->game->hand[PLAYER2], false);
+    tt::set_face_down(&this->game->hand[PLAYER2], false);
   }
 
   while( this->game->hand[PLAYER1].size() < MAX_PLAYER_HAND ) {
@@ -387,56 +388,56 @@ void PlayState::on_init( nom::void_ptr data )
 
     auto increase_north_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, NORTH );
     });
 
     auto decrease_north_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, NORTH );
     });
 
     auto increase_south_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, SOUTH );
     });
 
     auto decrease_south_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, SOUTH );
     });
 
     auto increase_west_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, WEST );
     });
 
     auto decrease_west_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, WEST );
     });
 
     auto increase_east_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   true, EAST );
     });
 
     auto decrease_east_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
-      ttcards::modify_card_rank(  this->game->card_res_.get(),
+      tt::modify_card_rank(  this->game->card_res_.get(),
                                   &this->game->hand[pturn],
                                   false, EAST );
     });
@@ -808,7 +809,7 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
       this->updateScore();
       this->game->card_flip->Play();
 
-      if( ttcards::is_card_rule_set(&rules, CardRule::COMBO_RULE) == true ) {
+      if( tt::is_card_rule_set(&rules, CardRule::COMBO_RULE) == true ) {
 
         // Do a second round of flippable cards check for the COMBO rule-set
         board_tiles_result tgrid =
@@ -1294,7 +1295,7 @@ void PlayState::on_draw( nom::RenderWindow& target )
 
 bool PlayState::save_game()
 {
-  if( ttcards::save_game(this->game->board_.get(), this->game->hand) == false ) {
+  if( tt::save_game(this->game->board_.get(), this->game->hand) == false ) {
     this->game->cursor_wrong->Play();
     return false;
   }
@@ -1306,7 +1307,7 @@ bool PlayState::save_game()
 
 bool PlayState::load_game()
 {
-  if( ttcards::load_game(this->game->board_.get(), this->game->hand) == false ) {
+  if( tt::load_game(this->game->board_.get(), this->game->hand) == false ) {
     this->game->cursor_wrong->Play();
     return false;
   }
@@ -1332,7 +1333,7 @@ void PlayState::check_gameover_conditions()
 
   auto& rules = this->game->rules_;
   bool sudden_death_rule_applied =
-    ttcards::is_card_rule_set(&rules, CardRuleset::SUDDEN_DEATH_RULESET);
+    tt::is_card_rule_set(&rules, CardRuleset::SUDDEN_DEATH_RULESET);
 
   if( this->game->actions_.action_running("move_card_up") == true ) {
     return;
@@ -1460,3 +1461,5 @@ void PlayState::initialize_cpu_player_turn()
     this->game->actions_.run_action(cpu_move_delay_timer);
   }
 }
+
+} // namespace tt

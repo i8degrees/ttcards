@@ -36,7 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "helpers.hpp"
 
 using namespace nom;
-using namespace ttcards;
+
+namespace tt {
 
 // Static initializations
 // std::unique_ptr<nom::Sprite> CardRenderer::INVALID_CARD;
@@ -220,3 +221,5 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
     nom::make_unique_sprite(texture);
   return( new CardRenderer( std::move(card_sprite) ) );
 }
+
+} // namespace tt

@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
-namespace ttcards {
+namespace tt {
 
 bool
 is_card_rule_set(const RegionRuleSet* region, nom::uint32 rule)
@@ -101,4 +101,4 @@ remove_trade_rules(RegionRuleSet* region)
   }
 }
 
-} // namespace ttcards
+} // namespace tt

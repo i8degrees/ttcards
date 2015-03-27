@@ -37,12 +37,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "types.hpp"
 
-// Forward declarations
 namespace nom {
 
+// Forward declarations
 class IValueDeserializer;
 
 } // namespace nom
+
+namespace tt {
 
 /// \brief Simple, convenient file-based settings interface
 ///
@@ -79,7 +81,7 @@ class GameConfig
     /// nom::NOM_REAL64_MIN on failure, such as when the node does not exist.
     nom::real64 get_real64(const std::string& node) const;
 
-    ttcards::string_list get_array(const std::string& node) const;
+    tt::string_list get_array(const std::string& node) const;
 
     bool has_property(const std::string& node);
 
@@ -105,5 +107,6 @@ class GameConfig
     std::map<std::string, nom::Value> config_;
 };
 
+} // namespace tt
 
 #endif // include guard defined

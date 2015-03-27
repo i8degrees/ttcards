@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardDebug.hpp"
 #include "config.hpp"
 
+namespace tt {
+
 class CardCollection
 {
   public:
@@ -77,5 +79,7 @@ class CardCollection
     /// debug support for card attributes
     CardDebug debug;
 };
+
+} // namespace tt
 
 #endif // GAMEAPP_CARD_COLLECTION_HEADERS defined

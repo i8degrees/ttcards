@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "IPlayer.hpp"
 
+namespace tt {
+
 IPlayer::IPlayer() :
   score_(5)
 {
@@ -63,3 +65,5 @@ void IPlayer::set_score(nom::uint score)
 {
   this->score_ = score;
 }
+
+} // namespace tt

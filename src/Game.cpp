@@ -48,8 +48,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //#include "states/States.hpp" // StateFactory
 
-using namespace ttcards;
 using namespace nom;
+
+namespace tt {
 
 Game::Game( nom::int32 argc, char* argv[] ) :
   // SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES | INIT_ENGINE_FONTS ),
@@ -1054,7 +1055,7 @@ int Game::Run()
       this->window.set_window_title(WINDOW_TITLE);
     }
 
-    ttcards::set_frame_interval(this->frame_interval_);
+    tt::set_frame_interval(this->frame_interval_);
   } // end while game is running
 
   return NOM_EXIT_SUCCESS;
@@ -1099,7 +1100,7 @@ void Game::set_state( nom::uint32 id, nom::void_ptr data )
 }
 
 bool Game::
-init_game_rules(const GameConfig* config, ttcards::RegionRuleSet& region)
+init_game_rules(const GameConfig* config, tt::RegionRuleSet& region)
 {
   if( config == nullptr ) {
     NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1107,9 +1108,9 @@ init_game_rules(const GameConfig* config, ttcards::RegionRuleSet& region)
     return false;
   }
 
-  ttcards::clear_card_rulesets(&region);
+  tt::clear_card_rulesets(&region);
 
-  ttcards::string_list region_cfg =
+  tt::string_list region_cfg =
     config->get_array("REGION_RULESET");
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
@@ -1143,7 +1144,7 @@ init_game_rules(const GameConfig* config, ttcards::RegionRuleSet& region)
       ruleset = CardRuleset::SAME_RULESET;
     }
 
-    ttcards::append_card_ruleset(&region, ruleset);
+    tt::append_card_ruleset(&region, ruleset);
   }
 
   return true;
@@ -1236,8 +1237,6 @@ void Game::dump_collection( void )
     }
   }
 }
-
-namespace tt {
 
 void free_game ( Game* game )
 {

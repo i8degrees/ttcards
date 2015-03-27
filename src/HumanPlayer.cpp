@@ -36,6 +36,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 HumanPlayer::HumanPlayer(CardHand* hand)
 {
   //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
@@ -96,3 +98,5 @@ void HumanPlayer::draw(nom::IDrawable::RenderTarget& target)
     }
   } // end for this->hand loop
 }
+
+} // namespace tt

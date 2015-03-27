@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "IPlayer.hpp"
 
+namespace tt {
+
 // Forward declarations
 class CardHand;
 class Board;
@@ -117,5 +119,7 @@ class CPU_Player: public IPlayer
     /// \brief The unique identifier for the player.
     nom::uint32 player_id_;
 };
+
+} // namespace tt
 
 #endif // CPU_PLAYERS_HEADERS defined

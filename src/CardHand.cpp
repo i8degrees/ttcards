@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardCollection.hpp"
 #include "CardResourceLoader.hpp"
 
+namespace tt {
+
 CardHand::CardHand()
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
@@ -473,3 +475,5 @@ std::ostream& operator << ( std::ostream& os, const CardHand& rhs )
 
   return os;
 }
+
+} // namespace tt

@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 GameConfig::GameConfig()
 {
   NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
@@ -111,10 +113,10 @@ real64 GameConfig::get_real64(const std::string& node) const
   }
 }
 
-ttcards::string_list
+tt::string_list
 GameConfig::get_array(const std::string& node) const
 {
-  ttcards::string_list out;
+  tt::string_list out;
 
   auto res = this->config_.find(node);
 
@@ -237,3 +239,5 @@ std::string GameConfig::dump_tree() const
 
   return "\0";
 }
+
+} // namespace tt

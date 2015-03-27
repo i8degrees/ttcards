@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 ConfirmationDialogState::ConfirmationDialogState(nom::SDLApp* object) :
   nom::IState( Game::State::ConfirmationDialog, nom::IState::Flags::BackRender, nom::IState::Type::Child ),
   game( NOM_SCAST(Game*, object) )
@@ -306,3 +308,5 @@ void ConfirmationDialogState::send_response()
 
   this->game->state()->pop_state(response);
 }
+
+} // namespace tt

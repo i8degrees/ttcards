@@ -37,6 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
+namespace tt {
+
+// Forward declarations
+class CardRenderer;
+
 /// Used with pretty printing the card attributes when using << operator
 const std::string card_delimiter = " ";
 
@@ -69,9 +74,6 @@ const int MIN_NUM = 0;
 
 /// \brief The maximum number of cards of a type you can collect.
 const int MAX_NUM = 99;
-
-// Forward declarations
-class CardRenderer;
 
 class Card
 {
@@ -245,5 +247,7 @@ bool strongest_card(const Card& lhs, const Card& rhs);
 ///
 /// \see CardHand
 bool weakest_card(const Card& lhs, const Card& rhs);
+
+} // namespace tt
 
 #endif // GAMEAPP_CARD_HEADERS defined

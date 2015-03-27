@@ -38,8 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardResourceLoader.hpp"
 #include "CardRenderer.hpp"
 
-using namespace ttcards;
 using namespace nom;
+
+namespace tt {
 
 Board::Board() :
   rules_(nullptr),
@@ -54,7 +55,7 @@ Board::~Board()
 }
 
 bool
-Board::initialize(ttcards::RegionRuleSet* ruleset, CardResourceLoader* res)
+Board::initialize(tt::RegionRuleSet* ruleset, CardResourceLoader* res)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 
@@ -147,7 +148,7 @@ Board::initialize(ttcards::RegionRuleSet* ruleset, CardResourceLoader* res)
   this->clear();
 
   bool elemental_ruleset =
-    ttcards::is_card_rule_set(this->rules_, CardRuleset::ELEMENTAL_RULESET);
+    tt::is_card_rule_set(this->rules_, CardRuleset::ELEMENTAL_RULESET);
   if( elemental_ruleset == true ) {
     this->initialize_board_elements();
   }
@@ -260,7 +261,7 @@ board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
   board_tiles_result coords;
 
   bool same_rule_applied =
-    ttcards::is_card_rule_set(this->rules_, CardRuleset::SAME_RULESET);
+    tt::is_card_rule_set(this->rules_, CardRuleset::SAME_RULESET);
 
   coords.clear(); // initialize a fresh new coords list
 
@@ -819,3 +820,5 @@ void Board::initialize_board_elements()
     } // end for y loop
   } // end while num_elements < MAXIMUM_BOARD_ELEMENTS
 }
+
+} // namespace tt

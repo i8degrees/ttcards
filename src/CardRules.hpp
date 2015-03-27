@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // See also: Resources/Documentation/rules.md
 
-namespace ttcards {
+namespace tt {
 
 enum CardRule: nom::uint32
 {
@@ -101,6 +101,6 @@ set_trade_rule(RegionRuleSet* region, nom::uint32 rule);
 void
 clear_trade_rule(RegionRuleSet* region);
 
-} // namespace ttcards
+} // namespace tt
 
 #endif // defined include guard

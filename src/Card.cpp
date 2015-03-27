@@ -34,11 +34,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Forward declarations
 #include "CardRenderer.hpp"
 
+using namespace nom;
+
+namespace tt {
+
 // Static initialization
 Card Card::null = Card();
 nom::int32 Card::CARDS_COLLECTION = 0;
-
-using namespace nom;
 
 Card::Card() :
   id(BAD_CARD_ID),
@@ -449,3 +451,5 @@ bool weakest_card(const Card& lhs, const Card& rhs)
     return(lhs_total_strengths < rhs_total_strengths);
   }
 }
+
+} // namespace tt

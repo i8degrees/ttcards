@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 #include "config.hpp"
 
+namespace tt {
+
 // Forward declarations
 class CardCollection;
 class CardResourceLoader;
@@ -166,5 +168,7 @@ class CardHand
 /// Pretty print the the card attributes.
 ///
 std::ostream& operator << ( std::ostream& os, const CardHand& rhs );
+
+} // namespace tt
 
 #endif // GAMEAPP_CARD_HAND_HEADERS defined

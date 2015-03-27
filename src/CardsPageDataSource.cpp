@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace Rocket::Core;
 
+namespace tt {
+
 CardsPageDataSource::CardsPageDataSource( const std::string& source,
                                           const std::string& table_name ) :
   Rocket::Controls::DataSource( source.c_str() )
@@ -138,8 +140,8 @@ nom::size_type CardsPageDataSource::num_rows() const
 }
 
 void
-CardsPageDataSource::row( ttcards::string_list& row, int row_index,
-                          const ttcards::string_list& columns )
+CardsPageDataSource::row( tt::string_list& row, int row_index,
+                          const tt::string_list& columns )
 {
   Rocket::Core::StringList ret_rows;
   Rocket::Core::StringList ret_columns;
@@ -542,3 +544,5 @@ void CardNameFormatter::FormatData( Rocket::Core::String& formatted_data,
       "id='" + raw_data[1] + "'>" + raw_data[2] + "</card>";
   }
 }
+
+} // namespace tt
