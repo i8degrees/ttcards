@@ -11,18 +11,28 @@
     // Target frame rate; this is the maximum frame rate of the game, and will
     // effect smoothness of things like input responsiveness and animation
     // fluidity.
-    // A frame interval value of zero (0) disables fixed time stepping,
-    // effectively removing the artificial frame capping
+
+    // Custom frame rate value; this should normally not need to be used
+    // unless we have trouble detecting the display's native refresh rate.
+    //
+    // A value of zero (0) will disable the frame rate governor, effectively
+    // running at whatever the CPU and GPU is capable of. This is generally
+    // undesirable for battery-powered environments, i.e.: notebooks and mobile
+    // phones.
     "FRAME_RATE": 30,
 
-    // This will override the FRAME_RATE configuration variable when a sensible
-    // value for the display's vertical refresh rate can be determined.
+    // Sync to the the display's native frame rate -- determined by the
+    // vertical refresh rate.
+    //
+    // NOTE: This will always override a custom FRAME_RATE configuration value!
     "ENABLE_VSYNC": true,
 
-    // The default video display to use in placing the game window. The order
-    // of the video display(s) is platform specific, but typically your primary
-    // display will be indexed as zero (0).
-    "VIDEO_DISPLAY_INDEX": 0,
+    // The video display to use in placing the game window.
+    //
+    // The video display defaults to zero (0) when this value is not set.
+    //
+    // NOTE: The order of the video display(s) is platform specific.
+    // "VIDEO_DISPLAY_INDEX": 0,
 
     // Whether to start the game window full-screen or as a window.
     "WINDOW_FULLSCREEN": false,

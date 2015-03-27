@@ -152,6 +152,8 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // Extended call stack diagnostics (i.e.: number of initialized Card objects)
     // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
+    nom::set_hint(NOM_EVENT_QUEUE_STATISTICS, "1");
+
   #else // NDEBUG -- release target build
 
     NOM_LOG_INFO( TTCARDS, "RELEASE build" );
@@ -255,6 +257,7 @@ bool Game::on_init()
   int render_driver = -1;
   uint32 window_flags = SDL_WINDOW_OPENGL;
   uint32 render_flags = SDL_RENDERER_ACCELERATED;
+  bool vsync_hint_result = false;
 
   auto fp = nom::make_unique_json_deserializer();
   if( fp == nullptr ) {
@@ -304,28 +307,27 @@ bool Game::on_init()
 
   this->game->debug_game_ =
     this->game->config_->get_bool("DEBUG_GAME");
-  const bool ENABLE_VSYNC =
-    this->config_->get_bool32("ENABLE_VSYNC");
-  const std::string ENABLE_VSYNC_STR =
-    std::to_string(ENABLE_VSYNC);
 
   const std::string RENDER_SCALE_QUALITY =
     this->config_->get_string("RENDER_SCALE_QUALITY");
-  const int VIDEO_DISPLAY_INDEX =
-    this->config_->get_int("VIDEO_DISPLAY_INDEX");
-  NOM_ASSERT(VIDEO_DISPLAY_INDEX >= 0);
-
-  if( nom::set_hint(SDL_HINT_RENDER_VSYNC, ENABLE_VSYNC_STR) == false ) {
-    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not enable VSYNC." );
-  }
-
   if( nom::set_hint(  SDL_HINT_RENDER_SCALE_QUALITY,
                       RENDER_SCALE_QUALITY) == false )
   {
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not set the renderer's scale quality to",
                   RENDER_SCALE_QUALITY );
+  }
+
+  const bool ENABLE_VSYNC =
+    this->config_->get_bool32("ENABLE_VSYNC");
+  const std::string ENABLE_VSYNC_STR =
+    std::to_string(ENABLE_VSYNC);
+
+  vsync_hint_result =
+    nom::set_hint(SDL_HINT_RENDER_VSYNC, ENABLE_VSYNC_STR);
+  if( vsync_hint_result == false ) {
+    NOM_LOG_WARN( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not enable VSYNC." );
   }
 
   // We only can support a OpenGL capable rendering driver at the moment; see
@@ -338,6 +340,8 @@ bool Game::on_init()
     return false;
   }
 
+  const int VIDEO_DISPLAY_INDEX =
+    this->config_->get_int("VIDEO_DISPLAY_INDEX", 0);
   auto window_ret =
     this->window.create(  APP_NAME, RenderWindow::WINDOW_POS_CENTERED,
                           VIDEO_DISPLAY_INDEX, SCREEN_RESOLUTION, window_flags,
@@ -349,6 +353,49 @@ bool Game::on_init()
   }
 
   this->window.set_window_icon ( this->config_->get_string("APP_ICON") );
+
+  // Try to set a sensible (optimal) frame rate based on the display
+  // capabilities
+  if( ENABLE_VSYNC == true && vsync_hint_result == true ) {
+
+    // Disable frame rate governor; the effective frame rate will be
+    // determined by the updating frequency of the display at its native
+    // refresh rate -- as per what the underlying rendering driver chooses to
+    // use.
+    this->frame_interval_ = 0;
+  } else {
+    // ...Not using VSYNC...
+
+    if( this->config_->find("FRAME_RATE") == false ) {
+
+      auto display_refresh_rate =
+        this->window.refresh_rate();
+      if( display_refresh_rate > 0 ) {
+        // Use the auto-detected refresh rate value
+        this->frame_interval_ = display_refresh_rate;
+      } else {
+        NOM_LOG_WARN( TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not auto-detect display refresh rate." );
+        // Unable to detect the refresh rate; the effective frame rate will be
+        // whatever the CPU && GPU is capable of.
+        this->frame_interval_ = 0;
+      }
+    } else if( this->config_->find("FRAME_RATE") == true ) {
+      // ...Run at a custom frame rate specified by the end-user...
+
+      if( this->config_->get_int("FRAME_RATE") < 0 ) {
+        NOM_LOG_WARN( TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not use the custom frame rate; this value must"
+                      "be equal to or greater than zero." );
+        // Unable to detect the refresh rate; the effective frame rate will be
+        // whatever the CPU && GPU is capable of.
+        this->frame_interval_ = 0;
+      } else {
+        this->frame_interval_ = this->config_->get_int("FRAME_RATE");
+      }
+    }
+
+  }
 
   if( nom::RocketSDL2RenderInterface::gl_init(  this->window.size().w,
                                                 this->window.size().h ) == false )
@@ -368,24 +415,6 @@ bool Game::on_init()
   #else
     this->window.set_scale( nom::Point2f(1,1) );
   #endif
-
-  // Target frame rate default
-  this->frame_interval_ = this->config_->get_int("FRAME_RATE");
-  NOM_ASSERT(this->frame_interval_ >= 0);
-
-  // Try to set a sensible (optimal) refresh rate based on the display
-  // capabilities
-  if( ENABLE_VSYNC == true ) {
-    auto display_refresh_rate =
-      this->window.refresh_rate();
-    if( display_refresh_rate > 0 ) {
-      // Disable frame rate governor; the effective frame rate will be
-      // determined by updating the display at the display's refresh rate
-      this->frame_interval_ = 0;
-    } else {
-      // ...Use the default frame rate setting
-    }
-  }
 
   // Initialize file roots for nomlib && libRocket to base file access from
   Rocket::Core::FileInterface* fs = nullptr;
