@@ -56,12 +56,14 @@ std::string GameConfig::get_string(const std::string& node) const
   }
 }
 
-nom::int32 GameConfig::get_int(const std::string& node) const
+nom::int32
+GameConfig::get_int(  const std::string& node,
+                      nom::int32 default_value ) const
 {
   auto res = this->config_.find(node);
 
   if( res == this->config_.end() ) {
-    return nom::NOM_INT_MIN;
+    return default_value;
   } else {
     return res->second.get_int();
   }
@@ -69,26 +71,31 @@ nom::int32 GameConfig::get_int(const std::string& node) const
 
 bool GameConfig::get_bool(const std::string& node) const
 {
+  bool result = false;
+
   auto res = this->config_.find(node);
 
   if( res == this->config_.end() ) {
-    return false;
+    result = false;
   } else {
-    return res->second.get_bool();
+    result = res->second.get_bool();
   }
+
+  return result;
 }
 
 int GameConfig::get_bool32(const std::string& node) const
 {
-  int result = -1;
+  int result = 0;
   auto res = this->config_.find(node);
 
   if( res == this->config_.end() ) {
-    return(result);
+    result = 0;
   } else {
     result = NOM_SCAST(int, res->second.get_bool() );
-    return(result);
   }
+
+  return result;
 }
 
 real32 GameConfig::get_real32(const std::string& node) const
@@ -135,7 +142,7 @@ GameConfig::get_array(const std::string& node) const
   return out;
 }
 
-bool GameConfig::has_property(const std::string& node)
+bool GameConfig::find(const std::string& node)
 {
   auto res = this->config_.find(node);
 

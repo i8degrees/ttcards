@@ -63,7 +63,10 @@ class GameConfig
 
     /// \returns The de-serialized integer value on success, or
     /// nom::NOM_INT_MIN on failure, such as when the node does not exist.
-    nom::int32 get_int(const std::string& node) const;
+    ///
+    /// \todo Rename to get_int32
+    nom::int32 get_int( const std::string& node,
+                        nom::int32 default_value = nom::NOM_INT_MIN ) const;
 
     bool get_bool(const std::string& node) const;
 
@@ -83,7 +86,7 @@ class GameConfig
 
     tt::string_list get_array(const std::string& node) const;
 
-    bool has_property(const std::string& node);
+    bool find(const std::string& node);
 
     /// \brief Set a new value in the configuration node.
     ///
