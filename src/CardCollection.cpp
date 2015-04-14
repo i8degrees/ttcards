@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardCollection.hpp"
 
 // Private headers
+#include <sstream>
 #include <nomlib/serializers.hpp>
 
 using namespace nom;
@@ -160,10 +161,6 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
   // All is well, let us make our freshly loaded data permanent
   this->cards = cards_buffer;
   Card::CARDS_COLLECTION = this->cards.size();
-
-#ifdef DEBUG_CARD_COLLECTION
-  debug.ListCards ( this->cards );
-#endif
 
   return true;
 }

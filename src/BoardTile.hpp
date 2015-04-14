@@ -37,7 +37,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "Card.hpp"
-#include "CardDebug.hpp"
 
 namespace tt {
 

@@ -28,8 +28,6 @@ set(  TTCARDS_SOURCE
       ${SRC_DIR}/Card.hpp
       ${SRC_DIR}/CardCollection.cpp
       ${SRC_DIR}/CardCollection.hpp
-      ${SRC_DIR}/CardDebug.cpp
-      ${SRC_DIR}/CardDebug.hpp
       ${SRC_DIR}/CardHand.cpp
       ${SRC_DIR}/CardHand.hpp
       ${SRC_DIR}/CardRules.cpp

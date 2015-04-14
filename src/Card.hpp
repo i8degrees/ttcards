@@ -42,9 +42,6 @@ namespace tt {
 // Forward declarations
 class CardRenderer;
 
-/// Used with pretty printing the card attributes when using << operator
-const std::string card_delimiter = " ";
-
 /// Minimum level a card can contain
 const nom::int32 LEVEL_MIN = 1;
 
@@ -211,14 +208,17 @@ class Card
     std::shared_ptr<CardRenderer> card_renderer_;
 };
 
-/// \todo Rename to CardList
+/// \todo Rename to CardList..?
 typedef std::vector<Card> Cards;
-typedef std::vector<Card>::iterator CardsIterator;
-typedef std::vector<Card>::const_iterator ConstCardsIterator;
+
+/// TODO: Rename to Card::iterator
+typedef Cards::iterator CardsIterator;
+
+/// TODO: Rename to Card::const_iterator
+typedef Cards::const_iterator ConstCardsIterator;
 
 /// Pretty print the the card attributes.
-///
-std::ostream& operator << ( std::ostream& os, const Card& rhs );
+std::ostream& operator <<(std::ostream& os, const Card& rhs);
 
 /// Compare two cards for equality
 bool operator == ( const Card& lhs, const Card& rhs );

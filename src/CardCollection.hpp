@@ -26,15 +26,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_COLLECTION_HEADERS
-#define GAMEAPP_CARD_COLLECTION_HEADERS
+#ifndef TTCARDS_CARD_COLLECTION_HPP
+#define TTCARDS_CARD_COLLECTION_HPP
 
-#include <fstream>
 #include <string>
 
-#include "Card.hpp"
-#include "CardDebug.hpp"
 #include "config.hpp"
+#include "Card.hpp"
 
 namespace tt {
 
@@ -74,10 +72,8 @@ class CardCollection
     CardsIterator end();
 
   private:
+    // TODO: Rename to cards_
     Cards cards;
-
-    /// debug support for card attributes
-    CardDebug debug;
 };
 
 } // namespace tt

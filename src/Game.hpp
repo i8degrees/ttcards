@@ -42,7 +42,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "CardDebug.hpp"
 #include "CardHand.hpp"
 #include "CardRules.hpp"
 #include "GameConfig.hpp"
@@ -127,9 +126,6 @@ class Game: public nom::SDLApp
 
     /// \brief The card pool of playable cards.
     std::unique_ptr<CardCollection> cards_db_[TOTAL_PLAYERS];
-
-    /// Debug support for card attributes
-    CardDebug debug;
 
     /// Player hands
     CardHand hand[2];
@@ -261,7 +257,7 @@ class Game: public nom::SDLApp
     ///
     /// \remarks Only available when the game is built with debug (developer)
     /// flags.
-    void dump_board( void );
+    void dump_board();
 
     /// \brief Method callback action for dumping the player's hand data.
     ///
@@ -269,7 +265,7 @@ class Game: public nom::SDLApp
     ///
     /// \remarks Only available when the game is built with debug (developer)
     /// flags.
-    void dump_hand( nom::uint32 player_id );
+    void dump_hand(nom::uint32 player_id);
 
     /// \brief Method callback action for dumping the card collection.
     ///
@@ -277,7 +273,7 @@ class Game: public nom::SDLApp
     ///
     /// \remarks Only available when the game is built with debug (developer)
     /// flags.
-    void dump_collection( void );
+    void dump_collection(nom::uint32 player_id);
 
     /// \brief The event handler that is called when our window is shown, such
     /// as upon initial creation, restored from a hidden or minimized state,

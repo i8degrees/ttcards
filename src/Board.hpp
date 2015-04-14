@@ -43,7 +43,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "resources.hpp"
 #include "BoardTile.hpp"
 #include "Card.hpp"
-#include "CardDebug.hpp"
 
 namespace tt {
 

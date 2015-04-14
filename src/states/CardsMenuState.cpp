@@ -174,10 +174,6 @@ void CardsMenuState::on_init( nom::void_ptr data )
     // if( (*itr).num() > 0 ) {
       deck.push_back(pcard);
     // }
-
-    NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
-                  (*itr).getID(), ":", (*itr).getName(),
-                  "[", (*itr).num(), "]" );
   }
 
   // This card will be updated from the input subsystem

@@ -340,31 +340,29 @@ void Card::set_card_renderer(CardRenderer* renderer)
   this->card_renderer_.reset(renderer);
 }
 
-std::ostream& operator << ( std::ostream& os, const Card& rhs )
+std::ostream& operator <<(std::ostream& os, const Card& rhs)
 {
-  os  << rhs.getName()
-      << card_delimiter
+  os  << "[name="
+      << rhs.getName()
+      << ", card_id="
       << rhs.getID()
-      << card_delimiter
-      << rhs.getLevel()
-      << card_delimiter
-      << rhs.getType()
-      << card_delimiter
+      << ", element_id="
       << rhs.getElement()
-      << card_delimiter
-      << rhs.getNorthRank()
-      << card_delimiter
-      << rhs.getEastRank()
-      << card_delimiter
-      << rhs.getSouthRank()
-      << card_delimiter
-      << rhs.getWestRank()
-      << card_delimiter
+      << ", player_id="
       << rhs.getPlayerID()
-      << card_delimiter
+      << ", player_owner="
       << rhs.getPlayerOwner()
-      << card_delimiter
-      << rhs.num();
+      << ", num="
+      << rhs.num()
+      << ", ranks="
+      << rhs.getNorthRank()
+      << ", "
+      << rhs.getEastRank()
+      << ", "
+      << rhs.getSouthRank()
+      << ", "
+      << rhs.getWestRank()
+      << "] ";
 
   return os;
 }

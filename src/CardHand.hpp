@@ -166,8 +166,7 @@ class CardHand
 };
 
 /// Pretty print the the card attributes.
-///
-std::ostream& operator << ( std::ostream& os, const CardHand& rhs );
+std::ostream& operator <<(std::ostream& os, const CardHand& rhs);
 
 } // namespace tt
 

@@ -961,16 +961,20 @@ bool Game::on_init()
       this->game->dump_board();
     });
 
-    auto dump_player0_hand( [=](const nom::Event& evt) {
-      this->game->dump_hand(0);
-    });
-
     auto dump_player1_hand( [=](const nom::Event& evt) {
-      this->game->dump_hand(1);
+      this->game->dump_hand(PLAYER1);
     });
 
-    auto dump_collection( [=](const nom::Event& evt) {
-      this->game->dump_collection();
+    auto dump_player2_hand( [=](const nom::Event& evt) {
+      this->game->dump_hand(PLAYER2);
+    });
+
+    auto dump_player1_collection( [=](const nom::Event& evt) {
+      this->game->dump_collection(PLAYER1);
+    });
+
+    auto dump_player2_collection( [=](const nom::Event& evt) {
+      this->game->dump_collection(PLAYER2);
     });
 
     state.insert( "jumpto_confirmation_dialog_state",
@@ -981,18 +985,22 @@ bool Game::on_init()
                   nom::KeyboardAction(SDLK_0), jumpto_gameover_state );
 
     state.insert( "dump_board",
-                  nom::KeyboardAction(SDLK_LEFTBRACKET, KMOD_LGUI),
+                  nom::KeyboardAction(SDLK_BACKSPACE, KMOD_LGUI),
                   dump_board );
 
-    state.insert( "dump_player0_hand",
-                  nom::KeyboardAction(SDLK_LEFTBRACKET), dump_player0_hand );
-
     state.insert( "dump_player1_hand",
-                  nom::KeyboardAction(SDLK_RIGHTBRACKET), dump_player1_hand );
+                  nom::KeyboardAction(SDLK_LEFTBRACKET), dump_player1_hand );
 
-    state.insert( "dump_collection",
+    state.insert( "dump_player2_hand",
+                  nom::KeyboardAction(SDLK_RIGHTBRACKET), dump_player2_hand );
+
+    state.insert( "dump_player1_collection",
+                  nom::KeyboardAction(SDLK_LEFTBRACKET, KMOD_LGUI),
+                  dump_player1_collection );
+
+    state.insert( "dump_player2_collection",
                   nom::KeyboardAction(SDLK_RIGHTBRACKET, KMOD_LGUI),
-                  dump_collection );
+                  dump_player2_collection );
   } // end if DEBUG_GAME
 
   state.insert("quit_game", nom::KeyboardAction(SDLK_q), quit_game);
@@ -1238,30 +1246,36 @@ void Game::reload_config()
     this->game->config_->get_bool("DEBUG_GAME");
 }
 
-void Game::dump_board( void )
+void Game::dump_board()
 {
   if( this->game->board_ != nullptr ) {
     this->game->board_->dump_values();
   }
 }
 
-void Game::dump_hand( nom::uint32 player_id )
+void Game::dump_hand(nom::uint32 player_id)
 {
-  this->game->debug.ListCards( this->game->hand[player_id].cards );
+  auto& phand = this->game->hand[player_id];
+
+  NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, "Player", player_id, phand);
 }
 
-void Game::dump_collection( void )
+void Game::dump_collection(nom::uint32 player_id)
 {
-  if( this->game->cards_db_[PLAYER1] != nullptr ) {
+  auto db = this->game->cards_db_[player_id].get();
+  if( db != nullptr ) {
 
-    for(  auto itr = this->game->cards_db_[PLAYER1]->begin();
-          itr != this->game->cards_db_[PLAYER1]->end();
-          ++itr )
-    {
-      NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION, "FIXME" );
-      // this->game->debug.ListCards(*itr);
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Player", player_id, "\n\tdeck:", db->size() );
+
+    // IMPORTANT: We exceed the maximal logging output size of ~4KB imposed by
+    // SDL's logging facilities if we do not break up the data dump of a
+    // player's full card deck
+    for( auto itr = db->begin(); itr != db->end(); ++itr ) {
+      NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, *itr);
     }
   }
+
 }
 
 void free_game ( Game* game )
