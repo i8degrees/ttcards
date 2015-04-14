@@ -76,24 +76,6 @@ const auto SCREEN_RESOLUTION =
 /// Maximum number of players -- both human & AI
 const nom::int32 TOTAL_PLAYERS = 2; // +1 padding
 
-/// Maximum number of cards in cards database (see Resources/cards.json)
-///
-/// \remark Loading of the database will fail a sanity check if we go beyond
-/// this number
-const nom::int32 MAX_COLLECTION = 220;
-
-/// Variable number of cards found in the cards database
-/// (see Resources/cards.json)
-///
-/// \remark This number cannot exceed MAX_COLLECTION.
-///
-/// \FIXME We have this defined in the Card class as a workaround patch, until
-/// we figure out how we want to approach the initialization order issues.
-///
-/// Card::setID has its ID check disabled as well; Card class appears to be
-/// the origin point of troubles.
-//extern nom::int32 CARDS_COLLECTION;
-
 /// Invalid Card identifier -- NULL value, if you will.
 const nom::sint BAD_CARD_ID = -1;
 

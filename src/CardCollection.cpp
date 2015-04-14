@@ -29,7 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardCollection.hpp"
 
 // Private headers
-#include <sstream>
 #include <nomlib/serializers.hpp>
 
 using namespace nom;
@@ -48,18 +47,18 @@ CardCollection::~CardCollection()
 
 void CardCollection::clear()
 {
-  this->cards.clear();
+  this->cards_.clear();
 }
 
 nom::size_type CardCollection::size() const
 {
-  return this->cards.size();
+  return this->cards_.size();
 }
 
 const Card& CardCollection::front() const
 {
-  if( this->cards.size() > 0 ) {
-    return this->cards.front();
+  if( this->cards_.size() > 0 ) {
+    return this->cards_.front();
   } else {
     return Card::null;
   }
@@ -67,14 +66,11 @@ const Card& CardCollection::front() const
 
 bool CardCollection::save(const std::string& filename)
 {
-  // Our JSON output will be a JSON object enclosing an array keyed "cards",
-  // of which holds each of our individual, unnamed JSON objects.
-  //
   // NOTE: I wished for "cards" to be an object as well, but then sorting gets
   // all messed up -- the "off by six-ish" bug from before -- so the compromise
   // until we figure these things out is going to have to be this!
-  nom::Value obj( nom::Value::ObjectValues );
-  nom::Value arr( nom::Value::ArrayValues );
+  nom::Value obj(nom::Value::ObjectValues);
+  nom::Value arr(nom::Value::ArrayValues);
 
   auto fp = nom::make_unique_json_serializer();
   if( fp == nullptr ) {
@@ -83,42 +79,29 @@ bool CardCollection::save(const std::string& filename)
     return false;
   }
 
-  if ( this->cards.size() > MAX_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check before saving: " + filename );
-    return false;
-  }
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
-  for ( nom::uint32 idx = 0; idx != this->cards.size(); ++idx )
-  {
     // Serialize each card's attributes; said card attributes become JSON
     // objects, enclosed within our overall container ("cards" array).
-    arr.push_back( this->cards[idx].serialize() );
+    arr.push_back( (*itr).serialize() );
 
     // Top-level array node
     obj["cards"] = arr;
   }
 
-  if ( fp->save( obj, filename ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
+  if( fp->save(obj, filename) == false ) {
+    NOM_LOG_ERR(TTCARDS, "Unable to save JSON file: " + filename);
     return false;
   }
-
-  Card::CARDS_COLLECTION = this->cards.size();
 
   return true;
 }
 
 bool CardCollection::load(const std::string& filename)
 {
-  nom::Value value;
-
-  // The card attributes we are loading in will be stored in here, and once a
-  // card has filled its buffer, we push it into its final resting place ...
-  // CardCollection's Card vector.
   Card card;
   Cards cards_buffer;
+  nom::Value value;
 
   auto fp = nom::make_unique_json_deserializer();
   if( fp == nullptr ) {
@@ -127,47 +110,33 @@ bool CardCollection::load(const std::string& filename)
     return false;
   }
 
-  if ( fp->load( filename, value ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
+  if( fp->load(filename, value) == false ) {
+    NOM_LOG_ERR(TTCARDS, "Unable to parse JSON input file: " + filename);
     return false;
   }
 
-  if ( value.size() > MAX_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check before loading: " + filename );
-    return false;
-  }
+  nom::Value deck = value["cards"];
+  for( auto itr = deck.begin(); itr != deck.end(); ++itr ) {
 
-  for ( auto itr = value["cards"].begin(); itr != value["cards"].end(); ++itr )
-  {
-    nom::Value val = itr->ref();
-
-    card.unserialize( val );
+    nom::Value attr = itr->ref();
+    card.unserialize(attr);
 
     // Additional attributes
     card.setPlayerID(Card::NO_PLAYER);
     card.setPlayerOwner(Card::NO_PLAYER);
 
-    cards_buffer.push_back( card );
-  }
-
-  if ( cards_buffer.size() > MAX_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check after loading: " + filename );
-    return false;
+    cards_buffer.push_back(card);
   }
 
   // All is well, let us make our freshly loaded data permanent
-  this->cards = cards_buffer;
-  Card::CARDS_COLLECTION = this->cards.size();
+  this->cards_ = cards_buffer;
 
   return true;
 }
 
 const Card& CardCollection::find(const std::string& card_name) const
 {
-  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
     if( (*itr).getName() == card_name ) {
       // Successful match
@@ -181,7 +150,7 @@ const Card& CardCollection::find(const std::string& card_name) const
 
 const Card& CardCollection::find(int32 card_id) const
 {
-  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
     if( (*itr).getID() == card_id ) {
       // Successful match
@@ -195,22 +164,22 @@ const Card& CardCollection::find(int32 card_id) const
 
 ConstCardsIterator CardCollection::begin() const
 {
-  return this->cards.begin();
+  return this->cards_.begin();
 }
 
 ConstCardsIterator CardCollection::end() const
 {
-  return this->cards.end();
+  return this->cards_.end();
 }
 
 CardsIterator CardCollection::begin()
 {
-  return this->cards.begin();
+  return this->cards_.begin();
 }
 
 CardsIterator CardCollection::end()
 {
-  return this->cards.end();
+  return this->cards_.end();
 }
 
 } // namespace tt

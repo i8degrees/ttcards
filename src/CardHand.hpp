@@ -79,7 +79,7 @@ class CardHand
     /// ::set_position, etc.
     void selectCard(const Card& card);
 
-    bool exists ( const Card& card ) const;
+    bool exists(const Card& card) const;
 
     /// Make selected card the first element in stack
     ///
@@ -121,7 +121,9 @@ class CardHand
     ///
     /// Do not forget to set the proper player ID on your new card objects
     /// before heading off into battle!
-    void shuffle( nom::int32 level_min, nom::int32 level_max, const CardCollection& db);
+    void
+    shuffle(  nom::int32 level_min, nom::int32 level_max,
+              const CardCollection& db );
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
     /// compliant objects.

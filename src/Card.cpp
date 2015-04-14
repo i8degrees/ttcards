@@ -40,7 +40,6 @@ namespace tt {
 
 // Static initialization
 Card Card::null = Card();
-nom::int32 Card::CARDS_COLLECTION = 0;
 
 Card::Card() :
   id(BAD_CARD_ID),
@@ -168,17 +167,17 @@ void Card::setID ( nom::int32 id_ )
 
 void Card::setLevel ( nom::int32 level_ )
 {
-  this->level = std::min ( level_, LEVEL_MAX );
+  this->level = level_;
 }
 
 void Card::setType ( nom::int32 type_ )
 {
-  this->type = std::min ( type_, MAX_TYPE );
+  this->type = type_;
 }
 
 void Card::setElement ( nom::int32 element_ )
 {
-  this->element = std::min ( element_, MAX_ELEMENT );
+  this->element = element_;
 }
 
 void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
@@ -199,29 +198,26 @@ void Card::set_ranks ( std::vector<nom::int32> ranks )
 
 void Card::setNorthRank ( nom::int32 rank )
 {
-  this->rank[NORTH] = std::min ( rank, MAX_RANK );
+  this->rank[NORTH] = rank;
 }
 
 void Card::setEastRank ( nom::int32 rank )
 {
-  this->rank[EAST] = std::min ( rank, MAX_RANK );
+  this->rank[EAST] = rank;
 }
 
 void Card::setSouthRank ( nom::int32 rank )
 {
-  this->rank[SOUTH] = std::min ( rank, MAX_RANK );
+  this->rank[SOUTH] = rank;
 }
 
 void Card::setWestRank ( nom::int32 rank )
 {
-  this->rank[WEST] = std::min ( rank, MAX_RANK );
+  this->rank[WEST] = rank;
 }
 
 void Card::setName ( std::string name_ )
 {
-  if ( name_.length() > MAX_NAME )
-    name_.resize ( MAX_NAME );
-
   this->name = name_;
 }
 
@@ -237,7 +233,7 @@ void Card::setPlayerOwner ( nom::int32 player_owner_ )
 
 void Card::set_num(int num_cards)
 {
-  this->num_ = std::min(num_cards, MAX_NUM);
+  this->num_ = num_cards;
 }
 
 void Card::set_face_down(bool state)
@@ -255,13 +251,12 @@ nom::Value Card::serialize( void ) const
   obj["type"] = this->type;
   obj["element"] = this->element;
 
-  for( auto it = this->rank.begin(); it != this->rank.end(); ++it )
-  {
+  for( auto rank = this->rank.begin(); rank != this->rank.end(); ++rank ) {
     // If we do not insert the array elements as an integer here, nom::Value
     // gets confused and assigns the values as boolean.
-    int val = *it;
+    int attr = *rank;
 
-    obj["ranks"].push_back( val );
+    obj["ranks"].push_back(attr);
   }
 
   obj["num"] = this->num_;
@@ -279,11 +274,10 @@ void Card::unserialize( nom::Value& obj )
 
   nom::Value arr = obj["ranks"].array();
 
-  nom::uint idx = 0;
-  for( auto it = arr.begin(); it != arr.end(); ++it )
-  {
-    this->rank[idx] = it->get_int();
-    ++idx;
+  nom::uint32 rank_idx = 0;
+  for( auto rank = arr.begin(); rank != arr.end(); ++rank ) {
+    this->rank[rank_idx] = rank->get_int();
+    ++rank_idx;
   }
 
   this->set_num( obj["num"].get_int() );

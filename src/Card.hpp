@@ -42,15 +42,6 @@ namespace tt {
 // Forward declarations
 class CardRenderer;
 
-/// Minimum level a card can contain
-const nom::int32 LEVEL_MIN = 1;
-
-/// Maximum level a card can contain
-const nom::int32 LEVEL_MAX = 10;
-
-/// Maximum type a card can contain -- starting at 1
-const nom::int32 MAX_TYPE = 4;
-
 /// Maximum element a card can contain -- starting at 1
 const nom::int32 MAX_ELEMENT = 8;
 
@@ -76,9 +67,6 @@ class Card
 {
   public:
     static Card null;
-
-    /// FIXME: See CARDS_COLLECTION initialization issue
-    static nom::int32 CARDS_COLLECTION;
 
     Card();
     ~Card();
@@ -111,43 +99,30 @@ class Card
 
     std::shared_ptr<CardRenderer>& card_renderer();
 
-    /// Clamps value to Card::CARDS_COLLECTION
     void setID ( nom::int32 id_ );
 
-    /// Clamps value to MAX_LEVEL
     void setLevel ( nom::int32 level_ );
 
-    /// Clamps value to MAX_TYPE
     void setType ( nom::int32 type_ );
 
-    /// Clamps value to MAX_ELEMENT
     void setElement ( nom::int32 element_ );
 
-    /// Clamps array values to MAX_RANK
     void setRanks ( std::array<nom::int32, MAX_RANKS> ranks );
 
-    /// Clamps array values to MAX_RANK
     void set_ranks ( std::vector<nom::int32> ranks );
 
-    /// Clamps value to MAX_RANK
     void setNorthRank ( nom::int32 rank );
 
-    /// Clamps value to MAX_RANK
     void setEastRank ( nom::int32 rank );
 
-    /// Clamps value to MAX_RANK
     void setSouthRank ( nom::int32 rank );
 
-    /// Clamps value to MAX_RANK
     void setWestRank ( nom::int32 rank );
 
-    /// Clamps value to MAX_NAME
     void setName ( std::string name_ );
 
-    /// Clamps value to TOTAL_PLAYERS
     void setPlayerID ( nom::int32 player_id_ );
 
-    /// Clamps value to TOTAL_PLAYERS
     void setPlayerOwner ( nom::int32 player_owner_ );
 
     /// \brief Set the number of cards of this type has been collected.

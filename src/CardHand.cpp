@@ -263,44 +263,38 @@ void CardHand::clear ( void )
   this->clearSelectedCard();
 }
 
-bool CardHand::exists ( const Card& card ) const
+bool CardHand::exists(const Card& card) const
 {
-  if ( card.getID() < 0 || card.getID() > Card::CARDS_COLLECTION )
-  {
-    return false;
+  for( nom::uint32 idx = 0; idx < this->size(); idx++ ) {
+
+    if( card == this->cards[idx] ) {
+      // Matched
+      return true;
+    }
   }
 
-  for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
-  {
-    if ( card == this->cards[idx] ) return true;
-  }
-
+  // Not found
   return false;
 }
 
-void CardHand::shuffle( nom::int32 level_min, nom::int32 level_max, const CardCollection& db)
+void
+CardHand::shuffle(  nom::int32 level_min, nom::int32 level_max,
+                    const CardCollection& db )
 {
-  // Cards are picked out using our random number equal distribution generator;
-  // this needs to be a value between 0..Card::CARDS_COLLECTION in order to yield a
-  // ID in the cards database.
-  nom::uint32 card_id = 0;
-  nom::uint32 num_cards = 0; // iterator
+  nom::uint32 picked_card_id = 0;
+  nom::uint32 num_cards = 0;
 
   NOM_ASSERT( level_min >= LEVEL_MIN );
   NOM_ASSERT( level_max <= LEVEL_MAX );
 
-  // The last ID is reserved for the no face sprite frame
-  card_id = nom::uniform_int_rand<nom::uint32>(0, Card::CARDS_COLLECTION - 1);
+  picked_card_id = nom::uniform_int_rand<nom::uint32>(0, (db.size() - 1) );
 
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CARD_HAND, "card_id: ", card_id );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CARD_HAND, "CARDS_COLLECTION: ", Card::CARDS_COLLECTION );
-
-  Card c = db.find(card_id);
+  Card c = db.find(picked_card_id);
 
   if( c.getLevel() <= level_max && c.getLevel() >= level_min ) {
 
     if( this->push_back(c) ) {
-      num_cards++;
+      ++num_cards;
     }
   }
 }

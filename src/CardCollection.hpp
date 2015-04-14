@@ -72,8 +72,7 @@ class CardCollection
     CardsIterator end();
 
   private:
-    // TODO: Rename to cards_
-    Cards cards;
+    Cards cards_;
 };
 
 } // namespace tt
