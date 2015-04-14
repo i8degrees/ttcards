@@ -6,7 +6,8 @@
 
       // The header files in 'src' are ignored here because I wish to logically
       // distinguish between source and header files by file view.
-      "file_exclude_patterns": [ ".LSOverride", "ttcards", "src/*.hpp" ],
+      "file_exclude_patterns": [  "*.sublime-workspace", ".LSOverride",
+                                  "*.bck", "src/*.hpp" ],
 
       "folder_exclude_patterns": [ "build", "tmp", "third-party" ]
     },
