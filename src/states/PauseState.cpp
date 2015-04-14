@@ -76,14 +76,13 @@ void PauseState::on_init( nom::void_ptr data )
     this->game->state()->pop_state(nullptr);
   });
 
-  state.insert( "pause_game",
-                nom::KeyboardAction(SDL_KEYDOWN, SDLK_p),
-                pause_game );
+  // ...Keyboard mappings ...
+  state.insert("pause_game", nom::KeyboardAction(SDLK_p), pause_game);
 
-  state.insert( "pause_game",
-                nom::JoystickButtonAction(  0, SDL_JOYBUTTONDOWN,
-                                            nom::PSXBUTTON::START ),
-                pause_game );
+  // ...Joystick mappings ...
+  auto& joystick_id = this->game->joystick_id_;
+  state.insert( "pause_game", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_START), pause_game );
 
   this->game->input_mapper.erase( "PauseState" );
   this->game->input_mapper.insert( "PauseState", state, true );
@@ -120,11 +119,9 @@ void PauseState::on_resume( nom::void_ptr data )
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-bool PauseState::on_event( const nom::Event& ev )
+bool PauseState::on_event(const nom::Event& ev)
 {
-  this->game->gui_window_.process_event(ev);
-
-  return true;
+  return false;
 }
 
 void PauseState::on_update( float delta_time )

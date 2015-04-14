@@ -286,31 +286,51 @@ void CardsMenuState::on_init( nom::void_ptr data )
     this->game->set_state(Game::State::ConfirmationDialog);
   });
 
-  state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
-  state.insert( "cursor_prev", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), cursor_prev );
-  state.insert( "cursor_prev", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), cursor_prev );
+  // ...Keyboard input mappings...
 
-  state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
-  state.insert( "cursor_next", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), cursor_next );
-  state.insert( "cursor_next", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), cursor_next );
+  state.insert("cursor_prev", nom::KeyboardAction(SDLK_UP), cursor_prev);
+  state.insert("cursor_next", nom::KeyboardAction(SDLK_DOWN), cursor_next);
+  state.insert("prev_page", nom::KeyboardAction(SDLK_LEFT), prev_page);
+  state.insert("next_page", nom::KeyboardAction(SDLK_RIGHT), next_page);
+  state.insert("delete_card", nom::KeyboardAction(SDLK_d), delete_card);
+  state.insert("select_card", nom::KeyboardAction(SDLK_SPACE), select_card);
+  state.insert("start_game", nom::KeyboardAction(SDLK_RETURN), start_game);
 
-  state.insert( "prev_page", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT ), prev_page );
-  state.insert( "prev_page", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::LEFT ), prev_page );
-  state.insert( "prev_page", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::LEFT ), prev_page );
+  // ...Mouse wheel input mappings...
 
-  state.insert( "next_page", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT ), next_page );
-  state.insert( "next_page", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::RIGHT ), next_page );
-  state.insert( "next_page", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::RIGHT ), next_page );
+  state.insert( "cursor_prev",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_UP), cursor_prev );
+  state.insert( "cursor_next",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_DOWN), cursor_next );
+  state.insert( "prev_page",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_LEFT), prev_page );
+  state.insert( "next_page",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_RIGHT), next_page );
 
-  state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
+  // ...Joystick input mappings...
+  auto& joystick_id = this->game->joystick_id_;
 
-  state.insert( "delete_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), delete_card );
+  state.insert( "cursor_prev",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_UP), cursor_prev );
 
-  state.insert( "select_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select_card );
-  state.insert( "select_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_card );
+  state.insert( "cursor_next", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_DOWN), cursor_next );
 
-  state.insert( "start_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), start_game );
-  state.insert( "start_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), start_game );
+  state.insert( "prev_page", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_LEFT), prev_page );
+
+  state.insert( "next_page", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_RIGHT), next_page );
+
+  state.insert( "delete_card", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_B), delete_card );
+
+  state.insert( "select_card", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_A), select_card );
+
+  state.insert( "start_game", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_START), start_game );
 
   this->game->input_mapper.erase( "CardsMenuState" );
   this->game->input_mapper.insert( "CardsMenuState", state, true );
@@ -429,11 +449,9 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
 
 // Private scope
 
-bool CardsMenuState::on_event( const nom::Event& ev )
+bool CardsMenuState::on_event(const nom::Event& ev)
 {
-  this->game->gui_window_.process_event(ev);
-
-  return true;
+  return false;
 }
 
 void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)

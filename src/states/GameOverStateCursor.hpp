@@ -66,12 +66,19 @@ class GameOverStateCursor: public nom::SpriteBatch
     /// Returns the X coordinate position of the cursor after it has been moved.
     nom::int32 move_right ( void );
 
-  private:
-    void next ( void );
-    void previous ( void );
+    // NOTE: The event handler object **must** outlive the destruction of this
+    // object!
+    void set_event_handler(nom::EventHandler& evt_handler);
 
+  private:
+    void next();
+    void previous();
+
+    // Non-owned pointer
     CardHand* card_position;
-    nom::EventDispatcher cursor_event;
+
+    // Non-owned pointer
+    nom::EventHandler* evt_handler_;
 };
 
 } // namespace tt

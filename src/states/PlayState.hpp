@@ -60,10 +60,8 @@ class PlayState: public nom::IState
     void on_draw( nom::RenderWindow& target );
 
   private:
-    /// \brief Injection of the GUI event loop.
-    ///
-    /// \note This is the current context's event loop (libRocket).
-    bool on_event(const nom::Event& ev);
+    /// \brief The default event handler for this state.
+    bool on_event(const nom::Event& ev) override;
 
     /// \brief Method callback for mouse button actions.
     ///

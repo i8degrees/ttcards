@@ -150,28 +150,40 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
     this->on_mouse_button_dblclick(evt);
   });
 
-  // Keyboard mappings
+  // ...Keyboard mappings...
 
-  state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
-  state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
-  state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select );
-  state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), select );
-  state.insert( "cancel", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), cancel );
+  state.insert("cursor_prev", nom::KeyboardAction(SDLK_UP), cursor_prev);
+  state.insert("cursor_next", nom::KeyboardAction(SDLK_DOWN), cursor_next);
+  state.insert("select", nom::KeyboardAction(SDLK_SPACE), select);
+  state.insert("select", nom::KeyboardAction(SDLK_RETURN), select);
+  state.insert("cancel", nom::KeyboardAction(SDLK_ESCAPE), cancel);
 
-  // Mouse button mappings
-  state.insert( "click", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT ), mouse_click );
-  state.insert( "select", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT, 2 ), mouse_select );
+  // ...Mouse button && wheel mappings...
+  state.insert( "click", nom::MouseButtonAction(nom::LEFT_MOUSE_BUTTON,
+                nom::InputState::RELEASED), mouse_click );
+  state.insert( "select", nom::MouseButtonAction(nom::LEFT_MOUSE_BUTTON, 2,
+                nom::InputState::RELEASED), mouse_select );
 
-  // Mouse wheel mappings
-  state.insert( "cursor_prev", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), cursor_prev );
-  state.insert( "cursor_next", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), cursor_next );
+  state.insert( "cursor_prev",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_UP), cursor_prev );
+  state.insert( "cursor_next",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_DOWN), cursor_next );
 
-  // Joystick button mappings
+  // ...Joystick input mappings...
+  auto& joystick_id = this->game->joystick_id_;
 
-  state.insert( "cursor_prev", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), cursor_prev );
-  state.insert( "cursor_next", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), cursor_next );
-  state.insert( "select", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select );
-  state.insert( "cancel", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), cancel );
+  state.insert( "cursor_prev",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_UP), cursor_prev );
+
+  state.insert( "cursor_next", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_DOWN), cursor_next );
+
+  state.insert( "select", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_A), select );
+
+  state.insert( "cancel", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_B), cancel );
 
   this->game->input_mapper.erase( "ConfirmationDialogState" );
   this->game->input_mapper.insert( "ConfirmationDialogState", state, true );
@@ -200,22 +212,6 @@ void ConfirmationDialogState::on_resume( nom::void_ptr data )
   this->game->input_mapper.activate_only( "ConfirmationDialogState" );
   this->game->input_mapper.activate( "Game" );
 }
-
-// void ConfirmationDialogState::on_user_event(const nom::Event& ev)
-// {
-//   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
-
-//   // Nothing to do; not the right event type for us!
-//   if( ev.type != SDL_USEREVENT )
-//   {
-//     return;
-//   }
-
-//   if( ev.user.code == GameEvent::AudioEvent )
-//   {
-//     this->game->cursor_move->Play();
-//   }
-// }
 
 void ConfirmationDialogState::on_mouse_button_up(const nom::Event& ev)
 {

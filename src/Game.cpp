@@ -152,6 +152,7 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // Extended call stack diagnostics (i.e.: number of initialized Card objects)
     // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TRACE, nom::LogPriority::NOM_LOG_PRIORITY_VERBOSE );
 
+    // Enable event handler queue debugging statistics
     nom::set_hint(NOM_EVENT_QUEUE_STATISTICS, "1");
 
   #else // NDEBUG -- release target build
@@ -921,8 +922,8 @@ bool Game::on_init()
     this->on_app_quit(evt);
   });
 
-  auto on_window_resized( [=](const nom::Event& evt) {
-    this->game->on_window_resized(evt);
+  auto toggle_fullscreen( [=](const nom::Event& evt) {
+    this->window.toggle_fullscreen();
   });
 
   auto fps_counter( [=](const nom::Event& evt) {
@@ -972,64 +973,59 @@ bool Game::on_init()
     });
 
     state.insert( "jumpto_confirmation_dialog_state",
-                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_0, KMOD_LGUI),
+                  nom::KeyboardAction(SDLK_0, KMOD_LGUI),
                   jumpto_confirmation_dialog_state );
 
     state.insert( "jumpto_gameover_state",
-                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_0),
-                  jumpto_gameover_state );
+                  nom::KeyboardAction(SDLK_0), jumpto_gameover_state );
 
     state.insert( "dump_board",
-                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_LEFTBRACKET, KMOD_LGUI),
+                  nom::KeyboardAction(SDLK_LEFTBRACKET, KMOD_LGUI),
                   dump_board );
 
     state.insert( "dump_player0_hand",
-                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_LEFTBRACKET),
-                  dump_player0_hand );
+                  nom::KeyboardAction(SDLK_LEFTBRACKET), dump_player0_hand );
 
     state.insert( "dump_player1_hand",
-                  nom::KeyboardAction(SDL_KEYDOWN, SDLK_RIGHTBRACKET),
-                  dump_player1_hand );
+                  nom::KeyboardAction(SDLK_RIGHTBRACKET), dump_player1_hand );
 
     state.insert( "dump_collection",
-                  nom::KeyboardAction(  SDL_KEYDOWN, SDLK_RIGHTBRACKET,
-                                        KMOD_LGUI ),
+                  nom::KeyboardAction(SDLK_RIGHTBRACKET, KMOD_LGUI),
                   dump_collection );
   } // end if DEBUG_GAME
 
-  // Conflicts with ConfirmationDialogState key binding
-  state.insert( "quit_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_q ), quit_game );
+  state.insert("quit_game", nom::KeyboardAction(SDLK_q), quit_game);
 
-  #if defined( NOM_PLATFORM_OSX )
-    state.insert( "on_window_resize", nom::KeyboardAction( SDL_KEYDOWN, SDLK_f, KMOD_LGUI ), on_window_resized );
-  #else
-    state.insert( "on_window_resize", nom::KeyboardAction( SDL_KEYDOWN, SDLK_f, KMOD_LCTRL ), on_window_resized );
-  #endif
+#if defined(NOM_PLATFORM_OSX)
+  state.insert( "toggle_fullscreen", nom::KeyboardAction(SDLK_f, KMOD_LGUI),
+                toggle_fullscreen );
+#else
+  state.insert( "toggle_fullscreen", nom::KeyboardAction(SDLK_f, KMOD_LCTRL),
+                toggle_fullscreen );
+#endif
 
-  state.insert( "fps_counter", nom::KeyboardAction( SDL_KEYDOWN, SDLK_BACKSLASH ), fps_counter );
-  state.insert( "pause_music", nom::KeyboardAction( SDL_KEYDOWN, SDLK_m, KMOD_LSHIFT ), pause_music );
-  state.insert( "mute_volume", nom::KeyboardAction( SDL_KEYDOWN, SDLK_m ), mute_volume );
-  state.insert( "save_screenshot", nom::KeyboardAction( SDL_KEYDOWN, SDLK_F1 ), save_screenshot );
-  state.insert( "reload_config", nom::KeyboardAction( SDL_KEYDOWN, SDLK_r ), reload_config );
+  state.insert( "fps_counter", nom::KeyboardAction(SDLK_BACKSLASH),
+                fps_counter );
+  state.insert( "pause_music", nom::KeyboardAction(SDLK_m, KMOD_LSHIFT),
+                pause_music );
+  state.insert("mute_volume", nom::KeyboardAction(SDLK_m), mute_volume);
+  state.insert( "save_screenshot", nom::KeyboardAction(SDLK_F1),
+                save_screenshot );
+  state.insert("reload_config", nom::KeyboardAction(SDLK_r), reload_config);
 
   this->game->input_mapper.insert( "Game", state, true );
 
+  if( this->evt_handler_.enable_game_controller_polling() == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not initialize joystick subsystem: ",
+                  nom::error() );
+  }
+
+  SDLApp::set_event_handler(this->evt_handler_);
+  this->input_mapper.set_event_handler(this->evt_handler_);
+  this->game->gui_window_.set_event_handler(this->evt_handler_);
+
   return true;
-}
-
-void Game::on_event( const nom::Event& ev )
-{
-  // First, our own events (global key bindings):
-  SDLApp::on_event( ev );
-
-  // Then, key, mouse, joystick, etc. events registered for the current input
-  // context:
-  this->input_mapper.on_event( ev );
-}
-
-void Game::on_window_resized( const nom::Event& ev )
-{
-  this->window.toggle_fullscreen();
 }
 
 int Game::Run()
@@ -1053,8 +1049,9 @@ int Game::Run()
 
     delta_time = game_time.ticks();
 
-    while( this->poll_event(evt) ) {
-      this->on_event(evt);
+    while( this->evt_handler_.poll_event(evt) == true ) {
+      // NOTE: Pending events will be handled by the event listeners that were
+      // given an EventHandler object via ::set_event_handler
     }
 
     this->on_update(delta_time);

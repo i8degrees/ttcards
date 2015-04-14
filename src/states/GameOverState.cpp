@@ -56,6 +56,7 @@ GameOverState::~GameOverState( void )
 
 void GameOverState::on_init( nom::void_ptr data )
 {
+  this->cursor_.set_event_handler(this->game->evt_handler_);
   this->cursor_.set_texture(this->game->cursor_tex_);
   this->cursor_.set_sprite_sheet(this->game->right_cursor_frames_);
   this->cursor_.set_frame(INTERFACE_CURSOR_SHOWN);
@@ -231,23 +232,44 @@ void GameOverState::on_init( nom::void_ptr data )
     this->game->set_state( Game::State::ConfirmationDialog );
   });
 
-  // Keyboard mappings
-  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
-  state.insert( "move_cursor_left", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT ), move_cursor_left );
-  state.insert( "move_cursor_right", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT ), move_cursor_right );
-  state.insert( "select_cards", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select_cards );
+  // ...Keyboard mappings...
+  state.insert("pause_game", nom::KeyboardAction(SDLK_p), pause_game);
+  state.insert( "move_cursor_left", nom::KeyboardAction(SDLK_LEFT),
+                move_cursor_left );
+  state.insert( "move_cursor_right", nom::KeyboardAction(SDLK_RIGHT),
+                move_cursor_right );
+  state.insert( "select_cards", nom::KeyboardAction(SDLK_SPACE), select_cards );
 
-  // Mouse button & mouse wheel mappings
-  state.insert( "move_cursor_left", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), move_cursor_left );
-  state.insert( "move_cursor_right", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), move_cursor_right );
-  state.insert( "select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), select_card );
-  state.insert( "select_cards", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT, 2 ), select_cards );
+  // ...Mouse button & wheel mappings...
 
-  // Joystick button mappings
-  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
-  state.insert( "move_cursor_left", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::LEFT ), move_cursor_left );
-  state.insert( "move_cursor_right", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::RIGHT ), move_cursor_right );
-  state.insert( "select_cards", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_cards );
+  state.insert( "select_card", nom::MouseButtonAction(nom::LEFT_MOUSE_BUTTON,
+                InputState::RELEASED), select_card );
+  state.insert( "select_cards",
+                nom::MouseButtonAction(nom::LEFT_MOUSE_BUTTON, 2,
+                InputState::RELEASED), select_cards );
+
+  state.insert( "move_cursor_left",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_UP),
+                move_cursor_left );
+  state.insert( "move_cursor_right",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_DOWN),
+                move_cursor_right );
+
+  // ...Joystick mappings...
+  auto& joystick_id = this->game->joystick_id_;
+
+  state.insert( "pause_game",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_START), pause_game );
+  state.insert( "move_cursor_left",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_LEFT), move_cursor_left );
+  state.insert( "move_cursor_right",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_RIGHT), move_cursor_right );
+  state.insert( "select_cards",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_A), select_cards );
 
   if( this->game->debug_game_ == true ) {
     auto restart_game( [=](const nom::Event& evt) {
@@ -255,8 +277,10 @@ void GameOverState::on_init( nom::void_ptr data )
       this->game->set_state(Game::State::CardsMenu);
     });
 
-    state.insert( "restart_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), restart_game );
-    state.insert( "restart_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::SELECT ), restart_game );
+    state.insert("restart_game", nom::KeyboardAction(SDLK_RETURN), restart_game);
+
+    state.insert( "restart_game", nom::GameControllerButtonAction(joystick_id,
+                  nom::GameController::BUTTON_BACK), restart_game );
   } // end if DEBUG_GAME
 
   this->game->input_mapper.erase( "GameOverState" );
@@ -296,30 +320,31 @@ void GameOverState::on_resume( nom::void_ptr data )
   if( response != nullptr && *response == 1 && this->game->state()->current_state_id() == Game::State::GameOver )
   {
     nom::Event ev;
+    ev.type = nom::Event::USER_EVENT;
+    ev.timestamp = nom::ticks();
     ev.user.code = GameEvent::AnimationEvent;
     ev.user.data1 = nullptr;
     ev.user.data2 = nullptr;
     ev.user.window_id = 0;
-    this->event.dispatch( ev );
+    this->game->evt_handler_.push_event(ev);
   }
 
   this->game->input_mapper.activate_only( "GameOverState" );
   this->game->input_mapper.activate( "Game" );
 }
 
-bool GameOverState::on_event( const nom::Event& ev )
+bool GameOverState::on_event(const nom::Event& ev)
 {
-  // this->game->gui_window_.process_event(ev);
+  if( ev.type == nom::Event::USER_EVENT ) {
+    this->on_user_event(ev);
+    return true;
+  }
 
-  // Do **not** override the normal event loop (otherwise this state breaks)
   return false;
 }
 
 void GameOverState::on_mouse_button_down( const nom::Event& ev )
 {
-  // Sanity check
-  if( ev.type != SDL_MOUSEBUTTONDOWN ) return;
-
   nom::Point2i coords ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
 
   // Player hand selection checks
@@ -353,11 +378,8 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
   }
 }
 
-void GameOverState::on_user_event( const nom::Event& ev )
+void GameOverState::on_user_event(const nom::Event& ev)
 {
-  // Nothing to do; not the right event type for us!
-  if( ev.type != SDL_USEREVENT ) return;
-
   if( ev.user.code == GameEvent::GUIEvent )
   {
     NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::GUIEvent" );

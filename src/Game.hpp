@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <memory>
 
+#include <nomlib/core.hpp>
 #include <nomlib/audio.hpp>
 #include <nomlib/graphics.hpp>
 #include <nomlib/actions.hpp>
@@ -223,16 +224,10 @@ class Game: public nom::SDLApp
     /// \brief Toggle switch for in-game debugging features.
     bool debug_game_;
 
+    nom::EventHandler evt_handler_;
+    nom::JoystickID joystick_id_ = 0;
+
   private:
-    /// \remarks Re-implements nom::SDLApp::on_event.
-    ///
-    /// \fixme This is currently required for GUI events processing in
-    /// ConfirmationDialogState, and probably can be handled better.
-    void on_event( const nom::Event& ev );
-
-    /// Event handler for resize app request
-    void on_window_resized( const nom::Event& ev );
-
     /// \brief Method callback action for pausing the music tracks in the game.
     ///
     /// \see nom::InputMapper.

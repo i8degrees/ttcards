@@ -87,33 +87,34 @@ nom::int32 GameOverStateCursor::move_right ( void )
   return this->position().x;
 }
 
-void GameOverStateCursor::next ( void )
+void GameOverStateCursor::set_event_handler(nom::EventHandler& evt_handler)
 {
-  if ( this->card_position )
-  {
+  this->evt_handler_ = &evt_handler;
+}
+
+void GameOverStateCursor::next()
+{
+  if( this->card_position != nullptr ) {
     this->card_position->next();
 
-    nom::Event ev;
-    ev.user.code = GameEvent::GUIEvent;
-    ev.user.data1 = nullptr;
-    ev.user.data2 = nullptr;
-    ev.user.window_id = 0;
-    this->cursor_event.dispatch ( ev );
+    nom::Event ev =
+      nom::create_user_event(GameEvent::GUIEvent, nullptr, nullptr, 0);
+
+    NOM_ASSERT(this->evt_handler_ != nullptr);
+    this->evt_handler_->push_event(ev);
   }
 }
 
-void GameOverStateCursor::previous ( void )
+void GameOverStateCursor::previous()
 {
-  if ( this->card_position )
-  {
+  if( this->card_position != nullptr ) {
     this->card_position->previous();
 
-    nom::Event ev;
-    ev.user.code = GameEvent::GUIEvent;
-    ev.user.data1 = nullptr;
-    ev.user.data2 = nullptr;
-    ev.user.window_id = 0;
-    this->cursor_event.dispatch ( ev );
+    nom::Event ev =
+      nom::create_user_event(GameEvent::GUIEvent, nullptr, nullptr, 0);
+
+    NOM_ASSERT(this->evt_handler_ != nullptr);
+    this->evt_handler_->push_event(ev);
   }
 }
 

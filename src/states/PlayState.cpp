@@ -246,6 +246,8 @@ void PlayState::on_init( nom::void_ptr data )
   // this->game->input_mapper.clear();
   nom::InputActionMapper state;
 
+  // ...Keyboard mappings...
+
   CREATE_MOVE_TO_KEY_BINDING(move_to_1, 0, 0);
   CREATE_MOVE_TO_KEY_BINDING(move_to_2, 1, 0);
   CREATE_MOVE_TO_KEY_BINDING(move_to_3, 2, 0);
@@ -256,24 +258,15 @@ void PlayState::on_init( nom::void_ptr data )
   CREATE_MOVE_TO_KEY_BINDING(move_to_8, 1, 2);
   CREATE_MOVE_TO_KEY_BINDING(move_to_9, 2, 2);
 
-  state.insert( "moveto_1", nom::KeyboardAction(SDL_KEYDOWN, SDLK_1),
-                move_to_1 );
-  state.insert( "moveto_2", nom::KeyboardAction(SDL_KEYDOWN, SDLK_2),
-                move_to_2 );
-  state.insert( "moveto_3", nom::KeyboardAction(SDL_KEYDOWN, SDLK_3),
-                move_to_3 );
-  state.insert( "moveto_4", nom::KeyboardAction(SDL_KEYDOWN, SDLK_4),
-                move_to_4 );
-  state.insert( "moveto_5", nom::KeyboardAction(SDL_KEYDOWN, SDLK_5),
-                move_to_5 );
-  state.insert( "moveto_6", nom::KeyboardAction(SDL_KEYDOWN, SDLK_6),
-                move_to_6 );
-  state.insert( "moveto_7", nom::KeyboardAction(SDL_KEYDOWN, SDLK_7),
-                move_to_7 );
-  state.insert( "moveto_8", nom::KeyboardAction(SDL_KEYDOWN, SDLK_8),
-                move_to_8 );
-  state.insert( "moveto_9", nom::KeyboardAction(SDL_KEYDOWN, SDLK_9),
-                move_to_9 );
+  state.insert("moveto_1", nom::KeyboardAction(SDLK_1), move_to_1);
+  state.insert("moveto_2", nom::KeyboardAction(SDLK_2), move_to_2);
+  state.insert("moveto_3", nom::KeyboardAction(SDLK_3), move_to_3);
+  state.insert("moveto_4", nom::KeyboardAction(SDLK_4), move_to_4);
+  state.insert("moveto_5", nom::KeyboardAction(SDLK_5), move_to_5);
+  state.insert("moveto_6", nom::KeyboardAction(SDLK_6), move_to_6);
+  state.insert("moveto_7", nom::KeyboardAction(SDLK_7), move_to_7);
+  state.insert("moveto_8", nom::KeyboardAction(SDLK_8), move_to_8);
+  state.insert("moveto_9", nom::KeyboardAction(SDLK_9), move_to_9);
 
   // Register event callbacks for our input actions
   auto unlock_selected_card( [=](const nom::Event& evt) {
@@ -315,35 +308,25 @@ void PlayState::on_init( nom::void_ptr data )
     this->save_game();
   });
 
-  state.insert( "unlock_selected_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_x ), unlock_selected_card );
-  state.insert( "lock_selected_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), lock_selected_card );
+  state.insert( "unlock_selected_card", nom::KeyboardAction(SDLK_x),
+                unlock_selected_card );
+  state.insert( "lock_selected_card", nom::KeyboardAction(SDLK_SPACE),
+                lock_selected_card );
 
-  state.insert( "move_cursor_up", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), move_cursor_up );
-  state.insert( "move_cursor_up", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), move_cursor_up );
+  state.insert( "move_cursor_up", nom::KeyboardAction(SDLK_UP),
+                move_cursor_up );
 
-  state.insert( "move_cursor_down", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), move_cursor_down );
-  state.insert( "move_cursor_down", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), move_cursor_down );
+  state.insert( "move_cursor_down",
+                nom::KeyboardAction(SDLK_DOWN), move_cursor_down );
 
-  state.insert( "move_cursor_left", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT ), move_cursor_left );
-  state.insert( "move_cursor_right", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT ), move_cursor_right );
+  state.insert( "move_cursor_left", nom::KeyboardAction(SDLK_LEFT),
+                move_cursor_left );
+  state.insert( "move_cursor_right", nom::KeyboardAction(SDLK_RIGHT),
+                move_cursor_right );
 
-  state.insert( "select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT ), select_card );
-  state.insert( "select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONDOWN, SDL_BUTTON_RIGHT ), select_card );
-
-  // Joystick input action mappings
-  state.insert( "unlock_selected_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), unlock_selected_card );
-  state.insert( "lock_selected_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), lock_selected_card );
-
-  state.insert( "move_cursor_up", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), move_cursor_up );
-  state.insert( "move_cursor_down", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), move_cursor_down );
-  state.insert( "move_cursor_left", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::LEFT ), move_cursor_left );
-  state.insert( "move_cursor_right", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::RIGHT ), move_cursor_right );
-
-  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
-  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
-
-  state.insert( "load_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_l ), load_game );
-  state.insert( "save_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_s ), save_game );
+  state.insert("pause_game", nom::KeyboardAction(SDLK_p), pause_game);
+  state.insert("load_game", nom::KeyboardAction(SDLK_l), load_game);
+  state.insert("save_game", nom::KeyboardAction(SDLK_s), save_game);
 
   // TODO: Declare a debug_state nom::InputMapper var so we can insert said
   // state only when the applicable debug flags are toggled on -- for sake of
@@ -382,9 +365,10 @@ void PlayState::on_init( nom::void_ptr data )
       this->game->cursor_->set_position(cursor_pos);
     });
 
-    state.insert( "control_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e, KMOD_LGUI ), control_turn );
-    state.insert( "skip_turn", nom::KeyboardAction( SDL_KEYDOWN, SDLK_e ), skip_turn );
-    state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
+    state.insert( "control_turn", nom::KeyboardAction(SDLK_e, KMOD_LGUI),
+                  control_turn );
+    state.insert("skip_turn", nom::KeyboardAction(SDLK_e), skip_turn);
+    state.insert("delete_card", nom::KeyboardAction(SDLK_d), delete_card);
 
     auto increase_north_rank( [=](const nom::Event& evt) {
       auto pturn = this->turn();
@@ -442,18 +426,71 @@ void PlayState::on_init( nom::void_ptr data )
                                   false, EAST );
     });
 
-    state.insert( "increase_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LSHIFT ), increase_north_rank );
-    state.insert( "decrease_north_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP, KMOD_LCTRL ), decrease_north_rank );
+    state.insert( "increase_north_rank", nom::KeyboardAction(SDLK_UP,
+                  KMOD_LSHIFT), increase_north_rank );
+    state.insert( "decrease_north_rank", nom::KeyboardAction(SDLK_UP,
+                  KMOD_LCTRL), decrease_north_rank );
 
-    state.insert( "increase_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LSHIFT ), increase_south_rank );
-    state.insert( "decrease_south_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN, KMOD_LCTRL ), decrease_south_rank );
+    state.insert( "increase_south_rank", nom::KeyboardAction(SDLK_DOWN,
+                  KMOD_LSHIFT), increase_south_rank );
+    state.insert( "decrease_south_rank", nom::KeyboardAction(SDLK_DOWN,
+                  KMOD_LCTRL), decrease_south_rank );
 
-    state.insert( "increase_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LSHIFT ), increase_west_rank );
-    state.insert( "decrease_west_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT, KMOD_LCTRL ), decrease_west_rank );
+    state.insert( "increase_west_rank", nom::KeyboardAction(SDLK_LEFT,
+                  KMOD_LSHIFT), increase_west_rank );
+    state.insert( "decrease_west_rank", nom::KeyboardAction(SDLK_LEFT,
+                  KMOD_LCTRL), decrease_west_rank );
 
-    state.insert( "increase_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LSHIFT ), increase_east_rank );
-    state.insert( "decrease_east_rank", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT, KMOD_LCTRL ), decrease_east_rank );
+    state.insert( "increase_east_rank", nom::KeyboardAction(SDLK_RIGHT,
+                  KMOD_LSHIFT), increase_east_rank );
+    state.insert( "decrease_east_rank", nom::KeyboardAction(SDLK_RIGHT,
+                  KMOD_LCTRL), decrease_east_rank );
   } // end if DEBUG_GAME
+
+  // ...Mouse button && wheel mappings...
+
+  state.insert( "select_card", nom::MouseButtonAction(nom::LEFT_MOUSE_BUTTON,
+                nom::InputState::RELEASED), select_card );
+  state.insert( "select_card", nom::MouseButtonAction(nom::RIGHT_MOUSE_BUTTON,
+                nom::InputState::RELEASED), select_card );
+
+  state.insert( "move_cursor_up",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_UP),
+                move_cursor_up );
+  state.insert( "move_cursor_down",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_DOWN),
+                move_cursor_down );
+
+  // ...Joystick input mappings...
+  auto& joystick_id = this->game->joystick_id_;
+
+  state.insert( "unlock_selected_card",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_B), unlock_selected_card );
+
+  state.insert( "lock_selected_card",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_A), lock_selected_card );
+
+  state.insert( "move_cursor_up",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_UP), move_cursor_up );
+
+  state.insert( "move_cursor_down",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_DOWN), move_cursor_down );
+
+  state.insert( "move_cursor_left",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_LEFT), move_cursor_left );
+
+  state.insert( "move_cursor_right",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_RIGHT), move_cursor_right );
+
+  state.insert( "pause_game",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_START), pause_game );
 
   this->game->input_mapper.erase( "PlayState" );
   this->game->input_mapper.insert( "PlayState", state, true );
@@ -468,15 +505,11 @@ void PlayState::on_init( nom::void_ptr data )
 
 bool PlayState::on_event(const nom::Event& ev)
 {
-  this->game->gui_window_.process_event(ev);
-
-  return true;
+  return false;
 }
 
 void PlayState::on_mouse_button_down( const nom::Event& ev )
 {
-  if( ev.type != SDL_MOUSEBUTTONDOWN ) return;
-
   if( this->game->actions_.action_running("move_card_up") == true ) {
     return;
   }

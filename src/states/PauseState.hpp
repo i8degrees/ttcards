@@ -57,10 +57,9 @@ class PauseState: public nom::IState
     void on_pause( nom::void_ptr data );
     void on_resume( nom::void_ptr data );
 
-    /// \brief Injection of the GUI event loop.
-    ///
-    /// \note This is the current context's event loop (libRocket).
-    bool on_event( const nom::Event& ev );
+    /// \brief The default event handler for this state.
+    bool on_event(const nom::Event& ev) override;
+
     void on_update( float delta_time );
     void on_draw( nom::RenderWindow& target );
 

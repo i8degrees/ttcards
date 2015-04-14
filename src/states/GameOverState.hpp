@@ -60,17 +60,16 @@ class GameOverState: public nom::IState
     void on_pause( nom::void_ptr data );
     void on_resume( nom::void_ptr data );
 
-    /// \brief Injection of the GUI event loop.
-    ///
-    /// \note This is the current context's event loop (libRocket).
-    bool on_event( const nom::Event& ev ) override;
+    /// \brief The default event handler for this state.
+    bool on_event(const nom::Event& ev) override;
 
     /// \brief Method callback for mouse button actions.
     ///
     /// \see nom::InputMapper.
     void on_mouse_button_down( const nom::Event& ev );
 
-    void on_user_event( const nom::Event& ev );
+    /// \brief User events handler for this state.
+    void on_user_event(const nom::Event& ev);
 
     void on_update ( float delta_time );
     void on_draw( nom::RenderWindow& target );
@@ -92,8 +91,6 @@ class GameOverState: public nom::IState
 
     /// Position of player 2 hand
     nom::Point2i player2_pos;
-
-    nom::EventDispatcher event;
 };
 
 // Convenience declarations for changing state
