@@ -122,8 +122,8 @@ bool CardCollection::load(const std::string& filename)
     card.unserialize(attr);
 
     // Additional attributes
-    card.setPlayerID(Card::NO_PLAYER);
-    card.setPlayerOwner(Card::NO_PLAYER);
+    card.setPlayerID(PlayerID::PLAYER_ID_INVALID);
+    card.setPlayerOwner(PlayerID::PLAYER_ID_INVALID);
 
     cards_buffer.push_back(card);
   }
@@ -148,7 +148,7 @@ const Card& CardCollection::find(const std::string& card_name) const
   return Card::null;
 }
 
-const Card& CardCollection::find(int32 card_id) const
+const Card& CardCollection::find(CardID card_id) const
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 

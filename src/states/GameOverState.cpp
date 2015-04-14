@@ -61,7 +61,7 @@ void GameOverState::on_init( nom::void_ptr data )
   this->cursor_.set_sprite_sheet(this->game->right_cursor_frames_);
   this->cursor_.set_frame(INTERFACE_CURSOR_SHOWN);
 
-  this->cursor_.set_position_map(&this->game->hand[1]);
+  this->cursor_.set_position_map(&this->game->hand[PlayerIndex::PLAYER_2]);
   this->cursor_.set_size( Size2i ( CURSOR_WIDTH, CURSOR_HEIGHT ) );
   this->cursor_.set_position(  Point2i (
                                         PLAYER2_GAMEOVER_CURSOR_ORIGIN_X,
@@ -80,30 +80,30 @@ void GameOverState::on_init( nom::void_ptr data )
       Card pcard = this->game->board_->get(x, y);
       pcard.set_face_down(false);
 
-      if( pcard.getPlayerOwner() == Card::PLAYER1 ) {
-        pcard.setPlayerID(Card::PLAYER1);
+      if( pcard.getPlayerOwner() == PlayerID::PLAYER_ID_1 ) {
+        pcard.setPlayerID(PlayerID::PLAYER_ID_1);
 
         // Render the new card background based on the new owner
         pcard.set_card_renderer( create_card_renderer(this->game->card_res_.get(), pcard) );
         NOM_ASSERT(pcard.card_renderer() != nullptr);
         NOM_ASSERT(pcard.card_renderer()->valid() == true);
 
-        this->game->hand[PLAYER1].push_back(pcard);
-      } else if( pcard.getPlayerOwner() == Card::PLAYER2 ) {
-        pcard.setPlayerID(Card::PLAYER2);
+        this->game->hand[PlayerIndex::PLAYER_1].push_back(pcard);
+      } else if( pcard.getPlayerOwner() == PlayerID::PLAYER_ID_2 ) {
+        pcard.setPlayerID(PlayerID::PLAYER_ID_2);
 
         // Render the new card background based on the new owner
         pcard.set_card_renderer( create_card_renderer(this->game->card_res_.get(), pcard) );
         NOM_ASSERT(pcard.card_renderer() != nullptr);
         NOM_ASSERT(pcard.card_renderer()->valid() == true);
 
-        this->game->hand[PLAYER2].push_back(pcard);
+        this->game->hand[PlayerIndex::PLAYER_2].push_back(pcard);
       }
     }
   }
 
-  auto p1_hand = this->game->hand[PLAYER1];
-  auto p2_hand = this->game->hand[PLAYER2];
+  auto p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
 
   auto p2_hand_idx = 0;
   Point2i p2_pos(Point2i::zero);
@@ -143,11 +143,11 @@ void GameOverState::on_init( nom::void_ptr data )
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "You lose...");
 
     // Stub logic
-    NOM_ASSERT( this->game->hand[0].empty() == false );
-    if( this->game->hand[0].size() > 0 ) {
+    NOM_ASSERT( this->game->hand[PlayerIndex::PLAYER_1].empty() == false );
+    if( this->game->hand[PlayerIndex::PLAYER_1].size() > 0 ) {
 
-      Card strongest_card = this->game->hand[0].strongest();
-      this->game->hand[0].selectCard(strongest_card);
+      Card strongest_card = this->game->hand[PlayerIndex::PLAYER_1].strongest();
+      this->game->hand[PlayerIndex::PLAYER_1].selectCard(strongest_card);
       NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE,
                     "Lost", strongest_card.getName() );
     }
@@ -164,7 +164,7 @@ void GameOverState::on_init( nom::void_ptr data )
 
   // Reset the player's hand back to the front, so our cursor tracking is
   // accurate.
-  this->game->hand[1].front();
+  this->game->hand[PlayerIndex::PLAYER_2].front();
 
   // Northern message box
 
@@ -203,7 +203,9 @@ void GameOverState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  this->game->card_info_box_.set_message_text( this->game->hand[1].getSelectedCard().getName() );
+  auto card_text =
+    this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard().getName();
+  this->game->card_info_box_.set_message_text(card_text);
   this->game->card_info_box_.show();
 
   // Commence the countdown on the showing of results!
@@ -228,7 +230,7 @@ void GameOverState::on_init( nom::void_ptr data )
   });
 
   auto select_cards( [=](const nom::Event& evt) {
-    this->selected_card = this->game->hand[1].getSelectedCard();
+    this->selected_card = this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard();
     this->game->set_state( Game::State::ConfirmationDialog );
   });
 
@@ -273,7 +275,7 @@ void GameOverState::on_init( nom::void_ptr data )
 
   if( this->game->debug_game_ == true ) {
     auto restart_game( [=](const nom::Event& evt) {
-      this->selected_card = this->game->hand[1].getSelectedCard();
+      this->selected_card = this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard();
       this->game->set_state(Game::State::CardsMenu);
     });
 
@@ -348,7 +350,7 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
   nom::Point2i coords ( ev.mouse.x, ev.mouse.y ); // mouse input coordinates
 
   // Player hand selection checks
-  for ( nom::int32 idx = 0; idx < this->game->hand[1].size(); idx++ )
+  for ( nom::int32 idx = 0; idx < this->game->hand[PlayerIndex::PLAYER_2].size(); idx++ )
   {
     IntRect player2_card_pos  ( PLAYER2_GAMEOVER_ORIGIN_X,
                                 PLAYER2_GAMEOVER_ORIGIN_Y,
@@ -363,10 +365,10 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
       // 3. Update the card info message box
       // 4. Play sound event
 
-      this->game->hand[1].set_position(idx);
+      this->game->hand[PlayerIndex::PLAYER_2].set_position(idx);
       this->cursor_.set_position( Point2i(PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor_.position().y ) );
 
-      Card selected_card = this->game->hand[1].cards[idx];
+      Card selected_card = this->game->hand[PlayerIndex::PLAYER_2].cards[idx];
       this->game->card_info_box_.set_message_text( selected_card.getName() );
 
       this->game->cursor_move->Play();
@@ -384,7 +386,7 @@ void GameOverState::on_user_event(const nom::Event& ev)
   {
     NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::GUIEvent" );
 
-    Card selected_card = this->game->hand[1].getSelectedCard();
+    Card selected_card = this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard();
     this->game->card_info_box_.set_message_text( selected_card.getName() );
 
     this->game->cursor_move->Play();
@@ -397,15 +399,16 @@ void GameOverState::on_user_event(const nom::Event& ev)
     // has been reached.
     this->game->card_info_box_.disable();
 
-    nom::size_type card_pos = this->game->hand[1].position();
-    if ( this->game->hand[1].cards[card_pos].getPlayerID() != Card::PLAYER1 )
+    nom::size_type card_pos = this->game->hand[PlayerIndex::PLAYER_2].position();
+    if( this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos].getPlayerID()
+        != PlayerID::PLAYER_ID_1 )
     {
       // FIXME; should have no spacing on card printout
       this->game->info_box_.set_message_text( this->selected_card.getName() + " card acquired" );
 
-      this->game->hand[PLAYER2].cards[card_pos].setPlayerID(Card::PLAYER1);
+      this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos].setPlayerID(PlayerID::PLAYER_ID_1);
 
-      Card& pcard = this->game->hand[PLAYER2].cards[card_pos];
+      Card& pcard = this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos];
 
       // Render a new card background based on the owner flip
       auto old_renderer =
@@ -454,8 +457,8 @@ void GameOverState::on_draw( nom::RenderWindow& target )
   // Render top view
   auto p2_hand_idx = 0;
   Point2i p2_pos(Point2i::zero);
-  for(  auto itr = this->game->hand[PLAYER2].begin();
-        itr != this->game->hand[PLAYER2].end();
+  for(  auto itr = this->game->hand[PlayerIndex::PLAYER_2].begin();
+        itr != this->game->hand[PlayerIndex::PLAYER_2].end();
         ++itr )
   {
      p2_pos.x = PLAYER2_GAMEOVER_ORIGIN_X + (CARD_WIDTH * p2_hand_idx);
@@ -472,8 +475,8 @@ void GameOverState::on_draw( nom::RenderWindow& target )
   // Render bottom view
   auto p1_hand_idx = 0;
   Point2i p1_pos(Point2i::zero);
-  for(  auto itr = this->game->hand[PLAYER1].begin();
-        itr != this->game->hand[PLAYER1].end();
+  for(  auto itr = this->game->hand[PlayerIndex::PLAYER_1].begin();
+        itr != this->game->hand[PlayerIndex::PLAYER_1].end();
         ++itr )
   {
      p1_pos.x = PLAYER1_GAMEOVER_ORIGIN_X + (CARD_WIDTH * p1_hand_idx);
@@ -492,7 +495,7 @@ void GameOverState::on_draw( nom::RenderWindow& target )
   this->cursor_.draw(target);
   if ( this->show_results == true )
   {
-    //Card lost_card = this->game->hand[0].getSelectedCard();
+    //Card lost_card = this->game->hand[PlayerIndex::PLAYER_1].getSelectedCard();
 //NOM_LOG_INFO ( TTCARDS, lost_card.getName() + "Card lost" );
 
     //nom::sleep ( 1000 );

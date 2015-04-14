@@ -366,9 +366,12 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     nom::Value obj = itr->ref();
     card.unserialize( obj );
 
+    auto player_id = NOM_SCAST(PlayerID, obj["player_id"].get_int() );
+    auto player_owner = NOM_SCAST(PlayerID, obj["owner"].get_int() );
+
     // Additional attributes
-    card.setPlayerID( obj["player_id"].get_int() );
-    card.setPlayerOwner( obj["owner"].get_int() );
+    card.setPlayerID(player_id);
+    card.setPlayerOwner(player_owner);
 
     // Commit contents to our buffer if all goes well
     cards_buffer.push_back ( card );

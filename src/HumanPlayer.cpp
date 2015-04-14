@@ -43,7 +43,7 @@ HumanPlayer::HumanPlayer(CardHand* hand)
   //NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 
   this->hand_ = hand;
-  this->player_id_ = Card::PLAYER1;
+  this->player_id_ = PlayerID::PLAYER_ID_INVALID;
 
   NOM_ASSERT(this->hand_ != nullptr);
 }
@@ -53,12 +53,17 @@ HumanPlayer::~HumanPlayer()
   // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-nom::uint32 HumanPlayer::player_id() const
+PlayerType HumanPlayer::type() const
+{
+  return PlayerType::HUMAN_PLAYER;
+}
+
+PlayerID HumanPlayer::player_id() const
 {
   return this->player_id_;
 }
 
-void HumanPlayer::set_player_id(nom::uint32 id)
+void HumanPlayer::set_player_id(PlayerID id)
 {
   this->player_id_ = id;
 }

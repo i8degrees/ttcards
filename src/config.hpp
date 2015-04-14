@@ -73,11 +73,8 @@ const auto SCREEN_RESOLUTION =
   const nom::Size2i GAME_RESOLUTION = nom::Size2i(768,448);
 #endif
 
-/// Maximum number of players -- both human & AI
-const nom::int32 TOTAL_PLAYERS = 2; // +1 padding
-
 /// Invalid Card identifier -- NULL value, if you will.
-const nom::sint BAD_CARD_ID = -1;
+const nom::int32 BAD_CARD_ID = -1;
 
 /// Minimum number of cards a player can hold in a game round
 const nom::int32 MIN_PLAYER_HAND = 0;
@@ -89,17 +86,6 @@ const nom::int32 MAX_PLAYER_HAND = 5;
 const nom::int32 BOARD_GRID_WIDTH = 3;
 const nom::int32 BOARD_GRID_HEIGHT = 3;
 const nom::uint16 BOARD_COUNT_MAX = BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT;
-
-/// Sprite sheet: elements.json
-const nom::int32 ELEMENT_NONE = 0;
-const nom::int32 ELEMENT_EARTH = 1;
-const nom::int32 ELEMENT_FIRE = 2;
-const nom::int32 ELEMENT_HOLY = 3;
-const nom::int32 ELEMENT_ICE = 4;
-const nom::int32 ELEMENT_POISON = 5;
-const nom::int32 ELEMENT_THUNDER = 6;
-const nom::int32 ELEMENT_WATER = 7;
-const nom::int32 ELEMENT_WIND = 8;
 
 /// Sprite sheet: faces.json
 const nom::int32 NOFACE_ID = 110;
@@ -187,91 +173,6 @@ const nom::Point2i PLAYER1_TRIAD_ORIGIN =
 
 const nom::Point2i PLAYER2_TRIAD_ORIGIN =
   nom::Point2i(40 * SCALE_FACTOR, 0 * SCALE_FACTOR);
-
-/// Card elemental type
-enum {
-  NONE=0, // type 0; no element
-  EARTH=1, // type 1 element
-  FIRE=2, // type 2 element
-  HOLY=3, // type 3 element
-  ICE=4, // type 4 element
-  POISON=5, // type 5 element
-  THUNDER=6, // type 6 element
-  WATER=7, // type 7 element
-  WIND=8 // type 8 element
-};
-
-/// Card level category
-enum {
-  MONSTER=1,
-  BOSS=2,
-  GF=3,
-  PLAYER=4
-};
-
-// Card ranking sides
-enum {
-  NORTH=0,
-  EAST=1,
-  SOUTH=2,
-  WEST=3
-};
-
-// Game::turn[players]
-enum {
-  PLAYER1=0,
-  PLAYER2=1
-};
-
-enum GameOverType: nom::uint32
-{
-  NotOver = 0,
-  Tie,
-  Won,
-  Lost
-};
-
-enum BoardPosition: nom::int32
-{
-  TopLeft = 0,
-  TopCenter,
-  TopRight,
-  MiddleLeft,
-  MiddleCenter,
-  MiddleRight,
-  BottomLeft,
-  BottomCenter,
-  BottomRight
-};
-
-enum GameEvent: nom::int32
-{
-  AnimationEvent,
-  DebugEvent,
-  GUIEvent,
-  AudioEvent,
-
-  /// \remarks Starting event number for Game::State enum (to ensure unique
-  /// code identifiers).
-  NUM_EVENTS
-};
-
-// The gradient colors used to render card backgrounds.
-
-const nom::Color4iColors CARD_BG_PLAYER1 = {{
-  // light to dark blue
-  nom::Color4i( 208, 223, 255 ), nom::Color4i( 50, 59, 114 )
-}};
-
-const nom::Color4iColors CARD_BG_PLAYER2 = {{
-  // light to dark pink
-  nom::Color4i( 251, 222, 232 ), nom::Color4i( 114, 66, 66 )
-}};
-
-const nom::Color4iColors CARD_BG_NO_PLAYER = {{
-  // light to dark gray
-  nom::Color4i( 197, 197, 197 ), nom::Color4i( 84, 84, 84 )
-}};
 
 } // namespace tt
 

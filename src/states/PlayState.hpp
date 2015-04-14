@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
 
 namespace tt {
 
@@ -68,8 +69,8 @@ class PlayState: public nom::IState
     /// \see nom::InputMapper.
     void on_mouse_button_down( const nom::Event& ev );
 
-    nom::uint32 turn();
-    void set_player_turn(nom::uint32 player_id);
+    PlayerIndex turn() const;
+    void set_player_turn(PlayerIndex player_id);
 
     // Helper method for incrementing to next player's turn
     void end_turn();
@@ -99,8 +100,8 @@ class PlayState: public nom::IState
     void on_update_info_dialogs();
     void updateCursor ( void );
 
-    /// Update each player's scoreboard
-    void updateScore ( void );
+    /// \brief Update the players' scoreboard.
+    void update_score();
 
     bool save_game();
     bool load_game();
@@ -108,20 +109,18 @@ class PlayState: public nom::IState
     Game* game;
 
     /// \brief Game players
-    std::unique_ptr<IPlayer> players_[TOTAL_PLAYERS];
+    std::unique_ptr<IPlayer> players_[PlayerIndex::TOTAL_PLAYERS];
 
     /// x, y coords mapping for player1, player2 cursor starting position
-    nom::Point2i player_cursor_coords[2];
+    nom::Point2i player_cursor_coords[PlayerIndex::TOTAL_PLAYERS];
 
     /// x, y coords mapping for player1, player2 scoreboard positions
-    nom::Point2i player_scoreboard[2];
+    nom::Point2i player_scoreboard[PlayerIndex::TOTAL_PLAYERS];
 
     /// y coords mapping for cursor -> card position index
-    nom::Point2i cursor_coords_map[5];
+    nom::Point2i cursor_coords_map[MAX_PLAYER_HAND];
 
-    // TODO: We probably ought to be using the value of Card::NOPLAYER,
-    // Card::PLAYER1, Card::PLAYER2 here!
-    nom::uint32 turn_;
+    PlayerIndex turn_;
 
     enum CursorState
     {

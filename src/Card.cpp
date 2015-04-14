@@ -44,12 +44,12 @@ Card Card::null = Card();
 Card::Card() :
   id(BAD_CARD_ID),
   level(0),
-  type(0),
-  element(::NONE),
+  type(CARD_TYPE_INVALID),
+  element(CARD_ELEMENT_NONE),
   rank( {{0}} ),
   name("INVALID"),
-  player_id(Card::NO_PLAYER),
-  player_owner(Card::NO_PLAYER),
+  player_id(PlayerID::PLAYER_ID_INVALID),
+  player_owner(PlayerID::PLAYER_ID_INVALID),
   num_(0),
   face_down_(false),
   card_renderer_(nullptr)
@@ -62,60 +62,54 @@ Card::~Card()
   // NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
 }
 
-const nom::int32 Card::getID ( void ) const
+CardID Card::getID ( void ) const
 {
   return this->id;
 }
 
-const std::string Card::get_id_string( void ) const
+std::string Card::get_id_string( void ) const
 {
   return std::to_string( this->id );
 }
 
-const nom::int32 Card::getLevel ( void ) const
+nom::uint32 Card::getLevel ( void ) const
 {
   return this->level;
 }
 
-const nom::int32 Card::getType ( void ) const
+nom::uint32 Card::getType ( void ) const
 {
   return this->type;
 }
 
-const nom::int32 Card::getElement ( void ) const
+nom::uint32 Card::getElement ( void ) const
 {
   return this->element;
 }
 
-const std::array<nom::int32, MAX_RANKS> Card::getRanks ( void ) const
+std::array<nom::uint32, MAX_RANKS> Card::getRanks ( void ) const
 {
   return this->rank;
 }
 
-const std::vector<int> Card::ranks_as_vector ( void ) const
+nom::uint32 Card::getNorthRank ( void ) const
 {
-  return std::vector<int> { this->rank[NORTH], this->rank[EAST],
-                            this->rank[SOUTH], this->rank[WEST] };
+  return this->rank[RANK_NORTH];
 }
 
-const nom::int32 Card::getNorthRank ( void ) const
+nom::uint32 Card::getEastRank ( void ) const
 {
-  return this->rank[NORTH];
+  return this->rank[RANK_EAST];
 }
 
-const nom::int32 Card::getEastRank ( void ) const
+nom::uint32 Card::getSouthRank ( void ) const
 {
-  return this->rank[EAST];
+  return this->rank[RANK_SOUTH];
 }
 
-const nom::int32 Card::getSouthRank ( void ) const
+nom::uint32 Card::getWestRank ( void ) const
 {
-  return this->rank[SOUTH];
-}
-
-const nom::int32 Card::getWestRank ( void ) const
-{
-  return this->rank[WEST];
+  return this->rank[RANK_WEST];
 }
 
 const std::string& Card::getName ( void ) const
@@ -123,12 +117,12 @@ const std::string& Card::getName ( void ) const
   return this->name;
 }
 
-const nom::int32 Card::getPlayerID ( void ) const
+PlayerID Card::getPlayerID() const
 {
   return this->player_id;
 }
 
-const nom::int32 Card::getPlayerOwner ( void ) const
+PlayerID Card::getPlayerOwner() const
 {
   return this->player_owner;
 }
@@ -160,60 +154,60 @@ std::shared_ptr<CardRenderer>& Card::card_renderer()
   return this->card_renderer_;
 }
 
-void Card::setID ( nom::int32 id_ )
+void Card::setID ( CardID id )
 {
-  this->id = id_;
+  this->id = id;
 }
 
-void Card::setLevel ( nom::int32 level_ )
+void Card::setLevel ( nom::uint32 level_ )
 {
   this->level = level_;
 }
 
-void Card::setType ( nom::int32 type_ )
+void Card::setType ( nom::uint32 type )
 {
-  this->type = type_;
+  this->type = type;
 }
 
-void Card::setElement ( nom::int32 element_ )
+void Card::setElement ( nom::uint32 element )
 {
-  this->element = element_;
+  this->element = element;
 }
 
-void Card::setRanks ( std::array<nom::int32, MAX_RANKS> ranks )
+void Card::setRanks ( std::array<nom::uint32, MAX_RANKS> ranks )
 {
-  this->setNorthRank ( ranks[NORTH] );
-  this->setEastRank ( ranks[EAST] );
-  this->setSouthRank ( ranks[SOUTH] );
-  this->setWestRank ( ranks[WEST] );
+  this->setNorthRank ( ranks[RANK_NORTH] );
+  this->setEastRank ( ranks[RANK_EAST] );
+  this->setSouthRank ( ranks[RANK_SOUTH] );
+  this->setWestRank ( ranks[RANK_WEST] );
 }
 
-void Card::set_ranks ( std::vector<nom::int32> ranks )
+void Card::set_ranks ( std::vector<nom::uint32> ranks )
 {
-  this->setNorthRank ( ranks[NORTH] );
-  this->setEastRank ( ranks[EAST] );
-  this->setSouthRank ( ranks[SOUTH] );
-  this->setWestRank ( ranks[WEST] );
+  this->setNorthRank ( ranks[RANK_NORTH] );
+  this->setEastRank ( ranks[RANK_EAST] );
+  this->setSouthRank ( ranks[RANK_SOUTH] );
+  this->setWestRank ( ranks[RANK_WEST] );
 }
 
-void Card::setNorthRank ( nom::int32 rank )
+void Card::setNorthRank ( nom::uint32 rank )
 {
-  this->rank[NORTH] = rank;
+  this->rank[RANK_NORTH] = rank;
 }
 
-void Card::setEastRank ( nom::int32 rank )
+void Card::setEastRank ( nom::uint32 rank )
 {
-  this->rank[EAST] = rank;
+  this->rank[RANK_EAST] = rank;
 }
 
-void Card::setSouthRank ( nom::int32 rank )
+void Card::setSouthRank ( nom::uint32 rank )
 {
-  this->rank[SOUTH] = rank;
+  this->rank[RANK_SOUTH] = rank;
 }
 
-void Card::setWestRank ( nom::int32 rank )
+void Card::setWestRank ( nom::uint32 rank )
 {
-  this->rank[WEST] = rank;
+  this->rank[RANK_WEST] = rank;
 }
 
 void Card::setName ( std::string name_ )
@@ -221,14 +215,14 @@ void Card::setName ( std::string name_ )
   this->name = name_;
 }
 
-void Card::setPlayerID ( nom::int32 player_id_ )
+void Card::setPlayerID(PlayerID player_id)
 {
-  this->player_id = player_id_;
+  this->player_id = player_id;
 }
 
-void Card::setPlayerOwner ( nom::int32 player_owner_ )
+void Card::setPlayerOwner(PlayerID player_owner)
 {
-  this->player_owner = player_owner_;
+  this->player_owner = player_owner;
 }
 
 void Card::set_num(int num_cards)

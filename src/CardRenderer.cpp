@@ -133,7 +133,7 @@ CardRenderer* create_placeholder_card_renderer()
 CardRenderer*
 create_card_renderer(const CardResourceLoader* res, const Card& card)
 {
-  uint32 player_id = card.getPlayerID();
+  PlayerID player_id = card.getPlayerID();
 
   auto texture = std::make_shared<Texture>();
   NOM_ASSERT(texture != nullptr);

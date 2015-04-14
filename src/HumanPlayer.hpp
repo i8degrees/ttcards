@@ -46,8 +46,10 @@ class HumanPlayer: public IPlayer
 
     virtual ~HumanPlayer();
 
-    virtual nom::uint32 player_id() const override;
-    virtual void set_player_id(nom::uint32 id) override;
+    virtual PlayerType type() const override;
+
+    virtual PlayerID player_id() const override;
+    virtual void set_player_id(PlayerID id) override;
 
     void update(nom::real32 delta_time) override;
     void draw(nom::IDrawable::RenderTarget& target) override;
@@ -57,7 +59,7 @@ class HumanPlayer: public IPlayer
     CardHand* hand_;
 
     /// \brief The unique identifier for the player.
-    nom::uint32 player_id_;
+    PlayerID player_id_;
 };
 
 } // namespace tt

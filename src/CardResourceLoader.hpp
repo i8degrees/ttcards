@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
 
 namespace tt {
 
@@ -46,7 +47,7 @@ class CardResourceLoader
     /// \brief Load the resources used in rendering cards from a collection.
     bool load_file(const GameConfig* config, const nom::Font& card_font);
 
-    std::unique_ptr<nom::Gradient> card_backgrounds_[TOTAL_PLAYERS+1];
+    std::unique_ptr<nom::Gradient> card_backgrounds_[PlayerID::TOTAL_PLAYER_IDS];
     std::unique_ptr<nom::SpriteBatch> card_faces_;
     std::unique_ptr<nom::SpriteBatch> card_elements_;
     std::unique_ptr<nom::Text> card_text_;

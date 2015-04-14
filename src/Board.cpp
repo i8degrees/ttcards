@@ -411,7 +411,7 @@ nom::uint32 Board::getCount ( void )
   return total_count;
 }
 
-nom::uint32 Board::getPlayerCount ( nom::int32 player_id )
+nom::uint32 Board::getPlayerCount(PlayerID player_id)
 {
   nom::uint32 pid_count = 0;
 
@@ -428,7 +428,7 @@ nom::uint32 Board::getPlayerCount ( nom::int32 player_id )
   return pid_count;
 }
 
-const nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y ) const
+CardID Board::getStatus ( nom::int32 x, nom::int32 y ) const
 {
   if ( ( x >= 0 && x <= BOARD_GRID_WIDTH ) && ( y >= 0 && y <= BOARD_GRID_HEIGHT ) )
   {
@@ -438,7 +438,7 @@ const nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y ) const
   return BAD_CARD_ID;
 }
 
-nom::int32 Board::status(const nom::Point2i& rel_board_pos) const
+CardID Board::status(const nom::Point2i& rel_board_pos) const
 {
   return this->getStatus(rel_board_pos.x, rel_board_pos.y);
 }
@@ -496,12 +496,12 @@ void Board::update(const nom::Point2i& grid_pos, Card& pcard)
   this->grid[grid_pos.x][grid_pos.y].set_tile(pcard);
 }
 
-const nom::int32 Board::getPlayerID ( nom::int32 x, nom::int32 y ) const
+PlayerID Board::getPlayerID(nom::int32 x, nom::int32 y) const
 {
   return this->grid[x][y].tile_card.getPlayerID();
 }
 
-void Board::flip_card(const nom::Point2i& rel_board_pos, nom::int32 player_id)
+void Board::flip_card(const nom::Point2i& rel_board_pos, PlayerID player_id)
 {
   int x = rel_board_pos.x;
   int y = rel_board_pos.y;
@@ -642,9 +642,12 @@ NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
     nom::Value obj = itr->ref();
     card.unserialize( obj );
 
+    auto player_id = NOM_SCAST(PlayerID, obj["player_id"].get_int() );
+    auto player_owner = NOM_SCAST(PlayerID, obj["owner"].get_int() );
+
     // Additional attributes
-    card.setPlayerID( obj["player_id"].get_int() );
-    card.setPlayerOwner( obj["owner"].get_int() );
+    card.setPlayerID(player_id);
+    card.setPlayerOwner(player_owner);
 
     // Commit contents to our buffer if all goes well
     cards_buffer.push_back ( card );
@@ -737,7 +740,7 @@ void Board::initialize_board_elements()
   const uint32 MAXIMUM_BOARD_ELEMENTS = 4;
   const uint32 MAXIMUM_RAND_NUMBER = 25;
   uint32 num_elements = 0;
-  uint32 max_element_type_count[MAX_ELEMENT+1] = {0};
+  uint32 max_element_type_count[TOTAL_CARD_ELEMENTS] = {0};
 
   while( num_elements < MAXIMUM_BOARD_ELEMENTS ) {
 
@@ -747,72 +750,72 @@ void Board::initialize_board_elements()
         uint32 random_element =
           nom::uniform_int_rand<uint32>(0, MAXIMUM_RAND_NUMBER);
 
-        if( random_element == ELEMENT_EARTH &&
-            max_element_type_count[ELEMENT_EARTH] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_EARTH )
+        if( random_element == CARD_ELEMENT_EARTH &&
+            max_element_type_count[CARD_ELEMENT_EARTH] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_EARTH )
         {
-          ++max_element_type_count[ELEMENT_EARTH];
+          ++max_element_type_count[CARD_ELEMENT_EARTH];
           ++num_elements;
         }
 
-        if( random_element == ELEMENT_FIRE &&
-            max_element_type_count[ELEMENT_FIRE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_FIRE )
+        if( random_element == CARD_ELEMENT_FIRE &&
+            max_element_type_count[CARD_ELEMENT_FIRE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_FIRE )
         {
-          ++max_element_type_count[ELEMENT_FIRE];
+          ++max_element_type_count[CARD_ELEMENT_FIRE];
           ++num_elements;
         }
 
-        if( random_element == ELEMENT_HOLY &&
-            max_element_type_count[ELEMENT_HOLY] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_HOLY )
+        if( random_element == CARD_ELEMENT_HOLY &&
+            max_element_type_count[CARD_ELEMENT_HOLY] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_HOLY )
         {
-          ++max_element_type_count[ELEMENT_HOLY];
+          ++max_element_type_count[CARD_ELEMENT_HOLY];
           ++num_elements;
         }
 
-        if( random_element == ELEMENT_ICE &&
-            max_element_type_count[ELEMENT_ICE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_ICE )
+        if( random_element == CARD_ELEMENT_ICE &&
+            max_element_type_count[CARD_ELEMENT_ICE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_ICE )
         {
-          ++max_element_type_count[ELEMENT_ICE];
+          ++max_element_type_count[CARD_ELEMENT_ICE];
           ++num_elements;
         }
 
-        if( random_element == ELEMENT_POISON &&
-            max_element_type_count[ELEMENT_POISON] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_POISON )
+        if( random_element == CARD_ELEMENT_POISON &&
+            max_element_type_count[CARD_ELEMENT_POISON] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_POISON )
         {
-          ++max_element_type_count[ELEMENT_POISON];
+          ++max_element_type_count[CARD_ELEMENT_POISON];
           ++num_elements;
         }
 
-        if( random_element == ELEMENT_THUNDER &&
-            max_element_type_count[ELEMENT_THUNDER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_THUNDER )
+        if( random_element == CARD_ELEMENT_THUNDER &&
+            max_element_type_count[CARD_ELEMENT_THUNDER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_THUNDER )
         {
-          ++max_element_type_count[ELEMENT_THUNDER];
+          ++max_element_type_count[CARD_ELEMENT_THUNDER];
           ++num_elements;
         }
 
-        if( random_element == ELEMENT_WATER &&
-            max_element_type_count[ELEMENT_WATER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_WATER )
+        if( random_element == CARD_ELEMENT_WATER &&
+            max_element_type_count[CARD_ELEMENT_WATER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_WATER )
         {
-          ++max_element_type_count[ELEMENT_WATER];
+          ++max_element_type_count[CARD_ELEMENT_WATER];
           ++num_elements;
         }
 
-        if( random_element == ELEMENT_WIND &&
-            max_element_type_count[ELEMENT_WIND] < MAXIMUM_ELEMENT_TYPE_COUNT &&
-            this->grid[x][y].element() != ELEMENT_WIND )
+        if( random_element == CARD_ELEMENT_WIND &&
+            max_element_type_count[CARD_ELEMENT_WIND] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_WIND )
         {
-          ++max_element_type_count[ELEMENT_WIND];
+          ++max_element_type_count[CARD_ELEMENT_WIND];
           ++num_elements;
         }
 
-        if( random_element > MAX_ELEMENT ) {
-          random_element = ::NONE;
+        if( random_element > (TOTAL_CARD_ELEMENTS - 1) ) {
+          random_element = CARD_ELEMENT_NONE;
         }
 
         this->grid[x][y].set_element(random_element);

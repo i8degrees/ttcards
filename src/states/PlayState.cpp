@@ -43,10 +43,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Create keyboard bindings for a game board position
 #define CREATE_MOVE_TO_KEY_BINDING(var_name, x, y) \
   auto var_name( [=](const nom::Event& evt) { \
-    auto pturn = this->turn(); \
+    auto player_turn = this->turn(); \
     if( this->game->debug_game_ == true ) { \
       this->move_to( nom::Point2i(x, y) ); \
-    } else if( this->game->debug_game_ == false && pturn != PLAYER2 ) { \
+    } else if(  this->game->debug_game_ == false && \
+                player_turn != PlayerIndex::PLAYER_2 ) \
+    { \
       this->move_to( nom::Point2i(x, y) ); \
     } \
   });
@@ -58,7 +60,7 @@ namespace tt {
 PlayState::PlayState(nom::SDLApp* object) :
   nom::IState( Game::State::Play ),
   game( NOM_SCAST(Game*, object) ),
-  turn_(PLAYER1),
+  turn_(PlayerIndex::TOTAL_PLAYERS),
   cursor_state_(CursorState::PLAYER),
   cursor_locked(false),
   skip_turn(false)
@@ -108,7 +110,7 @@ void PlayState::on_init( nom::void_ptr data )
 
   this->gameover_state_ = GameOverType::NotOver;
   this->cursor_state_ = CursorState::PLAYER;
-  this->turn_ = PLAYER1;
+  this->turn_ = PlayerIndex::TOTAL_PLAYERS;
   this->cursor_locked = false;
   this->skip_turn = false;
 
@@ -119,8 +121,8 @@ void PlayState::on_init( nom::void_ptr data )
   // ...Initialize player hands...
 
   auto& rules = this->game->rules_;
-  auto p1_db = this->game->cards_db_[PLAYER1].get();
-  auto p2_db = this->game->cards_db_[PLAYER2].get();
+  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
   NOM_ASSERT(p1_db != nullptr);
   NOM_ASSERT(p2_db != nullptr);
 
@@ -131,14 +133,14 @@ void PlayState::on_init( nom::void_ptr data )
 
   if( tt::is_card_rule_set(&rules, CardRuleset::OPEN_RULESET) == false ) {
     // ...No peeking at the opponent's cards!!
-    tt::set_face_down(&this->game->hand[PLAYER2], true);
+    tt::set_face_down(&this->game->hand[PlayerIndex::PLAYER_2], true);
   } else {
-    tt::set_face_down(&this->game->hand[PLAYER2], false);
+    tt::set_face_down(&this->game->hand[PlayerIndex::PLAYER_2], false);
   }
 
-  while( this->game->hand[PLAYER1].size() < MAX_PLAYER_HAND ) {
-    // this->game->hand[PLAYER1].shuffle(8, 10, this->game->collection);
-    this->game->hand[PLAYER1].shuffle(1, 1, *p1_db);
+  while( this->game->hand[PlayerIndex::PLAYER_1].size() < MAX_PLAYER_HAND ) {
+    // this->game->hand[PlayerIndex::PLAYER_1].shuffle(8, 10, this->game->collection);
+    this->game->hand[PlayerIndex::PLAYER_1].shuffle(1, 1, *p1_db);
   }
 
   // ...Initialize game board...
@@ -149,32 +151,38 @@ void PlayState::on_init( nom::void_ptr data )
   this->game->cursor_->set_position( Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y) );
   this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
 
-  this->players_[0].reset( new HumanPlayer(&this->game->hand[0]) );
-  // this->players_[0].reset( new CPU_Player( CPU_Player::Difficulty::Easy,
+  this->players_[PlayerIndex::PLAYER_1].reset( new HumanPlayer(&this->game->hand[PlayerIndex::PLAYER_1]) );
+  // this->players_[PlayerIndex::PLAYER_1].reset( new CPU_Player( CPU_Player::Difficulty::Easy,
   //                                   &this->game->board,
-  //                                   &this->game->hand[0],
+  //                                   &this->game->hand[PlayerIndex::PLAYER_1],
   //                                   cpu_player_action_callback ) );
 
-  this->players_[0]->set_position( Point2i( PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y ) );
+  this->players_[PlayerIndex::PLAYER_1]->set_position( Point2i(PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y) );
 
-  this->players_[1].reset( new CPU_Player(  CPU_Player::Difficulty::Easy,
+  this->players_[PlayerIndex::PLAYER_2].reset( new CPU_Player(  CPU_Player::Difficulty::Easy,
                                             this->game->board_.get(),
-                                            &this->game->hand[1],
+                                            &this->game->hand[PlayerIndex::PLAYER_2],
                                             cpu_player_action_callback ) );
 
-  this->players_[1]->set_position( Point2i( PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y ) );
+  this->players_[PlayerIndex::PLAYER_2]->set_position( Point2i(PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y) );
 
   // player1, player2 cursor X, Y coords
-  this->player_cursor_coords[0] = nom::Point2i( PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y );
-  this->player_cursor_coords[1] = nom::Point2i( PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y );
+  this->player_cursor_coords[PlayerIndex::PLAYER_1] =
+    nom::Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y);
+
+  this->player_cursor_coords[PlayerIndex::PLAYER_2] =
+    nom::Point2i(PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y);
 
   // Compute the player's scoreboard X, Y coordinate positions
-  this->player_scoreboard[0] = Point2i( PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y );
-  this->player_scoreboard[1] = Point2i( PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y );
+  this->player_scoreboard[PlayerIndex::PLAYER_1] =
+    Point2i(PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y);
 
-  for ( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ )
-  {
-    this->cursor_coords_map[idx] = nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
+  this->player_scoreboard[PlayerIndex::PLAYER_2] =
+    Point2i(PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y);
+
+  for( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ ) {
+    this->cursor_coords_map[idx] =
+      nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
   // Northern message box
@@ -224,15 +232,17 @@ void PlayState::on_init( nom::void_ptr data )
   //
   // Assuming a player hand of five, this should always assign a starting score
   // value of 5 for each player initially.
-  this->updateScore();
+  this->update_score();
 
   // Set whose turn it is initially using a random number generator with equal
   // odds -- 50/50 chance that you will have the first move!
   uint32 random_choice =
-    nom::uniform_int_rand<nom::uint32>(0, TOTAL_PLAYERS - 1);
-  this->set_player_turn(random_choice);
+    nom::uniform_int_rand<nom::uint32>(0, PlayerIndex::TOTAL_PLAYERS - 1);
 
-  if( this->turn() == PLAYER2 ) {
+  PlayerIndex chosen_player = NOM_SCAST(PlayerIndex, random_choice);
+  this->set_player_turn(chosen_player);
+
+  if( this->turn() == PlayerIndex::PLAYER_2 ) {
     this->initialize_cpu_player_turn();
   }
 
@@ -354,14 +364,14 @@ void PlayState::on_init( nom::void_ptr data )
     });
 
     auto delete_card( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
+      auto player_turn = this->turn();
       Point2i cursor_pos;
-      cursor_pos.x = this->player_cursor_coords[pturn].x;
-      cursor_pos.y = this->player_cursor_coords[pturn].y;
+      cursor_pos.x = this->player_cursor_coords[player_turn].x;
+      cursor_pos.y = this->player_cursor_coords[player_turn].y;
 
-      Card selected_card = this->game->hand[pturn].getSelectedCard();
+      Card selected_card = this->game->hand[player_turn].getSelectedCard();
 
-      this->game->hand[pturn].erase(selected_card);
+      this->game->hand[player_turn].erase(selected_card);
       this->game->cursor_->set_position(cursor_pos);
     });
 
@@ -371,59 +381,52 @@ void PlayState::on_init( nom::void_ptr data )
     state.insert("delete_card", nom::KeyboardAction(SDLK_d), delete_card);
 
     auto increase_north_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
+      auto player_turn = this->turn();
       tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  true, NORTH );
+                                  &this->game->hand[player_turn],
+                                  true, RANK_NORTH );
     });
 
     auto decrease_north_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  false, NORTH );
+      auto player_turn = this->turn();
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], false, RANK_NORTH );
     });
 
     auto increase_south_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  true, SOUTH );
+      auto player_turn = this->turn();
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], true, RANK_SOUTH );
     });
 
     auto decrease_south_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  false, SOUTH );
+      auto player_turn = this->turn();
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], false, RANK_SOUTH );
     });
 
     auto increase_west_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  true, WEST );
+      auto player_turn = this->turn();
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], true, RANK_WEST );
     });
 
     auto decrease_west_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  false, WEST );
+      auto player_turn = this->turn();
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], false, RANK_WEST );
     });
 
     auto increase_east_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  true, EAST );
+      auto player_turn = this->turn();
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], true, RANK_EAST );
     });
 
     auto decrease_east_rank( [=](const nom::Event& evt) {
-      auto pturn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[pturn],
-                                  false, EAST );
+      auto player_turn = this->turn();
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], false, RANK_EAST );
     });
 
     state.insert( "increase_north_rank", nom::KeyboardAction(SDLK_UP,
@@ -514,7 +517,7 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
     return;
   }
 
-  uint32 player_turn = this->turn(); // Ignore player2 mouse input
+  auto player_turn = this->turn(); // Ignore player2 mouse input
 
   // Player cursor positioning
   Point2i player_pos = this->players_[player_turn]->position();
@@ -574,14 +577,14 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
   }
 }
 
-nom::uint32 PlayState::turn()
+PlayerIndex PlayState::turn() const
 {
   return this->turn_;
 }
 
-void PlayState::set_player_turn(nom::uint32 player_id)
+void PlayState::set_player_turn(PlayerIndex player_index)
 {
-  this->turn_ = player_id;
+  this->turn_ = player_index;
 
   this->resetCursor();
 }
@@ -590,22 +593,21 @@ void PlayState::end_turn()
 {
   this->unlockSelectedCard();
 
-  this->game->hand[PLAYER1].clearSelectedCard();
-  this->game->hand[PLAYER2].clearSelectedCard();
+  this->game->hand[PlayerIndex::PLAYER_1].clearSelectedCard();
+  this->game->hand[PlayerIndex::PLAYER_2].clearSelectedCard();
 
-  if( this->turn() == PLAYER1 ) {
-    this->set_player_turn(PLAYER2);
+  if( this->turn() == PlayerIndex::PLAYER_1 ) {
+    this->set_player_turn(PlayerIndex::PLAYER_2);
 
     this->initialize_cpu_player_turn();
-  }
-  else if( this->turn() == PLAYER2 ) {
-    this->set_player_turn(PLAYER1);
+  } else if( this->turn() == PlayerIndex::PLAYER_2 ) {
+    this->set_player_turn(PlayerIndex::PLAYER_1);
   }
 }
 
 void PlayState::on_update_info_dialogs()
 {
-  nom::uint32 player_turn = this->turn();
+  auto player_turn = this->turn();
   Card selected_card;
   nom::Point2i cursor_pos;
   nom::IntRect board_pos;
@@ -636,7 +638,7 @@ void PlayState::on_update_info_dialogs()
 
     os << card_id << "/" << player_id << " " << "[" << player_owner << "]";
   } else {
-    selected_card = this->game->hand[PLAYER1].getSelectedCard();
+    selected_card = this->game->hand[PlayerIndex::PLAYER_1].getSelectedCard();
   }
 
   if( selected_card == Card::null ) {
@@ -681,7 +683,7 @@ void PlayState::lockCursor ( bool lock )
 void PlayState::resetCursor ( void )
 {
   Point2i cursor_pos(Point2i::zero);
-  uint32 player_turn = this->turn();
+  auto player_turn = this->turn();
 
   this->game->hand[player_turn].front();
 
@@ -752,7 +754,7 @@ void PlayState::lockSelectedCard ( void )
 
 void PlayState::move_to(const nom::Point2i& rel_board_pos)
 {
-  nom::uint32 player_turn = this->turn();
+  auto player_turn = this->turn();
 
   Card selected_card = this->game->hand[player_turn].getSelectedCard();
   if( selected_card.getID() == BAD_CARD_ID ) {
@@ -794,7 +796,7 @@ void
 PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
                         const std::function<void()>& on_completion_func )
 {
-  uint32 player_turn = this->turn();
+  auto player_turn = this->turn();
   auto& rules = this->game->rules_;
 
   // Check for flippable cards
@@ -837,9 +839,10 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
 
       this->flip_card_action(gpos);
 
-      this->game->board_->flip_card(gpos, player_turn + 1);
+      auto player_id = tt::flip_player_id(player_turn);
+      this->game->board_->flip_card(gpos, player_id);
 
-      this->updateScore();
+      this->update_score();
       this->game->card_flip->Play();
 
       if( tt::is_card_rule_set(&rules, CardRule::COMBO_RULE) == true ) {
@@ -870,9 +873,10 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
 
             this->flip_card_action(tgpos);
 
-            this->game->board_->flip_card(tgpos, player_turn + 1);
+            auto player_id = tt::flip_player_id(player_turn);
+            this->game->board_->flip_card(tgpos, player_id);
 
-            this->updateScore();
+            this->update_score();
             this->game->card_flip->Play();
           });
         } // end inner for loop (additional flips)
@@ -892,12 +896,12 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
                                 const move_card_up_action_callback&
                                 on_completion_func )
 {
-  uint32 pturn = this->turn();
+  auto player_turn = this->turn();
 
   this->game->actions_.cancel_action("move_card_up");
 
   Card pcard =
-    this->game->hand[pturn].getSelectedCard();
+    this->game->hand[player_turn].getSelectedCard();
 
   std::shared_ptr<CardRenderer> card_renderer =
     pcard.card_renderer();
@@ -907,17 +911,18 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
   NOM_ASSERT(this->move_card_up_sprite_ != nullptr);
   NOM_ASSERT(this->move_card_up_sprite_->valid() == true);
 
-  Point2i player_pos = this->players_[pturn]->position();
+  Point2i player_pos = this->players_[player_turn]->position();
 
   // We begin the animation by moving the selected card from the player's hand
   // upward, so we need to apply the offset that is rendered in IPlayer::draw
 
   // TODO: Perhaps we should just apply the rendering offset to the player's
   // position getter???
-  player_pos.y += (CARD_HEIGHT / 2 ) * this->game->hand[pturn].position();
-  if( pturn == 0 ) {
+  player_pos.y +=
+    (CARD_HEIGHT / 2 ) * this->game->hand[player_turn].position();
+  if( player_turn == 0 ) {
     player_pos.x -= 16;
-  } else if( pturn == 1 ) {
+  } else if( player_turn == PlayerIndex::PLAYER_2 ) {
     player_pos.x += 16;
   }
 
@@ -937,7 +942,7 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
     this->game->board_->tile(rel_board_pos.x, rel_board_pos.y).bounds().size().h;
 
   // We must reverse the board position coordinates for 2, y and 0, y
-  if( pturn == PLAYER1 ) {
+  if( player_turn == PlayerIndex::PLAYER_1 ) {
     if( rel_board_pos.x == 2 ) {
       board_pos.x = BOARD_ORIGIN_X;
     } else if( rel_board_pos.x == 0 ) {
@@ -948,7 +953,7 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
   // The off-screen animation delta for moving along the X-axis
   Point2i delta(board_pos.x, 0);
 
-  if( pturn == PLAYER1 ) {
+  if( player_turn == PlayerIndex::PLAYER_1 ) {
     // Subtract away the player's card rendering offset; this undoes the
     // player_pos calculation done above to get us the actual board position
     delta.x -= 48;
@@ -1163,7 +1168,7 @@ void PlayState::moveCursorDown ( void )
 
 void PlayState::updateCursor()
 {
-  uint32 player_turn = this->turn();
+  auto player_turn = this->turn();
   bool blinking_cursor_action =
     this->game->actions_.action_running("blinking_cursor_action");
 
@@ -1177,33 +1182,47 @@ void PlayState::updateCursor()
 
     this->game->actions_.cancel_action("blinking_cursor_action");
 
-    if( player_turn == PLAYER1 ) {
+    if( player_turn == PlayerIndex::PLAYER_1 ) {
 
       this->game->cursor_->set_sprite_sheet(this->game->right_cursor_frames_);
       this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
-    } else if( this->skip_turn == true && player_turn == PLAYER2 ) {
-
+    } else if(  this->skip_turn == true &&
+                player_turn == PlayerIndex::PLAYER_2 )
+    {
       this->game->cursor_->set_sprite_sheet(this->game->left_cursor_frames_);
       this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
     }
   }
 }
 
-void PlayState::updateScore ( void )
+void PlayState::update_score()
 {
-  for ( nom::uint32 players = 0; players < TOTAL_PLAYERS; players++ )
+  nom::uint32 board_count = 0;
+  nom::uint32 hand_count = 0;
+  uint32 score = 0;
+  Point2i score_pos;
+  std::string score_str;
+
+  for(  nom::uint32 player_index = 0;
+        player_index < PlayerIndex::TOTAL_PLAYERS;
+        ++player_index )
   {
+    auto player_id = tt::player_id( NOM_SCAST(PlayerIndex, player_index) );
+
     // Number of cards player owns on the board
-    nom::uint32 board_count = this->game->board_->getPlayerCount(players + 1);
+    board_count = this->game->board_->getPlayerCount(player_id);
 
     // Number of cards player has remaining
-    nom::uint32 hand_count = this->game->hand[players].size();
+    hand_count = this->game->hand[player_index].size();
 
-    this->players_[players]->set_score(board_count + hand_count);
+    score = (board_count + hand_count);
+    this->players_[player_index]->set_score(score);
 
-    // Update the font responsible for rendering the score
-    this->game->scoreboard_text[players].set_text( this->players_[players]->score_string() );
-    this->game->scoreboard_text[players].set_position( nom::Point2i (this->player_scoreboard[players].x, this->player_scoreboard[players].y) );
+    score_str = this->players_[player_index]->score_string();
+    score_pos = this->player_scoreboard[player_index];
+
+    this->game->scoreboard_text[player_index].set_text(score_str);
+    this->game->scoreboard_text[player_index].set_position(score_pos);
   }
 }
 
@@ -1216,7 +1235,7 @@ void PlayState::on_update(nom::real32 delta_time)
   this->on_update_info_dialogs();
   this->game->gui_window_.update();
 
-  this->players_[0]->update(delta_time);
+  this->players_[PlayerIndex::PLAYER_1]->update(delta_time);
 
   // CPU player's hand animation
   if( delta_time >= this->last_delta_ + this->cpu_hand_delay_seconds_ ) {
@@ -1227,18 +1246,18 @@ void PlayState::on_update(nom::real32 delta_time)
 
       // Fixes a out of bounds issue that occurs occasionally upon state
       // phasing
-      if( this->game->hand[PLAYER2].size() > 0 ) {
+      if( this->game->hand[PlayerIndex::PLAYER_2].size() > 0 ) {
         nom::uint32 rand_pick =
-          nom::uniform_int_rand<uint32>(0, this->game->hand[PLAYER2].size() - 1);
-        this->game->hand[PLAYER2].set_position(rand_pick);
+          nom::uniform_int_rand<uint32>(0, this->game->hand[PlayerIndex::PLAYER_2].size() - 1);
+        this->game->hand[PlayerIndex::PLAYER_2].set_position(rand_pick);
       }
     }
   }
 
-  if( player_turn == PLAYER1 ) {
+  if( player_turn == PlayerIndex::PLAYER_1 ) {
 
     this->game->triad_->set_position(PLAYER1_TRIAD_ORIGIN);
-  } else if( player_turn == PLAYER2 ) {
+  } else if( player_turn == PlayerIndex::PLAYER_2 ) {
 
     this->game->triad_->set_position(PLAYER2_TRIAD_ORIGIN);
 
@@ -1248,11 +1267,11 @@ void PlayState::on_update(nom::real32 delta_time)
       if( this->game->actions_.action_running("cpu_move_delay") == false &&
           this->game->actions_.action_running("move_card_up") == false )
       {
-        this->players_[PLAYER2]->update(delta_time);
+        this->players_[PlayerIndex::PLAYER_2]->update(delta_time);
       }
     } // end if skip_turn == FALSE
   } else {
-    NOM_ASSERT("PlayState::update(): player_turn > PLAYER2");
+    NOM_ASSERT("PlayState::update(): player_turn > PlayerIndex::PLAYER_2");
   }
 
   this->game->window.update();
@@ -1266,8 +1285,8 @@ void PlayState::on_draw( nom::RenderWindow& target )
 
   this->game->board_->draw(target);
 
-  this->players_[PLAYER1]->draw(target);
-  this->players_[PLAYER2]->draw(target);
+  this->players_[PlayerIndex::PLAYER_1]->draw(target);
+  this->players_[PlayerIndex::PLAYER_2]->draw(target);
 
   this->game->triad_->draw(target);
 
@@ -1278,8 +1297,8 @@ void PlayState::on_draw( nom::RenderWindow& target )
   this->game->gui_window_.draw();
 
   // Draw each player's scoreboard
-  this->game->scoreboard_text[0].draw(target);
-  this->game->scoreboard_text[1].draw(target);
+  this->game->scoreboard_text[PlayerIndex::PLAYER_1].draw(target);
+  this->game->scoreboard_text[PlayerIndex::PLAYER_2].draw(target);
 
   if( this->game->actions_.action_running("same_text_action") == true ) {
     if( this->text_action_sprite_ != nullptr &&
@@ -1346,7 +1365,7 @@ bool PlayState::load_game()
   }
 
   // Success!
-  this->updateScore();
+  this->update_score();
   this->resetCursor();
 
   this->game->load_game->Play();
@@ -1358,11 +1377,11 @@ void PlayState::check_gameover_conditions()
   auto board_count = this->game->board_->getCount();
   NOM_ASSERT(board_count <= BOARD_COUNT_MAX);
 
-  auto player1_score = this->players_[PLAYER1]->score();
-  auto player1_num_cards = this->game->hand[PLAYER1].size();
+  auto player1_score = this->players_[PlayerIndex::PLAYER_1]->score();
+  auto player1_num_cards = this->game->hand[PlayerIndex::PLAYER_1].size();
 
-  auto player2_score = this->players_[PLAYER2]->score();
-  auto player2_num_cards = this->game->hand[PLAYER2].size();
+  auto player2_score = this->players_[PlayerIndex::PLAYER_2]->score();
+  auto player2_num_cards = this->game->hand[PlayerIndex::PLAYER_2].size();
 
   auto& rules = this->game->rules_;
   bool sudden_death_rule_applied =

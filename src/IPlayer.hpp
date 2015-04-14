@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math/Point2.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
 
 namespace tt {
 
@@ -43,15 +44,17 @@ class IPlayer
     IPlayer();
     virtual ~IPlayer();
 
+    virtual PlayerType type() const = 0;
+
     const nom::Point2i& position() const;
     virtual void set_position(const nom::Point2i& pos);
 
-    virtual nom::uint32 player_id() const = 0;
-    virtual void set_player_id(nom::uint32 id) = 0;
+    virtual PlayerID player_id() const = 0;
+    virtual void set_player_id(PlayerID id) = 0;
 
-    nom::uint score() const;
+    nom::uint32 score() const;
     std::string score_string() const;
-    void set_score(nom::uint score);
+    void set_score(nom::uint32 score);
 
     virtual void update(nom::real32 delta_time) = 0;
     virtual void draw(nom::IDrawable::RenderTarget& target) /*const*/ = 0;
@@ -62,7 +65,7 @@ class IPlayer
 
   private:
     /// \brief The player's score.
-    nom::uint score_;
+    nom::uint32 score_;
 };
 
 } // namespace tt

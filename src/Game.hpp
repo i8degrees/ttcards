@@ -265,7 +265,7 @@ class Game: public nom::SDLApp
     ///
     /// \remarks Only available when the game is built with debug (developer)
     /// flags.
-    void dump_hand(nom::uint32 player_id);
+    void dump_hand(PlayerIndex player_index);
 
     /// \brief Method callback action for dumping the card collection.
     ///
@@ -273,7 +273,7 @@ class Game: public nom::SDLApp
     ///
     /// \remarks Only available when the game is built with debug (developer)
     /// flags.
-    void dump_collection(nom::uint32 player_id);
+    void dump_collection(PlayerIndex player_index);
 
     /// \brief The event handler that is called when our window is shown, such
     /// as upon initial creation, restored from a hidden or minimized state,

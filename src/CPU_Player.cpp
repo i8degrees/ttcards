@@ -49,7 +49,7 @@ CPU_Player::CPU_Player( Difficulty difficulty, Board* board, CardHand* hand,
   this->board_ = board;
   this->hand_ = hand;
   this->action_ = action;
-  this->player_id_ = Card::PLAYER2;
+  this->player_id_ = PlayerID::PLAYER_ID_INVALID;
 
   NOM_ASSERT(this->hand_ != nullptr);
   NOM_ASSERT(this->board_ != nullptr);
@@ -60,12 +60,17 @@ CPU_Player::~CPU_Player()
   // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-nom::uint32 CPU_Player::player_id() const
+PlayerType CPU_Player::type() const
+{
+  return PlayerType::CPU_PLAYER;
+}
+
+PlayerID CPU_Player::player_id() const
 {
   return this->player_id_;
 }
 
-void CPU_Player::set_player_id(nom::uint32 id)
+void CPU_Player::set_player_id(PlayerID id)
 {
   this->player_id_ = id;
 }

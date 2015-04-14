@@ -181,27 +181,27 @@ load_file(const GameConfig* config, const nom::Font& card_font)
 
   // Initialize rendering of the card backgrounds for each player; we cache
   // these individually to gain some performance in load time
-  this->card_backgrounds_[Card::NO_PLAYER] =
+  this->card_backgrounds_[PlayerID::PLAYER_ID_INVALID] =
     init_card_background(CARD_BG_NO_PLAYER);
-  if( this->card_backgrounds_[Card::NO_PLAYER] == nullptr ) {
+  if( this->card_backgrounds_[PlayerID::PLAYER_ID_INVALID] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not initialize cards: failed to allocate memory for"
                   "a card background" );
     return false;
   }
 
-  this->card_backgrounds_[Card::PLAYER1] =
+  this->card_backgrounds_[PlayerID::PLAYER_ID_1] =
     init_card_background(CARD_BG_PLAYER1);
-  if( this->card_backgrounds_[Card::PLAYER1] == nullptr ) {
+  if( this->card_backgrounds_[PlayerID::PLAYER_ID_1] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not initialize cards: failed to allocate memory for"
                   "a card background" );
     return false;
   }
 
-  this->card_backgrounds_[Card::PLAYER2] =
+  this->card_backgrounds_[PlayerID::PLAYER_ID_2] =
     init_card_background(CARD_BG_PLAYER2);
-  if( this->card_backgrounds_[Card::PLAYER2] == nullptr ) {
+  if( this->card_backgrounds_[PlayerID::PLAYER_ID_2] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not initialize cards: failed to allocate memory for"
                   "a card background" );

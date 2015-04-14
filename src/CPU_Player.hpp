@@ -61,8 +61,14 @@ class CPU_Player: public IPlayer
 
     virtual ~CPU_Player();
 
-    virtual nom::uint32 player_id() const override;
-    virtual void set_player_id(nom::uint32 id) override;
+    // TODO: Make use of this method; there are several spots in PlayState
+    // where we should be checking for our player type and performing the
+    // appropriate actions only when we are a bot -- i.e.: see
+    // PlayState::on_update.
+    virtual PlayerType type() const override;
+
+    virtual PlayerID player_id() const override;
+    virtual void set_player_id(PlayerID id) override;
 
     /// \brief Calculate the best possible move for the CPU player followed by
     /// execution of said move with the specified action callback.
@@ -117,7 +123,7 @@ class CPU_Player: public IPlayer
     action_callback action_;
 
     /// \brief The unique identifier for the player.
-    nom::uint32 player_id_;
+    PlayerID player_id_;
 };
 
 } // namespace tt

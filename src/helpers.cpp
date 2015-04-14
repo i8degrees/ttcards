@@ -48,10 +48,40 @@ using namespace nom;
 
 namespace tt {
 
+PlayerID player_id(PlayerIndex player_index)
+{
+  auto result = PlayerID::PLAYER_ID_INVALID;
+
+  if( player_index == PlayerIndex::PLAYER_1 ) {
+    result = PlayerID::PLAYER_ID_1;
+  } else if( player_index == PlayerIndex::PLAYER_2 ) {
+    result = PlayerID::PLAYER_ID_2;
+  } else {
+    // NOTE: Invalid player!
+    NOM_ASSERT_INVALID_PATH();
+  }
+
+  return result;
+}
+
+PlayerID flip_player_id(PlayerIndex player_index)
+{
+  auto result = PlayerID::PLAYER_ID_INVALID;
+
+  result = NOM_SCAST(PlayerID, player_index + 1);
+
+  if( result == PlayerID::TOTAL_PLAYER_IDS ) {
+    // NOTE: Invalid player!
+    NOM_ASSERT_INVALID_PATH();
+  }
+
+  return result;
+}
+
 bool
 save_game(Board* game_board, CardHand* player_hand)
 {
-  if( player_hand[PLAYER1].save(TTCARDS_PLAYER1_FILENAME) == false ) {
+  if( player_hand[PlayerIndex::PLAYER_1].save(TTCARDS_PLAYER1_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Unable to save player 1 hand at:",
                   TTCARDS_PLAYER1_FILENAME );
@@ -61,7 +91,7 @@ save_game(Board* game_board, CardHand* player_hand)
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION, "Player 1 hand saved at:",
                   TTCARDS_PLAYER1_FILENAME );
 
-  if( player_hand[PLAYER2].save(TTCARDS_PLAYER2_FILENAME) == false ) {
+  if( player_hand[PlayerIndex::PLAYER_2].save(TTCARDS_PLAYER2_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Unable to save player 2 hand at:",
                   TTCARDS_PLAYER2_FILENAME );
@@ -87,7 +117,7 @@ save_game(Board* game_board, CardHand* player_hand)
 bool
 load_game(Board* game_board, CardHand* player_hand)
 {
-  if( player_hand[PLAYER1].load(TTCARDS_PLAYER1_FILENAME) == false ) {
+  if( player_hand[PlayerIndex::PLAYER_1].load(TTCARDS_PLAYER1_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Unable to load player 1 hand from:",
                   TTCARDS_PLAYER1_FILENAME );
@@ -97,7 +127,7 @@ load_game(Board* game_board, CardHand* player_hand)
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Player 1 hand loaded from:", TTCARDS_PLAYER1_FILENAME );
 
-  if( player_hand[PLAYER2].load(TTCARDS_PLAYER2_FILENAME) == false ) {
+  if( player_hand[PlayerIndex::PLAYER_2].load(TTCARDS_PLAYER2_FILENAME) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Unable to load player 2 hand from:", TTCARDS_PLAYER2_FILENAME );
     return false;
@@ -120,7 +150,7 @@ load_game(Board* game_board, CardHand* player_hand)
 }
 
 bool
-render_card_background( nom::int32 player_id, const nom::Point2i& pos,
+render_card_background( PlayerID player_id, const nom::Point2i& pos,
                         nom::Gradient* card_background,
                         nom::RenderTarget& target,
                         const nom::Texture* render_target )
@@ -163,7 +193,7 @@ render_card_background( nom::int32 player_id, const nom::Point2i& pos,
 }
 
 bool
-render_card_face( nom::int32 face_id, const nom::Point2i& pos,
+render_card_face( CardID face_id, const nom::Point2i& pos,
                   nom::SpriteBatch* card_face,
                   nom::RenderTarget& target,
                   const nom::Texture* render_target )
@@ -201,7 +231,7 @@ render_card_face( nom::int32 face_id, const nom::Point2i& pos,
   return true;
 }
 
-bool render_card_element( nom::int32 element_id, const nom::Point2i& pos,
+bool render_card_element( nom::uint32 element_id, const nom::Point2i& pos,
                           nom::SpriteBatch* card_element,
                           nom::RenderTarget& target,
                           const nom::Texture* render_target )
@@ -216,20 +246,51 @@ bool render_card_element( nom::int32 element_id, const nom::Point2i& pos,
 
   switch(element_id)
   {
-    case ::NONE:
+    case CARD_ELEMENT_NONE:
     default:
     {
-      card_element->set_frame(ELEMENT_NONE);
+      card_element->set_frame(CARD_ELEMENT_NONE);
     } break;
 
-    case EARTH: card_element->set_frame(ELEMENT_EARTH); break;
-    case FIRE: card_element->set_frame(ELEMENT_FIRE); break;
-    case HOLY: card_element->set_frame(ELEMENT_HOLY); break;
-    case ICE: card_element->set_frame (ELEMENT_ICE); break;
-    case POISON: card_element->set_frame(ELEMENT_POISON); break;
-    case THUNDER: card_element->set_frame(ELEMENT_THUNDER); break;
-    case WATER: card_element->set_frame(ELEMENT_WATER); break;
-    case WIND: card_element->set_frame(ELEMENT_WIND); break;
+    case CARD_ELEMENT_EARTH:
+    {
+      card_element->set_frame(CARD_ELEMENT_EARTH);
+    } break;
+
+    case CARD_ELEMENT_FIRE:
+    {
+      card_element->set_frame(CARD_ELEMENT_FIRE);
+    } break;
+
+    case CARD_ELEMENT_HOLY:
+    {
+      card_element->set_frame(CARD_ELEMENT_HOLY);
+    } break;
+
+    case CARD_ELEMENT_ICE:
+    {
+      card_element->set_frame(CARD_ELEMENT_ICE);
+    } break;
+
+    case CARD_ELEMENT_POISON:
+    {
+      card_element->set_frame(CARD_ELEMENT_POISON);
+    } break;
+
+    case CARD_ELEMENT_THUNDER:
+    {
+      card_element->set_frame(CARD_ELEMENT_THUNDER);
+    } break;
+
+    case CARD_ELEMENT_WATER:
+    {
+      card_element->set_frame(CARD_ELEMENT_WATER);
+    } break;
+
+    case CARD_ELEMENT_WIND:
+    {
+      card_element->set_frame(CARD_ELEMENT_WIND);
+    } break;
   }
 
   card_element->set_position(pos);
@@ -257,7 +318,7 @@ bool render_card_element( nom::int32 element_id, const nom::Point2i& pos,
 }
 
 bool
-render_card_text( nom::int32 rank, const nom::Point2i& pos,
+render_card_text( nom::uint32 rank, const nom::Point2i& pos,
                   nom::Text* card_text, nom::RenderTarget& target,
                   const nom::Texture* render_target )
 {
@@ -305,7 +366,7 @@ render_card(  const Card& card, const nom::Point2i& pos,
               const CardResourceLoader* res, nom::RenderTarget& target,
               const nom::Texture* render_target )
 {
-  uint32 player_id = card.getPlayerID();
+  auto player_id = card.getPlayerID();
 
   if( render_target != nullptr ) {
     if( target.set_render_target(render_target) == false ) {
@@ -364,23 +425,19 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
   NOM_ASSERT(player_hand != nullptr);
 
   Card pcard = player_hand->getSelectedCard();
-  std::array<nom::int32, MAX_RANKS> ranks = {{0}};
   CardsIterator pos = player_hand->begin();
 
   // First, obtain current rank attributes of the selected card; validation is
   // done for us by the Card class.
-  ranks = pcard.getRanks();
+  auto ranks = pcard.getRanks();
 
   if(modifier) {
     // ...increase...
-
-    ranks[direction] = ranks [direction] + 1;
+    ranks[direction] = nom::minimum( (uint32)(ranks[direction] + 1), MAX_RANK);
     pcard.setRanks(ranks);
   } else {
     // ...decrease...
-
-    // This clamps the decreased attribute to not falling below one (1).
-    ranks[direction] = std::max( ranks[direction] - 1, 1);
+    ranks[direction] = nom::maximum( (uint32)(ranks[direction] - 1), MIN_RANK);
     pcard.setRanks(ranks);
   }
 

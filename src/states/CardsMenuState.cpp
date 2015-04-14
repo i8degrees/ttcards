@@ -64,8 +64,8 @@ void CardsMenuState::on_init( nom::void_ptr data )
   this->selected_card_pos_.y =
     BOARD_ORIGIN_Y + ( (CARD_HEIGHT / 2) + CARD_HEIGHT * 1) - 8;
 
-  this->game->hand[PLAYER1].clear();
-  this->game->hand[PLAYER2].clear();
+  this->game->hand[PlayerIndex::PLAYER_1].clear();
+  this->game->hand[PlayerIndex::PLAYER_2].clear();
 
   // ...Initialize game rules...
 
@@ -73,11 +73,11 @@ void CardsMenuState::on_init( nom::void_ptr data )
   auto cfg = this->game->config_.get();
   this->game->init_game_rules(cfg, rules);
 
-  this->game->hand[PLAYER1].init(this->game->card_res_.get() );
-  this->game->hand[PLAYER2].init(this->game->card_res_.get() );
+  this->game->hand[PlayerIndex::PLAYER_1].init(this->game->card_res_.get() );
+  this->game->hand[PlayerIndex::PLAYER_2].init(this->game->card_res_.get() );
 
-  auto p1_db = this->game->cards_db_[PLAYER1].get();
-  auto p2_db = this->game->cards_db_[PLAYER2].get();
+  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
   NOM_ASSERT(p1_db != nullptr);
   NOM_ASSERT(p2_db != nullptr);
 
@@ -90,15 +90,15 @@ void CardsMenuState::on_init( nom::void_ptr data )
     }
   }
 
-  while( this->game->hand[PLAYER2].size() < MAX_PLAYER_HAND ) {
-    // this->game->hand[PlAYER2].shuffle(1, 10, this->game->collection);
-    this->game->hand[PLAYER2].shuffle(1, 1, *p2_db);
+  while( this->game->hand[PlayerIndex::PLAYER_2].size() < MAX_PLAYER_HAND ) {
+    // this->game->hand[PlayerIndex::PLAYER_2].shuffle(1, 10, this->game->collection);
+    this->game->hand[PlayerIndex::PLAYER_2].shuffle(1, 1, *p2_db);
   }
 
   // Player 2 positioning (to the left)
   nom::size_type hand_idx = 0;
   Point2i p2_pos(Point2i::zero);
-  auto p2_hand = this->game->hand[PLAYER2];
+  auto p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
   for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
 
     p2_pos.x = PLAYER2_ORIGIN_X;
@@ -177,7 +177,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
   }
 
   // This card will be updated from the input subsystem
-  this->selected_card_ = this->game->cards_db_[PLAYER1]->front();
+  this->selected_card_ = this->game->cards_db_[PlayerIndex::PLAYER_1]->front();
 
   // Card pages initializing...
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
@@ -395,7 +395,7 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
   this->game->background.draw(target);
 
   // Player 2 is to the left
-  auto p2_hand = this->game->hand[PLAYER2];
+  auto p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
   for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
 
     auto card_renderer =
@@ -408,7 +408,7 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
   // Player 1 is to the right
   auto hand_idx = 0;
   Point2i p1_pos(Point2i::zero);
-  auto p1_hand = this->game->hand[PLAYER1];
+  auto p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
   for( auto itr = p1_hand.begin(); itr != p1_hand.end(); ++itr ) {
 
     p1_pos.x = PLAYER1_ORIGIN_X;
@@ -764,7 +764,7 @@ void CardsMenuState::add_card(const Card& card)
   {
     c.set_num( c.num() - 1 );
 
-    if( this->game->hand[PLAYER1].push_back(c) == true ) {
+    if( this->game->hand[PlayerIndex::PLAYER_1].push_back(c) == true ) {
 
       this->game->cards_page_model_->insert_card(pos, c);
       this->selected_card_ = c;
@@ -797,7 +797,7 @@ void CardsMenuState::remove_card(const Card& card)
 
   // Used to compare the selected card from the current model with the game
   // cards collection (number of cards to return)
-  Card ref_card = this->game->cards_db_[PLAYER2]->find(pos);
+  Card ref_card = this->game->cards_db_[PlayerIndex::PLAYER_2]->find(pos);
 
   // Card logic for removing a card from the player's hand
   //

@@ -36,32 +36,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/config.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
 
 namespace tt {
 
 // Forward declarations
 class CardRenderer;
 
-/// Maximum element a card can contain -- starting at 1
-const nom::int32 MAX_ELEMENT = 8;
+/// \brief Minimum card level.
+const nom::uint32 LEVEL_MIN = 1;
+
+/// \brief Maximum card level.
+const nom::uint32 LEVEL_MAX = 10;
 
 /// Minimum rank a card can contain
-const nom::int32 MIN_RANK = 1;
+const nom::uint32 MIN_RANK = 1;
 
 /// Maximum rank a card can contain
-const nom::int32 MAX_RANK = 10;
+const nom::uint32 MAX_RANK = 10;
 
 /// Maximum number of rank attributes
-const nom::int32 MAX_RANKS = 4;
+const nom::uint32 MAX_RANKS = 4;
 
 /// Maximum name length a card can contain -- "Chubby Chocobo" (without quotes)
-const nom::int32 MAX_NAME = 14; // +1 padding
+const nom::uint32 MAX_NAME = 14; // +1 padding
 
 /// \brief The minimum number of cards of a type you can collect.
-const int MIN_NUM = 0;
+const nom::uint32 MIN_NUM = 0;
 
 /// \brief The maximum number of cards of a type you can collect.
-const int MAX_NUM = 99;
+const nom::uint32 MAX_NUM = 99;
 
 class Card
 {
@@ -71,21 +75,20 @@ class Card
     Card();
     ~Card();
 
-    const nom::int32 getID ( void ) const;
-    const std::string get_id_string( void ) const;
-    const nom::int32 getLevel ( void ) const;
-    const nom::int32 getType ( void ) const;
-    const nom::int32 getElement ( void ) const;
-    const std::array<nom::int32, MAX_RANKS> getRanks ( void ) const;
-    const std::vector<int> ranks_as_vector ( void ) const;
-    const nom::int32 getNorthRank ( void ) const;
-    const nom::int32 getEastRank ( void ) const;
-    const nom::int32 getSouthRank ( void ) const;
-    const nom::int32 getWestRank ( void ) const;
+    CardID getID ( void ) const;
+    std::string get_id_string( void ) const;
+    nom::uint32 getLevel ( void ) const;
+    nom::uint32 getType ( void ) const;
+    nom::uint32 getElement ( void ) const;
+    std::array<nom::uint32, MAX_RANKS> getRanks ( void ) const;
+    nom::uint32 getNorthRank ( void ) const;
+    nom::uint32 getEastRank ( void ) const;
+    nom::uint32 getSouthRank ( void ) const;
+    nom::uint32 getWestRank ( void ) const;
     const std::string& getName ( void ) const;
 
-    const nom::int32 getPlayerID ( void ) const;
-    const nom::int32 getPlayerOwner ( void ) const;
+    PlayerID getPlayerID() const;
+    PlayerID getPlayerOwner() const;
 
     int num() const;
     bool face_down() const;
@@ -99,31 +102,31 @@ class Card
 
     std::shared_ptr<CardRenderer>& card_renderer();
 
-    void setID ( nom::int32 id_ );
+    void setID ( CardID id_ );
 
-    void setLevel ( nom::int32 level_ );
+    void setLevel ( nom::uint32 level_ );
 
-    void setType ( nom::int32 type_ );
+    void setType ( nom::uint32 type_ );
 
-    void setElement ( nom::int32 element_ );
+    void setElement ( nom::uint32 element );
 
-    void setRanks ( std::array<nom::int32, MAX_RANKS> ranks );
+    void setRanks ( std::array<nom::uint32, MAX_RANKS> ranks );
 
-    void set_ranks ( std::vector<nom::int32> ranks );
+    void set_ranks ( std::vector<nom::uint32> ranks );
 
-    void setNorthRank ( nom::int32 rank );
+    void setNorthRank ( nom::uint32 rank );
 
-    void setEastRank ( nom::int32 rank );
+    void setEastRank ( nom::uint32 rank );
 
-    void setSouthRank ( nom::int32 rank );
+    void setSouthRank ( nom::uint32 rank );
 
-    void setWestRank ( nom::int32 rank );
+    void setWestRank ( nom::uint32 rank );
 
     void setName ( std::string name_ );
 
-    void setPlayerID ( nom::int32 player_id_ );
+    void setPlayerID(PlayerID player_id);
 
-    void setPlayerOwner ( nom::int32 player_owner_ );
+    void setPlayerOwner(PlayerID player_owner);
 
     /// \brief Set the number of cards of this type has been collected.
     void set_num(int num_cards);
@@ -142,35 +145,25 @@ class Card
 
     void set_card_renderer(CardRenderer* renderer);
 
-    /// card.player_id AKA owner tag
-    enum
-    {
-      NO_PLAYER=0,
-      PLAYER1=1,
-      PLAYER2=2
-    };
-
     nom::Value serialize( void ) const;
 
     void unserialize( nom::Value& obj );
 
   private:
-    nom::int32 id;
-    nom::int32 level;
-    nom::int32 type;
-    /// NONE is no element
-    nom::int32 element;
-    /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
-    std::array<nom::int32, MAX_RANKS> rank;
+    CardID id;
+    nom::uint32 level;
+
+    nom::uint32 type;
+    nom::uint32 element;
+
+    std::array<nom::uint32, MAX_RANKS> rank;
     std::string name;
 
-    /// Additional field; used to distinguish card background and also used to
-    // track player in board in order to do card flipping, among other things
-    // like score tallying
-    nom::int32 player_id;
+    // The current owner of this card.
+    PlayerID player_id;
 
-    /// Additional field; original owner of the card
-    nom::int32 player_owner;
+    // The player whom first owned this card.
+    PlayerID player_owner;
 
     /// \brief The number of cards of this instance type that has been
     /// collected.

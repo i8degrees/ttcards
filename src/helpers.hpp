@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/graphics.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
 
 namespace tt {
 
@@ -43,28 +44,34 @@ class CardResourceLoader;
 class Board;
 class CardHand;
 
+// Get the player's unique instance identifier.
+PlayerID player_id(PlayerIndex player_index);
+
+// Flip the card's player owning ID to the opponent
+PlayerID flip_player_id(PlayerIndex player_index);
+
 bool save_game(Board* game_board, CardHand* player_hand);
 bool load_game(Board* game_board, CardHand* player_hand);
 
 bool
-render_card_background( nom::int32 player_id, const nom::Point2i& pos,
+render_card_background( PlayerID player_id, const nom::Point2i& pos,
                         nom::Gradient* card_background,
                         nom::RenderTarget& target,
                         const nom::Texture* render_target = nullptr );
 
 bool
-render_card_face( nom::int32 face_id, const nom::Point2i& pos,
+render_card_face( CardID face_id, const nom::Point2i& pos,
                   nom::SpriteBatch* card_face,
                   nom::RenderTarget& target,
                   const nom::Texture* render_target = nullptr );
 
-bool render_card_element( nom::int32 element_id, const nom::Point2i& pos,
+bool render_card_element( nom::uint32 element_id, const nom::Point2i& pos,
                           nom::SpriteBatch* card_element,
                           nom::RenderTarget& target,
                           const nom::Texture* render_target = nullptr );
 
 bool
-render_card_text( nom::int32 rank, const nom::Point2i& pos,
+render_card_text( nom::uint32 rank, const nom::Point2i& pos,
                   nom::Text* card_text, nom::RenderTarget& target,
                   const nom::Texture* render_target = nullptr );
 

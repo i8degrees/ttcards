@@ -101,12 +101,12 @@ class Board
     nom::uint32 getCount ( void );
 
     /// get card count by player's cards on board
-    nom::uint32 getPlayerCount ( nom::int32 player_id );
+    nom::uint32 getPlayerCount(PlayerID player_id);
 
     /// Getter helper method for obtaining card ID at x, y coords
-    const nom::int32 getStatus ( nom::int32 x, nom::int32 y ) const;
+    CardID getStatus ( nom::int32 x, nom::int32 y ) const;
 
-    nom::int32 status(const nom::Point2i& rel_board_pos) const;
+    CardID status(const nom::Point2i& rel_board_pos) const;
 
     /// \brief Helper method for placing a card on the board.
     ///
@@ -117,10 +117,10 @@ class Board
 
     /// Getter helper method for obtaining player owner tag / ID on a card at x, y
     /// coords
-    const nom::int32 getPlayerID ( nom::int32 x, nom::int32 y ) const;
+    PlayerID getPlayerID(nom::int32 x, nom::int32 y) const;
 
     /// \brief Helper method for swapping player owner tags / IDs on a card.
-    void flip_card(const nom::Point2i& rel_board_pos, nom::int32 player_id);
+    void flip_card(const nom::Point2i& rel_board_pos, PlayerID player_id);
 
     /// (Private) Getter helper method for obtaining card placed at x, y coords;
     /// Used within Board::Draw(), Game::showCardInfoBox() method calls

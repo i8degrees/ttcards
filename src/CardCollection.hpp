@@ -63,7 +63,7 @@ class CardCollection
 
     /// \returns The resulting card by its ID on success, or Card::null on
     /// failure to find a card by the given ID.
-    const Card& find(nom::int32 card_id) const;
+    const Card& find(CardID card_id) const;
 
     ConstCardsIterator begin() const;
     ConstCardsIterator end() const;

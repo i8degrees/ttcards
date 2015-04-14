@@ -639,49 +639,49 @@ bool Game::on_init()
   const std::string CARDS_DB =
     this->config_->get_string("CARDS_DB");
 
-  this->game->cards_db_[PLAYER1].reset( new CardCollection() );
-  if( this->game->cards_db_[PLAYER1] == nullptr ) {
+  this->game->cards_db_[PlayerIndex::PLAYER_1].reset( new CardCollection() );
+  if( this->game->cards_db_[PlayerIndex::PLAYER_1] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load the player's cards:",
                   "memory allocation failure." );
     return false;
   }
 
-  if( this->game->cards_db_[PLAYER1]->load(CARDS_DB) == false ) {
+  if( this->game->cards_db_[PlayerIndex::PLAYER_1]->load(CARDS_DB) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load the cards database for player 1 from:",
                   CARDS_DB );
     return false;
   }
 
-  this->game->cards_db_[PLAYER2].reset( new CardCollection() );
-  if( this->game->cards_db_[PLAYER2] == nullptr ) {
+  this->game->cards_db_[PlayerIndex::PLAYER_2].reset( new CardCollection() );
+  if( this->game->cards_db_[PlayerIndex::PLAYER_2] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load the opponent's cards:",
                   "memory allocation failure." );
     return false;
   }
 
-  if( this->game->cards_db_[PLAYER2]->load(CARDS_DB) == false ) {
+  if( this->game->cards_db_[PlayerIndex::PLAYER_2]->load(CARDS_DB) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load the cards database for player 2 from:",
                   CARDS_DB );
     return false;
   }
 
-  auto p1_db = this->game->cards_db_[PLAYER1].get();
-  auto p2_db = this->game->cards_db_[PLAYER2].get();
+  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
 
   // Initialize the player's deck
   for( auto itr = p1_db->begin(); itr != p1_db->end(); ++itr ) {
-    itr->setPlayerID(Card::PLAYER1);
-    itr->setPlayerOwner(Card::PLAYER1);
+    itr->setPlayerID(PlayerID::PLAYER_ID_1);
+    itr->setPlayerOwner(PlayerID::PLAYER_ID_1);
   }
 
   // Initialize the opponent's deck
   for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
-    itr->setPlayerID(Card::PLAYER2);
-    itr->setPlayerOwner(Card::PLAYER2);
+    itr->setPlayerID(PlayerID::PLAYER_ID_2);
+    itr->setPlayerOwner(PlayerID::PLAYER_ID_2);
   }
 
   this->game->card_res_.reset( new CardResourceLoader() );
@@ -962,19 +962,19 @@ bool Game::on_init()
     });
 
     auto dump_player1_hand( [=](const nom::Event& evt) {
-      this->game->dump_hand(PLAYER1);
+      this->game->dump_hand(PlayerIndex::PLAYER_1);
     });
 
     auto dump_player2_hand( [=](const nom::Event& evt) {
-      this->game->dump_hand(PLAYER2);
+      this->game->dump_hand(PlayerIndex::PLAYER_2);
     });
 
     auto dump_player1_collection( [=](const nom::Event& evt) {
-      this->game->dump_collection(PLAYER1);
+      this->game->dump_collection(PlayerIndex::PLAYER_1);
     });
 
     auto dump_player2_collection( [=](const nom::Event& evt) {
-      this->game->dump_collection(PLAYER2);
+      this->game->dump_collection(PlayerIndex::PLAYER_2);
     });
 
     state.insert( "jumpto_confirmation_dialog_state",
@@ -1253,17 +1253,20 @@ void Game::dump_board()
   }
 }
 
-void Game::dump_hand(nom::uint32 player_id)
+void Game::dump_hand(PlayerIndex player_index)
 {
-  auto& phand = this->game->hand[player_id];
+  auto& phand = this->game->hand[player_index];
+  auto player_id = tt::player_id(player_index);
 
   NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, "Player", player_id, phand);
 }
 
-void Game::dump_collection(nom::uint32 player_id)
+void Game::dump_collection(PlayerIndex player_index)
 {
-  auto db = this->game->cards_db_[player_id].get();
+  auto db = this->game->cards_db_[player_index].get();
   if( db != nullptr ) {
+
+    auto player_id = tt::player_id(player_index);
 
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Player", player_id, "\n\tdeck:", db->size() );
