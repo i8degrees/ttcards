@@ -110,7 +110,8 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_INPUT, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
     nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_TEST, nom::LogPriority::NOM_LOG_PRIORITY_INFO );
 
-    // nom::SDL2Logger::set_logging_priority( TTCARDS_LOG_CATEGORY_EVENTS, nom::LogPriority::NOM_LOG_PRIORITY_DEBUG );
+    // nom::SDL2Logger::set_logging_priority(  TTCARDS_LOG_CATEGORY_EVENTS,
+                                            // nom::NOM_LOG_PRIORITY_DEBUG );
 
     // GameConfig debugging log levels;
     // NOM_LOG_PRIORITY_INFO will log only the file path of the configuration
@@ -1032,7 +1033,6 @@ int Game::Run()
 {
   real32 delta_time = 0.0f;
   real32 elapsed_frames = 0.0f;
-  Timer fps_time;
   Timer game_time;
   const std::string WINDOW_TITLE(APP_NAME);
   std::stringstream fps_title_prefix;
@@ -1041,7 +1041,7 @@ int Game::Run()
   this->set_state(Game::State::CardsMenu);
 
   game_time.start();
-  fps_time.start();
+  this->fps_timer_.start();
   fps_title_prefix << WINDOW_TITLE << " " << "-" << " ";
 
   nom::Event evt;
@@ -1063,9 +1063,9 @@ int Game::Run()
 
     ++elapsed_frames;
 
-    if( this->show_fps() ) {
+    if( this->show_fps() == true ) {
 
-      if( fps_time.ticks() >= 1000 ) {
+      if( this->fps_timer_.ticks() >= 1000 ) {
         real32 frame_interval = elapsed_frames;
 
         fps_title_suffix.str("");
@@ -1073,7 +1073,7 @@ int Game::Run()
         fps_title_suffix  << fps_title_prefix.str()
                           << std::fixed << frame_interval << " " << "FPS";
         this->window.set_window_title( fps_title_suffix.str() );
-        fps_time.restart();
+        this->fps_timer_.restart();
         elapsed_frames = 0;
       }
     } else {
@@ -1270,6 +1270,38 @@ void free_game ( Game* game )
 
   // Fixes double delete issues that result otherwise
   //if ( game != nullptr ) delete game;
+}
+
+void Game::on_window_shown(const nom::Event& evt)
+{
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
+
+  this->set_show_fps(true);
+  this->fps_timer_.start();
+}
+
+void Game::on_window_hidden(const nom::Event& evt)
+{
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
+
+  this->set_show_fps(false);
+  this->fps_timer_.stop();
+}
+
+void Game::on_window_minimized(const nom::Event& evt)
+{
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
+
+  this->set_show_fps(false);
+  this->fps_timer_.stop();
+}
+
+void Game::on_window_restored(const nom::Event& evt)
+{
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
+
+  this->set_show_fps(true);
+  this->fps_timer_.start();
 }
 
 } // namespace tt

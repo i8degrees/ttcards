@@ -279,8 +279,32 @@ class Game: public nom::SDLApp
     /// flags.
     void dump_collection( void );
 
+    /// \brief The event handler that is called when our window is shown, such
+    /// as upon initial creation, restored from a hidden or minimized state,
+    /// etc.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_shown
+    void on_window_shown(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is hidden.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_hidden
+    void on_window_hidden(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is minimized.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_minimized
+    void on_window_minimized(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is restored to
+    /// normal size and position.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_restored
+    void on_window_restored(const nom::Event& evt) override;
+
     Game* game;
 
+    nom::Timer fps_timer_;
     nom::uint32 frame_interval_ = 0;
 };
 
