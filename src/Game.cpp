@@ -261,8 +261,8 @@ bool Game::on_init()
   uint32 render_flags = SDL_RENDERER_ACCELERATED;
   bool vsync_hint_result = false;
 
-  auto fp = nom::make_unique_json_deserializer();
-  if( fp == nullptr ) {
+  auto cfg_parser = nom::make_unique_json_deserializer();
+  if( cfg_parser == nullptr ) {
     NOM_LOG_ERR(  TTCARDS,
                   "Could not load input file: failure to allocate memory!" );
     return false;
@@ -273,7 +273,7 @@ bool Game::on_init()
   this->game->config_ = nom::make_unique<GameConfig>();
   NOM_ASSERT(this->game->config_ != nullptr);
   if( this->game->config_->load_file( TTCARDS_CONFIG_GAME_FILENAME,
-      fp.get() ) == false )
+      cfg_parser.get() ) == false )
   {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load resource configuration file:",
@@ -287,7 +287,7 @@ bool Game::on_init()
   this->game->res_cfg_ = nom::make_unique<GameConfig>();
   NOM_ASSERT(this->game->res_cfg_ != nullptr);
   if( this->game->res_cfg_->load_file(  TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME,
-      fp.get() ) == false )
+      cfg_parser.get() ) == false )
   {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load resource configuration file:",
@@ -298,7 +298,7 @@ bool Game::on_init()
   this->game->res_cfg_ = nom::make_unique<GameConfig>();
   NOM_ASSERT(this->game->res_cfg_ != nullptr);
   if( this->game->res_cfg_->load_file(  TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME,
-      fp.get() ) == false )
+      cfg_parser.get() ) == false )
   {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load resource configuration file:",
@@ -634,9 +634,21 @@ bool Game::on_init()
   NOM_ASSERT(this->game->blinking_cursor_action_ != nullptr);
   this->game->blinking_cursor_action_->set_name("blinking_cursor_action");
 
-  // Initialize both player's card deck
-  const std::string CARDS_DB =
-    this->config_->get_string("CARDS_DB");
+  // ...Initialize both player's card deck...
+
+  File fp;
+  std::string cards_db;
+
+  const std::string LOCAL_PREFS_CARDS_DB =
+    fp.user_app_support_path() + p.native() + APP_NAME + p.native() +
+    "cards.json";
+
+  if( fp.exists(LOCAL_PREFS_CARDS_DB) == true ) {
+    cards_db = LOCAL_PREFS_CARDS_DB;
+  } else {
+    cards_db = this->config_->get_string("CARDS_DB");
+  }
+
   this->game->cards_db_[PlayerIndex::PLAYER_1].reset( new CardCollection() );
   if( this->game->cards_db_[PlayerIndex::PLAYER_1] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -645,10 +657,10 @@ bool Game::on_init()
     return false;
   }
 
-  if( this->game->cards_db_[PlayerIndex::PLAYER_1]->load(CARDS_DB) == false ) {
+  if( this->game->cards_db_[PlayerIndex::PLAYER_1]->load(cards_db) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load the cards database for player 1 from:",
-                  CARDS_DB );
+                  cards_db );
     return false;
   }
 
@@ -660,10 +672,10 @@ bool Game::on_init()
     return false;
   }
 
-  if( this->game->cards_db_[PlayerIndex::PLAYER_2]->load(CARDS_DB) == false ) {
+  if( this->game->cards_db_[PlayerIndex::PLAYER_2]->load(cards_db) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load the cards database for player 2 from:",
-                  CARDS_DB );
+                  cards_db );
     return false;
   }
 
