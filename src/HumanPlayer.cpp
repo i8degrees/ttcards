@@ -94,7 +94,7 @@ void HumanPlayer::draw(nom::IDrawable::RenderTarget& target)
     ++hand_idx;
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       // TODO: Update the element position only when we need to -- this will
       // help ease further integration of animations!

@@ -366,7 +366,7 @@ render_card(  const Card& card, const nom::Point2i& pos,
               const CardResourceLoader* res, nom::RenderTarget& target,
               const nom::Texture* render_target )
 {
-  auto player_id = card.getPlayerID();
+  auto player_id = card.player_id;
 
   if( render_target != nullptr ) {
     if( target.set_render_target(render_target) == false ) {
@@ -376,7 +376,7 @@ render_card(  const Card& card, const nom::Point2i& pos,
     }
   }
 
-  if( card == Card::null || card.face_down() == true ) {
+  if( (card == Card::null || card.face_down == true) ) {
 
     render_card_face( NOFACE_ID, Point2i::zero, res->card_faces_.get(),
                       target, render_target );
@@ -386,22 +386,22 @@ render_card(  const Card& card, const nom::Point2i& pos,
                             res->card_backgrounds_[player_id].get(), target,
                             render_target );
 
-    render_card_face( card.getID(), Point2i::zero, res->card_faces_.get(),
+    render_card_face( card.id, Point2i::zero, res->card_faces_.get(),
                       target, render_target );
 
-    render_card_element(  card.getElement(), ELEMENT_ORIGIN,
+    render_card_element(  card.element, ELEMENT_ORIGIN,
                           res->card_elements_.get(), target, render_target );
 
-    render_card_text( card.getNorthRank(), RANK_NORTH_ORIGIN,
+    render_card_text( card.ranks[RANK_NORTH], RANK_NORTH_ORIGIN,
                       res->card_text_.get(), target, render_target );
 
-    render_card_text( card.getEastRank(), RANK_EAST_ORIGIN,
+    render_card_text( card.ranks[RANK_EAST], RANK_EAST_ORIGIN,
                       res->card_text_.get(), target, render_target );
 
-    render_card_text( card.getWestRank(), RANK_WEST_ORIGIN,
+    render_card_text( card.ranks[RANK_WEST], RANK_WEST_ORIGIN,
                       res->card_text_.get(), target, render_target );
 
-    render_card_text( card.getSouthRank(), RANK_SOUTH_ORIGIN,
+    render_card_text( card.ranks[RANK_SOUTH], RANK_SOUTH_ORIGIN,
                       res->card_text_.get(), target, render_target );
   }
 
@@ -427,18 +427,10 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
   Card pcard = player_hand->getSelectedCard();
   CardsIterator pos = player_hand->begin();
 
-  // First, obtain current rank attributes of the selected card; validation is
-  // done for us by the Card class.
-  auto ranks = pcard.getRanks();
-
   if(modifier) {
-    // ...increase...
-    ranks[direction] = nom::minimum( (uint32)(ranks[direction] + 1), MAX_RANK);
-    pcard.setRanks(ranks);
+    tt::increase_card_rank( NOM_SCAST(CardRank, direction), pcard);
   } else {
-    // ...decrease...
-    ranks[direction] = nom::maximum( (uint32)(ranks[direction] - 1), MIN_RANK);
-    pcard.setRanks(ranks);
+    tt::decrease_card_rank( NOM_SCAST(CardRank, direction), pcard);
   }
 
   // Get the position of the selected card before we erase it so we can
@@ -448,9 +440,10 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
   player_hand->erase(pcard);
 
   // Render a new card based on the new card ranks text
-  pcard.set_card_renderer( create_card_renderer(card_res, pcard) );
-  NOM_ASSERT(pcard.card_renderer() != nullptr);
-  NOM_ASSERT(pcard.card_renderer()->valid() == true);
+  auto renderer = tt::create_card_renderer(card_res, pcard);
+  pcard.card_renderer.reset(renderer);
+  NOM_ASSERT(pcard.card_renderer != nullptr);
+  NOM_ASSERT(pcard.card_renderer->valid() == true);
 
   // Update the player hand with our modified card attributes
   player_hand->cards.insert(pos, pcard);
@@ -468,11 +461,23 @@ void set_face_down(CardHand* player_hand, bool face_down)
   }
 
   for( auto itr = player_hand->begin(); itr != player_hand->end(); ++itr ) {
-    itr->set_face_down(face_down);
+    itr->face_down = face_down;
   }
 
   // Update the card renderings
   player_hand->reinit();
+}
+
+void increase_card_rank(CardRank rank, Card& card)
+{
+  uint32 dir = (card.ranks[rank] + 1);
+  card.ranks[rank] = nom::minimum(dir, MAX_RANK);
+}
+
+void decrease_card_rank(CardRank rank, Card& card)
+{
+  uint32 dir = (card.ranks[rank] - 1);
+  card.ranks[rank] = nom::maximum(dir, MIN_RANK);
 }
 
 // NOTE: This implementation derives from [Handmade Hero](https://www.handmadehero.org/)'s

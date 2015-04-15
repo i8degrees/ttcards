@@ -69,8 +69,8 @@ bool CardCollection::save(const std::string& filename)
   // NOTE: I wished for "cards" to be an object as well, but then sorting gets
   // all messed up -- the "off by six-ish" bug from before -- so the compromise
   // until we figure these things out is going to have to be this!
-  nom::Value obj(nom::Value::ObjectValues);
-  nom::Value arr(nom::Value::ArrayValues);
+  nom::Value card_obj(nom::Value::ObjectValues);
+  nom::Value card_array(nom::Value::ArrayValues);
 
   auto fp = nom::make_unique_json_serializer();
   if( fp == nullptr ) {
@@ -83,13 +83,14 @@ bool CardCollection::save(const std::string& filename)
 
     // Serialize each card's attributes; said card attributes become JSON
     // objects, enclosed within our overall container ("cards" array).
-    arr.push_back( (*itr).serialize() );
+    card_obj = tt::serialize_card(*itr);
+    card_array.push_back(card_obj);
 
     // Top-level array node
-    obj["cards"] = arr;
+    card_obj["cards"] = card_array;
   }
 
-  if( fp->save(obj, filename) == false ) {
+  if( fp->save(card_obj, filename) == false ) {
     NOM_LOG_ERR(TTCARDS, "Unable to save JSON file: " + filename);
     return false;
   }
@@ -119,11 +120,11 @@ bool CardCollection::load(const std::string& filename)
   for( auto itr = deck.begin(); itr != deck.end(); ++itr ) {
 
     nom::Value attr = itr->ref();
-    card.unserialize(attr);
+    card = unserialize_card(attr);
 
     // Additional attributes
-    card.setPlayerID(PlayerID::PLAYER_ID_INVALID);
-    card.setPlayerOwner(PlayerID::PLAYER_ID_INVALID);
+    card.player_id = PlayerID::PLAYER_ID_INVALID;
+    card.player_owner = PlayerID::PLAYER_ID_INVALID;
 
     cards_buffer.push_back(card);
   }
@@ -138,7 +139,7 @@ const Card& CardCollection::find(const std::string& card_name) const
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
-    if( (*itr).getName() == card_name ) {
+    if( (*itr).name == card_name ) {
       // Successful match
       return *itr;
     }
@@ -152,7 +153,7 @@ const Card& CardCollection::find(CardID card_id) const
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
-    if( (*itr).getID() == card_id ) {
+    if( (*itr).id == card_id ) {
       // Successful match
       return *itr;
     }

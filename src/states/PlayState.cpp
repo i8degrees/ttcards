@@ -382,9 +382,8 @@ void PlayState::on_init( nom::void_ptr data )
 
     auto increase_north_rank( [=](const nom::Event& evt) {
       auto player_turn = this->turn();
-      tt::modify_card_rank(  this->game->card_res_.get(),
-                                  &this->game->hand[player_turn],
-                                  true, RANK_NORTH );
+      tt::modify_card_rank( this->game->card_res_.get(),
+                            &this->game->hand[player_turn], true, RANK_NORTH );
     });
 
     auto decrease_north_rank( [=](const nom::Event& evt) {
@@ -632,9 +631,9 @@ void PlayState::on_update_info_dialogs()
   if( this->game->debug_game_ == true ) {
 
     // Additional card info
-    int32 card_id = selected_card.getID();
-    int32 player_id = selected_card.getPlayerID();
-    int32 player_owner = selected_card.getPlayerOwner();
+    int32 card_id = selected_card.id;
+    int32 player_id = selected_card.player_id;
+    int32 player_owner = selected_card.player_owner;
 
     os << card_id << "/" << player_id << " " << "[" << player_owner << "]";
   } else {
@@ -652,7 +651,7 @@ void PlayState::on_update_info_dialogs()
 
     this->game->info_box_.show();
 
-    std::string card_name = selected_card.getName();
+    std::string card_name = selected_card.name;
 
     // Northern info window (debug info)
     this->game->debug_box_.set_message_text( os.str() );
@@ -757,7 +756,7 @@ void PlayState::move_to(const nom::Point2i& rel_board_pos)
   auto player_turn = this->turn();
 
   Card selected_card = this->game->hand[player_turn].getSelectedCard();
-  if( selected_card.getID() == BAD_CARD_ID ) {
+  if( selected_card.id == BAD_CARD_ID ) {
     NOM_LOG_ERR( TTCARDS, "Sanity check failed: the selected card is invalid!" );
     return; // Do not end turn
   }
@@ -903,8 +902,7 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
   Card pcard =
     this->game->hand[player_turn].getSelectedCard();
 
-  std::shared_ptr<CardRenderer> card_renderer =
-    pcard.card_renderer();
+  auto card_renderer = pcard.card_renderer;
 
   this->move_card_up_sprite_ =
     card_renderer->rendered_card();
@@ -999,8 +997,7 @@ void PlayState::flip_card_action(const nom::Point2i& rel_board_pos)
   Card pcard =
     this->game->board_->get(rel_board_pos.x, rel_board_pos.y);
 
-  std::shared_ptr<CardRenderer> card_renderer =
-    pcard.card_renderer();
+  auto card_renderer = pcard.card_renderer;
   NOM_ASSERT(card_renderer != nullptr);
 
   this->flip_card_sprite_ =

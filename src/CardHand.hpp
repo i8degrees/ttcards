@@ -70,7 +70,7 @@ class CardHand
     /// \see ::reinit
     bool push_back(const Card& card);
 
-    bool erase ( Card& card );
+    bool erase(const Card& card);
 
     void clearSelectedCard ( void );
     const Card& getSelectedCard ( void );
@@ -114,7 +114,7 @@ class CardHand
     void clear ( void );
     bool empty() const;
     nom::uint32 size ( void ) const;
-    nom::int32 at ( Card& card );
+    nom::int32 at(const Card& card);
 
     /// Creates a randomized player hand with the preferred minimum & maximum
     /// level ranges in mind, ~~with no duplicate cards present~~.
@@ -122,7 +122,7 @@ class CardHand
     /// Do not forget to set the proper player ID on your new card objects
     /// before heading off into battle!
     void
-    shuffle(  nom::int32 level_min, nom::int32 level_max,
+    shuffle(  nom::int32 MIN_LEVEL, nom::int32 MAX_LEVEL,
               const CardCollection& db );
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON

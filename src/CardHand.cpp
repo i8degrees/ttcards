@@ -37,6 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardCollection.hpp"
 #include "CardResourceLoader.hpp"
 
+using namespace nom;
+
 namespace tt {
 
 CardHand::CardHand()
@@ -81,16 +83,17 @@ bool CardHand::reinit(CardResourceLoader* res)
   for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
 
     Card& pcard = *itr;
-    pcard.set_card_renderer( create_card_renderer(this->card_res_, pcard) );
+    auto renderer = tt::create_card_renderer(this->card_res_, pcard);
+    pcard.card_renderer.reset(renderer);
 
-    NOM_ASSERT(pcard.card_renderer() != nullptr);
-    NOM_ASSERT(pcard.card_renderer()->valid() == true);
-    if( pcard.card_renderer() == nullptr ) {
+    NOM_ASSERT(pcard.card_renderer != nullptr);
+    NOM_ASSERT(pcard.card_renderer->valid() == true);
+    if( pcard.card_renderer == nullptr ) {
       // TODO: logging &&  handle err
       return false;
     }
 
-    if( pcard.card_renderer()->valid() == false ) {
+    if( pcard.card_renderer->valid() == false ) {
       // TODO: logging &&  handle err
       return false;
     }
@@ -111,21 +114,22 @@ bool CardHand::push_back(const Card& card)
     return false;
   }
 
-  if( pcard.face_down() == true ) {
-    pcard.set_card_renderer( create_card_renderer(this->card_res_, Card::null) );
+  if( pcard.face_down == true ) {
+    auto renderer = tt::create_card_renderer(this->card_res_, Card::null);
+    pcard.card_renderer.reset(renderer);
   } else {
-    pcard.set_card_renderer( create_card_renderer(this->card_res_, pcard) );
+    auto renderer = tt::create_card_renderer(this->card_res_, pcard);
+    pcard.card_renderer.reset(renderer);
   }
 
-  NOM_ASSERT(pcard.card_renderer() != nullptr);
-  NOM_ASSERT(pcard.card_renderer()->valid() == true);
-
-  if( pcard.card_renderer() == nullptr ) {
+  NOM_ASSERT(pcard.card_renderer != nullptr);
+  if( pcard.card_renderer == nullptr ) {
     // TODO: logging && handle err
     return false;
   }
 
-  if( pcard.card_renderer()->valid() == false ) {
+  NOM_ASSERT(pcard.card_renderer->valid() == true);
+  if( pcard.card_renderer->valid() == false ) {
     // TODO: logging && handle err
     return false;
   }
@@ -138,31 +142,23 @@ bool CardHand::push_back(const Card& card)
   return true;
 }
 
-bool CardHand::erase ( Card& card )
+bool CardHand::erase(const Card& card)
 {
-  signed int position = 0;
-  unsigned int previous_id = 0;
+  int32 position = 0;
+  CardID previous_id = 0;
   std::string previous_name;
 
-  position = this->at ( card );
+  position = this->at(card);
 
-  if ( position == -1 )
-  {
-#ifdef DEBUG_CARD_HAND
-  std::cout << "CardHand::removeCard (): " << "Not removing card at pos: " << position << std::endl;
-#endif
+  if( position == -1 ) {
     return false;
   }
 
-  previous_id = this->cards[position].getID();
-  previous_name = this->cards[position].getName();
+  previous_id = this->cards[position].id;
+  previous_name = this->cards[position].name;
 
   auto itr = this->cards.begin() + position;
   this->cards.erase(itr);
-
-#ifdef DEBUG_CARD_HAND
-  std::cout << "CardHand::removeCard (): " << "Removed card at pos: " << position << ' ' << "(" << previous_id << ' ' << previous_name << ")" << std::endl;
-#endif
 
   this->front();
 
@@ -185,10 +181,6 @@ void CardHand::selectCard(const Card& card)
   {
     this->selectedCard = card;
   }
-
-#ifdef DEBUG_CARD_HAND
-  std::cout << "CardHand::selectCard (): " << this->selectedCard.getID() << std::endl;
-#endif
 }
 
 bool CardHand::empty() const
@@ -201,23 +193,22 @@ nom::uint32 CardHand::size ( void ) const
   return this->cards.size();
 }
 
-nom::int32 CardHand::at ( Card& card )
+nom::int32 CardHand::at(const Card& card)
 {
   nom::int32 pos = -1;
 
-  if ( this->size() > 0 )
-  {
-    for ( nom::uint32 idx = 0; idx < this->size() && pos == -1; idx++ )
-    {
-      if ( this->cards[idx].getID() == card.getID() && this->cards[idx].getName() == card.getName() )
-      {
-        pos = idx;
-#ifdef DEBUG_CARD_HAND
-  std::cout << "CardHand::pos (): " << "Position at: " << pos << ' ' << "of card: " << ' ' << this->cards[idx].getID() << ' ' << this->cards[idx].getName() << std::endl;
-#endif
-      }
+  if( this->size() < 1 ) {
+    return pos;
+  }
+
+  for( nom::uint32 idx = 0; idx < this->size() && pos == -1; idx++ ) {
+
+    if( this->cards[idx] == card ) {
+      pos = idx;
+      break;
     }
   }
+
   return pos;
 }
 
@@ -278,20 +269,20 @@ bool CardHand::exists(const Card& card) const
 }
 
 void
-CardHand::shuffle(  nom::int32 level_min, nom::int32 level_max,
+CardHand::shuffle(  nom::int32 MIN_LEVEL, nom::int32 MAX_LEVEL,
                     const CardCollection& db )
 {
   nom::uint32 picked_card_id = 0;
   nom::uint32 num_cards = 0;
 
-  NOM_ASSERT( level_min >= LEVEL_MIN );
-  NOM_ASSERT( level_max <= LEVEL_MAX );
+  NOM_ASSERT( MIN_LEVEL >= MIN_LEVEL );
+  NOM_ASSERT( MAX_LEVEL <= MAX_LEVEL );
 
   picked_card_id = nom::uniform_int_rand<nom::uint32>(0, (db.size() - 1) );
 
   Card c = db.find(picked_card_id);
 
-  if( c.getLevel() <= level_max && c.getLevel() >= level_min ) {
+  if( c.level <= MAX_LEVEL && c.level >= MIN_LEVEL ) {
 
     if( this->push_back(c) ) {
       ++num_cards;
@@ -301,8 +292,8 @@ CardHand::shuffle(  nom::int32 level_min, nom::int32 level_max,
 
 bool CardHand::save(const std::string& filename)
 {
-  nom::Value value(nom::Value::ArrayValues);
-  nom::Value card(nom::Value::ObjectValues);
+  nom::Value card_array(nom::Value::ArrayValues);
+  nom::Value card_obj(nom::Value::ObjectValues);
 
   auto fp = nom::make_unique_json_serializer();
   if( fp == nullptr ) {
@@ -311,28 +302,25 @@ bool CardHand::save(const std::string& filename)
     return false;
   }
 
-  // Sanity check
-  if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid in file: " + filename );
+  if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND ) {
+    NOM_LOG_ERR(TTCARDS, "Player hand data is invalid in file: " + filename);
     return false;
   }
 
-  for ( nom::uint32 idx = 0; idx < this->size(); idx++ )
-  {
+  for( nom::uint32 idx = 0; idx < this->size(); idx++ ) {
+
     // Serialize each card's attributes
-    card = this->cards[idx].serialize();
+    card_obj = tt::serialize_card(this->cards[idx]);
 
     // Additional card attributes
-    card["player_id"] = this->cards[idx].getPlayerID();
-    card["owner"] = this->cards[idx].getPlayerOwner();
+    card_obj["player_id"] = this->cards[idx].player_id;
+    card_obj["owner"] = this->cards[idx].player_owner;
 
-    value.push_back( card );
+    card_array.push_back(card_obj);
   }
 
-  if ( fp->save( value, filename ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
+  if( fp->save(card_array, filename) == false ) {
+    NOM_LOG_ERR(TTCARDS, "Unable to save JSON file: " + filename);
     return false;
   }
 
@@ -355,33 +343,32 @@ bool CardHand::load(const std::string& filename)
     return false;
   }
 
-  if ( fp->load( filename, values ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
+  if( fp->load(filename, values) == false ) {
+    NOM_LOG_ERR(TTCARDS, "Unable to parse JSON input file: " + filename);
     return false;
   }
 
-  for ( auto itr = values.begin(); itr != values.end(); ++itr )
-  {
-    nom::Value obj = itr->ref();
-    card.unserialize( obj );
+  for( auto itr = values.begin(); itr != values.end(); ++itr ) {
 
+    nom::Value obj = itr->ref();
+    card = tt::unserialize_card(obj);
+
+    // Additional attributes
     auto player_id = NOM_SCAST(PlayerID, obj["player_id"].get_int() );
     auto player_owner = NOM_SCAST(PlayerID, obj["owner"].get_int() );
 
-    // Additional attributes
-    card.setPlayerID(player_id);
-    card.setPlayerOwner(player_owner);
+    card.player_id = player_id;
+    card.player_owner = player_owner;
 
     // Commit contents to our buffer if all goes well
-    cards_buffer.push_back ( card );
+    cards_buffer.push_back(card);
 
   } // end for loop
 
-  // Sanity check
-  if ( cards_buffer.size() <= MIN_PLAYER_HAND || cards_buffer.size() > MAX_PLAYER_HAND )
+  if( cards_buffer.size() <= MIN_PLAYER_HAND ||
+      cards_buffer.size() > MAX_PLAYER_HAND )
   {
-    NOM_LOG_ERR ( TTCARDS, "Player hand data is invalid in file: " + filename );
+    NOM_LOG_ERR(TTCARDS, "Player hand data is invalid in file: " + filename);
     return false;
   }
 

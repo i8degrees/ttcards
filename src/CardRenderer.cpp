@@ -133,7 +133,7 @@ CardRenderer* create_placeholder_card_renderer()
 CardRenderer*
 create_card_renderer(const CardResourceLoader* res, const Card& card)
 {
-  PlayerID player_id = card.getPlayerID();
+  PlayerID player_id = card.player_id;
 
   auto texture = std::make_shared<Texture>();
   NOM_ASSERT(texture != nullptr);
@@ -183,7 +183,7 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
     return nullptr;
   }
 
-  if( card == Card::null || card.face_down() == true ) {
+  if( (card == Card::null || card.face_down == true) ) {
     render_card_face( NOFACE_ID, Point2i::zero, res->card_faces_.get(),
                       *context, texture.get() );
   } else {
@@ -191,22 +191,22 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
                             res->card_backgrounds_[player_id].get(), *context,
                             texture.get() );
 
-    render_card_face( card.getID(), Point2i::zero, res->card_faces_.get(),
+    render_card_face( card.id, Point2i::zero, res->card_faces_.get(),
                       *context, texture.get() );
 
-    render_card_element(  card.getElement(), ELEMENT_ORIGIN,
+    render_card_element(  card.element, ELEMENT_ORIGIN,
                           res->card_elements_.get(), *context, texture.get() );
 
-    render_card_text( card.getNorthRank(), RANK_NORTH_ORIGIN,
+    render_card_text( card.ranks[RANK_NORTH], RANK_NORTH_ORIGIN,
                       res->card_text_.get(), *context, texture.get() );
 
-    render_card_text( card.getEastRank(), RANK_EAST_ORIGIN,
+    render_card_text( card.ranks[RANK_EAST], RANK_EAST_ORIGIN,
                       res->card_text_.get(), *context, texture.get() );
 
-    render_card_text( card.getWestRank(), RANK_WEST_ORIGIN,
+    render_card_text( card.ranks[RANK_WEST], RANK_WEST_ORIGIN,
                       res->card_text_.get(), *context, texture.get() );
 
-    render_card_text( card.getSouthRank(), RANK_SOUTH_ORIGIN,
+    render_card_text( card.ranks[RANK_SOUTH], RANK_SOUTH_ORIGIN,
                       res->card_text_.get(), *context, texture.get() );
   }
 

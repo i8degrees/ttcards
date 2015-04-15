@@ -78,24 +78,27 @@ void GameOverState::on_init( nom::void_ptr data )
     for( auto x = 0; x != BOARD_GRID_WIDTH; ++x) {
 
       Card pcard = this->game->board_->get(x, y);
-      pcard.set_face_down(false);
+      pcard.face_down = false;
 
-      if( pcard.getPlayerOwner() == PlayerID::PLAYER_ID_1 ) {
-        pcard.setPlayerID(PlayerID::PLAYER_ID_1);
+      if( pcard.player_owner == PlayerID::PLAYER_ID_1 ) {
+        pcard.player_id = PlayerID::PLAYER_ID_1;
 
         // Render the new card background based on the new owner
-        pcard.set_card_renderer( create_card_renderer(this->game->card_res_.get(), pcard) );
-        NOM_ASSERT(pcard.card_renderer() != nullptr);
-        NOM_ASSERT(pcard.card_renderer()->valid() == true);
+        auto renderer = tt::create_card_renderer(this->game->card_res_.get(), pcard);
+        pcard.card_renderer.reset(renderer);
+        NOM_ASSERT(pcard.card_renderer != nullptr);
+        NOM_ASSERT(pcard.card_renderer->valid() == true);
 
         this->game->hand[PlayerIndex::PLAYER_1].push_back(pcard);
-      } else if( pcard.getPlayerOwner() == PlayerID::PLAYER_ID_2 ) {
-        pcard.setPlayerID(PlayerID::PLAYER_ID_2);
+      } else if( pcard.player_owner == PlayerID::PLAYER_ID_2 ) {
+        pcard.player_id = PlayerID::PLAYER_ID_2;
 
         // Render the new card background based on the new owner
-        pcard.set_card_renderer( create_card_renderer(this->game->card_res_.get(), pcard) );
-        NOM_ASSERT(pcard.card_renderer() != nullptr);
-        NOM_ASSERT(pcard.card_renderer()->valid() == true);
+        auto renderer =
+          tt::create_card_renderer(this->game->card_res_.get(), pcard);
+        pcard.card_renderer.reset(renderer);
+        NOM_ASSERT(pcard.card_renderer != nullptr);
+        NOM_ASSERT(pcard.card_renderer->valid() == true);
 
         this->game->hand[PlayerIndex::PLAYER_2].push_back(pcard);
       }
@@ -114,7 +117,7 @@ void GameOverState::on_init( nom::void_ptr data )
    ++p2_hand_idx;
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->set_position(p2_pos);
     }
@@ -129,7 +132,7 @@ void GameOverState::on_init( nom::void_ptr data )
    ++p1_hand_idx;
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->set_position(p1_pos);
     }
@@ -149,7 +152,7 @@ void GameOverState::on_init( nom::void_ptr data )
       Card strongest_card = this->game->hand[PlayerIndex::PLAYER_1].strongest();
       this->game->hand[PlayerIndex::PLAYER_1].selectCard(strongest_card);
       NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE,
-                    "Lost", strongest_card.getName() );
+                    "Lost", strongest_card.name );
     }
   } else {  // GameOverType::NotOver
     // We shouldn't ever see this
@@ -204,7 +207,7 @@ void GameOverState::on_init( nom::void_ptr data )
   }
 
   auto card_text =
-    this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard().getName();
+    this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard().name;
   this->game->card_info_box_.set_message_text(card_text);
   this->game->card_info_box_.show();
 
@@ -369,7 +372,7 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
       this->cursor_.set_position( Point2i(PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH ) * idx, this->cursor_.position().y ) );
 
       Card selected_card = this->game->hand[PlayerIndex::PLAYER_2].cards[idx];
-      this->game->card_info_box_.set_message_text( selected_card.getName() );
+      this->game->card_info_box_.set_message_text( selected_card.name );
 
       this->game->cursor_move->Play();
       // We must break the loop here upon the end of a matching coords check
@@ -387,7 +390,7 @@ void GameOverState::on_user_event(const nom::Event& ev)
     NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::GUIEvent" );
 
     Card selected_card = this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard();
-    this->game->card_info_box_.set_message_text( selected_card.getName() );
+    this->game->card_info_box_.set_message_text( selected_card.name );
 
     this->game->cursor_move->Play();
   }
@@ -400,19 +403,20 @@ void GameOverState::on_user_event(const nom::Event& ev)
     this->game->card_info_box_.disable();
 
     nom::size_type card_pos = this->game->hand[PlayerIndex::PLAYER_2].position();
-    if( this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos].getPlayerID()
+    if( this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos].player_id
         != PlayerID::PLAYER_ID_1 )
     {
       // FIXME; should have no spacing on card printout
-      this->game->info_box_.set_message_text( this->selected_card.getName() + " card acquired" );
+      this->game->info_box_.set_message_text( this->selected_card.name + " card acquired" );
 
-      this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos].setPlayerID(PlayerID::PLAYER_ID_1);
+      this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos].player_id =
+        PlayerID::PLAYER_ID_1;
 
       Card& pcard = this->game->hand[PlayerIndex::PLAYER_2].cards[card_pos];
 
       // Render a new card background based on the owner flip
       auto old_renderer =
-        pcard.card_renderer();
+        pcard.card_renderer;
       NOM_ASSERT(old_renderer != nullptr);
       NOM_ASSERT(old_renderer->valid() == true);
 
@@ -420,11 +424,11 @@ void GameOverState::on_user_event(const nom::Event& ev)
         old_renderer->position();
 
       auto new_renderer =
-        create_card_renderer(this->game->card_res_.get(), pcard);
+        tt::create_card_renderer(this->game->card_res_.get(), pcard);
       NOM_ASSERT(new_renderer != nullptr);
       NOM_ASSERT(new_renderer->valid() == true);
 
-      pcard.set_card_renderer(new_renderer);
+      pcard.card_renderer.reset(new_renderer);
       new_renderer->set_position(old_renderer_pos);
 
       this->game->card_flip->Play();
@@ -466,7 +470,7 @@ void GameOverState::on_draw( nom::RenderWindow& target )
      ++p2_hand_idx;
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->render(target);
     }
@@ -484,7 +488,7 @@ void GameOverState::on_draw( nom::RenderWindow& target )
      ++p1_hand_idx;
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->render(target);
     }

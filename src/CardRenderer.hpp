@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace tt {
 
 // Forward declarations
-class Card;
+struct Card;
 class CardResourceLoader;
 
 class CardRenderer

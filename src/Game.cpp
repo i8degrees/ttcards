@@ -635,10 +635,8 @@ bool Game::on_init()
   this->game->blinking_cursor_action_->set_name("blinking_cursor_action");
 
   // Initialize both player's card deck
-
   const std::string CARDS_DB =
     this->config_->get_string("CARDS_DB");
-
   this->game->cards_db_[PlayerIndex::PLAYER_1].reset( new CardCollection() );
   if( this->game->cards_db_[PlayerIndex::PLAYER_1] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -674,14 +672,14 @@ bool Game::on_init()
 
   // Initialize the player's deck
   for( auto itr = p1_db->begin(); itr != p1_db->end(); ++itr ) {
-    itr->setPlayerID(PlayerID::PLAYER_ID_1);
-    itr->setPlayerOwner(PlayerID::PLAYER_ID_1);
+    itr->player_id = PlayerID::PLAYER_ID_1;
+    itr->player_owner = PlayerID::PLAYER_ID_1;
   }
 
   // Initialize the opponent's deck
   for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
-    itr->setPlayerID(PlayerID::PLAYER_ID_2);
-    itr->setPlayerOwner(PlayerID::PLAYER_ID_2);
+    itr->player_id = PlayerID::PLAYER_ID_2;
+    itr->player_owner = PlayerID::PLAYER_ID_2;
   }
 
   this->game->card_res_.reset( new CardResourceLoader() );

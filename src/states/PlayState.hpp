@@ -44,7 +44,7 @@ namespace tt {
 // Forward declarations
 class Game;
 class IPlayer;
-class Card;
+struct Card;
 
 class PlayState: public nom::IState
 {

@@ -67,7 +67,7 @@ void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::C
     {
       if( columns[i] == "status" && row_index < row_end )
       {
-        if( row_index < row_end && this->db_[row_offset].num() < 1 ) {
+        if( row_index < row_end && this->db_[row_offset].num < 1 ) {
           row.push_back("0"); // Unavailable
         }
         else {
@@ -79,7 +79,7 @@ void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::C
         String card_class =
           "unavailable-card";
 
-        if( this->db_[row_offset].num() > 0 ) {
+        if( this->db_[row_offset].num > 0 ) {
           card_class = "available-card";
         }
 
@@ -88,21 +88,21 @@ void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::C
       else if( row_index < row_end && columns[i] == "id" )
       {
         String card_id =
-          this->db_[row_offset].getName().c_str();
+          this->db_[row_offset].name.c_str();
 
         row.push_back(card_id);
       }
       else if( row_index < row_end && columns[i] == "name" )
       {
         String card_name =
-          this->db_[row_offset].getName().c_str();
+          this->db_[row_offset].name.c_str();
 
         row.push_back(card_name);
       }
       else if( row_index < row_end && columns[i] == "num" )
       {
         String card_num =
-          std::to_string( this->db_[row_offset].num() ).c_str();
+          std::to_string( this->db_[row_offset].num ).c_str();
 
         row.push_back(card_num);
       }
@@ -357,13 +357,13 @@ std::string CardsPageDataSource::dump()
   {
     os
     // ID && card name
-    << (*itr).getID()
+    << (*itr).id
     << " : "
-    << (*itr).getName()
+    << (*itr).name
 
     // Number of cards
     << " ["
-    << (*itr).num()
+    << (*itr).num
     << "]"
     << std::endl;
   }
@@ -375,7 +375,7 @@ const Card& CardsPageDataSource::lookup_by_name( const std::string& name ) const
 {
   for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
   {
-    if( (*itr).getName() == name )
+    if( (*itr).name == name )
     {
       // Successful match
       return *itr;
@@ -390,7 +390,7 @@ const Card& CardsPageDataSource::lookup_by_id( int id ) const
 {
   for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
   {
-    if( (*itr).getID() == id )
+    if( (*itr).id == id )
     {
       // Successful match
       return *itr;

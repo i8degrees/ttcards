@@ -84,9 +84,9 @@ void CardsMenuState::on_init( nom::void_ptr data )
   for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
 
     if( this->game->debug_game_ == false ) {
-      itr->set_face_down(true);
+      itr->face_down = true;
     } else {
-      itr->set_face_down(false);
+      itr->face_down = false;
     }
   }
 
@@ -106,7 +106,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
     ++hand_idx;
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->set_position(p2_pos);
     }
@@ -144,23 +144,25 @@ void CardsMenuState::on_init( nom::void_ptr data )
     // each card in the database, so the player can immediately start browsing
     // once the pages are constructed
     Card& pcard = *itr;
-    pcard.set_card_renderer( create_card_renderer(this->game->card_res_.get(), pcard) );
+    auto renderer =
+      tt::create_card_renderer(this->game->card_res_.get(), pcard);
+    pcard.card_renderer.reset(renderer);
 
     auto card_renderer =
-      pcard.card_renderer();
+      pcard.card_renderer;
 
     NOM_ASSERT(card_renderer != nullptr);
-    NOM_ASSERT(card_renderer->valid() == true);
     if( card_renderer == nullptr ) {
       // TODO: logging && handle err
       // return false;
-      std::exit(-1);
+      NOM_ASSERT_INVALID_PATH();
     }
 
+    NOM_ASSERT(card_renderer->valid() == true);
     if( card_renderer->valid() == false ) {
       // TODO: logging && handle err
       // return false;
-      std::exit(-1);
+      NOM_ASSERT_INVALID_PATH();
     }
 
     card_renderer->set_position(this->selected_card_pos_);
@@ -399,7 +401,7 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
   for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->render(target);
     }
@@ -416,7 +418,7 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
     ++hand_idx;
 
     auto card_renderer =
-      itr->card_renderer();
+      itr->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       // TODO: Update the positions here at state initialization -- this will
       // help ease the integration of animation into the state; we just need to
@@ -437,7 +439,7 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
 
   // Player's current card selection
   auto card_renderer =
-    this->selected_card_.card_renderer();
+    this->selected_card_.card_renderer;
   if( card_renderer != nullptr && card_renderer->valid() == true ) {
     card_renderer->render(target);
   }
@@ -751,7 +753,7 @@ void CardsMenuState::add_card(const Card& card)
 
   page = this->game->cards_page_model_->page();
   Card c = card;
-  pos = c.getID();
+  pos = c.id;
 
   // Card logic for adding a card to the player's hand
   //
@@ -760,9 +762,9 @@ void CardsMenuState::add_card(const Card& card)
   // 3. Update player hand w/ modified card.
   // 4. Update game cursor position.
   // 5. Queue audio clip
-  if( c.num() > 0 )
+  if( c.num > 0 )
   {
-    c.set_num( c.num() - 1 );
+    c.num = (c.num - 1);
 
     if( this->game->hand[PlayerIndex::PLAYER_1].push_back(c) == true ) {
 
@@ -793,7 +795,7 @@ void CardsMenuState::remove_card(const Card& card)
 
   page = this->game->cards_page_model_->page();
   Card c = card;
-  pos = c.getID();
+  pos = c.id;
 
   // Used to compare the selected card from the current model with the game
   // cards collection (number of cards to return)
@@ -806,11 +808,10 @@ void CardsMenuState::remove_card(const Card& card)
   // 3. Remove the card from the player's hand.
   // 4. Update game cursor position.
   // 5. Queue audio clip
-  if( c.num() < ref_card.num() )
-  {
-    c.set_num( c.num() + 1 );
+  if( c.num < ref_card.num ) {
+    c.num = (c.num + 1);
 
-    if( this->game->hand[0].erase(c) == true ) {
+    if( this->game->hand[PlayerIndex::PLAYER_1].erase(c) == true ) {
 
       this->game->cards_page_model_->insert_card(pos, c);
       this->selected_card_ = card;

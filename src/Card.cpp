@@ -38,360 +38,148 @@ using namespace nom;
 
 namespace tt {
 
-// Static initialization
+// Static initializations
 Card Card::null = Card();
 
 Card::Card() :
   id(BAD_CARD_ID),
-  level(0),
+  level(MIN_LEVEL),
   type(CARD_TYPE_INVALID),
   element(CARD_ELEMENT_NONE),
-  rank( {{0}} ),
-  name("INVALID"),
+  ranks( {{MIN_RANK-1}} ),
   player_id(PlayerID::PLAYER_ID_INVALID),
   player_owner(PlayerID::PLAYER_ID_INVALID),
-  num_(0),
-  face_down_(false),
-  card_renderer_(nullptr)
+  num(0),
+  face_down(false),
+  card_renderer(nullptr)
 {
-  // NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO( TTCARDS_LOG_CATEGORY_TRACE,
+                      NOM_LOG_PRIORITY_VERBOSE );
 }
 
 Card::~Card()
 {
-  // NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
+  NOM_LOG_TRACE_PRIO( TTCARDS_LOG_CATEGORY_TRACE,
+                      NOM_LOG_PRIORITY_VERBOSE );
 }
 
-CardID Card::getID ( void ) const
+nom::Value serialize_card(const Card& card)
 {
-  return this->id;
-}
+  nom::Value card_obj;
 
-std::string Card::get_id_string( void ) const
-{
-  return std::to_string( this->id );
-}
+  card_obj["id"] = card.id;
+  card_obj["name"] = card.name;
+  card_obj["level"] = card.level;
+  card_obj["type"] = card.type;
+  card_obj["element"] = card.element;
+  card_obj["num"] = card.num;
 
-nom::uint32 Card::getLevel ( void ) const
-{
-  return this->level;
-}
+  auto ranks = card.ranks;
 
-nom::uint32 Card::getType ( void ) const
-{
-  return this->type;
-}
+  for( auto itr = ranks.begin(); itr != ranks.end(); ++itr ) {
 
-nom::uint32 Card::getElement ( void ) const
-{
-  return this->element;
-}
-
-std::array<nom::uint32, MAX_RANKS> Card::getRanks ( void ) const
-{
-  return this->rank;
-}
-
-nom::uint32 Card::getNorthRank ( void ) const
-{
-  return this->rank[RANK_NORTH];
-}
-
-nom::uint32 Card::getEastRank ( void ) const
-{
-  return this->rank[RANK_EAST];
-}
-
-nom::uint32 Card::getSouthRank ( void ) const
-{
-  return this->rank[RANK_SOUTH];
-}
-
-nom::uint32 Card::getWestRank ( void ) const
-{
-  return this->rank[RANK_WEST];
-}
-
-const std::string& Card::getName ( void ) const
-{
-  return this->name;
-}
-
-PlayerID Card::getPlayerID() const
-{
-  return this->player_id;
-}
-
-PlayerID Card::getPlayerOwner() const
-{
-  return this->player_owner;
-}
-
-int Card::num() const
-{
-  return this->num_;
-}
-
-bool Card::face_down() const
-{
-  return this->face_down_;
-}
-
-nom::int32 Card::strength ( void )
-{
-  nom::int32 total_strength_value = 0;
-
-  total_strength_value += this->getNorthRank();
-  total_strength_value += this->getEastRank();
-  total_strength_value += this->getWestRank();
-  total_strength_value += this->getSouthRank();
-
-  return total_strength_value;
-}
-
-std::shared_ptr<CardRenderer>& Card::card_renderer()
-{
-  return this->card_renderer_;
-}
-
-void Card::setID ( CardID id )
-{
-  this->id = id;
-}
-
-void Card::setLevel ( nom::uint32 level_ )
-{
-  this->level = level_;
-}
-
-void Card::setType ( nom::uint32 type )
-{
-  this->type = type;
-}
-
-void Card::setElement ( nom::uint32 element )
-{
-  this->element = element;
-}
-
-void Card::setRanks ( std::array<nom::uint32, MAX_RANKS> ranks )
-{
-  this->setNorthRank ( ranks[RANK_NORTH] );
-  this->setEastRank ( ranks[RANK_EAST] );
-  this->setSouthRank ( ranks[RANK_SOUTH] );
-  this->setWestRank ( ranks[RANK_WEST] );
-}
-
-void Card::set_ranks ( std::vector<nom::uint32> ranks )
-{
-  this->setNorthRank ( ranks[RANK_NORTH] );
-  this->setEastRank ( ranks[RANK_EAST] );
-  this->setSouthRank ( ranks[RANK_SOUTH] );
-  this->setWestRank ( ranks[RANK_WEST] );
-}
-
-void Card::setNorthRank ( nom::uint32 rank )
-{
-  this->rank[RANK_NORTH] = rank;
-}
-
-void Card::setEastRank ( nom::uint32 rank )
-{
-  this->rank[RANK_EAST] = rank;
-}
-
-void Card::setSouthRank ( nom::uint32 rank )
-{
-  this->rank[RANK_SOUTH] = rank;
-}
-
-void Card::setWestRank ( nom::uint32 rank )
-{
-  this->rank[RANK_WEST] = rank;
-}
-
-void Card::setName ( std::string name_ )
-{
-  this->name = name_;
-}
-
-void Card::setPlayerID(PlayerID player_id)
-{
-  this->player_id = player_id;
-}
-
-void Card::setPlayerOwner(PlayerID player_owner)
-{
-  this->player_owner = player_owner;
-}
-
-void Card::set_num(int num_cards)
-{
-  this->num_ = num_cards;
-}
-
-void Card::set_face_down(bool state)
-{
-  this->face_down_ = state;
-}
-
-nom::Value Card::serialize( void ) const
-{
-  nom::Value obj;
-
-  obj["id"] = this->id;
-  obj["name"] = this->name;
-  obj["level"] = this->level;
-  obj["type"] = this->type;
-  obj["element"] = this->element;
-
-  for( auto rank = this->rank.begin(); rank != this->rank.end(); ++rank ) {
-    // If we do not insert the array elements as an integer here, nom::Value
-    // gets confused and assigns the values as boolean.
-    int attr = *rank;
-
-    obj["ranks"].push_back(attr);
+    // NOTE: If we do not insert the array elements as an integer here,
+    // nom::Value gets confused and assigns the values as boolean!
+    uint32 attr = *itr;
+    card_obj["ranks"].push_back(attr);
   }
 
-  obj["num"] = this->num_;
-
-  return obj;
+  return card_obj;
 }
 
-void Card::unserialize( nom::Value& obj )
+Card unserialize_card(const nom::Value& obj)
 {
-  this->setID( obj["id"].get_int() );
-  this->setName( obj["name"].get_string() );
-  this->setLevel( obj["level"].get_int() );
-  this->setType( obj["type"].get_int() );
-  this->setElement( obj["element"].get_int() );
+  nom::Value ranks;
+  Card result;
 
-  nom::Value arr = obj["ranks"].array();
+  result.id = obj["id"].get_int();
+  result.name = obj["name"].get_string();
+  result.level = obj["level"].get_int();
+  result.type = obj["type"].get_int();
+  result.element = obj["element"].get_int();
+
+  ranks = obj["ranks"].array();
 
   nom::uint32 rank_idx = 0;
-  for( auto rank = arr.begin(); rank != arr.end(); ++rank ) {
-    this->rank[rank_idx] = rank->get_int();
+  for( auto rank = ranks.begin(); rank != ranks.end(); ++rank ) {
+
+    NOM_ASSERT(ranks.size() == MAX_RANKS);
+    result.ranks[rank_idx] = rank->get_int();
     ++rank_idx;
   }
 
-  this->set_num( obj["num"].get_int() );
-}
+  result.num = obj["num"].get_int();
 
-void Card::increaseNorthRank ( void )
-{
-  this->setNorthRank ( this->getNorthRank() + 1 );
-}
-
-void Card::increaseEastRank ( void )
-{
-  this->setEastRank ( this->getEastRank() + 1 );
-}
-
-void Card::increaseSouthRank ( void )
-{
-  this->setSouthRank ( this->getSouthRank() + 1 );
-}
-
-void Card::increaseWestRank ( void )
-{
-  this->setWestRank ( this->getWestRank() + 1 );
-}
-
-void Card::decreaseNorthRank ( void )
-{
-  nom::int32 modified_rank = std::max ( this->getNorthRank() - 1, MIN_RANK );
-  this->setNorthRank ( modified_rank );
-}
-
-void Card::decreaseEastRank ( void )
-{
-  nom::int32 modified_rank = std::max ( this->getEastRank() - 1, MIN_RANK );
-  this->setEastRank ( modified_rank );
-}
-
-void Card::decreaseSouthRank ( void )
-{
-  nom::int32 modified_rank = std::max ( this->getSouthRank() - 1, MIN_RANK );
-  this->setSouthRank ( modified_rank );
-}
-
-void Card::decreaseWestRank ( void )
-{
-  nom::int32 modified_rank = std::max ( this->getWestRank() - 1, MIN_RANK );
-  this->setWestRank ( modified_rank );
-}
-
-void Card::set_card_renderer(CardRenderer* renderer)
-{
-  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE);
-
-  this->card_renderer_.reset(renderer);
+  return result;
 }
 
 std::ostream& operator <<(std::ostream& os, const Card& rhs)
 {
   os  << "[name="
-      << rhs.getName()
+      << rhs.name
       << ", card_id="
-      << rhs.getID()
+      << rhs.id
       << ", element_id="
-      << rhs.getElement()
+      << rhs.element
       << ", player_id="
-      << rhs.getPlayerID()
+      << rhs.player_id
       << ", player_owner="
-      << rhs.getPlayerOwner()
+      << rhs.player_owner
       << ", num="
-      << rhs.num()
+      << rhs.num
       << ", ranks="
-      << rhs.getNorthRank()
+      << rhs.ranks[RANK_NORTH]
       << ", "
-      << rhs.getEastRank()
+      << rhs.ranks[RANK_EAST]
       << ", "
-      << rhs.getSouthRank()
+      << rhs.ranks[RANK_SOUTH]
       << ", "
-      << rhs.getWestRank()
+      << rhs.ranks[RANK_WEST]
       << "] ";
 
   return os;
 }
 
-bool operator == ( const Card& lhs, const Card& rhs )
+bool operator ==(const Card& lhs, const Card& rhs)
 {
-  return  ( lhs.getID() == rhs.getID() )                      &&
-          ( lhs.getLevel() == rhs.getLevel() )                &&
-          ( lhs.getType() == rhs.getType() )                  &&
-          ( lhs.getElement() == rhs.getElement() )            &&
-          ( lhs.getNorthRank() == rhs.getNorthRank() )        &&
-          ( lhs.getEastRank() == rhs.getEastRank() )          &&
-          ( lhs.getSouthRank() == rhs.getSouthRank() )        &&
-          ( lhs.getWestRank() == rhs.getWestRank() )          &&
-          ( lhs.getName() == rhs.getName() );                 //&&
-          // ( lhs.num() == rhs.num() );
-}
-
-bool operator != ( const Card& lhs, const Card& rhs )
-{
-  return ! ( lhs == rhs );
-}
-
-bool operator <= ( const Card& lhs, const Card& rhs )
-{
-  return ! (rhs < lhs );
-}
-
-bool operator >= ( const Card& lhs, const Card& rhs )
-{
-  return ! ( lhs < rhs );
+  return( lhs.id == rhs.id );
 }
 
 bool operator <(const Card& lhs, const Card& rhs)
 {
-  return( lhs.getID() < rhs.getID() );
+  return( lhs.id < rhs.id );
 }
 
 bool operator >(const Card& lhs, const Card& rhs)
 {
-  return( rhs.getID() > lhs.getID() );
+  return( rhs.id > lhs.id );
+}
+
+bool operator !=(const Card& lhs, const Card& rhs)
+{
+  return ! ( lhs == rhs );
+}
+
+bool operator <=(const Card& lhs, const Card& rhs)
+{
+  return ! (rhs < lhs );
+}
+
+bool operator >=(const Card& lhs, const Card& rhs)
+{
+  return ! ( lhs < rhs );
+}
+
+nom::int32 card_strength(const Card& rhs)
+{
+  nom::int32 total_strength_value = 0;
+
+  total_strength_value += rhs.ranks[RANK_NORTH];
+  total_strength_value += rhs.ranks[RANK_EAST];
+  total_strength_value += rhs.ranks[RANK_WEST];
+  total_strength_value += rhs.ranks[RANK_SOUTH];
+
+  return total_strength_value;
 }
 
 bool strongest_card(const Card& lhs, const Card& rhs)
@@ -399,20 +187,20 @@ bool strongest_card(const Card& lhs, const Card& rhs)
   nom::int32 lhs_total_strengths = 0;
   nom::int32 rhs_total_strengths = 0;
 
-  lhs_total_strengths += lhs.getNorthRank();
-  lhs_total_strengths += lhs.getEastRank();
-  lhs_total_strengths += lhs.getWestRank();
-  lhs_total_strengths += lhs.getSouthRank();
+  lhs_total_strengths += lhs.ranks[RANK_NORTH];
+  lhs_total_strengths += lhs.ranks[RANK_EAST];
+  lhs_total_strengths += lhs.ranks[RANK_WEST];
+  lhs_total_strengths += lhs.ranks[RANK_SOUTH];
 
-  rhs_total_strengths += rhs.getNorthRank();
-  rhs_total_strengths += rhs.getEastRank();
-  rhs_total_strengths += rhs.getWestRank();
-  rhs_total_strengths += rhs.getSouthRank();
+  rhs_total_strengths += rhs.ranks[RANK_NORTH];
+  rhs_total_strengths += rhs.ranks[RANK_EAST];
+  rhs_total_strengths += rhs.ranks[RANK_WEST];
+  rhs_total_strengths += rhs.ranks[RANK_SOUTH];
 
   if( rhs_total_strengths == lhs_total_strengths ) {
-    return( rhs.getID() < lhs.getID() );
+    return( rhs.id < lhs.id );
   } else {
-    return(rhs_total_strengths < lhs_total_strengths);
+    return( rhs_total_strengths < lhs_total_strengths );
   }
 }
 
@@ -421,20 +209,20 @@ bool weakest_card(const Card& lhs, const Card& rhs)
   nom::int32 lhs_total_strengths = 0;
   nom::int32 rhs_total_strengths = 0;
 
-  lhs_total_strengths += lhs.getNorthRank();
-  lhs_total_strengths += lhs.getEastRank();
-  lhs_total_strengths += lhs.getWestRank();
-  lhs_total_strengths += lhs.getSouthRank();
+  lhs_total_strengths += lhs.ranks[RANK_NORTH];
+  lhs_total_strengths += lhs.ranks[RANK_EAST];
+  lhs_total_strengths += lhs.ranks[RANK_WEST];
+  lhs_total_strengths += lhs.ranks[RANK_SOUTH];
 
-  rhs_total_strengths += rhs.getNorthRank();
-  rhs_total_strengths += rhs.getEastRank();
-  rhs_total_strengths += rhs.getWestRank();
-  rhs_total_strengths += rhs.getSouthRank();
+  rhs_total_strengths += rhs.ranks[RANK_NORTH];
+  rhs_total_strengths += rhs.ranks[RANK_EAST];
+  rhs_total_strengths += rhs.ranks[RANK_WEST];
+  rhs_total_strengths += rhs.ranks[RANK_SOUTH];
 
   if( lhs_total_strengths == rhs_total_strengths ) {
-    return( lhs.getID() < rhs.getID() );
+    return( lhs.id < rhs.id );
   } else {
-    return(lhs_total_strengths < rhs_total_strengths);
+    return( lhs_total_strengths < rhs_total_strengths );
   }
 }
 

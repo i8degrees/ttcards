@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace tt {
 
 // Forward declarations
-class Card;
+struct Card;
 class CardResourceLoader;
 class Board;
 class CardHand;
@@ -96,6 +96,14 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
                   nom::uint32 direction );
 
 void set_face_down(CardHand* player_hand, bool face_down);
+
+// NOTE: This only modifies the rank attribute(s) -- no rendering is done to
+// the number glyphs.
+void increase_card_rank(CardRank rank, Card& card);
+
+// NOTE: This only modifies the rank attribute(s) -- no rendering is done to
+// the number glyphs.
+void decrease_card_rank(CardRank rank, Card& card);
 
 void set_frame_interval(nom::uint32 interval);
 
