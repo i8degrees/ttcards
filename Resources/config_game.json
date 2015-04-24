@@ -42,19 +42,25 @@
 
     "REGION_RULESET": [ "Open", "Elemental", "Same" ],
 
-    // animations
+    // ...Animations...
 
+    // NOTE: Interval && duration units are always specified in seconds unless
+    // noted otherwise!
     "TRIAD_START_FRAME": 22,
-    "CURSOR_BLINK_INTERVAL": 0.100, // ~100 ms blink rate
-    "TRIAD_FRAME_INTERVAL": 0.100, // 100 ms per frame
-    "GAMEOVER_TEXT_FADE_DURATION": 1.0, // seconds
-    "FLIP_CARD_FADE_DURATION": 1.0, // seconds
+    "CURSOR_BLINK_INTERVAL": 0.100,
+    "TRIAD_FRAME_INTERVAL": 0.100,
+    "GAMEOVER_TEXT_FADE_DURATION": 1.0,
+
+    "FLIP_CARD_FLASH_DURATION": 0.100,
+    "FLIP_CARD_FADE_OUT_DURATION": 1.0,
+
+    "GAME_OVER_FADE_OUT_DURATION": 2.0,
 
     // How long to wait before animating the CPU player's hand
-    "CPU_HAND_DELAY_SECONDS": 1.0, // seconds
+    "CPU_HAND_DELAY_SECONDS": 1.0,
 
     // Minimum time before CPU player executes a move
-    "CPU_MOVE_DELAY_SECONDS": 4.0, // seconds
+    "CPU_MOVE_DELAY_SECONDS": 4.0,
 
     // Toggle showing the opponent's hand in CardsMenuState
     "DEBUG_GAME": true,

@@ -80,6 +80,9 @@ render_card(  const Card& card, const nom::Point2i& pos,
               const CardResourceLoader* res, nom::RenderTarget& target,
               const nom::Texture* render_target = nullptr );
 
+std::shared_ptr<nom::Sprite>
+generate_text_sprite(nom::Text& font, const std::string& text);
+
 /// \brief Mutate a player's hand (card ranks).
 ///
 /// \fixme This method is not properly handling the position of a player's

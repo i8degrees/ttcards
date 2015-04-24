@@ -76,13 +76,15 @@ class GameConfig
     /// (-1) on failure, such as when the specified node does not exist.
     int get_bool32(const std::string& node) const;
 
-    /// \returns The de-serialized floating-point value on success, or
-    /// nom::NOM_REAL32_MIN on failure, such as when the node does not exist.
-    nom::real32 get_real32(const std::string& node) const;
+    /// \returns The de-serialized floating-point value on success, or the set
+    /// default value on failure, such as when the node does not exist.
+    nom::real32
+    get_real32(const std::string& node, nom::real32 default_value) const;
 
-    /// \returns The de-serialized floating-point value on success, or
-    /// nom::NOM_REAL64_MIN on failure, such as when the node does not exist.
-    nom::real64 get_real64(const std::string& node) const;
+    /// \returns The de-serialized floating-point value on success, or the set
+    /// default value on failure, such as when the node does not exist.
+    nom::real64
+    get_real64(const std::string& node, nom::real64 default_value) const;
 
     tt::string_list get_array(const std::string& node) const;
 

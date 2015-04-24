@@ -417,6 +417,21 @@ render_card(  const Card& card, const nom::Point2i& pos,
   return true;
 }
 
+std::shared_ptr<nom::Sprite>
+generate_text_sprite(nom::Text& font, const std::string& text)
+{
+  std::shared_ptr<nom::Sprite> sprite;
+  font.set_text(text);
+
+  auto tex = font.clone_texture();
+  if( tex != nullptr ) {
+    sprite.reset( new Sprite() );
+    sprite->set_texture(tex);
+  }
+
+  return sprite;
+}
+
 void
 modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modifier,
                   nom::uint32 direction )

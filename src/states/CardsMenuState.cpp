@@ -58,14 +58,17 @@ void CardsMenuState::on_init( nom::void_ptr data )
 
   this->cursor_state_ = 0;
 
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
+
   this->selected_card_pos_.x =
     BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ),
 
   this->selected_card_pos_.y =
     BOARD_ORIGIN_Y + ( (CARD_HEIGHT / 2) + CARD_HEIGHT * 1) - 8;
 
-  this->game->hand[PlayerIndex::PLAYER_1].clear();
-  this->game->hand[PlayerIndex::PLAYER_2].clear();
+  p1_hand.clear();
+  p2_hand.clear();
 
   // ...Initialize game rules...
 
@@ -90,23 +93,22 @@ void CardsMenuState::on_init( nom::void_ptr data )
     }
   }
 
-  while( this->game->hand[PlayerIndex::PLAYER_2].size() < MAX_PLAYER_HAND ) {
-    // this->game->hand[PlayerIndex::PLAYER_2].shuffle(1, 10, this->game->collection);
-    this->game->hand[PlayerIndex::PLAYER_2].shuffle(1, 1, *p2_db);
+  while( p2_hand.size() < MAX_PLAYER_HAND ) {
+    // p2_hand.shuffle(1, 10, this->game->collection);
+    p2_hand.shuffle(1, 1, *p2_db);
   }
 
   // Player 2 positioning (to the left)
   nom::size_type hand_idx = 0;
   Point2i p2_pos(Point2i::zero);
-  auto p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
-  for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
+  for( auto card = p2_hand.begin(); card != p2_hand.end(); ++card ) {
 
     p2_pos.x = PLAYER2_ORIGIN_X;
     p2_pos.y = PLAYER2_ORIGIN_Y + (CARD_HEIGHT / 2) * hand_idx;
     ++hand_idx;
 
     auto card_renderer =
-      itr->card_renderer;
+      card->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->set_position(p2_pos);
     }
@@ -341,7 +343,7 @@ void CardsMenuState::on_init( nom::void_ptr data )
   this->game->theme_track_->Play();
 }
 
-void CardsMenuState::on_exit( nom::void_ptr data )
+void CardsMenuState::on_exit(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -398,10 +400,10 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
 
   // Player 2 is to the left
   auto p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
-  for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
+  for( auto card = p2_hand.begin(); card != p2_hand.end(); ++card ) {
 
     auto card_renderer =
-      itr->card_renderer;
+      card->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       card_renderer->render(target);
     }
@@ -411,14 +413,14 @@ void CardsMenuState::on_draw( nom::RenderWindow& target )
   auto hand_idx = 0;
   Point2i p1_pos(Point2i::zero);
   auto p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
-  for( auto itr = p1_hand.begin(); itr != p1_hand.end(); ++itr ) {
+  for( auto card = p1_hand.begin(); card != p1_hand.end(); ++card ) {
 
     p1_pos.x = PLAYER1_ORIGIN_X;
     p1_pos.y = PLAYER1_ORIGIN_Y + (CARD_HEIGHT / 2) * hand_idx;
     ++hand_idx;
 
     auto card_renderer =
-      itr->card_renderer;
+      card->card_renderer;
     if( card_renderer != nullptr && card_renderer->valid() == true ) {
       // TODO: Update the positions here at state initialization -- this will
       // help ease the integration of animation into the state; we just need to

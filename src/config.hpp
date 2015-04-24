@@ -107,6 +107,7 @@ const nom::int32 INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
 /// Additional resource data; width, height, origin coordinates
 const nom::int32 CARD_WIDTH = 64 * SCALE_FACTOR;
 const nom::int32 CARD_HEIGHT = 64 * SCALE_FACTOR;
+const nom::Size2i CARD_DIMS = nom::Size2i(CARD_WIDTH, CARD_HEIGHT);
 
 const nom::int32 ELEMENT_WIDTH = 16 * SCALE_FACTOR;
 const nom::int32 ELEMENT_HEIGHT = 16 * SCALE_FACTOR;

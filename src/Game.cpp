@@ -620,8 +620,7 @@ bool Game::on_init()
 
   // blinking cursor animation
   const real32 CURSOR_BLINK_INTERVAL =
-    this->game->config_->get_real32("CURSOR_BLINK_INTERVAL");
-  NOM_ASSERT(CURSOR_BLINK_INTERVAL > 0.0f);
+    this->game->config_->get_real32("CURSOR_BLINK_INTERVAL", 0.100f);
 
   auto cursor_action =
     nom::create_action<SpriteBatchAction>(
@@ -744,8 +743,7 @@ bool Game::on_init()
 
   // blinking cursor animation
   const real32 TRIAD_FRAME_INTERVAL =
-    this->game->config_->get_real32("TRIAD_FRAME_INTERVAL");
-  NOM_ASSERT(TRIAD_FRAME_INTERVAL > 0.0f);
+    this->game->config_->get_real32("TRIAD_FRAME_INTERVAL", 0.100f);
 
   auto triad_action =
     nom::create_action<SpriteBatchAction>(
@@ -757,51 +755,56 @@ bool Game::on_init()
   NOM_ASSERT(this->game->triad_action_ != nullptr);
   this->game->triad_action_->set_name("triad_action");
 
-  // win, lose, draw text actions
+  // ...win, lose, draw text actions...
 
-  this->game->gameover_text.set_text("You Win!");
   this->game->won_text_sprite_ =
-    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
+    tt::generate_text_sprite(this->game->gameover_text, "You Win!");
   NOM_ASSERT(this->game->won_text_sprite_ != nullptr);
-
+  NOM_ASSERT(this->game->won_text_sprite_->valid() == true);
+  this->game->won_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
   nom::set_alignment( this->game->won_text_sprite_.get(), Point2i::zero,
                       GAME_RESOLUTION, Anchor::MiddleCenter );
-  this->game->won_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
 
-  this->game->gameover_text.set_text("You Lose...");
   this->game->lost_text_sprite_ =
-    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
+    tt::generate_text_sprite(this->game->gameover_text, "You Lose...");
   NOM_ASSERT(this->game->lost_text_sprite_ != nullptr);
-
+  NOM_ASSERT(this->game->lost_text_sprite_->valid() == true);
+  this->game->lost_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
   nom::set_alignment( this->game->lost_text_sprite_.get(), Point2i::zero,
                       GAME_RESOLUTION, Anchor::MiddleCenter );
-  this->game->lost_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
 
-  this->game->gameover_text.set_text("Draw");
   this->game->tied_text_sprite_ =
-    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
+    tt::generate_text_sprite(this->game->gameover_text, "Draw");
   NOM_ASSERT(this->game->tied_text_sprite_ != nullptr);
-
+  NOM_ASSERT(this->game->tied_text_sprite_->valid() == true);
+  this->game->tied_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
   nom::set_alignment( this->game->tied_text_sprite_.get(), Point2i::zero,
                       GAME_RESOLUTION, Anchor::MiddleCenter );
-  this->game->tied_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
 
-  // Combo && Same flip text sprites
-  this->game->gameover_text.set_text("Combo!");
   this->game->combo_text_sprite_ =
-    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
+    tt::generate_text_sprite(this->game->gameover_text, "Combo!");
   NOM_ASSERT(this->game->combo_text_sprite_ != nullptr);
-
+  NOM_ASSERT(this->game->combo_text_sprite_->valid() == true);
   nom::set_alignment( this->game->combo_text_sprite_.get(), Point2i::zero,
                       GAME_RESOLUTION, Anchor::MiddleRight );
 
-  this->game->gameover_text.set_text("Same!");
   this->game->same_text_sprite_ =
-    nom::make_shared_sprite( this->game->gameover_text.clone_texture() );
+    tt::generate_text_sprite(this->game->gameover_text, "Same!");
   NOM_ASSERT(this->game->same_text_sprite_ != nullptr);
-
+  NOM_ASSERT(this->game->same_text_sprite_->valid() == true);
   nom::set_alignment( this->game->same_text_sprite_.get(), Point2i::zero,
                       GAME_RESOLUTION, Anchor::MiddleRight );
+
+  // ...Initialize default game window fade out animation...
+
+  this->game->fade_window_out_sprite_ = std::make_shared<Sprite>();
+  if( this->game->fade_window_out_sprite_ != nullptr ) {
+    this->game->fade_window_out_sprite_->init_with_color( Color4i::Black,
+                                                          SCREEN_RESOLUTION );
+    this->game->fade_window_out_sprite_->set_color_blend_mode(BlendMode::BLEND_MODE_BLEND);
+    this->game->fade_window_out_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+    this->game->fade_window_out_sprite_->set_position(Point2i::zero);
+  }
 
   // Initialize audio subsystem...
   if( this->game->config_->get_bool("AUDIO_SFX") ||
@@ -1077,7 +1080,11 @@ int Game::Run()
 
     // Fix for GitHub Issue #9
     this->window.fill(nom::Color4i::Black);
+
     this->on_draw(this->window);
+
+    TT_RENDER_ACTION( this->game->fade_window_out_sprite_,
+                      "fade_window_out_action" );
 
     ++elapsed_frames;
 
@@ -1192,6 +1199,34 @@ init_game_rules(const GameConfig* config, tt::RegionRuleSet& region)
   }
 
   return true;
+}
+
+void
+Game::fade_window_out(  real32 duration, const nom::Color4i& color,
+                        const nom::Size2i& window_dims )
+{
+  auto sp = this->game->fade_window_out_sprite_;
+  if( sp != nullptr ) {
+
+    auto window_color = sp->color();
+    auto window_dims = sp->size();
+
+    if( window_color != color || window_dims != window_dims ) {
+      sp->init_with_color(color, window_dims);
+    }
+
+    sp->set_color_blend_mode(BlendMode::BLEND_MODE_BLEND);
+    sp->set_alpha(Color4i::ALPHA_TRANSPARENT);
+    sp->set_position(Point2i::zero);
+  }
+
+  auto fade_out_action =
+    nom::create_action<FadeInAction>(sp, duration);
+  if( fade_out_action != nullptr ) {
+    fade_out_action->set_name("fade_window_out_action");
+  }
+
+  this->game->actions_.run_action(fade_out_action);
 }
 
 void Game::pause_music( void )

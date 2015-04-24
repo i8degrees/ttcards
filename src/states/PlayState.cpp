@@ -76,7 +76,7 @@ PlayState::~PlayState()
                   this->game->actions_.num_actions() );
 }
 
-void PlayState::on_exit( nom::void_ptr data )
+void PlayState::on_exit(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -101,7 +101,7 @@ void PlayState::on_resume( nom::void_ptr data )
   this->game->input_mapper.activate( "Game" );
 }
 
-void PlayState::on_init( nom::void_ptr data )
+void PlayState::on_init(nom::void_ptr data)
 {
   NOM_ASSERT(this->game != nullptr);
 
@@ -247,8 +247,7 @@ void PlayState::on_init( nom::void_ptr data )
   }
 
   this->cpu_hand_delay_seconds_ =
-    this->game->config_->get_real32("CPU_HAND_DELAY_SECONDS");
-  NOM_ASSERT(this->cpu_hand_delay_seconds_ >= 0.0f);
+    this->game->config_->get_real32("CPU_HAND_DELAY_SECONDS", 1.0f);
 
   // Convert to milliseconds
   this->cpu_hand_delay_seconds_ = this->cpu_hand_delay_seconds_ * 1000;
@@ -501,6 +500,16 @@ void PlayState::on_init( nom::void_ptr data )
 
   this->game->triad_->set_frame(0);
   this->game->actions_.run_action(this->game->triad_action_);
+
+  // ...Initialization of animation sprites...
+
+  this->flash_action_sprite_ = std::make_shared<Sprite>();
+  if( this->flash_action_sprite_ != nullptr ) {
+    const Color4i FLIP_CARD_FLASH_COLOR = Color4i::White;
+    this->flash_action_sprite_->init_with_color(  FLIP_CARD_FLASH_COLOR,
+                                                  CARD_DIMS );
+    this->flash_action_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+  }
 }
 
 // Private scope
@@ -814,18 +823,16 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
       this->text_action_sprite_ = nullptr;
     }
 
-    auto flip_text_action = std::make_shared<MoveByAction>(
-      this->text_action_sprite_, Point2i(-GAME_RESOLUTION.w, 0), 1.0f);
+    auto text_sp = this->text_action_sprite_;
+    Point2i delta(-GAME_RESOLUTION.w, 0);
+
+    auto flip_text_action =
+      nom::create_action<MoveByAction>(text_sp, delta, 1.0f);
     NOM_ASSERT(flip_text_action != nullptr);
 
-    // NOTE: This action has two separate action sprites given to it, and thus
-    // the card flipping animation will occur in either condition
     if( applied_rule == CardRuleset::SAME_RULESET ) {
-      // Render the "Same!" scrolling text animation
+      // Render the "Same!" rule set animation
       flip_text_action->set_name("same_text_action");
-    } else {
-      // Render the card flipping animation
-      flip_text_action->set_name("flip_card");
     }
 
     // Reset position for action to translate from
@@ -906,8 +913,18 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
 
   this->move_card_up_sprite_ =
     card_renderer->rendered_card();
+
+#if 1
+  // FIXME:
+  if( this->move_card_up_sprite_ == nullptr ||
+      this->move_card_up_sprite_->valid() == false )
+  {
+    return;
+  }
+#else
   NOM_ASSERT(this->move_card_up_sprite_ != nullptr);
   NOM_ASSERT(this->move_card_up_sprite_->valid() == true);
+#endif
 
   Point2i player_pos = this->players_[player_turn]->position();
 
@@ -982,50 +999,75 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
 
   this->game->card_place->Play();
 
+  auto remove_card_up_action =
+    nom::create_action<RemoveAction>(move_card_up);
+  NOM_ASSERT(remove_card_up_action != nullptr);
+
+  auto remove_card_along_action =
+    nom::create_action<RemoveAction>(move_card_along);
+  NOM_ASSERT(remove_card_along_action != nullptr);
+
+  auto remove_card_down_action =
+    nom::create_action<RemoveAction>(move_card_down);
+  NOM_ASSERT(remove_card_down_action != nullptr);
+
   this->game->actions_.run_action(move_card_sequence, [=]() {
+
+    this->game->actions_.run_action(remove_card_up_action);
+    this->game->actions_.run_action(remove_card_along_action);
+    this->game->actions_.run_action(remove_card_down_action);
 
     NOM_ASSERT(on_completion_func != nullptr);
     on_completion_func.operator()(pcard);
   });
 }
 
-// This works by alpha blending a sprite of the player's card on top of the
-// flip (new owner) -- the sprite is rendered only until the action is
-// completed.
 void PlayState::flip_card_action(const nom::Point2i& rel_board_pos)
 {
+  const real32 FLIP_CARD_FADE_OUT_DURATION =
+    this->game->config_->get_real32("FLIP_CARD_FADE_OUT_DURATION", 1.0f);
+  const real32 FLIP_CARD_FLASH_DURATION =
+    this->game->config_->get_real32("FLIP_CARD_FLASH_DURATION", 0.100f);
+  const Color4i FLIP_CARD_FLASH_COLOR = Color4i::White;
+
+  this->game->actions_.cancel_action("flip_card_action0");
+  this->game->actions_.cancel_action("flip_card_action1");
+
   Card pcard =
     this->game->board_->get(rel_board_pos.x, rel_board_pos.y);
 
   auto card_renderer = pcard.card_renderer;
   NOM_ASSERT(card_renderer != nullptr);
 
+  this->flash_action_sprite_->set_position( card_renderer->position() );
+  this->flash_action_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+
+  auto flip_card_action0 =
+    nom::create_action<FadeInAction>( this->flash_action_sprite_,
+                                      FLIP_CARD_FLASH_DURATION );
+  NOM_ASSERT(flip_card_action0 != nullptr);
+  flip_card_action0->set_name("flip_card_action0");
+
   this->flip_card_sprite_ =
     card_renderer->rendered_card();
   NOM_ASSERT(this->flip_card_sprite_ != nullptr);
   this->flip_card_sprite_->set_alpha(Color4i::ALPHA_OPAQUE);
 
-  const real32 FLIP_CARD_FADE_DURATION =
-    this->game->config_->get_real32("FLIP_CARD_FADE_DURATION");
-
-  auto flip_card_action0 =
+  auto flip_card_action1 =
     nom::create_action<FadeOutAction>(  this->flip_card_sprite_,
-                                        FLIP_CARD_FADE_DURATION );
-  NOM_ASSERT(flip_card_action0 != nullptr);
-  flip_card_action0->set_name("flip_card");
+                                        FLIP_CARD_FADE_OUT_DURATION );
+  NOM_ASSERT(flip_card_action1 != nullptr);
+  flip_card_action1->set_name("flip_card_action1");
 
-  // auto flip_card_action1 =
-    // nom::create_action<FadeInAction>( this->flip_card_sprite_,
-                                      // FLIP_CARD_FADE_DURATION );
-  // NOM_ASSERT(flip_card_action1 != nullptr);
-  // flip_card_action0->set_name("flip_card");
+  auto remove_flip_card_action1 =
+    nom::create_action<RemoveAction>(flip_card_action1);
+  NOM_ASSERT(remove_flip_card_action1 != nullptr);
 
   this->game->actions_.run_action(flip_card_action0, [=]() {
 
-    // this->game->actions_.run_action(flip_card_action1, [=]() {
-    //   NOM_DUMP( this->flip_card_sprite_->position() );
-    //   NOM_DUMP( (int)this->flip_card_sprite_->alpha() );
-    // });
+    this->game->actions_.run_action(flip_card_action1, [=]() {
+      this->game->actions_.run_action(remove_flip_card_action1);
+    });
   });
 }
 
@@ -1166,12 +1208,12 @@ void PlayState::moveCursorDown ( void )
 void PlayState::updateCursor()
 {
   auto player_turn = this->turn();
-  bool blinking_cursor_action =
+  bool blinking_cursor_state =
     this->game->actions_.action_running("blinking_cursor_action");
 
   if( this->cursor_state_ == CursorState::BOARD ) {
 
-    if( blinking_cursor_action == false ) {
+    if( blinking_cursor_state == false ) {
       this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
       this->game->actions_.run_action(this->game->blinking_cursor_action_);
     }
@@ -1276,7 +1318,7 @@ void PlayState::on_update(nom::real32 delta_time)
   this->check_gameover_conditions();
 }
 
-void PlayState::on_draw( nom::RenderWindow& target )
+void PlayState::on_draw(nom::RenderWindow& target)
 {
   this->game->background.draw ( target );
 
@@ -1291,55 +1333,18 @@ void PlayState::on_draw( nom::RenderWindow& target )
     this->game->cursor_->draw(target);
   }
 
-  this->game->gui_window_.draw();
-
   // Draw each player's scoreboard
   this->game->scoreboard_text[PlayerIndex::PLAYER_1].draw(target);
   this->game->scoreboard_text[PlayerIndex::PLAYER_2].draw(target);
 
-  if( this->game->actions_.action_running("same_text_action") == true ) {
-    if( this->text_action_sprite_ != nullptr &&
-        this->text_action_sprite_->valid() == true )
-    {
-      this->text_action_sprite_->draw(target);
-    }
-  }
+  TT_RENDER_ACTION(this->move_card_up_sprite_, "move_card_up");
+  TT_RENDER_ACTION(this->flash_action_sprite_, "flip_card_action0");
+  TT_RENDER_ACTION(this->flip_card_sprite_, "flip_card_action1");
+  TT_RENDER_ACTION(this->text_action_sprite_, "same_text_action");
+  TT_RENDER_ACTION(this->text_action_sprite_, "combo_text_action");
+  TT_RENDER_ACTION(this->gameover_text_action_sprite_, "gameover_action");
 
-  if( this->game->actions_.action_running("combo_text_action") == true ) {
-    if( this->text_action_sprite_ != nullptr &&
-        this->text_action_sprite_->valid() == true )
-    {
-      this->text_action_sprite_->draw(target);
-    }
-  }
-
-  if( this->game->actions_.action_running("gameover_action") == true ) {
-    if( this->gameover_text_action_sprite_ != nullptr &&
-        this->gameover_text_action_sprite_->valid() == true )
-    {
-      this->gameover_text_action_sprite_->draw(target);
-    }
-  }
-
-#if 1
-  if( this->game->actions_.action_running("move_card_up") == true ) {
-    if( this->move_card_up_sprite_ != nullptr &&
-        this->move_card_up_sprite_->valid() == true )
-    {
-      this->move_card_up_sprite_->draw(target);
-    }
-  }
-#endif
-
-#if 1
-  if( this->game->actions_.action_running("flip_card") == true ) {
-    if( this->flip_card_sprite_ != nullptr &&
-        this->flip_card_sprite_->valid() == true )
-    {
-      this->flip_card_sprite_->draw(target);
-    }
-  }
-#endif
+  this->game->gui_window_.draw();
 }
 
 bool PlayState::save_game()
@@ -1388,7 +1393,11 @@ void PlayState::check_gameover_conditions()
     return;
   }
 
-  if( this->game->actions_.action_running("flip_card") == true ) {
+  if( this->game->actions_.action_running("flip_card_action0") == true ) {
+    return;
+  }
+
+  if( this->game->actions_.action_running("flip_card_action1") == true ) {
     return;
   }
 
@@ -1404,6 +1413,14 @@ void PlayState::check_gameover_conditions()
       player2_num_cards == 0 )
   {
     if( this->gameover_state_ != GameOverType::NotOver ) {
+
+      if( this->game->actions_.action_running("fade_window_out_action") == true ) {
+        return;
+      }
+
+      this->game->window.fill(Color4i::Black);
+      this->game->window.update();
+
       this->game->actions_.cancel_actions();
 
       // TODO: Implement CardRules::SuddenDeath
@@ -1420,6 +1437,9 @@ void PlayState::check_gameover_conditions()
       return;
     }
 
+    const real32 GAME_OVER_FADE_OUT_DURATION =
+      this->game->config_->get_real32("GAME_OVER_FADE_OUT_DURATION", 1.5f);
+
     if( player1_score > player2_score ) {
 
       auto gameover_text_action =
@@ -1432,6 +1452,9 @@ void PlayState::check_gameover_conditions()
 
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Won;
+
+        this->game->fade_window_out(  GAME_OVER_FADE_OUT_DURATION,
+                                      Color4i::Black, SCREEN_RESOLUTION );
       });
     } else if( player1_score < player2_score ) {
 
@@ -1440,6 +1463,9 @@ void PlayState::check_gameover_conditions()
 
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Lost;
+
+        this->game->fade_window_out(  GAME_OVER_FADE_OUT_DURATION,
+                                      Color4i::Black, SCREEN_RESOLUTION );
       });
     } else {
 
@@ -1448,6 +1474,8 @@ void PlayState::check_gameover_conditions()
 
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Tie;
+        this->game->fade_window_out(  GAME_OVER_FADE_OUT_DURATION,
+                                      Color4i::Black, SCREEN_RESOLUTION );
       });
     }
   } // end game over conditions check
@@ -1458,8 +1486,7 @@ PlayState::create_gameover_text_action( GameOverType type,
                                         const std::string& action_name )
 {
   const real32 GAMEOVER_TEXT_FADE_DURATION =
-    this->game->config_->get_real32("GAMEOVER_TEXT_FADE_DURATION");
-  NOM_ASSERT(GAMEOVER_TEXT_FADE_DURATION > 0.0f);
+    this->game->config_->get_real32("GAMEOVER_TEXT_FADE_DURATION", 1.0f);
 
   auto transition_delay_action =
     std::make_shared<WaitForDurationAction>(GAMEOVER_TEXT_FADE_DURATION);
@@ -1476,7 +1503,9 @@ PlayState::create_gameover_text_action( GameOverType type,
   }
 
   // Reset the action's internal state
-  this->gameover_text_action_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+  if( this->gameover_text_action_sprite_ != nullptr ) {
+    this->gameover_text_action_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
+  }
 
   auto gameover_text_fade_in_action =
     std::make_shared<FadeInAction>( this->gameover_text_action_sprite_,
@@ -1485,6 +1514,7 @@ PlayState::create_gameover_text_action( GameOverType type,
 
   nom::action_list sequence_list = {  gameover_text_fade_in_action,
                                       transition_delay_action };
+
   auto gameover_text_action =
     nom::create_action<SequenceAction>(sequence_list);
   NOM_ASSERT(gameover_text_action != nullptr);
@@ -1496,10 +1526,7 @@ PlayState::create_gameover_text_action( GameOverType type,
 void PlayState::initialize_cpu_player_turn()
 {
   real32 cpu_move_delay_seconds =
-    this->game->config_->get_real32("CPU_MOVE_DELAY_SECONDS");
-  if( cpu_move_delay_seconds < 0.0f ) {
-    cpu_move_delay_seconds = 1.0f;
-  }
+    this->game->config_->get_real32("CPU_MOVE_DELAY_SECONDS", 4.0f);
 
   auto cpu_move_delay_timer =
     std::make_shared<WaitForDurationAction>(cpu_move_delay_seconds);

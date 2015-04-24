@@ -47,6 +47,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "GameConfig.hpp"
 #include "CardsPageDataSource.hpp"
 
+#define TT_RENDER_ACTION(sprite, action_id) \
+  if( this->game->actions_.action_running(action_id) == true && \
+      sprite != nullptr && sprite->valid() == true ) \
+  { \
+    sprite->draw(this->game->window); \
+  }
+
 namespace tt {
 
 // Forward declarations
@@ -72,6 +79,10 @@ class Game: public nom::SDLApp
 
     bool
     init_game_rules(const GameConfig* config, tt::RegionRuleSet& region);
+
+    void
+    fade_window_out(  nom::real32 duration, const nom::Color4i& color,
+                      const nom::Size2i& window_dims );
 
     /// Audio subsystem
     std::unique_ptr<nom::IAudioDevice> audio_dev_;
@@ -222,6 +233,9 @@ class Game: public nom::SDLApp
 
     nom::EventHandler evt_handler_;
     nom::JoystickID joystick_id_ = 0;
+
+    /// \see Game::fade_screen_out
+    std::shared_ptr<nom::Sprite> fade_window_out_sprite_;
 
   private:
     /// \brief Method callback action for pausing the music tracks in the game.

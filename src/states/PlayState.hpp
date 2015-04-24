@@ -52,13 +52,13 @@ class PlayState: public nom::IState
     PlayState(nom::SDLApp* object);
     virtual ~PlayState();
 
-    void on_init( nom::void_ptr data );
-    void on_exit( nom::void_ptr data );
+    void on_init(nom::void_ptr data);
+    void on_exit(nom::void_ptr data);
     void on_pause( nom::void_ptr data );
     void on_resume( nom::void_ptr data );
 
-    void on_update( float delta_time );
-    void on_draw( nom::RenderWindow& target );
+    void on_update(float delta_time);
+    void on_draw(nom::RenderWindow& target);
 
   private:
     /// \brief The default event handler for this state.
@@ -150,6 +150,7 @@ class PlayState: public nom::IState
 
     std::shared_ptr<nom::Sprite> move_card_up_sprite_;
     std::shared_ptr<nom::Sprite> flip_card_sprite_;
+    std::shared_ptr<nom::Sprite> flash_action_sprite_;
 
     std::shared_ptr<nom::Sprite> text_action_sprite_;
     std::shared_ptr<nom::Sprite> gameover_text_action_sprite_;

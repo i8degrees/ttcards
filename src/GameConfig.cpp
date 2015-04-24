@@ -98,26 +98,30 @@ int GameConfig::get_bool32(const std::string& node) const
   return result;
 }
 
-real32 GameConfig::get_real32(const std::string& node) const
+nom::real32
+GameConfig::get_real32(const std::string& node, nom::real32 default_value) const
 {
-  auto res = this->config_.find(node);
+  real32 result = default_value;
 
-  if( res == this->config_.end() ) {
-    return nom::NOM_REAL32_MIN;
-  } else {
-    return res->second.get_float();
+  auto res = this->config_.find(node);
+  if( res != this->config_.end() ) {
+    result = res->second.get_float();
   }
+
+  return result;
 }
 
-real64 GameConfig::get_real64(const std::string& node) const
+nom::real64
+GameConfig::get_real64(const std::string& node, nom::real64 default_value) const
 {
-  auto res = this->config_.find(node);
+  real64 result = default_value;
 
-  if( res == this->config_.end() ) {
-    return nom::NOM_REAL64_MIN;
-  } else {
-    return res->second.get_double();
+  auto res = this->config_.find(node);
+  if( res != this->config_.end() ) {
+    result = res->second.get_double();
   }
+
+  return result;
 }
 
 tt::string_list

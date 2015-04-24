@@ -99,6 +99,7 @@ enum CardRank: nom::uint32
   RANK_EAST,
   RANK_SOUTH,
   RANK_WEST,
+  TOTAL_RANKS,
 };
 
 enum GameOverType: nom::uint32
