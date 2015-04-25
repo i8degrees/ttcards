@@ -823,20 +823,15 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
       this->text_action_sprite_ = nullptr;
     }
 
-    auto text_sp = this->text_action_sprite_;
-    Point2i delta(-GAME_RESOLUTION.w, 0);
-
-    auto flip_text_action =
-      nom::create_action<MoveByAction>(text_sp, delta, 1.0f);
-    NOM_ASSERT(flip_text_action != nullptr);
-
-    if( applied_rule == CardRuleset::SAME_RULESET ) {
-      // Render the "Same!" rule set animation
-      flip_text_action->set_name("same_text_action");
+    auto flip_text_action = create_text_action(this->text_action_sprite_);
+    if( flip_text_action != nullptr ) {
+      if( applied_rule == CardRuleset::SAME_RULESET ) {
+        flip_text_action->set_name("same_text_action");
+      }
     }
 
-    // Reset position for action to translate from
     if( this->text_action_sprite_ != nullptr ) {
+      // Reset position for action to translate from
       nom::set_alignment( this->text_action_sprite_.get(), Point2i::zero,
                           GAME_RESOLUTION, nom::Anchor::MiddleRight );
     }
@@ -865,15 +860,17 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
 
           this->text_action_sprite_ = this->game->combo_text_sprite_;
 
-          auto combo_action = std::make_shared<MoveByAction>(
-            this->text_action_sprite_, Point2i(-GAME_RESOLUTION.w, 0), 1.0f);
-          NOM_ASSERT(combo_action != nullptr);
-          combo_action->set_name("combo_text_action");
+          auto combo_action = create_text_action(this->text_action_sprite_);
+          if( combo_action != nullptr ) {
+            combo_action->set_name("combo_text_action");
+          }
 
-          // Reset position for action to translate from
-          nom::set_alignment( this->text_action_sprite_.get(),
-                              Point2i::zero, GAME_RESOLUTION,
-                              nom::Anchor::MiddleRight );
+          if( this->text_action_sprite_ != nullptr ) {
+            // Reset position for action to translate from
+            nom::set_alignment( this->text_action_sprite_.get(),
+                                Point2i::zero, GAME_RESOLUTION,
+                                nom::Anchor::MiddleRight );
+          }
 
           this->game->actions_.run_action(combo_action, [=]() {
 
@@ -1521,6 +1518,39 @@ PlayState::create_gameover_text_action( GameOverType type,
   gameover_text_action->set_name(action_name);
 
   return gameover_text_action;
+}
+
+std::shared_ptr<nom::IActionObject>
+PlayState::create_text_action(const std::shared_ptr<nom::Sprite>& sp)
+{
+  const auto TEXT_ACTION_TIMING_CURVE_STR =
+    this->game->config_->get_string("TEXT_ACTION_TIMING_CURVE");
+  const auto TEXT_ACTION_TIMING_CURVE =
+    nom::make_timing_curve_from_string(TEXT_ACTION_TIMING_CURVE_STR);
+  Point2i delta(Point2i::zero);
+
+  if( sp != nullptr ) {
+    delta.x = -( (GAME_RESOLUTION.w - sp->size().w) / 2);
+  }
+
+  auto text_action0 =
+    nom::create_action<MoveByAction>(sp, delta, 0.5f);
+
+  auto text_action1 =
+    nom::create_action<WaitForDurationAction>(0.5f);
+
+  auto text_action2 =
+    nom::create_action<MoveByAction>(sp, delta, 0.5f);
+
+  action_list seq_list = {text_action0, text_action1, text_action2};
+
+  auto flip_text_action =
+    nom::create_action<SequenceAction>(seq_list);
+  if( flip_text_action != nullptr ) {
+    flip_text_action->set_timing_curve(TEXT_ACTION_TIMING_CURVE);
+  }
+
+  return flip_text_action;
 }
 
 void PlayState::initialize_cpu_player_turn()

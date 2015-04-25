@@ -54,6 +54,8 @@
     "FLIP_CARD_FLASH_DURATION": 0.100,
     "FLIP_CARD_FADE_OUT_DURATION": 1.0,
 
+    "TEXT_ACTION_TIMING_CURVE": "quad_ease_in_out",
+
     "GAME_OVER_FADE_OUT_DURATION": 2.0,
 
     // How long to wait before animating the CPU player's hand

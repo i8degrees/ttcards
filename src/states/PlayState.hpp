@@ -171,6 +171,9 @@ class PlayState: public nom::IState
     create_gameover_text_action(  GameOverType type,
                                   const std::string& action_name );
 
+    std::shared_ptr<nom::IActionObject>
+    create_text_action(const std::shared_ptr<nom::Sprite>& sp);
+
     void initialize_cpu_player_turn();
 };
 
