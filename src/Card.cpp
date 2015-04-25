@@ -103,7 +103,7 @@ Card unserialize_card(const nom::Value& obj)
   nom::uint32 rank_idx = 0;
   for( auto rank = ranks.begin(); rank != ranks.end(); ++rank ) {
 
-    NOM_ASSERT(ranks.size() == MAX_RANKS);
+    NOM_ASSERT(ranks.size() == CardRank::TOTAL_RANKS);
     result.ranks[rank_idx] = rank->get_int();
     ++rank_idx;
   }

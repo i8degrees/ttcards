@@ -54,9 +54,6 @@ const nom::uint32 MIN_RANK = 1;
 /// Maximum rank a card can contain
 const nom::uint32 MAX_RANK = 10;
 
-/// Maximum number of rank attributes
-const nom::uint32 MAX_RANKS = 4;
-
 /// \brief Maximum card name length
 const nom::uint32 MAX_NAME = 24;
 
@@ -87,7 +84,7 @@ struct Card
   nom::uint32 element;
 
   /// \see tt::CardRank
-  std::array<nom::uint32, MAX_RANKS> ranks;
+  std::array<nom::uint32, CardRank::TOTAL_RANKS> ranks;
 
   // The current owner of this card.
   PlayerID player_id;
