@@ -59,7 +59,9 @@ class GameConfig
     GameConfig();
     ~GameConfig();
 
-    std::string get_string(const std::string& node) const;
+    std::string
+    get_string( const std::string& node,
+                const std::string& default_value = "" ) const;
 
     /// \returns The de-serialized integer value on success, or
     /// nom::NOM_INT_MIN on failure, such as when the node does not exist.

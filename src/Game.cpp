@@ -311,7 +311,7 @@ bool Game::on_init()
     this->game->config_->get_bool("DEBUG_GAME");
 
   const std::string RENDER_SCALE_QUALITY =
-    this->config_->get_string("RENDER_SCALE_QUALITY");
+    this->config_->get_string("RENDER_SCALE_QUALITY", "nearest");
   if( nom::set_hint(  SDL_HINT_RENDER_SCALE_QUALITY,
                       RENDER_SCALE_QUALITY) == false )
   {
@@ -354,7 +354,9 @@ bool Game::on_init()
     return false;
   }
 
-  this->window.set_window_icon ( this->config_->get_string("APP_ICON") );
+  const std::string ICON_FILENAME =
+    this->config_->get_string("APP_ICON", "icon.png");
+  this->window.set_window_icon(ICON_FILENAME);
 
   // Try to set a sensible (optimal) frame rate based on the display
   // capabilities

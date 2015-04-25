@@ -45,15 +45,17 @@ GameConfig::~GameConfig()
   NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-std::string GameConfig::get_string(const std::string& node) const
+std::string GameConfig::
+get_string(const std::string& node, const std::string& default_value) const
 {
-  auto res = this->config_.find(node);
+  std::string result = default_value;
 
-  if( res == this->config_.end() ) {
-    return "\0";
-  } else {
-    return res->second.get_string();
+  auto res = this->config_.find(node);
+  if( res != this->config_.end() ) {
+    result = res->second.get_string();
   }
+
+  return result;
 }
 
 nom::int32
