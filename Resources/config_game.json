@@ -62,6 +62,8 @@
     "CPU_HAND_DELAY_SECONDS": 1.0,
 
     // Minimum time before CPU player executes a move
+    //
+    // NOTE: This value is used only in non-debug builds
     "CPU_MOVE_DELAY_SECONDS": 4.0,
 
     // Toggle showing the opponent's hand in CardsMenuState

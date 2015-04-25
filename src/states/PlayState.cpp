@@ -1555,8 +1555,14 @@ PlayState::create_text_action(const std::shared_ptr<nom::Sprite>& sp)
 
 void PlayState::initialize_cpu_player_turn()
 {
-  real32 cpu_move_delay_seconds =
-    this->game->config_->get_real32("CPU_MOVE_DELAY_SECONDS", 4.0f);
+  real32 cpu_move_delay_seconds = 0.0f;
+
+  if( this->game->debug_game_ == true ) {
+    cpu_move_delay_seconds = 2.0f;
+  } else {
+    cpu_move_delay_seconds =
+      this->game->config_->get_real32("CPU_MOVE_DELAY_SECONDS", 4.0f);
+  }
 
   auto cpu_move_delay_timer =
     std::make_shared<WaitForDurationAction>(cpu_move_delay_seconds);
