@@ -505,9 +505,7 @@ void PlayState::on_init(nom::void_ptr data)
 
   this->flash_action_sprite_ = std::make_shared<Sprite>();
   if( this->flash_action_sprite_ != nullptr ) {
-    const Color4i FLIP_CARD_FLASH_COLOR = Color4i::White;
-    this->flash_action_sprite_->init_with_color(  FLIP_CARD_FLASH_COLOR,
-                                                  CARD_DIMS );
+    this->flash_action_sprite_->init_with_color(Color4i::White, CARD_DIMS);
     this->flash_action_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
   }
 }
@@ -806,6 +804,7 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
 {
   auto player_turn = this->turn();
   auto& rules = this->game->rules_;
+  Point2i card_pos;
 
   // Check for flippable cards
   board_tiles_result grid =
@@ -836,9 +835,18 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
                           GAME_RESOLUTION, nom::Anchor::MiddleRight );
     }
 
-    this->game->actions_.run_action(flip_text_action, [=]() {
+    this->game->actions_.run_action(flip_text_action, [=]() mutable {
 
-      this->flip_card_action(gpos);
+      Card pcard =
+        this->game->board_->get(gpos.x, gpos.y);
+      if( pcard.card_renderer != nullptr ) {
+        card_pos = pcard.card_renderer->position();
+      }
+
+      auto action =
+        this->game->create_flip_card_action(this->flash_action_sprite_, card_pos);
+
+      this->game->actions_.run_action(action);
 
       auto player_id = tt::flip_player_id(player_turn);
       this->game->board_->flip_card(gpos, player_id);
@@ -872,9 +880,18 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
                                 nom::Anchor::MiddleRight );
           }
 
-          this->game->actions_.run_action(combo_action, [=]() {
+          this->game->actions_.run_action(combo_action, [=]() mutable {
 
-            this->flip_card_action(tgpos);
+            Card pcard =
+              this->game->board_->get(tgpos.x, tgpos.y);
+            if( pcard.card_renderer != nullptr ) {
+              card_pos = pcard.card_renderer->position();
+            }
+
+            auto action =
+              this->game->create_flip_card_action(this->flash_action_sprite_, card_pos);
+
+            this->game->actions_.run_action(action);
 
             auto player_id = tt::flip_player_id(player_turn);
             this->game->board_->flip_card(tgpos, player_id);
@@ -1016,55 +1033,6 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
 
     NOM_ASSERT(on_completion_func != nullptr);
     on_completion_func.operator()(pcard);
-  });
-}
-
-void PlayState::flip_card_action(const nom::Point2i& rel_board_pos)
-{
-  const real32 FLIP_CARD_FADE_OUT_DURATION =
-    this->game->config_->get_real32("FLIP_CARD_FADE_OUT_DURATION", 1.0f);
-  const real32 FLIP_CARD_FLASH_DURATION =
-    this->game->config_->get_real32("FLIP_CARD_FLASH_DURATION", 0.100f);
-  const Color4i FLIP_CARD_FLASH_COLOR = Color4i::White;
-
-  this->game->actions_.cancel_action("flip_card_action0");
-  this->game->actions_.cancel_action("flip_card_action1");
-
-  Card pcard =
-    this->game->board_->get(rel_board_pos.x, rel_board_pos.y);
-
-  auto card_renderer = pcard.card_renderer;
-  NOM_ASSERT(card_renderer != nullptr);
-
-  this->flash_action_sprite_->set_position( card_renderer->position() );
-  this->flash_action_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
-
-  auto flip_card_action0 =
-    nom::create_action<FadeInAction>( this->flash_action_sprite_,
-                                      FLIP_CARD_FLASH_DURATION );
-  NOM_ASSERT(flip_card_action0 != nullptr);
-  flip_card_action0->set_name("flip_card_action0");
-
-  this->flip_card_sprite_ =
-    card_renderer->rendered_card();
-  NOM_ASSERT(this->flip_card_sprite_ != nullptr);
-  this->flip_card_sprite_->set_alpha(Color4i::ALPHA_OPAQUE);
-
-  auto flip_card_action1 =
-    nom::create_action<FadeOutAction>(  this->flip_card_sprite_,
-                                        FLIP_CARD_FADE_OUT_DURATION );
-  NOM_ASSERT(flip_card_action1 != nullptr);
-  flip_card_action1->set_name("flip_card_action1");
-
-  auto remove_flip_card_action1 =
-    nom::create_action<RemoveAction>(flip_card_action1);
-  NOM_ASSERT(remove_flip_card_action1 != nullptr);
-
-  this->game->actions_.run_action(flip_card_action0, [=]() {
-
-    this->game->actions_.run_action(flip_card_action1, [=]() {
-      this->game->actions_.run_action(remove_flip_card_action1);
-    });
   });
 }
 
@@ -1335,8 +1303,7 @@ void PlayState::on_draw(nom::RenderWindow& target)
   this->game->scoreboard_text[PlayerIndex::PLAYER_2].draw(target);
 
   TT_RENDER_ACTION(this->move_card_up_sprite_, "move_card_up");
-  TT_RENDER_ACTION(this->flash_action_sprite_, "flip_card_action0");
-  TT_RENDER_ACTION(this->flip_card_sprite_, "flip_card_action1");
+  TT_RENDER_ACTION(this->flash_action_sprite_, "flip_card_action");
   TT_RENDER_ACTION(this->text_action_sprite_, "same_text_action");
   TT_RENDER_ACTION(this->text_action_sprite_, "combo_text_action");
   TT_RENDER_ACTION(this->gameover_text_action_sprite_, "gameover_action");
@@ -1390,11 +1357,7 @@ void PlayState::check_gameover_conditions()
     return;
   }
 
-  if( this->game->actions_.action_running("flip_card_action0") == true ) {
-    return;
-  }
-
-  if( this->game->actions_.action_running("flip_card_action1") == true ) {
+  if( this->game->actions_.action_running("flip_card_action") == true ) {
     return;
   }
 

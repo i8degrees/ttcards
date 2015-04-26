@@ -149,7 +149,6 @@ class PlayState: public nom::IState
     enum GameOverType gameover_state_;
 
     std::shared_ptr<nom::Sprite> move_card_up_sprite_;
-    std::shared_ptr<nom::Sprite> flip_card_sprite_;
     std::shared_ptr<nom::Sprite> flash_action_sprite_;
 
     std::shared_ptr<nom::Sprite> text_action_sprite_;
@@ -161,9 +160,6 @@ class PlayState: public nom::IState
     move_card_up_action(  const nom::Point2i& rel_board_pos,
                           const move_card_up_action_callback&
                           on_completion_func );
-
-    void
-    flip_card_action(const nom::Point2i& rel_board_pos);
 
     void check_gameover_conditions();
 

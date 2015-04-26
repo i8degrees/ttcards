@@ -1231,6 +1231,30 @@ Game::fade_window_out(  real32 duration, const nom::Color4i& color,
   this->game->actions_.run_action(fade_out_action);
 }
 
+std::shared_ptr<nom::IActionObject> Game::
+create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
+                          const nom::Point2i& card_pos )
+{
+  const real32 FLIP_CARD_FLASH_DURATION =
+    this->game->config_->get_real32("FLIP_CARD_FLASH_DURATION", 0.100f);
+  const Color4i FLIP_CARD_FLASH_COLOR = Color4i::White;
+
+  this->game->actions_.cancel_action("flip_card_action");
+
+  if( sp != nullptr ) {
+    sp->set_position(card_pos);
+    sp->set_alpha(Color4i::ALPHA_TRANSPARENT);
+  }
+
+  auto flip_card_action =
+    nom::create_action<FadeInAction>(sp, FLIP_CARD_FLASH_DURATION);
+  if( flip_card_action != nullptr ) {
+    flip_card_action->set_name("flip_card_action");
+  }
+
+  return flip_card_action;
+}
+
 void Game::pause_music( void )
 {
   this->game->theme_track_->togglePause();

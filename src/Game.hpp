@@ -59,6 +59,7 @@ namespace tt {
 // Forward declarations
 class CardCollection;
 class Board;
+class CardRenderer;
 class CardResourceLoader;
 
 class Game: public nom::SDLApp
@@ -83,6 +84,10 @@ class Game: public nom::SDLApp
     void
     fade_window_out(  nom::real32 duration, const nom::Color4i& color,
                       const nom::Size2i& window_dims );
+
+    std::shared_ptr<nom::IActionObject>
+    create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
+                              const nom::Point2i& card_pos );
 
     /// Audio subsystem
     std::unique_ptr<nom::IAudioDevice> audio_dev_;
