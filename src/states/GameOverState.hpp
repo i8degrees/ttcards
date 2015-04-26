@@ -32,6 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 
 #include <nomlib/graphics.hpp>
+#include <nomlib/actions.hpp>
 #include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
@@ -55,7 +56,7 @@ class GameOverState: public nom::IState
 
   private:
     /// \todo Change return type to bool
-    void on_init( nom::void_ptr data );
+    void on_init(nom::void_ptr data);
     void on_exit( nom::void_ptr data );
 
     void on_pause( nom::void_ptr data );
@@ -73,7 +74,10 @@ class GameOverState: public nom::IState
     void on_user_event(const nom::Event& ev);
 
     void on_update ( float delta_time );
-    void on_draw( nom::RenderWindow& target );
+    void on_draw(nom::RenderWindow& target);
+
+    std::shared_ptr<nom::IActionObject>
+    create_scale_card_action(const std::shared_ptr<nom::Sprite>& sp);
 
     Game* game;
 
@@ -92,6 +96,9 @@ class GameOverState: public nom::IState
 
     /// Position of player 2 hand
     nom::Point2i player2_pos;
+
+    std::shared_ptr<nom::Sprite> flash_action_sprite_;
+    std::shared_ptr<nom::Sprite> scale_action_sprite_;
 };
 
 // Convenience declarations for changing state
