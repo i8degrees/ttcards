@@ -100,6 +100,12 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
 
 void set_face_down(CardHand* player_hand, bool face_down);
 
+/// \brief Update the rendering coordinates of the player's hand.
+void update_card_layout(CardHand* phand, const nom::Point2i& origin);
+
+/// \brief Render the player's hand.
+void render_player_hand(const nom::RenderTarget& target, const CardHand* phand);
+
 // NOTE: This only modifies the rank attribute(s) -- no rendering is done to
 // the number glyphs.
 void increase_card_rank(CardRank rank, Card& card);

@@ -156,7 +156,7 @@ class CardHand
 
   private:
     /// Track the current position we are at in the cards vector
-    nom::size_type position_;
+    nom::size_type position_ = 0;
 
     /// Player's active card
     Card selectedCard;

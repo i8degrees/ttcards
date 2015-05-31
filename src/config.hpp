@@ -121,9 +121,13 @@ const nom::int32 BOARD_ORIGIN_Y = 16 * SCALE_FACTOR;
 
 const nom::int32 PLAYER2_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ); // 16
 const nom::int32 PLAYER2_ORIGIN_Y = BOARD_ORIGIN_Y; // 16
+const nom::Point2i PLAYER2_ORIGIN =
+  nom::Point2i(PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y);
 
 const nom::int32 PLAYER1_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ) + BOARD_ORIGIN_X + ( CARD_WIDTH * 3 );
 const nom::int32 PLAYER1_ORIGIN_Y = BOARD_ORIGIN_Y;
+const nom::Point2i PLAYER1_ORIGIN =
+  nom::Point2i(PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y);
 
 const nom::int32 CURSOR_ORIGIN_X = ( GAME_RESOLUTION.w - CURSOR_WIDTH ) / 2 ;
 const nom::int32 CURSOR_ORIGIN_Y = ( GAME_RESOLUTION.h - CURSOR_HEIGHT ) / 2;

@@ -55,14 +55,14 @@ class CardsMenuState: public nom::IState
     virtual ~CardsMenuState();
 
     /// \todo Change return type to bool
-    void on_init( nom::void_ptr data );
+    void on_init(nom::void_ptr data);
     void on_exit( nom::void_ptr data );
 
     void on_pause(nom::void_ptr data);
     void on_resume(nom::void_ptr data);
 
-    void on_update( float delta_time );
-    void on_draw( nom::RenderWindow& target );
+    void on_update(nom::real32 delta_time);
+    void on_draw(nom::RenderWindow& target);
 
   private:
     /// \brief The default event handler for this state.
@@ -110,9 +110,19 @@ class CardsMenuState: public nom::IState
     /// \brief Remove a card from the player's hand.
     void remove_card(const Card& card);
 
+    /// \brief Render the player's card sprite.
+    ///
+    /// \param card An existing card -- with a valid card renderer -- to base
+    /// the sprite rendering from.
+    std::unique_ptr<nom::Sprite>
+    set_player_selected_card_position(  const Card& card,
+                                        const nom::Point2i& pos );
+
     Game* game;
 
-    Card selected_card_;
+    Card p1_selected_card_;
+    nom::Point2i p1_selected_card_pos_;
+    std::shared_ptr<nom::Sprite> p1_selected_card_sprite_;
 
     /// \brief Bounds map for game cursor movement.
     std::vector<nom::IntRect> cursor_coords_map_;
@@ -121,9 +131,6 @@ class CardsMenuState: public nom::IState
     ///
     /// \remarks Not implemented
     nom::uint32 cursor_state_;
-
-    /// \brief The position origin of the card selection from the menu window.
-    nom::Point2i selected_card_pos_;
 };
 
 // Convenience declarations for changing state

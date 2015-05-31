@@ -54,6 +54,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     sprite->draw(this->game->window); \
   }
 
+#define TT_RENDER_SPRITE(sprite) \
+  if( sprite != nullptr && sprite->valid() == true ) { \
+    sprite->draw(this->game->window); \
+  }
+
 namespace tt {
 
 // Forward declarations

@@ -52,6 +52,9 @@ GameOverState::GameOverState(nom::SDLApp* object, nom::void_ptr state) :
 GameOverState::~GameOverState( void )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_TRACE_STATES, "num_actions:",
+                  this->game->actions_.num_actions() );
 }
 
 void GameOverState::on_init(nom::void_ptr data)
@@ -312,6 +315,8 @@ void GameOverState::on_exit( nom::void_ptr data )
   this->game->card_info_box_.close();
   Rocket::Core::Factory::ClearStyleSheetCache();
   Rocket::Core::Factory::ClearTemplateCache();
+
+  this->game->actions_.cancel_actions();
 }
 
 void GameOverState::on_pause( nom::void_ptr data )

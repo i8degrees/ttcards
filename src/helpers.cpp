@@ -483,6 +483,35 @@ void set_face_down(CardHand* player_hand, bool face_down)
   player_hand->reinit();
 }
 
+void update_card_layout(CardHand* phand, const nom::Point2i& origin)
+{
+  nom::size_type hand_index = 0;
+  Point2i card_pos(Point2i::zero);
+
+  for( auto itr = phand->begin(); itr != phand->end(); ++itr ) {
+
+    auto card_sp = (itr)->card_renderer;
+    if( card_sp != nullptr && card_sp->valid() == true ) {
+      card_pos.x = origin.x;
+      card_pos.y = origin.y + (CARD_HEIGHT / 2) * hand_index;
+      card_sp->set_position(card_pos);
+
+      ++hand_index;
+    }
+  }
+}
+
+void render_player_hand(const nom::RenderTarget& target, const CardHand* phand)
+{
+  for( auto itr = phand->begin(); itr != phand->end(); ++itr ) {
+
+    auto card_renderer = (itr)->card_renderer;
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->render(target);
+    }
+  }
+}
+
 void increase_card_rank(CardRank rank, Card& card)
 {
   uint32 dir = (card.ranks[rank] + 1);
