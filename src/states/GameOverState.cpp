@@ -80,6 +80,11 @@ void GameOverState::on_init(nom::void_ptr data)
   for( auto y = 0; y != BOARD_GRID_HEIGHT; ++y) {
     for( auto x = 0; x != BOARD_GRID_WIDTH; ++x) {
 
+      // Err; invalid game board
+      if( this->game->board_ == nullptr ) {
+        break;
+      }
+
       Card pcard = this->game->board_->get(x, y);
       pcard.face_down = false;
 
@@ -107,6 +112,8 @@ void GameOverState::on_init(nom::void_ptr data)
       }
     }
   }
+
+  // ...Set the card rendering layout for the player and opponent...
 
   auto p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
   auto p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
@@ -236,8 +243,16 @@ void GameOverState::on_init(nom::void_ptr data)
   });
 
   auto select_cards( [=](const nom::Event& evt) {
-    this->selected_card = this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard();
-    this->game->set_state( Game::State::ConfirmationDialog );
+    this->selected_card =
+      this->game->hand[PlayerIndex::PLAYER_2].getSelectedCard();
+
+    // NOTE: Data validation (crash prevention)
+    if( this->selected_card != Card::null ) {
+      this->game->set_state(Game::State::ConfirmationDialog);
+    } else {
+      this->game->cursor_wrong->Play();
+      this->game->set_state(Game::State::MainMenu);
+    }
   });
 
   // ...Keyboard mappings...
@@ -305,7 +320,7 @@ void GameOverState::on_init(nom::void_ptr data)
   }
 }
 
-void GameOverState::on_exit( nom::void_ptr data )
+void GameOverState::on_exit(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -374,8 +389,8 @@ void GameOverState::on_mouse_button_down( const nom::Event& ev )
                                 CARD_WIDTH
                               );
 
-    if ( player2_card_pos.contains ( coords ) )
-    {
+    if( player2_card_pos.contains(coords) ) {
+
       // 1. Update cursor position
       // 2. Update player's selected card
       // 3. Update the card info message box

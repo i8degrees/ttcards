@@ -64,7 +64,10 @@ set(  TTCARDS_SOURCE_STATES
       ${STATES_DIR}/CardsMenuState.cpp
       ${STATES_DIR}/CardsMenuState.hpp
       ${STATES_DIR}/PlayState.cpp
-      ${STATES_DIR}/PlayState.hpp )
+      ${STATES_DIR}/PlayState.hpp
+
+      ${STATES_DIR}/MainMenuState.cpp
+      ${STATES_DIR}/MainMenuState.hpp )
 
 set(  TTCARDS_SOURCE
       ${TTCARDS_SOURCE}

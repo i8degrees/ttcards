@@ -45,6 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "states/PauseState.hpp"
 #include "states/CardsMenuState.hpp"
 #include "states/PlayState.hpp"
+#include "states/MainMenuState.hpp"
 
 //#include "states/States.hpp" // StateFactory
 
@@ -496,6 +497,13 @@ bool Game::on_init()
     return false;
   }
 
+  // ...Initialize the font for the main menu states...
+  if( this->game->menu_font_.load(GUI_TEXT_FONT) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource file:", GUI_TEXT_FONT );
+    return false;
+  }
+
   Rocket::Core::DecoratorInstancer* decorator0 = new nom::DecoratorInstancerFinalFantasyFrame();
   Rocket::Core::Factory::RegisterDecoratorInstancer("final-fantasy-theme", decorator0 );
   decorator0->RemoveReference();
@@ -558,6 +566,9 @@ bool Game::on_init()
 
   // Initialize game over text
   this->game->gameover_text.set_font(&this->game->gameover_font);
+
+  // ...Initialize the text for the main menu states...
+  this->game->menu_text_.set_font(&this->game->menu_font_);
 
   const auto GAMEOVER_BACKGROUND =
     this->game->res_cfg_->get_string("GAMEOVER_BACKGROUND");
@@ -935,7 +946,7 @@ bool Game::on_init()
   nom::InputActionMapper state;
 
   auto quit_game( [=](const nom::Event& evt) {
-    this->on_app_quit(evt);
+    this->on_game_quit(evt);
   });
 
   auto toggle_fullscreen( [=](const nom::Event& evt) {
@@ -1061,7 +1072,7 @@ int Game::Run()
   std::stringstream fps_title_prefix;
   std::stringstream fps_title_suffix;
 
-  this->set_state(Game::State::CardsMenu);
+  this->set_state(Game::State::MainMenu);
 
   game_time.start();
   this->fps_timer_.start();
@@ -1114,41 +1125,47 @@ int Game::Run()
   return NOM_EXIT_SUCCESS;
 }
 
-void Game::set_state( nom::uint32 id, nom::void_ptr data )
+void Game::set_state(nom::uint32 id, nom::void_ptr data)
 {
-  switch ( id )
+  switch(id)
   {
-    default: /* Ignore unknown identifiers */ break;
+    default:
+    {
+      NOM_ASSERT_INVALID_PATH();
+    } break;
 
     case Game::State::CardsMenu:
     {
       this->state()->set_state( CardsMenuStatePtr( new CardsMenuState( this->game ) ), data );
-      break;
-    }
+    } break;
 
     case Game::State::Play:
     {
       this->state()->set_state( PlayStatePtr( new PlayState( this->game ) ), data );
-      break;
-    }
+    } break;
 
     case Game::State::GameOver:
     {
       this->state()->set_state( GameOverStatePtr( new GameOverState( this->game, data ) ), data );
-      break;
-    }
+    } break;
 
     case Game::State::Pause:
     {
       this->state()->set_state( PauseStatePtr( new PauseState( this->game ) ), data );
-      break;
-    }
+    } break;
 
     case Game::State::ConfirmationDialog:
     {
       this->state()->set_state( ConfirmationDialogStatePtr( new ConfirmationDialogState( this->game ) ), data );
-      break;
-    }
+    } break;
+
+    case Game::State::MainMenu:
+    {
+      auto state_ptr =
+        MainMenuStatePtr( new MainMenuState(this->game) );
+
+      this->state()->set_state( std::move(state_ptr), data );
+    } break;
   }
 }
 
@@ -1205,8 +1222,10 @@ init_game_rules(const GameConfig* config, tt::RegionRuleSet& region)
 
 void
 Game::fade_window_out(  real32 duration, const nom::Color4i& color,
-                        const nom::Size2i& window_dims )
+                        const nom::Size2i& window_dims,
+                        const std::function<void()>& on_completion_func )
 {
+  bool ret = false; // log action execution failures
   auto sp = this->game->fade_window_out_sprite_;
   if( sp != nullptr ) {
 
@@ -1228,7 +1247,18 @@ Game::fade_window_out(  real32 duration, const nom::Color4i& color,
     fade_out_action->set_name("fade_window_out_action");
   }
 
-  this->game->actions_.run_action(fade_out_action);
+  ret = this->game->actions_.run_action(fade_out_action, on_completion_func);
+
+  if( ret == false ) {
+    NOM_LOG_ERR( TTCARDS_LOG_CATEGORY_APPLICATION, "Animation failure: ",
+                  fade_out_action->name() );
+
+  }
+}
+
+void Game::on_game_quit(const nom::Event& evt)
+{
+  this->on_app_quit(evt);
 }
 
 std::shared_ptr<nom::IActionObject> Game::
@@ -1308,10 +1338,7 @@ void Game::reload_config()
 
   NOM_ASSERT(this->state() != nullptr);
 
-  // NOTE: Prevents states crash
-  if( this->state()->current_state_id() != Game::State::CardsMenu ) {
-    this->set_state(Game::State::CardsMenu);
-  }
+  this->set_state(Game::State::MainMenu);
 
   this->game->debug_game_ =
     this->game->config_->get_bool("DEBUG_GAME");

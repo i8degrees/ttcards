@@ -115,9 +115,10 @@ void CardsMenuState::on_init(nom::void_ptr data)
   this->p1_selected_card_pos_.y =
     BOARD_ORIGIN_Y + ( (CARD_HEIGHT / 2) + CARD_HEIGHT * 1) - 8;
 
-  // Reset the state of the cards model to ensure no persistent state; this
-  // can lead to subtle bugs or worse if we don't do this
-  this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );
+  // FIXME: We crash here if we initialize this on every game!
+  if( this->game->cards_page_model_ == nullptr ) {
+    this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );
+  }
 
   if( this->game->cards_menu_.set_context(&this->game->gui_window_) == false ) {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -153,10 +154,17 @@ void CardsMenuState::on_init(nom::void_ptr data)
     // }
   }
 
-  // Card pages initializing...
+  // ...Setup the card page database...
+
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
-  if( this->game->cards_page_model_ != nullptr ) {
+
+  if( this->game->cards_page_model_ != nullptr &&
+      this->game->first_init_ == false )
+  {
     this->game->cards_page_model_->insert_cards(0, deck);
+
+    // FIXME: We crash here if we initialize this on every game!
+    this->game->first_init_ = true;
   }
 
   // Build card row data

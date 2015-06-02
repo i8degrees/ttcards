@@ -26,84 +26,97 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_GAMEOVER_HEADERS
-#define GAMEAPP_GAMEOVER_HEADERS
+#ifndef TTCARDS_MAIN_MENU_HPP
+#define TTCARDS_MAIN_MENU_HPP
 
+#include <iostream>
+#include <string>
 #include <memory>
 
 #include <nomlib/graphics.hpp>
-#include <nomlib/actions.hpp>
-#include <nomlib/gui.hpp>
+// #include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "types.hpp"
 #include "resources.hpp"
 #include "Card.hpp"
-#include "GameOverStateCursor.hpp"
 
 namespace tt {
 
 // Forward declarations
 class Game;
 
-class GameOverState: public nom::IState
+class MainMenuState: public nom::IState
 {
   public:
-    GameOverState(nom::SDLApp* object, nom::void_ptr state);
+    enum MenuText
+    {
+      MENU_TEXT_INVALID = -1,
+      MENU_TEXT_CONTINUE,
+      MENU_TEXT_NEW_GAME,
+      MENU_TEXT_LOAD_GAME,
+      MENU_TEXT_VIEW_CARDS,
+      MENU_TEXT_OPTIONS,
+      MENU_TEXT_CREDITS,
+      MENU_TEXT_QUIT,
+    };
 
-    virtual ~GameOverState();
+    MainMenuState(nom::SDLApp* object);
 
-  private:
+    virtual ~MainMenuState();
+
     /// \todo Change return type to bool
     void on_init(nom::void_ptr data);
     void on_exit(nom::void_ptr data);
 
-    void on_pause( nom::void_ptr data );
-    void on_resume( nom::void_ptr data );
+    void on_pause(nom::void_ptr data);
+    void on_resume(nom::void_ptr data);
 
-    /// \brief The default event handler for this state.
-    bool on_event(const nom::Event& ev) override;
-
-    /// \brief Method callback for mouse button actions.
-    ///
-    /// \see nom::InputMapper.
-    void on_mouse_button_down( const nom::Event& ev );
-
-    /// \brief User events handler for this state.
-    void on_user_event(const nom::Event& ev);
-
-    void on_update ( float delta_time );
+    void on_update(nom::real32 delta_time);
     void on_draw(nom::RenderWindow& target);
 
-    std::shared_ptr<nom::IActionObject>
-    create_scale_card_action(const std::shared_ptr<nom::Sprite>& sp);
+  private:
+    /// \brief The default event handler for this state.
+    bool on_event(const nom::Event& evt) override;
 
-    Game* game;
+    void on_mouse_button_up(const nom::Event& evt);
 
-    nom::Timer transistion;
-    bool show_results;
+    void on_confirm_selection(const nom::Event& evt);
 
-    nom::uint32 gameover_state_;
+    void update_cursor();
 
-    /// Interface cursor
-    GameOverStateCursor cursor_;
+    /// \brief Get the game cursor position.
+    ///
+    /// \returns The game cursor's position index, relative to the shown menu.
+    int cursor_position();
 
-    Card selected_card;
+    /// \brief Set the rendering position of the game cursor.
+    ///
+    /// \param pos The position index of the game cursor, relative to the shown
+    /// menu.
+    void set_cursor_position(int pos);
 
-    /// Position of player 1 hand
-    nom::Point2i player1_pos;
+    /// \brief Move the game cursor to the previous menu text entry.
+    void cursor_prev();
 
-    /// Position of player 2 hand
-    nom::Point2i player2_pos;
+    /// \brief Move the game cursor to the next menu text entry.
+    void cursor_next();
 
-    std::shared_ptr<nom::Sprite> flash_action_sprite_;
-    std::shared_ptr<nom::Sprite> scale_action_sprite_;
+    Game* game = nullptr;
+
+    /// \brief Game cursor rendering bounds
+    std::vector<nom::IntRect> cursor_coords_map_;
+
+    // Menu entry index; 0..TOTAL_MENU_ENTRIES - 1
+    nom::size_type cursor_pos_ = 0;
+
+    // Rendered menu entries; 0..TOTAL_MENU_ENTRIES - 1
+    std::map<nom::size_type, nom::Text> menu_text_;
 };
 
 // Convenience declarations for changing state
-typedef std::unique_ptr<GameOverState> GameOverStatePtr;
+typedef std::unique_ptr<MainMenuState> MainMenuStatePtr;
 
 } // namespace tt
 
-#endif // GAMEAPP_GAMEOVER_HEADERS defined
+#endif // GAMEAPP_CARDS_MENU_HEADERS defined

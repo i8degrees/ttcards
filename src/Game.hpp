@@ -81,14 +81,17 @@ class Game: public nom::SDLApp
     int Run();
 
     /// \see SDLApp
-    void set_state( nom::uint32 id, nom::void_ptr data = nullptr );
+    void set_state(nom::uint32 id, nom::void_ptr data = nullptr);
 
     bool
     init_game_rules(const GameConfig* config, tt::RegionRuleSet& region);
 
     void
     fade_window_out(  nom::real32 duration, const nom::Color4i& color,
-                      const nom::Size2i& window_dims );
+                      const nom::Size2i& window_dims,
+                      const std::function<void()>& on_completion_func = nullptr );
+
+    void on_game_quit(const nom::Event& evt);
 
     std::shared_ptr<nom::IActionObject>
     create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
@@ -135,9 +138,11 @@ class Game: public nom::SDLApp
     nom::Font card_font_;
     nom::Font gameover_font;
     nom::Font scoreboard_font;
+    nom::Font menu_font_;
 
     nom::Text scoreboard_text[2];
     nom::Text gameover_text;
+    nom::Text menu_text_;
 
     /// Game board
     std::unique_ptr<Board> board_;
@@ -211,7 +216,9 @@ class Game: public nom::SDLApp
       Play,
       GameOver,
       Pause,
-      ConfirmationDialog
+      ConfirmationDialog,
+      MainMenu,
+      Options,
     };
 
     nom::InputStateMapper input_mapper;
@@ -244,8 +251,11 @@ class Game: public nom::SDLApp
     nom::EventHandler evt_handler_;
     nom::JoystickID joystick_id_ = 0;
 
-    /// \see Game::fade_screen_out
+    /// \see Game::fade_window_out
     std::shared_ptr<nom::Sprite> fade_window_out_sprite_;
+
+
+    bool first_init_ = false;
 
   private:
     /// \brief Method callback action for pausing the music tracks in the game.
