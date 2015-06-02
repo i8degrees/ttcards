@@ -13,6 +13,8 @@ install_options
 *.mp3
 *.ogg
 #*.wav
+wiki
+
 #Resources/audio
 # ctags
 .tags*
