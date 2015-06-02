@@ -1068,7 +1068,6 @@ int Game::Run()
   real32 delta_time = 0.0f;
   real32 elapsed_frames = 0.0f;
   Timer game_time;
-  const std::string WINDOW_TITLE(APP_NAME);
   std::stringstream fps_title_prefix;
   std::stringstream fps_title_suffix;
 
@@ -1076,7 +1075,7 @@ int Game::Run()
 
   game_time.start();
   this->fps_timer_.start();
-  fps_title_prefix << WINDOW_TITLE << " " << "-" << " ";
+  fps_title_prefix << APP_WINDOW_TITLE << " " << "-" << " ";
 
   nom::Event evt;
   while( this->running() == true ) {
@@ -1100,7 +1099,6 @@ int Game::Run()
                       "fade_window_out_action" );
 
     ++elapsed_frames;
-
     if( this->show_fps() == true ) {
 
       if( this->fps_timer_.ticks() >= 1000 ) {
@@ -1116,7 +1114,7 @@ int Game::Run()
       }
     } else {
       // Use the default window title string
-      this->window.set_window_title(WINDOW_TITLE);
+      this->window.set_window_title(APP_WINDOW_TITLE);
     }
 
     tt::set_frame_interval(this->frame_interval_);
