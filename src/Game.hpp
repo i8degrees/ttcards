@@ -86,10 +86,11 @@ class Game: public nom::SDLApp
     bool
     init_game_rules(const GameConfig* config, tt::RegionRuleSet& region);
 
+    /// \param alpha The starting opacity (origin) to fade the color with.
     void
-    fade_window_out(  nom::real32 duration, const nom::Color4i& color,
-                      const nom::Size2i& window_dims,
-                      const std::function<void()>& on_completion_func = nullptr );
+    fade_window(  nom::real32 duration, const nom::Color4i& color,
+                  nom::uint8 alpha, const nom::Size2i& window_dims,
+                  const std::function<void()>& on_completion_func = nullptr );
 
     void on_game_quit(const nom::Event& evt);
 
@@ -251,10 +252,6 @@ class Game: public nom::SDLApp
     nom::EventHandler evt_handler_;
     nom::JoystickID joystick_id_ = 0;
 
-    /// \see Game::fade_window_out
-    std::shared_ptr<nom::Sprite> fade_window_out_sprite_;
-
-
     bool first_init_ = false;
 
   private:
@@ -331,6 +328,9 @@ class Game: public nom::SDLApp
     ///
     /// \remarks Re-implements nom::SDLApp::on_window_restored
     void on_window_restored(const nom::Event& evt) override;
+
+    /// \see Game::fade_window_out
+    std::shared_ptr<nom::Sprite> fade_window_sprite_;
 
     Game* game;
 

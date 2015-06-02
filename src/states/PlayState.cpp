@@ -1413,8 +1413,9 @@ void PlayState::check_gameover_conditions()
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Won;
 
-        this->game->fade_window_out(  GAME_OVER_FADE_OUT_DURATION,
-                                      Color4i::Black, SCREEN_RESOLUTION );
+        this->game->fade_window(  GAME_OVER_FADE_OUT_DURATION, Color4i::Black,
+                                  nom::Color4i::ALPHA_TRANSPARENT,
+                                  SCREEN_RESOLUTION );
       });
     } else if( player1_score < player2_score ) {
 
@@ -1424,8 +1425,9 @@ void PlayState::check_gameover_conditions()
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Lost;
 
-        this->game->fade_window_out(  GAME_OVER_FADE_OUT_DURATION,
-                                      Color4i::Black, SCREEN_RESOLUTION );
+        this->game->fade_window(  GAME_OVER_FADE_OUT_DURATION, Color4i::Black,
+                                  nom::Color4i::ALPHA_TRANSPARENT,
+                                  SCREEN_RESOLUTION );
       });
     } else {
 
@@ -1434,8 +1436,9 @@ void PlayState::check_gameover_conditions()
 
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Tie;
-        this->game->fade_window_out(  GAME_OVER_FADE_OUT_DURATION,
-                                      Color4i::Black, SCREEN_RESOLUTION );
+        this->game->fade_window(  GAME_OVER_FADE_OUT_DURATION, Color4i::Black,
+                                  nom::Color4i::ALPHA_TRANSPARENT,
+                                  SCREEN_RESOLUTION );
       });
     }
   } // end game over conditions check

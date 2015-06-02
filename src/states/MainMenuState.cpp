@@ -385,7 +385,7 @@ void MainMenuState::cursor_next()
 
 void MainMenuState::on_confirm_selection(const nom::Event& evt)
 {
-  const real32 FADE_OUT_DURATION = 1.0f;
+  const real32 FADE_DURATION = 1.0f;
   int cursor_pos = this->cursor_position();
 
   switch(cursor_pos)
@@ -405,8 +405,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         this->game->set_state(Game::State::CardsMenu);
       });
 
-      this->game->fade_window_out(  FADE_OUT_DURATION, Color4i::White,
-                                    SCREEN_RESOLUTION, fade_transistion );
+      this->game->fade_window(  FADE_DURATION, Color4i::White,
+                                Color4i::ALPHA_OPAQUE, SCREEN_RESOLUTION,
+                                fade_transistion );
     } break;
 
     case MENU_TEXT_NEW_GAME:
@@ -416,8 +417,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         this->game->set_state(Game::State::CardsMenu);
       });
 
-      this->game->fade_window_out(  FADE_OUT_DURATION, Color4i::Black,
-                                    SCREEN_RESOLUTION, fade_transistion );
+      this->game->fade_window(  FADE_DURATION, Color4i::Black,
+                                Color4i::ALPHA_TRANSPARENT, SCREEN_RESOLUTION,
+                                fade_transistion );
     } break;
 
     case MENU_TEXT_LOAD_GAME:
@@ -446,12 +448,13 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
 
     case MENU_TEXT_QUIT:
     {
-      auto completion_func( [=]() {
+      auto fade_transistion( [=]() {
         this->game->on_game_quit(evt);
       });
 
-      this->game->fade_window_out(  FADE_OUT_DURATION, Color4i::Black,
-                                    SCREEN_RESOLUTION );
+      this->game->fade_window(  FADE_DURATION, Color4i::Black,
+                                nom::Color4i::ALPHA_TRANSPARENT,
+                                SCREEN_RESOLUTION, fade_transistion );
     } break;
   }
 }
