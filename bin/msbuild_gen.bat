@@ -18,11 +18,9 @@ echo "BUILD_FLAGS: %BUILD_FLAGS%"
 
 REM Only 32-bit builds have been tested; we're probably missing library
 REM dependencies for a complete 64-bit build ...
-REM
-REM NOMLIB_DEPS_PREFIX is the &&absolute** directory path to the engine's
-REM packaged dependencies for the platform, i.e.:
-REM %HOME%/Projects/nomlib.git/third-party/windows
 
+REM Details for setting up the NOMLIB_DEPS_PREFIX environment variable can be
+REM found in the project's README.md and also bin/windev_tt.bat.
 set CMAKE_FLAGS=-DARCH_32=on -DNOMLIB_DEPS_PREFIX=%NOMLIB_DEPS_PREFIX%
 
 if EXIST CMakeCache.txt del CMakeCache.txt

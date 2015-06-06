@@ -126,26 +126,27 @@ if( PLATFORM_WINDOWS )
 
 endif( PLATFORM_WINDOWS )
 
-# External dependencies prefix (absolute path to nomlib's third-party directory)
+# ...Engine dependencies...
+
 if( NOT NOMLIB_DEPS_PREFIX )
-  message( FATAL_ERROR "The location of the third-party dependencies must be set. See README.md for details." )
+  NOM_LOG_CRIT( "An absolute directory path to the engine's dependencies must be set. See README.md for details." )
 else()
-  # Used by nomlib's find module
+  # IMPORTANT: NOMLIB_DEPS_ROOT **must** be set before using FIND_PACKAGE to
+  # locate nomlib (nomlib-config.cmake) as it is used by said script. It should
+  # **not** be used anywhere in this project.
   set(  NOMLIB_DEPS_ROOT ${NOMLIB_DEPS_PREFIX} CACHE PATH
-        "nomlib's third-party dependencies path" )
-  message( STATUS "NOMLIB_DEPS_ROOT: ${NOMLIB_DEPS_PREFIX}" )
+        "engine dependencies dir path" )
+  set( NOMLIB_DEPS_ROOT "${NOMLIB_DEPS_PREFIX}" )
+  message( STATUS "NOMLIB_DEPS_ROOT: ${NOMLIB_DEPS_ROOT}" )
 endif()
 
-# TODO: When building on Windows, if the end-user has both Debug and Release
-# build targets of nomlib installed, we need to modify the component names to
-# reflect which library name to use ('-d' postfix for debug). Hint: I think
-# that our nomlib-config.cmake script should be able to handle this for us
-# automatically.
-find_package( nomlib COMPONENTS
-              core file math system graphics gui ptree serializers REQUIRED
-              OPTIONAL_COMPONENTS audio )
-
 if( PLATFORM_WINDOWS )
+
+  # Sanitize file path delimiters for Windows installations; this resolves
+  # installation woes within cmake_install.cmake when mixing environment
+  # variables -- forward slashes -- and CMake script paths -- backslashes.
+  string( REPLACE "\\" "/" NOMLIB_DEPS_PREFIX ${NOMLIB_DEPS_ROOT} )
+
   # Redistribution paths must be absolute, a directory and end with a trailing
   # slash character (these are fed to CMake's install command). Only filenames
   # with the extension of '.dll' (case-insensitive) will be copied.
@@ -175,6 +176,15 @@ elseif( PLATFORM_OSX )
 elseif( PLATFORM_LINUX )
   # TODO
 endif( PLATFORM_WINDOWS )
+
+# TODO: When building on Windows, if the end-user has both Debug and Release
+# build targets of nomlib installed, we need to modify the component names to
+# reflect which library name to use ('-d' postfix for debug). Hint: I think
+# that our nomlib-config.cmake script should be able to handle this for us
+# automatically.
+find_package( nomlib COMPONENTS
+              core file math system graphics gui ptree serializers REQUIRED
+              OPTIONAL_COMPONENTS audio )
 
 # Project source tree
 include( "${SRC_DIR}/CMakeLists.txt" )

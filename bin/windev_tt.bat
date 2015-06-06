@@ -3,10 +3,10 @@
 REM Automated Windows build script for TTcards -- windev.local
 
 REM NOTE: This script is intended to be ran from the project's root
-REM directory, i.e.: %HOME%/Projects/ttcards.git
+REM directory, i.e.: %HOMEPATH%\Projects\ttcards.git
 
-REM ...Environment setup...
-set NOMLIB_DEPS_PREFIX=%HOME%/Projects/nomlib.git/third-party/windows
+REM ...Engine setup...
+set NOMLIB_DEPS_PREFIX=%HOMEPATH%\Projects\nomlib.git\third-party\windows
 
 REM virgo.local source repository
 unison ttcards
