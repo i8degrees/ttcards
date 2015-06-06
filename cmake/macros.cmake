@@ -30,3 +30,21 @@ macro(add_rpath rpath binary_path)
   endforeach(path ${rpath})
 
 endmacro(add_rpath rpath binary_path)
+
+# ...Logging...
+
+macro(NOM_LOG_INFO msg)
+  message( STATUS "INFO: ${msg}" )
+endmacro(NOM_LOG_INFO msg)
+
+macro(NOM_LOG_WARN msg)
+  message( WARNING "WARN: ${msg}" )
+endmacro(NOM_LOG_WARN msg)
+
+macro(NOM_LOG_ERR msg)
+  message( FATAL_ERROR "ERROR: ${msg}" )
+endmacro(NOM_LOG_ERR msg)
+
+macro(NOM_LOG_CRIT msg)
+  message( FATAL_ERROR "CRITICAL: ${msg}" )
+endmacro(NOM_LOG_CRIT msg)
