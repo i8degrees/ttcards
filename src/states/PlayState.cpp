@@ -82,18 +82,27 @@ void PlayState::on_exit(nom::void_ptr data)
 
   this->game->info_box_.close();
   this->game->debug_box_.close();
+
   Rocket::Core::Factory::ClearStyleSheetCache();
   Rocket::Core::Factory::ClearTemplateCache();
 
   this->game->actions_.cancel_actions();
 }
 
-void PlayState::on_pause( nom::void_ptr data )
+void PlayState::on_pause(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
+
+  if( this->game->info_box_.enabled() == true ) {
+    this->game->info_box_.hide();
+  }
+
+  if( this->game->debug_box_.enabled() == true ) {
+    this->game->debug_box_.hide();
+  }
 }
 
-void PlayState::on_resume( nom::void_ptr data )
+void PlayState::on_resume(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 

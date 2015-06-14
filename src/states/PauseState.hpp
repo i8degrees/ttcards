@@ -51,22 +51,25 @@ class PauseState: public nom::IState
     virtual ~PauseState();
 
   private:
-    void on_init( nom::void_ptr data );
-    void on_exit( nom::void_ptr data );
+    void on_init(nom::void_ptr data);
+    void on_exit(nom::void_ptr data);
 
-    void on_pause( nom::void_ptr data );
-    void on_resume( nom::void_ptr data );
+    void on_pause(nom::void_ptr data);
+    void on_resume(nom::void_ptr data);
 
     /// \brief The default event handler for this state.
     bool on_event(const nom::Event& ev) override;
 
-    void on_update( float delta_time );
-    void on_draw( nom::RenderWindow& target );
+    void on_update(nom::real32 delta_time);
+    void on_draw(nom::RenderWindow& target);
 
     Game* game;
 
     nom::Timer blink_update;
     bool blink_text;
+
+    /// \brief Overlay that is rendered on top of other states.
+    std::unique_ptr<nom::Sprite> overlay_sprite_;
 };
 
 // Convenience declarations for changing state

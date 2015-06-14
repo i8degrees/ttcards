@@ -54,8 +54,8 @@ class PlayState: public nom::IState
 
     void on_init(nom::void_ptr data);
     void on_exit(nom::void_ptr data);
-    void on_pause( nom::void_ptr data );
-    void on_resume( nom::void_ptr data );
+    void on_pause(nom::void_ptr data);
+    void on_resume(nom::void_ptr data);
 
     void on_update(float delta_time);
     void on_draw(nom::RenderWindow& target);
