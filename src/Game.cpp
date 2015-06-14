@@ -651,64 +651,23 @@ bool Game::on_init()
   NOM_ASSERT(this->game->blinking_cursor_action_ != nullptr);
   this->game->blinking_cursor_action_->set_name("blinking_cursor_action");
 
-  // ...Initialize both player's card deck...
-
-  File fp;
-  std::string cards_db;
-
-  const std::string LOCAL_PREFS_CARDS_DB =
-    fp.user_app_support_path() + p.native() + APP_NAME + p.native() +
-    "cards.json";
-
-  if( fp.exists(LOCAL_PREFS_CARDS_DB) == true ) {
-    cards_db = LOCAL_PREFS_CARDS_DB;
-  } else {
-    cards_db = this->config_->get_string("CARDS_DB");
-  }
+  // ...Cards database (decks)...
 
   this->game->cards_db_[PlayerIndex::PLAYER_1].reset( new CardCollection() );
+  this->game->cards_db_[PlayerIndex::PLAYER_2].reset( new CardCollection() );
+
   if( this->game->cards_db_[PlayerIndex::PLAYER_1] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load the player's cards:",
+                  "Could not initialize the player's card database:",
                   "memory allocation failure." );
     return false;
   }
 
-  if( this->game->cards_db_[PlayerIndex::PLAYER_1]->load(cards_db) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load the cards database for player 1 from:",
-                  cards_db );
-    return false;
-  }
-
-  this->game->cards_db_[PlayerIndex::PLAYER_2].reset( new CardCollection() );
   if( this->game->cards_db_[PlayerIndex::PLAYER_2] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load the opponent's cards:",
+                  "Could not initialize the opponent's card database:",
                   "memory allocation failure." );
     return false;
-  }
-
-  if( this->game->cards_db_[PlayerIndex::PLAYER_2]->load(cards_db) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load the cards database for player 2 from:",
-                  cards_db );
-    return false;
-  }
-
-  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
-  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
-
-  // Initialize the player's deck
-  for( auto itr = p1_db->begin(); itr != p1_db->end(); ++itr ) {
-    itr->player_id = PlayerID::PLAYER_ID_1;
-    itr->player_owner = PlayerID::PLAYER_ID_1;
-  }
-
-  // Initialize the opponent's deck
-  for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
-    itr->player_id = PlayerID::PLAYER_ID_2;
-    itr->player_owner = PlayerID::PLAYER_ID_2;
   }
 
   this->game->card_res_.reset( new CardResourceLoader() );
@@ -720,6 +679,10 @@ bool Game::on_init()
                   "Could not bootstrap card resources." );
     return false;
   }
+
+  // IMPORTANT: Initializing this more than once leads to a crash within
+  // libRocket.
+  this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );
 
   nom::SpriteSheet triad_frames;
   nom::Texture* triad_tex = new nom::Texture();
@@ -1290,6 +1253,58 @@ create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
   return flip_card_action;
 }
 
+bool Game::init_deck(CardCollection* deck, const std::string& filename)
+{
+  if( deck == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load the player's card deck:",
+                  "memory allocation failure." );
+    return false;
+  }
+
+  if( deck->load(filename) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not parse the player's deck:", filename );
+    return false;
+  }
+
+  return true;
+}
+
+void Game::dump_board()
+{
+  if( this->game->board_ != nullptr ) {
+    this->game->board_->dump_values();
+  }
+}
+
+void Game::dump_hand(PlayerIndex player_index)
+{
+  auto& phand = this->game->hand[player_index];
+  auto player_id = tt::player_id(player_index);
+
+  NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, "Player", player_id, phand);
+}
+
+void Game::dump_collection(PlayerIndex player_index)
+{
+  auto db = this->game->cards_db_[player_index].get();
+  if( db != nullptr ) {
+
+    auto player_id = tt::player_id(player_index);
+
+    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Player", player_id, "\n\tdeck:", db->size() );
+
+    // IMPORTANT: We exceed the maximal logging output size of ~4KB imposed by
+    // SDL's logging facilities if we do not break up the data dump of a
+    // player's full card deck
+    for( auto itr = db->begin(); itr != db->end(); ++itr ) {
+      NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, *itr);
+    }
+  }
+}
+
 void Game::pause_music( void )
 {
   this->game->theme_track_->togglePause();
@@ -1347,49 +1362,6 @@ void Game::reload_config()
 
   this->game->debug_game_ =
     this->game->config_->get_bool("DEBUG_GAME");
-}
-
-void Game::dump_board()
-{
-  if( this->game->board_ != nullptr ) {
-    this->game->board_->dump_values();
-  }
-}
-
-void Game::dump_hand(PlayerIndex player_index)
-{
-  auto& phand = this->game->hand[player_index];
-  auto player_id = tt::player_id(player_index);
-
-  NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, "Player", player_id, phand);
-}
-
-void Game::dump_collection(PlayerIndex player_index)
-{
-  auto db = this->game->cards_db_[player_index].get();
-  if( db != nullptr ) {
-
-    auto player_id = tt::player_id(player_index);
-
-    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Player", player_id, "\n\tdeck:", db->size() );
-
-    // IMPORTANT: We exceed the maximal logging output size of ~4KB imposed by
-    // SDL's logging facilities if we do not break up the data dump of a
-    // player's full card deck
-    for( auto itr = db->begin(); itr != db->end(); ++itr ) {
-      NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, *itr);
-    }
-  }
-
-}
-
-void free_game ( Game* game )
-{
-  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
-
-  // Fixes double delete issues that result otherwise
-  //if ( game != nullptr ) delete game;
 }
 
 void Game::on_window_shown(const nom::Event& evt)

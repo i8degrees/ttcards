@@ -39,7 +39,7 @@ CardsPageDataSource::CardsPageDataSource( const std::string& source,
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 
   // Defaults
-  this->set_per_page(11);
+  this->set_cards_per_page(11);
   this->set_total_pages(0);
   this->set_page(0);
   this->set_table_name(table_name);
@@ -50,57 +50,86 @@ CardsPageDataSource::~CardsPageDataSource()
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns )
+void
+CardsPageDataSource::GetRow(  Rocket::Core::StringList& row,
+                              const Rocket::Core::String& table,
+                              int row_index,
+                              const Rocket::Core::StringList& columns )
 {
+  int cards_per_page = this->cards_per_page();
+  int page = this->page();
+
   // The starting ID position to begin reading from the storage container
-  int row_offset = row_index + ( this->per_page() * this->page() );
+  int row_offset = row_index + (cards_per_page * page);
 
   // The last ID position; should match return value of ::GetNumRows
-  int row_end = this->per_page();
+  int row_end = cards_per_page;
 
   // Out of bounds
-  if( row_offset >= this->num_rows() ) return;
+  if( row_offset >= this->num_rows() ) {
+    return;
+  }
 
-  if( table == this->table_name().c_str() )
-  {
-    for( auto i = 0; i != columns.size(); ++i )
-    {
-      if( columns[i] == "status" && row_index < row_end )
-      {
-        if( row_index < row_end && this->db_[row_offset].num < 1 ) {
-          row.push_back("0"); // Unavailable
+  if( table == this->table_name().c_str() ) {
+
+    for( auto i = 0; i != columns.size(); ++i ) {
+
+      if( columns[i] == "status" && row_index < row_end ) {
+
+        // First column; card status
+
+        if( this->db_[row_offset] == Card::null ) {
+          row.push_back("-1");  // Do not render this column
+        } else if( row_index < row_end && this->db_[row_offset].num < 1 ) {
+          row.push_back("0");   // No cards left sprite frame
+        } else {
+          row.push_back("1");   // Remaining cards left sprite frame
         }
-        else {
-          row.push_back("1"); // Available
-        }
-      }
-      else if( row_index < row_end && columns[i] == "available" )
-      {
+      } else if( row_index < row_end && columns[i] == "available" ) {
+
+        // Second column (A); class selector of the card tag to control the
+        // rendering of the text color of this column
         String card_class =
           "unavailable-card";
 
-        if( this->db_[row_offset].num > 0 ) {
+        if( this->db_[row_offset] == Card::null ) {
+          // Do not render this column
+          card_class = "erased";
+        } else if( this->db_[row_offset].num > 0 ) {
           card_class = "available-card";
         }
 
         row.push_back(card_class);
-      }
-      else if( row_index < row_end && columns[i] == "id" )
-      {
+      } else if( row_index < row_end && columns[i] == "id" ) {
+
+        // Second column (B); card name (id selector of the card tag)
         String card_id =
           this->db_[row_offset].name.c_str();
 
         row.push_back(card_id);
-      }
-      else if( row_index < row_end && columns[i] == "name" )
-      {
+      } else if( row_index < row_end && columns[i] == "name" ) {
+
+        // Second column (C); card name (inner RML text of the tag)
         String card_name =
           this->db_[row_offset].name.c_str();
 
         row.push_back(card_name);
-      }
-      else if( row_index < row_end && columns[i] == "num" )
-      {
+      } else if( row_index < row_end && columns[i] == "num_class" ) {
+
+        // Third column (A); class selector of the card tag to control the
+        // rendering of the text for this column
+        String card_class = "available-card";
+
+        if( this->db_[row_offset] == Card::null ) {
+          // Do not render this column
+          card_class = "erased";
+        }
+
+        row.push_back(card_class);
+      } else if( row_index < row_end && columns[i] == "num" ) {
+
+        // Third column (B); total number of collected cards -- inner RML text
+        // of the tag
         String card_num =
           std::to_string( this->db_[row_offset].num ).c_str();
 
@@ -110,18 +139,20 @@ void CardsPageDataSource::GetRow( Rocket::Core::StringList& row, const Rocket::C
   }
 } // end GetRow func
 
-int CardsPageDataSource::GetNumRows( const Rocket::Core::String& table )
+int CardsPageDataSource::GetNumRows(const Rocket::Core::String& table)
 {
-  if( table == this->table_name().c_str() )
-  {
-    // Influences the maximum number of row items returned from ::GetRow
-    return this->per_page();
+  int cards_per_page = this->cards_per_page();
+
+  if( table == this->table_name().c_str() ) {
+    // NOTE: Influences the maximum number of row items returned from
+    // ::GetRow (libRocket interface)
+    return cards_per_page;
   }
 
   NOM_ASSERT( table == this->table_name().c_str() );
 
   // Err; ..invalid table?
-  return -1;
+  return 0;
 }
 
 const std::string& CardsPageDataSource::table_name() const
@@ -160,83 +191,95 @@ CardsPageDataSource::row( tt::string_list& row, int row_index,
   }
 }
 
-int CardsPageDataSource::insert_card( int pos, const Card& card )
+int CardsPageDataSource::insert_card(int pos, const Card& card)
 {
-  int rows = this->num_rows();
+  int num_rows = this->num_rows();
+  int page = this->page();
+  int page_pos = -1;
+  Card c = card;
 
-  NOM_ASSERT( pos <= rows );
-  if( pos <= rows )
-  {
-    this->db_.at(pos) = card;
+  if( pos <= num_rows ) {
 
-    NotifyRowChange(  this->table_name().c_str(),
-                      // First row index changed -- zero-based index
-                      // pos,
-                      // Translate internal position to page position
-                      this->map_page_row( pos, this->page() ),
-                      // The number of rows changed -- including the first
-                      // row
-                      1 );
+    this->db_[pos] = card;
 
-    // Update page count
-    this->update();
+    // Translate the internal array element position to a paged element
+    // position
+    page_pos = this->map_page_row(pos, page);
+    if( page_pos != -1 ) {
+      NotifyRowChange(  this->table_name().c_str(),
+                        // First row index changed (zero-based index)
+                        page_pos,
+                        // The number of rows changed, including the first row
+                        1 );
 
-    // Resulting (modified) size
-    return this->num_rows();
-  }
+      // Update page count
+      this->update();
 
-  // Err
-  return nom::npos;
-}
-
-int CardsPageDataSource::insert_cards( int pos, const std::vector<Card>& cards )
-{
-  int rows = this->num_rows();
-
-  NOM_ASSERT( pos <= rows );
-  if( pos <= rows )
-  {
-    int idx = 0;
-    for( auto itr = cards.begin(); itr != cards.end(); ++itr )
-    {
-      this->db_.insert( this->db_.begin() + (pos + idx), (*itr) );
-      ++idx;
+      // Resulting (modified) size
+      return this->num_rows();
     }
-    // this->db_.insert( this->db_.begin() + pos, cards.size() );
-
-    NotifyRowChange(  this->table_name().c_str(),
-                      // First row index changed -- zero-based index
-                      // pos,
-                      // Translate internal position to page position
-                      this->map_page_row( pos, this->page() ),
-                      // The number of rows changed -- including the first
-                      // row
-                      cards.size() );
-
-    // Update page count
-    this->update();
-
-    // Resulting (modified) size
-    return this->num_rows();
   }
 
   // Err
-  return nom::npos;
+  return 0;
 }
 
-int CardsPageDataSource::append_card( const Card& card )
+int CardsPageDataSource::insert_cards(int pos, const std::vector<Card>& cards)
 {
-  int rows = this->num_rows();
+  int num_rows = this->num_rows();
+  int input_pos = 0;
+  int card_pos = 0;
 
-  this->db_.push_back( card );
+  if( pos <= num_rows ) {
 
-  NotifyRowAdd( this->table_name().c_str(),
-                // The index of the first row added
-                // rows,
-                // Translate internal position to page position
-                this->map_page_row( rows, this->page() ),
-                // The number of rows added -- including first row
-                1 );
+    for( auto itr = cards.begin(); itr != cards.end(); ++itr ) {
+
+      // card insertion row
+      int card_index = pos + input_pos;
+
+      this->db_[card_index] = *itr;
+      ++input_pos;
+    };
+
+    num_rows = this->num_rows();
+    card_pos = pos + ( cards.size() - 1 );
+    if( card_pos >= 0 && card_pos <= num_rows ) {
+
+      NotifyRowChange( this->table_name().c_str() );
+
+      // Update page count
+      this->update();
+
+      // Resulting (modified) size
+      return num_rows;
+    }
+  }
+
+  // Err
+  return 0;
+}
+
+int CardsPageDataSource::append_card(const Card& card)
+{
+  int num_rows = this->num_rows();
+  int page = this->page();
+  int page_pos = -1;
+
+  this->db_[num_rows] = card;
+
+  page_pos = this->map_page_row(num_rows, page);
+  if( page_pos != -1 ) {
+
+    NotifyRowAdd( this->table_name().c_str(),
+                  // The index of the first row added (zero-based index)
+                  page_pos,
+                  // The number of rows added, including first row
+                  1 );
+  } else {
+    // NOTE: The current page is filled, so we need to add the card to the
+    // beginning of a new page and render the results immediately.
+    NotifyRowChange( this->table_name().c_str() );
+  }
 
   // Update page count
   this->update();
@@ -245,22 +288,34 @@ int CardsPageDataSource::append_card( const Card& card )
   return this->num_rows();
 }
 
-int CardsPageDataSource::append_cards( const std::vector<Card>& cards )
+int CardsPageDataSource::append_cards(const std::vector<Card>& cards)
 {
-  int rows = this->num_rows();
+  int num_rows = this->num_rows();
+  int page = this->page();
+  int page_pos = -1;
+  int card_pos = 0;
 
-  for( auto itr = cards.begin(); itr != cards.end(); ++itr )
-  {
-    this->db_.push_back( (*itr) );
+  for( auto itr = cards.begin(); itr != cards.end(); ++itr ) {
+
+    // card insertion row
+    int card_index = num_rows + card_pos;
+
+    this->db_[card_index] = *itr;
+    ++card_pos;
   }
 
-  NotifyRowAdd( this->table_name().c_str(),
-                // The index of the first row added
-                // rows,
-                // Translate internal position to page position
-                this->map_page_row( rows, this->page() ),
-                // The number of rows added -- including first row
-                cards.size() );
+  page_pos = this->map_page_row(num_rows, page);
+  if( page_pos != -1 ) {
+    NotifyRowAdd( this->table_name().c_str(),
+                  // The index of the first row added (zero-based index)
+                  page_pos,
+                  // The number of rows added, including the first row
+                  cards.size() );
+  } else {
+    // NOTE: The current page is filled, so we need to add the card to the
+    // beginning of a new page and render the results immediately.
+    NotifyRowChange( this->table_name().c_str() );
+  }
 
   // Update page count
   this->update();
@@ -274,6 +329,32 @@ bool CardsPageDataSource::empty() const
   return this->db_.empty();
 }
 
+int CardsPageDataSource::erase_card(int pos)
+{
+  int num_rows = this->num_rows();
+  int page = this->page();
+  int page_pos = -1;
+
+  if( pos <= num_rows ) {
+
+    this->db_.erase(pos);
+
+    page_pos = this->map_page_row(pos, page);
+    if( page_pos != -1 ) {
+      NotifyRowChange(  this->table_name().c_str() );
+    }
+
+    // Update page count
+    this->update();
+
+    // Resulting (modified) size
+    return this->num_rows();
+  }
+
+  // Err
+  return 0;
+}
+
 void CardsPageDataSource::erase_cards()
 {
   this->db_.clear();
@@ -284,70 +365,10 @@ void CardsPageDataSource::erase_cards()
   this->update();
 }
 
-int CardsPageDataSource::erase_card( int pos )
-{
-  int rows = this->num_rows();
-
-  NOM_ASSERT( pos <= rows );
-  if( pos <= rows )
-  {
-    this->db_.erase( this->db_.begin() + pos );
-
-    NotifyRowRemove(  this->table_name().c_str(),
-                      // First row index removed -- zero-based index
-                      // pos,
-                      // Translate internal position to page position
-                      this->map_page_row( pos, this->page() ),
-                      // The number of rows changed -- including the first
-                      // row
-                      1 );
-
-    // Update page count
-    this->update();
-
-    // Resulting (modified) size
-    return this->num_rows();
-  }
-
-  // Err
-  return nom::npos; // -1
-}
-
-int CardsPageDataSource::erase_cards( int begin_pos, int end_pos )
-{
-  int rows = this->num_rows();
-
-  NOM_ASSERT( (begin_pos <= rows) && (end_pos <= rows) );
-  if( (begin_pos <= rows) && (end_pos <= rows) )
-  {
-    this->db_.erase(  (this->db_.begin() + begin_pos),
-                      (this->db_.begin() + end_pos) );
-
-    NotifyRowRemove(  this->table_name().c_str(),
-                      // First row index removed -- zero-based index
-                      // begin_pos,
-                      // Translate internal position to page position
-                      this->map_page_row( begin_pos, this->page() ),
-                      // The number of rows changed -- including the first
-                      // row
-                      begin_pos + end_pos );
-
-    // Update page count
-    this->update();
-
-    // Resulting (modified) size
-    return this->num_rows();
-  }
-
-  // Err
-  return nom::npos; // -1
-}
-
 std::string CardsPageDataSource::dump()
 {
   std::stringstream os;
 
-  // Table && number of rows (size)
   os
   << "table: " << this->table_name()
   << "[" << this->num_rows() << "]" << std::endl;
@@ -356,14 +377,12 @@ std::string CardsPageDataSource::dump()
   for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
   {
     os
-    // ID && card name
-    << (*itr).id
+    << (itr)->second.id
     << " : "
-    << (*itr).name
+    << (itr)->second.name
 
-    // Number of cards
     << " ["
-    << (*itr).num
+    << (itr)->second.num
     << "]"
     << std::endl;
   }
@@ -371,14 +390,13 @@ std::string CardsPageDataSource::dump()
   return os.str();
 }
 
-const Card& CardsPageDataSource::lookup_by_name( const std::string& name ) const
+const Card& CardsPageDataSource::find_by_name(const std::string& name) const
 {
   for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
   {
-    if( (*itr).name == name )
-    {
+    if( (itr)->second.name == name ) {
       // Successful match
-      return *itr;
+      return itr->second;
     }
   }
 
@@ -386,24 +404,21 @@ const Card& CardsPageDataSource::lookup_by_name( const std::string& name ) const
   return Card::null;
 }
 
-const Card& CardsPageDataSource::lookup_by_id( int id ) const
+const Card& CardsPageDataSource::find_by_pos(int pos) const
 {
-  for( auto itr = this->db_.begin(); itr != this->db_.end(); ++itr )
-  {
-    if( (*itr).id == id )
-    {
-      // Successful match
-      return *itr;
-    }
+  auto res = this->db_.find(pos);
+  if( res != this->db_.end() ) {
+    // Successful match
+    return res->second;
+  } else {
+    // No match
+    return Card::null;
   }
-
-  // No match
-  return Card::null;
 }
 
-int CardsPageDataSource::per_page() const
+int CardsPageDataSource::cards_per_page() const
 {
-  return this->per_page_;
+  return this->cards_per_page_;
 }
 
 int CardsPageDataSource::total_pages() const
@@ -416,65 +431,73 @@ int CardsPageDataSource::page() const
   return this->page_;
 }
 
-void CardsPageDataSource::set_per_page( int pg )
+void CardsPageDataSource::set_cards_per_page(int pg)
 {
-  this->per_page_ = pg;
+  this->cards_per_page_ = pg;
 
   this->update();
 }
 
-void CardsPageDataSource::set_page( int page )
+void CardsPageDataSource::set_page(int page)
 {
   this->page_ = page;
-
-  // NotifyRowChange( this->table_name().c_str() );
 
   // This is necessary for ::GetRow to immediately update its row indexes to
   // match the requested page
   NotifyRowChange(  this->table_name().c_str(),
-                    // First row index changed -- zero-based index
+                    // First row index changed (zero-based index)
                     0,
-                    // The number of rows changed -- including the first
-                    // row
+                    // The number of rows changed, including the first row
                     11 );
 
   // Update total page count
   this->update();
 }
 
-// curr_page * per_page + selection
-int CardsPageDataSource::map_page_row(int index, int pg) const
+int CardsPageDataSource::map_card_pos(int page_pos) const
 {
+  int cards_per_page = this->cards_per_page();
+  int page = this->page();
   int selection = -1;
-  NOM_ASSERT( index <= this->num_rows() );
-  NOM_ASSERT( pg <= this->total_pages() );
+  selection = page_pos + ( cards_per_page * page );
 
-  selection = index - ( this->per_page() * pg );
   NOM_ASSERT( selection >= 0 );
 
   return selection;
 }
 
-int CardsPageDataSource::map_row(int page_row) const
+// private
+int CardsPageDataSource::map_page_row(int pos, int pg) const
 {
+  int cards_per_page = this->cards_per_page();
   int selection = -1;
-  selection = page_row + ( this->per_page() * this->page() );
+  NOM_ASSERT( pos <= this->num_rows() );
+
+  selection = pos - ( cards_per_page * pg );
+
+  if( selection >= cards_per_page ) {
+    // Err; out of bounds
+    return -1;
+  }
+
+  NOM_ASSERT( selection >= 0 );
+
   return selection;
 }
 
-// Private scope
-
-void CardsPageDataSource::set_total_pages( int num_pages )
+// private
+void CardsPageDataSource::set_total_pages(int num_pages)
 {
   this->total_pages_ = num_pages;
 }
 
+// private
 void CardsPageDataSource::update()
 {
-  double pages = this->num_rows() / this->per_page();
+  double pages = this->num_rows() / this->cards_per_page();
 
   // Calculate total number of pages we need for the stored cards
-  if( ( this->num_rows() % this->per_page() ) != 0 ) {
+  if( ( this->num_rows() % this->cards_per_page() ) != 0 ) {
     // Partial page
     pages = floor(pages + 1.0f);
   }
@@ -490,13 +513,13 @@ CardStatusFormatter::CardStatusFormatter() :
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-CardStatusFormatter::CardStatusFormatter( const std::string& formatter ) :
-  Rocket::Controls::DataFormatter( formatter.c_str() )
+CardStatusFormatter::~CardStatusFormatter()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-CardStatusFormatter::~CardStatusFormatter()
+CardStatusFormatter::CardStatusFormatter(const std::string& formatter) :
+  Rocket::Controls::DataFormatter( formatter.c_str() )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
@@ -504,15 +527,13 @@ CardStatusFormatter::~CardStatusFormatter()
 void CardStatusFormatter::FormatData( Rocket::Core::String& formatted_data,
                                       const Rocket::Core::StringList& raw_data )
 {
-  std::string styling = "";
-
-  if( raw_data[0] == "0" ) {
-    formatted_data = String("<status class='unavailable' ") +
-      styling.c_str() + String(" />");
-  }
-  else if( raw_data[0] == "1" ) {
-    formatted_data = String("<status class='available' ") +
-      styling.c_str() + String(" />");
+  if( raw_data[0] == "-1" ) {
+    // Do not render
+    formatted_data = "<status class='erased' />";
+  } else if( raw_data[0] == "0" ) {
+    formatted_data = "<status class='unavailable' />";
+  } else if( raw_data[0] == "1" ) {
+    formatted_data = "<status class='available' />";
   }
 }
 
@@ -524,13 +545,13 @@ CardNameFormatter::CardNameFormatter() :
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-CardNameFormatter::CardNameFormatter( const std::string& formatter ) :
-  Rocket::Controls::DataFormatter( formatter.c_str() )
+CardNameFormatter::~CardNameFormatter()
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
 
-CardNameFormatter::~CardNameFormatter()
+CardNameFormatter::CardNameFormatter(const std::string& formatter) :
+  Rocket::Controls::DataFormatter( formatter.c_str() )
 {
   NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
 }
@@ -539,9 +560,37 @@ void CardNameFormatter::FormatData( Rocket::Core::String& formatted_data,
                                     const Rocket::Core::StringList& raw_data )
 {
   if( raw_data.size() == 3 ) {
-
     formatted_data = "<card class='" + raw_data[0] + "'" +
-      "id='" + raw_data[1] + "'>" + raw_data[2] + "</card>";
+    "id='" + raw_data[1] + "'>" + raw_data[2] + "</card>";
+  }
+}
+
+// CardsAvailableFormatter
+
+CardsAvailableFormatter::CardsAvailableFormatter() :
+  Rocket::Controls::DataFormatter("card_num")
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+CardsAvailableFormatter::~CardsAvailableFormatter()
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+CardsAvailableFormatter::CardsAvailableFormatter(const std::string& formatter) :
+  Rocket::Controls::DataFormatter( formatter.c_str() )
+{
+  NOM_LOG_TRACE_PRIO( NOM_LOG_CATEGORY_TRACE, nom::NOM_LOG_PRIORITY_VERBOSE );
+}
+
+void
+CardsAvailableFormatter::FormatData(  Rocket::Core::String& formatted_data,
+                                      const Rocket::Core::StringList& raw_data )
+{
+  if( raw_data.size() == 2 ) {
+    formatted_data = "<card class='" + raw_data[0] + "'>" + raw_data[1] +
+    "</card>";
   }
 }
 

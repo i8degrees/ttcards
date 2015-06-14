@@ -130,10 +130,8 @@ void PlayState::on_init(nom::void_ptr data)
   // ...Initialize player hands...
 
   auto& rules = this->game->rules_;
-  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
-  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
-  NOM_ASSERT(p1_db != nullptr);
-  NOM_ASSERT(p2_db != nullptr);
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
 
   CPU_Player::
   action_callback cpu_player_action_callback( [=](BoardTile& tile) {
@@ -145,11 +143,6 @@ void PlayState::on_init(nom::void_ptr data)
     tt::set_face_down(&this->game->hand[PlayerIndex::PLAYER_2], true);
   } else {
     tt::set_face_down(&this->game->hand[PlayerIndex::PLAYER_2], false);
-  }
-
-  while( this->game->hand[PlayerIndex::PLAYER_1].size() < MAX_PLAYER_HAND ) {
-    // this->game->hand[PlayerIndex::PLAYER_1].shuffle(8, 10, this->game->collection);
-    this->game->hand[PlayerIndex::PLAYER_1].shuffle(1, 1, *p1_db);
   }
 
   // ...Initialize game board...

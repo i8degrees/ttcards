@@ -54,117 +54,53 @@ void MainMenuState::on_init(nom::void_ptr data)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE_STATES);
 
-  // auto cfg = this->game->config_.get();
+  File fp;
+  auto cfg = this->game->config_.get();
+  nom::size_type menu_element = 0;
 
-  Point2i align_text_pos(Point2i::zero);
-  Point2i offset(Point2i::zero);
+  this->existing_game_cards_db_ =
+    TTCARDS_SAVED_GAME_DIR + p.native() +
+    cfg->get_string("EXISTING_GAME_CARDS_DB", "existing_game.json");
 
-  // TODO: This menu text should only be shown when there is one or more saved
-  // games in the player's local "Saved Games" directory
-  this->menu_text_[0] = Text();
-  this->menu_text_[0].set_font(&this->game->menu_font_);
-  this->menu_text_[0].set_text_size(22);
-  this->menu_text_[0].set_text("Continue");
+  this->new_game_cards_db_ =
+    cfg->get_string("NEW_GAME_CARDS_DB", "new_game.json");
 
-  align_text_pos =
-    nom::alignment_rect(  this->menu_text_[0].size(), Point2i::zero,
-                          GAME_RESOLUTION, nom::Anchor::MiddleCenter );
+  NOM_ASSERT( fp.exists(this->new_game_cards_db_) == true );
 
-  this->menu_text_[0].set_position(align_text_pos);
+  if( fp.exists(this->existing_game_cards_db_) == true ) {
+    this->continue_game_ = true;
+  } else {
+    // Err; could not open file
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not access the player's existing game:",
+                  this->existing_game_cards_db_ );
+  }
 
-  //
+  menu_element = this->append_menu_entry("Continue");
 
-  this->menu_text_[1] = Text();
-  this->menu_text_[1].set_font(&this->game->menu_font_);
-  this->menu_text_[1].set_text_size(22);
-  this->menu_text_[1].set_text("New Game");
+  if( this->continue_game_ == false ) {
+    this->menu_entries_[menu_element].set_color(Color4i::LightGray);
+  } else {
+    this->menu_entries_[menu_element].set_color(Color4i::White);
+  }
 
-  offset.y = offset.y + this->menu_text_[0].size().h;
-  align_text_pos =
-    nom::alignment_rect(  this->menu_text_[1].size(), offset,
-                          GAME_RESOLUTION, nom::Anchor::MiddleCenter );
+  this->append_menu_entry("New Game");
+  this->append_menu_entry("View Cards");
+  this->append_menu_entry("Options");
+  this->append_menu_entry("Credits");
+  this->append_menu_entry("Quit");
 
-  this->menu_text_[1].set_position(align_text_pos);
-
-  //
-
-  this->menu_text_[2] = Text();
-  this->menu_text_[2].set_font(&this->game->menu_font_);
-  this->menu_text_[2].set_text_size(22);
-  this->menu_text_[2].set_text("Load Game");
-
-  offset.y = offset.y + this->menu_text_[1].size().h;
-  align_text_pos =
-    nom::alignment_rect(  this->menu_text_[2].size(), offset,
-                          GAME_RESOLUTION, nom::Anchor::MiddleCenter );
-
-  this->menu_text_[2].set_position(align_text_pos);
-
-  //
-
-  this->menu_text_[3] = Text();
-  this->menu_text_[3].set_font(&this->game->menu_font_);
-  this->menu_text_[3].set_text_size(22);
-  this->menu_text_[3].set_text("View Cards");
-
-  offset.y = offset.y + this->menu_text_[2].size().h;
-  align_text_pos =
-    nom::alignment_rect(  this->menu_text_[3].size(), offset,
-                          GAME_RESOLUTION, nom::Anchor::MiddleCenter );
-
-  this->menu_text_[3].set_position(align_text_pos);
-
-  //
-
-  this->menu_text_[4] = Text();
-  this->menu_text_[4].set_font(&this->game->menu_font_);
-  this->menu_text_[4].set_text_size(22);
-  this->menu_text_[4].set_text("Options");
-
-  offset.y = offset.y + this->menu_text_[3].size().h;
-  align_text_pos =
-    nom::alignment_rect(  this->menu_text_[4].size(), offset,
-                          GAME_RESOLUTION, nom::Anchor::MiddleCenter );
-
-  this->menu_text_[4].set_position(align_text_pos);
-
-  //
-
-  this->menu_text_[5] = Text();
-  this->menu_text_[5].set_font(&this->game->menu_font_);
-  this->menu_text_[5].set_text_size(22);
-  this->menu_text_[5].set_text("Credits");
-
-  offset.y = offset.y + this->menu_text_[4].size().h;
-  align_text_pos =
-    nom::alignment_rect(  this->menu_text_[5].size(), offset,
-                          GAME_RESOLUTION, nom::Anchor::MiddleCenter );
-
-  this->menu_text_[5].set_position(align_text_pos);
-
-  //
-
-  this->menu_text_[6] = Text();
-  this->menu_text_[6].set_font(&this->game->menu_font_);
-  this->menu_text_[6].set_text_size(22);
-  this->menu_text_[6].set_text("Quit");
-
-  offset.y = offset.y + this->menu_text_[5].size().h;
-  align_text_pos =
-    nom::alignment_rect(  this->menu_text_[6].size(), offset,
-                          GAME_RESOLUTION, nom::Anchor::MiddleCenter );
-
-  this->menu_text_[6].set_position(align_text_pos);
+  this->update_menu_entries();
 
   // ...Initialize game cursor...
 
   IntRect cursor_pos(IntRect::zero);
   for(  auto cursor_index = 0;
-        cursor_index != tt::TOTAL_MENU_ENTRIES;
+        cursor_index != MenuEntry::TOTAL_MENU_ENTRIES;
         ++cursor_index )
   {
     Size2i menu_text_dims =
-      this->menu_text_[cursor_index].size();
+      this->menu_entries_[cursor_index].size();
 
     Point2i align_pos =
       nom::alignment_rect(  this->game->cursor_->size(), Point2i::zero,
@@ -175,15 +111,14 @@ void MainMenuState::on_init(nom::void_ptr data)
 
     cursor_pos.x = align_pos.x - menu_text_dims.w;
 
-    // Roughly aligned in the middle of the menu text entry
+    // Align roughly to the middle of each text entry
     cursor_pos.y =
-      // (align_pos.y + (CARD_HEIGHT / 2) * cursor_index);
       (align_pos.y + (menu_text_dims.h) * cursor_index);
 
-    this->cursor_coords_map_.push_back(cursor_pos);
+    this->cursor_pos_bounds_.push_back(cursor_pos);
   }
 
-  this->game->cursor_->set_position( this->cursor_coords_map_[0].position() );
+  this->game->cursor_->set_position( this->cursor_pos_bounds_[0].position() );
   this->game->cursor_->set_sprite_sheet(this->game->right_cursor_frames_);
   this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
 
@@ -280,8 +215,8 @@ void MainMenuState::on_draw(nom::RenderWindow& target)
   this->game->gameover_background.draw(target);
 #endif
 
-  for(  auto itr = this->menu_text_.begin();
-        itr != this->menu_text_.end();
+  for(  auto itr = this->menu_entries_.begin();
+        itr != this->menu_entries_.end();
         ++itr )
   {
     (itr)->second.draw(target);
@@ -302,8 +237,8 @@ void MainMenuState::on_mouse_button_up(const nom::Event& evt)
   Point2i mouse_input(evt.mouse.x, evt.mouse.y);
   IntRect menu_text_bounds(IntRect::zero);
 
-  for(  auto itr = this->menu_text_.begin();
-        itr != this->menu_text_.end();
+  for(  auto itr = this->menu_entries_.begin();
+        itr != this->menu_entries_.end();
         ++itr )
   {
     menu_text_bounds.x = (itr)->second.position().x;
@@ -321,6 +256,149 @@ void MainMenuState::on_mouse_button_up(const nom::Event& evt)
   }
 }
 
+void MainMenuState::on_confirm_selection(const nom::Event& evt)
+{
+  const real32 FADE_DURATION = 1.0f;
+  int cursor_pos = this->cursor_position();
+
+  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
+
+  switch(cursor_pos)
+  {
+    default:
+    {
+      NOM_ASSERT(cursor_pos != -1);
+    } break;
+
+    case MENU_ENTRY_CONTINUE:
+    {
+      if( this->continue_game_ == false ) {
+        this->game->cursor_wrong->Play();
+        break;
+      }
+
+      auto fade_transistion( [=]() {
+          this->game->load_game->Play();
+          this->game->set_state(Game::State::CardsMenu);
+      });
+
+      auto p1_db_ready =
+        this->game->init_deck(p1_db, this->existing_game_cards_db_);
+      auto p2_db_ready =
+        this->game->init_deck(p2_db, this->existing_game_cards_db_);
+
+      auto db_ready = (p1_db_ready == true && p2_db_ready == true);
+      if( db_ready == true ) {
+        this->game->fade_window(  FADE_DURATION, Color4i::White,
+                                  Color4i::ALPHA_OPAQUE, SCREEN_RESOLUTION,
+                                  fade_transistion );
+      } else {
+        // Err; could not open or parse file?
+        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not access the player's deck:",
+                      this->new_game_cards_db_ );
+      }
+
+    } break;
+
+    case MENU_ENTRY_NEW_GAME:
+    {
+      auto fade_transistion( [=]() {
+        this->game->load_game->Play();
+        this->game->set_state(Game::State::CardsMenu);
+      });
+
+      auto p1_db_ready =
+        this->game->init_deck(p1_db, this->new_game_cards_db_);
+      auto p2_db_ready =
+        this->game->init_deck(p2_db, this->new_game_cards_db_);
+
+      auto db_ready = (p1_db_ready == true && p2_db_ready == true);
+      if( db_ready == true ) {
+        this->game->fade_window(  FADE_DURATION, Color4i::Black,
+                                  Color4i::ALPHA_TRANSPARENT,
+                                  SCREEN_RESOLUTION, fade_transistion );
+      } else {
+        // Err; could not open or parse file?
+        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not access the player's deck:",
+                      this->new_game_cards_db_ );
+      }
+
+    } break;
+
+    case MENU_ENTRY_VIEW_CARDS:
+    {
+      // TODO: Implement!
+      this->game->cursor_wrong->Play();
+    } break;
+
+    case MENU_ENTRY_OPTIONS:
+    {
+      // TODO: Implement!
+      this->game->cursor_wrong->Play();
+    } break;
+
+    case MENU_ENTRY_CREDITS:
+    {
+      // TODO: Implement!
+      this->game->cursor_wrong->Play();
+    } break;
+
+    case MENU_ENTRY_QUIT:
+    {
+      auto fade_transistion( [=]() {
+        this->game->on_game_quit(evt);
+      });
+
+      this->game->fade_window(  FADE_DURATION, Color4i::Black,
+                                nom::Color4i::ALPHA_TRANSPARENT,
+                                SCREEN_RESOLUTION, fade_transistion );
+    } break;
+  }
+}
+
+nom::size_type
+MainMenuState::append_menu_entry(const std::string& entry_text)
+{
+  nom::size_type num_entries = this->menu_entries_.size();
+
+  this->menu_entries_[num_entries] = Text();
+  this->menu_entries_[num_entries].set_font(&this->game->menu_font_);
+  this->menu_entries_[num_entries].set_text_size(22);
+  this->menu_entries_[num_entries].set_text(entry_text);
+
+  return num_entries;
+}
+
+bool MainMenuState::update_menu_entries()
+{
+  nom::size_type num_entries = this->menu_entries_.size();
+
+  Point2i align_text_pos(Point2i::zero);
+  Point2i text_offset(Point2i::zero);
+  int idx = 0;
+  for(  auto itr = this->menu_entries_.begin();
+        itr != this->menu_entries_.end();
+        ++itr )
+  {
+    if( idx > 0 ) {
+      text_offset.y = text_offset.y + itr->second.size().h;
+    } else {
+      // text_offset.y = 0;
+    }
+
+    align_text_pos =
+      nom::alignment_rect(  itr->second.size(), text_offset,
+                            GAME_RESOLUTION, nom::Anchor::MiddleCenter );
+    itr->second.set_position(align_text_pos);
+    ++idx;
+  }
+
+  return true;
+}
+
 void MainMenuState::update_cursor()
 {
   this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
@@ -328,20 +406,21 @@ void MainMenuState::update_cursor()
 
 int MainMenuState::cursor_position()
 {
-  int pos = this->cursor_pos_; // The card's position index
+  int pos = this->cursor_pos_;
+  int result = -1;
 
-  if( pos < TOTAL_MENU_ENTRIES && pos >= 0 ) {
-    return pos;
-  } else {
-    return -1;
+  if( pos < MenuEntry::TOTAL_MENU_ENTRIES && pos >= 0 ) {
+    result = pos;
   }
+
+  return result;
 }
 
 void MainMenuState::set_cursor_position(int pos)
 {
-  if( pos < TOTAL_MENU_ENTRIES && pos >= 0 ) {
+  if( pos < MenuEntry::TOTAL_MENU_ENTRIES && pos >= 0 ) {
     auto cursor_pos =
-      this->cursor_coords_map_[pos].position();
+      this->cursor_pos_bounds_[pos].position();
 
     this->cursor_pos_ = pos;
 
@@ -359,7 +438,7 @@ void MainMenuState::cursor_prev()
 
     --this->cursor_pos_;
     move_to_offset.x = 0;
-    move_to_offset.y = -(this->cursor_coords_map_.at(pos).h);
+    move_to_offset.y = -(this->cursor_pos_bounds_.at(pos).h);
     this->game->cursor_->translate(move_to_offset);
 
     this->game->cursor_move->Play();
@@ -372,90 +451,13 @@ void MainMenuState::cursor_next()
   Point2i move_to_offset(Point2i::zero);
 
   // Move down if the game cursor is not at the last menu entry
-  if( this->cursor_pos_ < (TOTAL_MENU_ENTRIES - 1) ) {
-
+  if( this->cursor_pos_ < (MenuEntry::TOTAL_MENU_ENTRIES - 1) ) {
     ++this->cursor_pos_;
     move_to_offset.x = 0;
-    move_to_offset.y = this->cursor_coords_map_.at(pos).h;
+    move_to_offset.y = this->cursor_pos_bounds_.at(pos).h;
     this->game->cursor_->translate(move_to_offset);
 
     this->game->cursor_move->Play();
-  }
-}
-
-void MainMenuState::on_confirm_selection(const nom::Event& evt)
-{
-  const real32 FADE_DURATION = 1.0f;
-  int cursor_pos = this->cursor_position();
-
-  switch(cursor_pos)
-  {
-    case MENU_TEXT_INVALID:
-    default:
-    {
-      NOM_ASSERT(cursor_pos != -1);
-    } break;
-
-    case MENU_TEXT_CONTINUE:
-    {
-      // TODO: This is stub code and needs to be implemented; continuing will
-      // pick up from where the player last left off.
-      auto fade_transistion( [=]() {
-        this->game->load_game->Play();
-        this->game->set_state(Game::State::CardsMenu);
-      });
-
-      this->game->fade_window(  FADE_DURATION, Color4i::White,
-                                Color4i::ALPHA_OPAQUE, SCREEN_RESOLUTION,
-                                fade_transistion );
-    } break;
-
-    case MENU_TEXT_NEW_GAME:
-    {
-      auto fade_transistion( [=]() {
-        this->game->load_game->Play();
-        this->game->set_state(Game::State::CardsMenu);
-      });
-
-      this->game->fade_window(  FADE_DURATION, Color4i::Black,
-                                Color4i::ALPHA_TRANSPARENT, SCREEN_RESOLUTION,
-                                fade_transistion );
-    } break;
-
-    case MENU_TEXT_LOAD_GAME:
-    {
-      // TODO: Implement!
-      this->game->cursor_wrong->Play();
-    } break;
-
-    case MENU_TEXT_VIEW_CARDS:
-    {
-      // TODO: Implement!
-      this->game->cursor_wrong->Play();
-    } break;
-
-    case MENU_TEXT_OPTIONS:
-    {
-      // TODO: Implement!
-      this->game->cursor_wrong->Play();
-    } break;
-
-    case MENU_TEXT_CREDITS:
-    {
-      // TODO: Implement!
-      this->game->cursor_wrong->Play();
-    } break;
-
-    case MENU_TEXT_QUIT:
-    {
-      auto fade_transistion( [=]() {
-        this->game->on_game_quit(evt);
-      });
-
-      this->game->fade_window(  FADE_DURATION, Color4i::Black,
-                                nom::Color4i::ALPHA_TRANSPARENT,
-                                SCREEN_RESOLUTION, fade_transistion );
-    } break;
   }
 }
 

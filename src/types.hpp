@@ -45,6 +45,7 @@ enum PlayerIndex: nom::uint32
   PLAYER_1 = 0,
   PLAYER_2 = 1,
   TOTAL_PLAYERS,
+  PLAYER_INVALID,
 };
 
 // NOTE: Unique identifier for a player
@@ -153,6 +154,14 @@ const nom::Color4iColors CARD_BG_NO_PLAYER = {{
 }};
 
 typedef std::vector<std::string> string_list;
+
+// CardsMenuState UI column titles
+enum ColumnTitle
+{
+  CARDS_COLUMN_STATUS = 0,
+  CARDS_COLUMN_TITLE,
+  CARDS_COLUMN_NUM,
+};
 
 } // namespace tt
 

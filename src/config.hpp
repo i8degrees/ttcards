@@ -179,9 +179,6 @@ const nom::Point2i PLAYER1_TRIAD_ORIGIN =
 const nom::Point2i PLAYER2_TRIAD_ORIGIN =
   nom::Point2i(40 * SCALE_FACTOR, 0 * SCALE_FACTOR);
 
-// MainMenuState
-const nom::size_type TOTAL_MENU_ENTRIES = 7;
-
 } // namespace tt
 
 #endif // GAMEAPP_CFG_HEADERS defined

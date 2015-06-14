@@ -98,6 +98,32 @@ class Game: public nom::SDLApp
     create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
                               const nom::Point2i& card_pos );
 
+    bool init_deck(CardCollection* deck, const std::string& filename);
+
+    /// \brief Method callback action for dumping the board data in the game.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_board();
+
+    /// \brief Method callback action for dumping the player's hand data.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_hand(PlayerIndex player_index);
+
+    /// \brief Method callback action for dumping the card collection.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_collection(PlayerIndex player_index);
+
     /// Audio subsystem
     std::unique_ptr<nom::IAudioDevice> audio_dev_;
 
@@ -185,12 +211,13 @@ class Game: public nom::SDLApp
     /// \brief The top-level GUI "window" (desktop)
     nom::UIContext gui_window_;
 
-    /// \brief The view used for paged cards list.
+    /// \brief The UI view for building the player's hand from a deck.
     ///
-    /// \remarks Used in CardsMenuState.
+    /// \see CardsMenuState.
     std::unique_ptr<CardsPageDataSource> cards_page_model_;
     CardStatusFormatter card_status_;
     CardNameFormatter card_;
+    CardsAvailableFormatter card_num_;
 
     /// \brief UI for selection of cards.
     ///
@@ -252,8 +279,6 @@ class Game: public nom::SDLApp
     nom::EventHandler evt_handler_;
     nom::JoystickID joystick_id_ = 0;
 
-    bool first_init_ = false;
-
   private:
     /// \brief Method callback action for pausing the music tracks in the game.
     ///
@@ -281,30 +306,6 @@ class Game: public nom::SDLApp
     /// \todo Finish reloading of all the applicable game variables in here --
     /// i.e.: animations -- we only do DEBUG_GAME at the moment!
     void reload_config();
-
-    /// \brief Method callback action for dumping the board data in the game.
-    ///
-    /// \see nom::InputMapper.
-    ///
-    /// \remarks Only available when the game is built with debug (developer)
-    /// flags.
-    void dump_board();
-
-    /// \brief Method callback action for dumping the player's hand data.
-    ///
-    /// \see nom::InputMapper.
-    ///
-    /// \remarks Only available when the game is built with debug (developer)
-    /// flags.
-    void dump_hand(PlayerIndex player_index);
-
-    /// \brief Method callback action for dumping the card collection.
-    ///
-    /// \see nom::InputMapper.
-    ///
-    /// \remarks Only available when the game is built with debug (developer)
-    /// flags.
-    void dump_collection(PlayerIndex player_index);
 
     /// \brief The event handler that is called when our window is shown, such
     /// as upon initial creation, restored from a hidden or minimized state,

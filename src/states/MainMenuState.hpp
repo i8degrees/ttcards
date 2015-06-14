@@ -49,18 +49,6 @@ class Game;
 class MainMenuState: public nom::IState
 {
   public:
-    enum MenuText
-    {
-      MENU_TEXT_INVALID = -1,
-      MENU_TEXT_CONTINUE,
-      MENU_TEXT_NEW_GAME,
-      MENU_TEXT_LOAD_GAME,
-      MENU_TEXT_VIEW_CARDS,
-      MENU_TEXT_OPTIONS,
-      MENU_TEXT_CREDITS,
-      MENU_TEXT_QUIT,
-    };
-
     MainMenuState(nom::SDLApp* object);
 
     virtual ~MainMenuState();
@@ -83,17 +71,26 @@ class MainMenuState: public nom::IState
 
     void on_confirm_selection(const nom::Event& evt);
 
+    /// \brief Add a textual menu item.
+    ///
+    /// \returns The element index of the menu entry.
+    nom::size_type append_menu_entry(const std::string& entry_text);
+
+    /// \brief Reset rendering positions for stored text entries.
+    bool update_menu_entries();
+
     void update_cursor();
 
     /// \brief Get the game cursor position.
     ///
-    /// \returns The game cursor's position index, relative to the shown menu.
+    /// \returns A number between the first menu entry index and last menu
+    /// entry index on success, and negative one (-1) on failure.
     int cursor_position();
 
     /// \brief Set the rendering position of the game cursor.
     ///
-    /// \param pos The position index of the game cursor, relative to the shown
-    /// menu.
+    /// \param pos A number between the first menu entry index and last menu
+    /// entry index.
     void set_cursor_position(int pos);
 
     /// \brief Move the game cursor to the previous menu text entry.
@@ -104,14 +101,41 @@ class MainMenuState: public nom::IState
 
     Game* game = nullptr;
 
-    /// \brief Game cursor rendering bounds
-    std::vector<nom::IntRect> cursor_coords_map_;
+    /// \brief The renderable menu entries.
+    std::map<nom::size_type, nom::Text> menu_entries_;
 
-    // Menu entry index; 0..TOTAL_MENU_ENTRIES - 1
-    nom::size_type cursor_pos_ = 0;
+    /// \brief The game cursor's minimum and maximum rendering bounds.
+    std::vector<nom::IntRect> cursor_pos_bounds_;
 
-    // Rendered menu entries; 0..TOTAL_MENU_ENTRIES - 1
-    std::map<nom::size_type, nom::Text> menu_text_;
+    /// \brief The menu element index.
+    ///
+    /// \see MenuEntry enumeration
+    int cursor_pos_ = 0;
+
+    /// \brief The menu text entries.
+    ///
+    /// \see ::on_confirm_selection
+    enum MenuEntry
+    {
+      /// Load a game
+      MENU_ENTRY_CONTINUE = 0,
+
+      /// Start a new game
+      MENU_ENTRY_NEW_GAME,
+
+      MENU_ENTRY_VIEW_CARDS,
+      MENU_ENTRY_OPTIONS,
+      MENU_ENTRY_CREDITS,
+      MENU_ENTRY_QUIT,
+
+      /// Total number of menu entries
+      TOTAL_MENU_ENTRIES,
+    };
+
+    std::string existing_game_cards_db_;
+    std::string new_game_cards_db_;
+
+    bool continue_game_ = false;
 };
 
 // Convenience declarations for changing state

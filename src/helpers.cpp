@@ -56,6 +56,8 @@ PlayerID player_id(PlayerIndex player_index)
     result = PlayerID::PLAYER_ID_1;
   } else if( player_index == PlayerIndex::PLAYER_2 ) {
     result = PlayerID::PLAYER_ID_2;
+  } else if( player_index == PlayerIndex::PLAYER_INVALID ) {
+    result = PlayerID::PLAYER_ID_INVALID;
   } else {
     // NOTE: Invalid player!
     NOM_ASSERT_INVALID_PATH();
@@ -480,7 +482,15 @@ void set_face_down(CardHand* player_hand, bool face_down)
   }
 
   // Update the card renderings
-  player_hand->reinit();
+  player_hand->update();
+}
+
+void set_card_id(Card& card, PlayerID pid)
+{
+  if( card != Card::null ) {
+    card.player_id = pid;
+    card.player_owner = pid;
+  }
 }
 
 void update_card_layout(CardHand* phand, const nom::Point2i& origin)
@@ -497,6 +507,11 @@ void update_card_layout(CardHand* phand, const nom::Point2i& origin)
       card_sp->set_position(card_pos);
 
       ++hand_index;
+    } else {
+      NOM_ASSERT(card_sp != nullptr);
+
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION, "Card ID,", (itr)->id,
+                    "was not valid; card renderer invalid." );
     }
   }
 }

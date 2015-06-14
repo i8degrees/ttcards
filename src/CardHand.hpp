@@ -45,29 +45,35 @@ namespace tt {
 class CardCollection;
 class CardResourceLoader;
 
-// TODO: Rename ::reinit to ::update..?
 class CardHand
 {
   public:
     CardHand();
     ~CardHand();
 
-    bool init(CardResourceLoader* res);
-
-    /// \brief Re-render the card renderings in the player's hand using the
-    /// stored card attributes at the time of this call.
+    /// \brief Initialize the player's hand.
     ///
-    /// \remarks This method should not normally be necessary as the rendering
-    /// of the card is intended to be taken care of internally by the game.
-    bool reinit(CardResourceLoader* res = nullptr);
+    /// \param pid One of the enumeration values of tt::PlayerIndex
+    ///
+    /// \remarks The player's index controls the ownership and rendering color
+    /// of their cards.
+    ///
+    /// \see ::update
+    bool init(CardResourceLoader* res, PlayerIndex pid);
+
+    /// \brief Re-render the player's hand.
+    ///
+    /// \note This method call is necessary when render-able card attributes
+    /// are modified outside of this class interface.
+    bool update();
 
     /// \brief Append a card to the player's hand.
     ///
-    /// \remarks If the card is successfully able to be added to the player's
-    /// hand, the card rendering is done on-the-fly at this time with the
-    /// attributes of that card.
+    /// \remarks The ownership and rendering color attributes of the card will
+    /// be set to the player determined from this object's instance
+    /// initialization.
     ///
-    /// \see ::reinit
+    /// \see ::init
     bool push_back(const Card& card);
 
     bool erase(const Card& card);
@@ -111,19 +117,16 @@ class CardHand
     /// Sets the position we are at in the cards vector
     void set_position(nom::size_type pos);
 
-    void clear ( void );
+    void clear();
+
     bool empty() const;
     nom::uint32 size ( void ) const;
     nom::int32 at(const Card& card);
 
-    /// Creates a randomized player hand with the preferred minimum & maximum
-    /// level ranges in mind, ~~with no duplicate cards present~~.
-    ///
-    /// Do not forget to set the proper player ID on your new card objects
-    /// before heading off into battle!
+    /// \brief Create a randomized player hand with a set criteria.
     void
-    shuffle(  nom::int32 MIN_LEVEL, nom::int32 MAX_LEVEL,
-              const CardCollection& db );
+    shuffle(  nom::uint32 min_level, nom::uint32 max_level,
+              const CardCollection* db );
 
     /// Save the current player's hand to a file as a series of RFC 4627 JSON
     /// compliant objects.
@@ -151,6 +154,9 @@ class CardHand
     ConstCardsIterator begin() const;
     ConstCardsIterator end() const;
 
+    PlayerID player_id() const;
+    PlayerIndex player_index() const;
+
     /// \todo Declare in private scope
     Cards cards;
 
@@ -165,6 +171,9 @@ class CardHand
     ///
     /// \remarks We do not own this pointer, so we **must not** free it!
     CardResourceLoader* card_res_;
+
+    /// \brief The player identifier.
+    PlayerIndex player_index_ = PLAYER_INVALID;
 };
 
 /// Pretty print the the card attributes.

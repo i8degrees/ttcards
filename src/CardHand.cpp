@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardHand.hpp"
 
 // Private headers
+#include "helpers.hpp"
 #include "CardRenderer.hpp"
 
 #include <nomlib/serializers.hpp>
@@ -54,11 +55,12 @@ CardHand::~CardHand()
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-bool CardHand::init(CardResourceLoader* res)
+bool CardHand::init(CardResourceLoader* res, PlayerIndex pid)
 {
   this->cards.reserve(MAX_PLAYER_HAND);
 
   this->card_res_ = res;
+  this->player_index_ = pid;
 
   NOM_ASSERT(this->card_res_ != nullptr);
   if( this->card_res_ != nullptr) {
@@ -68,33 +70,30 @@ bool CardHand::init(CardResourceLoader* res)
   return false;
 }
 
-bool CardHand::reinit(CardResourceLoader* res)
+bool CardHand::update()
 {
-  if( res != nullptr ) {
-    this->card_res_ = res;
-  }
-
   NOM_ASSERT(this->card_res_ != nullptr);
   if( this->card_res_ == nullptr) {
-    // TODO: logging
+    // TODO: logging && err handling
     return false;
   }
 
   for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
 
     Card& pcard = *itr;
+
     auto renderer = tt::create_card_renderer(this->card_res_, pcard);
     pcard.card_renderer.reset(renderer);
 
     NOM_ASSERT(pcard.card_renderer != nullptr);
     NOM_ASSERT(pcard.card_renderer->valid() == true);
     if( pcard.card_renderer == nullptr ) {
-      // TODO: logging &&  handle err
+      // TODO: logging && err handling
       return false;
     }
 
     if( pcard.card_renderer->valid() == false ) {
-      // TODO: logging &&  handle err
+      // TODO: logging && err handling
       return false;
     }
   } // end for loop
@@ -114,7 +113,12 @@ bool CardHand::push_back(const Card& card)
     return false;
   }
 
+  // IMPORTANT: To minimize rendering updates, the card's initial attributes
+  // should be set before the rendering of the hand occurs
+  tt::set_card_id(pcard, this->player_id() );
+
   if( pcard.face_down == true ) {
+    // No card face
     auto renderer = tt::create_card_renderer(this->card_res_, Card::null);
     pcard.card_renderer.reset(renderer);
   } else {
@@ -248,7 +252,7 @@ void CardHand::previous()
   }
 }
 
-void CardHand::clear ( void )
+void CardHand::clear()
 {
   this->cards.clear();
   this->clearSelectedCard();
@@ -269,24 +273,26 @@ bool CardHand::exists(const Card& card) const
 }
 
 void
-CardHand::shuffle(  nom::int32 MIN_LEVEL, nom::int32 MAX_LEVEL,
-                    const CardCollection& db )
+CardHand::shuffle(  nom::uint32 min_level, nom::uint32 max_level,
+                    const CardCollection* db )
 {
-  nom::uint32 picked_card_id = 0;
-  nom::uint32 num_cards = 0;
+  nom::size_type num_cards = 0;
+  int32 random_card_id = 0;
+  Card card(Card::null);
 
-  NOM_ASSERT( MIN_LEVEL >= MIN_LEVEL );
-  NOM_ASSERT( MAX_LEVEL <= MAX_LEVEL );
+  if( db == nullptr ) {
+    return;
+  }
 
-  picked_card_id = nom::uniform_int_rand<nom::uint32>(0, (db.size() - 1) );
+  // ...Pick a card at random
+  num_cards = (db->size() - 1);
+  random_card_id = nom::uniform_int_rand<nom::uint32>(0, num_cards);
 
-  Card c = db.find(picked_card_id);
-
-  if( c.level <= MAX_LEVEL && c.level >= MIN_LEVEL ) {
-
-    if( this->push_back(c) ) {
-      ++num_cards;
-    }
+  card = db->find(random_card_id);
+  if( card != Card::null && card.num > 0 && card.level <= max_level &&
+      card.level >= min_level )
+  {
+    this->push_back(card);
   }
 }
 
@@ -375,8 +381,7 @@ bool CardHand::load(const std::string& filename)
   // All is well, let us make it permanent
   this->cards = cards_buffer;
 
-  // Render cards in the player's hand
-  this->reinit();
+  this->update();
 
   return true;
 }
@@ -428,6 +433,18 @@ ConstCardsIterator CardHand::begin() const
 ConstCardsIterator CardHand::end() const
 {
   return this->cards.end();
+}
+
+PlayerID CardHand::player_id() const
+{
+  auto id = tt::player_id(this->player_index_);
+
+  return id;
+}
+
+PlayerIndex CardHand::player_index() const
+{
+  return this->player_index_;
 }
 
 std::ostream& operator <<(std::ostream& os, const CardHand& rhs)

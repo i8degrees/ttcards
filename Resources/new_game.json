@@ -1,0 +1,75 @@
+
+{
+  "cards" :
+  [
+    {
+      "element" : 0,
+      "id" : 0,
+      "level" : 1,
+      "name" : "Geezard",
+      "num" : 1,
+      "ranks" : [ 1, 4, 5, 1 ],
+      "type" : 1
+    },
+
+    {
+      "element" : 0,
+      "id" : 1,
+      "level" : 1,
+      "name" : "Fungar",
+      "num" : 1,
+      "ranks" : [ 5, 1, 1, 3 ],
+      "type" : 1
+    },
+
+    {
+      "element" : 0,
+      "id" : 3,
+      "level" : 1,
+      "name" : "Red Bat",
+      "num" : 1,
+      "ranks" : [ 6, 1, 1, 2 ],
+      "type" : 1
+    },
+
+    {
+      "element" : 6,
+      "id" : 5,
+      "level" : 1,
+      "name" : "Gayla",
+      "num" : 1,
+      "ranks" : [ 2, 1, 4, 4 ],
+      "type" : 1
+    },
+
+    {
+      "element" : 0,
+      "id" : 6,
+      "level" : 1,
+      "name" : "Gesper",
+      "num" : 1,
+      "ranks" : [ 1, 5, 4, 1 ],
+      "type" : 1
+    },
+
+    {
+      "element" : 1,
+      "id" : 7,
+      "level" : 1,
+      "name" : "Fastitocalon-F",
+      "num" : 1,
+      "ranks" : [ 3, 5, 2, 1 ],
+      "type" : 1
+    },
+
+    {
+      "element" : 0,
+      "id" : 9,
+      "level" : 1,
+      "name" : "Caterchipillar",
+      "num" : 1,
+      "ranks" : [ 4, 2, 4, 3 ],
+      "type" : 1
+    }
+  ]
+}

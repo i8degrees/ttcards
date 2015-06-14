@@ -100,6 +100,9 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
 
 void set_face_down(CardHand* player_hand, bool face_down);
 
+/// \brief Set the ownership and rendering color of a card.
+void set_card_id(Card& card, PlayerID pid);
+
 /// \brief Update the rendering coordinates of the player's hand.
 void update_card_layout(CardHand* phand, const nom::Point2i& origin);
 

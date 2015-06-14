@@ -46,6 +46,7 @@ namespace tt {
 
 // Forward declarations
 class Game;
+class CardHand;
 
 class CardsMenuState: public nom::IState
 {
@@ -81,9 +82,12 @@ class CardsMenuState: public nom::IState
     /// \brief Set the appropriate page arrows for the shown page.
     void update_page_indicators();
 
-    /// \brief Get the cursor position.
+    /// \brief Get the game cursor indexed position.
     ///
-    /// \returns The card entry's position index, relative to the shown page.
+    /// \returns A row index number between zero (0) and the set number of
+    /// cards per page, i.e.: ~0..10.
+    ///
+    /// \see tt::CardsPageDataSource
     int cursor_position();
 
     /// \brief Set the rendering position of the game cursor.
@@ -105,18 +109,34 @@ class CardsMenuState: public nom::IState
     void cursor_next();
 
     /// \brief Add a card to the player's hand.
-    void add_card(const Card& card);
+    void add_player_card(const Card& card);
 
     /// \brief Remove a card from the player's hand.
-    void remove_card(const Card& card);
+    void remove_player_card(const Card& card);
 
     /// \brief Render the player's card sprite.
     ///
     /// \param card An existing card -- with a valid card renderer -- to base
     /// the sprite rendering from.
     std::unique_ptr<nom::Sprite>
-    set_player_selected_card_position(  const Card& card,
+    set_player_selected_card_position(  Card& card,
                                         const nom::Point2i& pos );
+
+    /// \brief Set the shown cards page.
+    void update_page_count_title(nom::size_type page);
+
+    /// \brief Add a card to the player's deck.
+    void append_player_card(const Card& card);
+
+    /// \brief Add one or more cards to the player's deck.
+    void append_player_cards(const Cards& cards);
+
+    /// \brief Remove all of the cards in the player's deck.
+    ///
+    /// \param phand A pointer to the player's hand instance.
+    ///
+    /// \remarks The player's hand is also cleared.
+    void erase_player_cards(CardHand* phand);
 
     Game* game;
 

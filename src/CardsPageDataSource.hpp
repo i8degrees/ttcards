@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef TTCARDS_CARDS_PAGE_DATA_SOURCE_HPP
 #define TTCARDS_CARDS_PAGE_DATA_SOURCE_HPP
 
+#include <unordered_map>
+
 #include <Rocket/Core.h>
 #include <Rocket/Controls/DataFormatter.h>
 #include <Rocket/Controls/DataSource.h>
@@ -61,7 +63,11 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     virtual ~CardsPageDataSource();
 
     /// \note Implements Rocket::Controls::DataSource::GetRow.
-    virtual void GetRow( Rocket::Core::StringList& row, const Rocket::Core::String& table, int row_index, const Rocket::Core::StringList& columns );
+    virtual void
+    GetRow( Rocket::Core::StringList& row,
+            const Rocket::Core::String& table,
+            int row_index,
+            const Rocket::Core::StringList& columns );
 
     /// \brief Get the total number of rows for a page.
     ///
@@ -73,7 +79,7 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     ///
     /// \note Implements Rocket::Controls::DataSource::GetNumRows.
     ///
-    /// \see ::num_rows, ::per_page.
+    /// \see ::num_rows, ::cards_per_page.
     virtual int GetNumRows( const Rocket::Core::String& table );
 
     const std::string& table_name() const;
@@ -95,14 +101,21 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     void row( tt::string_list& row, int row_index,
               const tt::string_list& columns );
 
-    int insert_card( int pos, const Card& card );
+    /// \param pos The internal array element index to insert at; this will
+    /// overwrite an existing element.
+    ///
+    /// \param card The card to be inserted.
+    int insert_card(int pos, const Card& card);
 
-    /// \param pos The beginning element position to perform the insertion.
-    int insert_cards( int pos, const std::vector<Card>& cards );
+    /// \param pos The internal array element index to begin inserting at;
+    /// this will overwrite existing element(s).
+    ///
+    /// \param card The cards to be inserted.
+    int insert_cards(int pos, const std::vector<Card>& cards);
 
-    int append_card( const Card& card );
+    int append_card(const Card& card);
 
-    int append_cards( const std::vector<Card>& cards );
+    int append_cards(const std::vector<Card>& cards);
 
     /// \brief Test whether the cards storage is empty.
     ///
@@ -112,70 +125,58 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     /// ```::num_rows() != 0```.
     bool empty() const;
 
+    /// \brief Erase a card from the stored data source instance.
+    ///
+    /// \param pos The internal array element index to destroy.
+    ///
+    /// \returns The resulting size of the cards storage after removal on
+    /// success, or nom::npos on failure, i.e.: invalid index.
+    int erase_card(int pos);
+
     /// \brief Destroy all the cards in storage.
     void erase_cards();
-
-    /// \brief Erase a card from the storage container.
-    ///
-    /// \param pos The element position to erase, starting from the beginning
-    /// of the cards storage container; zero-based index.
-    ///
-    /// \returns The resulting size of the cards storage after removal on
-    /// success, or nom::npos on failure, i.e.: invalid position.
-    int erase_card( int pos );
-
-    /// \brief Erase a range of cards from the storage container.
-    ///
-    /// \param begin_pos The starting element position, from the beginning of
-    /// the cards storage container; zero-based index.
-    ///
-    /// \param end_pos The ending element position, from the beginning of
-    /// the cards storage container; zero-based index.
-    ///
-    /// \returns The resulting size of the cards storage after removal on
-    /// success, or nom::npos on failure, i.e.: invalid position(s).
-    int erase_cards( int begin_pos, int end_pos );
 
     /// \brief Rudimentary debugging aid.
     std::string dump();
 
-    /// \brief Lookup a card by name.
+    /// \brief Reference a card by name.
     ///
-    /// \param name The card's name.
-    const Card& lookup_by_name( const std::string& name ) const;
+    /// \param name The card name to look up.
+    const Card& find_by_name(const std::string& name) const;
 
-    /// \brief Lookup a card by ID.
+    /// \brief Reference a card by an internal array element position.
     ///
-    /// \param id The card's identifier.
-    const Card& lookup_by_id( int id ) const;
+    /// \param id The card's array element index.
+    const Card& find_by_pos(int pos) const;
 
-    int per_page() const;
+    int cards_per_page() const;
     int total_pages() const;
     int page() const;
 
-    void set_per_page( int pg );
+    /// \see ::set_page
+    void set_cards_per_page(int page);
 
     /// \brief Set the current page in the table.
     ///
     /// \remarks This method call is potentially expensive, as it calls for a
     /// refresh on all row indexes within the table.
-    void set_page( int page );
+    void set_page(int page);
 
-    /// \brief Get the row index (position) of a page.
+    /// \brief Get the internal array element position of a card.
     ///
-    /// \param index  The row index (of the internal representation) to map.
-    /// \param pg     The page number to use to map.
+    /// \param page_pos The row element index of the page.
     ///
-    /// \returns A non-negative row index that is accurate for the currently
-    /// rendered page, or negative one (-1) on failure, such as an invalid page
-    /// or row index.
+    /// \returns An array element index between zero (0) and the maximum
+    /// number of cards stored in the data source instance.
     ///
-    /// \remarks This method is useful for mapping game objects, such as a game
-    /// cursor controlled by the user's keyboard.
-    int map_page_row(int index, int pg) const;
+    /// \note The maximum range for a row element index is determined by the
+    /// set number of cards per page, i.e.: ~0..10
+    ///
+    /// \see ::set_cards_per_page
+    /// \see ::insert_card, ::insert_cards
+    int map_card_pos(int page_pos) const;
 
-    int map_row(int page_row) const;
-
+  private:
     /// \brief Recalculate the total number of pages.
     ///
     /// \remarks The total number of pages is calculated by dividing the total
@@ -184,29 +185,63 @@ class CardsPageDataSource: public Rocket::Controls::DataSource
     ///
     /// \note This method should ordinarily not need to be called.
     ///
-    /// \see ::num_rows, ::set_per_page
+    /// \see ::num_rows, ::set_cards_per_page
     void update();
 
-  private:
-    void set_total_pages( int num_pages );
+    void set_total_pages(int num_pages);
 
-    /// \brief The name of the table of the data source.
+    /// \brief Translate the internal array element position to its paged row
+    /// element position.
+    ///
+    /// \param pos  The internal array element index.
+    /// \param pg   The row index for the current page of cards.
+    ///
+    /// \returns A row index between ~0..10 on success, and negative one (-1)
+    /// on failure, such as an invalid page number and/or array element
+    /// index.
+    ///
+    /// \note The internal array element range is from ~0..110; the maximum
+    /// element range is determined by the number of cards stored by the data
+    /// source instance. The maximum range for a row index is determined by the
+    /// set number of cards per page.
+    ///
+    /// \see ::set_cards_per_page
+    /// \see ::insert_card, ::insert_cards
+    int map_page_row(int pos, int pg) const;
+
+    /// \brief The table name of the data source.
+    ///
+    /// \note libRocket interfacing
     std::string table_name_;
 
-    /// \brief The internal storage for the data source.
-    std::vector<Card> db_;
+    /// \brief The data source container.
+    std::unordered_map<int, Card> db_;
 
-    /// \brief The number of cards shown per page.
-    int per_page_;
+    /// \brief The maximum number of cards rendered per page.
+    int cards_per_page_;
 
-    /// \brief The total number of available pages.
+    /// \brief The total number of pages.
     int total_pages_;
 
-    /// \brief The current (shown) page.
+    /// \brief The active (updated and rendered) page.
     int page_;
 };
 
-/// \brief Column zero (0) styling
+/// \brief The status column.
+///
+/// \note The first column creates a status tag element with a class selector,
+/// responsible for rendering the appropriate sprite frame. This sprite serves
+/// as a visual indicator of availability of a given card.
+///
+/// \code
+/// <status class='available'></status>
+/// <status class='unavailable'></status>
+/// \endcode
+///
+///     See also:
+/// Class selectors: status.unavailable, status.available, status.erased
+///
+/// \see dataview.rml
 class CardStatusFormatter: public Rocket::Controls::DataFormatter
 {
   public:
@@ -220,13 +255,25 @@ class CardStatusFormatter: public Rocket::Controls::DataFormatter
     /// \brief Construct an object using a custom column formatter name.
     ///
     /// \param formatter The datagrid column formatter attribute name.
-    CardStatusFormatter( const std::string& formatter );
+    CardStatusFormatter(const std::string& formatter);
 
     void FormatData(  Rocket::Core::String& formatted_data,
                       const Rocket::Core::StringList& raw_data );
 };
 
-/// \brief Column one (1) styling
+/// \brief The card name column.
+///
+/// \note The second column is composed of three fields to create a card tag
+/// element, used for rendering the text of the card's name.
+///
+/// \code
+/// <card class='unavailable-card' id='Geezard'>Geezard</card>
+/// \endcode
+///
+///     See also:
+/// Class selectors: card.unavailable-card, card.available-card, card.erased
+///
+/// \see dataview.rml
 class CardNameFormatter: public Rocket::Controls::DataFormatter
 {
   public:
@@ -240,7 +287,40 @@ class CardNameFormatter: public Rocket::Controls::DataFormatter
     /// \brief Construct an object using a custom column formatter name.
     ///
     /// \param formatter The datagrid column formatter attribute name.
-    CardNameFormatter( const std::string& formatter );
+    CardNameFormatter(const std::string& formatter);
+
+    void FormatData(  Rocket::Core::String& formatted_data,
+                      const Rocket::Core::StringList& raw_data );
+};
+
+/// \brief The column showing card availability count.
+///
+/// \note The third column is composed of a single field to create a card tag
+/// element. This tag uses a class selector to render the number of available
+/// cards left for the player to choose from.
+///
+/// \code
+/// <card class='available-card' id='Geezard'>Geezard</card>
+/// \endcode
+///
+///     See also:
+/// Class selectors: card.available-card, card.erased
+///
+/// \see dataview.rml
+class CardsAvailableFormatter: public Rocket::Controls::DataFormatter
+{
+  public:
+    /// \brief Default constructor.
+    ///
+    /// \remarks The default column formatter used is 'card_num'.
+    CardsAvailableFormatter();
+
+    virtual ~CardsAvailableFormatter();
+
+    /// \brief Construct an object using a custom column formatter name.
+    ///
+    /// \param formatter The datagrid column formatter attribute name.
+    CardsAvailableFormatter(const std::string& formatter);
 
     void FormatData(  Rocket::Core::String& formatted_data,
                       const Rocket::Core::StringList& raw_data );

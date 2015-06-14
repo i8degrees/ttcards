@@ -115,8 +115,8 @@ void GameOverState::on_init(nom::void_ptr data)
 
   // ...Set the card rendering layout for the player and opponent...
 
-  auto p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
-  auto p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
 
   auto p2_hand_idx = 0;
   Point2i p2_pos(Point2i::zero);

@@ -256,15 +256,16 @@ if ( PLATFORM_OSX )
               DESTINATION "${INSTALL_FRAMEWORK_PATH}"
               PATTERN ".*" EXCLUDE ) # do not include dotfiles
 
+    file( MAKE_DIRECTORY
+          "$ENV{HOME}/Library/Application\ Support/TTcards/Cards"
+          "$ENV{HOME}/Library/Application\ Support/TTcards/SavedGames"
+          "$ENV{HOME}/Library/Application\ Support/TTcards/Screenshots" )
+
     install(  FILES
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_game.json"
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-low-res.json"
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-hi-res.json"
               DESTINATION "$ENV{HOME}/Library/Application\ Support/TTcards" )
-
-    file( MAKE_DIRECTORY
-          "$ENV{HOME}/Library/Application\ Support/TTcards/SavedGames"
-          "$ENV{HOME}/Library/Application\ Support/TTcards/Screenshots" )
 
   endif ( OSXAPP )
 
@@ -308,6 +309,11 @@ elseif ( PLATFORM_WINDOWS )
             "${INSTALL_APP_PATH}"
             FILES_MATCHING PATTERN "*.dll" )
 
+    file( MAKE_DIRECTORY
+          "$ENV{LOCALAPPDATA}/TTcards/Cards"
+          "$ENV{LOCALAPPDATA}/TTcards/SavedGames"
+          "$ENV{LOCALAPPDATA}/TTcards/Screenshots" )
+
     # TODO: Use the APPDATA environment variable for the base prefix
     # installation path of configuration files; it appears to be the most
     # "universal" default games are using. If we decide to go with this change,
@@ -319,10 +325,6 @@ elseif ( PLATFORM_WINDOWS )
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-low-res.json"
               "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-hi-res.json"
               DESTINATION "$ENV{LOCALAPPDATA}/TTcards" )
-
-    file( MAKE_DIRECTORY
-          "$ENV{LOCALAPPDATA}/TTcards/SavedGames"
-          "$ENV{LOCALAPPDATA}/TTcards/Screenshots" )
 
 elseif ( PLATFORM_LINUX ) # POSIX install layout
   # TODO: set paths, etc. like we do above with OSX & Windows platforms

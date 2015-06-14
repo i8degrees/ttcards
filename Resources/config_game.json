@@ -39,6 +39,8 @@
 
     "APP_ICON" : "icon.png",
     "CARDS_DB" : "cards.json",
+    "NEW_GAME_CARDS_DB": "new_game.json",
+    "EXISTING_GAME_CARDS_DB": "existing_game.json",
 
     "REGION_RULESET": [ "Open", "Elemental", "Same" ],
 
