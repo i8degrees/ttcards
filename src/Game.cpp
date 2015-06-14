@@ -421,6 +421,11 @@ bool Game::on_init()
     this->window.set_scale( nom::Point2f(1,1) );
   #endif
 
+  // ...Game loading notification...
+  this->window.set_window_title("Loading " + APP_WINDOW_TITLE + "...");
+  this->window.fill(Color4i::Black);
+  this->window.update();
+
   // Initialize file roots for nomlib && libRocket to base file access from
   Rocket::Core::FileInterface* fs = nullptr;
   std::string fs_root;
@@ -1060,6 +1065,8 @@ bool Game::on_init()
   this->input_mapper.set_event_handler(this->evt_handler_);
   this->game->gui_window_.set_event_handler(this->evt_handler_);
 
+  this->window.set_window_title(APP_WINDOW_TITLE);
+
   return true;
 }
 
@@ -1075,7 +1082,7 @@ int Game::Run()
 
   game_time.start();
   this->fps_timer_.start();
-  fps_title_prefix << APP_WINDOW_TITLE << " " << "-" << " ";
+  fps_title_prefix << APP_WINDOW_TITLE << " - ";
 
   nom::Event evt;
   while( this->running() == true ) {

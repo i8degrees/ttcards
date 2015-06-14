@@ -38,7 +38,7 @@ const nom::File fp;
 namespace tt {
 
 const std::string APP_NAME = "TTcards";
-const std::string APP_WINDOW_TITLE = "TTcards (Triple Triad)";
+const std::string APP_WINDOW_TITLE = "Triple Triad";
 
 // Data folder for game storage -- configuration, screen-shots, saved games and
 // so forth.
