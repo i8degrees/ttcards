@@ -335,8 +335,11 @@ class Game: public nom::SDLApp
 
     Game* game;
 
+    // IMPORTANT: The running state of this timer controls whether the max or
+    // min frame rate is in use.
     nom::Timer fps_timer_;
-    nom::uint32 frame_interval_ = 0;
+    nom::uint32 max_frame_interval_ = 0;
+    nom::uint32 min_frame_interval_ = 0;
 };
 
 } // namespace tt

@@ -19,7 +19,11 @@
     // running at whatever the CPU and GPU is capable of. This is generally
     // undesirable for battery-powered environments, i.e.: notebooks and mobile
     // phones.
-    "FRAME_RATE": 30,
+    "MAX_FRAME_RATE": 30,
+
+    // The frame rate to idle at when the game is not active, i.e.: game window
+    // is minimized.
+    "MIN_FRAME_RATE": 5,
 
     // Sync to the the display's native frame rate -- determined by the
     // vertical refresh rate.

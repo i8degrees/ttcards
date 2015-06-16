@@ -367,40 +367,41 @@ bool Game::on_init()
     // determined by the updating frequency of the display at its native
     // refresh rate -- as per what the underlying rendering driver chooses to
     // use.
-    this->frame_interval_ = 0;
+    this->max_frame_interval_ = 0;
   } else {
     // ...Not using VSYNC...
 
-    if( this->config_->find("FRAME_RATE") == false ) {
+    if( this->config_->find("MAX_FRAME_RATE") == false ) {
 
       auto display_refresh_rate =
         this->window.refresh_rate();
       if( display_refresh_rate > 0 ) {
         // Use the auto-detected refresh rate value
-        this->frame_interval_ = display_refresh_rate;
+        this->max_frame_interval_ = display_refresh_rate;
       } else {
         NOM_LOG_WARN( TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not auto-detect display refresh rate." );
         // Unable to detect the refresh rate; the effective frame rate will be
         // whatever the CPU && GPU is capable of.
-        this->frame_interval_ = 0;
+        this->max_frame_interval_ = 0;
       }
-    } else if( this->config_->find("FRAME_RATE") == true ) {
+    } else if( this->config_->find("MAX_FRAME_RATE") == true ) {
       // ...Run at a custom frame rate specified by the end-user...
 
-      if( this->config_->get_int("FRAME_RATE") < 0 ) {
+      if( this->config_->get_int("MAX_FRAME_RATE") < 0 ) {
         NOM_LOG_WARN( TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not use the custom frame rate; this value must"
                       "be equal to or greater than zero." );
         // Unable to detect the refresh rate; the effective frame rate will be
         // whatever the CPU && GPU is capable of.
-        this->frame_interval_ = 0;
+        this->max_frame_interval_ = 0;
       } else {
-        this->frame_interval_ = this->config_->get_int("FRAME_RATE");
+        this->max_frame_interval_ = this->config_->get_int("MAX_FRAME_RATE");
       }
     }
-
   }
+
+  this->min_frame_interval_ = this->config_->get_int("MIN_FRAME_RATE", 5);
 
   if( nom::RocketSDL2RenderInterface::gl_init(  this->window.size().w,
                                                 this->window.size().h ) == false )
@@ -1087,7 +1088,15 @@ int Game::Run()
       this->window.set_window_title(APP_WINDOW_TITLE);
     }
 
-    tt::set_frame_interval(this->frame_interval_);
+    if( this->fps_timer_.started() == true ) {
+      // Update and render at full speed
+      tt::set_frame_interval(this->max_frame_interval_);
+    } else if( this->fps_timer_.started() == false ) {
+      // Game window is not active, so we can free up what is otherwise wasted
+      // CPU cycles for end-user multi-tasking
+      tt::set_frame_interval(this->min_frame_interval_);
+    }
+
   } // end while game is running
 
   return NOM_EXIT_SUCCESS;
