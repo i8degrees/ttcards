@@ -71,6 +71,9 @@
     // NOTE: This value is used only in non-debug builds
     "CPU_MOVE_DELAY_SECONDS": 4.0,
 
+    // How long to wait before the 'lost card' animation starts
+    "GAMEOVER_LOST_CARD_DELAY": 1.5,
+
     // Toggle showing the opponent's hand in CardsMenuState
     "DEBUG_GAME": true,
 

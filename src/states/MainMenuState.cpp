@@ -58,22 +58,15 @@ void MainMenuState::on_init(nom::void_ptr data)
   auto cfg = this->game->config_.get();
   nom::size_type menu_element = 0;
 
-  this->existing_game_cards_db_ =
-    TTCARDS_SAVED_GAME_DIR + p.native() +
-    cfg->get_string("EXISTING_GAME_CARDS_DB", "existing_game.json");
+  NOM_ASSERT( fp.exists(this->game->new_game_cards_db_) == true );
 
-  this->new_game_cards_db_ =
-    cfg->get_string("NEW_GAME_CARDS_DB", "new_game.json");
-
-  NOM_ASSERT( fp.exists(this->new_game_cards_db_) == true );
-
-  if( fp.exists(this->existing_game_cards_db_) == true ) {
+  if( fp.exists(this->game->existing_game_cards_db_) == true ) {
     this->continue_game_ = true;
   } else {
     // Err; could not open file
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not access the player's existing game:",
-                  this->existing_game_cards_db_ );
+                  this->game->existing_game_cards_db_ );
   }
 
   menu_element = this->append_menu_entry("Continue");
@@ -284,9 +277,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
       });
 
       auto p1_db_ready =
-        this->game->init_deck(p1_db, this->existing_game_cards_db_);
+        this->game->init_deck(p1_db, this->game->existing_game_cards_db_);
       auto p2_db_ready =
-        this->game->init_deck(p2_db, this->existing_game_cards_db_);
+        this->game->init_deck(p2_db, this->game->existing_game_cards_db_);
 
       auto db_ready = (p1_db_ready == true && p2_db_ready == true);
       if( db_ready == true ) {
@@ -297,7 +290,7 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         // Err; could not open or parse file?
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not access the player's deck:",
-                      this->new_game_cards_db_ );
+                      this->game->existing_game_cards_db_ );
       }
 
     } break;
@@ -310,9 +303,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
       });
 
       auto p1_db_ready =
-        this->game->init_deck(p1_db, this->new_game_cards_db_);
+        this->game->init_deck(p1_db, this->game->new_game_cards_db_);
       auto p2_db_ready =
-        this->game->init_deck(p2_db, this->new_game_cards_db_);
+        this->game->init_deck(p2_db, this->game->new_game_cards_db_);
 
       auto db_ready = (p1_db_ready == true && p2_db_ready == true);
       if( db_ready == true ) {
@@ -323,7 +316,7 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         // Err; could not open or parse file?
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not access the player's deck:",
-                      this->new_game_cards_db_ );
+                      this->game->new_game_cards_db_ );
       }
 
     } break;

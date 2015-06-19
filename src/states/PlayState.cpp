@@ -1385,12 +1385,12 @@ void PlayState::check_gameover_conditions()
 
       this->game->actions_.cancel_actions();
 
-      // TODO: Implement CardRules::SuddenDeath
       if( this->gameover_state_ == GameOverType::Tie &&
           sudden_death_rule_applied == false )
       {
-        this->game->set_state(Game::State::CardsMenu);
+        this->game->set_state(Game::State::GameOver, &this->gameover_state_);
       } else {
+        // TODO: Implement CardRules::SuddenDeath
         this->game->set_state(Game::State::GameOver, &this->gameover_state_);
       }
     }
@@ -1405,7 +1405,7 @@ void PlayState::check_gameover_conditions()
     if( player1_score > player2_score ) {
 
       auto gameover_text_action =
-        create_gameover_text_action(GameOverType::Won, "gameover_action");
+        this->create_gameover_text_action(GameOverType::Won, "gameover_action");
 
       if( this->game->winning_track->getStatus() != Playing ) {
         this->game->theme_track_->Stop();
@@ -1422,7 +1422,7 @@ void PlayState::check_gameover_conditions()
     } else if( player1_score < player2_score ) {
 
       auto gameover_text_action =
-        create_gameover_text_action(GameOverType::Lost, "gameover_action");
+        this->create_gameover_text_action(GameOverType::Lost, "gameover_action");
 
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Lost;
@@ -1434,7 +1434,7 @@ void PlayState::check_gameover_conditions()
     } else {
 
       auto gameover_text_action =
-        create_gameover_text_action(GameOverType::Tie, "gameover_action");
+        this->create_gameover_text_action(GameOverType::Tie, "gameover_action");
 
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Tie;

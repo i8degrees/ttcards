@@ -132,9 +132,6 @@ class MainMenuState: public nom::IState
       TOTAL_MENU_ENTRIES,
     };
 
-    std::string existing_game_cards_db_;
-    std::string new_game_cards_db_;
-
     bool continue_game_ = false;
 };
 

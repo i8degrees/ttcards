@@ -279,6 +279,9 @@ class Game: public nom::SDLApp
     nom::EventHandler evt_handler_;
     nom::JoystickID joystick_id_ = 0;
 
+    std::string existing_game_cards_db_;
+    std::string new_game_cards_db_;
+
   private:
     /// \brief Method callback action for pausing the music tracks in the game.
     ///

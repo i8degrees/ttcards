@@ -685,6 +685,15 @@ bool Game::on_init()
   // libRocket.
   this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );
 
+  // ...Set the known file paths to the player's game cards...
+
+  this->game->existing_game_cards_db_ =
+    TTCARDS_SAVED_GAME_DIR + p.native() +
+    this->game->config_->get_string("EXISTING_GAME_CARDS_DB", "existing_game.json");
+
+  this->game->new_game_cards_db_ =
+    this->game->config_->get_string("NEW_GAME_CARDS_DB", "new_game.json");
+
   nom::SpriteSheet triad_frames;
   nom::Texture* triad_tex = new nom::Texture();
   NOM_ASSERT(triad_tex != nullptr);

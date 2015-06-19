@@ -66,11 +66,8 @@ const Card& CardCollection::front() const
 
 bool CardCollection::save(const std::string& filename)
 {
-  // NOTE: I wished for "cards" to be an object as well, but then sorting gets
-  // all messed up -- the "off by six-ish" bug from before -- so the compromise
-  // until we figure these things out is going to have to be this!
-  nom::Value card_obj(nom::Value::ObjectValues);
-  nom::Value card_array(nom::Value::ArrayValues);
+  nom::Value objects;
+  nom::Value card;
 
   auto fp = nom::make_unique_json_serializer();
   if( fp == nullptr ) {
@@ -81,16 +78,11 @@ bool CardCollection::save(const std::string& filename)
 
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
-    // Serialize each card's attributes; said card attributes become JSON
-    // objects, enclosed within our overall container ("cards" array).
-    card_obj = tt::serialize_card(*itr);
-    card_array.push_back(card_obj);
-
-    // Top-level array node
-    card_obj["cards"] = card_array;
+    card = tt::serialize_card(*itr);
+    objects["cards"].push_back(card);
   }
 
-  if( fp->save(card_obj, filename) == false ) {
+  if( fp->save(objects, filename) == false ) {
     NOM_LOG_ERR(TTCARDS, "Unable to save JSON file: " + filename);
     return false;
   }
@@ -120,7 +112,7 @@ bool CardCollection::load(const std::string& filename)
   for( auto itr = deck.begin(); itr != deck.end(); ++itr ) {
 
     nom::Value attr = itr->ref();
-    card = unserialize_card(attr);
+    card = tt::unserialize_card(attr);
 
     // Additional attributes
     card.player_id = PlayerID::PLAYER_ID_INVALID;
@@ -161,6 +153,46 @@ const Card& CardCollection::find(CardID card_id) const
 
   // No match
   return Card::null;
+}
+
+void CardCollection::add_card(const Card& card)
+{
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
+
+    // Existing card
+    if( *itr == card ) {
+      if( (*itr).num < 99 ) {
+        (*itr).num = (*itr).num + 1;
+      }
+
+      return;
+    }
+  }
+
+  // Card does not exist, so we add it to the deck
+  Card new_card = card;
+  new_card.num = 1;
+  this->cards_.push_back(new_card);
+}
+
+void CardCollection::remove_card(const Card& card)
+{
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
+
+    // Existing card
+    if( (*itr) == card ) {
+
+      if( (*itr).num > 0 ) {
+        (*itr).num = (*itr).num - 1;
+      }
+
+      if( (*itr).num == 0 ) {
+        this->cards_.erase(itr);
+      }
+
+      return;
+    }
+  }
 }
 
 ConstCardsIterator CardCollection::begin() const

@@ -44,6 +44,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace tt {
 
+const nom::Point2i TOP_GAMEOVER_ORIGIN =
+  nom::Point2i( BOARD_ORIGIN_X - ( CARD_DIMS.w ),
+                BOARD_ORIGIN_Y + ( CARD_DIMS.h / 3 ) );
+
+const nom::Point2i BOTTOM_GAMEOVER_ORIGIN =
+  nom::Point2i( BOARD_ORIGIN_X - ( CARD_DIMS.w ),
+                BOARD_ORIGIN_Y + ( CARD_DIMS.h ) +
+                ( CARD_DIMS.h / 2 ) + ( CARD_DIMS.h / 4 ) );
+
+const nom::Point2i TOP_GAMEOVER_CURSOR_ORIGIN =
+  nom::Point2i(TOP_GAMEOVER_ORIGIN.x, TOP_GAMEOVER_ORIGIN.y * 2);
+
 // Forward declarations
 class Game;
 
@@ -59,8 +71,8 @@ class GameOverState: public nom::IState
     void on_init(nom::void_ptr data);
     void on_exit(nom::void_ptr data);
 
-    void on_pause( nom::void_ptr data );
-    void on_resume( nom::void_ptr data );
+    void on_pause(nom::void_ptr data);
+    void on_resume(nom::void_ptr data);
 
     /// \brief The default event handler for this state.
     bool on_event(const nom::Event& ev) override;
@@ -68,35 +80,29 @@ class GameOverState: public nom::IState
     /// \brief Method callback for mouse button actions.
     ///
     /// \see nom::InputMapper.
-    void on_mouse_button_down( const nom::Event& ev );
+    void on_mouse_button_down(const nom::Event& ev);
 
     /// \brief User events handler for this state.
     void on_user_event(const nom::Event& ev);
 
-    void on_update ( float delta_time );
+    void on_update(nom::real32 delta_time);
     void on_draw(nom::RenderWindow& target);
 
     std::shared_ptr<nom::IActionObject>
     create_scale_card_action(const std::shared_ptr<nom::Sprite>& sp);
 
-    Game* game;
+    void play_gameover_animation( CardCollection* db, CardHand* phand,
+                                  int card_pos );
 
-    nom::Timer transistion;
-    bool show_results;
+    Game* game;
 
     nom::uint32 gameover_state_;
 
-    /// Interface cursor
+    // Input
     GameOverStateCursor cursor_;
+    Card selected_card_;
 
-    Card selected_card;
-
-    /// Position of player 1 hand
-    nom::Point2i player1_pos;
-
-    /// Position of player 2 hand
-    nom::Point2i player2_pos;
-
+    // Animations
     std::shared_ptr<nom::Sprite> flash_action_sprite_;
     std::shared_ptr<nom::Sprite> scale_action_sprite_;
 };

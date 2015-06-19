@@ -443,7 +443,7 @@ void CardsMenuState::on_resume(nom::void_ptr data)
 
     auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
     auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
-    auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
+    // auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
 
     if( this->game->debug_game_ == true ) {
 

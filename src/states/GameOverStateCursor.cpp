@@ -28,42 +28,42 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameOverStateCursor.hpp"
 
+// Private headers
+#include "GameOverState.hpp"
+
 namespace tt {
 
-GameOverStateCursor::GameOverStateCursor ( void )
+GameOverStateCursor::GameOverStateCursor()
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-GameOverStateCursor::~GameOverStateCursor ( void )
+GameOverStateCursor::~GameOverStateCursor()
 {
   // NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-void GameOverStateCursor::set_position_map ( CardHand* position )
+void GameOverStateCursor::set_position_map(CardHand* position)
 {
-  this->card_position = position;
+  this->cards_ = position;
 }
 
-int GameOverStateCursor::cursor_position( void )
+int GameOverStateCursor::cursor_position()
 {
-  if ( this->card_position )
-  {
-    return this->card_position->position();
+  int result = -1;
+  if( this->cards_ != nullptr ) {
+    result = this->cards_->position();
   }
-  else
-  {
-    return -1;
-  }
+
+  return result;
 }
 
-nom::int32 GameOverStateCursor::move_left ( void )
+nom::int32 GameOverStateCursor::move_left()
 {
-  if ( this->position().x > PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH / 2 ) ) {
+  nom::Point2i offset( this->position() );
 
-    nom::Point2i offset;
-    offset.x = this->position().x - CARD_WIDTH;
-    offset.y = this->position().y;
+  if( this->position().x > tt::TOP_GAMEOVER_ORIGIN.x + (CARD_DIMS.w / 2) ) {
+    offset.x -= CARD_DIMS.w;
     this->set_position(offset);
 
     this->previous();
@@ -72,13 +72,14 @@ nom::int32 GameOverStateCursor::move_left ( void )
   return this->position().x;
 }
 
-nom::int32 GameOverStateCursor::move_right ( void )
+nom::int32 GameOverStateCursor::move_right()
 {
-  if ( this->position().x < PLAYER2_GAMEOVER_ORIGIN_X + ( CARD_WIDTH * ( this->card_position->size() - 1 ) ) ) {
+  nom::Point2i offset( this->position() );
 
-    nom::Point2i offset;
-    offset.x = this->position().x + CARD_WIDTH;
-    offset.y = this->position().y;
+  if( this->position().x < tt::TOP_GAMEOVER_ORIGIN.x +
+      ( CARD_DIMS.w * ( this->cards_->size() - 1 ) ) )
+  {
+    offset.x += CARD_DIMS.w;
     this->set_position(offset);
 
     this->next();
@@ -94,8 +95,8 @@ void GameOverStateCursor::set_event_handler(nom::EventHandler& evt_handler)
 
 void GameOverStateCursor::next()
 {
-  if( this->card_position != nullptr ) {
-    this->card_position->next();
+  if( this->cards_ != nullptr ) {
+    this->cards_->next();
 
     nom::Event ev =
       nom::create_user_event(GameEvent::GUIEvent, nullptr, nullptr, 0);
@@ -107,8 +108,8 @@ void GameOverStateCursor::next()
 
 void GameOverStateCursor::previous()
 {
-  if( this->card_position != nullptr ) {
-    this->card_position->previous();
+  if( this->cards_ != nullptr ) {
+    this->cards_->previous();
 
     nom::Event ev =
       nom::create_user_event(GameEvent::GUIEvent, nullptr, nullptr, 0);
