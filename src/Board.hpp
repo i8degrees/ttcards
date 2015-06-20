@@ -115,6 +115,13 @@ class Board
     /// \see ::getGlobalBounds
     void update(const nom::Point2i& grid_pos, Card& pcard);
 
+    /// \brief ...
+    ///
+    /// \param
+    ///
+    /// \remarks ...
+    bool update(const Cards& cards);
+
     /// Getter helper method for obtaining player owner tag / ID on a card at x, y
     /// coords
     PlayerID getPlayerID(nom::int32 x, nom::int32 y) const;
@@ -124,20 +131,12 @@ class Board
 
     /// (Private) Getter helper method for obtaining card placed at x, y coords;
     /// Used within Board::Draw(), Game::showCardInfoBox() method calls
-    const Card& get ( nom::int32 x, nom::int32 y ) const;
+    const Card& get(nom::int32 x, nom::int32 y) const;
 
-    const BoardTile& tile ( nom::int32 x, nom::int32 y ) const;
+    const BoardTile& tile(nom::int32 x, nom::int32 y) const;
 
     /// Draws our active board grid based on their values (card IDs)
     void draw(nom::IDrawable::RenderTarget& target);
-
-    /// Save the current board grid data to a file as a series of RFC 4627
-    /// compliant JSON objects.
-    bool save(const std::string& filename);
-
-    /// Load saved board grid data from a file encoded as RFC 4627 compliant
-    /// JSON objects.
-    bool load(const std::string& filename);
 
     /// \brief Get the unoccupied tiles on the board.
     board_tiles free_tiles() const;
@@ -171,6 +170,12 @@ class Board
     /// detection with mouse input.
     nom::IntRect board_mouse_map_[9];
 };
+
+nom::Value
+serialize_board(const Board* board);
+
+tt::Cards
+deserialize_board(const nom::Value& objects);
 
 } // namespace tt
 

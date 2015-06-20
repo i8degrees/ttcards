@@ -486,6 +486,33 @@ void Board::update(const nom::Point2i& grid_pos, Card& pcard)
   this->grid[grid_pos.x][grid_pos.y].set_tile(pcard);
 }
 
+bool Board::update(const Cards& cards)
+{
+  nom::size_type num_cards = cards.size();
+  Card card;
+
+  if( num_cards < 1 ) {
+    // No cards to use to update the game board
+    return false;
+  }
+
+  nom::size_type card_index = 0;
+  for( auto y = 0; y < BOARD_GRID_HEIGHT; ++y ) {
+    for( auto x = 0; x < BOARD_GRID_HEIGHT; ++x ) {
+
+      if( card_index < num_cards ) {
+        card = cards[card_index];
+        this->update( Point2i(x, y), card );
+      }
+
+      ++card_index;
+    }
+  }
+
+  // Success!
+  return true;
+}
+
 PlayerID Board::getPlayerID(nom::int32 x, nom::int32 y) const
 {
   return this->grid[x][y].tile_card.player_id;
@@ -516,12 +543,12 @@ void Board::flip_card(const nom::Point2i& rel_board_pos, PlayerID player_id)
   pcard.card_renderer->set_position(board_pos);
 }
 
-const Card& Board::get ( nom::int32 x, nom::int32 y ) const
+const Card& Board::get(nom::int32 x, nom::int32 y) const
 {
   return this->grid[x][y].tile();
 }
 
-const BoardTile& Board::tile ( nom::int32 x, nom::int32 y ) const
+const BoardTile& Board::tile(nom::int32 x, nom::int32 y) const
 {
   return this->grid[x][y];
 }
@@ -560,104 +587,13 @@ void Board::draw ( nom::IDrawable::RenderTarget& target )
 
         // TODO: Update the element position only when we need to -- this will
         // help ease further integration of animations
-        render_card_element(  tile.element(), element_pos,
-                              this->card_res_->card_elements_.get(), target );
+        tt::render_card_element(  tile.element(), element_pos,
+                                  this->card_res_->card_elements_.get(),
+                                  target );
       }
 
     } // end for loop rows
   } // end for loop cols
-}
-
-bool Board::save(const std::string& filename)
-{
-  nom::Value card_array(nom::Value::ArrayValues);
-  nom::Value card_obj(nom::Value::ObjectValues);
-
-  auto fp = nom::make_unique_json_serializer();
-  if( fp == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS,
-                  "Could not load input file: failure to allocate memory!" );
-    return false;
-  }
-
-  for( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; y++ ) {
-    for( nom::int32 x = 0; x != BOARD_GRID_WIDTH; x++ ) {
-
-      // Serialize each card's attributes
-      card_obj = tt::serialize_card(this->grid[x][y].tile_card);
-
-      // Additional attributes
-      card_obj["player_id"] = this->grid[x][y].tile_card.player_id;
-      card_obj["owner"] = this->grid[x][y].tile_card.player_owner;
-
-      card_array.push_back(card_obj);
-    }
-  }
-
-  if( fp->save(card_array, filename) == false ) {
-    NOM_LOG_ERR(TTCARDS, "Unable to save JSON file: " + filename);
-    return false;
-  }
-
-  return true;
-}
-
-bool Board::load(const std::string& filename)
-{
-  nom::Value values;
-
-  // The card attributes we are loading in will be stored in here temporarily.
-  // This will become the data to load onto the board if all goes well..!
-  Card card;
-  Cards cards_buffer;
-
-  auto fp = nom::make_unique_json_deserializer();
-  if( fp == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS,
-                  "Could not load input file: failure to allocate memory!" );
-    return false;
-  }
-
-  if( fp->load(filename, values) == false ) {
-    NOM_LOG_ERR(TTCARDS, "Unable to parse JSON input file: " + filename);
-    return false;
-  }
-
-  for( auto itr = values.begin(); itr != values.end(); ++itr ) {
-    nom::Value obj = itr->ref();
-
-    card = tt::unserialize_card(obj);
-
-    // Additional attributes
-    auto player_id = NOM_SCAST(PlayerID, obj["player_id"].get_int() );
-    auto player_owner = NOM_SCAST(PlayerID, obj["owner"].get_int() );
-
-    card.player_id = player_id;
-    card.player_owner = player_owner;
-
-    // Commit contents to our buffer if all goes well
-    cards_buffer.push_back(card);
-  } // end for loop
-
-  if( cards_buffer.size() < 8 ) {
-    NOM_LOG_ERR (TTCARDS, "Board data is invalid from file: " + filename);
-    return false;
-  }
-
-  // All is well, we can safely update the board with the de-serialized data
-  this->clear();
-
-  // Load each card object onto the board grid at the proper X, Y coordinates.
-  nom::size_type idx = 0;
-  for( auto y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
-    for( auto x = 0; x < BOARD_GRID_HEIGHT; x++ ) {
-
-      this->update( Point2i(x, y), cards_buffer[idx]);
-      ++idx;
-    }
-  }
-
-  return true;
 }
 
 board_tiles Board::free_tiles() const
@@ -806,6 +742,58 @@ void Board::initialize_board_elements()
       } // end for x loop
     } // end for y loop
   } // end while num_elements < MAXIMUM_BOARD_ELEMENTS
+}
+
+nom::Value
+serialize_board(const Board* board)
+{
+  nom::Value objects(nom::Value::ValueType::Null);
+  nom::Value card;
+
+  NOM_ASSERT(board != nullptr);
+  if( board == nullptr ) {
+    // No game board to serialize
+    return objects;
+  }
+
+  for( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; ++y ) {
+    for( nom::int32 x = 0; x != BOARD_GRID_WIDTH; ++x ) {
+
+      // Serialize each card as an object
+      card = tt::serialize_card( board->get(x, y) );
+
+      // Additional attributes
+      card["player_id"] = board->get(x, y).player_id;
+      card["owner"] = board->get(x, y).player_owner;
+
+      objects.push_back(card);
+    }
+  }
+
+  // Success!
+  return objects;
+}
+
+tt::Cards
+deserialize_board(const nom::Value& objects)
+{
+  Card card;
+  Cards cards;
+
+  // Reconstruct board data
+  for( auto itr = objects.begin(); itr != objects.end(); ++itr ) {
+
+    nom::Value attr = itr->ref();
+    card = tt::deserialize_card(*itr);
+
+    // Additional card attributes
+    card.player_id = NOM_SCAST( PlayerID, attr["player_id"].get_int() );
+    card.player_owner = NOM_SCAST( PlayerID, attr["owner"].get_int() );
+
+    cards.push_back(card);
+  }
+
+  return cards;
 }
 
 } // namespace tt

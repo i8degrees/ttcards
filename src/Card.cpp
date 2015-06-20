@@ -87,7 +87,7 @@ nom::Value serialize_card(const Card& card)
   return card_obj;
 }
 
-Card unserialize_card(const nom::Value& obj)
+Card deserialize_card(const nom::Value& obj)
 {
   nom::Value ranks;
   Card result;

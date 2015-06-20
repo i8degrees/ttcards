@@ -272,8 +272,8 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
       }
 
       auto fade_transistion( [=]() {
-          this->game->load_game->Play();
-          this->game->set_state(Game::State::CardsMenu);
+        this->game->load_game_sfx->Play();
+        this->game->set_state(Game::State::CardsMenu);
       });
 
       auto p1_db_ready =
@@ -298,7 +298,7 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
     case MENU_ENTRY_NEW_GAME:
     {
       auto fade_transistion( [=]() {
-        this->game->load_game->Play();
+        this->game->load_game_sfx->Play();
         this->game->set_state(Game::State::CardsMenu);
       });
 

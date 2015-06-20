@@ -146,6 +146,23 @@ bool CardHand::push_back(const Card& card)
   return true;
 }
 
+bool CardHand::push_back(const Cards& cards)
+{
+  Card card;
+
+  if( cards.size() < 1 ) {
+    // No cards to use to update
+    return false;
+  }
+
+  for( auto itr = cards.begin(); itr != cards.end(); ++itr ) {
+    this->push_back(*itr);
+  }
+
+  // Success!
+  return true;
+}
+
 bool CardHand::erase(const Card& card)
 {
   int32 position = 0;
@@ -169,7 +186,7 @@ bool CardHand::erase(const Card& card)
   return true;
 }
 
-void CardHand::clearSelectedCard ( void )
+void CardHand::clearSelectedCard()
 {
   this->selectedCard = Card();
 }
@@ -192,7 +209,7 @@ bool CardHand::empty() const
   return this->cards.empty();
 }
 
-nom::uint32 CardHand::size ( void ) const
+nom::uint32 CardHand::size() const
 {
   return this->cards.size();
 }
@@ -296,96 +313,6 @@ CardHand::shuffle(  nom::uint32 min_level, nom::uint32 max_level,
   }
 }
 
-bool CardHand::save(const std::string& filename)
-{
-  nom::Value card_array(nom::Value::ArrayValues);
-  nom::Value card_obj(nom::Value::ObjectValues);
-
-  auto fp = nom::make_unique_json_serializer();
-  if( fp == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS,
-                  "Could not load input file: failure to allocate memory!" );
-    return false;
-  }
-
-  if ( this->size() <= MIN_PLAYER_HAND || this->size() > MAX_PLAYER_HAND ) {
-    NOM_LOG_ERR(TTCARDS, "Player hand data is invalid in file: " + filename);
-    return false;
-  }
-
-  for( nom::uint32 idx = 0; idx < this->size(); idx++ ) {
-
-    // Serialize each card's attributes
-    card_obj = tt::serialize_card(this->cards[idx]);
-
-    // Additional card attributes
-    card_obj["player_id"] = this->cards[idx].player_id;
-    card_obj["owner"] = this->cards[idx].player_owner;
-
-    card_array.push_back(card_obj);
-  }
-
-  if( fp->save(card_array, filename) == false ) {
-    NOM_LOG_ERR(TTCARDS, "Unable to save JSON file: " + filename);
-    return false;
-  }
-
-  return true;
-}
-
-bool CardHand::load(const std::string& filename)
-{
-  nom::Value values;
-
-  // The card attributes we are loading in will be stored in here temporarily.
-  // This will become the data to load onto the board if all goes well..!
-  Card card;
-  Cards cards_buffer;
-
-  auto fp = nom::make_unique_json_deserializer();
-  if( fp == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS,
-                  "Could not load input file: failure to allocate memory!" );
-    return false;
-  }
-
-  if( fp->load(filename, values) == false ) {
-    NOM_LOG_ERR(TTCARDS, "Unable to parse JSON input file: " + filename);
-    return false;
-  }
-
-  for( auto itr = values.begin(); itr != values.end(); ++itr ) {
-
-    nom::Value obj = itr->ref();
-    card = tt::unserialize_card(obj);
-
-    // Additional attributes
-    auto player_id = NOM_SCAST(PlayerID, obj["player_id"].get_int() );
-    auto player_owner = NOM_SCAST(PlayerID, obj["owner"].get_int() );
-
-    card.player_id = player_id;
-    card.player_owner = player_owner;
-
-    // Commit contents to our buffer if all goes well
-    cards_buffer.push_back(card);
-
-  } // end for loop
-
-  if( cards_buffer.size() <= MIN_PLAYER_HAND ||
-      cards_buffer.size() > MAX_PLAYER_HAND )
-  {
-    NOM_LOG_ERR(TTCARDS, "Player hand data is invalid in file: " + filename);
-    return false;
-  }
-
-  // All is well, let us make it permanent
-  this->cards = cards_buffer;
-
-  this->update();
-
-  return true;
-}
-
 Card CardHand::strongest()
 {
   Cards strongest_cards(this->cards);
@@ -458,6 +385,44 @@ std::ostream& operator <<(std::ostream& os, const CardHand& rhs)
   }
 
   return os;
+}
+
+nom::Value
+serialize_hand(const CardHand* phand)
+{
+  nom::Value objects(nom::Value::ValueType::Null);
+
+  NOM_ASSERT(phand != nullptr);
+  if( phand == nullptr ) {
+    return objects;
+  }
+
+  for( auto itr = phand->cards.begin(); itr != phand->cards.end(); ++itr ) {
+    // Serialize each card as an object
+    objects.push_back( tt::serialize_card(*itr) );
+  }
+
+  return objects;
+}
+
+tt::Cards
+deserialize_hand(PlayerID player_id, const nom::Value& objects)
+{
+  Card card;
+  Cards cards;
+
+  // Reconstruct hand data
+  for( auto itr = objects.begin(); itr != objects.end(); ++itr ) {
+
+    card = tt::deserialize_card(*itr);
+
+    // Set rendering color && ownership info
+    tt::set_card_id(card, player_id);
+
+    cards.push_back(card);
+  }
+
+  return cards;
 }
 
 } // namespace tt

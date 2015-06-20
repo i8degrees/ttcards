@@ -100,6 +100,9 @@ class Game: public nom::SDLApp
 
     bool init_deck(CardCollection* deck, const std::string& filename);
 
+    bool save_game(Board* game_board, CardHand* phand, const std::string& filename);
+    bool load_game(Board* game_board, CardHand* phand, const std::string& filename);
+
     /// \brief Method callback action for dumping the board data in the game.
     ///
     /// \see nom::InputMapper.
@@ -151,10 +154,10 @@ class Game: public nom::SDLApp
     std::unique_ptr<nom::ISoundSource> card_flip;
 
     /// Load saved game sound event
-    std::unique_ptr<nom::ISoundSource> load_game;
+    std::unique_ptr<nom::ISoundSource> load_game_sfx;
 
     /// Save game sound event
-    std::unique_ptr<nom::ISoundSource> save_game;
+    std::unique_ptr<nom::ISoundSource> save_game_sfx;
 
     std::unique_ptr<nom::ISoundSource> theme_track_;
 

@@ -1315,28 +1315,47 @@ void PlayState::on_draw(nom::RenderWindow& target)
 
 bool PlayState::save_game()
 {
-  if( tt::save_game(this->game->board_.get(), this->game->hand) == false ) {
+  auto board = this->game->board_.get();
+  auto player_hands = this->game->hand;
+
+  // TEST CODE
+  const std::string P1_SAVE_GAME_PATH =
+    TTCARDS_SAVED_GAME_DIR + p.native() + "p1.json";
+
+  if( this->game->save_game(board, player_hands, P1_SAVE_GAME_PATH) == false ) {
     this->game->cursor_wrong->Play();
     return false;
   }
 
   // Success!
-  this->game->save_game->Play();
+  this->game->save_game_sfx->Play();
   return true;
 }
 
 bool PlayState::load_game()
 {
-  if( tt::load_game(this->game->board_.get(), this->game->hand) == false ) {
+  auto board = this->game->board_.get();
+  auto player_hands = this->game->hand;
+
+  // TEST CODE
+  const std::string P1_LOAD_GAME_PATH =
+    TTCARDS_SAVED_GAME_DIR + p.native() + "p1.json";
+
+  if( this->game->load_game(board, player_hands, P1_LOAD_GAME_PATH) == false ) {
     this->game->cursor_wrong->Play();
     return false;
   }
+
+  // FIXME (?):
+  // if( this->player_turn() == PlayerIndex::PLAYER_2 ) {
+  //   this->initialize_cpu_player_turn();
+  // }
 
   // Success!
   this->update_score();
   this->resetCursor();
 
-  this->game->load_game->Play();
+  this->game->load_game_sfx->Play();
   return true;
 }
 

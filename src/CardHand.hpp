@@ -76,10 +76,17 @@ class CardHand
     /// \see ::init
     bool push_back(const Card& card);
 
+    /// \brief ...
+    ///
+    /// \param
+    ///
+    /// \remarks ...
+    bool push_back(const Cards& cards);
+
     bool erase(const Card& card);
 
-    void clearSelectedCard ( void );
-    const Card& getSelectedCard ( void );
+    void clearSelectedCard();
+    const Card& getSelectedCard();
 
     /// \deprecated Use the provided iterators ::previous, ::next,
     /// ::set_position, etc.
@@ -120,21 +127,13 @@ class CardHand
     void clear();
 
     bool empty() const;
-    nom::uint32 size ( void ) const;
+    nom::uint32 size() const;
     nom::int32 at(const Card& card);
 
     /// \brief Create a randomized player hand with a set criteria.
     void
     shuffle(  nom::uint32 min_level, nom::uint32 max_level,
               const CardCollection* db );
-
-    /// Save the current player's hand to a file as a series of RFC 4627 JSON
-    /// compliant objects.
-    bool save(const std::string& filename);
-
-    /// Load saved player hand from a file encoded as RFC 4627 compliant JSON
-    /// objects.
-    bool load(const std::string& filename);
 
     /// Getter for obtaining the strongest card in the player's hand.
     ///
@@ -178,6 +177,12 @@ class CardHand
 
 /// Pretty print the the card attributes.
 std::ostream& operator <<(std::ostream& os, const CardHand& rhs);
+
+nom::Value
+serialize_hand(const CardHand* phand);
+
+tt::Cards
+deserialize_hand(PlayerID player_id, const nom::Value& objects);
 
 } // namespace tt
 

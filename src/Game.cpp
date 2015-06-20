@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Game.hpp"
 
 // Private headers
+#include "types.hpp"
 #include "version.hpp"
 #include "resources.hpp"
 
@@ -63,8 +64,8 @@ Game::Game( nom::int32 argc, char* argv[] ) :
   cursor_wrong(nullptr),
   card_place(nullptr),
   card_flip(nullptr),
-  load_game(nullptr),
-  save_game(nullptr),
+  load_game_sfx(nullptr),
+  save_game_sfx(nullptr),
   theme_track_(nullptr),
   winning_track(nullptr),
   config_(nullptr),
@@ -857,32 +858,31 @@ bool Game::on_init()
       NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("SFX_SAVE_GAME") );
     }
 
-    #if defined(NOM_USE_OPENAL)
-      this->cursor_move.reset( new nom::Sound() );
-      this->cursor_cancel.reset( new nom::Sound() );
-      this->cursor_wrong.reset( new nom::Sound() );
-      this->card_place.reset( new nom::Sound() );
-      this->card_flip.reset( new nom::Sound() );
-      this->load_game.reset( new nom::Sound() );
-      this->save_game.reset( new nom::Sound() );
-    #endif // defined NOM_USE_OPENAL
+#if defined(NOM_USE_OPENAL)
+    this->cursor_move.reset( new nom::Sound() );
+    this->cursor_cancel.reset( new nom::Sound() );
+    this->cursor_wrong.reset( new nom::Sound() );
+    this->card_place.reset( new nom::Sound() );
+    this->card_flip.reset( new nom::Sound() );
+    this->load_game_sfx.reset( new nom::Sound() );
+    this->save_game_sfx.reset( new nom::Sound() );
+#endif // defined NOM_USE_OPENAL
 
     this->cursor_move->setBuffer( *this->sound_buffers[0] );
     this->cursor_cancel->setBuffer( *this->sound_buffers[1] );
     this->cursor_wrong->setBuffer( *this->sound_buffers[2] );
     this->card_place->setBuffer( *this->sound_buffers[3] );
     this->card_flip->setBuffer( *this->sound_buffers[4] );
-    this->load_game->setBuffer( *this->sound_buffers[5] );
-    this->save_game->setBuffer( *this->sound_buffers[6] );
-  } // end if AUDIO_SFX
-  else {
+    this->load_game_sfx->setBuffer( *this->sound_buffers[5] );
+    this->save_game_sfx->setBuffer( *this->sound_buffers[6] );
+  } else {
     this->cursor_move.reset( new nom::NullSound() );
     this->cursor_cancel.reset( new nom::NullSound() );
     this->cursor_wrong.reset( new nom::NullSound() );
     this->card_place.reset( new nom::NullSound() );
     this->card_flip.reset( new nom::NullSound() );
-    this->load_game.reset( new nom::NullSound() );
-    this->save_game.reset( new nom::NullSound() );
+    this->load_game_sfx.reset( new nom::NullSound() );
+    this->save_game_sfx.reset( new nom::NullSound() );
   }
 
   if( this->game->config_->get_bool("AUDIO_TRACKS") ) {
@@ -1286,6 +1286,112 @@ bool Game::init_deck(CardCollection* deck, const std::string& filename)
     return false;
   }
 
+  return true;
+}
+
+bool Game::
+save_game(Board* game_board, CardHand* phand, const std::string& filename)
+{
+  nom::Value game;
+  auto& p1_hand = phand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = phand[PlayerIndex::PLAYER_2];
+
+  NOM_ASSERT(game_board != nullptr);
+  if( game_board == nullptr ) {
+    return false;
+  }
+
+  NOM_ASSERT(phand != nullptr);
+  if( phand == nullptr ) {
+    return false;
+  }
+
+  auto fp = nom::make_unique_json_serializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
+
+  // Arrays enclosed in an object
+  game["board"] = tt::serialize_board(game_board);
+  game["player_1"] = tt::serialize_hand(&p1_hand);
+  game["player_2"] = tt::serialize_hand(&p2_hand);
+
+  // TEST CODE
+  // game["state"]["player_turn"] = this->game->player_turn();
+  // game["state"]["cursor_pos"] = this->game->player_turn();
+
+  if( fp->save(game, filename) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Unable to save data at:", filename );
+    return false;
+  }
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Game data saved at:", filename );
+
+  // Success!
+  return true;
+}
+
+bool Game::
+load_game(Board* game_board, CardHand* phand, const std::string& filename)
+{
+  Cards board_cards;
+  Cards p1_cards;
+  Cards p2_cards;
+
+  auto& p1_hand = phand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = phand[PlayerIndex::PLAYER_2];
+  nom::Value game;
+
+  NOM_ASSERT(game_board != nullptr);
+  if( game_board == nullptr ) {
+    return false;
+  }
+
+  NOM_ASSERT(phand != nullptr);
+  if( phand == nullptr ) {
+    return false;
+  }
+
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load input file: failure to allocate memory!" );
+    return false;
+  }
+
+  if( fp->load(filename, game) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Unable to load saved data from:", filename );
+    return false;
+  }
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Game data loaded from:", filename );
+
+  // Arrays enclosed in an object
+  board_cards = tt::deserialize_board(game["board"]);
+  p1_cards = tt::deserialize_hand(p1_hand.player_id(), game["player_1"]);
+  p2_cards = tt::deserialize_hand(p2_hand.player_id(), game["player_2"]);
+
+  // TODO: Game data validation checks here?
+
+  game_board->clear();
+  p1_hand.clear();
+  p2_hand.clear();
+
+  p1_hand.push_back(p1_cards);
+  p2_hand.push_back(p2_cards);
+  game_board->update(board_cards);
+
+  // TEST CODE
+  // this->set_player_turn( (PlayerIndex)game["state"]["player_turn"].get_int() );
+  // this->set_cursor_position( (PlayerIndex)game["state"]["cursor_pos"].get_int() );
+
+  // Success!
   return true;
 }
 

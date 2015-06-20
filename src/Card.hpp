@@ -107,7 +107,7 @@ struct Card
 
 nom::Value serialize_card(const Card& card);
 
-Card unserialize_card(const nom::Value& obj);
+Card deserialize_card(const nom::Value& obj);
 
 /// \todo Rename to CardList..?
 typedef std::vector<Card> Cards;

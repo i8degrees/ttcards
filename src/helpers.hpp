@@ -50,9 +50,6 @@ PlayerID player_id(PlayerIndex player_index);
 // Flip the card's player owning ID to the opponent
 PlayerID flip_player_id(PlayerIndex player_index);
 
-bool save_game(Board* game_board, CardHand* player_hand);
-bool load_game(Board* game_board, CardHand* player_hand);
-
 bool
 render_card_background( PlayerID player_id, const nom::Point2i& pos,
                         nom::Gradient* card_background,

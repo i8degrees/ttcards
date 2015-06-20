@@ -112,7 +112,7 @@ bool CardCollection::load(const std::string& filename)
   for( auto itr = deck.begin(); itr != deck.end(); ++itr ) {
 
     nom::Value attr = itr->ref();
-    card = tt::unserialize_card(attr);
+    card = tt::deserialize_card(attr);
 
     // Additional attributes
     card.player_id = PlayerID::PLAYER_ID_INVALID;
