@@ -67,19 +67,22 @@ class PlayState: public nom::IState
     /// \brief Method callback for mouse button actions.
     ///
     /// \see nom::InputMapper.
-    void on_mouse_button_down( const nom::Event& ev );
+    void on_mouse_button_down(const nom::Event& ev);
 
-    PlayerIndex turn() const;
+    PlayerIndex player_turn() const;
+
     void set_player_turn(PlayerIndex player_id);
 
     // Helper method for incrementing to next player's turn
     void end_turn();
 
-    bool isCursorLocked ( void );
-    void lockCursor ( bool lock );
-    void resetCursor ( void );
-    void unlockSelectedCard ( void );
-    void lockSelectedCard ( void );
+    // ...Helper methods for game cursor input...
+
+    bool cursor_locked();
+    void lock_cursor(bool state);
+    void reset_cursor();
+    void unlock_selected_card();
+    void lock_selected_card();
 
     /// \brief Helper method for updating board with player's selected card.
     void move_to(const nom::Point2i& rel_board_pos);
@@ -88,17 +91,17 @@ class PlayState: public nom::IState
     flip_cards( const nom::Point2i& rel_board_pos,
                 const std::function<void()>& on_completion_func );
 
-    unsigned int getCursorPos ( void );
-    void moveCursorLeft ( void );
-    void moveCursorRight ( void );
-    void moveCursorUp ( void );
-    void moveCursorDown ( void );
+    nom::uint32 cursor_position();
+    void move_cursor_left();
+    void move_cursor_right();
+    void move_cursor_up();
+    void move_cursor_down();
+    void update_cursor();
 
     /// Interface Helper method; shows Card's ID number in a message box for
     /// both cursor states; player's hand and placed board cards -- debug
     /// handling included.
     void on_update_info_dialogs();
-    void updateCursor ( void );
 
     /// \brief Update the players' scoreboard.
     void update_score();
@@ -111,16 +114,16 @@ class PlayState: public nom::IState
     /// \brief Game players
     std::unique_ptr<IPlayer> players_[PlayerIndex::TOTAL_PLAYERS];
 
-    /// x, y coords mapping for player1, player2 cursor starting position
-    nom::Point2i player_cursor_coords[PlayerIndex::TOTAL_PLAYERS];
+    /// \brief Rendering bounds for the starting origin of the game cursor.
+    nom::Point2i player_cursor_coords_[PlayerIndex::TOTAL_PLAYERS];
 
-    /// x, y coords mapping for player1, player2 scoreboard positions
-    nom::Point2i player_scoreboard[PlayerIndex::TOTAL_PLAYERS];
+    /// \brief Rendering bounds for the starting origin of the scoreboard.
+    nom::Point2i player_scoreboard_[PlayerIndex::TOTAL_PLAYERS];
 
-    /// y coords mapping for cursor -> card position index
-    nom::Point2i cursor_coords_map[MAX_PLAYER_HAND];
+    /// \brief Rendering bounds for the game cursor.
+    nom::Point2i cursor_bounds_[MAX_PLAYER_HAND];
 
-    PlayerIndex turn_;
+    PlayerIndex player_turn_ = PlayerIndex::TOTAL_PLAYERS;
 
     enum CursorState
     {
@@ -132,10 +135,10 @@ class PlayState: public nom::IState
     };
 
     /// \brief Cursor state
-    enum CursorState cursor_state_;
+    enum CursorState cursor_state_ = CursorState::PLAYER;
 
     /// locks cursor state to board placement
-    bool cursor_locked;
+    bool cursor_locked_ = false;
 
     nom::uint32 last_delta_ = 0;
 
@@ -144,7 +147,7 @@ class PlayState: public nom::IState
     nom::real32 cpu_hand_delay_seconds_ = 0.0f;
 
     /// Debug option -- when toggled on, we are able to control both players.
-    bool skip_turn;
+    bool skip_turn_ = false;
 
     enum GameOverType gameover_state_;
 

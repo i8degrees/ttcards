@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Create keyboard bindings for a game board position
 #define CREATE_MOVE_TO_KEY_BINDING(var_name, x, y) \
   auto var_name( [=](const nom::Event& evt) { \
-    auto player_turn = this->turn(); \
+    auto player_turn = this->player_turn(); \
     if( this->game->debug_game_ == true ) { \
       this->move_to( nom::Point2i(x, y) ); \
     } else if(  this->game->debug_game_ == false && \
@@ -58,12 +58,8 @@ using namespace nom;
 namespace tt {
 
 PlayState::PlayState(nom::SDLApp* object) :
-  nom::IState( Game::State::Play ),
-  game( NOM_SCAST(Game*, object) ),
-  turn_(PlayerIndex::TOTAL_PLAYERS),
-  cursor_state_(CursorState::PLAYER),
-  cursor_locked(false),
-  skip_turn(false)
+  nom::IState(Game::State::Play),
+  game( NOM_SCAST(Game*, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -119,9 +115,9 @@ void PlayState::on_init(nom::void_ptr data)
 
   this->gameover_state_ = GameOverType::NotOver;
   this->cursor_state_ = CursorState::PLAYER;
-  this->turn_ = PlayerIndex::TOTAL_PLAYERS;
-  this->cursor_locked = false;
-  this->skip_turn = false;
+  this->skip_turn_ = false;
+  this->player_turn_ = PlayerIndex::TOTAL_PLAYERS;
+  this->cursor_locked_ = false;
 
   this->text_action_sprite_ =
     std::make_shared<Sprite>();
@@ -168,23 +164,23 @@ void PlayState::on_init(nom::void_ptr data)
 
   this->players_[PlayerIndex::PLAYER_2]->set_position( Point2i(PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y) );
 
-  // player1, player2 cursor X, Y coords
-  this->player_cursor_coords[PlayerIndex::PLAYER_1] =
+  // Starting origins for the game cursor
+  this->player_cursor_coords_[PlayerIndex::PLAYER_1] =
     nom::Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y);
 
-  this->player_cursor_coords[PlayerIndex::PLAYER_2] =
+  this->player_cursor_coords_[PlayerIndex::PLAYER_2] =
     nom::Point2i(PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y);
 
-  // Compute the player's scoreboard X, Y coordinate positions
-  this->player_scoreboard[PlayerIndex::PLAYER_1] =
+  // Starting origins for player scoreboard
+  this->player_scoreboard_[PlayerIndex::PLAYER_1] =
     Point2i(PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y);
 
-  this->player_scoreboard[PlayerIndex::PLAYER_2] =
+  this->player_scoreboard_[PlayerIndex::PLAYER_2] =
     Point2i(PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y);
 
   for( nom::int32 idx = 0; idx < MAX_PLAYER_HAND; idx++ ) {
-    this->cursor_coords_map[idx] =
-      nom::Point2i( idx, this->player_cursor_coords[0].y + ( CARD_HEIGHT / 2 * idx ) );
+    this->cursor_bounds_[idx] =
+      nom::Point2i( idx, this->player_cursor_coords_[0].y + ( CARD_HEIGHT / 2 * idx ) );
   }
 
   // Northern message box
@@ -242,9 +238,14 @@ void PlayState::on_init(nom::void_ptr data)
     nom::uniform_int_rand<nom::uint32>(0, PlayerIndex::TOTAL_PLAYERS - 1);
 
   PlayerIndex chosen_player = NOM_SCAST(PlayerIndex, random_choice);
+#if 0
   this->set_player_turn(chosen_player);
+#else
+  this->set_player_turn(PlayerIndex::PLAYER_1);
+#endif
+  this->reset_cursor();
 
-  if( this->turn() == PlayerIndex::PLAYER_2 ) {
+  if( this->player_turn() == PlayerIndex::PLAYER_2 ) {
     this->initialize_cpu_player_turn();
   }
 
@@ -280,11 +281,12 @@ void PlayState::on_init(nom::void_ptr data)
   state.insert("moveto_9", nom::KeyboardAction(SDLK_9), move_to_9);
 
   // Register event callbacks for our input actions
-  auto unlock_selected_card( [=](const nom::Event& evt) {
-    this->unlockSelectedCard();
+  auto unlock_card( [=](const nom::Event& evt) {
+    this->unlock_selected_card();
   });
-  auto lock_selected_card( [=](const nom::Event& evt) {
-    this->lockSelectedCard();
+
+  auto lock_card( [=](const nom::Event& evt) {
+    this->lock_selected_card();
   });
 
   auto select_card( [=](const nom::Event& evt) {
@@ -292,19 +294,19 @@ void PlayState::on_init(nom::void_ptr data)
   });
 
   auto move_cursor_up( [=](const nom::Event& evt) {
-    this->moveCursorUp();
+    this->move_cursor_up();
   });
 
   auto move_cursor_down( [=](const nom::Event& evt) {
-    this->moveCursorDown();
+    this->move_cursor_down();
   });
 
   auto move_cursor_left( [=](const nom::Event& evt) {
-    this->moveCursorLeft();
+    this->move_cursor_left();
   });
 
   auto move_cursor_right( [=](const nom::Event& evt) {
-    this->moveCursorRight();
+    this->move_cursor_right();
   });
 
   auto pause_game( [=](const nom::Event& evt) {
@@ -319,10 +321,10 @@ void PlayState::on_init(nom::void_ptr data)
     this->save_game();
   });
 
-  state.insert( "unlock_selected_card", nom::KeyboardAction(SDLK_x),
-                unlock_selected_card );
-  state.insert( "lock_selected_card", nom::KeyboardAction(SDLK_SPACE),
-                lock_selected_card );
+  state.insert( "unlock_card", nom::KeyboardAction(SDLK_x),
+                unlock_card );
+  state.insert( "lock_card", nom::KeyboardAction(SDLK_SPACE),
+                lock_card );
 
   state.insert( "move_cursor_up", nom::KeyboardAction(SDLK_UP),
                 move_cursor_up );
@@ -354,21 +356,21 @@ void PlayState::on_init(nom::void_ptr data)
 
     auto control_turn( [=](const nom::Event& evt) {
       // FIXME: Why are these inversed???
-      this->skip_turn = true;
+      this->skip_turn_ = true;
       this->end_turn();
     });
 
     auto skip_turn( [=](const nom::Event& evt) {
         // FIXME: Why are these inversed???
-        this->skip_turn = false;
+        this->skip_turn_ = false;
         this->end_turn();
     });
 
     auto delete_card( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       Point2i cursor_pos;
-      cursor_pos.x = this->player_cursor_coords[player_turn].x;
-      cursor_pos.y = this->player_cursor_coords[player_turn].y;
+      cursor_pos.x = this->player_cursor_coords_[player_turn].x;
+      cursor_pos.y = this->player_cursor_coords_[player_turn].y;
 
       Card selected_card = this->game->hand[player_turn].getSelectedCard();
 
@@ -382,49 +384,49 @@ void PlayState::on_init(nom::void_ptr data)
     state.insert("delete_card", nom::KeyboardAction(SDLK_d), delete_card);
 
     auto increase_north_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], true, RANK_NORTH );
     });
 
     auto decrease_north_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], false, RANK_NORTH );
     });
 
     auto increase_south_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], true, RANK_SOUTH );
     });
 
     auto decrease_south_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], false, RANK_SOUTH );
     });
 
     auto increase_west_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], true, RANK_WEST );
     });
 
     auto decrease_west_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], false, RANK_WEST );
     });
 
     auto increase_east_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], true, RANK_EAST );
     });
 
     auto decrease_east_rank( [=](const nom::Event& evt) {
-      auto player_turn = this->turn();
+      auto player_turn = this->player_turn();
       tt::modify_card_rank( this->game->card_res_.get(),
                             &this->game->hand[player_turn], false, RANK_EAST );
     });
@@ -467,13 +469,13 @@ void PlayState::on_init(nom::void_ptr data)
   // ...Joystick input mappings...
   auto& joystick_id = this->game->joystick_id_;
 
-  state.insert( "unlock_selected_card",
+  state.insert( "unlock_card",
                 nom::GameControllerButtonAction(joystick_id,
-                nom::GameController::BUTTON_B), unlock_selected_card );
+                nom::GameController::BUTTON_B), unlock_card );
 
-  state.insert( "lock_selected_card",
+  state.insert( "lock_card",
                 nom::GameControllerButtonAction(joystick_id,
-                nom::GameController::BUTTON_A), lock_selected_card );
+                nom::GameController::BUTTON_A), lock_card );
 
   state.insert( "move_cursor_up",
                 nom::GameControllerButtonAction(joystick_id,
@@ -519,13 +521,13 @@ bool PlayState::on_event(const nom::Event& ev)
   return false;
 }
 
-void PlayState::on_mouse_button_down( const nom::Event& ev )
+void PlayState::on_mouse_button_down(const nom::Event& ev)
 {
   if( this->game->actions_.action_running("move_card_up") == true ) {
     return;
   }
 
-  auto player_turn = this->turn(); // Ignore player2 mouse input
+  auto player_turn = this->player_turn(); // Ignore player2 mouse input
 
   // Player cursor positioning
   Point2i player_pos = this->players_[player_turn]->position();
@@ -537,8 +539,8 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
   IntRect card_bounds;
 
   // Disable mouse input if we are not controlling the other player
-  if( this->skip_turn == false ) {
-    if( this->turn() != 0 ) {
+  if( this->skip_turn_ == false ) {
+    if( this->player_turn() != 0 ) {
       return;
     }
   }
@@ -562,7 +564,7 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
       // 3. Play sound event
       this->game->hand[player_turn].set_position(idx);
 
-      this->game->cursor_->set_position( Point2i(this->player_cursor_coords[ player_turn ].x, this->player_cursor_coords[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
+      this->game->cursor_->set_position( Point2i(this->player_cursor_coords_[ player_turn ].x, this->player_cursor_coords_[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
 
       this->game->cursor_move->Play();
 
@@ -585,37 +587,37 @@ void PlayState::on_mouse_button_down( const nom::Event& ev )
   }
 }
 
-PlayerIndex PlayState::turn() const
+PlayerIndex PlayState::player_turn() const
 {
-  return this->turn_;
+  return this->player_turn_;
 }
 
 void PlayState::set_player_turn(PlayerIndex player_index)
 {
-  this->turn_ = player_index;
-
-  this->resetCursor();
+  this->player_turn_ = player_index;
 }
 
 void PlayState::end_turn()
 {
-  this->unlockSelectedCard();
+  this->unlock_selected_card();
 
   this->game->hand[PlayerIndex::PLAYER_1].clearSelectedCard();
   this->game->hand[PlayerIndex::PLAYER_2].clearSelectedCard();
 
-  if( this->turn() == PlayerIndex::PLAYER_1 ) {
+  if( this->player_turn() == PlayerIndex::PLAYER_1 ) {
     this->set_player_turn(PlayerIndex::PLAYER_2);
 
     this->initialize_cpu_player_turn();
-  } else if( this->turn() == PlayerIndex::PLAYER_2 ) {
+  } else if( this->player_turn() == PlayerIndex::PLAYER_2 ) {
     this->set_player_turn(PlayerIndex::PLAYER_1);
   }
+
+  this->reset_cursor();
 }
 
 void PlayState::on_update_info_dialogs()
 {
-  auto player_turn = this->turn();
+  auto player_turn = this->player_turn();
   Card selected_card;
   nom::Point2i cursor_pos;
   nom::IntRect board_pos;
@@ -624,7 +626,7 @@ void PlayState::on_update_info_dialogs()
   cursor_pos = this->game->cursor_->position();
   board_pos = this->game->board_->getGlobalBounds(cursor_pos.x, cursor_pos.y);
 
-  if( this->isCursorLocked() == true ) {
+  if( this->cursor_locked() == true ) {
 
     // ...Board select state...
     selected_card = this->game->board_->get(board_pos.x, board_pos.y);
@@ -670,28 +672,20 @@ void PlayState::on_update_info_dialogs()
   }
 }
 
-bool PlayState::isCursorLocked ( void )
+bool PlayState::cursor_locked()
 {
-  if ( this->cursor_locked == true )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return( this->cursor_locked_ == true );
 }
 
-void PlayState::lockCursor ( bool lock )
+void PlayState::lock_cursor(bool state)
 {
-  this->cursor_locked = lock;
+  this->cursor_locked_ = state;
 }
 
-// Helper method for resetting cursor related input
-void PlayState::resetCursor ( void )
+void PlayState::reset_cursor()
 {
   Point2i cursor_pos(Point2i::zero);
-  auto player_turn = this->turn();
+  auto player_turn = this->player_turn();
 
   this->game->hand[player_turn].front();
 
@@ -699,55 +693,50 @@ void PlayState::resetCursor ( void )
 
   // Only set the position of the game interface cursor for the opponent when
   // we are controlling him (debug builds)
-  if( this->skip_turn == true ) {
-    cursor_pos.x = this->player_cursor_coords[player_turn].x;
-    cursor_pos.y = this->player_cursor_coords[player_turn].y;
+  if( this->skip_turn_ == true ) {
+    cursor_pos.x = this->player_cursor_coords_[player_turn].x;
+    cursor_pos.y = this->player_cursor_coords_[player_turn].y;
   } else {
-    cursor_pos.x = this->player_cursor_coords[0].x;
-    cursor_pos.y = this->player_cursor_coords[0].y;
+    cursor_pos.x = this->player_cursor_coords_[0].x;
+    cursor_pos.y = this->player_cursor_coords_[0].y;
   }
 
   this->game->cursor_->set_position(cursor_pos);
 }
 
-// helper method for cursor input selection
-void PlayState::unlockSelectedCard ( void )
+void PlayState::unlock_selected_card()
 {
   this->cursor_state_ = CursorState::PLAYER;
 
-  this->resetCursor();
+  this->reset_cursor();
 
-  this->lockCursor ( false );
+  this->lock_cursor(false);
 
   this->game->cursor_cancel->Play();
 }
 
-// helper method for cursor input selection
-void PlayState::lockSelectedCard ( void )
+void PlayState::lock_selected_card()
 {
   nom::IntRect coords; // temp container var to hold cursor pos mapping coords
 
   this->cursor_state_ = CursorState::BOARD;
 
-  if ( this->isCursorLocked() == false )
-  {
-    if( this->turn() == 0 ) {
+  if( this->cursor_locked() == false ) {
+
+    if( this->player_turn() == 0 ) {
       Point2i cursor_pos;
       cursor_pos.x = CURSOR_ORIGIN_X-16;  // FIXME
       cursor_pos.y = CURSOR_ORIGIN_Y;
       this->game->cursor_->set_position(cursor_pos);
-    }
-    else if( this->turn() == 1 ) {
+    } else if( this->player_turn() == 1 ) {
       Point2i cursor_pos;
       cursor_pos.x = CURSOR_ORIGIN_X+16;  // FIXME
       cursor_pos.y = CURSOR_ORIGIN_Y;
       this->game->cursor_->set_position(cursor_pos);
     }
 
-    this->lockCursor ( true );
-  }
-  else
-  {
+    this->lock_cursor(true);
+  } else {
     int cursor_x = this->game->cursor_->position().x;
     int cursor_y = this->game->cursor_->position().y;
 
@@ -756,13 +745,13 @@ void PlayState::lockSelectedCard ( void )
       this->move_to( coords.position() );
     }
 
-    this->unlockSelectedCard();
+    this->unlock_selected_card();
   }
 }
 
 void PlayState::move_to(const nom::Point2i& rel_board_pos)
 {
-  auto player_turn = this->turn();
+  auto player_turn = this->player_turn();
 
   Card selected_card = this->game->hand[player_turn].getSelectedCard();
   if( selected_card.id == BAD_CARD_ID ) {
@@ -804,7 +793,7 @@ void
 PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
                         const std::function<void()>& on_completion_func )
 {
-  auto player_turn = this->turn();
+  auto player_turn = this->player_turn();
   auto& rules = this->game->rules_;
   Point2i card_pos;
 
@@ -918,7 +907,7 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
                                 const move_card_up_action_callback&
                                 on_completion_func )
 {
-  auto player_turn = this->turn();
+  auto player_turn = this->player_turn();
 
   this->game->actions_.cancel_action("move_card_up");
 
@@ -1047,15 +1036,15 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
 // cursor_coords_map
 //   [ index, y coordinate value ]
 //
-unsigned int PlayState::getCursorPos ( void )
+nom::uint32 PlayState::cursor_position()
 {
   unsigned int pos = 0;
   nom::int32 idx = 0;
 
   for ( idx = 0; idx < MAX_PLAYER_HAND; idx++ )
   {
-    if( this->game->cursor_->position().y <= this->cursor_coords_map[idx].y )
-      return this->cursor_coords_map[idx].x;
+    if( this->game->cursor_->position().y <= this->cursor_bounds_[idx].y )
+      return this->cursor_bounds_[idx].x;
     else // catch all safety switch
       // assume we are at the last position in the index when all else fails
       pos = MAX_PLAYER_HAND;
@@ -1064,7 +1053,7 @@ unsigned int PlayState::getCursorPos ( void )
   return pos;
 }
 
-void PlayState::moveCursorLeft ( void )
+void PlayState::move_cursor_left()
 {
   Point2i move_to_offset(Point2i::zero);
 
@@ -1083,7 +1072,7 @@ void PlayState::moveCursorLeft ( void )
   this->game->cursor_move->Play();
 }
 
-void PlayState::moveCursorRight ( void )
+void PlayState::move_cursor_right()
 {
   Point2i move_to_offset(Point2i::zero);
 
@@ -1102,10 +1091,10 @@ void PlayState::moveCursorRight ( void )
   this->game->cursor_move->Play();
 }
 
-void PlayState::moveCursorUp ( void )
+void PlayState::move_cursor_up()
 {
   unsigned int pos = 0;
-  unsigned int player_turn = this->turn();
+  unsigned int player_turn = this->player_turn();
   Point2i move_to_offset(Point2i::zero);
 
   if( this->game->actions_.action_running("move_card_up") ) {
@@ -1119,7 +1108,7 @@ void PlayState::moveCursorUp ( void )
       move_to_offset.y = -(CARD_HEIGHT / 2);
       this->game->cursor_->translate(move_to_offset);
 
-      pos = this->getCursorPos();
+      pos = this->cursor_position();
       this->game->hand[player_turn].previous();
     }
   }
@@ -1136,10 +1125,10 @@ void PlayState::moveCursorUp ( void )
   this->game->cursor_move->Play();
 }
 
-void PlayState::moveCursorDown ( void )
+void PlayState::move_cursor_down()
 {
-  unsigned int pos = 0;
-  unsigned int player_turn = this->turn();
+  uint32 pos = 0;
+  PlayerIndex player_turn = this->player_turn();
   Point2i move_to_offset(Point2i::zero);
 
   if( this->game->actions_.action_running("move_card_up") ) {
@@ -1155,7 +1144,7 @@ void PlayState::moveCursorDown ( void )
       move_to_offset.y = (CARD_HEIGHT / 2);
       this->game->cursor_->translate(move_to_offset);
 
-      pos = this->getCursorPos();
+      pos = this->cursor_position();
       this->game->hand[player_turn].next();
     }
   }
@@ -1172,9 +1161,9 @@ void PlayState::moveCursorDown ( void )
   this->game->cursor_move->Play();
 }
 
-void PlayState::updateCursor()
+void PlayState::update_cursor()
 {
-  auto player_turn = this->turn();
+  auto player_turn = this->player_turn();
   bool blinking_cursor_state =
     this->game->actions_.action_running("blinking_cursor_action");
 
@@ -1192,7 +1181,7 @@ void PlayState::updateCursor()
 
       this->game->cursor_->set_sprite_sheet(this->game->right_cursor_frames_);
       this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
-    } else if(  this->skip_turn == true &&
+    } else if(  this->skip_turn_ == true &&
                 player_turn == PlayerIndex::PLAYER_2 )
     {
       this->game->cursor_->set_sprite_sheet(this->game->left_cursor_frames_);
@@ -1225,7 +1214,7 @@ void PlayState::update_score()
     this->players_[player_index]->set_score(score);
 
     score_str = this->players_[player_index]->score_string();
-    score_pos = this->player_scoreboard[player_index];
+    score_pos = this->player_scoreboard_[player_index];
 
     this->game->scoreboard_text[player_index].set_text(score_str);
     this->game->scoreboard_text[player_index].set_position(score_pos);
@@ -1234,9 +1223,9 @@ void PlayState::update_score()
 
 void PlayState::on_update(nom::real32 delta_time)
 {
-  uint32 player_turn = this->turn();
+  uint32 player_turn = this->player_turn();
 
-  this->updateCursor();
+  this->update_cursor();
 
   this->on_update_info_dialogs();
   this->game->gui_window_.update();
@@ -1248,7 +1237,7 @@ void PlayState::on_update(nom::real32 delta_time)
     last_delta_ = delta_time;
 
     // Only show the animation when we are not controlling him (debug builds)
-    if( this->skip_turn == false ) {
+    if( this->skip_turn_ == false ) {
 
       // Fixes a out of bounds issue that occurs occasionally upon state
       // phasing
@@ -1268,14 +1257,14 @@ void PlayState::on_update(nom::real32 delta_time)
     this->game->triad_->set_position(PLAYER2_TRIAD_ORIGIN);
 
     // Skipping a turn like this is only available in debug versions
-    if( this->skip_turn == false ) {
+    if( this->skip_turn_ == false ) {
 
       if( this->game->actions_.action_running("cpu_move_delay") == false &&
           this->game->actions_.action_running("move_card_up") == false )
       {
         this->players_[PlayerIndex::PLAYER_2]->update(delta_time);
       }
-    } // end if skip_turn == FALSE
+    } // end if skip_turn_ == FALSE
   } else {
     NOM_ASSERT("PlayState::update(): player_turn > PlayerIndex::PLAYER_2");
   }
@@ -1353,7 +1342,7 @@ bool PlayState::load_game()
 
   // Success!
   this->update_score();
-  this->resetCursor();
+  this->reset_cursor();
 
   this->game->load_game_sfx->Play();
   return true;
