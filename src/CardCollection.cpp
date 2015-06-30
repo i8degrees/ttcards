@@ -155,7 +155,7 @@ const Card& CardCollection::find(CardID card_id) const
   return Card::null;
 }
 
-void CardCollection::add_card(const Card& card)
+void CardCollection::append_card(const Card& card)
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
@@ -175,7 +175,14 @@ void CardCollection::add_card(const Card& card)
   this->cards_.push_back(new_card);
 }
 
-void CardCollection::remove_card(const Card& card)
+void CardCollection::append_cards(const Cards& cards)
+{
+  for( auto itr = cards.begin(); itr != cards.end(); ++itr ) {
+    this->cards_.push_back(*itr);
+  }
+}
+
+void CardCollection::erase_card(const Card& card)
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
@@ -213,6 +220,42 @@ CardsIterator CardCollection::begin()
 CardsIterator CardCollection::end()
 {
   return this->cards_.end();
+}
+
+nom::Value
+serialize_deck(const CardCollection* deck)
+{
+  nom::Value objects(nom::Value::ValueType::Null);
+
+  NOM_ASSERT(deck != nullptr);
+  if( deck == nullptr ) {
+    return objects;
+  }
+
+  auto deck_end = deck->end();
+  for( auto itr = deck->begin(); itr != deck_end; ++itr ) {
+    // Serialize each card as an object
+    objects.push_back( tt::serialize_card(*itr) );
+  }
+
+  return objects;
+}
+
+tt::Cards
+deserialize_deck(const nom::Value& objects)
+{
+  Card card;
+  Cards cards;
+
+  // Reconstruct hand data
+  auto object_end = objects.end();
+  for( auto itr = objects.begin(); itr != object_end; ++itr ) {
+
+    card = tt::deserialize_card(*itr);
+    cards.push_back(card);
+  }
+
+  return cards;
 }
 
 } // namespace tt

@@ -65,19 +65,22 @@ class CardCollection
     /// failure to find a card by the given ID.
     const Card& find(CardID card_id) const;
 
-    /// \brief Append a card to the end of the deck.
+    /// \brief Append a card at the end of the deck.
     ///
     /// \note When adding a card that exists in the deck, the number attribute
     /// is incremented by one -- if less than 99. When the card does **not**
     /// exist, it will be appended with a number attribute of one (1).
-    void add_card(const Card& card);
+    void append_card(const Card& card);
+
+    /// \brief Append one or more cards at the end of the deck.
+    void append_cards(const Cards& cards);
 
     /// \brief Erase a card from the deck.
     ///
     /// \note When removing a card from the deck, the number attribute is
     /// decremented by one (1) and will be removed from the deck once the
     /// number attribute is equal to zero (0).
-    void remove_card(const Card& card);
+    void erase_card(const Card& card);
 
     ConstCardsIterator begin() const;
     ConstCardsIterator end() const;
@@ -88,6 +91,12 @@ class CardCollection
   private:
     Cards cards_;
 };
+
+nom::Value
+serialize_deck(const CardCollection* deck);
+
+tt::Cards
+deserialize_deck(const nom::Value& objects);
 
 } // namespace tt
 

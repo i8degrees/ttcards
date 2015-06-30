@@ -59,6 +59,8 @@ GameOverState::~GameOverState()
 
 void GameOverState::on_init(nom::void_ptr data)
 {
+  auto cfg = this->game->config_.get();
+
   this->cursor_.set_event_handler(this->game->evt_handler_);
   this->cursor_.set_texture(this->game->cursor_tex_);
   this->cursor_.set_sprite_sheet(this->game->right_cursor_frames_);
@@ -128,50 +130,10 @@ void GameOverState::on_init(nom::void_ptr data)
     exit(NOM_EXIT_FAILURE);
   }
 
-  // ...Set the card rendering layout for the player and opponent...
-
   auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
   auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
 
-  auto p1_hand_idx = 0;
-  Point2i p1_pos(Point2i::zero);
-  for( auto itr = p1_hand.begin(); itr != p1_hand.end(); ++itr ) {
-
-    if( this->gameover_state_ == GameOverType::Won ) {
-      p1_pos.x = BOTTOM_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p1_hand_idx);
-      p1_pos.y = BOTTOM_GAMEOVER_ORIGIN.y;
-    } else {
-      p1_pos.x = TOP_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p1_hand_idx);
-      p1_pos.y = TOP_GAMEOVER_ORIGIN.y;
-    }
-
-    ++p1_hand_idx;
-
-    auto card_renderer = itr->card_renderer;
-    if( card_renderer != nullptr && card_renderer->valid() == true ) {
-      card_renderer->set_position(p1_pos);
-    }
-  }
-
-  auto p2_hand_idx = 0;
-  Point2i p2_pos(Point2i::zero);
-  for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
-
-    if( this->gameover_state_ == GameOverType::Won ) {
-      p2_pos.x = TOP_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p2_hand_idx);
-      p2_pos.y = TOP_GAMEOVER_ORIGIN.y;
-    } else {
-      p2_pos.x = BOTTOM_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p2_hand_idx);
-      p2_pos.y = BOTTOM_GAMEOVER_ORIGIN.y;
-    }
-
-    ++p2_hand_idx;
-
-    auto card_renderer = itr->card_renderer;
-    if( card_renderer != nullptr && card_renderer->valid() == true ) {
-      card_renderer->set_position(p2_pos);
-    }
-  }
+  this->update_player_positions();
 
   // Reset the player's hand back to the front, so our cursor tracking is
   // accurate.
@@ -368,9 +330,6 @@ void GameOverState::on_init(nom::void_ptr data)
 
       NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_GAME_OVER_STATE, "Lost",
                     this->selected_card_.name );
-      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_GAME_OVER_STATE,
-                      "Card attributes:", this->selected_card_ );
-
       NOM_ASSERT(this->selected_card_ == chosen_card);
 
       const real32 DELAY_DURATION =
@@ -387,17 +346,19 @@ void GameOverState::on_init(nom::void_ptr data)
 
         this->play_gameover_animation(p1_db, &player_hand, card_pos);
 
-        const std::string P1_SAVE_GAME_PATH =
-          this->game->existing_game_cards_db_;
-        const std::string P2_SAVE_GAME_PATH =
-          TTCARDS_SAVED_GAME_DIR + p.native() + "CPU.json";
-#if 0
-        p1_db->remove_card(this->selected_card_);
-        p1_db->save(P1_SAVE_GAME_PATH);
-#endif
-        this->selected_card_.num = this->selected_card_.num + 1;
-        p2_db->add_card(this->selected_card_);
-        p2_db->save(P2_SAVE_GAME_PATH);
+        auto& paths = this->game->paths_;
+
+        // TODO: Verify that the player has the card that the opponent has
+        // selected; this also requires us to repeat the opponent's selection
+        // algorithm.
+
+        if( cfg->get_bool("PLAYER_LOSE_CARDS", false) == true ) {
+          p1_db->erase_card(this->selected_card_);
+          this->game->save_deck(p1_db, paths["PLAYER_DECK_PATH"]);
+        }
+
+        p2_db->append_card(this->selected_card_);
+        this->game->save_deck(p2_db, paths["OPPONENT_DECK_PATH"]);
 
         // TODO: Assertion for validating the selected card with the player's
         // deck
@@ -502,6 +463,7 @@ void GameOverState::on_user_event(const nom::Event& ev)
 {
   // FIXME (clean up): This function executes only when player 1 wins
   auto& player_hand = this->game->hand[PlayerIndex::PLAYER_2];
+  auto cfg = this->game->config_.get();
 
   if( ev.user.code == GameEvent::GUIEvent ) {
     NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::GUIEvent" );
@@ -523,7 +485,12 @@ void GameOverState::on_user_event(const nom::Event& ev)
     int card_pos = player_hand.position();
     Card& pcard = player_hand.cards[card_pos];
     this->selected_card_ = player_hand.cards[card_pos];
-
+#if 0
+    if( this->num_trade_cards_ > 1 ) {
+      this->game->cursor_wrong->Play();
+      return;
+    }
+#endif
     const std::string INFO_STR =
       this->selected_card_.name + " card acquired";
     this->game->info_box_.set_message_text(INFO_STR);
@@ -532,17 +499,19 @@ void GameOverState::on_user_event(const nom::Event& ev)
 
     // ...Player acquires a card from the opponent's deck...
 
-    const std::string SAVE_GAME_PATH =
-      this->game->existing_game_cards_db_;
-    const std::string P2_SAVE_GAME_PATH =
-      TTCARDS_SAVED_GAME_DIR + p.native() + "CPU.json";
+    auto& paths = this->game->paths_;
 
-    p1_db->add_card(pcard);
-    p1_db->save(SAVE_GAME_PATH);
-#if 0
-    p2_db->remove_card(pcard);
-    p2_db->save(P2_SAVE_GAME_PATH);
-#endif
+    // TODO: Verify that the opponent has the card that the player has selected
+
+    p1_db->append_card(pcard);
+    this->game->save_deck(p1_db, paths["PLAYER_DECK_PATH"]);
+
+    if( this->game->config_->get_bool("OPPONENT_LOSE_CARDS", true) == true ) {
+      p2_db->erase_card(pcard);
+      this->game->save_deck(p2_db, paths["OPPONENT_DECK_PATH"]);
+    }
+
+    ++this->num_trade_cards_;
   }
 }
 
@@ -626,6 +595,52 @@ create_scale_card_action(const std::shared_ptr<nom::Sprite>& sp)
   }
 
   return scale_card_action;
+}
+
+bool GameOverState::update_player_positions()
+{
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
+
+  auto p1_hand_idx = 0;
+  Point2i p1_pos(Point2i::zero);
+  for( auto itr = p1_hand.begin(); itr != p1_hand.end(); ++itr ) {
+
+    if( this->gameover_state_ == GameOverType::Won ) {
+      p1_pos.x = BOTTOM_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p1_hand_idx);
+      p1_pos.y = BOTTOM_GAMEOVER_ORIGIN.y;
+    } else {
+      p1_pos.x = TOP_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p1_hand_idx);
+      p1_pos.y = TOP_GAMEOVER_ORIGIN.y;
+    }
+
+    ++p1_hand_idx;
+
+    auto card_renderer = itr->card_renderer;
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->set_position(p1_pos);
+    }
+  }
+
+  auto p2_hand_idx = 0;
+  Point2i p2_pos(Point2i::zero);
+  for( auto itr = p2_hand.begin(); itr != p2_hand.end(); ++itr ) {
+
+    if( this->gameover_state_ == GameOverType::Won ) {
+      p2_pos.x = TOP_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p2_hand_idx);
+      p2_pos.y = TOP_GAMEOVER_ORIGIN.y;
+    } else {
+      p2_pos.x = BOTTOM_GAMEOVER_ORIGIN.x + (CARD_DIMS.w * p2_hand_idx);
+      p2_pos.y = BOTTOM_GAMEOVER_ORIGIN.y;
+    }
+
+    ++p2_hand_idx;
+
+    auto card_renderer = itr->card_renderer;
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->set_position(p2_pos);
+    }
+  }
 }
 
 void GameOverState::

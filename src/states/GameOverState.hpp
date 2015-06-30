@@ -90,6 +90,9 @@ class GameOverState: public nom::IState
     std::shared_ptr<nom::IActionObject>
     create_scale_card_action(const std::shared_ptr<nom::Sprite>& sp);
 
+    // Set the card rendering layout for the player and opponent
+    bool update_player_positions();
+
     void play_gameover_animation( CardCollection* db, CardHand* phand,
                                   int card_pos );
 
@@ -104,6 +107,10 @@ class GameOverState: public nom::IState
     // Animations
     std::shared_ptr<nom::Sprite> flash_action_sprite_;
     std::shared_ptr<nom::Sprite> scale_action_sprite_;
+
+    // nom::uint32 num_trade_cards_ = 0;
+    // STUB
+    nom::uint32 num_trade_cards_ = 1;
 };
 
 // Convenience declarations for changing state

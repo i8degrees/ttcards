@@ -43,6 +43,10 @@
 
     "REGION_RULESET": [ "Open", "Elemental", "Same" ],
 
+    // Toggle whether when you lose a game, you lose a card from your deck.
+    "PLAYER_LOSE_CARDS" : true,
+    "OPPONENT_LOSE_CARDS" : true,
+
     // ...Animations...
 
     // NOTE: Interval && duration units are always specified in seconds unless

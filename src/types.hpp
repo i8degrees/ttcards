@@ -87,9 +87,10 @@ enum CardType: nom::uint32
 {
   CARD_TYPE_INVALID = 0,
   CARD_TYPE_MONSTER,
-  CARD_TYPE_TOTAL_BOSS,
-  CARD_TYPE_TOTAL_GF,
-  CARD_TYPE_TOTAL_PLAYER,
+  CARD_TYPE_BOSS,
+  CARD_TYPE_GF,
+  CARD_TYPE_PLAYER,
+  CARD_TYPE_CUSTOM,
   TOTAL_CARD_TYPES,
 };
 
@@ -161,6 +162,17 @@ enum ColumnTitle
   CARDS_COLUMN_STATUS = 0,
   CARDS_COLUMN_TITLE,
   CARDS_COLUMN_NUM,
+};
+
+/// \brief The game cursor response choices.
+///
+/// \see tt::ConfirmationDialogState, ::on_resume
+enum GameResponse: nom::uint32
+{
+  /// nullptr
+  GAME_RESPONSE_NO = 0,
+  GAME_RESPONSE_YES = 1,
+  TOTAL_GAME_RESPONSES
 };
 
 } // namespace tt
