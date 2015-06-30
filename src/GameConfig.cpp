@@ -71,14 +71,13 @@ GameConfig::get_int(  const std::string& node,
   }
 }
 
-bool GameConfig::get_bool(const std::string& node) const
+bool GameConfig::get_bool(const std::string& node, bool default_value) const
 {
   bool result = false;
 
   auto res = this->config_.find(node);
-
   if( res == this->config_.end() ) {
-    result = false;
+    result = default_value;
   } else {
     result = res->second.get_bool();
   }
@@ -86,13 +85,13 @@ bool GameConfig::get_bool(const std::string& node) const
   return result;
 }
 
-int GameConfig::get_bool32(const std::string& node) const
+int GameConfig::get_bool32(const std::string& node, bool default_value) const
 {
   int result = 0;
   auto res = this->config_.find(node);
 
   if( res == this->config_.end() ) {
-    result = 0;
+    result = default_value;
   } else {
     result = NOM_SCAST(int, res->second.get_bool() );
   }

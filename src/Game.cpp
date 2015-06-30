@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Private headers
 #include "types.hpp"
 #include "version.hpp"
-#include "resources.hpp"
 
 #include <Rocket/Debugger.h>
 #include <nomlib/serializers.hpp>
@@ -54,7 +53,7 @@ using namespace nom;
 
 namespace tt {
 
-Game::Game( nom::int32 argc, char* argv[] ) :
+Game::Game(nom::int32 argc, char* argv[]) :
   // SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES | INIT_ENGINE_FONTS ),
   SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
   audio_dev_(nullptr),
@@ -121,8 +120,6 @@ Game::Game( nom::int32 argc, char* argv[] ) :
     // NOM_LOG_PRIORITY_DEBUG will log just the output data stream
     // NOM_LOG_PRIORITY_VERBOSE will log both the input and output data streams
 
-    // nom::SDL2Logger::set_logging_priority(  TTCARDS_LOG_CATEGORY_CFG,
-                                            // NOM_LOG_PRIORITY_DEBUG );
     nom::SDL2Logger::set_logging_priority(  TTCARDS_LOG_CATEGORY_CFG,
                                             NOM_LOG_PRIORITY_INFO );
 
@@ -258,14 +255,42 @@ Game::~Game()
 
 bool Game::on_init()
 {
+  nom::Path p;
+  nom::File fp;
+  std::string fs_root;
+  auto& paths = this->game->paths_;
+
   int render_driver = -1;
   uint32 window_flags = SDL_WINDOW_OPENGL;
   uint32 render_flags = SDL_RENDERER_ACCELERATED;
   bool vsync_hint_result = false;
 
+  // ...Initialize file-system paths...
+
+#if defined(NOM_PLATFORM_OSX)
+    fs_root = fp.resource_path() + "/";
+#elif defined(NOM_PLATFORM_WINDOWS)
+    fs_root = this->working_directory + "\\";
+#else
+    // Has not been tested!
+    fs_root = this->working_directory + "/Resources/";
+#endif
+
+  // NOTE: This is used by nom::BMFont interface and libRocket; this sets
+  // the game's root directory path by which other file system paths can use as
+  // a prefix when dealing with forming a complete file-system path to load from
+  // and save to.
+  nom::set_file_root(fs_root);
+
+  if( this->init_config_paths() == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not locate the game configuration files." );
+    return false;
+  }
+
   auto cfg_parser = nom::make_unique_json_deserializer();
   if( cfg_parser == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS,
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load input file: failure to allocate memory!" );
     return false;
   }
@@ -274,12 +299,12 @@ bool Game::on_init()
 
   this->game->config_ = nom::make_unique<GameConfig>();
   NOM_ASSERT(this->game->config_ != nullptr);
-  if( this->game->config_->load_file( TTCARDS_CONFIG_GAME_FILENAME,
+  if( this->game->config_->load_file( paths["ROOT_CONFIG_PATH"],
       cfg_parser.get() ) == false )
   {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load resource configuration file:",
-                  TTCARDS_CONFIG_GAME_FILENAME );
+                  paths["ROOT_CONFIG_PATH"] );
     return false;
   }
 
@@ -288,29 +313,37 @@ bool Game::on_init()
 #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
   this->game->res_cfg_ = nom::make_unique<GameConfig>();
   NOM_ASSERT(this->game->res_cfg_ != nullptr);
-  if( this->game->res_cfg_->load_file(  TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME,
+  if( this->game->res_cfg_->load_file(  paths["LOW_RES_CONFIG_PATH"],
       cfg_parser.get() ) == false )
   {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load resource configuration file:",
-                  TTCARDS_CONFIG_ASSETS_LOW_RES_FILENAME );
+                  paths["LOW_RES_CONFIG_PATH"] );
     return false;
   }
 #else
   this->game->res_cfg_ = nom::make_unique<GameConfig>();
   NOM_ASSERT(this->game->res_cfg_ != nullptr);
-  if( this->game->res_cfg_->load_file(  TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME,
+  if( this->game->res_cfg_->load_file(  paths["HI_RES_CONFIG_PATH"],
       cfg_parser.get() ) == false )
   {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not load resource configuration file:",
-                  TTCARDS_CONFIG_ASSETS_HI_RES_FILENAME );
+                  paths["HI_RES_CONFIG_PATH"] );
     return false;
   }
 #endif
 
+  // IMPORTANT: The file-system root prefix must be set before we call the
+  // following!
+  if( this->init_game_paths( this->game->config_.get() ) == false ) {
+    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+                  "Failed to initialize game paths" );
+    return false;
+  }
+
   this->game->debug_game_ =
-    this->game->config_->get_bool("DEBUG_GAME");
+    this->game->config_->get_bool("DEBUG_GAME", false);
 
   const std::string RENDER_SCALE_QUALITY =
     this->config_->get_string("RENDER_SCALE_QUALITY", "nearest");
@@ -323,7 +356,7 @@ bool Game::on_init()
   }
 
   const bool ENABLE_VSYNC =
-    this->config_->get_bool32("ENABLE_VSYNC");
+    this->config_->get_bool32("ENABLE_VSYNC", true);
   const std::string ENABLE_VSYNC_STR =
     std::to_string(ENABLE_VSYNC);
 
@@ -428,27 +461,12 @@ bool Game::on_init()
   this->window.fill(Color4i::Black);
   this->window.update();
 
-  // Initialize file roots for nomlib && libRocket to base file access from
+  // Initialize file-system root for libRocket
   Rocket::Core::FileInterface* fs = nullptr;
-  std::string fs_root;
-  nom::File dir;
-
-#if defined(NOM_PLATFORM_OSX)
-    fs_root = dir.resource_path() + "/";
-#elif defined(NOM_PLATFORM_WINDOWS)
-    fs_root = this->working_directory + "\\";
-#else
-    // Has not been tested!
-    fs_root = this->working_directory + "/Resources/";
-#endif
 
   // Used by both internal and external libRocket interfaces; decorators,
   // libRocket-rendered fonts and so forth
   fs = new nom::RocketFileInterface( fs_root.c_str() );
-
-  // Used by nom::BMFont interface (wholly unrelated to libRocket); this sets
-  // the relative file root for filenames given in .FNT files to be loaded from
-  nom::set_file_root(fs_root);
 
   Rocket::Core::SystemInterface* sys =
     new RocketSDL2SystemInterface();
@@ -520,7 +538,7 @@ bool Game::on_init()
   decorator1->RemoveReference();
 
   const auto WINDOW_FULLSCREEN =
-    this->game->config_->get_bool("WINDOW_FULLSCREEN");
+    this->game->config_->get_bool("WINDOW_FULLSCREEN", false);
   if( WINDOW_FULLSCREEN == true ) {
     this->window.toggle_fullscreen();
   }
@@ -799,8 +817,8 @@ bool Game::on_init()
   }
 
   // Initialize audio subsystem...
-  if( this->game->config_->get_bool("AUDIO_SFX") ||
-      this->game->config_->get_bool("AUDIO_TRACKS") ) {
+  if( this->game->config_->get_bool("AUDIO_SFX", true) ||
+      this->game->config_->get_bool("AUDIO_TRACKS", true) ) {
 
     #if defined(NOM_USE_OPENAL)
       this->audio_dev_.reset( new nom::AudioDevice() );
@@ -821,7 +839,7 @@ bool Game::on_init()
   }
 
   // Load audio resources
-  if( this->game->config_->get_bool("AUDIO_SFX") ) {
+  if( this->game->config_->get_bool("AUDIO_SFX", true) ) {
 
     if ( this->sound_buffers[0]->load( this->config_->get_string("CURSOR_MOVE") ) == false )
     {
@@ -885,7 +903,7 @@ bool Game::on_init()
     this->save_game_sfx.reset( new nom::NullSound() );
   }
 
-  if( this->game->config_->get_bool("AUDIO_TRACKS") ) {
+  if( this->game->config_->get_bool("AUDIO_TRACKS", true) ) {
 
     const std::string MUSIC_THEME_TRACK =
       this->config_->get_string("MUSIC_THEME_TRACK");
@@ -1429,13 +1447,116 @@ void Game::dump_collection(PlayerIndex player_index)
   }
 }
 
-void Game::pause_music( void )
+bool Game::init_config_paths()
+{
+  nom::File fp;
+  nom::Path p;
+  auto& paths = this->game->paths_;
+
+  const std::string ROOT_CONFIG_FILENAME = "config_game.json";
+  const std::string HI_RES_CONFIG_FILENAME = "config_assets-hi-res.json";
+  const std::string LOW_RES_CONFIG_FILENAME = "config_assets-low-res.json";
+
+  // NOTE: Root configuration files
+  paths["CFG_DIR"] =
+    fp.user_app_support_path() + p.native() + APP_NAME + p.native();
+
+  if( fp.exists(paths["CFG_DIR"]) == false ) {
+    return false;
+  }
+
+  paths["ROOT_CONFIG_PATH"] = paths["CFG_DIR"] + ROOT_CONFIG_FILENAME;
+  paths["HI_RES_CONFIG_PATH"] = paths["CFG_DIR"] + HI_RES_CONFIG_FILENAME;
+  paths["LOW_RES_CONFIG_PATH"] = paths["CFG_DIR"] + LOW_RES_CONFIG_FILENAME;
+
+  return true;
+}
+
+bool Game::init_game_paths(GameConfig* cfg)
+{
+  nom::File fp;
+  nom::Path p;
+  auto& paths = this->game->paths_;
+
+  NOM_ASSERT(cfg != nullptr);
+  if( cfg == nullptr ) {
+    return false;
+  }
+
+  const std::string DEBUG_DATA_DIR = "Debug";
+  const std::string SAVE_SCREENSHOT_DIR = "Screenshots";
+
+  const std::string SAVE_GAME_DIR =
+    cfg->get_string("SAVE_GAME_DIR", "SavedGames");
+
+  const std::string SAVE_GAME_DECK_DIR =
+    cfg->get_string("SAVE_GAME_DECK_DIR", "Decks");
+
+  const std::string CARDS_DB_FILENAME =
+    cfg->get_string("CARDS_DB_FILENAME", "cards.json");
+
+  const std::string SAVE_GAME_FILENAME =
+    cfg->get_string("SAVE_GAME_FILENAME", "game.json");
+
+  const std::string PLAYER_DECK_FILENAME =
+    cfg->get_string("PLAYER_DECK_FILENAME", "player.json");
+
+  const std::string OPPONENT_DECK_FILENAME =
+    cfg->get_string("OPPONENT_DECK_FILENAME", "opponent.json");
+
+  const std::string EXTRA_CARD_TEXTURE_DIR =
+    cfg->get_string("EXTRA_CARD_TEXTURE_DIR", "Cards");
+
+  // NOTE: Base file name and extensions
+  paths["CARDS_DB_FILENAME"] = CARDS_DB_FILENAME;
+  paths["SAVE_GAME_FILENAME"] = SAVE_GAME_FILENAME;
+  paths["PLAYER_DECK_FILENAME"] = PLAYER_DECK_FILENAME;
+  paths["OPPONENT_DECK_FILENAME"] = OPPONENT_DECK_FILENAME;
+
+  // IMPORTANT: The following paths are expected to resolve to valid, absolute
+  // file paths, with a trailing platform-dependent path delimiter.
+
+  // Resources
+  paths["DATA_DIR"] = nom::file_root();
+
+  // in-game screen-shots storage
+  paths["SAVE_SCREENSHOT_DIR"] =
+    paths["CFG_DIR"] + SAVE_SCREENSHOT_DIR + p.native();
+
+  paths["DEBUG_DATA_DIR"] = paths["DATA_DIR"] + DEBUG_DATA_DIR + p.native();
+  paths["SAVE_GAME_DIR"] =
+    paths["CFG_DIR"] + SAVE_GAME_DIR + p.native();
+  paths["SAVE_DECK_DIR"] =
+    paths["SAVE_GAME_DIR"] + SAVE_GAME_DECK_DIR + p.native();
+  paths["EXTRA_CARD_TEXTURE_DIR"] = paths["CFG_DIR"] + EXTRA_CARD_TEXTURE_DIR +
+    p.native();
+
+  paths["CARDS_DB_PATH"] = paths["DATA_DIR"] + CARDS_DB_FILENAME;
+  paths["SAVE_GAME_PATH"] = paths["SAVE_GAME_DIR"] + SAVE_GAME_FILENAME;
+  paths["PLAYER_DECK_PATH"] = paths["SAVE_DECK_DIR"] + PLAYER_DECK_FILENAME;
+  paths["OPPONENT_DECK_PATH"] = paths["SAVE_DECK_DIR"] + OPPONENT_DECK_FILENAME;
+
+  // TODO: Add a command line switch to access a dump of these paths?
+  std::string key;
+  std::string path;
+  for( auto itr = paths.begin(); itr != paths.end(); ++itr ) {
+    key = itr->first;
+    path = itr->second;
+
+    NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CFG,
+                    "path key:", key, ":", path );
+  }
+
+  return true;
+}
+
+void Game::pause_music()
 {
   this->game->theme_track_->togglePause();
   this->game->winning_track->togglePause();
 }
 
-void Game::mute_volume( void )
+void Game::mute_volume()
 {
   // Global volume level
   float current_volume = this->game->listener_->getVolume();
@@ -1453,8 +1574,8 @@ void Game::mute_volume( void )
 void Game::save_screenshot()
 {
   nom::Path p;
-  std::string filename =
-    TTCARDS_SCREEN_SHOTS_DIR + p.native() + "Screenshot.png";
+  const std::string filename =
+    this->game->paths_["SAVE_SCREENSHOT_DIR"] + "Screenshot.png";
 
   if( this->game->window.save_screenshot(filename) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1471,12 +1592,12 @@ void Game::reload_config()
     return;
   }
 
-  if( this->game->config_->load_file( TTCARDS_CONFIG_GAME_FILENAME,
+  if( this->game->config_->load_file( this->game->paths_["ROOT_CONFIG_PATH"],
       fp.get() ) == false )
   {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not reload configuration file:",
-                  TTCARDS_CONFIG_GAME_FILENAME );
+                  this->game->paths_["ROOT_CONFIG_PATH"] );
     return;
   }
 
@@ -1485,7 +1606,7 @@ void Game::reload_config()
   this->set_state(Game::State::MainMenu);
 
   this->game->debug_game_ =
-    this->game->config_->get_bool("DEBUG_GAME");
+    this->game->config_->get_bool("DEBUG_GAME", false);
 }
 
 void Game::on_window_shown(const nom::Event& evt)

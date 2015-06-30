@@ -16,7 +16,6 @@ include_directories( ${NOMLIB_EXTERNAL_INCLUDE_DIRS} )
 set(  TTCARDS_SOURCE
       ${SRC_DIR}/config.hpp
       ${SRC_DIR}/version.hpp
-      ${SRC_DIR}/resources.hpp
       ${SRC_DIR}/main.cpp
       ${SRC_DIR}/GameConfig.cpp
       ${SRC_DIR}/GameConfig.hpp

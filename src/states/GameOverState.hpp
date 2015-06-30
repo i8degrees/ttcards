@@ -38,7 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 #include "types.hpp"
-#include "resources.hpp"
 #include "Card.hpp"
 #include "GameOverStateCursor.hpp"
 

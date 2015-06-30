@@ -70,7 +70,9 @@ class CardResourceLoader;
 class Game: public nom::SDLApp
 {
   public:
-    Game( nom::int32 argc, char* argv[] );
+    /// \todo Relocate function to main.cpp; nomlib init, command line options
+    /// and passing file handles to game configuration files.
+    Game(nom::int32 argc, char* argv[]);
     virtual ~Game();
 
     bool on_init();
@@ -184,6 +186,8 @@ class Game: public nom::SDLApp
     std::unique_ptr<CardCollection> cards_db_[TOTAL_PLAYERS];
 
     /// Player hands
+    ///
+    /// \todo Change to pointer
     CardHand hand[2];
 
     /// \brief Card resources container; background, face, elements, text
@@ -284,18 +288,36 @@ class Game: public nom::SDLApp
 
     std::string existing_game_cards_db_;
     std::string new_game_cards_db_;
+    // Platform-dependent game file paths; configuration, saves, screen-shots
+    typedef std::map<std::string, std::string> platform_paths;
+    platform_paths paths_;
 
   private:
+    /// \brief Setup platform-dependent file paths for locating the game
+    /// configuration files.
+    ///
+    /// \note The file-system root must be set before this function is called.
+    ///
+    /// \see nom::set_file_root
+    bool init_config_paths();
+
+    /// \brief Setup platform-dependent file paths for the game.
+    ///
+    /// \note The file-system root must be set before this function is called.
+    ///
+    /// \see nom::set_file_root
+    bool init_game_paths(GameConfig* cfg);
+
     /// \brief Method callback action for pausing the music tracks in the game.
     ///
     /// \see nom::InputMapper.
-    void pause_music( void );
+    void pause_music();
 
     /// \brief Method callback action for muting the global audio volume in the
     /// game.
     ///
     /// \see nom::InputMapper.
-    void mute_volume( void );
+    void mute_volume();
 
     /// \brief Method callback action for creating a snapshot image in the game.
     ///

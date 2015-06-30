@@ -62,6 +62,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace tt {
 
 // Global configuration
+const std::string APP_NAME = "TTcards";
+const std::string APP_WINDOW_TITLE = "Triple Triad";
 const nom::int32 SCREEN_WIDTH = 768;
 const nom::int32 SCREEN_HEIGHT = 448;
 const auto SCREEN_RESOLUTION =

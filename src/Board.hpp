@@ -40,7 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/math.hpp>
 
 #include "config.hpp"
-#include "resources.hpp"
 #include "BoardTile.hpp"
 #include "Card.hpp"
 

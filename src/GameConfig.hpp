@@ -70,13 +70,13 @@ class GameConfig
     nom::int32 get_int( const std::string& node,
                         nom::int32 default_value = nom::NOM_INT_MIN ) const;
 
-    bool get_bool(const std::string& node) const;
+    bool get_bool(const std::string& node, bool default_value) const;
 
     /// \brief Get a boolean configuration value.
     ///
     /// \returns The boolean value as an integer on success, or negative one
     /// (-1) on failure, such as when the specified node does not exist.
-    int get_bool32(const std::string& node) const;
+    int get_bool32(const std::string& node, bool default_value) const;
 
     /// \returns The de-serialized floating-point value on success, or the set
     /// default value on failure, such as when the node does not exist.

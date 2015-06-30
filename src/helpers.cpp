@@ -30,7 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Private headers
 #include "version.hpp"
-#include "resources.hpp"
 #include "CardRenderer.hpp"
 
 // Forward declarations

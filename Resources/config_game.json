@@ -41,11 +41,6 @@
     // Whether to start the game window full-screen or as a window.
     "WINDOW_FULLSCREEN": false,
 
-    "APP_ICON" : "icon.png",
-    "CARDS_DB" : "cards.json",
-    "NEW_GAME_CARDS_DB": "new_game.json",
-    "EXISTING_GAME_CARDS_DB": "existing_game.json",
-
     "REGION_RULESET": [ "Open", "Elemental", "Same" ],
 
     // ...Animations...
@@ -88,6 +83,19 @@
     "SFX_LOAD_GAME" : "audio/load_game.wav",
     "SFX_SAVE_GAME" : "audio/save_game.wav",
     "MUSIC_THEME_TRACK" : "audio/ShuffleOrBoogie.ogg",
-    "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg"
+    "MUSIC_WIN_TRACK" : "audio/TheWinner.ogg",
+
+    "APP_ICON" : "icon.png",
+
+    "SAVE_GAME_DIR" : "SavedGames",
+    "CARDS_DB_FILENAME" : "cards.json",
+
+    "SAVE_GAME_DECK_DIR" : "Decks",
+    "PLAYER_DECK_FILENAME" : "player.json",
+    "OPPONENT_DECK_FILENAME" : "opponent.json",
+    "SAVE_GAME_FILENAME" : "game.json",
+
+    // TODO: Rename directory name?
+    "EXTRA_CARD_TEXTURE_DIR" : "Cards"
   }
 }
