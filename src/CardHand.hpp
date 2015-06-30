@@ -132,8 +132,8 @@ class CardHand
 
     /// \brief Create a randomized player hand with a set criteria.
     void
-    shuffle(  nom::uint32 min_level, nom::uint32 max_level,
-              const CardCollection* db );
+    add_random_card(  nom::uint32 min_level, nom::uint32 max_level,
+                      const CardCollection* db );
 
     /// Getter for obtaining the strongest card in the player's hand.
     ///

@@ -148,10 +148,8 @@ bool CardHand::push_back(const Card& card)
 
 bool CardHand::push_back(const Cards& cards)
 {
-  Card card;
-
   if( cards.size() < 1 ) {
-    // No cards to use to update
+    // No cards to add
     return false;
   }
 
@@ -290,8 +288,8 @@ bool CardHand::exists(const Card& card) const
 }
 
 void
-CardHand::shuffle(  nom::uint32 min_level, nom::uint32 max_level,
-                    const CardCollection* db )
+CardHand::add_random_card(  nom::uint32 min_level, nom::uint32 max_level,
+                            const CardCollection* db )
 {
   nom::size_type num_cards = 0;
   int32 random_card_id = 0;

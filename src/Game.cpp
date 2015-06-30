@@ -705,15 +705,6 @@ bool Game::on_init()
   // libRocket.
   this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );
 
-  // ...Set the known file paths to the player's game cards...
-
-  this->game->existing_game_cards_db_ =
-    TTCARDS_SAVED_GAME_DIR + p.native() +
-    this->game->config_->get_string("EXISTING_GAME_CARDS_DB", "existing_game.json");
-
-  this->game->new_game_cards_db_ =
-    this->game->config_->get_string("NEW_GAME_CARDS_DB", "new_game.json");
-
   nom::SpriteSheet triad_frames;
   nom::Texture* triad_tex = new nom::Texture();
   NOM_ASSERT(triad_tex != nullptr);
@@ -971,10 +962,6 @@ bool Game::on_init()
   });
 
   if( this->game->debug_game_ == true ) {
-    auto jumpto_confirmation_dialog_state( [=](const nom::Event& evt) {
-      this->set_state(Game::State::ConfirmationDialog);
-    });
-
     auto jumpto_gameover_state( [=](const nom::Event& evt) {
       auto player1_win = new nom::uint32(GameOverType::Won);
       this->set_state(Game::State::GameOver, player1_win);
@@ -999,10 +986,6 @@ bool Game::on_init()
     auto dump_player2_collection( [=](const nom::Event& evt) {
       this->game->dump_collection(PlayerIndex::PLAYER_2);
     });
-
-    state.insert( "jumpto_confirmation_dialog_state",
-                  nom::KeyboardAction(SDLK_0, KMOD_LGUI),
-                  jumpto_confirmation_dialog_state );
 
     state.insert( "jumpto_gameover_state",
                   nom::KeyboardAction(SDLK_0), jumpto_gameover_state );
@@ -1057,6 +1040,9 @@ bool Game::on_init()
   this->input_mapper.set_event_handler(this->evt_handler_);
   this->game->gui_window_.set_event_handler(this->evt_handler_);
 
+  this->game->set_state(Game::State::MainMenu);
+
+  // Core game initialization is finished!
   this->window.set_window_title(APP_WINDOW_TITLE);
 
   return true;
@@ -1069,8 +1055,6 @@ int Game::Run()
   Timer game_time;
   std::stringstream fps_title_prefix;
   std::stringstream fps_title_suffix;
-
-  this->set_state(Game::State::MainMenu);
 
   game_time.start();
   this->fps_timer_.start();
@@ -1290,128 +1274,236 @@ create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
   return flip_card_action;
 }
 
-bool Game::init_deck(CardCollection* deck, const std::string& filename)
-{
-  if( deck == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load the player's card deck:",
-                  "memory allocation failure." );
-    return false;
-  }
-
-  if( deck->load(filename) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not parse the player's deck:", filename );
-    return false;
-  }
-
-  return true;
-}
-
-bool Game::
-save_game(Board* game_board, CardHand* phand, const std::string& filename)
+bool Game::save_deck(CardCollection* deck, const std::string& filename)
 {
   nom::Value game;
-  auto& p1_hand = phand[PlayerIndex::PLAYER_1];
-  auto& p2_hand = phand[PlayerIndex::PLAYER_2];
 
-  NOM_ASSERT(game_board != nullptr);
-  if( game_board == nullptr ) {
-    return false;
-  }
-
-  NOM_ASSERT(phand != nullptr);
-  if( phand == nullptr ) {
+  NOM_ASSERT(deck != nullptr);
+  if( deck == nullptr ) {
     return false;
   }
 
   auto fp = nom::make_unique_json_serializer();
   if( fp == nullptr ) {
     NOM_LOG_ERR(  TTCARDS,
-                  "Could not load input file: failure to allocate memory!" );
+                  "Could not open input file: failure to allocate memory!" );
     return false;
   }
 
-  // Arrays enclosed in an object
-  game["board"] = tt::serialize_board(game_board);
-  game["player_1"] = tt::serialize_hand(&p1_hand);
-  game["player_2"] = tt::serialize_hand(&p2_hand);
-
-  // TEST CODE
-  // game["state"]["player_turn"] = this->game->player_turn();
-  // game["state"]["cursor_pos"] = this->game->player_turn();
+  // ...Arrays enclosed in an object...
+  game["cards"] = tt::serialize_deck(deck);
 
   if( fp->save(game, filename) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to save data at:", filename );
+                  "Unable to save game at:", filename );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Game data saved at:", filename );
+                  "Game saved at:", filename );
 
   // Success!
   return true;
 }
 
-bool Game::
-load_game(Board* game_board, CardHand* phand, const std::string& filename)
+bool Game::load_new_deck(CardCollection* deck, const std::string& filename)
 {
-  Cards board_cards;
-  Cards p1_cards;
-  Cards p2_cards;
-
-  auto& p1_hand = phand[PlayerIndex::PLAYER_1];
-  auto& p2_hand = phand[PlayerIndex::PLAYER_2];
+  Cards cards;
   nom::Value game;
 
-  NOM_ASSERT(game_board != nullptr);
-  if( game_board == nullptr ) {
-    return false;
-  }
-
-  NOM_ASSERT(phand != nullptr);
-  if( phand == nullptr ) {
+  NOM_ASSERT(deck != nullptr);
+  if( deck == nullptr ) {
     return false;
   }
 
   auto fp = nom::make_unique_json_deserializer();
   if( fp == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not load input file: failure to allocate memory!" );
+                  "Could not open input file: failure to allocate memory!" );
     return false;
   }
 
   if( fp->load(filename, game) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to load saved data from:", filename );
+                  "Unable to load game from:", filename );
     return false;
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Game data loaded from:", filename );
+                  "Game loaded from:", filename );
 
-  // Arrays enclosed in an object
-  board_cards = tt::deserialize_board(game["board"]);
-  p1_cards = tt::deserialize_hand(p1_hand.player_id(), game["player_1"]);
-  p2_cards = tt::deserialize_hand(p2_hand.player_id(), game["player_2"]);
+  // ...Arrays enclosed in an object...
+  cards = tt::deserialize_deck(game["basic"]);
 
-  // TODO: Game data validation checks here?
-
-  game_board->clear();
-  p1_hand.clear();
-  p2_hand.clear();
-
-  p1_hand.push_back(p1_cards);
-  p2_hand.push_back(p2_cards);
-  game_board->update(board_cards);
-
-  // TEST CODE
-  // this->set_player_turn( (PlayerIndex)game["state"]["player_turn"].get_int() );
-  // this->set_cursor_position( (PlayerIndex)game["state"]["cursor_pos"].get_int() );
+  deck->clear();
+  deck->append_cards(cards);
 
   // Success!
   return true;
+}
+
+bool Game::load_deck(CardCollection* deck, const std::string& filename)
+{
+  Cards cards;
+  nom::Value game;
+
+  NOM_ASSERT(deck != nullptr);
+  if( deck == nullptr ) {
+    return false;
+  }
+
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not open input file: failure to allocate memory!" );
+    return false;
+  }
+
+  if( fp->load(filename, game) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Unable to load game from:", filename );
+    return false;
+  }
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Game loaded from:", filename );
+
+  // ...Arrays enclosed in an object...
+  cards = tt::deserialize_deck(game["cards"]);
+
+  deck->clear();
+  deck->append_cards(cards);
+
+  // Success!
+  return true;
+}
+
+bool
+Game::save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                        const std::string& filename )
+{
+  nom::Value game;
+
+  NOM_ASSERT(board != nullptr);
+  if( board == nullptr ) {
+    return false;
+  }
+
+  NOM_ASSERT(p1_hand != nullptr);
+  if( p1_hand == nullptr ) {
+    return false;
+  }
+
+  NOM_ASSERT(p2_hand != nullptr);
+  if( p2_hand == nullptr ) {
+    return false;
+  }
+
+  auto fp = nom::make_unique_json_serializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not open input file: failure to allocate memory!" );
+    return false;
+  }
+
+  // ...Arrays enclosed in an object...
+  game["board"] = tt::serialize_board(board);
+  game["player"]["hand"] = tt::serialize_hand(p1_hand);
+  game["opponent"]["hand"] = tt::serialize_hand(p2_hand);
+
+  if( fp->save(game, filename) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Unable to save game at:", filename );
+    return false;
+  }
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Game saved at:", filename );
+
+  // Success!
+  return true;
+}
+
+bool
+Game::load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                        const std::string& filename )
+{
+  Cards board_cards;
+  Cards p1_cards, p2_cards;
+  nom::Value game;
+
+  NOM_ASSERT(board != nullptr);
+  if( board == nullptr ) {
+    return false;
+  }
+
+  NOM_ASSERT(p1_hand != nullptr);
+  if( p1_hand == nullptr ) {
+    return false;
+  }
+
+  NOM_ASSERT(p2_hand != nullptr);
+  if( p2_hand == nullptr ) {
+    return false;
+  }
+
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not open input file: failure to allocate memory!" );
+    return false;
+  }
+
+  if( fp->load(filename, game) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Unable to load game from:", filename );
+    return false;
+  }
+
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Game loaded from:", filename );
+
+  // ...Arrays enclosed in an object...
+  board_cards = tt::deserialize_board(game["board"]);
+  p1_cards =
+    tt::deserialize_hand(p1_hand->player_id(), game["player"]["hand"]);
+  p2_cards =
+    tt::deserialize_hand(p2_hand->player_id(), game["opponent"]["hand"]);
+
+  board->clear();
+  board->update(board_cards);
+
+  p1_hand->clear();
+  p2_hand->clear();
+  p1_hand->push_back(p1_cards);
+  p2_hand->push_back(p2_cards);
+
+  // Success!
+  return true;
+}
+
+bool Game::player_deck_exists() const
+{
+  File fp;
+  bool result = false;
+
+  const auto PLAYER_DECK_PATH =
+    this->game->paths_["PLAYER_DECK_PATH"];
+  result = fp.exists(PLAYER_DECK_PATH);
+
+  return result;
+}
+
+bool Game::opponent_deck_exists() const
+{
+  File fp;
+  bool result = false;
+
+  const auto OPPONENT_DECK_PATH =
+    this->game->paths_["OPPONENT_DECK_PATH"];
+  result = fp.exists(OPPONENT_DECK_PATH);
+
+  return result;
 }
 
 void Game::dump_board()
@@ -1604,7 +1696,7 @@ void Game::reload_config()
 
   NOM_ASSERT(this->state() != nullptr);
 
-  this->set_state(Game::State::MainMenu);
+  this->game->set_state(Game::State::MainMenu);
 
   this->game->debug_game_ =
     this->game->config_->get_bool("DEBUG_GAME", false);

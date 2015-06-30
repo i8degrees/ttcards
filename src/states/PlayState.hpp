@@ -106,8 +106,8 @@ class PlayState: public nom::IState
     /// \brief Update the players' scoreboard.
     void update_score();
 
-    bool save_game();
-    bool load_game();
+    bool save_game(const std::string& filename);
+    bool load_game(const std::string& filename);
 
     Game* game;
 

@@ -54,19 +54,10 @@ void MainMenuState::on_init(nom::void_ptr data)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE_STATES);
 
-  File fp;
-  auto cfg = this->game->config_.get();
   nom::size_type menu_element = 0;
 
-  NOM_ASSERT( fp.exists(this->game->new_game_cards_db_) == true );
-
-  if( fp.exists(this->game->existing_game_cards_db_) == true ) {
+  if( this->game->player_deck_exists() == true ) {
     this->continue_game_ = true;
-  } else {
-    // Err; could not open file
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not access the player's existing game:",
-                  this->game->existing_game_cards_db_ );
   }
 
   menu_element = this->append_menu_entry("Continue");
@@ -191,6 +182,10 @@ void MainMenuState::on_resume(nom::void_ptr data)
 
   // Restore the rendering of the game cursor
   this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
+
+  // Ensure that the correct input contexts are reset
+  this->game->input_mapper.activate_only("MainMenuState");
+  this->game->input_mapper.activate("Game");
 }
 
 void MainMenuState::on_update(nom::real32 delta_time)
@@ -251,6 +246,9 @@ void MainMenuState::on_mouse_button_up(const nom::Event& evt)
 
 void MainMenuState::on_confirm_selection(const nom::Event& evt)
 {
+  File fp;
+  auto& paths = this->game->paths_;
+
   const real32 FADE_DURATION = 1.0f;
   int cursor_pos = this->cursor_position();
 
@@ -271,54 +269,67 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         break;
       }
 
+      if( this->game->load_deck(p1_db, paths["PLAYER_DECK_PATH"]) == false ) {
+        // Err; could not open or parse file?
+        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not load the player's deck:",
+                      paths["PLAYER_DECK_PATH"] );
+        this->game->cursor_wrong->Play();
+        break;
+      }
+
+      // TODO: Once we have game levels implemented, we can probably handle
+      // a missing opponent deck by using the player's existing game state data
+      // for the level?
+      if( this->game->load_deck(p2_db, paths["OPPONENT_DECK_PATH"]) == false ) {
+        // Err; could not open or parse file?
+        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not load the opponent's deck:",
+                      paths["OPPONENT_DECK_PATH"] );
+        this->game->cursor_wrong->Play();
+        break;
+      }
+
       auto fade_transistion( [=]() {
         this->game->load_game_sfx->Play();
         this->game->set_state(Game::State::CardsMenu);
       });
 
-      auto p1_db_ready =
-        this->game->init_deck(p1_db, this->game->existing_game_cards_db_);
-      auto p2_db_ready =
-        this->game->init_deck(p2_db, this->game->existing_game_cards_db_);
-
-      auto db_ready = (p1_db_ready == true && p2_db_ready == true);
-      if( db_ready == true ) {
-        this->game->fade_window(  FADE_DURATION, Color4i::White,
-                                  Color4i::ALPHA_OPAQUE, SCREEN_RESOLUTION,
-                                  fade_transistion );
-      } else {
-        // Err; could not open or parse file?
-        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                      "Could not access the player's deck:",
-                      this->game->existing_game_cards_db_ );
-      }
-
+      this->game->fade_window(  FADE_DURATION, Color4i::White,
+                                Color4i::ALPHA_OPAQUE, SCREEN_RESOLUTION,
+                                fade_transistion );
     } break;
 
     case MENU_ENTRY_NEW_GAME:
     {
+      NOM_ASSERT( fp.exists(paths["CARDS_DB_PATH"]) == true );
+
+      if( this->game->load_new_deck(p1_db, paths["CARDS_DB_PATH"]) == false ) {
+        // Err; could not open or parse file?
+        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not load the player's deck:",
+                      paths["CARDS_DB_PATH"] );
+        this->game->cursor_wrong->Play();
+        break;
+      }
+
+      if( this->game->load_new_deck(p2_db, paths["CARDS_DB_PATH"]) == false ) {
+        // Err; could not open or parse file?
+        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                      "Could not load the opponent's deck:",
+                      paths["CARDS_DB_PATH"] );
+        this->game->cursor_wrong->Play();
+        break;
+      }
+
       auto fade_transistion( [=]() {
         this->game->load_game_sfx->Play();
         this->game->set_state(Game::State::CardsMenu);
       });
 
-      auto p1_db_ready =
-        this->game->init_deck(p1_db, this->game->new_game_cards_db_);
-      auto p2_db_ready =
-        this->game->init_deck(p2_db, this->game->new_game_cards_db_);
-
-      auto db_ready = (p1_db_ready == true && p2_db_ready == true);
-      if( db_ready == true ) {
-        this->game->fade_window(  FADE_DURATION, Color4i::Black,
-                                  Color4i::ALPHA_TRANSPARENT,
-                                  SCREEN_RESOLUTION, fade_transistion );
-      } else {
-        // Err; could not open or parse file?
-        NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                      "Could not access the player's deck:",
-                      this->game->new_game_cards_db_ );
-      }
-
+      this->game->fade_window(  FADE_DURATION, Color4i::Black,
+                                Color4i::ALPHA_TRANSPARENT,
+                                SCREEN_RESOLUTION, fade_transistion );
     } break;
 
     case MENU_ENTRY_VIEW_CARDS:
@@ -367,7 +378,7 @@ MainMenuState::append_menu_entry(const std::string& entry_text)
 
 bool MainMenuState::update_menu_entries()
 {
-  nom::size_type num_entries = this->menu_entries_.size();
+  // nom::size_type num_entries = this->menu_entries_.size();
 
   Point2i align_text_pos(Point2i::zero);
   Point2i text_offset(Point2i::zero);

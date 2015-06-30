@@ -107,6 +107,12 @@ void PlayState::on_resume(nom::void_ptr data)
 
 void PlayState::on_init(nom::void_ptr data)
 {
+  uint16 platform_key_mod = KMOD_LCTRL;
+
+#if defined(NOM_PLATFORM_OSX)
+  platform_key_mod = KMOD_LGUI;
+#endif
+
   NOM_ASSERT(this->game != nullptr);
 
   this->game->board_.reset( new Board() );
@@ -312,14 +318,6 @@ void PlayState::on_init(nom::void_ptr data)
     this->game->set_state( Game::State::Pause );
   });
 
-  auto load_game( [=](const nom::Event& evt) {
-    this->load_game();
-  });
-
-  auto save_game( [=](const nom::Event& evt) {
-    this->save_game();
-  });
-
   state.insert( "unlock_card", nom::KeyboardAction(SDLK_x),
                 unlock_card );
   state.insert( "lock_card", nom::KeyboardAction(SDLK_SPACE),
@@ -337,8 +335,6 @@ void PlayState::on_init(nom::void_ptr data)
                 move_cursor_right );
 
   state.insert("pause_game", nom::KeyboardAction(SDLK_p), pause_game);
-  state.insert("load_game", nom::KeyboardAction(SDLK_l), load_game);
-  state.insert("save_game", nom::KeyboardAction(SDLK_s), save_game);
 
   // TODO: Declare a debug_state nom::InputMapper var so we can insert said
   // state only when the applicable debug flags are toggled on -- for sake of
@@ -449,6 +445,59 @@ void PlayState::on_init(nom::void_ptr data)
                   KMOD_LSHIFT), increase_east_rank );
     state.insert( "decrease_east_rank", nom::KeyboardAction(SDLK_RIGHT,
                   KMOD_LCTRL), decrease_east_rank );
+
+    // TODO: Redeclare in game state initialization
+    auto cfg = this->game->config_.get();
+    auto& paths = this->game->paths_;
+
+    auto debug_load_combo_rule( [=](const nom::Event& evt) mutable {
+      const std::string SAVE_GAME_PATH =
+        paths["DEBUG_DATA_DIR"] + "combo_rule.json";
+      this->load_game(SAVE_GAME_PATH);
+    });
+
+    auto debug_load_same_rule( [=](const nom::Event& evt) mutable {
+      const std::string SAVE_GAME_PATH =
+        paths["DEBUG_DATA_DIR"] + "same_rule.json";
+      this->load_game(SAVE_GAME_PATH);
+    });
+
+    auto debug_load_player_win( [=](const nom::Event& evt) mutable {
+      const std::string SAVE_GAME_PATH =
+        paths["DEBUG_DATA_DIR"] + "player_win.json";
+      this->load_game(SAVE_GAME_PATH);
+    });
+
+    auto debug_load_player_lose( [=](const nom::Event& evt) mutable {
+      const std::string SAVE_GAME_PATH =
+        paths["DEBUG_DATA_DIR"] + "player_lose.json";
+      this->load_game(SAVE_GAME_PATH);
+    });
+
+    auto debug_quick_load_game( [=](const nom::Event& evt) mutable {
+      this->load_game(paths["SAVE_GAME_PATH"]);
+    });
+
+    auto debug_quick_save_game( [=](const nom::Event& evt) mutable {
+      this->save_game(paths["SAVE_GAME_PATH"]);
+    });
+
+    // ...Game rules tests...
+    state.insert( "debug_load_combo_rule", nom::KeyboardAction(SDLK_1,
+                  platform_key_mod), debug_load_combo_rule );
+    state.insert( "debug_load_same_rule", nom::KeyboardAction(SDLK_2,
+                  platform_key_mod), debug_load_same_rule );
+
+    state.insert( "debug_load_player_win", nom::KeyboardAction(SDLK_9,
+                  platform_key_mod), debug_load_player_win );
+    state.insert( "debug_load_player_lose", nom::KeyboardAction(SDLK_0,
+                  platform_key_mod), debug_load_player_lose );
+
+    // ...Game state save && load...
+    state.insert( "debug_quick_save_game", nom::KeyboardAction(SDLK_s,
+                  platform_key_mod), debug_quick_save_game );
+    state.insert( "debug_quick_load_game", nom::KeyboardAction(SDLK_l,
+                  platform_key_mod), debug_quick_load_game );
   } // end if DEBUG_GAME
 
   // ...Mouse button && wheel mappings...
@@ -496,10 +545,10 @@ void PlayState::on_init(nom::void_ptr data)
                 nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_START), pause_game );
 
-  this->game->input_mapper.erase( "PlayState" );
-  this->game->input_mapper.insert( "PlayState", state, true );
-  this->game->input_mapper.activate_only( "PlayState" );
-  this->game->input_mapper.activate( "Game" );
+  this->game->input_mapper.erase("PlayState");
+  this->game->input_mapper.insert("PlayState", state, true );
+  this->game->input_mapper.activate_only("PlayState");
+  this->game->input_mapper.activate("Game");
 
   this->game->triad_->set_frame(0);
   this->game->actions_.run_action(this->game->triad_action_);
@@ -1301,16 +1350,29 @@ void PlayState::on_draw(nom::RenderWindow& target)
   this->game->gui_window_.draw();
 }
 
-bool PlayState::save_game()
+bool PlayState::save_game(const std::string& filename)
 {
+  auto cfg = this->game->config_.get();
+  auto& paths = this->game->paths_;
+  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
   auto board = this->game->board_.get();
-  auto player_hands = this->game->hand;
 
-  // TEST CODE
-  const std::string P1_SAVE_GAME_PATH =
-    TTCARDS_SAVED_GAME_DIR + p.native() + "p1.json";
+  if( this->game->save_deck(p1_db, paths["PLAYER_DECK_PATH"]) == false ) {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
 
-  if( this->game->save_game(board, player_hands, P1_SAVE_GAME_PATH) == false ) {
+  if( this->game->save_deck(p2_db, paths["OPPONENT_DECK_PATH"]) == false ) {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+
+  if( this->game->save_player_hand( board, &p1_hand, &p2_hand,
+                                    filename ) == false )
+  {
     this->game->cursor_wrong->Play();
     return false;
   }
@@ -1320,16 +1382,29 @@ bool PlayState::save_game()
   return true;
 }
 
-bool PlayState::load_game()
+bool PlayState::load_game(const std::string& filename)
 {
+  auto cfg = this->game->config_.get();
+  auto& paths = this->game->paths_;
+  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
   auto board = this->game->board_.get();
-  auto player_hands = this->game->hand;
 
-  // TEST CODE
-  const std::string P1_LOAD_GAME_PATH =
-    TTCARDS_SAVED_GAME_DIR + p.native() + "p1.json";
+  if( this->game->load_deck(p1_db, paths["PLAYER_DECK_PATH"]) == false ) {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
 
-  if( this->game->load_game(board, player_hands, P1_LOAD_GAME_PATH) == false ) {
+  if( this->game->load_deck(p2_db, paths["OPPONENT_DECK_PATH"]) == false ) {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+
+  if( this->game->load_player_hand( board, &p1_hand, &p2_hand,
+                                    filename ) == false )
+  {
     this->game->cursor_wrong->Play();
     return false;
   }

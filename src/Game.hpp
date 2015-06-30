@@ -100,10 +100,27 @@ class Game: public nom::SDLApp
     create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
                               const nom::Point2i& card_pos );
 
-    bool init_deck(CardCollection* deck, const std::string& filename);
+    bool save_deck(CardCollection* deck, const std::string& filename);
 
-    bool save_game(Board* game_board, CardHand* phand, const std::string& filename);
-    bool load_game(Board* game_board, CardHand* phand, const std::string& filename);
+    bool load_new_deck(CardCollection* deck, const std::string& filename);
+
+    bool load_deck(CardCollection* deck, const std::string& filename);
+
+    bool
+    save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                      const std::string& filename );
+
+    bool
+    load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                      const std::string& filename );
+
+    /// \brief Do an existence check on an existing player deck, i.e.: saved
+    /// game.
+    bool player_deck_exists() const;
+
+    /// \brief Do an existence check on an existing opponent deck, i.e.: saved
+    /// game.
+    bool opponent_deck_exists() const;
 
     /// \brief Method callback action for dumping the board data in the game.
     ///
@@ -286,8 +303,6 @@ class Game: public nom::SDLApp
     nom::EventHandler evt_handler_;
     nom::JoystickID joystick_id_ = 0;
 
-    std::string existing_game_cards_db_;
-    std::string new_game_cards_db_;
     // Platform-dependent game file paths; configuration, saves, screen-shots
     typedef std::map<std::string, std::string> platform_paths;
     platform_paths paths_;

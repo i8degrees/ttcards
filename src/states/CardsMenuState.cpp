@@ -89,7 +89,7 @@ void CardsMenuState::on_init(nom::void_ptr data)
   }
 
   while( p2_hand.size() < MAX_PLAYER_HAND ) {
-    p2_hand.shuffle(1, 1, p2_db);
+    p2_hand.add_random_card(1, 10, p2_db);
   }
 
   // ...Initialize opponent's rendering position -- to the left of player 1...
@@ -427,8 +427,7 @@ void CardsMenuState::on_resume(nom::void_ptr data)
   // Restore the rendering of the game cursor
   this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
 
-  // Continue running this state; response from ConfirmationDialogState was
-  // 'no'
+  // Ensure that the correct input contexts are reset
   this->game->input_mapper.activate_only("CardsMenuState");
   this->game->input_mapper.activate("Game");
 
@@ -448,7 +447,7 @@ void CardsMenuState::on_resume(nom::void_ptr data)
     if( this->game->debug_game_ == true ) {
 
       while( p1_hand.size() < MAX_PLAYER_HAND ) {
-        p1_hand.shuffle(1, 10, p1_db);
+        p1_hand.add_random_card(1, 10, p1_db);
       }
     } // end if debug game is enabled
 
