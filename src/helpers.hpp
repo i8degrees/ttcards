@@ -62,6 +62,11 @@ render_card_face( CardID face_id, const nom::Point2i& pos,
                   nom::RenderTarget& target,
                   const nom::Texture* render_target = nullptr );
 
+bool
+render_custom_card_face(  nom::Sprite* card_face, const nom::Point2i& pos,
+                          nom::RenderTarget& target,
+                          const nom::Texture* render_target );
+
 bool render_card_element( nom::uint32 element_id, const nom::Point2i& pos,
                           nom::SpriteBatch* card_element,
                           nom::RenderTarget& target,
@@ -71,11 +76,6 @@ bool
 render_card_text( nom::uint32 rank, const nom::Point2i& pos,
                   nom::Text* card_text, nom::RenderTarget& target,
                   const nom::Texture* render_target = nullptr );
-
-bool
-render_card(  const Card& card, const nom::Point2i& pos,
-              const CardResourceLoader* res, nom::RenderTarget& target,
-              const nom::Texture* render_target = nullptr );
 
 std::shared_ptr<nom::Sprite>
 generate_text_sprite(nom::Text& font, const std::string& text);

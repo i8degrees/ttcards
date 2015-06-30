@@ -692,8 +692,9 @@ bool Game::on_init()
 
   this->game->card_res_.reset( new CardResourceLoader() );
   NOM_ASSERT(this->game->card_res_ != nullptr);
-  if( this->card_res_->load_file( this->game->res_cfg_.get(),
-      this->game->card_font_) == false )
+  if( this->card_res_->init(  this->game->card_font_,
+                              this->game->res_cfg_.get(),
+                              paths["EXTRA_CARD_TEXTURE_DIR"] ) == false )
   {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not bootstrap card resources." );

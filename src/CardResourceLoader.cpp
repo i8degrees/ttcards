@@ -173,16 +173,19 @@ init_card_text(const Font& font)
 }
 
 bool CardResourceLoader::
-load_file(const GameConfig* config, const nom::Font& card_font)
+init( const nom::Font& card_font, const GameConfig* config,
+      const std::string& extra_textures_dir )
 {
   if( config == nullptr ) {
     return false;
   }
 
+  this->extra_textures_dir_ = extra_textures_dir;
+
   // Initialize rendering of the card backgrounds for each player; we cache
   // these individually to gain some performance in load time
   this->card_backgrounds_[PlayerID::PLAYER_ID_INVALID] =
-    init_card_background(CARD_BG_NO_PLAYER);
+    tt::init_card_background(CARD_BG_NO_PLAYER);
   if( this->card_backgrounds_[PlayerID::PLAYER_ID_INVALID] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not initialize cards: failed to allocate memory for"
@@ -191,7 +194,7 @@ load_file(const GameConfig* config, const nom::Font& card_font)
   }
 
   this->card_backgrounds_[PlayerID::PLAYER_ID_1] =
-    init_card_background(CARD_BG_PLAYER1);
+    tt::init_card_background(CARD_BG_PLAYER1);
   if( this->card_backgrounds_[PlayerID::PLAYER_ID_1] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not initialize cards: failed to allocate memory for"
@@ -200,7 +203,7 @@ load_file(const GameConfig* config, const nom::Font& card_font)
   }
 
   this->card_backgrounds_[PlayerID::PLAYER_ID_2] =
-    init_card_background(CARD_BG_PLAYER2);
+    tt::init_card_background(CARD_BG_PLAYER2);
   if( this->card_backgrounds_[PlayerID::PLAYER_ID_2] == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not initialize cards: failed to allocate memory for"
@@ -208,20 +211,20 @@ load_file(const GameConfig* config, const nom::Font& card_font)
     return false;
   }
 
-  this->card_faces_ = init_card_faces(config);
+  this->card_faces_ = tt::init_card_faces(config);
   NOM_ASSERT(this->card_faces_ != nullptr);
   if( this->card_faces_ == nullptr ) {
     // TODO: logging
   }
 
-  this->card_elements_ = init_card_elements(config);
+  this->card_elements_ = tt::init_card_elements(config);
   NOM_ASSERT(this->card_elements_ != nullptr);
   if( this->card_elements_ == nullptr ) {
     // TODO: logging
   }
 
   // Initialize text renderer for the cards
-  this->card_text_ = init_card_text(card_font);
+  this->card_text_ = tt::init_card_text(card_font);
   NOM_ASSERT(this->card_text_ != nullptr);
   if( this->card_text_ == nullptr ) {
     // TODO: logging

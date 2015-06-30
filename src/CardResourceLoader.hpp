@@ -45,12 +45,16 @@ class CardResourceLoader
 {
   public:
     /// \brief Load the resources used in rendering cards from a collection.
-    bool load_file(const GameConfig* config, const nom::Font& card_font);
+    bool init(  const nom::Font& card_font,
+                const GameConfig* config,
+                const std::string& extra_textures_dir );
 
     std::unique_ptr<nom::Gradient> card_backgrounds_[PlayerID::TOTAL_PLAYER_IDS];
     std::unique_ptr<nom::SpriteBatch> card_faces_;
     std::unique_ptr<nom::SpriteBatch> card_elements_;
     std::unique_ptr<nom::Text> card_text_;
+
+    std::string extra_textures_dir_;
 };
 
 } // namespace tt

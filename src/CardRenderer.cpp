@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardResourceLoader.hpp"
 
 // Private headers
+#include <nomlib/system/Path.hpp>
 #include "helpers.hpp"
 
 using namespace nom;
@@ -135,6 +136,13 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
 {
   PlayerID player_id = card.player_id;
 
+  NOM_ASSERT(res != nullptr);
+  if( res == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Failed to render card:", "NULL pointer was passed." );
+    return nullptr;
+  }
+
   auto texture = std::make_shared<Texture>();
   NOM_ASSERT(texture != nullptr);
 
@@ -145,8 +153,8 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
   RenderWindow* context = nom::render_interface();
   NOM_ASSERT(context != nullptr);
   if( context == nullptr ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION, "Could not update cache",
-                  "invalid renderer." );
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Failed to render card:", "NULL pointer was passed." );
     return nullptr;
   }
 
@@ -156,8 +164,8 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
   if( texture->initialize( caps.optimal_texture_format(),
       SDL_TEXTUREACCESS_TARGET, texture_dims ) == false )
   {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not update cache: failed texture creation." );
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Failed to render card:", "failed texture creation." );
     return nullptr;
   }
 
@@ -169,47 +177,93 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
   texture->set_position( Point2i(0,0) );
 
   if( context->set_render_target( texture.get() ) == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not update cache: render targets not supported." );
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Failed to render card:", "render targets not supported." );
     return nullptr;
   }
 
   // Clear the rendering backdrop color to be fully transparent; this preserves
   // any existing alpha channel data from the rendered text
   if( context->fill(Color4i::Transparent) == false ) {
-    NOM_LOG_ERR(  NOM_LOG_CATEGORY_APPLICATION,
-                  "Could not update cache:",
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Failed to render card:",
                   "failed to set the render target's color." );
     return nullptr;
   }
 
-  if( (card == Card::null || card.face_down == true) ) {
-    render_card_face( NOFACE_ID, Point2i::zero, res->card_faces_.get(),
-                      *context, texture.get() );
-  } else {
-    render_card_background( player_id, Point2i::zero,
-                            res->card_backgrounds_[player_id].get(), *context,
-                            texture.get() );
+  // Render the full card when valid
+  if( card != Card::null || card.face_down != true ) {
+    tt::render_card_background( player_id, Point2i::zero,
+                                res->card_backgrounds_[player_id].get(),
+                                *context, texture.get() );
 
-    render_card_face( card.id, Point2i::zero, res->card_faces_.get(),
-                      *context, texture.get() );
+    // TODO: Optimize this by caching the textures; implementing a texture
+    // lookup table may be the way to go.
+    if( card.texture_path.length() > 0 ) {
 
-    render_card_element(  card.element, ELEMENT_ORIGIN,
-                          res->card_elements_.get(), *context, texture.get() );
+      File fp;
+      const std::string EXTRA_CARD_TEXTURE_PATH =
+        res->extra_textures_dir_ + card.texture_path;
 
-    render_card_text( card.ranks[RANK_NORTH], RANK_NORTH_ORIGIN,
-                      res->card_text_.get(), *context, texture.get() );
+      if( fp.exists(EXTRA_CARD_TEXTURE_PATH) == true ) {
 
-    render_card_text( card.ranks[RANK_EAST], RANK_EAST_ORIGIN,
-                      res->card_text_.get(), *context, texture.get() );
+        // Render the custom texture
+        auto face_tex = std::make_shared<Texture>( Texture() );
+        face_tex->load(EXTRA_CARD_TEXTURE_PATH);
 
-    render_card_text( card.ranks[RANK_WEST], RANK_WEST_ORIGIN,
-                      res->card_text_.get(), *context, texture.get() );
+        NOM_ASSERT(face_tex->valid() == true);
+        if( face_tex->valid() == true ) {
+          auto face_sprite = std::make_shared<Sprite>( Sprite() );
+          face_sprite->set_texture(face_tex);
+          NOM_ASSERT(face_sprite != nullptr);
+          NOM_ASSERT(face_sprite->valid() == true);
 
-    render_card_text( card.ranks[RANK_SOUTH], RANK_SOUTH_ORIGIN,
-                      res->card_text_.get(), *context, texture.get() );
+          if( face_sprite->valid() == true ) {
+            tt::render_custom_card_face(  face_sprite.get(), Point2i::zero,
+                                          *context, texture.get() );
+          }
+        } else {
+          // Err; texture was not valid!
+
+          // TODO: render a placeholder card with ::create_placeholder_card
+          tt::render_card_face( NOFACE_ID, Point2i::zero, res->card_faces_.get(),
+                                *context, texture.get() );
+        }
+
+        // NOM_DELETE_PTR(face_tex);
+        // NOM_DELETE_PTR(face_sprite);
+      }
+    } else {
+      // Render the default texture from our sprite sheet
+      tt::render_card_face( card.id, Point2i::zero, res->card_faces_.get(),
+                            *context, texture.get() );
+    }
+
+    tt::render_card_element(  card.element, ELEMENT_ORIGIN,
+                              res->card_elements_.get(), *context,
+                              texture.get() );
+
+    tt::render_card_text( card.ranks[RANK_NORTH], RANK_NORTH_ORIGIN,
+                          res->card_text_.get(), *context, texture.get() );
+
+    tt::render_card_text( card.ranks[RANK_EAST], RANK_EAST_ORIGIN,
+                          res->card_text_.get(), *context, texture.get() );
+
+    tt::render_card_text( card.ranks[RANK_WEST], RANK_WEST_ORIGIN,
+                          res->card_text_.get(), *context, texture.get() );
+
+    tt::render_card_text( card.ranks[RANK_SOUTH], RANK_SOUTH_ORIGIN,
+                          res->card_text_.get(), *context, texture.get() );
   }
 
+  // Render card face shown down for invalid cards and cards requesting to be
+  // shown face down
+  if( card == Card::null || card.face_down == true ) {
+    tt::render_card_face( NOFACE_ID, Point2i::zero, res->card_faces_.get(),
+                          *context, texture.get() );
+  }
+
+  // ...Finished rendering...
   if( context->reset_render_target() == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not render card:",

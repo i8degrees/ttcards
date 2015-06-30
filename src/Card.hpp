@@ -103,6 +103,12 @@ struct Card
   bool face_down;
 
   std::shared_ptr<CardRenderer> card_renderer;
+
+  /// \brief The absolute file path to a custom texture.
+  ///
+  /// \todo Change this to an integer ID and implement a texture lookup table
+  /// for texture paths?
+  std::string texture_path;
 };
 
 nom::Value serialize_card(const Card& card);

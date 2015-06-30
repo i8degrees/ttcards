@@ -51,7 +51,8 @@ Card::Card() :
   player_owner(PlayerID::PLAYER_ID_INVALID),
   num(0),
   face_down(false),
-  card_renderer(nullptr)
+  card_renderer(nullptr),
+  texture_path("\0")
 {
   NOM_LOG_TRACE_PRIO( TTCARDS_LOG_CATEGORY_TRACE,
                       NOM_LOG_PRIORITY_VERBOSE );
@@ -84,6 +85,10 @@ nom::Value serialize_card(const Card& card)
     card_obj["ranks"].push_back(attr);
   }
 
+  if( card.texture_path.length() > 0 ) {
+    card_obj["texture"] = card.texture_path;
+  }
+
   return card_obj;
 }
 
@@ -91,6 +96,7 @@ Card deserialize_card(const nom::Value& obj)
 {
   nom::Value ranks;
   Card result;
+  std::string tex_path;
 
   result.id = obj["id"].get_int();
   result.name = obj["name"].get_string();
@@ -109,6 +115,7 @@ Card deserialize_card(const nom::Value& obj)
   }
 
   result.num = obj["num"].get_int();
+  result.texture_path = obj["texture"].get_string();
 
   return result;
 }
@@ -127,6 +134,8 @@ std::ostream& operator <<(std::ostream& os, const Card& rhs)
       << rhs.player_owner
       << ", num="
       << rhs.num
+      << ", texture_path="
+      << rhs.texture_path
       << ", ranks="
       << rhs.ranks[RANK_NORTH]
       << ", "

@@ -136,7 +136,12 @@ render_card_face( CardID face_id, const nom::Point2i& pos,
     return false;
   }
 
-  card_face->set_frame(face_id);
+  if( face_id < card_face->frames() ) {
+    card_face->set_frame(face_id);
+  } else {
+    return false;
+  }
+
   card_face->set_position(pos);
 
   if( render_target != nullptr ) {
@@ -160,6 +165,44 @@ render_card_face( CardID face_id, const nom::Point2i& pos,
 
   return true;
 }
+
+bool
+render_custom_card_face(  nom::Sprite* card_face, const nom::Point2i& pos,
+                          nom::RenderTarget& target,
+                          const nom::Texture* render_target )
+{
+  if( card_face == nullptr ) {
+    return false;
+  }
+
+  if( card_face->valid() == false ) {
+    return false;
+  }
+
+  card_face->set_position(pos);
+
+  if( render_target != nullptr ) {
+    if( target.set_render_target(render_target) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not render card: render targets not supported." );
+      return false;
+    }
+  }
+
+  card_face->draw(target);
+
+  if( render_target != nullptr ) {
+    if( target.reset_render_target() == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Could not render card:",
+                    "failed to reset the rendering target." );
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 bool render_card_element( nom::uint32 element_id, const nom::Point2i& pos,
                           nom::SpriteBatch* card_element,
@@ -278,62 +321,6 @@ render_card_text( nom::uint32 rank, const nom::Point2i& pos,
 
   card_text->set_position(pos);
   card_text->draw(target);
-
-  if( render_target != nullptr ) {
-    if( target.reset_render_target() == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not render card:",
-                    "failed to reset the rendering target." );
-      return false;
-    }
-  }
-
-  return true;
-}
-
-bool
-render_card(  const Card& card, const nom::Point2i& pos,
-              const CardResourceLoader* res, nom::RenderTarget& target,
-              const nom::Texture* render_target )
-{
-  auto player_id = card.player_id;
-
-  if( render_target != nullptr ) {
-    if( target.set_render_target(render_target) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not render card: render targets not supported." );
-      return false;
-    }
-  }
-
-  if( (card == Card::null || card.face_down == true) ) {
-
-    render_card_face( NOFACE_ID, Point2i::zero, res->card_faces_.get(),
-                      target, render_target );
-  } else {
-
-    render_card_background( player_id, Point2i::zero,
-                            res->card_backgrounds_[player_id].get(), target,
-                            render_target );
-
-    render_card_face( card.id, Point2i::zero, res->card_faces_.get(),
-                      target, render_target );
-
-    render_card_element(  card.element, ELEMENT_ORIGIN,
-                          res->card_elements_.get(), target, render_target );
-
-    render_card_text( card.ranks[RANK_NORTH], RANK_NORTH_ORIGIN,
-                      res->card_text_.get(), target, render_target );
-
-    render_card_text( card.ranks[RANK_EAST], RANK_EAST_ORIGIN,
-                      res->card_text_.get(), target, render_target );
-
-    render_card_text( card.ranks[RANK_WEST], RANK_WEST_ORIGIN,
-                      res->card_text_.get(), target, render_target );
-
-    render_card_text( card.ranks[RANK_SOUTH], RANK_SOUTH_ORIGIN,
-                      res->card_text_.get(), target, render_target );
-  }
 
   if( render_target != nullptr ) {
     if( target.reset_render_target() == false ) {
