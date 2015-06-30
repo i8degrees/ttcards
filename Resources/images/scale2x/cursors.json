@@ -45,7 +45,7 @@
     "height": 64,
     "padding": 0,
     "spacing": 0,
-    "scale": 1,
+    "scale": 2,
     "pixel_format": "RGBA8888",
     "smartupdate": "$TexturePacker:SmartUpdate:e7f11286a2c6285189d173849b7bfc79:507022e10396f82f15531867b27b9c71:5c72a818f45abbf727e428f9aec34004$"
   }
