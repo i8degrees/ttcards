@@ -641,6 +641,8 @@ bool GameOverState::update_player_positions()
       card_renderer->set_position(p2_pos);
     }
   }
+
+  return true;
 }
 
 void GameOverState::
