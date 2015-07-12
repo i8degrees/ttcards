@@ -109,10 +109,6 @@ void PlayState::on_init(nom::void_ptr data)
 {
   uint16 platform_key_mod = KMOD_LCTRL;
 
-#if defined(NOM_PLATFORM_OSX)
-  platform_key_mod = KMOD_LGUI;
-#endif
-
   NOM_ASSERT(this->game != nullptr);
 
   this->game->board_.reset( new Board() );

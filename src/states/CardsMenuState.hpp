@@ -138,7 +138,11 @@ class CardsMenuState: public nom::IState
     /// \remarks The player's hand is also cleared.
     void erase_player_cards(CardHand* phand);
 
+    // Serialize the player's current build and store to disk
+    bool save_player_hand(const std::string& filename);
 
+    // Deserialize the player's current build from disk store
+    bool load_player_hand(const std::string& filename);
 
     /// \brief Update the player's card sprite position.
     ///

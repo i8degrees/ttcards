@@ -53,6 +53,8 @@ CardsMenuState::~CardsMenuState()
 
 void CardsMenuState::on_init(nom::void_ptr data)
 {
+  uint16 platform_key_mod = KMOD_LCTRL;
+
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->cursor_state_ = 0;
@@ -256,6 +258,60 @@ void CardsMenuState::on_init(nom::void_ptr data)
     this->game->set_state(Game::State::ConfirmationDialog);
   });
 
+  // TODO: Rename to save_player_game0 ..?
+  auto save_game0( [=](const nom::Event& evt) {
+
+    if( this->save_player_hand("build0.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  // TODO: Rename to save_player_game1 ..?
+  auto save_game1( [=](const nom::Event& evt) {
+
+    if( this->save_player_hand("build1.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  // TODO: Rename to load_player_game0 ..?
+  auto load_game0( [=](const nom::Event& evt) {
+
+    if( this->load_player_hand("build0.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  // TODO: Rename to load_player_game1 ..?
+  auto load_game1( [=](const nom::Event& evt) {
+
+    if( this->load_player_hand("build1.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  auto clear_player_hand( [=](const nom::Event& evt) mutable {
+
+    // Render an invalid card texture afterwards
+    auto card_sp = Card::null;
+    this->set_display_card(card_sp);
+
+    this->erase_player_cards(&p1_hand);
+    this->game->card_place->Play();
+  });
+
   // ...Keyboard input mappings...
 
   state.insert("cursor_prev", nom::KeyboardAction(SDLK_UP), cursor_prev);
@@ -265,6 +321,16 @@ void CardsMenuState::on_init(nom::void_ptr data)
   state.insert("delete_card", nom::KeyboardAction(SDLK_d), delete_card);
   state.insert("select_card", nom::KeyboardAction(SDLK_SPACE), select_card);
   state.insert("start_game", nom::KeyboardAction(SDLK_RETURN), start_game);
+
+  state.insert("save_game0", nom::KeyboardAction(SDLK_1, KMOD_LALT), save_game0);
+  state.insert("save_game1", nom::KeyboardAction(SDLK_2, KMOD_LALT), save_game1);
+
+  state.insert( "load_game0", nom::KeyboardAction(SDLK_1, platform_key_mod),
+                load_game0 );
+  state.insert( "load_game1", nom::KeyboardAction(SDLK_2, platform_key_mod),
+                load_game1);
+  state.insert( "clear_player_hand", nom::KeyboardAction(SDLK_0,
+                platform_key_mod), clear_player_hand);
 
   // ...Mouse wheel input mappings...
 
@@ -301,6 +367,7 @@ void CardsMenuState::on_init(nom::void_ptr data)
 
   state.insert( "start_game", nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_START), start_game );
+
 
   if( this->game->debug_game_ == true ) {
 
@@ -366,22 +433,15 @@ void CardsMenuState::on_init(nom::void_ptr data)
       }
     });
 
-    auto debug_p1_erase_cards( [=,&p1_hand](const nom::Event& evt) {
-      this->erase_player_cards(&p1_hand);
-    });
-
     state.insert( "debug_p1_append_card", nom::KeyboardAction(SDLK_t),
                   debug_p1_append_card );
     state.insert( "debug_p1_append_cards",
-                  nom::KeyboardAction(SDLK_t, KMOD_LCTRL),
+                  nom::KeyboardAction(SDLK_t, platform_key_mod),
                   debug_p1_append_cards );
 
     state.insert( "debug_p1_erase_card",
-                  nom::KeyboardAction(SDLK_d, KMOD_LALT),
+                  nom::KeyboardAction(SDLK_d, platform_key_mod),
                   debug_p1_erase_card );
-    state.insert( "debug_p1_erase_cards",
-                  nom::KeyboardAction(SDLK_d, KMOD_LCTRL),
-                  debug_p1_erase_cards );
   } // end if debug game is enabled
 
   this->game->input_mapper.erase( "CardsMenuState" );
@@ -1022,6 +1082,62 @@ void CardsMenuState::erase_player_cards(CardHand* phand)
   // Render invalid card texture
   auto card_sp = Card::null;
   this->set_display_card(card_sp);
+}
+
+bool CardsMenuState::save_player_hand(const std::string& filename)
+{
+  auto& paths = this->game->paths_;
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+
+  const std::string SAVE_GAME_PATH =
+    paths["SAVE_DECK_DIR"] + filename;
+
+  if( this->game->save_player_hand( nullptr, &p1_hand, nullptr,
+                                    false, SAVE_GAME_PATH ) == false )
+  {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+
+  // Success!
+  this->game->save_game_sfx->Play();
+  return true;
+}
+
+// TODO: Consider reloading the player's deck when it is empty..?
+bool CardsMenuState::load_player_hand(const std::string& filename)
+{
+  auto& paths = this->game->paths_;
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+
+  const std::string SAVE_GAME_PATH =
+    paths["SAVE_DECK_DIR"] + filename;
+
+  if( this->game->load_player_hand( nullptr, &p1_hand, nullptr,
+                                    false, SAVE_GAME_PATH ) == false )
+  {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+
+  if( tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN) > 0 ) {
+
+    // Reset UI
+    this->update_page_count_title(0);
+    this->set_cursor_position(0);
+
+    if( this->update_display_card() == true ) {
+
+      // Success!
+      this->game->save_game_sfx->Play();
+
+      return true;
+    }
+  } else {
+    // Err; the player's hand was not updated
+    this->game->cursor_wrong->Play();
+    return false;
+  }
 }
 
 bool CardsMenuState::update_display_card()
