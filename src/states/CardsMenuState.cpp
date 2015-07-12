@@ -108,14 +108,6 @@ void CardsMenuState::on_init(nom::void_ptr data)
     }
   }
 
-  // ...Initialize the player's selected card rendering position -- to the
-  // right of player 2...
-  this->p1_selected_card_pos_.x =
-    BOARD_ORIGIN_X + ( CARD_WIDTH * 2 );
-
-  this->p1_selected_card_pos_.y =
-    BOARD_ORIGIN_Y + ( (CARD_HEIGHT / 2) + CARD_HEIGHT * 1) - 8;
-
   if( this->game->cards_page_model_ == nullptr ) {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Failed to initialize the cards data source UI." );
@@ -240,11 +232,24 @@ void CardsMenuState::on_init(nom::void_ptr data)
   });
 
   auto delete_card( [=](const nom::Event& evt) {
-    this->remove_player_card(this->p1_selected_card_);
+
+    // Player's rendered card
+    auto page_pos = this->cursor_position();
+    auto card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+    Card card_sp =
+      this->game->cards_page_model_->find_by_pos(card_pos);
+
+    this->remove_player_card(card_sp);
   });
 
   auto select_card( [=, &p1_hand](const nom::Event& evt) {
-    this->add_player_card(this->p1_selected_card_);
+    // Player's rendered card
+    auto page_pos = this->cursor_position();
+    auto card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+    Card card_sp =
+      this->game->cards_page_model_->find_by_pos(card_pos);
+
+    this->add_player_card(card_sp);
   });
 
   auto start_game( [=](const nom::Event& evt) {
@@ -389,15 +394,13 @@ void CardsMenuState::on_init(nom::void_ptr data)
   // Yeah buddy!
   this->game->theme_track_->Play();
 
-  // NOTE: Show the card as it would look like in the player's hand
-  tt::set_card_id(this->p1_selected_card_, p1_hand.player_id() );
+  // Set the initial display card -- for selection -- to always be the first
+  // card of the player's deck, and always render the card as if it was
+  // already in the player's deck
+  Card card_sp = p1_db->front();
+  tt::set_card_id(card_sp, p1_hand.player_id() );
 
-  // Set the default card selection for the active player
-  this->p1_selected_card_ = p1_db->front();
-
-  this->p1_selected_card_sprite_ =
-    this->set_player_selected_card_position(  this->p1_selected_card_,
-                                              this->p1_selected_card_pos_ );
+  this->set_display_card(card_sp);
 }
 
 void CardsMenuState::on_exit(nom::void_ptr data)
@@ -484,6 +487,35 @@ void CardsMenuState::on_draw(nom::RenderWindow& target)
 
   TT_RENDER_SPRITE(this->game->cursor_);
   TT_RENDER_SPRITE(this->p1_selected_card_sprite_);
+}
+
+bool CardsMenuState::set_display_card(Card& card)
+{
+  bool result = false;
+
+  // NOTE: Render the card as if it was already in the player's deck
+  tt::set_card_id(card, this->game->hand[PlayerIndex::PLAYER_1].player_id() );
+
+  auto p1_card_renderer =
+    tt::create_card_renderer(this->game->card_res_.get(), card);
+
+  NOM_ASSERT(p1_card_renderer != nullptr);
+  NOM_ASSERT(p1_card_renderer->valid() == true);
+
+  if( p1_card_renderer != nullptr && p1_card_renderer->valid() == true ) {
+
+    this->p1_selected_card_sprite_ = p1_card_renderer->rendered_card();
+    if( this->update_display_card() == true ) {
+      // Success!
+      result = true;
+    } else {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Failed to update the player's display card" );
+    }
+  }
+
+  // Err
+  return result;
 }
 
 // Private scope
@@ -578,18 +610,12 @@ void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
 
 void CardsMenuState::update_cursor()
 {
-  int page_pos = -1;
-  int card_pos = 0;
-
-  if( this->cursor_state_ == 0 ) {
+  if( this->cursor_state_ == 0 &&
+      this->game->cursor_->position() != Point2i::null )
+  {
     this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
-
-    // Update selected card
-    page_pos = this->cursor_position();
-    card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
-
-    this->p1_selected_card_ =
-      this->game->cards_page_model_->find_by_pos(card_pos);
+  } else {
+    this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
   }
 }
 
@@ -664,14 +690,20 @@ int CardsMenuState::cursor_position()
 
 void CardsMenuState::set_cursor_position(int pos)
 {
-  this->game->cursor_->set_position( this->cursor_coords_map_.at(pos).position() );
-  NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_pos:", this->game->cursor_->position() );
+  nom::size_type num_rows = this->cursor_coords_map_.size();
+
+  Point2i render_pos = Point2i::null;
+  if( pos <= num_rows ) {
+    render_pos = this->cursor_coords_map_.at(pos).position();
+    this->game->cursor_->set_position(render_pos);
+  }
 }
 
 void CardsMenuState::prev_page()
 {
   using namespace Rocket::Core;
 
+  Card card_sp(Card::null);
   int page = 0;
   int page_pos = -1;
   int card_pos = 0;
@@ -693,17 +725,17 @@ void CardsMenuState::prev_page()
       this->game->cards_page_model_->set_page(page);
       this->update_page_count_title(page);
 
+      // Player's rendered card
       page_pos = this->cursor_position();
       card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
-
-      Card card_sp =
+      card_sp =
         this->game->cards_page_model_->find_by_pos(card_pos);
 
-      this->p1_selected_card_sprite_ =
-        this->set_player_selected_card_position(  card_sp,
-                                                  this->p1_selected_card_pos_ );
-
-      this->game->cursor_move->Play();
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
   } // end if cursor state == 0
 }
@@ -712,6 +744,7 @@ void CardsMenuState::next_page()
 {
   using namespace Rocket::Core;
 
+  Card card_sp(Card::null);
   int page = 0;
   int num_pages = 0;
   int page_pos = -1;
@@ -735,17 +768,17 @@ void CardsMenuState::next_page()
       this->game->cards_page_model_->set_page(page);
       this->update_page_count_title(page);
 
+      // Player's rendered card
       page_pos = this->cursor_position();
       card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
-
-      Card card_sp =
+      card_sp =
         this->game->cards_page_model_->find_by_pos(card_pos);
 
-      this->p1_selected_card_sprite_ =
-        this->set_player_selected_card_position(  card_sp,
-                                                  this->p1_selected_card_pos_ );
-
-      this->game->cursor_move->Play();
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
 
   } // end if cursor state == 0
@@ -753,6 +786,7 @@ void CardsMenuState::next_page()
 
 void CardsMenuState::cursor_prev()
 {
+  Card card_sp(Card::null);
   int page_pos = -1;
   int card_pos = 0;
   Point2i move_to_offset(Point2i::zero);
@@ -769,10 +803,10 @@ void CardsMenuState::cursor_prev()
       NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "cursor.y:",
                     this->game->cursor_->position().y );
 
+      // Player's rendered card
       page_pos = this->cursor_position();
       card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
-
-      Card card_sp =
+      card_sp =
         this->game->cards_page_model_->find_by_pos(card_pos);
 
       NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "page_pos:",
@@ -782,16 +816,18 @@ void CardsMenuState::cursor_prev()
       NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "card_sp.id:",
                       card_sp.id );
 
-      this->p1_selected_card_sprite_ =
-        this->set_player_selected_card_position(  card_sp,
-                                                  this->p1_selected_card_pos_ );
-      this->game->cursor_move->Play();
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
   } // end if cursor state == 0
 }
 
 void CardsMenuState::cursor_next()
 {
+  Card card_sp(Card::null);
   int page_pos = -1;
   int max_per_page = 0;
   int card_pos = 0;
@@ -816,10 +852,10 @@ void CardsMenuState::cursor_next()
 
       NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_->position().y );
 
+      // Player's rendered card
       page_pos = this->cursor_position();
       card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
-
-      Card card_sp =
+      card_sp =
         this->game->cards_page_model_->find_by_pos(card_pos);
 
       NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "page_pos:",
@@ -829,10 +865,11 @@ void CardsMenuState::cursor_next()
       NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "card_sp.id:",
                       card_sp.id );
 
-      this->p1_selected_card_sprite_ =
-        this->set_player_selected_card_position(  card_sp,
-                                                  this->p1_selected_card_pos_ );
-      this->game->cursor_move->Play();
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
   } // end if cursor state == 0
 }
@@ -870,10 +907,12 @@ void CardsMenuState::add_player_card(const Card& card)
 
       this->game->cards_page_model_->insert_card(card_pos, c);
 
-      tt::update_card_layout(&p1_hand, PLAYER1_ORIGIN);
+      tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
 
       // Success; card has been added to the player's hand
       this->game->card_place->Play();
+    } else {
+      this->game->cursor_wrong->Play();
     }
   }
 }
@@ -918,38 +957,13 @@ void CardsMenuState::remove_player_card(const Card& card)
 
       this->game->cards_page_model_->insert_card(card_pos, c);
 
-      tt::update_card_layout(&p1_hand, PLAYER1_ORIGIN);
+      tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
 
       this->game->cursor_cancel->Play();
-    } // end if successful removal
+    } else {
+      this->game->cursor_wrong->Play();
+    }
   }
-}
-
-std::unique_ptr<nom::Sprite>
-CardsMenuState::set_player_selected_card_position(  Card& card,
-                                                    const nom::Point2i& pos )
-{
-  // NOTE: Show the card as it would look like in the player's hand
-  tt::set_card_id(card, this->game->hand[PlayerIndex::PLAYER_1].player_id() );
-
-  auto p1_card_renderer =
-    tt::create_card_renderer(this->game->card_res_.get(), card);
-
-  NOM_ASSERT(p1_card_renderer != nullptr);
-  NOM_ASSERT(p1_card_renderer->valid() == true);
-
-  if( p1_card_renderer != nullptr && p1_card_renderer->valid() == true ) {
-    auto card_sp =
-      p1_card_renderer->rendered_card();
-
-    card_sp->set_position(pos);
-
-    // Success!
-    return card_sp;
-  }
-
-  // Err
-  return nullptr;
 }
 
 void CardsMenuState::update_page_count_title(nom::size_type page)
@@ -1005,10 +1019,40 @@ void CardsMenuState::erase_player_cards(CardHand* phand)
   this->update_page_count_title(0);
   this->set_cursor_position(0);
 
-  this->p1_selected_card_ = Card::null;
-  this->p1_selected_card_sprite_ =
-    this->set_player_selected_card_position(  this->p1_selected_card_,
-                                              this->p1_selected_card_pos_ );
+  // Render invalid card texture
+  auto card_sp = Card::null;
+  this->set_display_card(card_sp);
+}
+
+bool CardsMenuState::update_display_card()
+{
+  bool result = false;
+  auto page_pos = -1;
+  auto card_pos = 0;
+
+  Card card_sp(Card::null);
+  Point2i render_pos(Point2i::zero);
+
+  page_pos = this->cursor_position();
+  card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+  NOM_ASSERT(card_pos >= 0);
+
+  // Player's rendered card
+  card_sp =
+    this->game->cards_page_model_->find_by_pos(card_pos);
+
+  render_pos.x =
+    BOARD_ORIGIN_X + ( CARD_DIMS.w * 2 );
+
+  render_pos.y =
+    BOARD_ORIGIN_Y + ( (CARD_DIMS.h / 2) + CARD_DIMS.h * 1) - 8;
+
+  if( this->p1_selected_card_sprite_ != nullptr ) {
+    this->p1_selected_card_sprite_->set_position(render_pos);
+    result = true;
+  }
+
+  return result;
 }
 
 } // namespace tt

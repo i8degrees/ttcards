@@ -1101,6 +1101,21 @@ nom::uint32 PlayState::cursor_position()
   return pos;
 }
 
+void PlayState::set_cursor_position(nom::uint32 cursor_pos)
+{
+  // auto pturn = this->game->player_turn();
+  Point2i render_pos;
+
+  if( cursor_pos >= 0 && cursor_pos < MAX_PLAYER_HAND ) {
+    this->game->hand[PlayerIndex::PLAYER_1].set_position(cursor_pos);
+
+    render_pos.x = this->player_cursor_coords_[PlayerIndex::PLAYER_1].x;
+    render_pos.y = this->player_cursor_coords_[PlayerIndex::PLAYER_1].y +
+      (CARD_HEIGHT / 2) * cursor_pos;
+    this->game->cursor_->set_position(render_pos);
+  }
+}
+
 void PlayState::move_cursor_left()
 {
   Point2i move_to_offset(Point2i::zero);
@@ -1352,7 +1367,7 @@ void PlayState::on_draw(nom::RenderWindow& target)
 
 bool PlayState::save_game(const std::string& filename)
 {
-  auto cfg = this->game->config_.get();
+  // auto cfg = this->game->config_.get();
   auto& paths = this->game->paths_;
   auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
   auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
@@ -1370,8 +1385,10 @@ bool PlayState::save_game(const std::string& filename)
     return false;
   }
 
+  this->game->cursor_pos_ = this->cursor_position();
+
   if( this->game->save_player_hand( board, &p1_hand, &p2_hand,
-                                    filename ) == false )
+                                    true, filename ) == false )
   {
     this->game->cursor_wrong->Play();
     return false;
@@ -1384,7 +1401,7 @@ bool PlayState::save_game(const std::string& filename)
 
 bool PlayState::load_game(const std::string& filename)
 {
-  auto cfg = this->game->config_.get();
+  // auto cfg = this->game->config_.get();
   auto& paths = this->game->paths_;
   auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
   auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
@@ -1403,7 +1420,7 @@ bool PlayState::load_game(const std::string& filename)
   }
 
   if( this->game->load_player_hand( board, &p1_hand, &p2_hand,
-                                    filename ) == false )
+                                    true, filename ) == false )
   {
     this->game->cursor_wrong->Play();
     return false;
@@ -1414,9 +1431,11 @@ bool PlayState::load_game(const std::string& filename)
   //   this->initialize_cpu_player_turn();
   // }
 
+  auto cursor_pos = this->game->cursor_pos_;
+  this->set_cursor_position(cursor_pos);
+
   // Success!
   this->update_score();
-  this->reset_cursor();
 
   this->game->load_game_sfx->Play();
   return true;

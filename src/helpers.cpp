@@ -408,27 +408,31 @@ void set_card_id(Card& card, PlayerID pid)
   }
 }
 
-void update_card_layout(CardHand* phand, const nom::Point2i& origin)
+nom::uint32
+update_hand_rendering(CardHand* phand, const nom::Point2i& origin)
 {
-  nom::size_type hand_index = 0;
+  uint32 num_updates = 0;
+  uint32 hand_index = 0;
   Point2i card_pos(Point2i::zero);
 
   for( auto itr = phand->begin(); itr != phand->end(); ++itr ) {
 
+    card_pos.x = origin.x;
+    card_pos.y = origin.y + (CARD_HEIGHT / 2) * hand_index;
+
     auto card_sp = (itr)->card_renderer;
-    if( card_sp != nullptr && card_sp->valid() == true ) {
-      card_pos.x = origin.x;
-      card_pos.y = origin.y + (CARD_HEIGHT / 2) * hand_index;
+    if( card_sp != nullptr ) {
       card_sp->set_position(card_pos);
-
-      ++hand_index;
+      ++num_updates;
     } else {
-      NOM_ASSERT(card_sp != nullptr);
-
       NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION, "Card ID,", (itr)->id,
                     "was not valid; card renderer invalid." );
     }
+
+    ++hand_index;
   }
+
+  return num_updates;
 }
 
 void render_player_hand(const nom::RenderTarget& target, const CardHand* phand)

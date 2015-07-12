@@ -92,6 +92,9 @@ class PlayState: public nom::IState
                 const std::function<void()>& on_completion_func );
 
     nom::uint32 cursor_position();
+
+    void set_cursor_position(nom::uint32 cursor_pos);
+
     void move_cursor_left();
     void move_cursor_right();
     void move_cursor_up();

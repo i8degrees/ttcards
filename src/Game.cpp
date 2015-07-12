@@ -1278,11 +1278,6 @@ bool Game::save_deck(CardCollection* deck, const std::string& filename)
 {
   nom::Value game;
 
-  NOM_ASSERT(deck != nullptr);
-  if( deck == nullptr ) {
-    return false;
-  }
-
   auto fp = nom::make_unique_json_serializer();
   if( fp == nullptr ) {
     NOM_LOG_ERR(  TTCARDS,
@@ -1290,13 +1285,15 @@ bool Game::save_deck(CardCollection* deck, const std::string& filename)
     return false;
   }
 
-  // ...Arrays enclosed in an object...
-  game["cards"] = tt::serialize_deck(deck);
+  if( deck != nullptr ) {
+    // ...Arrays enclosed in an object...
+    game["cards"] = tt::serialize_deck(deck);
 
-  if( fp->save(game, filename) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to save game at:", filename );
-    return false;
+    if( fp->save(game, filename) == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Unable to save game at:", filename );
+      return false;
+    }
   }
 
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1311,11 +1308,6 @@ bool Game::load_new_deck(CardCollection* deck, const std::string& filename)
   Cards cards;
   nom::Value game;
 
-  NOM_ASSERT(deck != nullptr);
-  if( deck == nullptr ) {
-    return false;
-  }
-
   auto fp = nom::make_unique_json_deserializer();
   if( fp == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1332,11 +1324,13 @@ bool Game::load_new_deck(CardCollection* deck, const std::string& filename)
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Game loaded from:", filename );
 
-  // ...Arrays enclosed in an object...
-  cards = tt::deserialize_deck(game["basic"]);
+  if( deck != nullptr ) {
+    // ...Arrays enclosed in an object...
+    cards = tt::deserialize_deck(game["basic"]);
 
-  deck->clear();
-  deck->append_cards(cards);
+    deck->clear();
+    deck->append_cards(cards);
+  }
 
   // Success!
   return true;
@@ -1347,11 +1341,6 @@ bool Game::load_deck(CardCollection* deck, const std::string& filename)
   Cards cards;
   nom::Value game;
 
-  NOM_ASSERT(deck != nullptr);
-  if( deck == nullptr ) {
-    return false;
-  }
-
   auto fp = nom::make_unique_json_deserializer();
   if( fp == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1369,10 +1358,12 @@ bool Game::load_deck(CardCollection* deck, const std::string& filename)
                   "Game loaded from:", filename );
 
   // ...Arrays enclosed in an object...
-  cards = tt::deserialize_deck(game["cards"]);
+  if( deck != nullptr ) {
+    cards = tt::deserialize_deck(game["cards"]);
 
-  deck->clear();
-  deck->append_cards(cards);
+    deck->clear();
+    deck->append_cards(cards);
+  }
 
   // Success!
   return true;
@@ -1380,24 +1371,9 @@ bool Game::load_deck(CardCollection* deck, const std::string& filename)
 
 bool
 Game::save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                        const std::string& filename )
+                        bool game_state, const std::string& filename )
 {
   nom::Value game;
-
-  NOM_ASSERT(board != nullptr);
-  if( board == nullptr ) {
-    return false;
-  }
-
-  NOM_ASSERT(p1_hand != nullptr);
-  if( p1_hand == nullptr ) {
-    return false;
-  }
-
-  NOM_ASSERT(p2_hand != nullptr);
-  if( p2_hand == nullptr ) {
-    return false;
-  }
 
   auto fp = nom::make_unique_json_serializer();
   if( fp == nullptr ) {
@@ -1407,9 +1383,21 @@ Game::save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
   }
 
   // ...Arrays enclosed in an object...
-  game["board"] = tt::serialize_board(board);
-  game["player"]["hand"] = tt::serialize_hand(p1_hand);
-  game["opponent"]["hand"] = tt::serialize_hand(p2_hand);
+  if( board != nullptr ) {
+    game["board"] = tt::serialize_board(board);
+  }
+
+  if( p1_hand != nullptr ) {
+    game["player"]["hand"] = tt::serialize_hand(p1_hand);
+  }
+
+  if( p2_hand != nullptr ) {
+    game["opponent"]["hand"] = tt::serialize_hand(p2_hand);
+  }
+
+  if( game_state == true ) {
+    game["state"]["cursor_pos"] = this->game->cursor_pos_;
+  }
 
   if( fp->save(game, filename) == false ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1426,26 +1414,11 @@ Game::save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
 
 bool
 Game::load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                        const std::string& filename )
+                        bool game_state, const std::string& filename )
 {
   Cards board_cards;
   Cards p1_cards, p2_cards;
   nom::Value game;
-
-  NOM_ASSERT(board != nullptr);
-  if( board == nullptr ) {
-    return false;
-  }
-
-  NOM_ASSERT(p1_hand != nullptr);
-  if( p1_hand == nullptr ) {
-    return false;
-  }
-
-  NOM_ASSERT(p2_hand != nullptr);
-  if( p2_hand == nullptr ) {
-    return false;
-  }
 
   auto fp = nom::make_unique_json_deserializer();
   if( fp == nullptr ) {
@@ -1464,19 +1437,30 @@ Game::load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
                   "Game loaded from:", filename );
 
   // ...Arrays enclosed in an object...
-  board_cards = tt::deserialize_board(game["board"]);
-  p1_cards =
-    tt::deserialize_hand(p1_hand->player_id(), game["player"]["hand"]);
-  p2_cards =
-    tt::deserialize_hand(p2_hand->player_id(), game["opponent"]["hand"]);
+  if( board != nullptr ) {
+    board_cards = tt::deserialize_board(game["board"]);
 
-  board->clear();
-  board->update(board_cards);
+    board->clear();
+    board->update(board_cards);
+  }
 
-  p1_hand->clear();
-  p2_hand->clear();
-  p1_hand->push_back(p1_cards);
-  p2_hand->push_back(p2_cards);
+  if( p1_hand != nullptr ) {
+    p1_cards =
+      tt::deserialize_hand(p1_hand->player_id(), game["player"]["hand"]);
+    p1_hand->clear();
+    p1_hand->push_back(p1_cards);
+  }
+
+  if( p2_hand != nullptr ) {
+    p2_cards =
+      tt::deserialize_hand(p2_hand->player_id(), game["opponent"]["hand"]);
+    p2_hand->clear();
+    p2_hand->push_back(p2_cards);
+  }
+
+  if( game_state == true ) {
+    this->game->cursor_pos_ = game["state"]["cursor_pos"].get_int();
+  }
 
   // Success!
   return true;

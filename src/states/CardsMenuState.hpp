@@ -64,6 +64,15 @@ class CardsMenuState: public nom::IState
     void on_update(nom::real32 delta_time);
     void on_draw(nom::RenderWindow& target);
 
+    /// \brief Render the player's card sprite.
+    ///
+    /// \param card An existing card with a valid renderer attached.
+    ///
+    /// \returns Boolean TRUE when the card's sprite renderer has been
+    /// successfully created, and boolean FALSE when the card's renderer has
+    /// **not** been created, such as when the card renderer is invalid.
+    bool set_display_card(Card& card);
+
   private:
     /// \brief The default event handler for this state.
     bool on_event(const nom::Event& ev) override;
@@ -113,14 +122,6 @@ class CardsMenuState: public nom::IState
     /// \brief Remove a card from the player's hand.
     void remove_player_card(const Card& card);
 
-    /// \brief Render the player's card sprite.
-    ///
-    /// \param card An existing card -- with a valid card renderer -- to base
-    /// the sprite rendering from.
-    std::unique_ptr<nom::Sprite>
-    set_player_selected_card_position(  Card& card,
-                                        const nom::Point2i& pos );
-
     /// \brief Set the shown cards page.
     void update_page_count_title(nom::size_type page);
 
@@ -137,11 +138,18 @@ class CardsMenuState: public nom::IState
     /// \remarks The player's hand is also cleared.
     void erase_player_cards(CardHand* phand);
 
-    Game* game;
 
-    Card p1_selected_card_;
-    nom::Point2i p1_selected_card_pos_;
-    std::shared_ptr<nom::Sprite> p1_selected_card_sprite_;
+
+    /// \brief Update the player's card sprite position.
+    ///
+    /// \returns Boolean TRUE when the sprite's position has been successfully
+    /// updated, and boolean FALSE when the sprite's position has **not** been
+    /// updated, such as when the sprite is NULL.
+    bool update_display_card();
+
+    Game* game = nullptr;
+
+    std::shared_ptr<nom::Sprite> p1_selected_card_sprite_ = nullptr;
 
     /// \brief Bounds map for game cursor movement.
     std::vector<nom::IntRect> cursor_coords_map_;
@@ -149,7 +157,7 @@ class CardsMenuState: public nom::IState
     /// \brief Cursor state
     ///
     /// \remarks Not implemented
-    nom::uint32 cursor_state_;
+    nom::uint32 cursor_state_ = 0;
 };
 
 // Convenience declarations for changing state

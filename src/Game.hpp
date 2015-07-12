@@ -108,11 +108,11 @@ class Game: public nom::SDLApp
 
     bool
     save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                      const std::string& filename );
+                      bool game_state, const std::string& filename );
 
     bool
     load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                      const std::string& filename );
+                      bool game_state, const std::string& filename );
 
     /// \brief Do an existence check on an existing player deck, i.e.: saved
     /// game.
@@ -221,6 +221,7 @@ class Game: public nom::SDLApp
     nom::SpriteSheet left_cursor_frames_;
     nom::Texture cursor_tex_;
     std::shared_ptr<nom::SpriteBatch> cursor_;
+    nom::uint32 cursor_pos_ = 0;
     std::shared_ptr<nom::IActionObject> blinking_cursor_action_;
 
     /// our public / visible display context handle
