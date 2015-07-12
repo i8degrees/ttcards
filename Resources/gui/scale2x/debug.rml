@@ -6,7 +6,8 @@
 
       body
       {
-        width: 176px;
+        /*width: 176px;*/
+        width: 224px;
 
         /* The actual height is ultimately determined by the font size */
         height: 48px;

@@ -6,10 +6,11 @@
 
       body
       {
-        width: 352px;
+        width: 256px;
 
         /* The actual height is ultimately determined by the font size */
-        height: 62px;
+        height: 31px;
+        font-size: 16px;
 
         /* Horizontal center */
         margin-right: auto;
@@ -17,7 +18,8 @@
 
         /* Bottom center */
         margin-top: auto;
-        margin-bottom: 12;
+        /*margin-bottom: 12px;*/
+        margin-bottom: 16px;
       }
 
       div#content
