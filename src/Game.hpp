@@ -335,6 +335,8 @@ class Game: public nom::SDLApp
     /// \see nom::InputMapper.
     void mute_volume();
 
+    void set_volume(nom::real32 gain);
+
     /// \brief Method callback action for creating a snapshot image in the game.
     ///
     /// \remarks The screen-shots are saved under ~/Documents/ttcards

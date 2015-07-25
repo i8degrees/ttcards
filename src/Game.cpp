@@ -925,6 +925,11 @@ bool Game::on_init()
     this->winning_track.reset( new nom::NullMusic() );
   }
 
+  // Set default audio volume level
+  const auto AUDIO_VOLUME =
+    this->game->config_->get_real32("AUDIO_VOLUME", 50.0f);
+  this->game->set_volume(AUDIO_VOLUME);
+
   // ...Initialize our global input action bindings...
 
   // TODO: Most all of the input action bindings here should be re-initialized
@@ -953,6 +958,18 @@ bool Game::on_init()
     this->game->mute_volume();
   });
 
+  auto increase_volume( [=](const nom::Event& evt) {
+    auto curr_volume = this->game->listener_->volume();
+    this->game->set_volume(curr_volume + (uint32)1);
+    NOM_DUMP(curr_volume);
+  });
+
+  auto decrease_volume( [=](const nom::Event& evt) {
+    auto curr_volume = this->game->listener_->volume();
+    this->game->set_volume(curr_volume - (uint32)1);
+    NOM_DUMP(curr_volume);
+  });
+
   auto save_screenshot( [=](const nom::Event& evt) {
     this->game->save_screenshot();
   });
@@ -960,6 +977,8 @@ bool Game::on_init()
   auto reload_config( [=](const nom::Event& evt) {
     this->game->reload_config();
   });
+
+  auto platform_key = KMOD_LCTRL;
 
   if( this->game->debug_game_ == true ) {
     auto jumpto_gameover_state( [=](const nom::Event& evt) {
@@ -991,7 +1010,7 @@ bool Game::on_init()
                   nom::KeyboardAction(SDLK_0), jumpto_gameover_state );
 
     state.insert( "dump_board",
-                  nom::KeyboardAction(SDLK_BACKSPACE, KMOD_LGUI),
+                  nom::KeyboardAction(SDLK_BACKSPACE, platform_key),
                   dump_board );
 
     state.insert( "dump_player1_hand",
@@ -1001,29 +1020,26 @@ bool Game::on_init()
                   nom::KeyboardAction(SDLK_RIGHTBRACKET), dump_player2_hand );
 
     state.insert( "dump_player1_collection",
-                  nom::KeyboardAction(SDLK_LEFTBRACKET, KMOD_LGUI),
+                  nom::KeyboardAction(SDLK_LEFTBRACKET, platform_key),
                   dump_player1_collection );
 
     state.insert( "dump_player2_collection",
-                  nom::KeyboardAction(SDLK_RIGHTBRACKET, KMOD_LGUI),
+                  nom::KeyboardAction(SDLK_RIGHTBRACKET, platform_key),
                   dump_player2_collection );
   } // end if DEBUG_GAME
 
   state.insert("quit_game", nom::KeyboardAction(SDLK_q), quit_game);
-
-#if defined(NOM_PLATFORM_OSX)
-  state.insert( "toggle_fullscreen", nom::KeyboardAction(SDLK_f, KMOD_LGUI),
+  state.insert( "toggle_fullscreen", nom::KeyboardAction(SDLK_f, platform_key),
                 toggle_fullscreen );
-#else
-  state.insert( "toggle_fullscreen", nom::KeyboardAction(SDLK_f, KMOD_LCTRL),
-                toggle_fullscreen );
-#endif
-
   state.insert( "fps_counter", nom::KeyboardAction(SDLK_BACKSLASH),
                 fps_counter );
   state.insert( "pause_music", nom::KeyboardAction(SDLK_m, KMOD_LSHIFT),
                 pause_music );
   state.insert("mute_volume", nom::KeyboardAction(SDLK_m), mute_volume);
+  state.insert("increase_volume", nom::KeyboardAction(SDLK_PERIOD),
+               increase_volume);
+  state.insert("decrease_volume", nom::KeyboardAction(SDLK_COMMA),
+               decrease_volume);
   state.insert( "save_screenshot", nom::KeyboardAction(SDLK_F1),
                 save_screenshot );
   state.insert("reload_config", nom::KeyboardAction(SDLK_r), reload_config);
@@ -1635,17 +1651,18 @@ void Game::pause_music()
 
 void Game::mute_volume()
 {
-  // Global volume level
-  float current_volume = this->game->listener_->getVolume();
+  real32 current_volume = this->game->listener_->volume();
 
-  if( current_volume >= 100.0 )
-  {
-    this->game->listener_->setVolume( 0.0 );
+  if( current_volume >= 100.0f ) {
+    this->game->listener_->set_volume(0.0f);
+  } else if( current_volume <= 0.0f ) {
+    this->game->listener_->set_volume(100.0f);
   }
-  else if( current_volume <= 0.0 )
-  {
-    this->game->listener_->setVolume( 100.0 );
-  }
+}
+
+void Game::set_volume(nom::real32 gain)
+{
+  this->game->listener_->set_volume(gain);
 }
 
 void Game::save_screenshot()

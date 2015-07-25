@@ -74,10 +74,12 @@
     "GAMEOVER_LOST_CARD_DELAY": 1.5,
 
     // Toggle showing the opponent's hand in CardsMenuState
+    // TODO: Rename to GAME_CHEATS
     "DEBUG_GAME": true,
 
     "AUDIO_SFX": true,
     "AUDIO_TRACKS": false,
+    "AUDIO_VOLUME": 50.0,
 
     "CARD_FLIP" : "audio/card_flip.wav",
     "CARD_PLACE" : "audio/card_place.wav",
