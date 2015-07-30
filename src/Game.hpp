@@ -381,6 +381,17 @@ class Game: public nom::SDLApp
     /// \remarks Re-implements nom::SDLApp::on_window_restored
     void on_window_restored(const nom::Event& evt) override;
 
+    /// \brief The event handler that is called when our window is in focus.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_mouse_focus
+    void on_window_mouse_focus(const nom::Event& evt);
+
+    /// \brief The event handler that is called when our window is **not** in
+    /// focus.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_mouse_focus_lost
+    void on_window_mouse_focus_lost(const nom::Event& evt);
+
     /// \see Game::fade_window_out
     std::shared_ptr<nom::Sprite> fade_window_sprite_;
 

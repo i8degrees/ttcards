@@ -1724,6 +1724,8 @@ void Game::on_window_shown(const nom::Event& evt)
 {
   NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
 
+  // NOTE: Update simulation at X frames per second; this uses however many CPU
+  // cycles necessary to sustain the frame rate.
   this->set_show_fps(true);
   this->fps_timer_.start();
 }
@@ -1732,6 +1734,7 @@ void Game::on_window_hidden(const nom::Event& evt)
 {
   NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
 
+  // NOTE: Throttle simulation speed; use less CPU cycles for update
   this->set_show_fps(false);
   this->fps_timer_.stop();
 }
@@ -1740,6 +1743,7 @@ void Game::on_window_minimized(const nom::Event& evt)
 {
   NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
 
+  // NOTE: Throttle simulation speed; use less CPU cycles for update
   this->set_show_fps(false);
   this->fps_timer_.stop();
 }
@@ -1748,8 +1752,33 @@ void Game::on_window_restored(const nom::Event& evt)
 {
   NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
 
+  // NOTE: Update simulation at X frames per second; this uses however many CPU
+  // cycles necessary to sustain the frame rate.
   this->set_show_fps(true);
   this->fps_timer_.start();
+}
+
+void Game::on_window_mouse_focus(const nom::Event& evt)
+{
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
+
+  // NOTE: Update simulation at X frames per second; this uses however many CPU
+  // cycles necessary to sustain the frame rate.
+  this->set_show_fps(true);
+  if( this->fps_timer_.started() == false ) {
+    this->fps_timer_.start();
+  }
+}
+
+void Game::on_window_mouse_focus_lost(const nom::Event& evt)
+{
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_EVENTS, NOM_LOG_PRIORITY_DEBUG);
+
+  // NOTE: Throttle simulation speed; use less CPU cycles for update
+  this->set_show_fps(false);
+  if( this->fps_timer_.started() == true ) {
+    this->fps_timer_.stop();
+  }
 }
 
 } // namespace tt
