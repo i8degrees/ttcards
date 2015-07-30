@@ -335,6 +335,11 @@ class Game: public nom::SDLApp
     /// \see nom::InputMapper.
     void mute_volume();
 
+    /// \brief Set a new master volume level.
+    ///
+    /// \param gain A number between 0..100 (min/max).
+    ///
+    /// \todo Add OSD (on-screen display) of audio volume change
     void set_volume(nom::real32 gain);
 
     /// \brief Method callback action for creating a snapshot image in the game.

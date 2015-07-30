@@ -959,15 +959,29 @@ bool Game::on_init()
   });
 
   auto increase_volume( [=](const nom::Event& evt) {
+
+    const real32 GAIN_STEP = 5.0f;
+    const real32 MAX_VOLUME_LEVEL = nom::Listener::max_volume();
     auto curr_volume = this->game->listener_->volume();
-    this->game->set_volume(curr_volume + (uint32)1);
-    NOM_DUMP(curr_volume);
+
+    if( curr_volume < (MAX_VOLUME_LEVEL - 1.0f) ) {
+      auto gain =
+        nom::round_float<real32>(curr_volume + GAIN_STEP);
+      this->game->set_volume(gain);
+    }
   });
 
   auto decrease_volume( [=](const nom::Event& evt) {
+
+    const real32 GAIN_STEP = 5.0f;
+    const real32 MIN_VOLUME_LEVEL = nom::Listener::min_volume();
     auto curr_volume = this->game->listener_->volume();
-    this->game->set_volume(curr_volume - (uint32)1);
-    NOM_DUMP(curr_volume);
+
+    if( curr_volume > MIN_VOLUME_LEVEL ) {
+      auto gain =
+        nom::round_float<real32>(curr_volume - GAIN_STEP);
+      this->game->set_volume(gain);
+    }
   });
 
   auto save_screenshot( [=](const nom::Event& evt) {
@@ -978,7 +992,7 @@ bool Game::on_init()
     this->game->reload_config();
   });
 
-  auto platform_key = KMOD_LCTRL;
+  auto platform_key_mod = KMOD_LCTRL;
 
   if( this->game->debug_game_ == true ) {
     auto jumpto_gameover_state( [=](const nom::Event& evt) {
@@ -1010,7 +1024,7 @@ bool Game::on_init()
                   nom::KeyboardAction(SDLK_0), jumpto_gameover_state );
 
     state.insert( "dump_board",
-                  nom::KeyboardAction(SDLK_BACKSPACE, platform_key),
+                  nom::KeyboardAction(SDLK_BACKSPACE, platform_key_mod),
                   dump_board );
 
     state.insert( "dump_player1_hand",
@@ -1020,16 +1034,16 @@ bool Game::on_init()
                   nom::KeyboardAction(SDLK_RIGHTBRACKET), dump_player2_hand );
 
     state.insert( "dump_player1_collection",
-                  nom::KeyboardAction(SDLK_LEFTBRACKET, platform_key),
+                  nom::KeyboardAction(SDLK_LEFTBRACKET, platform_key_mod),
                   dump_player1_collection );
 
     state.insert( "dump_player2_collection",
-                  nom::KeyboardAction(SDLK_RIGHTBRACKET, platform_key),
+                  nom::KeyboardAction(SDLK_RIGHTBRACKET, platform_key_mod),
                   dump_player2_collection );
   } // end if DEBUG_GAME
 
   state.insert("quit_game", nom::KeyboardAction(SDLK_q), quit_game);
-  state.insert( "toggle_fullscreen", nom::KeyboardAction(SDLK_f, platform_key),
+  state.insert( "toggle_fullscreen", nom::KeyboardAction(SDLK_f, platform_key_mod),
                 toggle_fullscreen );
   state.insert( "fps_counter", nom::KeyboardAction(SDLK_BACKSLASH),
                 fps_counter );
@@ -1651,18 +1665,21 @@ void Game::pause_music()
 
 void Game::mute_volume()
 {
-  real32 current_volume = this->game->listener_->volume();
+  auto current_volume = this->game->listener_->volume();
 
   if( current_volume >= 100.0f ) {
-    this->game->listener_->set_volume(0.0f);
+    this->game->set_volume(0.0f);
   } else if( current_volume <= 0.0f ) {
-    this->game->listener_->set_volume(100.0f);
+    this->game->set_volume(100.0f);
   }
 }
 
 void Game::set_volume(nom::real32 gain)
 {
   this->game->listener_->set_volume(gain);
+
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION, "volume:",
+                this->game->listener_->volume() );
 }
 
 void Game::save_screenshot()
