@@ -383,6 +383,17 @@ class Game: public nom::SDLApp
 
     /// \brief The event handler that is called when our window is in focus.
     ///
+    /// \remarks Re-implements nom::SDLApp::on_window_keyboard_focus
+    void on_window_keyboard_focus(const nom::Event& evt);
+
+    /// \brief The event handler that is called when our window is **not** in
+    /// focus.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_keyboard_focus_lost
+    void on_window_keyboard_focus_lost(const nom::Event& evt);
+
+    /// \brief The event handler that is called when our window is in focus.
+    ///
     /// \remarks Re-implements nom::SDLApp::on_window_mouse_focus
     void on_window_mouse_focus(const nom::Event& evt);
 
