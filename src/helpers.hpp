@@ -95,19 +95,8 @@ void
 modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modifier,
                   nom::uint32 direction );
 
-void set_face_down(CardHand* player_hand, bool face_down);
-
 /// \brief Set the ownership and rendering color of a card.
-void set_card_id(Card& card, PlayerID pid);
-
-/// \brief Set the rendering coordinates of the player's cards in their hand.
-///
-/// \returns The number of successfully modified cards.
-nom::uint32
-update_hand_rendering(CardHand* phand, const nom::Point2i& origin);
-
-/// \brief Render the player's hand.
-void render_player_hand(const nom::RenderTarget& target, const CardHand* phand);
+void set_card_id(PlayerID pid, Card& card);
 
 // NOTE: This only modifies the rank attribute(s) -- no rendering is done to
 // the number glyphs.

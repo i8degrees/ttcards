@@ -41,6 +41,7 @@
     // Whether to start the game window full-screen or as a window.
     "WINDOW_FULLSCREEN": false,
 
+    // "REGION_RULESET": [ "Elemental", "Same" ],
     "REGION_RULESET": [ "Open", "Elemental", "Same" ],
 
     // Toggle whether when you lose a game, you lose a card from your deck.
@@ -79,7 +80,9 @@
 
     "AUDIO_SFX": true,
     "AUDIO_TRACKS": false,
-    "AUDIO_VOLUME": 50.0,
+
+    // The game's initial master volume level for audio tracks and sound SFX
+    "AUDIO_VOLUME": 50.0, // Volume level min/max: 0.0 to 100.0
 
     "CARD_FLIP" : "audio/card_flip.wav",
     "CARD_PLACE" : "audio/card_place.wav",
@@ -94,6 +97,7 @@
     "APP_ICON" : "icon.png",
 
     "SAVE_GAME_DIR" : "SavedGames",
+    "EXTRA_CARD_TEXTURE_DIR" : "Cards",
     "CARDS_DB_FILENAME" : "cards.json",
 
     "SAVE_GAME_DECK_DIR" : "Decks",
@@ -101,7 +105,6 @@
     "OPPONENT_DECK_FILENAME" : "opponent.json",
     "SAVE_GAME_FILENAME" : "game.json",
 
-    // TODO: Rename directory name?
-    "EXTRA_CARD_TEXTURE_DIR" : "Cards"
+    "MAC_USE_CMD_KEY": true
   }
 }

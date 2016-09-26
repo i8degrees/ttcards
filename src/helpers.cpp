@@ -78,7 +78,21 @@ PlayerID flip_player_id(PlayerIndex player_index)
 
   return result;
 }
+#if 0
+PlayerIndex flip_player_id(PlayerID player_id)
+{
+  auto result = PlayerIndex::PLAYER_INVALID;
 
+  result = NOM_SCAST(PlayerIndex, player_id - 1);
+
+  if( result == PlayerIndex::TOTAL_PLAYERS ) {
+    // NOTE: Invalid player!
+    NOM_ASSERT_INVALID_PATH();
+  }
+
+  return result;
+}
+#endif
 bool
 render_card_background( PlayerID player_id, const nom::Point2i& pos,
                         nom::Gradient* card_background,
@@ -385,64 +399,11 @@ modify_card_rank( CardResourceLoader* card_res, CardHand* player_hand, bool modi
   // player_hand->selectCard(pcard);
 }
 
-void set_face_down(CardHand* player_hand, bool face_down)
-{
-  NOM_ASSERT(player_hand != nullptr);
-  if( player_hand == nullptr ) {
-    return;
-  }
-
-  for( auto itr = player_hand->begin(); itr != player_hand->end(); ++itr ) {
-    itr->face_down = face_down;
-  }
-
-  // Update the card renderings
-  player_hand->update();
-}
-
-void set_card_id(Card& card, PlayerID pid)
+void set_card_id(PlayerID pid, Card& card)
 {
   if( card != Card::null ) {
     card.player_id = pid;
     card.player_owner = pid;
-  }
-}
-
-nom::uint32
-update_hand_rendering(CardHand* phand, const nom::Point2i& origin)
-{
-  uint32 num_updates = 0;
-  uint32 hand_index = 0;
-  Point2i card_pos(Point2i::zero);
-
-  for( auto itr = phand->begin(); itr != phand->end(); ++itr ) {
-
-    card_pos.x = origin.x;
-    card_pos.y = origin.y + (CARD_HEIGHT / 2) * hand_index;
-
-    auto card_sp = (itr)->card_renderer;
-    if( card_sp != nullptr ) {
-      card_sp->set_position(card_pos);
-      ++num_updates;
-    } else {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION, "Card ID,", (itr)->id,
-                    "was not valid; card renderer invalid." );
-    }
-
-    ++hand_index;
-  }
-
-  return num_updates;
-}
-
-void render_player_hand(const nom::RenderTarget& target, const CardHand* phand)
-{
-  for( auto itr = phand->begin(); itr != phand->end(); ++itr ) {
-
-    auto card_renderer = (itr)->card_renderer;
-    if( card_renderer != nullptr && card_renderer->valid() == true ) {
-      card_renderer->render(target);
-    }
   }
 }
 

@@ -346,35 +346,4 @@ void CPU_Player::update(nom::real32 delta_time)
   }
 }
 
-void CPU_Player::draw(nom::IDrawable::RenderTarget& target)
-{
-  NOM_ASSERT(this->hand_ != nullptr);
-  if( this->hand_ == nullptr ) {
-    return;
-  }
-
-  auto hand_idx = 0;
-  nom::Point2i pos(nom::Point2i::zero);
-  for( auto itr = this->hand_->begin(); itr != this->hand_->end(); ++itr ) {
-
-    pos.x = this->position().x;
-    pos.y = this->position().y + ( CARD_HEIGHT / 2 ) * hand_idx;
-
-    if( this->hand_->position() == hand_idx) {
-      pos.x += 16;
-    }
-
-    ++hand_idx;
-
-    auto card_renderer =
-      itr->card_renderer;
-    if( card_renderer != nullptr && card_renderer->valid() == true ) {
-      // TODO: Update the element position only when we need to -- this will
-      // help ease further integration of animations!
-      card_renderer->set_position(pos);
-      card_renderer->render(target);
-    }
-  } // end for this->hand loop
-}
-
 } // namespace tt

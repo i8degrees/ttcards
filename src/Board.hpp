@@ -63,14 +63,11 @@ class Board
     /// \brief Destructor.
     ~Board();
 
-    /// \brief Initialize the game board with a rule set and card rendering
-    /// components.
+    /// \brief Initialize the game board.
     ///
-    /// \remarks The game board has two prerequisite dependencies before
-    /// successful construction -- both the card rule-sets and card rendering
-    /// components must be fully constructed.
+    /// \param ruleset The game's rule set to use.
     bool
-    initialize(tt::RegionRuleSet* ruleset, CardResourceLoader* res);
+    initialize(tt::RegionRuleSet* ruleset);
 
     /// \brief Empty the board of its stored cards.
     void clear();
@@ -125,17 +122,25 @@ class Board
     /// coords
     PlayerID getPlayerID(nom::int32 x, nom::int32 y) const;
 
-    /// \brief Helper method for swapping player owner tags / IDs on a card.
-    void flip_card(const nom::Point2i& rel_board_pos, PlayerID player_id);
-
     /// (Private) Getter helper method for obtaining card placed at x, y coords;
     /// Used within Board::Draw(), Game::showCardInfoBox() method calls
-    const Card& get(nom::int32 x, nom::int32 y) const;
+    Card
+    get(nom::int32 x, nom::int32 y) const;
 
-    const BoardTile& tile(nom::int32 x, nom::int32 y) const;
+    Card
+    get(const nom::Point2i& grid_pos) const;
+
+    BoardTile
+    tile(nom::int32 x, nom::int32 y) const;
+
+    BoardTile
+    tile(const nom::Point2i& grid_pos) const;
 
     /// Draws our active board grid based on their values (card IDs)
     void draw(nom::IDrawable::RenderTarget& target);
+
+    void render_elementals(const CardResourceLoader* res,
+                           const nom::IDrawable::RenderTarget& target);
 
     /// \brief Get the unoccupied tiles on the board.
     board_tiles free_tiles() const;
@@ -150,11 +155,6 @@ class Board
     ///
     /// \note This is a non-owned pointer, so we **must not** free it!
     tt::RegionRuleSet* rules_;
-
-    /// \brief Card rendering.
-    ///
-    /// \note This is a non-owned pointer, so we **must not** free it!
-    CardResourceLoader* card_res_;
 
     /// 2D vector of BoardTiles
     ///

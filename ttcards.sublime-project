@@ -16,6 +16,13 @@
       "name": "inc",
       "path": "src",
       "file_include_patterns": [ "*.hpp" ]
+    },
+
+    {
+      "name": "cfg",
+      "path": "~/Library/Application Support/TTcards",
+      "folder_exclude_patterns": [ "*.bck", "tmp"],
+      "file_include_patterns": [ "*" ]
     }
   ],
 

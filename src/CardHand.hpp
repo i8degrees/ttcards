@@ -52,20 +52,7 @@ class CardHand
     ~CardHand();
 
     /// \brief Initialize the player's hand.
-    ///
-    /// \param pid One of the enumeration values of tt::PlayerIndex
-    ///
-    /// \remarks The player's index controls the ownership and rendering color
-    /// of their cards.
-    ///
-    /// \see ::update
-    bool init(CardResourceLoader* res, PlayerIndex pid);
-
-    /// \brief Re-render the player's hand.
-    ///
-    /// \note This method call is necessary when render-able card attributes
-    /// are modified outside of this class interface.
-    bool update();
+    bool init();
 
     /// \brief Append a card to the player's hand.
     ///
@@ -84,13 +71,6 @@ class CardHand
     bool push_back(const Cards& cards);
 
     bool erase(const Card& card);
-
-    void clearSelectedCard();
-    const Card& getSelectedCard();
-
-    /// \deprecated Use the provided iterators ::previous, ::next,
-    /// ::set_position, etc.
-    void selectCard(const Card& card);
 
     bool exists(const Card& card) const;
 
@@ -130,11 +110,6 @@ class CardHand
     nom::uint32 size() const;
     nom::int32 at(const Card& card);
 
-    /// \brief Create a randomized player hand with a set criteria.
-    void
-    add_random_card(  nom::uint32 min_level, nom::uint32 max_level,
-                      const CardCollection* db );
-
     /// Getter for obtaining the strongest card in the player's hand.
     ///
     /// Note that this does not take into account game rules that may be in
@@ -153,8 +128,13 @@ class CardHand
     ConstCardsIterator begin() const;
     ConstCardsIterator end() const;
 
-    PlayerID player_id() const;
-    PlayerIndex player_index() const;
+    // TODO: Make private member(s)...
+    const Card& getSelectedCard();
+    void clearSelectedCard();
+
+    /// \deprecated Use the provided iterators ::previous, ::next,
+    /// ::set_position, etc.
+    void selectCard(const Card& card);
 
     /// \todo Declare in private scope
     Cards cards;
@@ -164,15 +144,9 @@ class CardHand
     nom::size_type position_ = 0;
 
     /// Player's active card
-    Card selectedCard;
-
-    /// \brief Our reference to the cards resource loader.
     ///
-    /// \remarks We do not own this pointer, so we **must not** free it!
-    CardResourceLoader* card_res_;
-
-    /// \brief The player identifier.
-    PlayerIndex player_index_ = PLAYER_INVALID;
+    /// \note DEPRECIATED
+    Card selectedCard;
 };
 
 /// Pretty print the the card attributes.
@@ -182,7 +156,7 @@ nom::Value
 serialize_hand(const CardHand* phand);
 
 tt::Cards
-deserialize_hand(PlayerID player_id, const nom::Value& objects);
+deserialize_hand(const nom::Value& objects);
 
 } // namespace tt
 

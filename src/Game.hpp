@@ -66,6 +66,7 @@ class CardCollection;
 class Board;
 class CardRenderer;
 class CardResourceLoader;
+class CardDealer;
 
 class Game: public nom::SDLApp
 {
@@ -100,19 +101,13 @@ class Game: public nom::SDLApp
     create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
                               const nom::Point2i& card_pos );
 
-    bool save_deck(CardCollection* deck, const std::string& filename);
-
-    bool load_new_deck(CardCollection* deck, const std::string& filename);
-
-    bool load_deck(CardCollection* deck, const std::string& filename);
+    bool
+    save_game_state(  Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                      const std::string& filename );
 
     bool
-    save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                      bool game_state, const std::string& filename );
-
-    bool
-    load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                      bool game_state, const std::string& filename );
+    load_game_state(  Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                      const std::string& filename, nom::Value& game );
 
     /// \brief Do an existence check on an existing player deck, i.e.: saved
     /// game.
@@ -121,6 +116,13 @@ class Game: public nom::SDLApp
     /// \brief Do an existence check on an existing opponent deck, i.e.: saved
     /// game.
     bool opponent_deck_exists() const;
+
+    PlayerIndex player_turn() const;
+    void set_player_turn(PlayerIndex player_id);
+    void begin_turn();
+    void end_turn();
+    // TODO: struct game_state {};
+    PlayerIndex player_turn_ = PlayerIndex::TOTAL_PLAYERS;
 
     /// \brief Method callback action for dumping the board data in the game.
     ///
@@ -155,7 +157,7 @@ class Game: public nom::SDLApp
     static const int NUM_SOUND_BUFFERS = 9;
 
     /// Audio buffers (one buffer per sound)
-    std::unique_ptr<nom::ISoundBuffer> sound_buffers[NUM_SOUND_BUFFERS];
+    std::unique_ptr<nom::SoundBuffer> sound_buffers[NUM_SOUND_BUFFERS];
 
     /// Cursor has been moved sound event
     std::unique_ptr<nom::ISoundSource> cursor_move;
@@ -189,7 +191,6 @@ class Game: public nom::SDLApp
     nom::Font scoreboard_font;
     nom::Font menu_font_;
 
-    nom::Text scoreboard_text[2];
     nom::Text gameover_text;
     nom::Text menu_text_;
 
@@ -198,14 +199,6 @@ class Game: public nom::SDLApp
 
     /// \brief The current game rules in effect.
     tt::RegionRuleSet rules_;
-
-    /// \brief The card pool of playable cards.
-    std::unique_ptr<CardCollection> cards_db_[TOTAL_PLAYERS];
-
-    /// Player hands
-    ///
-    /// \todo Change to pointer
-    CardHand hand[2];
 
     /// \brief Card resources container; background, face, elements, text
     std::unique_ptr<CardResourceLoader> card_res_;
@@ -221,7 +214,8 @@ class Game: public nom::SDLApp
     nom::SpriteSheet left_cursor_frames_;
     nom::Texture cursor_tex_;
     std::shared_ptr<nom::SpriteBatch> cursor_;
-    nom::uint32 cursor_pos_ = 0;
+    // TODO: Move to game_state struct
+    nom::int32 cursor_pos_ = 0;
     std::shared_ptr<nom::IActionObject> blinking_cursor_action_;
 
     /// our public / visible display context handle
@@ -289,15 +283,6 @@ class Game: public nom::SDLApp
     /// \remarks This is globally shared across states.
     nom::ActionPlayer actions_;
 
-    std::shared_ptr<nom::Sprite> won_text_sprite_;
-    std::shared_ptr<nom::Sprite> lost_text_sprite_;
-    std::shared_ptr<nom::Sprite> tied_text_sprite_;
-
-    std::shared_ptr<nom::Sprite> combo_text_sprite_;
-    std::shared_ptr<nom::Sprite> same_text_sprite_;
-    std::shared_ptr<nom::IActionObject> combo_text_action_;
-    std::shared_ptr<nom::IActionObject> same_text_action_;
-
     /// \brief Toggle switch for in-game debugging features.
     bool debug_game_;
 
@@ -307,6 +292,8 @@ class Game: public nom::SDLApp
     // Platform-dependent game file paths; configuration, saves, screen-shots
     typedef std::map<std::string, std::string> platform_paths;
     platform_paths paths_;
+
+    std::unique_ptr<CardDealer> dealer_;
 
   private:
     /// \brief Setup platform-dependent file paths for locating the game
@@ -406,7 +393,7 @@ class Game: public nom::SDLApp
     /// \see Game::fade_window_out
     std::shared_ptr<nom::Sprite> fade_window_sprite_;
 
-    Game* game;
+    Game* game = nullptr;
 
     // IMPORTANT: The running state of this timer controls whether the max or
     // min frame rate is in use.

@@ -25,6 +25,8 @@ set(  TTCARDS_SOURCE
       ${SRC_DIR}/BoardTile.hpp
       ${SRC_DIR}/Card.cpp
       ${SRC_DIR}/Card.hpp
+      ${SRC_DIR}/CardDealer.cpp
+      ${SRC_DIR}/CardDealer.hpp
       ${SRC_DIR}/CardCollection.cpp
       ${SRC_DIR}/CardCollection.hpp
       ${SRC_DIR}/CardHand.cpp

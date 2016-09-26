@@ -159,7 +159,7 @@ void CardCollection::append_card(const Card& card)
 {
   for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
-    // Existing card
+    // Existing card; modify quantity directly in place of
     if( *itr == card ) {
       if( (*itr).num < 99 ) {
         (*itr).num = (*itr).num + 1;
@@ -169,16 +169,14 @@ void CardCollection::append_card(const Card& card)
     }
   }
 
-  // Card does not exist, so we add it to the deck
-  Card new_card = card;
-  new_card.num = 1;
-  this->cards_.push_back(new_card);
+  // Card does not exist -- add it as-is
+  this->cards_.push_back(card);
 }
 
 void CardCollection::append_cards(const Cards& cards)
 {
   for( auto itr = cards.begin(); itr != cards.end(); ++itr ) {
-    this->cards_.push_back(*itr);
+    this->append_card(*itr);
   }
 }
 
@@ -188,7 +186,6 @@ void CardCollection::erase_card(const Card& card)
 
     // Existing card
     if( (*itr) == card ) {
-
       if( (*itr).num > 0 ) {
         (*itr).num = (*itr).num - 1;
       }

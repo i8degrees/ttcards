@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "Game.hpp"
+#include "CardDealer.hpp"
 
 using namespace nom;
 
@@ -252,9 +253,6 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
   const real32 FADE_DURATION = 1.0f;
   int cursor_pos = this->cursor_position();
 
-  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
-  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
-
   switch(cursor_pos)
   {
     default:
@@ -269,7 +267,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         break;
       }
 
-      if( this->game->load_deck(p1_db, paths["PLAYER_DECK_PATH"]) == false ) {
+      if( this->game->dealer_->load_deck(PlayerIndex::PLAYER_1,
+                                         paths["PLAYER_DECK_PATH"]) == false )
+      {
         // Err; could not open or parse file?
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the player's deck:",
@@ -281,7 +281,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
       // TODO: Once we have game levels implemented, we can probably handle
       // a missing opponent deck by using the player's existing game state data
       // for the level?
-      if( this->game->load_deck(p2_db, paths["OPPONENT_DECK_PATH"]) == false ) {
+      if( this->game->dealer_->load_deck(PlayerIndex::PLAYER_2,
+                                         paths["OPPONENT_DECK_PATH"]) == false )
+      {
         // Err; could not open or parse file?
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the opponent's deck:",
@@ -304,7 +306,10 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
     {
       NOM_ASSERT( fp.exists(paths["CARDS_DB_PATH"]) == true );
 
-      if( this->game->load_new_deck(p1_db, paths["CARDS_DB_PATH"]) == false ) {
+      if( this->game->dealer_->load_deck(PlayerIndex::PLAYER_1,
+                                         paths["CARDS_DB_PATH"],
+                                         true) == false )
+      {
         // Err; could not open or parse file?
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the player's deck:",
@@ -313,7 +318,10 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         break;
       }
 
-      if( this->game->load_new_deck(p2_db, paths["CARDS_DB_PATH"]) == false ) {
+      if( this->game->dealer_->load_deck(PlayerIndex::PLAYER_2,
+                                         paths["CARDS_DB_PATH"],
+                                         true) == false )
+      {
         // Err; could not open or parse file?
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the opponent's deck:",

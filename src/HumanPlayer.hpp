@@ -52,7 +52,6 @@ class HumanPlayer: public IPlayer
     virtual void set_player_id(PlayerID id) override;
 
     void update(nom::real32 delta_time) override;
-    void draw(nom::IDrawable::RenderTarget& target) override;
 
   private:
     /// \remarks This object pointer is **not** owned by us; do not free.

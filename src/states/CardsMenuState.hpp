@@ -133,16 +133,16 @@ class CardsMenuState: public nom::IState
 
     /// \brief Remove all of the cards in the player's deck.
     ///
-    /// \param phand A pointer to the player's hand instance.
+    /// \param pid One of the tt::PlayerIndex enumeration values.
     ///
     /// \remarks The player's hand is also cleared.
-    void erase_player_cards(CardHand* phand);
+    void erase_player_cards(PlayerIndex pid);
 
     // Serialize the player's current build and store to disk
-    bool save_player_hand(const std::string& filename);
+    bool save_game_state(const std::string& filename);
 
     // Deserialize the player's current build from disk store
-    bool load_player_hand(const std::string& filename);
+    bool load_game_state(const std::string& filename);
 
     /// \brief Update the player's card sprite position.
     ///

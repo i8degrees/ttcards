@@ -69,11 +69,7 @@ class PlayState: public nom::IState
     /// \see nom::InputMapper.
     void on_mouse_button_down(const nom::Event& ev);
 
-    PlayerIndex player_turn() const;
-
-    void set_player_turn(PlayerIndex player_id);
-
-    // Helper method for incrementing to next player's turn
+    // TODO: Move to Game class?
     void end_turn();
 
     // ...Helper methods for game cursor input...
@@ -109,6 +105,21 @@ class PlayState: public nom::IState
     /// \brief Update the players' scoreboard.
     void update_score();
 
+    /// \brief Update the game board with a new card.
+    ///
+    /// \note A new card rendering is generated.
+    bool update_board(const nom::Point2i& grid_pos, Card& pcard);
+
+    bool update_board();
+
+    /// \brief Swap the player's ownership tags.
+    ///
+    /// \remarks This modifies the color of the card's background gradient
+    /// texture (pink and blue).
+    ///
+    /// \see ::update_board
+    void flip_card(PlayerID player_id, const nom::Point2i& rel_board_pos);
+
     bool save_game(const std::string& filename);
     bool load_game(const std::string& filename);
 
@@ -121,12 +132,11 @@ class PlayState: public nom::IState
     nom::Point2i player_cursor_coords_[PlayerIndex::TOTAL_PLAYERS];
 
     /// \brief Rendering bounds for the starting origin of the scoreboard.
-    nom::Point2i player_scoreboard_[PlayerIndex::TOTAL_PLAYERS];
+// TODO: Remove me!
+    // nom::Point2i player_scoreboard_[PlayerIndex::TOTAL_PLAYERS];
 
     /// \brief Rendering bounds for the game cursor.
     nom::Point2i cursor_bounds_[MAX_PLAYER_HAND];
-
-    PlayerIndex player_turn_ = PlayerIndex::TOTAL_PLAYERS;
 
     enum CursorState
     {
@@ -176,7 +186,9 @@ class PlayState: public nom::IState
     std::shared_ptr<nom::IActionObject>
     create_text_action(const std::shared_ptr<nom::Sprite>& sp);
 
-    void initialize_cpu_player_turn();
+    void run_cpu_player_timer();
+
+    void update_player(PlayerIndex pturn);
 };
 
 // Convenience declarations for changing state

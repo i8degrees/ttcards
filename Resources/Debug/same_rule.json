@@ -15,7 +15,7 @@
     },
 
     {
-      "element" : 0,
+      "element" : 2,
       "id" : -1,
       "level" : 0,
       "name" : "INVALID",
@@ -181,5 +181,10 @@
         "type" : 1
       }
     ]
+  },
+
+  "state" :
+  {
+    "cursor_pos" : 0
   }
 }

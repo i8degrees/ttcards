@@ -77,8 +77,6 @@ class CPU_Player: public IPlayer
     /// success (non-NULL result); 1. best_move; 2. edge_move; 3. random_move.
     virtual void update(nom::real32 delta_time) override;
 
-    virtual void draw(nom::IDrawable::RenderTarget& target) override;
-
   protected:
     /// \brief Random play.
     ///

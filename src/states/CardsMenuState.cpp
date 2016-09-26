@@ -34,6 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // Forward declarations
 #include "Game.hpp"
+#include "CardDealer.hpp"
 
 using namespace nom;
 
@@ -55,15 +56,19 @@ void CardsMenuState::on_init(nom::void_ptr data)
 {
   uint16 platform_key_mod = KMOD_LCTRL;
 
+#if defined(NOM_PLATFORM_OSX)
+  // NOTE: Let the Mac end-user opt-in to using the platform's left CMD key,
+  // rather than the default CTRL key that is assigned.
+  //
+  // (This assumes an Apple keyboard or similarly configured hardware).
+  if( this->game->config_->get_bool("MAC_USE_CMD_KEY", false) == true ) {
+    platform_key_mod = KMOD_LGUI;
+  }
+#endif
+
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->cursor_state_ = 0;
-
-  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
-  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
-
-  p1_hand.clear();
-  p2_hand.clear();
 
   // ...Initialize game rules...
 
@@ -71,44 +76,20 @@ void CardsMenuState::on_init(nom::void_ptr data)
   auto cfg = this->game->config_.get();
   this->game->init_game_rules(cfg, rules);
 
-  this->game->hand[PlayerIndex::PLAYER_1].init( this->game->card_res_.get(),
-                                                PlayerIndex::PLAYER_1 );
-  this->game->hand[PlayerIndex::PLAYER_2].init( this->game->card_res_.get(),
-                                                PlayerIndex::PLAYER_2 );
+  this->game->dealer_->clear_hands();
 
-  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
-  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
+  auto p1_db = this->game->dealer_->player_deck(PlayerIndex::PLAYER_1);
   NOM_ASSERT(p1_db != nullptr);
-  NOM_ASSERT(p2_db != nullptr);
 
-  for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
-
-    if( this->game->debug_game_ == false ) {
-      itr->face_down = true;
-    } else {
-      itr->face_down = false;
-    }
-  }
-
-  while( p2_hand.size() < MAX_PLAYER_HAND ) {
-    p2_hand.add_random_card(1, 10, p2_db);
+  while( this->game->dealer_->num_cards(PlayerIndex::PLAYER_2) < MAX_PLAYER_HAND ) {
+    const bool FACE_UP_CARDS = false;
+    this->game->dealer_->add_random_card(PlayerIndex::PLAYER_2, 1, 10,
+                                         FACE_UP_CARDS);
   }
 
   // ...Initialize opponent's rendering position -- to the left of player 1...
-  nom::size_type hand_idx = 0;
-  Point2i p2_pos(Point2i::zero);
-  for( auto card = p2_hand.begin(); card != p2_hand.end(); ++card ) {
-
-    p2_pos.x = PLAYER2_ORIGIN_X;
-    p2_pos.y = PLAYER2_ORIGIN_Y + (CARD_HEIGHT / 2) * hand_idx;
-    ++hand_idx;
-
-    auto card_renderer =
-      card->card_renderer;
-    if( card_renderer != nullptr && card_renderer->valid() == true ) {
-      card_renderer->set_position(p2_pos);
-    }
-  }
+  this->game->dealer_->update_player_hand(PlayerIndex::PLAYER_2,
+                                          PLAYER2_ORIGIN);
 
   if( this->game->cards_page_model_ == nullptr ) {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -139,6 +120,7 @@ void CardsMenuState::on_init(nom::void_ptr data)
   for( auto itr = p1_db->begin(); itr != p1_db->end(); ++itr ) {
     if( (itr)->num > 0 ) {
       deck.push_back(*itr);
+      this->game->dealer_->add_deck_card(PlayerIndex::PLAYER_1, *itr);
     }
   }
 
@@ -244,7 +226,7 @@ void CardsMenuState::on_init(nom::void_ptr data)
     this->remove_player_card(card_sp);
   });
 
-  auto select_card( [=, &p1_hand](const nom::Event& evt) {
+  auto select_card( [=](const nom::Event& evt) {
     // Player's rendered card
     auto page_pos = this->cursor_position();
     auto card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
@@ -258,10 +240,9 @@ void CardsMenuState::on_init(nom::void_ptr data)
     this->game->set_state(Game::State::ConfirmationDialog);
   });
 
-  // TODO: Rename to save_player_game0 ..?
   auto save_game0( [=](const nom::Event& evt) {
 
-    if( this->save_player_hand("build0.json") == false ) {
+    if( this->save_game_state("build0.json") == false ) {
       this->game->cursor_wrong->Play();
     }
 
@@ -269,10 +250,9 @@ void CardsMenuState::on_init(nom::void_ptr data)
     this->game->save_game_sfx->Play();
   });
 
-  // TODO: Rename to save_player_game1 ..?
   auto save_game1( [=](const nom::Event& evt) {
 
-    if( this->save_player_hand("build1.json") == false ) {
+    if( this->save_game_state("build1.json") == false ) {
       this->game->cursor_wrong->Play();
     }
 
@@ -280,10 +260,9 @@ void CardsMenuState::on_init(nom::void_ptr data)
     this->game->save_game_sfx->Play();
   });
 
-  // TODO: Rename to load_player_game0 ..?
   auto load_game0( [=](const nom::Event& evt) {
 
-    if( this->load_player_hand("build0.json") == false ) {
+    if( this->load_game_state("build0.json") == false ) {
       this->game->cursor_wrong->Play();
     }
 
@@ -291,10 +270,9 @@ void CardsMenuState::on_init(nom::void_ptr data)
     this->game->save_game_sfx->Play();
   });
 
-  // TODO: Rename to load_player_game1 ..?
   auto load_game1( [=](const nom::Event& evt) {
 
-    if( this->load_player_hand("build1.json") == false ) {
+    if( this->load_game_state("build1.json") == false ) {
       this->game->cursor_wrong->Play();
     }
 
@@ -308,7 +286,7 @@ void CardsMenuState::on_init(nom::void_ptr data)
     auto card_sp = Card::null;
     this->set_display_card(card_sp);
 
-    this->erase_player_cards(&p1_hand);
+    this->erase_player_cards(PlayerIndex::PLAYER_1);
     this->game->card_place->Play();
   });
 
@@ -458,8 +436,6 @@ void CardsMenuState::on_init(nom::void_ptr data)
   // card of the player's deck, and always render the card as if it was
   // already in the player's deck
   Card card_sp = p1_db->front();
-  tt::set_card_id(card_sp, p1_hand.player_id() );
-
   this->set_display_card(card_sp);
 }
 
@@ -503,19 +479,17 @@ void CardsMenuState::on_resume(nom::void_ptr data)
 
     NOM_DELETE_PTR(response);
 
-    auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
-    auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
-    // auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
+    auto p1_hand = this->game->dealer_->player_hand(PlayerIndex::PLAYER_1);
 
     if( this->game->debug_game_ == true ) {
 
-      while( p1_hand.size() < MAX_PLAYER_HAND ) {
-        p1_hand.add_random_card(1, 10, p1_db);
+      while( p1_hand->size() < MAX_PLAYER_HAND ) {
+        this->game->dealer_->add_random_card(PlayerIndex::PLAYER_1, 1, 10);
       }
     } // end if debug game is enabled
 
     // Validate conditions necessary to advance onwards
-    if( p1_hand.size() < MAX_PLAYER_HAND ) {
+    if( p1_hand->size() < MAX_PLAYER_HAND ) {
       this->game->cursor_wrong->Play();
     } else {
       this->game->set_state(Game::State::Play);
@@ -537,11 +511,9 @@ void CardsMenuState::on_draw(nom::RenderWindow& target)
 {
   this->game->background.draw(target);
 
-  // Player 2 is to the left
-  tt::render_player_hand(target, &this->game->hand[PlayerIndex::PLAYER_2]);
-
-  // Player 1 is to the right
-  tt::render_player_hand(target, &this->game->hand[PlayerIndex::PLAYER_1]);
+  // NOTE: The opponent is to the left of you
+  this->game->dealer_->render_player_hand(PlayerIndex::PLAYER_2, target);
+  this->game->dealer_->render_player_hand(PlayerIndex::PLAYER_1, target);
 
   this->game->gui_window_.draw();
 
@@ -554,10 +526,13 @@ bool CardsMenuState::set_display_card(Card& card)
   bool result = false;
 
   // NOTE: Render the card as if it was already in the player's deck
-  tt::set_card_id(card, this->game->hand[PlayerIndex::PLAYER_1].player_id() );
+  // auto p1_card_renderer =
+  this->game->dealer_->generate_card_texture(PlayerIndex::PLAYER_1, card);
 
-  auto p1_card_renderer =
-    tt::create_card_renderer(this->game->card_res_.get(), card);
+  CardRenderer* p1_card_renderer = nullptr;
+  if( card.card_renderer != nullptr ) {
+    p1_card_renderer = card.card_renderer.get();
+  }
 
   NOM_ASSERT(p1_card_renderer != nullptr);
   NOM_ASSERT(p1_card_renderer->valid() == true);
@@ -940,8 +915,6 @@ void CardsMenuState::add_player_card(const Card& card)
 
   int page_pos = -1;
   int card_pos = 0;
-
-  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
   Point2i p1_card_pos(Point2i::zero);
 
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
@@ -949,7 +922,7 @@ void CardsMenuState::add_player_card(const Card& card)
     return;
   }
 
-  Card c = card;
+  Card menu_card = card;
   page_pos = this->cursor_position();
   card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
 
@@ -959,19 +932,21 @@ void CardsMenuState::add_player_card(const Card& card)
   // 2. Sync the cards model to reflect modified card count (-1)
   // 3. Update player hand w/ modified card.
   // 5. Queue audio clip
-  if( c.num > 0 ) {
+  if( menu_card.num > 0 ) {
+    --menu_card.num;
 
-    c.num = (c.num - 1);
+    auto add_card_result =
+      this->game->dealer_->add_player_card(PlayerIndex::PLAYER_1, menu_card);
+    if( add_card_result == true ) {
+      this->game->dealer_->update_player_hand(PlayerIndex::PLAYER_1,
+                                              PLAYER1_ORIGIN);
 
-    if( p1_hand.push_back(c) == true ) {
-
-      this->game->cards_page_model_->insert_card(card_pos, c);
-
-      tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
+      this->game->cards_page_model_->insert_card(card_pos, menu_card);
 
       // Success; card has been added to the player's hand
       this->game->card_place->Play();
     } else {
+      // Err
       this->game->cursor_wrong->Play();
     }
   }
@@ -983,8 +958,6 @@ void CardsMenuState::remove_player_card(const Card& card)
 
   int page_pos = -1;
   int card_pos = 0;
-
-  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
   Point2i p1_card_pos(Point2i::zero);
 
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
@@ -992,16 +965,13 @@ void CardsMenuState::remove_player_card(const Card& card)
     return;
   }
 
-  Card c = card;
+  Card menu_card = card;
   page_pos = this->cursor_position();
   card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
 
   // Use the opponent's card deck to compare total number of cards (to return)
-  //
-  // TODO: This is stub code and needs to be replaced with an actual deck
-  // query that is independent of the opponent's total number of cards count
   Card ref_card =
-    this->game->cards_db_[PlayerIndex::PLAYER_1]->find(c.id);
+    this->game->dealer_->player_deck(PlayerIndex::PLAYER_1)->find(menu_card.id);
 
   // Card logic for removing a card from the player's hand
   //
@@ -1009,18 +979,22 @@ void CardsMenuState::remove_player_card(const Card& card)
   // 2. Sync the cards model to reflect modified card count (+1)
   // 3. Remove the card from the player's hand.
   // 5. Queue audio clip
-  if( c.num < ref_card.num ) {
+  // Not including
+  if( menu_card.num < (ref_card.num - 1) ) {
+    ++menu_card.num;
 
-    c.num = (c.num + 1);
+    auto rm_card_result =
+      this->game->dealer_->remove_player_card(PlayerIndex::PLAYER_1, menu_card);
+    if( rm_card_result == true ) {
+      this->game->dealer_->update_player_hand(PlayerIndex::PLAYER_1,
+                                              PLAYER1_ORIGIN);
 
-    if( p1_hand.erase(c) == true ) {
+      this->game->cards_page_model_->insert_card(card_pos, menu_card);
 
-      this->game->cards_page_model_->insert_card(card_pos, c);
-
-      tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
-
+      // Success; card has been removed from the player's hand
       this->game->cursor_cancel->Play();
     } else {
+      // Err
       this->game->cursor_wrong->Play();
     }
   }
@@ -1062,16 +1036,9 @@ void CardsMenuState::append_player_cards(const Cards& cards)
   }
 }
 
-void CardsMenuState::erase_player_cards(CardHand* phand)
+void CardsMenuState::erase_player_cards(PlayerIndex pid)
 {
-  NOM_ASSERT(phand != nullptr);
-  if( phand != nullptr ) {
-    phand->clear();
-  } else {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Failed to erase the player's hand:",
-                  "memory location was NULL." );
-  }
+  this->game->dealer_->clear_hand(pid);
 
   this->game->cards_page_model_->erase_cards();
 
@@ -1084,16 +1051,16 @@ void CardsMenuState::erase_player_cards(CardHand* phand)
   this->set_display_card(card_sp);
 }
 
-bool CardsMenuState::save_player_hand(const std::string& filename)
+bool CardsMenuState::save_game_state(const std::string& filename)
 {
   auto& paths = this->game->paths_;
-  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto p1_hand = this->game->dealer_->player_hand(PlayerIndex::PLAYER_1);
 
   const std::string SAVE_GAME_PATH =
     paths["SAVE_DECK_DIR"] + filename;
 
-  if( this->game->save_player_hand( nullptr, &p1_hand, nullptr,
-                                    false, SAVE_GAME_PATH ) == false )
+  if( this->game->save_game_state(nullptr, p1_hand, nullptr,
+                                  SAVE_GAME_PATH ) == false )
   {
     this->game->cursor_wrong->Play();
     return false;
@@ -1104,40 +1071,46 @@ bool CardsMenuState::save_player_hand(const std::string& filename)
   return true;
 }
 
-// TODO: Consider reloading the player's deck when it is empty..?
-bool CardsMenuState::load_player_hand(const std::string& filename)
+bool CardsMenuState::load_game_state(const std::string& filename)
 {
   auto& paths = this->game->paths_;
-  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto p1_hand = this->game->dealer_->player_hand(PlayerIndex::PLAYER_1);
+  nom::Value game;
 
   const std::string SAVE_GAME_PATH =
     paths["SAVE_DECK_DIR"] + filename;
 
-  if( this->game->load_player_hand( nullptr, &p1_hand, nullptr,
-                                    false, SAVE_GAME_PATH ) == false )
+  if( this->game->load_game_state(nullptr, p1_hand, nullptr,
+                                  SAVE_GAME_PATH, game ) == false )
   {
-    this->game->cursor_wrong->Play();
-    return false;
-  }
-
-  if( tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN) > 0 ) {
-
-    // Reset UI
-    this->update_page_count_title(0);
-    this->set_cursor_position(0);
-
-    if( this->update_display_card() == true ) {
-
-      // Success!
-      this->game->save_game_sfx->Play();
-
-      return true;
-    }
-  } else {
     // Err; the player's hand was not updated
     this->game->cursor_wrong->Play();
     return false;
   }
+
+  if( this->game->dealer_->update_player_hand(PlayerIndex::PLAYER_1,
+                                              PLAYER1_ORIGIN) == false )
+  {
+    // TODO: Err handling && logging
+    NOM_ASSERT_INVALID_PATH();
+    return false;
+  }
+
+  auto cursor_pos = this->game->cursor_pos_;
+  if( cursor_pos >= 0 && cursor_pos <= 11 ) {
+    NOM_DUMP(this->game->cursor_pos_);
+    this->set_cursor_position(cursor_pos);
+  }
+
+  if( this->update_display_card() == false ) {
+    // TODO: Err handling && logging
+    NOM_ASSERT_INVALID_PATH();
+  }
+
+  // Success
+  this->game->load_game_sfx->Play();
+
+  return true;
 }
 
 bool CardsMenuState::update_display_card()

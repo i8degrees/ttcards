@@ -93,8 +93,7 @@ class GameOverState: public nom::IState
     // Set the card rendering layout for the player and opponent
     bool update_player_positions();
 
-    void play_gameover_animation( CardCollection* db, CardHand* phand,
-                                  int card_pos );
+    void play_gameover_animation(CardHand* phand, int card_pos);
 
     Game* game;
 

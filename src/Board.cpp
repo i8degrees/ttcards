@@ -43,8 +43,7 @@ using namespace nom;
 namespace tt {
 
 Board::Board() :
-  rules_(nullptr),
-  card_res_(nullptr)
+  rules_(nullptr)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
@@ -55,14 +54,13 @@ Board::~Board()
 }
 
 bool
-Board::initialize(tt::RegionRuleSet* ruleset, CardResourceLoader* res)
+Board::initialize(tt::RegionRuleSet* ruleset)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 
   this->rules_ = ruleset;
-  this->card_res_ = res;
 
-  if( this->rules_ == nullptr || this->card_res_ == nullptr ) {
+  if( this->rules_ == nullptr ) {
     return false;
   }
 
@@ -437,53 +435,10 @@ CardID Board::status(const nom::Point2i& rel_board_pos) const
 
 void Board::update(const nom::Point2i& grid_pos, Card& pcard)
 {
-  Point2i board_pos(Point2i::zero);
+  auto x = grid_pos.x;
+  auto y = grid_pos.y;
 
-  if( this->grid[grid_pos.x][grid_pos.y].element() != 0 ) {
-
-    // ...The region elemental rule-set is in effect...
-
-    if( pcard.element == this->grid[grid_pos.x][grid_pos.y].element() ) {
-      tt::increase_card_rank(RANK_NORTH, pcard);
-      tt::increase_card_rank(RANK_EAST, pcard);
-      tt::increase_card_rank(RANK_SOUTH, pcard);
-      tt::increase_card_rank(RANK_WEST, pcard);
-    } else {
-      tt::decrease_card_rank(RANK_NORTH, pcard);
-      tt::decrease_card_rank(RANK_EAST, pcard);
-      tt::decrease_card_rank(RANK_SOUTH, pcard);
-      tt::decrease_card_rank(RANK_WEST, pcard);
-    }
-  }
-
-  // Move the rendering of the player's card to the board
-  auto old_renderer =
-    pcard.card_renderer;
-  if( old_renderer == nullptr || old_renderer->valid() == false ) {
-
-    // Always render player cards on the board face up!
-    pcard.face_down = false;
-    auto renderer = tt::create_card_renderer(this->card_res_, pcard);
-    pcard.card_renderer.reset(renderer);
-  }
-
-  auto new_renderer =
-    pcard.card_renderer;
-  if( new_renderer != nullptr ) {
-
-    // Move the player's card position to the applicable board position
-    IntRect screen_bounds =
-      this->grid[grid_pos.x][grid_pos.y].bounds();
-    board_pos.x = screen_bounds.w;
-    board_pos.y = screen_bounds.h;
-    new_renderer->set_position(board_pos);
-  } else {
-    pcard.card_renderer.reset( tt::create_placeholder_card_renderer() );
-    NOM_ASSERT(pcard.card_renderer == nullptr);
-    NOM_ASSERT(pcard.card_renderer->valid() != false);
-  }
-
-  this->grid[grid_pos.x][grid_pos.y].set_tile(pcard);
+  this->grid[x][y].set_tile(pcard);
 }
 
 bool Board::update(const Cards& cards)
@@ -518,42 +473,45 @@ PlayerID Board::getPlayerID(nom::int32 x, nom::int32 y) const
   return this->grid[x][y].tile_card.player_id;
 }
 
-void Board::flip_card(const nom::Point2i& rel_board_pos, PlayerID player_id)
+Card
+Board::get(nom::int32 x, nom::int32 y) const
 {
-  int x = rel_board_pos.x;
-  int y = rel_board_pos.y;
-  Point2i board_pos(Point2i::zero);
+  auto result = Card::null;
 
-  Card& pcard = this->grid[x][y].tile_card;
+  if( x >= 0 && x != BOARD_GRID_WIDTH &&
+      y >= 0 && y != BOARD_GRID_HEIGHT )
+  {
+    result = this->grid[x][y].tile();
+  }
 
-  pcard.player_id = player_id;
-
-  // Render a new card background based on the new owner
-  auto card_renderer =
-    tt::create_card_renderer(this->card_res_, pcard);
-  pcard.card_renderer.reset(card_renderer);
-  NOM_ASSERT(pcard.card_renderer != nullptr);
-  NOM_ASSERT(pcard.card_renderer->valid() == true);
-
-  // Move the player's card position to the applicable board position
-  IntRect screen_bounds =
-    this->grid[x][y].bounds();
-  board_pos.x = screen_bounds.w;
-  board_pos.y = screen_bounds.h;
-  pcard.card_renderer->set_position(board_pos);
+  return result;
 }
 
-const Card& Board::get(nom::int32 x, nom::int32 y) const
+Card
+Board::get(const nom::Point2i& grid_pos) const
 {
-  return this->grid[x][y].tile();
+  return this->get(grid_pos.x, grid_pos.y);
 }
 
-const BoardTile& Board::tile(nom::int32 x, nom::int32 y) const
+BoardTile Board::tile(nom::int32 x, nom::int32 y) const
 {
-  return this->grid[x][y];
+  auto result = BoardTile::null;
+
+  if( x >= 0 && x != BOARD_GRID_WIDTH &&
+      y >= 0 && y != BOARD_GRID_HEIGHT )
+  {
+    result = this->grid[x][y];
+  }
+
+  return result;
 }
 
-void Board::draw ( nom::IDrawable::RenderTarget& target )
+BoardTile Board::tile(const nom::Point2i& grid_pos) const
+{
+  return this->tile(grid_pos.x, grid_pos.y);
+}
+
+void Board::draw(nom::IDrawable::RenderTarget& target)
 {
   for( auto y = 0; y != BOARD_GRID_HEIGHT; ++y ) {
     for( auto x = 0; x != BOARD_GRID_WIDTH; ++x ) {
@@ -567,33 +525,42 @@ void Board::draw ( nom::IDrawable::RenderTarget& target )
           card_renderer->render(target);
         }
       }
+    } // end for loop rows
+  } // end for loop cols
+}
 
-      BoardTile tile = this->tile(x, y);
+void Board::render_elementals(const CardResourceLoader* res,
+                              const nom::IDrawable::RenderTarget& target)
+{
+  for( auto y = 0; y != BOARD_GRID_HEIGHT; ++y ) {
+    for( auto x = 0; x != BOARD_GRID_WIDTH; ++x ) {
+
+      auto pcard = this->get(x, y);
+      auto tile = this->tile(x, y);
 
       // Only render the elemental when the space is unoccupied
-      if( tile.element() != 0 && card.id == BAD_CARD_ID ) {
+      if( tile.element() != 0 && pcard.id == BAD_CARD_ID ) {
 
         nom::Point2i element_pos, board_pos;
 
-        // local board position
+        // local board positions
         board_pos.x = tile.bounds().w;
         board_pos.y = tile.bounds().h;
 
         element_pos.x =
-          board_pos.x + (CARD_WIDTH - ELEMENT_WIDTH) / 2;
+          board_pos.x + (CARD_DIMS.w - ELEMENT_WIDTH) / 2;
 
         element_pos.y =
-          board_pos.y + (CARD_HEIGHT - ELEMENT_WIDTH) / 2;
+          board_pos.y + (CARD_DIMS.h - ELEMENT_WIDTH) / 2;
 
         // TODO: Update the element position only when we need to -- this will
         // help ease further integration of animations
-        tt::render_card_element(  tile.element(), element_pos,
-                                  this->card_res_->card_elements_.get(),
-                                  target );
+        tt::render_card_element(tile.element(), element_pos,
+                                res->card_elements_.get(), target );
       }
 
-    } // end for loop rows
-  } // end for loop cols
+    } // end for x loop
+  } // end for y loop
 }
 
 board_tiles Board::free_tiles() const

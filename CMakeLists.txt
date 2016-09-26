@@ -253,6 +253,8 @@ if ( PLATFORM_OSX )
     # Bundle our dependencies into our application bundle
     install(  DIRECTORY
               ${NOMLIB_LIBRARIES} # nomlib-component.framework
+              # Bundle nomlib.framework headers
+              "$ENV{HOME}/Library/Frameworks/nomlib.framework"
               DESTINATION "${INSTALL_FRAMEWORK_PATH}"
               PATTERN ".*" EXCLUDE ) # do not include dotfiles
 

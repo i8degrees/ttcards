@@ -55,90 +55,21 @@ CardHand::~CardHand()
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-bool CardHand::init(CardResourceLoader* res, PlayerIndex pid)
+bool CardHand::init()
 {
   this->cards.reserve(MAX_PLAYER_HAND);
-
-  this->card_res_ = res;
-  this->player_index_ = pid;
-
-  NOM_ASSERT(this->card_res_ != nullptr);
-  if( this->card_res_ != nullptr) {
-    return true;
-  }
-
-  return false;
-}
-
-bool CardHand::update()
-{
-  NOM_ASSERT(this->card_res_ != nullptr);
-  if( this->card_res_ == nullptr) {
-    // TODO: logging && err handling
-    return false;
-  }
-
-  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr ) {
-
-    Card& pcard = *itr;
-
-    auto renderer = tt::create_card_renderer(this->card_res_, pcard);
-    pcard.card_renderer.reset(renderer);
-
-    NOM_ASSERT(pcard.card_renderer != nullptr);
-    NOM_ASSERT(pcard.card_renderer->valid() == true);
-    if( pcard.card_renderer == nullptr ) {
-      // TODO: logging && err handling
-      return false;
-    }
-
-    if( pcard.card_renderer->valid() == false ) {
-      // TODO: logging && err handling
-      return false;
-    }
-  } // end for loop
-
-  // Reset the player's selected card to the top
-  this->set_position(0);
 
   return true;
 }
 
 bool CardHand::push_back(const Card& card)
 {
-  Card pcard = card;
-
   // No go -- we are out of space!
   if( this->size() > (MAX_PLAYER_HAND - 1) ) {
     return false;
   }
 
-  // IMPORTANT: To minimize rendering updates, the card's initial attributes
-  // should be set before the rendering of the hand occurs
-  tt::set_card_id(pcard, this->player_id() );
-
-  if( pcard.face_down == true ) {
-    // No card face
-    auto renderer = tt::create_card_renderer(this->card_res_, Card::null);
-    pcard.card_renderer.reset(renderer);
-  } else {
-    auto renderer = tt::create_card_renderer(this->card_res_, pcard);
-    pcard.card_renderer.reset(renderer);
-  }
-
-  NOM_ASSERT(pcard.card_renderer != nullptr);
-  if( pcard.card_renderer == nullptr ) {
-    // TODO: logging && handle err
-    return false;
-  }
-
-  NOM_ASSERT(pcard.card_renderer->valid() == true);
-  if( pcard.card_renderer->valid() == false ) {
-    // TODO: logging && handle err
-    return false;
-  }
-
-  this->cards.push_back(pcard);
+  this->cards.push_back(card);
 
   // Reset the player's selected card to the top
   this->set_position(0);
@@ -182,24 +113,6 @@ bool CardHand::erase(const Card& card)
   this->front();
 
   return true;
-}
-
-void CardHand::clearSelectedCard()
-{
-  this->selectedCard = Card();
-}
-
-const Card& CardHand::getSelectedCard()
-{
-  return this->selectedCard;
-}
-
-void CardHand::selectCard(const Card& card)
-{
-  if ( this->exists ( card ) )
-  {
-    this->selectedCard = card;
-  }
 }
 
 bool CardHand::empty() const
@@ -287,30 +200,6 @@ bool CardHand::exists(const Card& card) const
   return false;
 }
 
-void
-CardHand::add_random_card(  nom::uint32 min_level, nom::uint32 max_level,
-                            const CardCollection* db )
-{
-  nom::size_type num_cards = 0;
-  int32 random_card_id = 0;
-  Card card(Card::null);
-
-  if( db == nullptr ) {
-    return;
-  }
-
-  // ...Pick a card at random
-  num_cards = (db->size() - 1);
-  random_card_id = nom::uniform_int_rand<nom::uint32>(0, num_cards);
-
-  card = db->find(random_card_id);
-  if( card != Card::null && card.num > 0 && card.level <= max_level &&
-      card.level >= min_level )
-  {
-    this->push_back(card);
-  }
-}
-
 Card CardHand::strongest()
 {
   Cards strongest_cards(this->cards);
@@ -360,16 +249,26 @@ ConstCardsIterator CardHand::end() const
   return this->cards.end();
 }
 
-PlayerID CardHand::player_id() const
-{
-  auto id = tt::player_id(this->player_index_);
+// Private scope
 
-  return id;
+// NOTE: DEPRECATED; DO NOT USE
+const Card& CardHand::getSelectedCard()
+{
+  return this->selectedCard;
 }
 
-PlayerIndex CardHand::player_index() const
+// NOTE: DEPRECATED; DO NOT USE
+void CardHand::clearSelectedCard()
 {
-  return this->player_index_;
+  this->selectedCard = Card();
+}
+
+// NOTE: DEPRECATED; DO NOT USE
+void CardHand::selectCard(const Card& card)
+{
+  if( this->exists(card) == true ) {
+    this->selectedCard = card;
+  }
 }
 
 std::ostream& operator <<(std::ostream& os, const CardHand& rhs)
@@ -404,7 +303,7 @@ serialize_hand(const CardHand* phand)
 }
 
 tt::Cards
-deserialize_hand(PlayerID player_id, const nom::Value& objects)
+deserialize_hand(const nom::Value& objects)
 {
   Card card;
   Cards cards;
@@ -413,10 +312,6 @@ deserialize_hand(PlayerID player_id, const nom::Value& objects)
   for( auto itr = objects.begin(); itr != objects.end(); ++itr ) {
 
     card = tt::deserialize_card(*itr);
-
-    // Set rendering color && ownership info
-    tt::set_card_id(card, player_id);
-
     cards.push_back(card);
   }
 

@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardResourceLoader.hpp"
 #include "Board.hpp"
 #include "helpers.hpp"
+#include "CardDealer.hpp"
 #include "states/GameOverState.hpp"
 #include "states/ConfirmationDialogState.hpp"
 #include "states/PauseState.hpp"
@@ -73,6 +74,10 @@ Game::Game(nom::int32 argc, char* argv[]) :
   game(this)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
+
+  this->player_turn_ = PlayerIndex::TOTAL_PLAYERS;
+
+  this->game->dealer_.reset( new CardDealer() );
 
   std::ostringstream ttcards_version;
 
@@ -584,11 +589,6 @@ bool Game::on_init()
     return false;
   }
 
-  // Set both player's scoreboard fonts
-  for( nom::uint32 idx = 0; idx < TOTAL_PLAYERS; ++idx ) {
-    this->scoreboard_text[idx].set_font(&this->game->scoreboard_font);
-  }
-
   // Initialize game over text
   this->game->gameover_text.set_font(&this->game->gameover_font);
 
@@ -671,24 +671,7 @@ bool Game::on_init()
   NOM_ASSERT(this->game->blinking_cursor_action_ != nullptr);
   this->game->blinking_cursor_action_->set_name("blinking_cursor_action");
 
-  // ...Cards database (decks)...
-
-  this->game->cards_db_[PlayerIndex::PLAYER_1].reset( new CardCollection() );
-  this->game->cards_db_[PlayerIndex::PLAYER_2].reset( new CardCollection() );
-
-  if( this->game->cards_db_[PlayerIndex::PLAYER_1] == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not initialize the player's card database:",
-                  "memory allocation failure." );
-    return false;
-  }
-
-  if( this->game->cards_db_[PlayerIndex::PLAYER_2] == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not initialize the opponent's card database:",
-                  "memory allocation failure." );
-    return false;
-  }
+  // ...Card assets...
 
   this->game->card_res_.reset( new CardResourceLoader() );
   NOM_ASSERT(this->game->card_res_ != nullptr);
@@ -700,6 +683,13 @@ bool Game::on_init()
                   "Could not bootstrap card resources." );
     return false;
   }
+
+  this->game->dealer_->register_player( PlayerIndex::PLAYER_1,
+                                        this->game->card_res_.get(),
+                                        this->game->scoreboard_font );
+  this->game->dealer_->register_player( PlayerIndex::PLAYER_2,
+                                        this->game->card_res_.get(),
+                                        this->game->scoreboard_font );
 
   // IMPORTANT: Initializing this more than once leads to a crash within
   // libRocket.
@@ -757,46 +747,6 @@ bool Game::on_init()
   NOM_ASSERT(this->game->triad_action_ != nullptr);
   this->game->triad_action_->set_name("triad_action");
 
-  // ...win, lose, draw text actions...
-
-  this->game->won_text_sprite_ =
-    tt::generate_text_sprite(this->game->gameover_text, "You Win!");
-  NOM_ASSERT(this->game->won_text_sprite_ != nullptr);
-  NOM_ASSERT(this->game->won_text_sprite_->valid() == true);
-  this->game->won_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
-  nom::set_alignment( this->game->won_text_sprite_.get(), Point2i::zero,
-                      GAME_RESOLUTION, Anchor::MiddleCenter );
-
-  this->game->lost_text_sprite_ =
-    tt::generate_text_sprite(this->game->gameover_text, "You Lose...");
-  NOM_ASSERT(this->game->lost_text_sprite_ != nullptr);
-  NOM_ASSERT(this->game->lost_text_sprite_->valid() == true);
-  this->game->lost_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
-  nom::set_alignment( this->game->lost_text_sprite_.get(), Point2i::zero,
-                      GAME_RESOLUTION, Anchor::MiddleCenter );
-
-  this->game->tied_text_sprite_ =
-    tt::generate_text_sprite(this->game->gameover_text, "Draw");
-  NOM_ASSERT(this->game->tied_text_sprite_ != nullptr);
-  NOM_ASSERT(this->game->tied_text_sprite_->valid() == true);
-  this->game->tied_text_sprite_->set_alpha(Color4i::ALPHA_TRANSPARENT);
-  nom::set_alignment( this->game->tied_text_sprite_.get(), Point2i::zero,
-                      GAME_RESOLUTION, Anchor::MiddleCenter );
-
-  this->game->combo_text_sprite_ =
-    tt::generate_text_sprite(this->game->gameover_text, "Combo!");
-  NOM_ASSERT(this->game->combo_text_sprite_ != nullptr);
-  NOM_ASSERT(this->game->combo_text_sprite_->valid() == true);
-  nom::set_alignment( this->game->combo_text_sprite_.get(), Point2i::zero,
-                      GAME_RESOLUTION, Anchor::MiddleRight );
-
-  this->game->same_text_sprite_ =
-    tt::generate_text_sprite(this->game->gameover_text, "Same!");
-  NOM_ASSERT(this->game->same_text_sprite_ != nullptr);
-  NOM_ASSERT(this->game->same_text_sprite_->valid() == true);
-  nom::set_alignment( this->game->same_text_sprite_.get(), Point2i::zero,
-                      GAME_RESOLUTION, Anchor::MiddleRight );
-
   // ...Initialize default game window fade out animation...
 
   this->game->fade_window_sprite_ = std::make_shared<Sprite>();
@@ -826,47 +776,68 @@ bool Game::on_init()
     this->listener_.reset( new nom::NullListener() );
 
     for( auto idx = 0; idx != NUM_SOUND_BUFFERS; ++idx ) {
-      this->sound_buffers[idx].reset( new nom::NullSoundBuffer() );
+      this->sound_buffers[idx].reset( new nom::SoundBuffer() );
     }
   }
 
   // Load audio resources
   if( this->game->config_->get_bool("AUDIO_SFX", true) ) {
+    // FIXME:
+   //  auto audio_buffer =
+   //    nom::create_audio_buffer(this->config_->get_string("CURSOR_MOVE") );
+   //  this->sound_buffers[0].reset(audio_buffer);
+   // if( this->sound_buffers[0] != nullptr ) {
+   //    NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+   //                 this->config_->get_string("CURSOR_MOVE") );
+   //  }
 
-    if ( this->sound_buffers[0]->load( this->config_->get_string("CURSOR_MOVE") ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CURSOR_MOVE") );
-    }
+   //  audio_buffer =
+   //    nom::create_audio_buffer(this->config_->get_string("CURSOR_CANCEL") );
+   //  this->sound_buffers[1].reset(audio_buffer);
+   //  if( this->sound_buffers[1] != nullptr ) {
+   //    NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+   //                 this->config_->get_string("CURSOR_CANCEL") );
+   //  }
 
-    if ( this->sound_buffers[1]->load( this->config_->get_string("CURSOR_CANCEL") ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CURSOR_CANCEL") );
-    }
+   //  audio_buffer =
+   //    nom::create_audio_buffer(this->config_->get_string("CURSOR_WRONG") );
+   //  this->sound_buffers[2].reset(audio_buffer);
+   //  if( this->sound_buffers[2] != nullptr ) {
+   //    NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+   //                 this->config_->get_string("CURSOR_WRONG") );
+   //  }
 
-    if ( this->sound_buffers[2]->load( this->config_->get_string("CURSOR_WRONG") ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CURSOR_WRONG") );
-    }
+   //  audio_buffer =
+   //    nom::create_audio_buffer(this->config_->get_string("CARD_PLACE") );
+   //  this->sound_buffers[3].reset(audio_buffer);
+   //  if( this->sound_buffers[3] != nullptr ) {
+   //    NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+   //                 this->config_->get_string("CARD_PLACE") );
+   //  }
 
-    if ( this->sound_buffers[3]->load( this->config_->get_string("CARD_PLACE") ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CARD_PLACE") );
-    }
+   //  audio_buffer =
+   //    nom::create_audio_buffer(this->config_->get_string("CARD_FLIP") );
+   //  this->sound_buffers[4].reset(audio_buffer);
+   //  if( this->sound_buffers[4] != nullptr ) {
+   //    NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+   //                 this->config_->get_string("CARD_FLIP") );
+   //  }
 
-    if ( this->sound_buffers[4]->load( this->config_->get_string("CARD_FLIP") ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CARD_FLIP") );
-    }
+   //  audio_buffer =
+   //    nom::create_audio_buffer(this->config_->get_string("SFX_LOAD_GAME") );
+   //  this->sound_buffers[5].reset(audio_buffer);
+   //  if( this->sound_buffers[5] != nullptr ) {
+   //    NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+   //                 this->config_->get_string("SFX_LOAD_GAME") );
+   //  }
 
-    if ( this->sound_buffers[5]->load( this->config_->get_string("SFX_LOAD_GAME") ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("SFX_LOAD_GAME") );
-    }
-
-    if ( this->sound_buffers[6]->load( this->config_->get_string("SFX_SAVE_GAME") ) == false )
-    {
-      NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("SFX_SAVE_GAME") );
-    }
+   //  audio_buffer =
+   //    nom::create_audio_buffer(this->config_->get_string("SFX_SAVE_GAME") );
+   //  this->sound_buffers[6].reset(audio_buffer);
+   //  if( this->sound_buffers[6] != nullptr ) {
+   //    NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+   //                 this->config_->get_string("SFX_SAVE_GAME") );
+   //  }
 
 #if defined(NOM_USE_OPENAL)
     this->cursor_move.reset( new nom::Sound() );
@@ -878,13 +849,14 @@ bool Game::on_init()
     this->save_game_sfx.reset( new nom::Sound() );
 #endif // defined NOM_USE_OPENAL
 
-    this->cursor_move->setBuffer( *this->sound_buffers[0] );
-    this->cursor_cancel->setBuffer( *this->sound_buffers[1] );
-    this->cursor_wrong->setBuffer( *this->sound_buffers[2] );
-    this->card_place->setBuffer( *this->sound_buffers[3] );
-    this->card_flip->setBuffer( *this->sound_buffers[4] );
-    this->load_game_sfx->setBuffer( *this->sound_buffers[5] );
-    this->save_game_sfx->setBuffer( *this->sound_buffers[6] );
+    // FIXME:
+    // this->cursor_move->load_buffer( *this->sound_buffers[0] );
+    // this->cursor_cancel->load_buffer( *this->sound_buffers[1] );
+    // this->cursor_wrong->load_buffer( *this->sound_buffers[2] );
+    // this->card_place->load_buffer( *this->sound_buffers[3] );
+    // this->card_flip->load_buffer( *this->sound_buffers[4] );
+    // this->load_game_sfx->load_buffer( *this->sound_buffers[5] );
+    // this->save_game_sfx->load_buffer( *this->sound_buffers[6] );
   } else {
     this->cursor_move.reset( new nom::NullSound() );
     this->cursor_cancel.reset( new nom::NullSound() );
@@ -901,24 +873,31 @@ bool Game::on_init()
       this->config_->get_string("MUSIC_THEME_TRACK");
     const std::string MUSIC_WIN_TRACK =
       this->config_->get_string("MUSIC_WIN_TRACK");
+    // FIXME
+    // auto audio_buffer =
+    //   nom::create_audio_buffer(this->config_->get_string("MUSIC_THEME_TRACK") );
+    // this->sound_buffers[7].reset(audio_buffer);
+    // if( this->sound_buffers[7] != nullptr ) {
+    //   NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+    //                this->config_->get_string("MUSIC_THEME_TRACK") );
+    // }
 
-    if( this->sound_buffers[7]->load(MUSIC_THEME_TRACK) == false ) {
-      NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load resource file: ", MUSIC_THEME_TRACK );
-    }
-
-    if( this->sound_buffers[8]->load(MUSIC_WIN_TRACK) == false ) {
-      NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load resource file: ", MUSIC_WIN_TRACK );
-    }
+    // audio_buffer =
+    //   nom::create_audio_buffer(this->config_->get_string("MUSIC_WIN_TRACK") );
+    // this->sound_buffers[8].reset(audio_buffer);
+    // if( this->sound_buffers[8] != nullptr ) {
+    //   NOM_LOG_INFO(TTCARDS, "Could not load resource file: ",
+    //                this->config_->get_string("MUSIC_WIN_TRACK") );
+    // }
 
     #if defined(NOM_USE_OPENAL)
       this->theme_track_.reset( new nom::Music() );
       this->winning_track.reset( new nom::Music() );
     #endif // defined NOM_USE_OPENAL
 
-    this->theme_track_->setBuffer( *this->sound_buffers[7] );
-    this->winning_track->setBuffer( *this->sound_buffers[8] );
+    // FIXME:
+    // this->theme_track_->load_buffer( *this->sound_buffers[7] );
+    // this->winning_track->load_buffer( *this->sound_buffers[8] );
   } // end if AUDIO_TRACKS
   else {
     this->theme_track_.reset( new nom::NullMusic() );
@@ -993,6 +972,16 @@ bool Game::on_init()
   });
 
   auto platform_key_mod = KMOD_LCTRL;
+
+#if defined(NOM_PLATFORM_OSX)
+  // NOTE: Let the Mac end-user opt-in to using the platform's left CMD key,
+  // rather than the default CTRL key that is assigned.
+  //
+  // (This assumes an Apple keyboard or similarly configured hardware).
+  if( this->game->config_->get_bool("MAC_USE_CMD_KEY", false) == true ) {
+    platform_key_mod = KMOD_LGUI;
+  }
+#endif
 
   if( this->game->debug_game_ == true ) {
     auto jumpto_gameover_state( [=](const nom::Event& evt) {
@@ -1304,104 +1293,9 @@ create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
   return flip_card_action;
 }
 
-bool Game::save_deck(CardCollection* deck, const std::string& filename)
-{
-  nom::Value game;
-
-  auto fp = nom::make_unique_json_serializer();
-  if( fp == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS,
-                  "Could not open input file: failure to allocate memory!" );
-    return false;
-  }
-
-  if( deck != nullptr ) {
-    // ...Arrays enclosed in an object...
-    game["cards"] = tt::serialize_deck(deck);
-
-    if( fp->save(game, filename) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Unable to save game at:", filename );
-      return false;
-    }
-  }
-
-  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Game saved at:", filename );
-
-  // Success!
-  return true;
-}
-
-bool Game::load_new_deck(CardCollection* deck, const std::string& filename)
-{
-  Cards cards;
-  nom::Value game;
-
-  auto fp = nom::make_unique_json_deserializer();
-  if( fp == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not open input file: failure to allocate memory!" );
-    return false;
-  }
-
-  if( fp->load(filename, game) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to load game from:", filename );
-    return false;
-  }
-
-  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Game loaded from:", filename );
-
-  if( deck != nullptr ) {
-    // ...Arrays enclosed in an object...
-    cards = tt::deserialize_deck(game["basic"]);
-
-    deck->clear();
-    deck->append_cards(cards);
-  }
-
-  // Success!
-  return true;
-}
-
-bool Game::load_deck(CardCollection* deck, const std::string& filename)
-{
-  Cards cards;
-  nom::Value game;
-
-  auto fp = nom::make_unique_json_deserializer();
-  if( fp == nullptr ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Could not open input file: failure to allocate memory!" );
-    return false;
-  }
-
-  if( fp->load(filename, game) == false ) {
-    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Unable to load game from:", filename );
-    return false;
-  }
-
-  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Game loaded from:", filename );
-
-  // ...Arrays enclosed in an object...
-  if( deck != nullptr ) {
-    cards = tt::deserialize_deck(game["cards"]);
-
-    deck->clear();
-    deck->append_cards(cards);
-  }
-
-  // Success!
-  return true;
-}
-
 bool
-Game::save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                        bool game_state, const std::string& filename )
+Game::save_game_state(  Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                        const std::string& filename )
 {
   nom::Value game;
 
@@ -1425,7 +1319,8 @@ Game::save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
     game["opponent"]["hand"] = tt::serialize_hand(p2_hand);
   }
 
-  if( game_state == true ) {
+  // NOTE: Store game cursor position
+  if( this->game->cursor_pos_ != -1 ) {
     game["state"]["cursor_pos"] = this->game->cursor_pos_;
   }
 
@@ -1443,13 +1338,13 @@ Game::save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
 }
 
 bool
-Game::load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
-                        bool game_state, const std::string& filename )
+Game::load_game_state(  Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                        const std::string& filename, Value& game )
 {
   Cards board_cards;
   Cards p1_cards, p2_cards;
-  nom::Value game;
-
+  // nom::Value game;
+#if 0
   auto fp = nom::make_unique_json_deserializer();
   if( fp == nullptr ) {
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -1462,7 +1357,29 @@ Game::load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
                   "Unable to load game from:", filename );
     return false;
   }
+#else
+  if( p1_hand != nullptr ) {
+    auto p1_hand_result =
+      this->game->dealer_->load_player_hand(PlayerIndex::PLAYER_1,
+                                            filename, game);
+    if( p1_hand_result == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Unable to load game from:", filename );
+      return false;
+    }
+  }
 
+  if( p2_hand != nullptr ) {
+    auto p2_hand_result =
+      this->game->dealer_->load_player_hand(PlayerIndex::PLAYER_2, filename,
+                                            game);
+    if( p2_hand_result == false ) {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Unable to load game from:", filename );
+      return false;
+    }
+  }
+#endif
   NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Game loaded from:", filename );
 
@@ -1473,25 +1390,31 @@ Game::load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
     board->clear();
     board->update(board_cards);
   }
-
+#if 0
   if( p1_hand != nullptr ) {
     p1_cards =
-      tt::deserialize_hand(p1_hand->player_id(), game["player"]["hand"]);
-    p1_hand->clear();
-    p1_hand->push_back(p1_cards);
+      tt::deserialize_hand(game["player"]["hand"]);
+    this->game->dealer_->clear_hand(PlayerIndex::PLAYER_1);
+    this->game->dealer_->add_player_card(PlayerIndex::PLAYER_1, p1_cards);
   }
 
   if( p2_hand != nullptr ) {
     p2_cards =
-      tt::deserialize_hand(p2_hand->player_id(), game["opponent"]["hand"]);
-    p2_hand->clear();
-    p2_hand->push_back(p2_cards);
+      tt::deserialize_hand(game["opponent"]["hand"]);
+    this->game->dealer_->clear_hand(PlayerIndex::PLAYER_2);
+    this->game->dealer_->add_player_card(PlayerIndex::PLAYER_2, p2_cards);
   }
+#endif
 
-  if( game_state == true ) {
-    this->game->cursor_pos_ = game["state"]["cursor_pos"].get_int();
+#if 0
+  // TODO: Check to see if this field first exists
+  auto cursor_pos = game["state"]["cursor_pos"].get_int();
+
+  // NOTE: Load player's stored cursor position
+  if( cursor_pos >= 0 && cursor_pos <= 11 ) {
+    this->game->cursor_pos_ = cursor_pos;
   }
-
+#endif
   // Success!
   return true;
 }
@@ -1520,8 +1443,39 @@ bool Game::opponent_deck_exists() const
   return result;
 }
 
+PlayerIndex Game::player_turn() const
+{
+  return this->player_turn_;
+}
+
+void Game::set_player_turn(PlayerIndex player_index)
+{
+  this->player_turn_ = player_index;
+}
+
+void Game::begin_turn()
+{
+  auto& rules = this->game->rules_;
+  if( tt::is_card_rule_set(&rules, CardRuleset::OPEN_RULESET) == false ) {
+    // ...No peeking at the opponent's cards!!
+    this->game->dealer_->set_player_card_faces(PlayerIndex::PLAYER_2, false);
+  }
+}
+
+void Game::end_turn()
+{
+  auto pturn = this->player_turn();
+
+  if( pturn == PlayerIndex::PLAYER_1 ) {
+    this->set_player_turn(PlayerIndex::PLAYER_2);
+  } else if( pturn == PlayerIndex::PLAYER_2 ) {
+    this->set_player_turn(PlayerIndex::PLAYER_1);
+  }
+}
+
 void Game::dump_board()
 {
+  NOM_ASSERT(this->game->board_ != nullptr);
   if( this->game->board_ != nullptr ) {
     this->game->board_->dump_values();
   }
@@ -1529,28 +1483,17 @@ void Game::dump_board()
 
 void Game::dump_hand(PlayerIndex player_index)
 {
-  auto& phand = this->game->hand[player_index];
-  auto player_id = tt::player_id(player_index);
-
-  NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, "Player", player_id, phand);
+  NOM_ASSERT(this->game->dealer_ != nullptr);
+  if( this->game->dealer_ != nullptr ) {
+    this->game->dealer_->dump_hand(player_index);
+  }
 }
 
 void Game::dump_collection(PlayerIndex player_index)
 {
-  auto db = this->game->cards_db_[player_index].get();
-  if( db != nullptr ) {
-
-    auto player_id = tt::player_id(player_index);
-
-    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
-                  "Player", player_id, "\n\tdeck:", db->size() );
-
-    // IMPORTANT: We exceed the maximal logging output size of ~4KB imposed by
-    // SDL's logging facilities if we do not break up the data dump of a
-    // player's full card deck
-    for( auto itr = db->begin(); itr != db->end(); ++itr ) {
-      NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION, *itr);
-    }
+  NOM_ASSERT(this->game->dealer_ != nullptr);
+  if( this->game->dealer_ != nullptr ) {
+    this->game->dealer_->dump_deck(player_index);
   }
 }
 
@@ -1714,10 +1657,10 @@ void Game::reload_config()
 
   NOM_ASSERT(this->state() != nullptr);
 
-  this->game->set_state(Game::State::MainMenu);
-
   this->game->debug_game_ =
     this->game->config_->get_bool("DEBUG_GAME", false);
+
+  this->game->set_state(Game::State::MainMenu);
 }
 
 void Game::on_window_shown(const nom::Event& evt)

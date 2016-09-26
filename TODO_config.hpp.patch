@@ -1,0 +1,102 @@
+diff --git i/src/config.hpp w/src/config.hpp
+index 52ae9b2..21ea879 100644
+--- i/src/config.hpp
++++ w/src/config.hpp
+@@ -107,31 +107,48 @@ const nom::int32 INTERFACE_MENU_ELEMENT_PAGE_RIGHT = 3;
+ /// Additional resource data; width, height, origin coordinates
+ const nom::int32 CARD_WIDTH = 64 * SCALE_FACTOR;
+ const nom::int32 CARD_HEIGHT = 64 * SCALE_FACTOR;
++const nom::Size2i CARD_DIMS = nom::Size2i(CARD_WIDTH, CARD_HEIGHT);
+
+ const nom::int32 ELEMENT_WIDTH = 16 * SCALE_FACTOR;
+ const nom::int32 ELEMENT_HEIGHT = 16 * SCALE_FACTOR;
++const nom::Size2i CARD_ELEMENT_DIMS =
++  nom::Size2i(ELEMENT_WIDTH, ELEMENT_HEIGHT);
+
+ const nom::int32 CURSOR_WIDTH = 26 * SCALE_FACTOR;
+ const nom::int32 CURSOR_HEIGHT = 16 * SCALE_FACTOR;
++const nom::Size2i GAME_CURSOR_DIMS =
++  nom::Size2i(CURSOR_WIDTH, CURSOR_HEIGHT);
+
+ // top-left of board grid
+ const nom::int32 BOARD_ORIGIN_X = 96 * SCALE_FACTOR;
+ const nom::int32 BOARD_ORIGIN_Y = 16 * SCALE_FACTOR;
++const nom::Point2i BOARD_ORIGIN_POS =
++  nom::Point2i(BOARD_ORIGIN_X, BOARD_ORIGIN_Y);
+
+ const nom::int32 PLAYER2_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ); // 16
+ const nom::int32 PLAYER2_ORIGIN_Y = BOARD_ORIGIN_Y; // 16
++const nom::Point2i PLAYER2_ORIGIN_POS =
++  nom::Point2i(PLAYER2_ORIGIN_X, PLAYER2_ORIGIN_Y);
+
+ const nom::int32 PLAYER1_ORIGIN_X = ( BOARD_ORIGIN_X / 2 ) - ( CARD_WIDTH / 2 ) + BOARD_ORIGIN_X + ( CARD_WIDTH * 3 );
+ const nom::int32 PLAYER1_ORIGIN_Y = BOARD_ORIGIN_Y;
++const nom::Point2i PLAYER1_ORIGIN_POS =
++  nom::Point2i(PLAYER1_ORIGIN_X, PLAYER1_ORIGIN_Y);
+
+ const nom::int32 CURSOR_ORIGIN_X = ( GAME_RESOLUTION.w - CURSOR_WIDTH ) / 2 ;
+ const nom::int32 CURSOR_ORIGIN_Y = ( GAME_RESOLUTION.h - CURSOR_HEIGHT ) / 2;
++const nom::Point2i GAME_CURSOR_ORIGIN_POS =
++  nom::Point2i(CURSOR_ORIGIN_X, CURSOR_ORIGIN_Y);
+
+ const nom::int32 PLAYER2_CURSOR_ORIGIN_X = BOARD_ORIGIN_X - PLAYER2_ORIGIN_X; // 80
+ const nom::int32 PLAYER2_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
++const nom::Point2i GAME_CURSOR_PLAYER2_ORIGIN_POS =
++  nom::Point2i(PLAYER2_CURSOR_ORIGIN_X, PLAYER2_CURSOR_ORIGIN_Y);
+
+ const nom::int32 PLAYER1_CURSOR_ORIGIN_X = BOARD_ORIGIN_X + ( CARD_WIDTH * 3 ) - ( CURSOR_WIDTH / 2 ); // 275
+ const nom::int32 PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 ); // 48
++const nom::Point2i GAME_CURSOR_PLAYER1_ORIGIN_POS =
++  nom::Point2i(PLAYER1_CURSOR_ORIGIN_X, PLAYER1_CURSOR_ORIGIN_Y);
+
+ // TODO (player scores):
+ //
+@@ -139,32 +156,48 @@ const nom::int32 PLAYER1_CURSOR_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 2 );
+ // 64 * 5
+ const nom::int32 PLAYER1_SCORE_ORIGIN_X = 320 * SCALE_FACTOR;
+ const nom::int32 PLAYER1_SCORE_ORIGIN_Y = 176 * SCALE_FACTOR;
++const nom::Point2i SCOREBOARD_PLAYER1_ORIGIN_POS =
++  nom::Point2i(PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y);
+
+ const nom::int32 PLAYER2_SCORE_ORIGIN_X = 32 * SCALE_FACTOR;
+ const nom::int32 PLAYER2_SCORE_ORIGIN_Y = 176 * SCALE_FACTOR;
++const nom::Point2i SCOREBOARD_PLAYER2_ORIGIN_POS =
++  nom::Point2i(PLAYER2_SCORE_ORIGIN_X, PLAYER2_SCORE_ORIGIN_Y);
+
+ // TODO: relocate
+ const nom::int32 PLAYER1_GAMEOVER_ORIGIN_X = BOARD_ORIGIN_X - ( CARD_WIDTH );
+ const nom::int32 PLAYER1_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT ) + ( CARD_HEIGHT / 2 ) + ( CARD_HEIGHT / 4 );
++const nom::Point2i GAMEOVER_PLAYER1_ORIGIN_POS =
++  nom::Point2i(PLAYER1_SCORE_ORIGIN_X, PLAYER1_SCORE_ORIGIN_Y);
+
+ const nom::int32 PLAYER2_GAMEOVER_ORIGIN_X = BOARD_ORIGIN_X - ( CARD_WIDTH );
+ const nom::int32 PLAYER2_GAMEOVER_ORIGIN_Y = BOARD_ORIGIN_Y + ( CARD_HEIGHT / 3 );
++const nom::Point2i GAMEOVER_PLAYER2_ORIGIN_POS =
++  nom::Point2i(PLAYER2_GAMEOVER_ORIGIN_X, PLAYER2_GAMEOVER_ORIGIN_Y);
+
+ const nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_X = PLAYER2_GAMEOVER_ORIGIN_X;
+ const nom::int32 PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y = PLAYER2_GAMEOVER_ORIGIN_Y * 2;
++const nom::Point2i GAMEOVER_CURSOR_PLAYER2_ORIGIN_POS =
++  nom::Point2i(PLAYER2_GAMEOVER_CURSOR_ORIGIN_X, PLAYER2_GAMEOVER_CURSOR_ORIGIN_Y);
+
++// TODO: Rename to CARD_ELEMENT_ORIGIN_POS
+ const nom::Point2i ELEMENT_ORIGIN =
+   nom::Point2i(42 * SCALE_FACTOR, 5 * SCALE_FACTOR);
+
++// TODO: Rename to CARD_RANK_ORIGIN_POS[CardRank::TOTAL_RANKS]
++// TODO: Rename to CARD_RANK_ORIGIN_POS[RANK_NORTH]
+ const nom::Point2i RANK_NORTH_ORIGIN =
+   nom::Point2i(8 * SCALE_FACTOR, 3 * SCALE_FACTOR);
+
++// TODO: Rename to CARD_RANK_ORIGIN_POS[RANK_EAST]
+ const nom::Point2i RANK_EAST_ORIGIN =
+   nom::Point2i(12 * SCALE_FACTOR, 11 * SCALE_FACTOR);
+
++// TODO: Rename to CARD_RANK_ORIGIN_POS[RANK_SOUTH]
+ const nom::Point2i RANK_SOUTH_ORIGIN =
+   nom::Point2i(RANK_NORTH_ORIGIN.x, 20 * SCALE_FACTOR);
+
++// TODO: Rename to CARD_RANK_ORIGIN_POS[RANK_WEST]
+ const nom::Point2i RANK_WEST_ORIGIN =
+   nom::Point2i(4 * SCALE_FACTOR, RANK_EAST_ORIGIN.y);
+

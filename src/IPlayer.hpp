@@ -52,20 +52,11 @@ class IPlayer
     virtual PlayerID player_id() const = 0;
     virtual void set_player_id(PlayerID id) = 0;
 
-    nom::uint32 score() const;
-    std::string score_string() const;
-    void set_score(nom::uint32 score);
-
     virtual void update(nom::real32 delta_time) = 0;
-    virtual void draw(nom::IDrawable::RenderTarget& target) /*const*/ = 0;
 
   protected:
     /// \brief Rendering coordinates of the player's hand
     nom::Point2i position_;
-
-  private:
-    /// \brief The player's score.
-    nom::uint32 score_;
 };
 
 } // namespace tt
