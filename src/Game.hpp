@@ -75,12 +75,12 @@ class Game: public nom::SDLApp
     Game(nom::int32 argc, char* argv[]);
     virtual ~Game();
 
-    bool on_init();
+    bool on_init() override;
 
     /// \brief Te main game loop.
     ///
     /// \see main.cpp
-    int Run();
+    int Run() override;
 
     /// \see SDLApp
     void set_state(nom::uint32 id, nom::void_ptr data = nullptr);
@@ -384,24 +384,24 @@ class Game: public nom::SDLApp
     /// \brief The event handler that is called when our window is in focus.
     ///
     /// \remarks Re-implements nom::SDLApp::on_window_keyboard_focus
-    void on_window_keyboard_focus(const nom::Event& evt);
+    void on_window_keyboard_focus(const nom::Event& evt) override;
 
     /// \brief The event handler that is called when our window is **not** in
     /// focus.
     ///
     /// \remarks Re-implements nom::SDLApp::on_window_keyboard_focus_lost
-    void on_window_keyboard_focus_lost(const nom::Event& evt);
+    void on_window_keyboard_focus_lost(const nom::Event& evt) override;
 
     /// \brief The event handler that is called when our window is in focus.
     ///
     /// \remarks Re-implements nom::SDLApp::on_window_mouse_focus
-    void on_window_mouse_focus(const nom::Event& evt);
+    void on_window_mouse_focus(const nom::Event& evt) override;
 
     /// \brief The event handler that is called when our window is **not** in
     /// focus.
     ///
     /// \remarks Re-implements nom::SDLApp::on_window_mouse_focus_lost
-    void on_window_mouse_focus_lost(const nom::Event& evt);
+    void on_window_mouse_focus_lost(const nom::Event& evt) override;
 
     /// \see Game::fade_window_out
     std::shared_ptr<nom::Sprite> fade_window_sprite_;
