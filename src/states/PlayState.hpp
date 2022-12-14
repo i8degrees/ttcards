@@ -52,13 +52,13 @@ class PlayState: public nom::IState
     PlayState(nom::SDLApp* object);
     virtual ~PlayState();
 
-    void on_init(nom::void_ptr data);
-    void on_exit(nom::void_ptr data);
-    void on_pause(nom::void_ptr data);
-    void on_resume(nom::void_ptr data);
+    void on_init(nom::void_ptr data) override;
+    void on_exit(nom::void_ptr data) override;
+    void on_pause(nom::void_ptr data) override;
+    void on_resume(nom::void_ptr data) override;
 
-    void on_update(float delta_time);
-    void on_draw(nom::RenderWindow& target);
+    void on_update(float delta_time) override;
+    void on_draw(nom::RenderWindow& target) override;
 
   private:
     /// \brief The default event handler for this state.
