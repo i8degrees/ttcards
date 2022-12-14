@@ -19,10 +19,11 @@ First, ensure that you have the following development packages setup:
 **NOTE:** My own build setup for TTcards can be found under the project's ```bin``` directory.
 
 ```shell
-git clone https://github.com/i8degrees/ttcards
-cd ttcards
+git clone "https://github.com/i8degrees/ttcards" ttcards.git
+cd ttcards.git
 mkdir build && cd build
-cmake -DDEBUG=on -DDEBUG_ASSERT=on -DNOMLIB_DEPS_PREFIX=<library_deps_path> -DCMAKE_OSX_DEPLOYMENT_TARGET=10.7 ..
+#-DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 is the minimum MacOS SDK version supported!
+cmake -DDEBUG=on -DDEBUG_ASSERT=on -DNOMLIB_DEPS_PREFIX=$HOME/Library/Frameworks -DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 ..
 make
 make install
 ```
