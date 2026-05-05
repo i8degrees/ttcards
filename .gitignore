@@ -1,5 +1,8 @@
 # Project Folders
 build/
+build.*/
+!build.*/.placeholder
+dist/
 tmp/
 install_options
 
@@ -25,3 +28,12 @@ src/version.hpp
 
 # EMCC
 public/
+
+# mac osx build
+macos/
+
+# docs
+wiki
+docs/html/*
+!docs/.placeholder
+

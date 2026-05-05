@@ -35,10 +35,14 @@ Upon a successful build, you should have an OS X application bundle under your c
 
 ### Linux
 
-Linux builds are broken at the moment.
-
-~~Until I get around to writing the proper instructions, you may take a look at my
-.travis.yml build script in the project root of ttcards for hints!~~
+```shell
+cmake \
+    -DSDL2_INCLUDE_DIR=/home/jeff/Projects/nomlib.git/third-party/linux/sdl2/include/SDL2 \
+    -DCMAKE_C_COMPILER=/usr/bin/clang \
+    -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+    -DNOMLIB_DEPS_PREFIX=/home/jeff/Projects/nomlib.git/third-party/linux \
+    -DCMAKE_BUILD_TYPE=Release ..
+```
 
 ### Microsoft Windows Vista, 7, 8
 
@@ -93,3 +97,4 @@ I was interested in getting back into game programming, and thought this would b
   * [Triple Triad Flash Online](http://www.tripletriadflashonline.com/)
   * [Android Triple Triad](https://github.com/Viish/Android-Triple-Triad/)
   * [The 7 Elders](http://www.kongregate.com/games/TadeuBAS/the-7-elders/)
+

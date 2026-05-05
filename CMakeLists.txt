@@ -1,8 +1,9 @@
-cmake_minimum_required ( VERSION 2.6 )
-
 # TODO: Use CMake v2.8.12 OSX RPath features
 # http://www.kitware.com/blog/home/post/510
-# cmake_minimum_required ( VERSION 2.8.12 )
+#cmake_minimum_required ( VERSION 2.8.12 )
+cmake_minimum_required ( VERSION 3.14 )
+
+include ( "${CMAKE_SOURCE_DIR}/version.cmake" )
 
 # CMake Environment
 
@@ -10,8 +11,11 @@ cmake_minimum_required ( VERSION 2.6 )
 # project.
 # http://www.cmake.org/cmake/help/v3.0/command/project.html#command:project
 if( POLICY CMP0048 )
-  cmake_policy( SET CMP0048 OLD )
+  cmake_policy( SET CMP0048 NEW )
 endif( POLICY CMP0048 )
+if( POLICY CMP0144 )
+  cmake_policy( SET CMP0144 NEW )
+endif( POLICY CMP0144 )
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/" )
 set ( CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates" )
@@ -22,17 +26,21 @@ if ( NOT CMAKE_INSTALL_PREFIX )
   set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Install path prefix" )
 endif ( NOT CMAKE_INSTALL_PREFIX )
 
-# Project configuration
-set ( PROJECT_VERSION_MAJOR 0 )
-set ( PROJECT_VERSION_MINOR 11 )
-set ( PROJECT_VERSION_PATCH 0 )
 
 # Project options
 option ( DEBUG "Enable building with debugging features" off )
 option ( DEBUG_ASSERT "Enable building with run-time assertions" off )
 option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
-project ( ttcards ) # Sets PROJECT_NAME variable for us
+# IMPORTANT(JEFF): This initializes our engine versioning variables;
+# `PROJECT_VERSION_MAJOR` & friends
+project( ttcards
+  VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+  DESCRIPTION "Re-make of Triple Triad PSX game"
+  #HOMEPAGE_URL "https://github.com/i8degrees/ttcards"
+  #SPDX_LICENSE "BSD-2-Clause-FreeBSD"
+  #LANGUAGES "en"
+)
 
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
@@ -126,19 +134,10 @@ if( PLATFORM_WINDOWS )
 
 endif( PLATFORM_WINDOWS )
 
-# ...Engine dependencies...
-
-if( NOT NOMLIB_DEPS_PREFIX )
-  NOM_LOG_CRIT( "An absolute directory path to the engine's dependencies must be set. See README.md for details." )
-else()
-  # IMPORTANT: NOMLIB_DEPS_ROOT **must** be set before using FIND_PACKAGE to
-  # locate nomlib (nomlib-config.cmake) as it is used by said script. It should
-  # **not** be used anywhere in this project.
-  set(  NOMLIB_DEPS_ROOT ${NOMLIB_DEPS_PREFIX} CACHE PATH
-        "engine dependencies dir path" )
-  set( NOMLIB_DEPS_ROOT "${NOMLIB_DEPS_PREFIX}" )
-  message( STATUS "NOMLIB_DEPS_ROOT: ${NOMLIB_DEPS_ROOT}" )
-endif()
+if ( PLATFORM_LINUX )
+  # Set the search path for where to find nomlib's CMake package script
+  #set( NOMLIB_ROOT "/usr/local/lib/cmake/nomlib" )
+endif ( PLATFORM_LINUX )
 
 if( PLATFORM_WINDOWS )
 
@@ -174,21 +173,16 @@ elseif( PLATFORM_OSX )
   set( LIBROCKET_FREETYPE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/librocket/bin/libfreetype.6.dylib" )
 
 elseif( PLATFORM_LINUX )
-  # TODO
+  set( SDL2_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/SDL2/lib/" )
+  set( SDL2_IMAGE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/SDL2_image/lib" )
+  set( SDL2_TTF_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/SDL2_ttf/lib" )
+  set( LIBSNDFILE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/libsndfile/lib" )
+  set( LIBROCKET_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/libRocket/lib" )
+  set( LIBROCKET_FREETYPE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/libRocket/bin" )
 endif( PLATFORM_WINDOWS )
 
-# TODO: When building on Windows, if the end-user has both Debug and Release
-# build targets of nomlib installed, we need to modify the component names to
-# reflect which library name to use ('-d' postfix for debug). Hint: I think
-# that our nomlib-config.cmake script should be able to handle this for us
-# automatically.
-find_package( nomlib COMPONENTS
-              core file math system graphics gui ptree serializers REQUIRED
-              OPTIONAL_COMPONENTS audio )
-
 # Project source tree
-include( "${SRC_DIR}/CMakeLists.txt" )
-# add_subdirectory( ${SRC_DIR} )
+add_subdirectory( ${SRC_DIR} )
 
 # Installation phase
 if ( PLATFORM_OSX )
@@ -210,7 +204,7 @@ if ( PLATFORM_OSX )
 
     add_executable  ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
 
-    set ( INSTALL_APP_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${BUNDLE_NAME}.app" )
+    set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
 
     set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
 

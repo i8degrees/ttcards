@@ -1,5 +1,8 @@
 # Platform detection script for CMake
 
+option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
+option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
+
 if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   set ( PLATFORM_OSX true )
 
@@ -29,15 +32,38 @@ if ( CMAKE_SYSTEM_NAME STREQUAL "Darwin" )
   message ( STATUS "Platform: Darwin (Mac OS X)" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Linux" ) # Tested on Ubuntu v12.04-LTS
   set ( PLATFORM_LINUX true )
+  set ( PLATFORM_POSIX true )
 
-  set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+  # IMPORTANT(JEFF): clang is the only supported compiler as of now
+  if ( CMAKE_CXX_COMPILER MATCHES "clang" )
+    message ( STATUS "Using clang based platform to build..." )
+    # nomlib began its life under c++14 on Intel Darwin Mac OSX
+    set ( CMAKE_CXX_STANDARD 14 )
+    set ( CMAKE_CXX_STANDARD_REQUIRED ON )
+    set ( CMAKE_CXX_EXTENSIONS OFF)
+
+    # libc++ requires OSX v10.7+
+    #set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++" )
+  elseif ( CMAKE_C_COMPILER MATCHES "gcc" )
+    message ( STATUS "Using gcc based platform to build..." )
+    message ( FATAL_ERROR "nomlib only supports building with clang." )
+
+    # !! GoogleTest unit testing framework v1.10.x requires a minimum C++ level 11
+    set( CMAKE_CXX_STANDARD 11 )
+    # !! Our engine is based on a c++ level of 14
+    set( CMAKE_CXX_STANDARD 14 )
+    # NOTE(JEFF): This should only be set when GNU GCC is enabled?
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x" )
+  endif( CMAKE_CXX_COMPILER MATCHES "clang" )
 
   message ( STATUS "Platform: Linux" )
+  message ( STATUS "Build platform: ${CMAKE_CXX_COMPILER}" )
+  message ( STATUS "Compiler C++ level: ${CMAKE_CXX_STANDARD}" )
+  message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 elseif ( CMAKE_SYSTEM_NAME STREQUAL "Windows" )
   set ( PLATFORM_WINDOWS true )
 
-  option ( ARCH_32 "Compile ${PROJECT_NAME} as a 32-bit library" off )
-  option ( ARCH_64 "Compile ${PROJECT_NAME} as a 64-bit library" on )
+  set ( CMAKE_CONFIGURATION_TYPES "${CMAKE_BUILD_TYPE}" )
 
   message ( STATUS "Platform: Windows" )
 else () # Not OSX, Linux or Windows OS
@@ -68,25 +94,5 @@ if ( PLATFORM_WINDOWS AND ARCH_32 )
 elseif ( PLATFORM_WINDOWS AND ARCH_64 )
   set ( PLATFORM_ARCH "x64" )
 endif ( PLATFORM_WINDOWS AND ARCH_32 )
-
-# Use common build output directories for MSVCPP && Xcode project files.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_INSTALL_PREFIX}/Debug")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_INSTALL_PREFIX}/Release")
-
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_INSTALL_PREFIX}/Debug")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_INSTALL_PREFIX}/Release")
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${CMAKE_INSTALL_PREFIX}/Debug")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${CMAKE_INSTALL_PREFIX}/Release")
-
-if(DEBUG)
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG})
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
-else() # Release builds
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE})
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
-endif()
 
 message ( STATUS "Platform Architecture: ${PLATFORM_ARCH}" )

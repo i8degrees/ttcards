@@ -1,0 +1,22 @@
+{
+    "configurations": [
+
+        {
+            "name": "C/C++: clang build and debug active file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [
+                "NOM_PREFIX=/Volumes/Projects/ttcards.git/third-party".
+                "cmake -DDEBUG=on -DDEBUG_ASSERT=on -DNOMLIB_DEPS_PREFIX=$NOM_PREFIX -DCMAKE_OSX_DEPLOYMENT_TARGET=10.11 .."
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "C/C++: clang build active file"
+        }
+    ],
+    "version": "2.0.0"
+}
