@@ -40,6 +40,12 @@ Linux builds are broken at the moment.
 ~~Until I get around to writing the proper instructions, you may take a look at my
 .travis.yml build script in the project root of ttcards for hints!~~
 
+### Docker
+
+```shell
+docker run --rm -it -v ~/Projects/nomlib.git/third-party:/ttcards/third-party -v ~/Projects/nomlib.git/third-party:/nomlib/third-party ttcards:0.13.1
+```
+
 ### Microsoft Windows Vista, 7, 8
 
 **NOTE:** Vista support has not been tested.
