@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "IPlayer.hpp"
 
+namespace tt {
+
 IPlayer::IPlayer() :
   score_(5)
 {
@@ -49,7 +51,7 @@ void IPlayer::set_position(const nom::Point2i& pos)
   this->position_ = pos;
 }
 
-nom::uint IPlayer::score() const
+nom::uint32 IPlayer::score() const
 {
   return this->score_;
 }
@@ -59,7 +61,9 @@ std::string IPlayer::score_string() const
   return std::to_string(this->score_);
 }
 
-void IPlayer::set_score(nom::uint score)
+void IPlayer::set_score(nom::uint32 score)
 {
   this->score_ = score;
 }
+
+} // namespace tt

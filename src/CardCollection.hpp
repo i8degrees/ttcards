@@ -26,50 +26,78 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_CARD_COLLECTION_HEADERS
-#define GAMEAPP_CARD_COLLECTION_HEADERS
+#ifndef TTCARDS_CARD_COLLECTION_HPP
+#define TTCARDS_CARD_COLLECTION_HPP
 
-#include <array>
-#include <fstream>
-#include <iostream>
 #include <string>
-#include <vector>
 
-#include <nomlib/serializers.hpp>
-
-#include "Card.hpp"
-#include "CardDebug.hpp"
 #include "config.hpp"
+#include "Card.hpp"
+
+namespace tt {
 
 class CardCollection
 {
   public:
-    CardCollection ( void );
-    ~CardCollection ( void );
+    CardCollection();
+    ~CardCollection();
 
-    Card& getCards ( unsigned int idx );
-    Cards getCards ( void );
+    void clear();
+    nom::size_type size() const;
 
-    void clear ( void );
-    nom::uint32 size ( void ) const;
+    /// \returns The first card in the container on success, or Card::null on
+    /// failure, such as when the container is empty.
+    const Card& front() const;
 
     /// Save the current board grid data to a file as a series of RFC 4627
     /// compliant JSON objects.
-    bool save( const std::string& filename );
+    bool save(const std::string& filename);
 
     /// Load saved board grid data from a file encoded as RFC 4627 compliant
     /// JSON objects.
-    bool load( const std::string& filename );
+    bool load(const std::string& filename);
 
-    const Card& lookup_by_name( const std::string& name ) const;
-    const Card& lookup_by_id( int id ) const;
+    /// \returns The resulting card by its name on success, or Card::null on
+    /// failure to find a card by the given name.
+    const Card& find(const std::string& card_name) const;
 
-    /// \todo redeclare private scope
-    Cards cards;
+    /// \returns The resulting card by its ID on success, or Card::null on
+    /// failure to find a card by the given ID.
+    const Card& find(CardID card_id) const;
+
+    /// \brief Append a card at the end of the deck.
+    ///
+    /// \note When adding a card that exists in the deck, the number attribute
+    /// is incremented by one -- if less than 99. When the card does **not**
+    /// exist, it will be appended with a number attribute of one (1).
+    void append_card(const Card& card);
+
+    /// \brief Append one or more cards at the end of the deck.
+    void append_cards(const Cards& cards);
+
+    /// \brief Erase a card from the deck.
+    ///
+    /// \note When removing a card from the deck, the number attribute is
+    /// decremented by one (1) and will be removed from the deck once the
+    /// number attribute is equal to zero (0).
+    void erase_card(const Card& card);
+
+    ConstCardsIterator begin() const;
+    ConstCardsIterator end() const;
+
+    CardsIterator begin();
+    CardsIterator end();
 
   private:
-    /// debug support for card attributes
-    CardDebug debug;
+    Cards cards_;
 };
+
+nom::Value
+serialize_deck(const CardCollection* deck);
+
+tt::Cards
+deserialize_deck(const nom::Value& objects);
+
+} // namespace tt
 
 #endif // GAMEAPP_CARD_COLLECTION_HEADERS defined

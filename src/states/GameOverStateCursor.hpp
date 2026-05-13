@@ -40,36 +40,47 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "CardHand.hpp"
 
-class GameOverStateCursor: public nom::AnimatedSprite
+namespace tt {
+
+class GameOverStateCursor: public nom::SpriteBatch
 {
   public:
-    GameOverStateCursor ( void );
+    GameOverStateCursor();
 
-    virtual ~GameOverStateCursor ( void );
+    virtual ~GameOverStateCursor();
 
     /// Set a new positioning object for this instance to use
-    void set_position_map ( CardHand* position );
+    void set_position_map(CardHand* position);
 
     /// \brief Get the current position, relative to the card element (index) in
     /// the player's hand.
-    int cursor_position( void );
+    int cursor_position();
 
     /// Move the cursor to the left.
     ///
     /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 move_left ( void );
+    nom::int32 move_left();
 
     /// Move the cursor to the right.
     ///
     /// Returns the X coordinate position of the cursor after it has been moved.
-    nom::int32 move_right ( void );
+    nom::int32 move_right();
+
+    // NOTE: The event handler object **must** outlive the destruction of this
+    // object!
+    void set_event_handler(nom::EventHandler& evt_handler);
 
   private:
-    void next ( void );
-    void previous ( void );
+    void next();
+    void previous();
 
-    CardHand* card_position;
-    nom::EventDispatcher cursor_event;
+    // Non-owned pointer
+    CardHand* cards_;
+
+    // Non-owned pointer
+    nom::EventHandler* evt_handler_;
 };
+
+} // namespace tt
 
 #endif // include guard defined

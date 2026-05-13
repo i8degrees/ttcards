@@ -31,205 +31,137 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <string>
 #include <array>
-#include <algorithm>
 
-#include "nomlib/config.hpp"
-#include <nomlib/serializers.hpp>
+#include <nomlib/config.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
 
-/// Used with pretty printing the card attributes when using << operator
-const std::string card_delimiter = " ";
+namespace tt {
 
-/// Minimum level a card can contain
-const nom::int32 LEVEL_MIN = 1;
+// Forward declarations
+class CardRenderer;
 
-/// Maximum level a card can contain
-const nom::int32 LEVEL_MAX = 10;
+/// \brief Minimum card level.
+const nom::uint32 MIN_LEVEL = 1;
 
-/// Maximum type a card can contain -- starting at 1
-const nom::int32 MAX_TYPE = 4;
-
-/// Maximum element a card can contain -- starting at 1
-const nom::int32 MAX_ELEMENT = 8;
+/// \brief Maximum card level.
+const nom::uint32 MAX_LEVEL = 10;
 
 /// Minimum rank a card can contain
-const nom::int32 MIN_RANK = 1;
+const nom::uint32 MIN_RANK = 1;
 
 /// Maximum rank a card can contain
-const nom::int32 MAX_RANK = 10;
+const nom::uint32 MAX_RANK = 10;
 
-/// Maximum number of rank attributes
-const nom::int32 MAX_RANKS = 4;
-
-/// Maximum name length a card can contain -- "Chubby Chocobo" (without quotes)
-const nom::int32 MAX_NAME = 14; // +1 padding
+/// \brief Maximum card name length
+const nom::uint32 MAX_NAME = 24;
 
 /// \brief The minimum number of cards of a type you can collect.
-const int MIN_NUM = 0;
+const nom::uint32 MIN_CARD_NUM = 0;
 
 /// \brief The maximum number of cards of a type you can collect.
-const int MAX_NUM = 99;
+const nom::uint32 MAX_CARD_NUM = 99;
 
-class Card
+struct Card
 {
-  public:
-    static Card null;
+  static Card null;
 
-    /// FIXME: See CARDS_COLLECTION initialization issue
-    static nom::int32 CARDS_COLLECTION;
+  /// \brief Default constructor; constructs an invalid Card object.
+  Card();
 
-    Card();
-    ~Card();
+  ~Card();
 
-    Card( nom::int32 id, nom::int32 level, nom::int32 type,
-          nom::int32 element, std::array<nom::int32, MAX_RANKS> rank,
-          std::string name, nom::int32 player_id, nom::int32 player_owner,
-          int num, bool face_down = false );
+  /// \see Resources/cards.json
+  CardID id;
 
-    const nom::int32 getID ( void ) const;
-    const std::string get_id_string( void ) const;
-    const nom::int32 getLevel ( void ) const;
-    const nom::int32 getType ( void ) const;
-    const nom::int32 getElement ( void ) const;
-    const std::array<nom::int32, MAX_RANKS> getRanks ( void ) const;
-    const std::vector<int> ranks_as_vector ( void ) const;
-    const nom::int32 getNorthRank ( void ) const;
-    const nom::int32 getEastRank ( void ) const;
-    const nom::int32 getSouthRank ( void ) const;
-    const nom::int32 getWestRank ( void ) const;
-    const std::string& getName ( void ) const;
+  nom::uint32 level;
 
-    const nom::int32 getPlayerID ( void ) const;
-    const nom::int32 getPlayerOwner ( void ) const;
+  /// \see tt::CardType enumeration values.
+  nom::uint32 type;
 
-    int num() const;
-    bool face_down() const;
+  /// \see tt::CardElement enumeration values.
+  nom::uint32 element;
 
-    /// Clamps value to Card::CARDS_COLLECTION
-    void setID ( nom::int32 id_ );
+  /// \see tt::CardRank
+  std::array<nom::uint32, CardRank::TOTAL_RANKS> ranks;
 
-    /// Clamps value to MAX_LEVEL
-    void setLevel ( nom::int32 level_ );
+  // The current owner of this card.
+  PlayerID player_id;
 
-    /// Clamps value to MAX_TYPE
-    void setType ( nom::int32 type_ );
+  // The player whom first owned this card.
+  PlayerID player_owner;
 
-    /// Clamps value to MAX_ELEMENT
-    void setElement ( nom::int32 element_ );
+  std::string name;
 
-    /// Clamps array values to MAX_RANK
-    void setRanks ( std::array<nom::int32, MAX_RANKS> ranks );
+  /// \brief The number of cards of this instance type that has been
+  /// collected.
+  int num;
 
-    /// Clamps array values to MAX_RANK
-    void set_ranks ( std::vector<nom::int32> ranks );
+  /// \brief Internal state flag for whether or not the card face is to be
+  /// shown to the player.
+  bool face_down;
 
-    /// Clamps value to MAX_RANK
-    void setNorthRank ( nom::int32 rank );
+  std::shared_ptr<CardRenderer> card_renderer;
 
-    /// Clamps value to MAX_RANK
-    void setEastRank ( nom::int32 rank );
-
-    /// Clamps value to MAX_RANK
-    void setSouthRank ( nom::int32 rank );
-
-    /// Clamps value to MAX_RANK
-    void setWestRank ( nom::int32 rank );
-
-    /// Clamps value to MAX_NAME
-    void setName ( std::string name_ );
-
-    /// Clamps value to TOTAL_PLAYERS
-    void setPlayerID ( nom::int32 player_id_ );
-
-    /// Clamps value to TOTAL_PLAYERS
-    void setPlayerOwner ( nom::int32 player_owner_ );
-
-    /// \brief Set the number of cards of this type has been collected.
-    void set_num(int num_cards);
-
-    void set_face_down(bool state);
-
-    void increaseNorthRank ( void );
-    void increaseEastRank ( void );
-    void increaseSouthRank ( void );
-    void increaseWestRank ( void );
-
-    void decreaseNorthRank ( void );
-    void decreaseEastRank ( void );
-    void decreaseSouthRank ( void );
-    void decreaseWestRank ( void );
-
-    /// The total strength value of any given card is determined by adding the
-    /// sum of all the card rank values together.
-    ///
-    /// Note that this does not take into account game rules that may be in
-    /// effect!
-    nom::int32 strength ( void );
-
-    /// card.player_id AKA owner tag
-    enum
-    {
-      NOPLAYER=0,
-      PLAYER1=1,
-      PLAYER2=2
-    };
-
-    nom::Value serialize( void ) const;
-
-    void unserialize( nom::Value& obj );
-
-  private:
-    nom::int32 id;
-    nom::int32 level;
-    nom::int32 type;
-    /// NONE is no element
-    nom::int32 element;
-    /// NORTH = 0, EAST = 1, SOUTH = 2, WEST = 3
-    std::array<nom::int32, MAX_RANKS> rank;
-    std::string name;
-
-    /// Additional field; used to distinguish card background and also used to
-    // track player in board in order to do card flipping, among other things
-    // like score tallying
-    nom::int32 player_id;
-
-    /// Additional field; original owner of the card
-    nom::int32 player_owner;
-
-    /// \brief The number of cards of this instance type that has been
-    /// collected.
-    int num_;
-
-    /// \brief Internal state flag for whether or not the card face is to be
-    /// shown to the player.
-    bool face_down_;
+  /// \brief The absolute file path to a custom texture.
+  ///
+  /// \todo Change this to an integer ID and implement a texture lookup table
+  /// for texture paths?
+  std::string texture_path;
 };
 
-/// \todo Rename to CardList
+nom::Value serialize_card(const Card& card);
+
+Card deserialize_card(const nom::Value& obj);
+
+/// \todo Rename to CardList..?
 typedef std::vector<Card> Cards;
-typedef std::vector<Card>::iterator CardsIterator;
+
+/// TODO: Rename to Card::iterator
+typedef Cards::iterator CardsIterator;
+
+/// TODO: Rename to Card::const_iterator
+typedef Cards::const_iterator ConstCardsIterator;
 
 /// Pretty print the the card attributes.
-///
-std::ostream& operator << ( std::ostream& os, const Card& rhs );
+std::ostream& operator <<(std::ostream& os, const Card& rhs);
 
 /// Compare two cards for equality
-bool operator == ( const Card& lhs, const Card& rhs );
-
-/// Compare two cards for in-equality
-bool operator != ( const Card& lhs, const Card& rhs );
+bool operator ==(const Card& lhs, const Card& rhs);
 
 /// Compare two cards for less-than equality
-bool operator < ( const Card& lhs, const Card& rhs );
+bool operator <(const Card& lhs, const Card& rhs);
 
 /// Compare two cards for greater-than equality
-bool operator > ( const Card& lhs, const Card& rhs );
+bool operator >(const Card& lhs, const Card& rhs);
+
+/// Compare two cards for in-equality
+bool operator !=(const Card& lhs, const Card& rhs);
 
 /// Compare two cards for less-than or equal to equality
-bool operator <= ( const Card& lhs, const Card& rhs );
+bool operator <=(const Card& lhs, const Card& rhs);
 
 /// Compare two cards for greater-than or equal to equality
-bool operator >= ( const Card& lhs, const Card& rhs );
+bool operator >=(const Card& lhs, const Card& rhs);
+
+/// The total strength value of any given card is determined by adding the
+/// sum of all the card rank values together.
+///
+/// Note that this does not take into account game rules that may be in
+/// effect!
+nom::int32 strength(const Card& rhs);
+
+/// \brief Card strength greater-than comparison.
+///
+/// \see CardHand
+bool strongest_card(const Card& lhs, const Card& rhs);
+
+/// \brief Card strength lesser-than comparison.
+///
+/// \see CardHand
+bool weakest_card(const Card& lhs, const Card& rhs);
+
+} // namespace tt
 
 #endif // GAMEAPP_CARD_HEADERS defined

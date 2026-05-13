@@ -38,12 +38,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "resources.hpp"
 #include "CardsPageDataSource.hpp"
 #include "Card.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Game;
+class CardHand;
 
 class CardsMenuState: public nom::IState
 {
@@ -53,20 +55,27 @@ class CardsMenuState: public nom::IState
     virtual ~CardsMenuState();
 
     /// \todo Change return type to bool
-    void on_init( nom::void_ptr data );
+    void on_init(nom::void_ptr data);
     void on_exit( nom::void_ptr data );
 
     void on_pause(nom::void_ptr data);
     void on_resume(nom::void_ptr data);
 
-    void on_update( float delta_time );
-    void on_draw( nom::RenderWindow& target );
+    void on_update(nom::real32 delta_time);
+    void on_draw(nom::RenderWindow& target);
+
+    /// \brief Render the player's card sprite.
+    ///
+    /// \param card An existing card with a valid renderer attached.
+    ///
+    /// \returns Boolean TRUE when the card's sprite renderer has been
+    /// successfully created, and boolean FALSE when the card's renderer has
+    /// **not** been created, such as when the card renderer is invalid.
+    bool set_display_card(Card& card);
 
   private:
-    /// \brief Injection of the GUI event loop.
-    ///
-    /// \note This is the current context's event loop (libRocket).
-    bool on_event(const nom::Event& ev);
+    /// \brief The default event handler for this state.
+    bool on_event(const nom::Event& ev) override;
 
     /// \brief GUI event callback for mouse button actions.
     ///
@@ -81,9 +90,12 @@ class CardsMenuState: public nom::IState
     /// \brief Set the appropriate page arrows for the shown page.
     void update_page_indicators();
 
-    /// \brief Get the cursor position.
+    /// \brief Get the game cursor indexed position.
     ///
-    /// \returns The card entry's position index, relative to the shown page.
+    /// \returns A row index number between zero (0) and the set number of
+    /// cards per page, i.e.: ~0..10.
+    ///
+    /// \see tt::CardsPageDataSource
     int cursor_position();
 
     /// \brief Set the rendering position of the game cursor.
@@ -105,14 +117,43 @@ class CardsMenuState: public nom::IState
     void cursor_next();
 
     /// \brief Add a card to the player's hand.
-    void add_card(const Card& card);
+    void add_player_card(const Card& card);
 
     /// \brief Remove a card from the player's hand.
-    void remove_card(const Card& card);
+    void remove_player_card(const Card& card);
 
-    Game* game;
+    /// \brief Set the shown cards page.
+    void update_page_count_title(nom::size_type page);
 
-    Card selected_card_;
+    /// \brief Add a card to the player's deck.
+    void append_player_card(const Card& card);
+
+    /// \brief Add one or more cards to the player's deck.
+    void append_player_cards(const Cards& cards);
+
+    /// \brief Remove all of the cards in the player's deck.
+    ///
+    /// \param phand A pointer to the player's hand instance.
+    ///
+    /// \remarks The player's hand is also cleared.
+    void erase_player_cards(CardHand* phand);
+
+    // Serialize the player's current build and store to disk
+    bool save_player_hand(const std::string& filename);
+
+    // Deserialize the player's current build from disk store
+    bool load_player_hand(const std::string& filename);
+
+    /// \brief Update the player's card sprite position.
+    ///
+    /// \returns Boolean TRUE when the sprite's position has been successfully
+    /// updated, and boolean FALSE when the sprite's position has **not** been
+    /// updated, such as when the sprite is NULL.
+    bool update_display_card();
+
+    Game* game = nullptr;
+
+    std::shared_ptr<nom::Sprite> p1_selected_card_sprite_ = nullptr;
 
     /// \brief Bounds map for game cursor movement.
     std::vector<nom::IntRect> cursor_coords_map_;
@@ -120,19 +161,12 @@ class CardsMenuState: public nom::IState
     /// \brief Cursor state
     ///
     /// \remarks Not implemented
-    nom::uint32 cursor_state_;
-
-    /// Position of the player's hand (player 1)
-    nom::Point2i player1_pos;
-
-    /// Position of the opponent's hand (player 2)
-    nom::Point2i player2_pos;
-
-    /// Position of the card selection from the menu list
-    nom::Point2i card_pos;
+    nom::uint32 cursor_state_ = 0;
 };
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<CardsMenuState> CardsMenuStatePtr;
+
+} // namespace tt
 
 #endif // GAMEAPP_CARDS_MENU_HEADERS defined

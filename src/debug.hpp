@@ -29,26 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef TTCARDS_DEBUG_HPP
 #define TTCARDS_DEBUG_HPP
 
-// TODO: Phase out the preprocessor definitions, in favor of nomlib's run-time
-// configurable logging facilities
-
-#define TTCARDS_DEBUG_GAME_STATE
-#define TTCARDS_DEBUG_PLAY_STATE
-
-#define DEBUG_BOARD
-#define DEBUG_BOARD_CMP
-#define DEBUG_PLAYER
-#define DEBUG_CPU_PLAYER
-//#define DEBUG_CARD_HAND
-#define DEBUG_CARD_DEBUG
-#define DEBUG_CARD_VIEW
-//#define DEBUG_CARD
-//#define DEBUG_CARD_COLLECTION
-#define DEBUG_CARD_RULES
-#define DEBUG_GAMEOVER
-#define DEBUG_CARDS_MENU
-//#define DEBUG_CARDS_MENU_CURSOR
-
 /// \brief The predefined logging categories.
 ///
 /// \see nom::SDL2Logger
@@ -86,6 +66,7 @@ enum
   TTCARDS_LOG_CATEGORY_TRACE_EVENTS,
   TTCARDS_LOG_CATEGORY_TRACE_STATES,
 
+  TTCARDS_LOG_CATEGORY_INIT_GAME_STATE,
   TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
   TTCARDS_LOG_CATEGORY_PLAY_STATE,
   TTCARDS_LOG_CATEGORY_GAME_OVER_STATE,

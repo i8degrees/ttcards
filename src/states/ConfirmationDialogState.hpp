@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "DialogCursor.hpp"
 
+namespace tt {
+
 // Forward declarations
 class Game;
 
@@ -72,5 +74,7 @@ class ConfirmationDialogState: public nom::IState
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<ConfirmationDialogState> ConfirmationDialogStatePtr;
+
+} // namespace tt
 
 #endif // include guard defined

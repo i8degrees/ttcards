@@ -36,27 +36,44 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <fstream>
 
-#include "nomlib/config.hpp"
+#include <nomlib/config.hpp>
 #include <nomlib/math.hpp>
-#include <nomlib/serializers.hpp>
 
 #include "config.hpp"
-#include "resources.hpp"
 #include "BoardTile.hpp"
 #include "Card.hpp"
-#include "CardDebug.hpp"
-#include "CardRules.hpp"
-#include "CardView.hpp"
 
+namespace tt {
+
+// Forward declarations
+struct RegionRuleSet;
+class CardResourceLoader;
+
+/// \brief The game board
+///
+/// \note A new renderer for the card is generated on every call to ::update.
 class Board
 {
   public:
-    Board ( void );
-    Board ( CardRules& ruleset, CardView* view );
-    ~Board ( void );
+    /// \brief Default constructor.
+    ///
+    /// \see ::initialize.
+    Board();
 
-    /// Empties board vector
-    void clear ( void );
+    /// \brief Destructor.
+    ~Board();
+
+    /// \brief Initialize the game board with a rule set and card rendering
+    /// components.
+    ///
+    /// \remarks The game board has two prerequisite dependencies before
+    /// successful construction -- both the card rule-sets and card rendering
+    /// components must be fully constructed.
+    bool
+    initialize(tt::RegionRuleSet* ruleset, CardResourceLoader* res);
+
+    /// \brief Empty the board of its stored cards.
+    void clear();
 
     /// Translates local board coordinates into positioning coordinates used by
     /// display rendering (units are naturally in pixels) -- usefulness ranges
@@ -75,77 +92,90 @@ class Board
     /// Returns -1, -1 when undefined.
     const nom::IntRect getGlobalBounds ( nom::int32 x, nom::int32 y ) const;
 
-    const std::vector<BoardTile> find_adjacent ( nom::int32 x, nom::int32 y ) const;
+    board_tiles find_adjacent(nom::int32 x, nom::int32 y) const;
 
-    std::vector<std::pair<nom::int32, nom::int32>> checkBoard ( nom::int32 x, nom::int32 y );
+    board_tiles_result check_board(const nom::Point2i& rel_board_pos);
 
     /// Getter helper method for obtaining total count of placed cards on board
     nom::uint32 getCount ( void );
 
     /// get card count by player's cards on board
-    nom::uint32 getPlayerCount ( nom::int32 player_id );
+    nom::uint32 getPlayerCount(PlayerID player_id);
 
     /// Getter helper method for obtaining card ID at x, y coords
-    const nom::int32 getStatus ( nom::int32 x, nom::int32 y ) const;
+    CardID getStatus ( nom::int32 x, nom::int32 y ) const;
 
-    /// Setter helper method for placing a card on the board at x, y coords
-    void updateStatus ( nom::int32 x, nom::int32 y, const Card& card );
+    CardID status(const nom::Point2i& rel_board_pos) const;
+
+    /// \brief Helper method for placing a card on the board.
+    ///
+    /// \note A new card renderer is generated.
+    ///
+    /// \see ::getGlobalBounds
+    void update(const nom::Point2i& grid_pos, Card& pcard);
+
+    /// \brief ...
+    ///
+    /// \param
+    ///
+    /// \remarks ...
+    bool update(const Cards& cards);
 
     /// Getter helper method for obtaining player owner tag / ID on a card at x, y
     /// coords
-    const nom::int32 getPlayerID ( nom::int32 x, nom::int32 y ) const;
+    PlayerID getPlayerID(nom::int32 x, nom::int32 y) const;
 
-    /// Setter helper method for swapping player owner tags / IDs on a card at x, y
-    /// coords
-    void flipCard ( nom::int32 x, nom::int32 y, nom::int32 player_id );
-
-    /// Getter helper method for obtaining card name at x, y coords
-    const std::string getName ( nom::int32 x, nom::int32 y ) const;
+    /// \brief Helper method for swapping player owner tags / IDs on a card.
+    void flip_card(const nom::Point2i& rel_board_pos, PlayerID player_id);
 
     /// (Private) Getter helper method for obtaining card placed at x, y coords;
     /// Used within Board::Draw(), Game::showCardInfoBox() method calls
-    const Card& get ( nom::int32 x, nom::int32 y ) const;
+    const Card& get(nom::int32 x, nom::int32 y) const;
 
-    const BoardTile& tile ( nom::int32 x, nom::int32 y ) const;
-
-    void update ( void );
+    const BoardTile& tile(nom::int32 x, nom::int32 y) const;
 
     /// Draws our active board grid based on their values (card IDs)
-    void draw ( nom::IDrawable::RenderTarget& target );
+    void draw(nom::IDrawable::RenderTarget& target);
 
-    /// Pretty print the current board tiles
-    void list ( void );
+    /// \brief Get the unoccupied tiles on the board.
+    board_tiles free_tiles() const;
 
-    /// Save the current board grid data to a file as a series of RFC 4627
-    /// compliant JSON objects.
-    bool save ( const std::string& filename );
-
-    /// Load saved board grid data from a file encoded as RFC 4627 compliant
-    /// JSON objects.
-    bool load ( const std::string& filename );
-
-    const nom::int32 operator() ( const nom::int32 x, const nom::int32 y );
-
-    // std::vector<BoardTile> free_tiles() const;
+    /// \brief Diagnostic output of the current board tiles.
+    void dump_values();
 
   private:
-    void initialize ( void );
+    void initialize_board_elements();
 
-    /// Card rule logic
-    CardRules rules;
+    /// \brief The current game rules in effect.
+    ///
+    /// \note This is a non-owned pointer, so we **must not** free it!
+    tt::RegionRuleSet* rules_;
 
-    /// Card rendering
-    CardView* card;
-
-    /// Debug support for card attributes
-    CardDebug debug;
+    /// \brief Card rendering.
+    ///
+    /// \note This is a non-owned pointer, so we **must not** free it!
+    CardResourceLoader* card_res_;
 
     /// 2D vector of BoardTiles
+    ///
+    /// \todo Re-implement this as a one-dimensional array.
     std::vector<std::vector<BoardTile>> grid;
 
-    /// X, Y translation coordinates for mapping local to global positions on
-    /// the board
-    nom::IntRect board_map[9];
+    /// \brief The board's local grid positions mapped to screen coordinates.
+    nom::IntRect board_map_[9];
+
+    /// \brief The board's local grid positions mapped to screen coordinates
+    /// with the whole rectangle bounds of the position for ease of collision
+    /// detection with mouse input.
+    nom::IntRect board_mouse_map_[9];
 };
+
+nom::Value
+serialize_board(const Board* board);
+
+tt::Cards
+deserialize_board(const nom::Value& objects);
+
+} // namespace tt
 
 #endif // GAMEAPP_BOARD_HEADERS defined

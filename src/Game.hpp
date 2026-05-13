@@ -34,39 +34,117 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <memory>
 
+#include <nomlib/core.hpp>
 #include <nomlib/audio.hpp>
 #include <nomlib/graphics.hpp>
+#include <nomlib/actions.hpp>
 #include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "version.hpp"
-#include "resources.hpp"
-
-#include "Board.hpp"
-#include "CardCollection.hpp"
-#include "CardDebug.hpp"
 #include "CardHand.hpp"
-#include "CardView.hpp"
 #include "CardRules.hpp"
 #include "GameConfig.hpp"
-
 #include "CardsPageDataSource.hpp"
+
+#define TT_RENDER_ACTION(sprite, action_id) \
+  if( this->game->actions_.action_running(action_id) == true && \
+      sprite != nullptr && sprite->valid() == true ) \
+  { \
+    sprite->draw(this->game->window); \
+  }
+
+#define TT_RENDER_SPRITE(sprite) \
+  if( sprite != nullptr && sprite->valid() == true ) { \
+    sprite->draw(this->game->window); \
+  }
+
+namespace tt {
+
+// Forward declarations
+class CardCollection;
+class Board;
+class CardRenderer;
+class CardResourceLoader;
 
 class Game: public nom::SDLApp
 {
   public:
-    Game();
-    Game( nom::int32 argc, char* argv[] );
+    /// \todo Relocate function to main.cpp; nomlib init, command line options
+    /// and passing file handles to game configuration files.
+    Game(nom::int32 argc, char* argv[]);
     virtual ~Game();
 
-    bool on_init( void );
+    bool on_init() override;
 
-    /// Run app loop
-    nom::int32 Run( void );
+    /// \brief Te main game loop.
+    ///
+    /// \see main.cpp
+    int Run() override;
 
     /// \see SDLApp
-    void set_state( nom::uint32 id, nom::void_ptr data = nullptr );
+    void set_state(nom::uint32 id, nom::void_ptr data = nullptr);
+
+    bool
+    init_game_rules(const GameConfig* config, tt::RegionRuleSet& region);
+
+    /// \param alpha The starting opacity (origin) to fade the color with.
+    void
+    fade_window(  nom::real32 duration, const nom::Color4i& color,
+                  nom::uint8 alpha, const nom::Size2i& window_dims,
+                  const std::function<void()>& on_completion_func = nullptr );
+
+    void on_game_quit(const nom::Event& evt);
+
+    std::shared_ptr<nom::IActionObject>
+    create_flip_card_action(  const std::shared_ptr<nom::Sprite>& sp,
+                              const nom::Point2i& card_pos );
+
+    bool save_deck(CardCollection* deck, const std::string& filename);
+
+    bool load_new_deck(CardCollection* deck, const std::string& filename);
+
+    bool load_deck(CardCollection* deck, const std::string& filename);
+
+    bool
+    save_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                      bool game_state, const std::string& filename );
+
+    bool
+    load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
+                      bool game_state, const std::string& filename );
+
+    /// \brief Do an existence check on an existing player deck, i.e.: saved
+    /// game.
+    bool player_deck_exists() const;
+
+    /// \brief Do an existence check on an existing opponent deck, i.e.: saved
+    /// game.
+    bool opponent_deck_exists() const;
+
+    /// \brief Method callback action for dumping the board data in the game.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_board();
+
+    /// \brief Method callback action for dumping the player's hand data.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_hand(PlayerIndex player_index);
+
+    /// \brief Method callback action for dumping the card collection.
+    ///
+    /// \see nom::InputMapper.
+    ///
+    /// \remarks Only available when the game is built with debug (developer)
+    /// flags.
+    void dump_collection(PlayerIndex player_index);
 
     /// Audio subsystem
     std::unique_ptr<nom::IAudioDevice> audio_dev_;
@@ -95,42 +173,42 @@ class Game: public nom::SDLApp
     std::unique_ptr<nom::ISoundSource> card_flip;
 
     /// Load saved game sound event
-    std::unique_ptr<nom::ISoundSource> load_game;
+    std::unique_ptr<nom::ISoundSource> load_game_sfx;
 
     /// Save game sound event
-    std::unique_ptr<nom::ISoundSource> save_game;
+    std::unique_ptr<nom::ISoundSource> save_game_sfx;
 
-    /// Theme song track
-    std::unique_ptr<nom::ISoundSource> music_track;
+    std::unique_ptr<nom::ISoundSource> theme_track_;
 
     /// Player 1 has won track
     std::unique_ptr<nom::ISoundSource> winning_track;
 
     // Font resources
-    nom::Font card_font;
+    nom::Font card_font_;
     nom::Font gameover_font;
     nom::Font scoreboard_font;
+    nom::Font menu_font_;
 
     nom::Text scoreboard_text[2];
     nom::Text gameover_text;
+    nom::Text menu_text_;
 
     /// Game board
-    Board board;
+    std::unique_ptr<Board> board_;
 
-    /// Rules logic
-    CardRules rules;
+    /// \brief The current game rules in effect.
+    tt::RegionRuleSet rules_;
 
-    /// Cards database
-    CardCollection collection;
-
-    /// Debug support for card attributes
-    CardDebug debug;
+    /// \brief The card pool of playable cards.
+    std::unique_ptr<CardCollection> cards_db_[TOTAL_PLAYERS];
 
     /// Player hands
+    ///
+    /// \todo Change to pointer
     CardHand hand[2];
 
-    /// Card rendering
-    CardView card;
+    /// \brief Card resources container; background, face, elements, text
+    std::unique_ptr<CardResourceLoader> card_res_;
 
     /// Board background image
     nom::Texture background;
@@ -139,24 +217,32 @@ class Game: public nom::SDLApp
     nom::Texture gameover_background;
 
     /// interface cursor
+    nom::SpriteSheet right_cursor_frames_;
+    nom::SpriteSheet left_cursor_frames_;
     nom::Texture cursor_tex_;
-    nom::AnimatedSprite cursor_;
+    std::shared_ptr<nom::SpriteBatch> cursor_;
+    nom::uint32 cursor_pos_ = 0;
+    std::shared_ptr<nom::IActionObject> blinking_cursor_action_;
 
     /// our public / visible display context handle
     nom::RenderWindow window;
 
-    /// Variable set configuration properties
-    GameConfig config;
+    /// \brief General game configuration.
+    std::unique_ptr<GameConfig> config_;
+
+    /// \brief Game resource file paths.
+    std::unique_ptr<GameConfig> res_cfg_;
 
     /// \brief The top-level GUI "window" (desktop)
     nom::UIContext gui_window_;
 
-    /// \brief The view used for paged cards list.
+    /// \brief The UI view for building the player's hand from a deck.
     ///
-    /// \remarks Used in CardsMenuState.
+    /// \see CardsMenuState.
     std::unique_ptr<CardsPageDataSource> cards_page_model_;
     CardStatusFormatter card_status_;
     CardNameFormatter card_;
+    CardsAvailableFormatter card_num_;
 
     /// \brief UI for selection of cards.
     ///
@@ -183,7 +269,9 @@ class Game: public nom::SDLApp
       Play,
       GameOver,
       Pause,
-      ConfirmationDialog
+      ConfirmationDialog,
+      MainMenu,
+      Options,
     };
 
     nom::InputStateMapper input_mapper;
@@ -192,71 +280,141 @@ class Game: public nom::SDLApp
     std::string working_directory;
 
     /// visual indication of which player's turn it is
-    nom::Texture triad_tex_;
-    nom::SpriteBatch triad_;
+    std::shared_ptr<nom::SpriteBatch> triad_;
+
+    std::shared_ptr<nom::IActionObject> triad_action_;
+
+    /// \brief Game animations.
+    ///
+    /// \remarks This is globally shared across states.
+    nom::ActionPlayer actions_;
+
+    std::shared_ptr<nom::Sprite> won_text_sprite_;
+    std::shared_ptr<nom::Sprite> lost_text_sprite_;
+    std::shared_ptr<nom::Sprite> tied_text_sprite_;
+
+    std::shared_ptr<nom::Sprite> combo_text_sprite_;
+    std::shared_ptr<nom::Sprite> same_text_sprite_;
+    std::shared_ptr<nom::IActionObject> combo_text_action_;
+    std::shared_ptr<nom::IActionObject> same_text_action_;
+
+    /// \brief Toggle switch for in-game debugging features.
+    bool debug_game_;
+
+    nom::EventHandler evt_handler_;
+    nom::JoystickID joystick_id_ = 0;
+
+    // Platform-dependent game file paths; configuration, saves, screen-shots
+    typedef std::map<std::string, std::string> platform_paths;
+    platform_paths paths_;
 
   private:
-    /// \remarks Re-implements nom::SDLApp::on_event.
+    /// \brief Setup platform-dependent file paths for locating the game
+    /// configuration files.
     ///
-    /// \fixme This is currently required for GUI events processing in
-    /// ConfirmationDialogState, and probably can be handled better.
-    void on_event( const nom::Event& ev );
+    /// \note The file-system root must be set before this function is called.
+    ///
+    /// \see nom::set_file_root
+    bool init_config_paths();
 
-    /// Event handler for resize app request
-    void on_window_resized( const nom::Event& ev );
+    /// \brief Setup platform-dependent file paths for the game.
+    ///
+    /// \note The file-system root must be set before this function is called.
+    ///
+    /// \see nom::set_file_root
+    bool init_game_paths(GameConfig* cfg);
 
     /// \brief Method callback action for pausing the music tracks in the game.
     ///
     /// \see nom::InputMapper.
-    void pause_music( void );
+    void pause_music();
 
     /// \brief Method callback action for muting the global audio volume in the
     /// game.
     ///
     /// \see nom::InputMapper.
-    void mute_volume( void );
+    void mute_volume();
+
+    /// \brief Set a new master volume level.
+    ///
+    /// \param gain A number between 0..100 (min/max).
+    ///
+    /// \todo Add OSD (on-screen display) of audio volume change
+    void set_volume(nom::real32 gain);
 
     /// \brief Method callback action for creating a snapshot image in the game.
     ///
     /// \remarks The screen-shots are saved under ~/Documents/ttcards
     ///
     /// \see nom::InputMapper.
-    void save_screenshot( void );
+    void save_screenshot();
 
-    /// \brief Method callback action for reloading the configuration -- restart
-    /// the game.
+    /// \brief Callback action for reloading the game's configuration files.
     ///
-    /// \see nom::InputMapper.
-    void reload_config( void );
+    /// \todo Support hot-loading the configuration file without resetting the
+    /// game state.
+    ///
+    /// \todo Finish reloading of all the applicable game variables in here --
+    /// i.e.: animations -- we only do DEBUG_GAME at the moment!
+    void reload_config();
 
-    /// \brief Method callback action for dumping the board data in the game.
+    /// \brief The event handler that is called when our window is shown, such
+    /// as upon initial creation, restored from a hidden or minimized state,
+    /// etc.
     ///
-    /// \see nom::InputMapper.
-    ///
-    /// \remarks Only available when the game is built with debug (developer)
-    /// flags.
-    void dump_board( void );
+    /// \remarks Re-implements nom::SDLApp::on_window_shown
+    void on_window_shown(const nom::Event& evt) override;
 
-    /// \brief Method callback action for dumping the player's hand data.
+    /// \brief The event handler that is called when our window is hidden.
     ///
-    /// \see nom::InputMapper.
-    ///
-    /// \remarks Only available when the game is built with debug (developer)
-    /// flags.
-    void dump_hand( nom::uint32 player_id );
+    /// \remarks Re-implements nom::SDLApp::on_window_hidden
+    void on_window_hidden(const nom::Event& evt) override;
 
-    /// \brief Method callback action for dumping the card collection.
+    /// \brief The event handler that is called when our window is minimized.
     ///
-    /// \see nom::InputMapper.
+    /// \remarks Re-implements nom::SDLApp::on_window_minimized
+    void on_window_minimized(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is restored to
+    /// normal size and position.
     ///
-    /// \remarks Only available when the game is built with debug (developer)
-    /// flags.
-    void dump_collection( void );
+    /// \remarks Re-implements nom::SDLApp::on_window_restored
+    void on_window_restored(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is in focus.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_keyboard_focus
+    void on_window_keyboard_focus(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is **not** in
+    /// focus.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_keyboard_focus_lost
+    void on_window_keyboard_focus_lost(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is in focus.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_mouse_focus
+    void on_window_mouse_focus(const nom::Event& evt) override;
+
+    /// \brief The event handler that is called when our window is **not** in
+    /// focus.
+    ///
+    /// \remarks Re-implements nom::SDLApp::on_window_mouse_focus_lost
+    void on_window_mouse_focus_lost(const nom::Event& evt) override;
+
+    /// \see Game::fade_window_out
+    std::shared_ptr<nom::Sprite> fade_window_sprite_;
 
     Game* game;
 
-    /// Timer for tracking frames per second
-    nom::FPS fps;
+    // IMPORTANT: The running state of this timer controls whether the max or
+    // min frame rate is in use.
+    nom::Timer fps_timer_;
+    nom::uint32 max_frame_interval_ = 0;
+    nom::uint32 min_frame_interval_ = 0;
 };
+
+} // namespace tt
 
 #endif // include guard defined

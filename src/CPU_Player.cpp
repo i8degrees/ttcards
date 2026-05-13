@@ -28,57 +28,51 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CPU_Player.hpp"
 
+// Private headers
+#include "CardRenderer.hpp"
+
 // Forward declarations
 #include "CardHand.hpp"
 #include "Board.hpp"
 #include "BoardTile.hpp"
-#include "CardView.hpp"
 
-CPU_Player::~CPU_Player()
-{
-  // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
-}
+using namespace nom;
+
+namespace tt {
 
 CPU_Player::CPU_Player( Difficulty difficulty, Board* board, CardHand* hand,
-                        CardView* view, const action_callback& action)
+                        const action_callback& action )
 {
   // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 
   this->difficulty_ = difficulty;
   this->board_ = board;
   this->hand_ = hand;
-  this->card_renderer_ = view;
   this->action_ = action;
-  this->player_id_ = 1;
+  this->player_id_ = PlayerID::PLAYER_ID_INVALID;
 
   NOM_ASSERT(this->hand_ != nullptr);
   NOM_ASSERT(this->board_ != nullptr);
-  NOM_ASSERT(this->card_renderer_ != nullptr);
 }
 
-nom::uint32 CPU_Player::player_id() const
+CPU_Player::~CPU_Player()
+{
+  // NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
+}
+
+PlayerType CPU_Player::type() const
+{
+  return PlayerType::CPU_PLAYER;
+}
+
+PlayerID CPU_Player::player_id() const
 {
   return this->player_id_;
 }
 
-// Maps the player's (card) hand with their respective ID; this keeps track of
-// who's card is which and is used in CardView -- the rendering the card
-// background -- and most importantly, in the Board class where we compare cards
-// placed to determine whom's card to flip over to the respective player.
-//
-// card.player_owner is the *original* player owner of a card and should never be
-// altered once set initially here.
-//
-void CPU_Player::set_player_id(nom::uint32 id)
+void CPU_Player::set_player_id(PlayerID id)
 {
   this->player_id_ = id;
-
-  NOM_ASSERT(this->hand_ != nullptr);
-  for( nom::uint32 pid = 0; pid < this->hand_->cards.size(); pid++ )
-  {
-    this->hand_->cards[pid].setPlayerID(id);
-    this->hand_->cards[pid].setPlayerOwner(id);
-  }
 }
 
 BoardTile CPU_Player::random_move()
@@ -97,11 +91,39 @@ BoardTile CPU_Player::random_move()
     this->hand_->selectCard(strongest_card);
 
     NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CPU_PLAYER, "random_move" );
-    tile.set_bounds( nom::IntRect( moveX, moveY, -1, -1 ) );
+    tile.set_position( Point2i(moveX, moveY) );
   }
 
   // No move was found; BoardTile::null
   return tile;
+}
+
+BoardTile CPU_Player::free_tile_move()
+{
+  board_tiles tiles;
+
+  NOM_ASSERT(this->hand_ != nullptr);
+  NOM_ASSERT(this->board_ != nullptr);
+
+  tiles = this->board_->free_tiles();
+
+  if( tiles.empty() == false && this->hand_->size() > 0 ) {
+    BoardTile tile(BoardTile::null);
+
+    Point2i move_offset = tiles[0].position();
+
+    Card strongest_card = this->hand_->strongest();
+    this->hand_->selectCard(strongest_card);
+
+    NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CPU_PLAYER, "free_tile_move" );
+    tile.set_position(move_offset);
+
+    // Success!
+    return tile;
+  }
+
+  // No move was found
+  return BoardTile::null;
 }
 
 BoardTile CPU_Player::edge_move()
@@ -145,28 +167,28 @@ BoardTile CPU_Player::edge_move()
       NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CPU_PLAYER, "edge_move" );
       tile = BoardTile( this->hand_->getSelectedCard(),
                         nom::IntRect( board_edges[0].x, board_edges[0].y, -1, -1),
-                        this->hand_->getSelectedCard().getElement() );
+                        this->hand_->getSelectedCard().element );
     }
     else if( this->board_->getStatus( board_edges[1].x, board_edges[1].y ) == BAD_CARD_ID )
     {
       NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CPU_PLAYER, "edge_move" );
       tile = BoardTile( this->hand_->getSelectedCard(),
                         nom::IntRect( board_edges[1].x, board_edges[1].y, -1, -1 ),
-                        this->hand_->getSelectedCard().getElement() );
+                        this->hand_->getSelectedCard().element );
     }
     else if( this->board_->getStatus( board_edges[2].x, board_edges[2].y ) == BAD_CARD_ID )
     {
       NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CPU_PLAYER, "edge_move" );
       tile = BoardTile( this->hand_->getSelectedCard(),
                         nom::IntRect( board_edges[2].x, board_edges[2].y, -1, -1 ),
-                        this->hand_->getSelectedCard().getElement() );
+                        this->hand_->getSelectedCard().element );
     }
     else if( this->board_->getStatus(board_edges[3].x, board_edges[3].y) == BAD_CARD_ID )
     {
       NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CPU_PLAYER, "edge_move" );
       tile = BoardTile( this->hand_->getSelectedCard(),
                         nom::IntRect( board_edges[3].x, board_edges[3].y, -1, -1 ),
-                        this->hand_->getSelectedCard().getElement() );
+                        this->hand_->getSelectedCard().element );
     }
   }
 
@@ -196,16 +218,16 @@ BoardTile CPU_Player::best_move()
               // Validity check: potential tile must be empty
               board_->getStatus(x, y) == BAD_CARD_ID ) {
 
-            if( (*itr).getWestRank() >
-                board_->tile(x - 1, y).tile().getEastRank() == true ) {
+            if( (*itr).ranks[RANK_WEST] >
+                board_->tile(x - 1, y).tile().ranks[RANK_EAST] == true ) {
 
               NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CPU_PLAYER,
                               "best_move:",
-                              (*itr).getName(), "[W > E]",
+                              (*itr).name, "[W > E]",
                               // Opponent's card
-                              board_->tile(x - 1, y).tile().getName() );
+                              board_->tile(x - 1, y).tile().name );
 
-              tile.set_bounds( board_->tile(x,y).bounds() );
+              tile.set_position( this->board_->tile(x,y).position() );
               this->hand_->selectCard( (*itr) );
               return tile;
             }
@@ -223,16 +245,16 @@ BoardTile CPU_Player::best_move()
               // Validity check: potential tile must be empty
               board_->getStatus(x, y) == BAD_CARD_ID ) {
 
-            if( (*itr).getSouthRank() >
-                board_->tile(x, y + 1).tile().getNorthRank() == true ) {
+            if( (*itr).ranks[RANK_SOUTH] >
+                board_->tile(x, y + 1).tile().ranks[RANK_NORTH] == true ) {
 
               NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CPU_PLAYER,
                               "best_move:",
-                              (*itr).getName(), "[S > N]",
+                              (*itr).name, "[S > N]",
                               // Opponent's card
-                              board_->tile(x, y + 1).tile().getName() );
+                              board_->tile(x, y + 1).tile().name );
 
-              tile.set_bounds( board_->tile(x,y).bounds() );
+              tile.set_position( this->board_->tile(x,y).position() );
               this->hand_->selectCard( (*itr) );
               return tile;
             }
@@ -250,16 +272,16 @@ BoardTile CPU_Player::best_move()
               // Validity check: potential tile must be empty
               board_->getStatus(x, y) == BAD_CARD_ID ) {
 
-            if( (*itr).getEastRank() >
-                board_->tile(x + 1, y).tile().getWestRank() == true ) {
+            if( (*itr).ranks[RANK_EAST] >
+                board_->tile(x + 1, y).tile().ranks[RANK_WEST] == true ) {
 
               NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CPU_PLAYER,
                               "best_move:",
-                              (*itr).getName(), "[E > W]",
+                              (*itr).name, "[E > W]",
                               // Opponent's card
-                              board_->tile(x + 1, y).tile().getName() );
+                              board_->tile(x + 1, y).tile().name );
 
-              tile.set_bounds( board_->tile(x,y).bounds() );
+              tile.set_position( this->board_->tile(x,y).position() );
               this->hand_->selectCard( (*itr) );
               return tile;
             }
@@ -278,16 +300,16 @@ BoardTile CPU_Player::best_move()
               board_->getStatus(x, y) == BAD_CARD_ID ) {
 
             // Card comparison
-            if( (*itr).getNorthRank() >
-                board_->tile(x, y - 1).tile().getSouthRank() == true ) {
+            if( (*itr).ranks[RANK_NORTH] >
+                board_->tile(x, y - 1).tile().ranks[RANK_SOUTH] == true ) {
 
               NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CPU_PLAYER,
                               "best_move:",
-                              (*itr).getName(), "[N > S]",
+                              (*itr).name, "[N > S]",
                               // Opponent's card
-                              board_->tile(x, y - 1).tile().getName() );
+                              board_->tile(x, y - 1).tile().name );
 
-              tile.set_bounds( board_->tile(x,y).bounds() );
+              tile.set_position( this->board_->tile(x,y).position() );
               this->hand_->selectCard( (*itr) );
               return tile;
             }
@@ -301,7 +323,7 @@ BoardTile CPU_Player::best_move()
   return tile;
 }
 
-void CPU_Player::update()
+void CPU_Player::update(nom::real32 delta_time)
 {
   BoardTile tile;
 
@@ -316,7 +338,7 @@ void CPU_Player::update()
   }
 
   if( tile == BoardTile::null ) {
-    tile = this->random_move();
+    tile = this->free_tile_move();
   }
 
   if( tile != BoardTile::null ) {
@@ -326,23 +348,33 @@ void CPU_Player::update()
 
 void CPU_Player::draw(nom::IDrawable::RenderTarget& target)
 {
-  nom::Point2i pos(nom::Point2i::zero);
-
   NOM_ASSERT(this->hand_ != nullptr);
-  NOM_ASSERT(this->card_renderer_ != nullptr);
-  for( nom::int32 idx = 0; idx < this->hand_->size(); idx++ ) {
+  if( this->hand_ == nullptr ) {
+    return;
+  }
 
-    // Position of Player's cards in their hand
+  auto hand_idx = 0;
+  nom::Point2i pos(nom::Point2i::zero);
+  for( auto itr = this->hand_->begin(); itr != this->hand_->end(); ++itr ) {
+
     pos.x = this->position().x;
-    pos.y = this->position().y + ( CARD_HEIGHT / 2 ) * idx;
+    pos.y = this->position().y + ( CARD_HEIGHT / 2 ) * hand_idx;
 
-    if( this->hand_->position() == idx) {
+    if( this->hand_->position() == hand_idx) {
       pos.x += 16;
     }
 
-    this->card_renderer_->reposition(pos);
-    this->card_renderer_->setViewCard( this->hand_->cards.at(idx) );
-    this->card_renderer_->draw(target);
+    ++hand_idx;
 
+    auto card_renderer =
+      itr->card_renderer;
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      // TODO: Update the element position only when we need to -- this will
+      // help ease further integration of animations!
+      card_renderer->set_position(pos);
+      card_renderer->render(target);
+    }
   } // end for this->hand loop
 }
+
+} // namespace tt

@@ -26,51 +26,94 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#ifndef GAMEAPP_GAME_CONFIG_HEADERS
-#define GAMEAPP_GAME_CONFIG_HEADERS
+#ifndef TTCARDS_GAME_CONFIG_HPP
+#define TTCARDS_GAME_CONFIG_HPP
 
-#include <iostream>
 #include <string>
-#include <fstream>
 #include <map>
 
-#include "nomlib/config.hpp"
-#include <nomlib/serializers.hpp>
+#include <nomlib/config.hpp>
 
 #include "config.hpp"
+#include "types.hpp"
+
+namespace nom {
+
+// Forward declarations
+class IValueDeserializer;
+
+} // namespace nom
+
+namespace tt {
 
 /// \brief Simple, convenient file-based settings interface
 ///
-/// \remarks This interface does not allow duplicate key (node) members to be
-/// added.
+/// \remarks This interface does not allow duplicate keys members.
+///
+/// \todo Consider supporting the use of multiple objects within a
+/// configuration file, so we could consolidate config_assets* into one file?
+/// (I'm not sure yet if I even like the idea of consolidating asset files).
 class GameConfig
 {
   public:
     GameConfig();
-    GameConfig( const std::string& filename);
     ~GameConfig();
 
-    const std::string getString ( const std::string& node ) const;
-    const nom::int32 getInteger ( const std::string& node ) const;
-    bool get_bool(const std::string& node) const;
+    std::string
+    get_string( const std::string& node,
+                const std::string& default_value = "" ) const;
 
-    /// \returns std::vector<std::string>
-    nom::StringList string_array(const std::string& node) const;
+    /// \returns The de-serialized integer value on success, or
+    /// nom::NOM_INT_MIN on failure, such as when the node does not exist.
+    ///
+    /// \todo Rename to get_int32
+    nom::int32 get_int( const std::string& node,
+                        nom::int32 default_value = nom::NOM_INT_MIN ) const;
 
-    // const nom::Value& array(const std::string& node) const;
+    bool get_bool(const std::string& node, bool default_value) const;
 
-    const nom::Value& setProperty ( const std::string& node, const nom::Value& value );
+    /// \brief Get a boolean configuration value.
+    ///
+    /// \returns The boolean value as an integer on success, or negative one
+    /// (-1) on failure, such as when the specified node does not exist.
+    int get_bool32(const std::string& node, bool default_value) const;
 
-    /// Load saved board grid data from a file encoded as RFC 4627 compliant
-    /// JSON objects.
+    /// \returns The de-serialized floating-point value on success, or the set
+    /// default value on failure, such as when the node does not exist.
+    nom::real32
+    get_real32(const std::string& node, nom::real32 default_value) const;
+
+    /// \returns The de-serialized floating-point value on success, or the set
+    /// default value on failure, such as when the node does not exist.
+    nom::real64
+    get_real64(const std::string& node, nom::real64 default_value) const;
+
+    tt::string_list get_array(const std::string& node) const;
+
+    bool find(const std::string& node);
+
+    /// \brief Set a new value in the configuration node.
+    ///
+    /// \remarks Existing member keys will be overwritten.
+    ///
+    /// \see ::has_property
+    void set_property(const std::string& node, const nom::Value& value);
+
+    /// \brief De-serialize a configuration node from a file source.
+    ///
+    /// \param fp The high-level data output interface to use.
     ///
     /// \todo Restore the current configuration if we fail to parse config and
-    /// have cleared the
-    bool load ( const std::string& filename );
+    /// have cleared the?
+    bool load_file(const std::string& filename, nom::IValueDeserializer* fp);
+
+    /// \brief Diagnostics output.
+    std::string dump_tree() const;
 
   private:
-    std::map<std::string, nom::Value> config;
+    std::map<std::string, nom::Value> config_;
 };
 
+} // namespace tt
 
 #endif // include guard defined

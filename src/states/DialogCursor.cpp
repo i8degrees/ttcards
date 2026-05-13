@@ -28,6 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "DialogCursor.hpp"
 
+namespace tt {
+
 DialogCursor::DialogCursor() :
   cursor_position_(0)
 {
@@ -113,3 +115,5 @@ void DialogCursor::set_cursor_position(int pos)
     this->set_position( this->position_map_[pos].position() );
   }
 }
+
+} // namespace tt

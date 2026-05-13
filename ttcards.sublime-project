@@ -2,45 +2,27 @@
   "folders":
   [
     {
-      "name": ".",
       "path": ".",
-      "file_exclude_patterns": [ ".LSOverride", "ttcards", ".tags*", "ttcards.sublime-*" ],
-      "folder_exclude_patterns": [ "build", "extlibs", "tmp", "src", "docs", "Resources", "third-party", "include" ]
+
+      // The header files in 'src' are ignored here because I wish to logically
+      // distinguish between source and header files by file view.
+      "file_exclude_patterns": [  "*.sublime-workspace", ".LSOverride",
+                                  "*.bck", "src/*.hpp" ],
+
+      "folder_exclude_patterns": [ "build", "tmp", "third-party" ]
     },
 
     {
-      "name": "include",
-      "path": "include",
-      "file_include_patterns": ["*.*"]
-    },
-
-    {
-      "name": "src",
+      "name": "inc",
       "path": "src",
-      "file_include_patterns": ["*.*"]
-    },
-/*
-    {
-      "name": "docs",
-      "path": "docs",
-      "folder_exclude_patterns": ["build", "tmp", "public", "docs/man" ]
-    },
-*/
-    {
-      "name": "Resources",
-      "path": "Resources",
-      "file_exclude_patterns": [ "*.icns", "*.bmp", "*.png" ]
-      //"folder_exclude_patterns": [ "audio", "fonts", "images" ]
-    },
-
-    {} // placeholder
+      "file_include_patterns": [ "*.hpp" ]
+    }
   ],
 
   "settings":
   {
     "tab_size": 2,
-    "translate_tabs_to_spaces": true,
-    "ctags_command":  "/usr/local/bin/ctags -R -f .tags src/"
+    "translate_tabs_to_spaces": true
   },
 
   "build_systems":

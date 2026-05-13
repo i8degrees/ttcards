@@ -28,75 +28,116 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "GameConfig.hpp"
 
+// Forward declarations
+#include <nomlib/serializers.hpp>
+
+using namespace nom;
+
+namespace tt {
+
 GameConfig::GameConfig()
 {
-  //
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-GameConfig::GameConfig(const std::string& filename)
+GameConfig::~GameConfig()
 {
-  if( this->load(filename) == false )
-  {
-    NOM_LOG_ERR ( TTCARDS_LOG_CATEGORY_CFG, "Could not parse input file: " + filename );
-  }
+  NOM_LOG_TRACE_PRIO(TTCARDS_LOG_CATEGORY_TRACE, NOM_LOG_PRIORITY_VERBOSE);
 }
 
-GameConfig::~GameConfig ( void )
+std::string GameConfig::
+get_string(const std::string& node, const std::string& default_value) const
 {
-  //
+  std::string result = default_value;
+
+  auto res = this->config_.find(node);
+  if( res != this->config_.end() ) {
+    result = res->second.get_string();
+  }
+
+  return result;
 }
 
-const std::string GameConfig::getString ( const std::string& node ) const
+nom::int32
+GameConfig::get_int(  const std::string& node,
+                      nom::int32 default_value ) const
 {
-  auto itr = config.find ( node );
+  auto res = this->config_.find(node);
 
-  if ( itr == config.end() )
-  {
-    return "\0";
-  }
-  else
-  {
-    return itr->second.get_string();
-  }
-}
-
-const nom::int32 GameConfig::getInteger ( const std::string& node ) const
-{
-  auto itr = config.find ( node );
-
-  if ( itr == config.end() )
-  {
-    return -1;
-  }
-  else
-  {
-    return itr->second.get_int();
+  if( res == this->config_.end() ) {
+    return default_value;
+  } else {
+    return res->second.get_int();
   }
 }
 
-bool GameConfig::get_bool(const std::string& node) const
+bool GameConfig::get_bool(const std::string& node, bool default_value) const
 {
-  auto itr = config.find(node);
+  bool result = false;
 
-  if( itr == config.end() ) {
-    return false;
+  auto res = this->config_.find(node);
+  if( res == this->config_.end() ) {
+    result = default_value;
+  } else {
+    result = res->second.get_bool();
   }
-  else {
-    return itr->second.get_bool();
-  }
+
+  return result;
 }
 
-nom::StringList GameConfig::string_array(const std::string& node) const
+int GameConfig::get_bool32(const std::string& node, bool default_value) const
 {
-  nom::StringList out;
+  int result = 0;
+  auto res = this->config_.find(node);
 
-  auto itr = this->config.find(node);
+  if( res == this->config_.end() ) {
+    result = default_value;
+  } else {
+    result = NOM_SCAST(int, res->second.get_bool() );
+  }
 
-  if( itr != this->config.end() ) {
+  return result;
+}
 
-    NOM_ASSERT( itr->second.array_type() == false );
+nom::real32
+GameConfig::get_real32(const std::string& node, nom::real32 default_value) const
+{
+  real32 result = default_value;
 
-    nom::Value arr = itr->second;
+  auto res = this->config_.find(node);
+  if( res != this->config_.end() ) {
+    result = res->second.get_float();
+  }
+
+  return result;
+}
+
+nom::real64
+GameConfig::get_real64(const std::string& node, nom::real64 default_value) const
+{
+  real64 result = default_value;
+
+  auto res = this->config_.find(node);
+  if( res != this->config_.end() ) {
+    result = res->second.get_double();
+  }
+
+  return result;
+}
+
+tt::string_list
+GameConfig::get_array(const std::string& node) const
+{
+  tt::string_list out;
+
+  auto res = this->config_.find(node);
+
+  if( res != this->config_.end() ) {
+
+    NOM_ASSERT( res->second.array_type() == true ||
+                res->second.object_type() == true );
+
+    nom::Value arr = res->second;
 
     for( auto it = arr.begin(); it != arr.end(); ++it ) {
       out.push_back( it->get_string() );
@@ -106,109 +147,109 @@ nom::StringList GameConfig::string_array(const std::string& node) const
   return out;
 }
 
-// const nom::Value& GameConfig::array(const std::string& node) const
-// {
-//   auto itr = this->config.find(node);
-
-//   if( itr != this->config.end() ) {
-
-//     NOM_ASSERT( itr->second.array_type() == false );
-//     return itr->second;
-
-//   } // end if found
-// }
-
-const nom::Value& GameConfig::setProperty(  const std::string& node,
-                                            const nom::Value& value )
+bool GameConfig::find(const std::string& node)
 {
-  auto res = config.insert ( std::pair<std::string, nom::Value> ( node, value ) ).first;
+  auto res = this->config_.find(node);
 
-  if ( value.string_type() )
-  {
-    NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + "\"" + value.get_string() + "\"" + " has been added to the cache." );
+  if( res != this->config_.end() ) {
+    // Success -- the property exists in the node
+    return true;
+  } else {
+    // Failure -- the property does **not** exist in the node
+    return false;
   }
-  else if( value.int_type() )
-  {
-    NOM_LOG_INFO ( TTCARDS_LOG_CATEGORY_CFG, "GameConfig: " + node + ": " + std::to_string ( value.get_int() ) + " has been added to the cache." );
-  }
-  else if( value.bool_type() )
-  {
-    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG,
-                  "GameConfig: ", node, ":", std::to_string( value.get_bool() ),
-                  " has been added to the cache." );
-  }
-  else
-  {
-    NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG,
-                  "GameConfig: " + node + ": " + " has been added to the cache." );
-  }
-
-  return res->second;
 }
 
-bool GameConfig::load( const std::string& filename )
+void
+GameConfig::set_property(const std::string& node, const nom::Value& value)
 {
-  // High-level file I/O interface
-  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
-  std::string key;
-  nom::Value objects;
+  std::string value_as_string("INVALID VALUE");
 
+  this->config_[node] = value;
+
+  value_as_string = "'" + value.stringify() + "'";
+  NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CFG, node, ":", value_as_string,
+                  "has been added to the configuration cache." );
+}
+
+bool
+GameConfig::load_file(const std::string& filename, nom::IValueDeserializer* fp)
+{
   // Storage buffer for our configuration we are loading in; if everything is
   // successful, we will overwrite the existing configuration map with this one.
   GameConfig cfg;
+  nom::Value objects;
 
-  if ( fp->load( filename, objects ) == false )
-  {
-    NOM_LOG_ERR ( NOM, "Unable to open JSON file at: " + filename );
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Unable to parse input:",
+                  "de-serializer was NULL." );
     return false;
   }
 
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, objects );
-  NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_CFG, objects.size() );
+  if( fp->load(filename, objects) == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Unable to parse input file:", filename );
+    return false;
+  }
 
-  for( auto itr = objects.begin(); itr != objects.end(); ++itr )
-  {
-    if( itr->object_type() )
-    {
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG, "Parsed game configuration file:",
+                filename );
+
+  NOM_LOG_VERBOSE(TTCARDS_LOG_CATEGORY_CFG, objects);
+
+  // For sake of simplicity, we do not support storing more than one object in
+  // the configuration file,
+  NOM_ASSERT(objects.size() == 1);
+
+  for( auto itr = objects.begin(); itr != objects.end(); ++itr ) {
+
+    if( itr->object_type() ) {
       nom::Object obj = itr->object();
 
-      for( auto it = obj.begin(); it != obj.end(); ++it )
-      {
-        nom::Value::ConstIterator members( it );
+      for( auto it = obj.begin(); it != obj.end(); ++it ) {
+
+        nom::Value::ConstIterator members(it);
         std::string key = members.key();
 
-        NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CFG, key );
-
-        if( members->string_type() )
-        {
-          cfg.setProperty( key, members->get_string() );
+        if( members->int_type() ) {
+          cfg.set_property(key, members->get_int() );
+        } else if( members->double_type() ) {
+          cfg.set_property(key, members->get_double() );
+        } else if( members->string_type() ) {
+          cfg.set_property(key, members->get_string() );
+        } else if( members->bool_type() ) {
+          cfg.set_property(key, members->get_bool() );
+        } else if( members->array_type() ) {
+          cfg.set_property(key, members->array() );
+        } else if( members->object_type() ) {
+          cfg.set_property(key, members->object() );
+        } else {
+          // In practice, this condition should never happen! Something has
+          // probably gone terribly wrong with nomlib's de-serializing
+          // internals if this ever occurs.
+          NOM_LOG_WARN( TTCARDS_LOG_CATEGORY_APPLICATION,
+                        "Unrecognized member pair in", filename,
+                        "with the key", key );
         }
-        else if( members->int_type() )
-        {
-          cfg.setProperty( key, members->get_int() );
-        }
-        else if( members->bool_type() )
-        {
-          cfg.setProperty(key, members->get_bool() );
-        }
-        else if( members->array_type() )
-        {
-          cfg.setProperty(key, members->array() );
-        }
-        else if( members->object_type() )
-        {
-          cfg.setProperty(key, members->object() );
-        }
-      }
-    }
-  }
+      } // end for object loop
+    } // end if object type
+  } // end for objects loop
 
   // If we have made it this far, go ahead and overwrite our new configuration
   // onto the existing configuration map store!
-  this->config = cfg.config;
-
-  // Sanity check
-  // NOM_ASSERT( this->config.size() == objects.size() );
+  this->config_ = cfg.config_;
 
   return true;
 }
+
+std::string GameConfig::dump_tree() const
+{
+  for( auto itr = this->config_.begin(); itr != this->config_.end(); ++itr ) {
+    return itr->second.dump(itr->second);
+  }
+
+  return "\0";
+}
+
+} // namespace tt

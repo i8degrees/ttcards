@@ -178,7 +178,7 @@
     "height": 512,
     "padding": 2,
     "spacing": 2,
-    "scale": 1,
+    "scale": 2,
     "pixel_format": "RGBA8888",
     "smartupdate": "$TexturePacker:SmartUpdate:58fcfec10987cee8fb5328a56e6b1d08:d0dd2fc1c70841f5b46777457fc82d03:804453d693c40bacc7eeb79606669274$"
   }
