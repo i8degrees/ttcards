@@ -28,86 +28,186 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Board.hpp"
 
-/*
-TODO: Add configurable board init, such as:
+// Private helpers
+#include "helpers.hpp"
 
-  Board ( unsigned int board_width, unsigned int board_height );
+#include <nomlib/serializers.hpp>
 
-*/
-Board::Board ( CardRules& ruleset, CardView* view )
+// Forward declarations
+#include "CardRules.hpp"
+#include "CardResourceLoader.hpp"
+#include "CardRenderer.hpp"
+
+using namespace nom;
+
+namespace tt {
+
+Board::Board() :
+  rules_(nullptr),
+  card_res_(nullptr)
 {
-  this->rules = ruleset;
-  this->card = view;
-
-  this->initialize();
+  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-Board::Board ( void )
+Board::~Board()
 {
-  this->initialize();
+  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 }
 
-Board::~Board ( void )
+bool
+Board::initialize(tt::RegionRuleSet* ruleset, CardResourceLoader* res)
 {
-  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
-}
+  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
 
-void Board::clear ( void )
-{
-  this->initialize();
-}
+  this->rules_ = ruleset;
+  this->card_res_ = res;
 
-void Board::initialize ( void )
-{
-  NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
+  if( this->rules_ == nullptr || this->card_res_ == nullptr ) {
+    return false;
+  }
+
+  // Calculate the global screen coordinates for local positions on the board;
+  // these are the rectangle bounds starting from the top-left
+  this->board_map_[0] =
+    nom::IntRect( 0, 0,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 0),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0) );
+  this->board_map_[1] =
+    nom::IntRect( 1, 0,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 1),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0) );
+  this->board_map_[2] =
+    nom::IntRect( 2, 0,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 0) );
+  this->board_map_[3] =
+    nom::IntRect( 0, 1,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 0),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1) );
+  this->board_map_[4] =
+    nom::IntRect( 1, 1,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 1),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1) );
+  this->board_map_[5] =
+    nom::IntRect( 2, 1,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1) );
+  this->board_map_[6] =
+    nom::IntRect( 0, 2,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 0),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2) );
+  this->board_map_[7] =
+    nom::IntRect( 1, 2,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 1),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2) );
+  this->board_map_[8] =
+    nom::IntRect( 2, 2,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2) );
 
   // Calculate the global screen coordinates for local positions on the board
-  this->board_map[0] = nom::IntRect ( 0, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_map[1] = nom::IntRect ( 1, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
-  this->board_map[2] = nom::IntRect ( 2, 0, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1 ) );
+  // for comparing against mouse coordinates; for ease of collision bounds
+  // checking, these coordinates are the complete bounds of each position
+  this->board_mouse_map_[0] =
+    nom::IntRect( 0, 0,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 1),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1) );
+  this->board_mouse_map_[1] =
+    nom::IntRect( 1, 0,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1) );
+  this->board_mouse_map_[2] =
+    nom::IntRect( 2, 0,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 3),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 1) );
+  this->board_mouse_map_[3] =
+    nom::IntRect( 0, 1,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 1),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2) );
+  this->board_mouse_map_[4] =
+    nom::IntRect( 1, 1,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2) );
+  this->board_mouse_map_[5] =
+    nom::IntRect( 2, 1,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 3),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2) );
+  this->board_mouse_map_[6] =
+    nom::IntRect( 0, 2,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 1),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3) );
+  this->board_mouse_map_[7] =
+    nom::IntRect( 1, 2,
+                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2),
+                  BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3) );
+  this->board_mouse_map_[8] =
+    nom::IntRect( 2, 2,
+                 BOARD_ORIGIN_X + ( CARD_WIDTH * 3),
+                 BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3) );
 
-  this->board_map[3] = nom::IntRect ( 0, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_map[4] = nom::IntRect ( 1, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
-  this->board_map[5] = nom::IntRect ( 2, 1, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 2 ) );
+  this->clear();
 
-  this->board_map[6] = nom::IntRect ( 0, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 1), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_map[7] = nom::IntRect ( 1, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 2), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-  this->board_map[8] = nom::IntRect ( 2, 2, BOARD_ORIGIN_X + ( CARD_WIDTH * 3), BOARD_ORIGIN_Y + ( CARD_HEIGHT * 3 ) );
-
-  this->grid.resize ( BOARD_GRID_HEIGHT );
-
-  for ( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ )
-    this->grid[x].resize ( BOARD_GRID_WIDTH );
-
-  nom::int32 idx = 0;
-  int random_element = 0;
-  for( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
-    for( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ ) {
-
-      random_element = nom::uniform_int_rand<int>(1, MAX_ELEMENT);
-
-      this->grid[x][y] = BoardTile( Card(), this->board_map[idx], random_element );
-      idx++; // this->board_map[0..8]
-
-      // NOM_DUMP(random_element);
-    }
+  bool elemental_ruleset =
+    tt::is_card_rule_set(this->rules_, CardRuleset::ELEMENTAL_RULESET);
+  if( elemental_ruleset == true ) {
+    this->initialize_board_elements();
   }
+
+  return true;
+}
+
+void Board::clear()
+{
+  this->grid.clear();
+
+  // Bizarre things happen here if we do not do this -- it appears as though we
+  // overwrite existing memory ... I'd really like to better understand why this
+  // is!
+  //
+  // Call stack:
+  //
+  // Exception Type:        EXC_BAD_ACCESS (SIGSEGV)
+  // Exception Codes:       KERN_INVALID_ADDRESS at 0x0000000000000030
+  // Thread 0 Crashed:: Dispatch queue: com.apple.main-thread
+  // 0   libc++.1.dylib                  0x00007fff849f3892 std::__1::__shared_weak_count::__release_shared() + 24
+  // 1   org.i8degrees.ttcards           0x0000000103039d5f std::__1::shared_ptr<CardRenderer>::~shared_ptr() + 47 (memory:4449)
+  // 2   org.i8degrees.ttcards           0x0000000103037185 std::__1::shared_ptr<CardRenderer>::~shared_ptr() + 21 (memory:4449)
+  // 3   org.i8degrees.ttcards           0x0000000103040151 Card::operator=(Card const&) + 529 (Card.hpp:78)
+  // 4   org.i8degrees.ttcards           0x000000010303ea8d BoardTile::set_tile(Card const&) + 29 (BoardTile.cpp:97)
+  // 5   org.i8degrees.ttcards           0x000000010303263c Board::update(nom::Point2<int> const&, Card&) + 2908 (Board.cpp:590)
+  // 6   org.i8degrees.ttcards           0x00000001030345f4 Board::load(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) + 3396 (Board.cpp:776)
+  this->grid.resize(BOARD_GRID_HEIGHT);
+
+  for( auto x = 0; x < BOARD_GRID_WIDTH; ++x ) {
+    this->grid[x].resize(BOARD_GRID_WIDTH);
+  }
+
+  // Initial board values
+  auto idx = 0;
+  for( auto y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
+    for( auto x = 0; x < BOARD_GRID_WIDTH; x++ ) {
+      this->grid[x][y].set_tile(Card::null);
+      this->grid[x][y].set_bounds(this->board_map_[idx]);
+      this->grid[x][y].set_element(0);
+      ++idx;
+    } // end for x loop
+  } // end for y loop
 }
 
 const nom::IntRect Board::getGlobalBounds ( nom::int32 x, nom::int32 y ) const
 {
   for ( nom::int32 idx = 0; idx < ( BOARD_GRID_WIDTH * BOARD_GRID_HEIGHT ); idx++ )
   {
-    if ( x <= this->board_map[idx].w && x >= BOARD_ORIGIN_X && y <= this->board_map[idx].h && y >= BOARD_ORIGIN_Y )
-      return this->board_map[idx];
+    if ( x <= this->board_mouse_map_[idx].w && x >= BOARD_ORIGIN_X && y <= this->board_mouse_map_[idx].h && y >= BOARD_ORIGIN_Y )
+      return this->board_mouse_map_[idx];
   }
 
   return nom::IntRect::null;
 }
 
-const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y ) const
+board_tiles Board::find_adjacent(nom::int32 x, nom::int32 y) const
 {
-  std::vector<BoardTile> adjacent_cards;
+  board_tiles adjacent_cards;
 
   nom::int32 cols = y;
   nom::int32 rows = x;
@@ -148,117 +248,134 @@ const std::vector<BoardTile> Board::find_adjacent ( nom::int32 x, nom::int32 y )
     }
   }
 
-  return adjacent_cards;
+  return std::move(adjacent_cards);
 }
 
-std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x, nom::int32 y )
+board_tiles_result Board::check_board(const nom::Point2i& rel_board_pos)
 {
+  int x = rel_board_pos.x;
+  int y = rel_board_pos.y;
   nom::int32 cols, rows = 0; // iterator
   nom::int32 same_count = 0;
-  std::vector<std::pair<nom::int32, nom::int32>> coords;
+  BoardResult result;
+  board_tiles_result coords;
+
+  bool same_rule_applied =
+    tt::is_card_rule_set(this->rules_, CardRuleset::SAME_RULESET);
 
   coords.clear(); // initialize a fresh new coords list
 
-  for ( cols = y; y < BOARD_GRID_HEIGHT; y++ )
-  {
-    for ( rows = x; x < BOARD_GRID_WIDTH; x++ )
-    {
+  for( cols = y; y < BOARD_GRID_HEIGHT; y++ ) {
+    for( rows = x; x < BOARD_GRID_WIDTH; x++ ) {
+
       // Compare card's WEST rank with opponent's EAST rank
-      if ( rows != 0 )
-      {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows - 1, cols ) && getStatus ( rows - 1, cols ) != BAD_CARD_ID )
+      if( rows != 0 ) {
+
+        if( this->getPlayerID(rows, cols) != this->getPlayerID(rows - 1, cols) &&
+            this->getStatus(rows - 1, cols) != BAD_CARD_ID )
         {
-          if ( this->rules.getRules() == 2 )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.ranks[RANK_WEST] ==
+              this->grid[rows - 1][cols].tile_card.ranks[RANK_EAST] )
           {
-            if ( this->grid[rows][cols].tile_card.getWestRank() == grid[rows - 1][cols].tile_card.getEastRank() )
-            {
-              same_count += 1;
-              if ( same_count < 2 && coords.size() < 2 )
-                coords.push_back ( std::make_pair ( rows - 1, cols ) );
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows - 1][cols];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
-          if ( this->grid[rows][cols].tile_card.getWestRank() > grid[rows - 1][cols].tile_card.getEastRank() == true )
-          {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows - 1, cols ) << std::endl << std::endl;
-            #endif
 
-            coords.push_back ( std::make_pair ( rows - 1, cols ) );
+          if( this->grid[rows][cols].tile_card.ranks[RANK_WEST] >
+              this->grid[rows - 1][cols].tile_card.ranks[RANK_EAST] == true )
+          {
+            result.tile = this->grid[rows - 1][cols];
+            result.applied_ruleset = CardRuleset::NO_RULESET;
+            coords.push_back(result);
           }
         }
       }
 
       // Compare card's SOUTH rank with opponent's NORTH rank
-      if ( cols != BOARD_GRID_HEIGHT - 1 )
-      {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols + 1 ) && getStatus ( rows, cols + 1 ) != BAD_CARD_ID )
+      if( cols != BOARD_GRID_HEIGHT - 1 ) {
+
+        if( this->getPlayerID(rows, cols) != this->getPlayerID(rows, cols + 1) &&
+            this->getStatus(rows, cols + 1) != BAD_CARD_ID )
         {
-          if ( this->rules.getRules() == 2 )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.ranks[RANK_SOUTH] ==
+              this->grid[rows][cols + 1].tile_card.ranks[RANK_NORTH] )
           {
-            if ( this->grid[rows][cols].tile_card.getSouthRank() == grid[rows][cols + 1].tile_card.getNorthRank() )
-            {
-              same_count += 1;
-              if ( same_count < 2 && coords.size() < 2 )
-                coords.push_back ( std::make_pair ( rows, cols + 1 ) );
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows][cols + 1];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
-          if ( this->grid[rows][cols].tile_card.getSouthRank() > grid[rows][cols + 1].tile_card.getNorthRank() == true )
-          {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols + 1 ) << std::endl << std::endl;
-            #endif
 
-            coords.push_back ( std::make_pair ( rows, cols + 1 ) );
+          if( this->grid[rows][cols].tile_card.ranks[RANK_SOUTH] >
+              this->grid[rows][cols + 1].tile_card.ranks[RANK_NORTH] == true )
+          {
+            result.tile = this->grid[rows][cols + 1];
+            result.applied_ruleset = CardRuleset::NO_RULESET;
+            coords.push_back(result);
           }
         }
       }
 
       // Compare card's EAST rank with opponent's WEST rank
-      if ( rows != BOARD_GRID_WIDTH - 1 )
-      {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows + 1, cols ) && getStatus ( rows + 1, cols ) != BAD_CARD_ID )
+      if( rows != BOARD_GRID_WIDTH - 1 ) {
+
+        if( this->getPlayerID(rows, cols) != this->getPlayerID(rows + 1, cols) &&
+            this->getStatus(rows + 1, cols) != BAD_CARD_ID )
         {
-          if ( this->rules.getRules() == 2 )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.ranks[RANK_EAST] ==
+              this->grid[rows + 1][cols].tile_card.ranks[RANK_WEST] )
           {
-            if ( this->grid[rows][cols].tile_card.getEastRank() == this->grid[rows + 1][cols].tile_card.getWestRank() )
-            {
-              same_count += 1;
-              if ( same_count < 2 && coords.size() < 2 )
-                coords.push_back ( std::make_pair ( rows + 1, cols ) );
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows + 1][cols];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
-          if ( this->grid[rows][cols].tile_card.getEastRank() > grid[rows + 1][cols].tile_card.getWestRank() == true )
-          {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows + 1, cols ) << std::endl << std::endl;
-            #endif
 
-            coords.push_back ( std::make_pair ( rows + 1, cols ) );
+          if( this->grid[rows][cols].tile_card.ranks[RANK_EAST] >
+              this->grid[rows + 1][cols].tile_card.ranks[RANK_WEST] == true )
+          {
+            result.tile = this->grid[rows + 1][cols];
+            result.applied_ruleset = CardRuleset::NO_RULESET;
+            coords.push_back(result);
           }
         }
       }
 
       // Compare card's NORTH rank with opponent's SOUTH rank
-      if ( cols != 0 )
-      {
-        if ( getPlayerID ( rows, cols ) != getPlayerID ( rows, cols - 1 ) && getStatus ( rows, cols - 1 ) != BAD_CARD_ID )
+      if( cols != 0 ) {
+
+        if( this->getPlayerID(rows, cols) != this->getPlayerID(rows, cols - 1) &&
+            this->getStatus(rows, cols - 1) != BAD_CARD_ID )
         {
-          if ( this->rules.getRules() == 2 )
+          if( (same_rule_applied == true) &&
+              this->grid[rows][cols].tile_card.ranks[RANK_NORTH] ==
+              this->grid[rows][cols - 1].tile_card.ranks[RANK_SOUTH] )
           {
-            if ( this->grid[rows][cols].tile_card.getNorthRank() == grid[rows][cols - 1].tile_card.getSouthRank() )
-            {
-              same_count += 1;
-              if ( same_count < 2 && coords.size() < 2 )
-                coords.push_back ( std::make_pair ( rows, cols - 1 ) );
+            same_count += 1;
+            if( same_count < 2 && coords.size() < 2 ) {
+              result.tile = this->grid[rows][cols - 1];
+              result.applied_ruleset = CardRuleset::SAME_RULESET;
+              coords.push_back(result);
             }
           }
-          if ( this->grid[rows][cols].tile_card.getNorthRank() > grid[rows][cols - 1].tile_card.getSouthRank() == true )
-          {
-            #ifdef DEBUG_BOARD_CMP
-              std::cout << std::endl << getStatus ( rows, cols ) << " " << "wins against" << " " << getStatus ( rows, cols - 1 ) << std::endl << std::endl;
-            #endif
 
-            coords.push_back ( std::make_pair ( rows, cols - 1 ) );
+          if( this->grid[rows][cols].tile_card.ranks[RANK_NORTH] >
+              this->grid[rows][cols - 1].tile_card.ranks[RANK_SOUTH] == true )
+          {
+            result.tile = this->grid[rows][cols - 1];
+            result.applied_ruleset = CardRuleset::NO_RULESET;
+            coords.push_back(result);
           }
         }
       }
@@ -266,8 +383,8 @@ std::vector<std::pair<nom::int32, nom::int32>> Board::checkBoard ( nom::int32 x,
     } // rows for loop
   } // cols for loop
 
-  return coords;
-} // end Board::checkBoard()
+  return std::move(coords);
+}
 
 nom::uint32 Board::getCount ( void )
 {
@@ -286,7 +403,7 @@ nom::uint32 Board::getCount ( void )
   return total_count;
 }
 
-nom::uint32 Board::getPlayerCount ( nom::int32 player_id )
+nom::uint32 Board::getPlayerCount(PlayerID player_id)
 {
   nom::uint32 pid_count = 0;
 
@@ -303,200 +420,204 @@ nom::uint32 Board::getPlayerCount ( nom::int32 player_id )
   return pid_count;
 }
 
-const nom::int32 Board::getStatus ( nom::int32 x, nom::int32 y ) const
+CardID Board::getStatus ( nom::int32 x, nom::int32 y ) const
 {
   if ( ( x >= 0 && x <= BOARD_GRID_WIDTH ) && ( y >= 0 && y <= BOARD_GRID_HEIGHT ) )
   {
-    return this->grid[x][y].tile_card.getID(); // FIXME
+    return this->grid[x][y].tile_card.id;
   }
 
   return BAD_CARD_ID;
 }
 
-void Board::updateStatus ( nom::int32 x, nom::int32 y, const Card& card )
+CardID Board::status(const nom::Point2i& rel_board_pos) const
 {
-  this->grid[x][y].update( nom::Point2i( x, y ), card );
-/*
-  if ( this->grid[x][y].element() != 0 )
-  {
-    this->grid[x][y].tile_card.increaseNorthRank();
-    this->grid[x][y].tile_card.increaseEastRank();
-    this->grid[x][y].tile_card.increaseSouthRank();
-    this->grid[x][y].tile_card.increaseWestRank();
+  return this->getStatus(rel_board_pos.x, rel_board_pos.y);
+}
+
+void Board::update(const nom::Point2i& grid_pos, Card& pcard)
+{
+  Point2i board_pos(Point2i::zero);
+
+  if( this->grid[grid_pos.x][grid_pos.y].element() != 0 ) {
+
+    // ...The region elemental rule-set is in effect...
+
+    if( pcard.element == this->grid[grid_pos.x][grid_pos.y].element() ) {
+      tt::increase_card_rank(RANK_NORTH, pcard);
+      tt::increase_card_rank(RANK_EAST, pcard);
+      tt::increase_card_rank(RANK_SOUTH, pcard);
+      tt::increase_card_rank(RANK_WEST, pcard);
+    } else {
+      tt::decrease_card_rank(RANK_NORTH, pcard);
+      tt::decrease_card_rank(RANK_EAST, pcard);
+      tt::decrease_card_rank(RANK_SOUTH, pcard);
+      tt::decrease_card_rank(RANK_WEST, pcard);
+    }
   }
-  else
-  {
-    this->grid[x][y].tile_card.decreaseNorthRank();
-    this->grid[x][y].tile_card.decreaseEastRank();
-    this->grid[x][y].tile_card.decreaseSouthRank();
-    this->grid[x][y].tile_card.decreaseWestRank();
+
+  // Move the rendering of the player's card to the board
+  auto old_renderer =
+    pcard.card_renderer;
+  if( old_renderer == nullptr || old_renderer->valid() == false ) {
+
+    // Always render player cards on the board face up!
+    pcard.face_down = false;
+    auto renderer = tt::create_card_renderer(this->card_res_, pcard);
+    pcard.card_renderer.reset(renderer);
   }
-*/
+
+  auto new_renderer =
+    pcard.card_renderer;
+  if( new_renderer != nullptr ) {
+
+    // Move the player's card position to the applicable board position
+    IntRect screen_bounds =
+      this->grid[grid_pos.x][grid_pos.y].bounds();
+    board_pos.x = screen_bounds.w;
+    board_pos.y = screen_bounds.h;
+    new_renderer->set_position(board_pos);
+  } else {
+    pcard.card_renderer.reset( tt::create_placeholder_card_renderer() );
+    NOM_ASSERT(pcard.card_renderer == nullptr);
+    NOM_ASSERT(pcard.card_renderer->valid() != false);
+  }
+
+  this->grid[grid_pos.x][grid_pos.y].set_tile(pcard);
 }
 
-const nom::int32 Board::getPlayerID ( nom::int32 x, nom::int32 y ) const
+bool Board::update(const Cards& cards)
 {
-  return this->grid[x][y].tile_card.getPlayerID(); // FIXME
+  nom::size_type num_cards = cards.size();
+  Card card;
+
+  if( num_cards < 1 ) {
+    // No cards to use to update the game board
+    return false;
+  }
+
+  nom::size_type card_index = 0;
+  for( auto y = 0; y < BOARD_GRID_HEIGHT; ++y ) {
+    for( auto x = 0; x < BOARD_GRID_HEIGHT; ++x ) {
+
+      if( card_index < num_cards ) {
+        card = cards[card_index];
+        this->update( Point2i(x, y), card );
+      }
+
+      ++card_index;
+    }
+  }
+
+  // Success!
+  return true;
 }
 
-void Board::flipCard ( nom::int32 x, nom::int32 y, nom::int32 player_id )
+PlayerID Board::getPlayerID(nom::int32 x, nom::int32 y) const
 {
-  this->grid[x][y].tile_card.setPlayerID ( player_id ); // FIXME
+  return this->grid[x][y].tile_card.player_id;
 }
 
-const std::string Board::getName ( nom::int32 x, nom::int32 y ) const
+void Board::flip_card(const nom::Point2i& rel_board_pos, PlayerID player_id)
 {
-  Card selected = this->grid[x][y].tile();
-  return selected.getName();
+  int x = rel_board_pos.x;
+  int y = rel_board_pos.y;
+  Point2i board_pos(Point2i::zero);
+
+  Card& pcard = this->grid[x][y].tile_card;
+
+  pcard.player_id = player_id;
+
+  // Render a new card background based on the new owner
+  auto card_renderer =
+    tt::create_card_renderer(this->card_res_, pcard);
+  pcard.card_renderer.reset(card_renderer);
+  NOM_ASSERT(pcard.card_renderer != nullptr);
+  NOM_ASSERT(pcard.card_renderer->valid() == true);
+
+  // Move the player's card position to the applicable board position
+  IntRect screen_bounds =
+    this->grid[x][y].bounds();
+  board_pos.x = screen_bounds.w;
+  board_pos.y = screen_bounds.h;
+  pcard.card_renderer->set_position(board_pos);
 }
 
-const Card& Board::get ( nom::int32 x, nom::int32 y ) const
+const Card& Board::get(nom::int32 x, nom::int32 y) const
 {
   return this->grid[x][y].tile();
 }
 
-const BoardTile& Board::tile ( nom::int32 x, nom::int32 y ) const
+const BoardTile& Board::tile(nom::int32 x, nom::int32 y) const
 {
   return this->grid[x][y];
 }
 
-void Board::update ( void )
-{
-  this->card->update();
-}
-
 void Board::draw ( nom::IDrawable::RenderTarget& target )
 {
-  for( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
-    for( nom::int32 x = 0; x < BOARD_GRID_WIDTH; x++ ) {
+  for( auto y = 0; y != BOARD_GRID_HEIGHT; ++y ) {
+    for( auto x = 0; x != BOARD_GRID_WIDTH; ++x ) {
 
-      // Positions of the cards on the game board
-      nom::Point2i board_pos  (
-                                BOARD_ORIGIN_X + ( CARD_WIDTH * x ),
-                                BOARD_ORIGIN_Y + ( CARD_HEIGHT * y )
-                              );
+      Card card = this->get(x, y);
 
-      if( this->get ( x, y ).getID() != BAD_CARD_ID ) {
-
-        // Board tiles should **always** be shown with the card face rendered
-        this->grid[x][y].tile_card.set_face_down(false);
-
-        this->card->reposition(board_pos);
-        this->card->setViewCard( this->grid[x][y].tile() );
-        this->card->draw(target);
+      if( card.id != BAD_CARD_ID ) {
+        auto card_renderer =
+          card.card_renderer;
+        if( card_renderer != nullptr && card_renderer->valid() == true ) {
+          card_renderer->render(target);
+        }
       }
 
-      // if( this->grid[x][y].element() != 0 ) {
+      BoardTile tile = this->tile(x, y);
 
-      //   nom::IntRect element_pos (
-      //                             board_pos.x + ELEMENT_WIDTH,
-      //                             board_pos.y + ELEMENT_HEIGHT,
-      //                             ELEMENT_WIDTH,
-      //                             ELEMENT_HEIGHT
-      //                           );
+      // Only render the elemental when the space is unoccupied
+      if( tile.element() != 0 && card.id == BAD_CARD_ID ) {
 
-      //   this->card->draw_element  (
-      //                               target, this->grid[x][y].element(),
-      //                               element_pos.x, element_pos.y
-      //                             );
-      // }
+        nom::Point2i element_pos, board_pos;
+
+        // local board position
+        board_pos.x = tile.bounds().w;
+        board_pos.y = tile.bounds().h;
+
+        element_pos.x =
+          board_pos.x + (CARD_WIDTH - ELEMENT_WIDTH) / 2;
+
+        element_pos.y =
+          board_pos.y + (CARD_HEIGHT - ELEMENT_WIDTH) / 2;
+
+        // TODO: Update the element position only when we need to -- this will
+        // help ease further integration of animations
+        tt::render_card_element(  tile.element(), element_pos,
+                                  this->card_res_->card_elements_.get(),
+                                  target );
+      }
 
     } // end for loop rows
   } // end for loop cols
 }
 
-bool Board::save ( const std::string& filename )
+board_tiles Board::free_tiles() const
 {
-  nom::IValueSerializer* fp; // High-level file I/O interface
-  nom::Value value(nom::Value::ArrayValues);
-  nom::Value card(nom::Value::ObjectValues);
+  board_tiles out;
+  int tile_status;
 
-  fp = new nom::JsonCppSerializer();
+  for( int y = 0; y != BOARD_GRID_HEIGHT; y++ ) {
+    for( int x = 0; x != BOARD_GRID_WIDTH; x++ ) {
+      tile_status = this->getStatus(x, y);
 
-  for ( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; y++ )
-  {
-    for ( nom::int32 x = 0; x != BOARD_GRID_WIDTH; x++ )
-    {
-      // Serialize each card's attributes
-      card = this->grid[x][y].tile_card.serialize();
+      // Available tile
+      if( tile_status == BAD_CARD_ID ) {
+        IntRect tile_bounds( IntRect(x, y, CARD_WIDTH, CARD_HEIGHT) );
 
-      // Additional attributes
-      card["player_id"] = this->grid[x][y].tile_card.getPlayerID();
-      card["owner"] = this->grid[x][y].tile_card.getPlayerOwner();
-
-      value.push_back( card );
+        out.push_back( BoardTile(Card::null, tile_bounds, -1) );
+      }
     }
   }
 
-  if ( fp->save( value, filename ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
-    return false;
-  }
-
-  return true;
+  return std::move(out);
 }
 
-bool Board::load ( const std::string& filename )
-{
-  // High-level file I/O interface
-  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
-  nom::Value values;
-
-  // The card attributes we are loading in will be stored in here temporarily.
-  // This will become the data to load onto the board if all goes well..!
-  Card card;
-  Cards cards_buffer;
-
-  if ( fp->load( filename, values ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
-    return false;
-  }
-
-  for ( auto itr = values.begin(); itr != values.end(); ++itr )
-  {
-    nom::Value obj = itr->ref();
-    card.unserialize( obj );
-
-    // Additional attributes
-    card.setPlayerID( obj["player_id"].get_int() );
-    card.setPlayerOwner( obj["owner"].get_int() );
-
-    // Commit contents to our buffer if all goes well
-    cards_buffer.push_back ( card );
-  } // end for loop
-
-  // Sanity check
-  if ( cards_buffer.size() < 8 ) // - 1 padding; we start at zero, not one
-  {
-NOM_LOG_ERR ( TTCARDS, "Board data is invalid from file: " + filename );
-    return false;
-  }
-
-  this->clear(); // otherwise we may exceed our board size limit
-
-  // All is well, let us make it permanent!
-  // Load each card object onto the board grid at the proper X, Y coordinates.
-  nom::uint32 idx = 0;
-  for ( nom::int32 y = 0; y < BOARD_GRID_HEIGHT; y++ )
-  {
-    for ( nom::int32 x = 0; x < BOARD_GRID_HEIGHT; x++ )
-    {
-      this->grid[x][y].update ( nom::Point2i( x, y ), cards_buffer[idx] );
-      idx++;
-    }
-  }
-
-  return true;
-}
-
-const nom::int32 Board::operator() ( const nom::int32 x, const nom::int32 y )
-{
-  return this->getStatus ( x, y );
-}
-
-void Board::list ( void )
+void Board::dump_values()
 {
   nom::uint32 line_number = 1;
 
@@ -510,7 +631,7 @@ void Board::list ( void )
 
       std::cout << line_number
                 << ". "
-                << tile.getName()
+                << tile.name
                 << " is at pos "
                 << pos.x
                 << ", "
@@ -531,23 +652,148 @@ void Board::list ( void )
   std::cout << "\n";
 }
 
-// std::vector<BoardTile> Board::free_tiles() const
-// {
-//   std::vector<BoardTile> out;
-//   int status = 0;
+// Private scope
 
-//   for( int y = 0; y != BOARD_GRID_HEIGHT; y++ )
-//   {
-//     for( int x = 0; x != BOARD_GRID_WIDTH; x++ )
-//     {
-//       status = this->getStatus(x, y);
+void Board::initialize_board_elements()
+{
+  const uint32 MAXIMUM_ELEMENT_TYPE_COUNT = 2;
+  const uint32 MAXIMUM_BOARD_ELEMENTS = 4;
+  const uint32 MAXIMUM_RAND_NUMBER = 25;
+  uint32 num_elements = 0;
+  uint32 max_element_type_count[TOTAL_CARD_ELEMENTS] = {0};
 
-//       // Available tile
-//       if( status == BAD_CARD_ID ) {
-//         out.push_back( BoardTile( Card(), nom::IntRect(x,y,-1,-1), -1) );
-//       }
-//     }
-//   }
+  while( num_elements < MAXIMUM_BOARD_ELEMENTS ) {
 
-//   return out;
-// }
+    for( auto y = 0; y < BOARD_GRID_HEIGHT; y++ ) {
+      for( auto x = 0; x < BOARD_GRID_WIDTH; x++ ) {
+
+        uint32 random_element =
+          nom::uniform_int_rand<uint32>(0, MAXIMUM_RAND_NUMBER);
+
+        if( random_element == CARD_ELEMENT_EARTH &&
+            max_element_type_count[CARD_ELEMENT_EARTH] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_EARTH )
+        {
+          ++max_element_type_count[CARD_ELEMENT_EARTH];
+          ++num_elements;
+        }
+
+        if( random_element == CARD_ELEMENT_FIRE &&
+            max_element_type_count[CARD_ELEMENT_FIRE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_FIRE )
+        {
+          ++max_element_type_count[CARD_ELEMENT_FIRE];
+          ++num_elements;
+        }
+
+        if( random_element == CARD_ELEMENT_HOLY &&
+            max_element_type_count[CARD_ELEMENT_HOLY] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_HOLY )
+        {
+          ++max_element_type_count[CARD_ELEMENT_HOLY];
+          ++num_elements;
+        }
+
+        if( random_element == CARD_ELEMENT_ICE &&
+            max_element_type_count[CARD_ELEMENT_ICE] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_ICE )
+        {
+          ++max_element_type_count[CARD_ELEMENT_ICE];
+          ++num_elements;
+        }
+
+        if( random_element == CARD_ELEMENT_POISON &&
+            max_element_type_count[CARD_ELEMENT_POISON] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_POISON )
+        {
+          ++max_element_type_count[CARD_ELEMENT_POISON];
+          ++num_elements;
+        }
+
+        if( random_element == CARD_ELEMENT_THUNDER &&
+            max_element_type_count[CARD_ELEMENT_THUNDER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_THUNDER )
+        {
+          ++max_element_type_count[CARD_ELEMENT_THUNDER];
+          ++num_elements;
+        }
+
+        if( random_element == CARD_ELEMENT_WATER &&
+            max_element_type_count[CARD_ELEMENT_WATER] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_WATER )
+        {
+          ++max_element_type_count[CARD_ELEMENT_WATER];
+          ++num_elements;
+        }
+
+        if( random_element == CARD_ELEMENT_WIND &&
+            max_element_type_count[CARD_ELEMENT_WIND] < MAXIMUM_ELEMENT_TYPE_COUNT &&
+            this->grid[x][y].element() != CARD_ELEMENT_WIND )
+        {
+          ++max_element_type_count[CARD_ELEMENT_WIND];
+          ++num_elements;
+        }
+
+        if( random_element > (TOTAL_CARD_ELEMENTS - 1) ) {
+          random_element = CARD_ELEMENT_NONE;
+        }
+
+        this->grid[x][y].set_element(random_element);
+      } // end for x loop
+    } // end for y loop
+  } // end while num_elements < MAXIMUM_BOARD_ELEMENTS
+}
+
+nom::Value
+serialize_board(const Board* board)
+{
+  nom::Value objects(nom::Value::ValueType::Null);
+  nom::Value card;
+
+  NOM_ASSERT(board != nullptr);
+  if( board == nullptr ) {
+    // No game board to serialize
+    return objects;
+  }
+
+  for( nom::int32 y = 0; y != BOARD_GRID_HEIGHT; ++y ) {
+    for( nom::int32 x = 0; x != BOARD_GRID_WIDTH; ++x ) {
+
+      // Serialize each card as an object
+      card = tt::serialize_card( board->get(x, y) );
+
+      // Additional attributes
+      card["player_id"] = board->get(x, y).player_id;
+      card["owner"] = board->get(x, y).player_owner;
+
+      objects.push_back(card);
+    }
+  }
+
+  // Success!
+  return objects;
+}
+
+tt::Cards
+deserialize_board(const nom::Value& objects)
+{
+  Card card;
+  Cards cards;
+
+  // Reconstruct board data
+  for( auto itr = objects.begin(); itr != objects.end(); ++itr ) {
+
+    nom::Value attr = itr->ref();
+    card = tt::deserialize_card(*itr);
+
+    // Additional card attributes
+    card.player_id = NOM_SCAST( PlayerID, attr["player_id"].get_int() );
+    card.player_owner = NOM_SCAST( PlayerID, attr["owner"].get_int() );
+
+    cards.push_back(card);
+  }
+
+  return cards;
+}
+
+} // namespace tt

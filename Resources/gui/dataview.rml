@@ -47,6 +47,14 @@
         padding-left: 0px;
       }
 
+      datagridcell
+      {
+        /* Keeps the contained elements from moving around, otherwise we deal
+        with misaligned game cursor positions when deleting cards */
+        min-height: 16px;
+      }
+
+      /* First column; card status */
       status
       {
         sprite-decorator: sprite-sheet;
@@ -69,15 +77,26 @@
         sprite-sheet-frame: 1;
       }
 
-      .available-card
+      status.erased
+      {
+        sprite-sheet-frame: -1;
+      }
+
+      /* Second && third columns */
+      card.available-card
       {
         color: white;
       }
 
-      .unavailable-card
+      card.unavailable-card
       {
         /* light gray */
         color: rgb(128,128,128);
+      }
+
+      card.erased
+      {
+        display: none;
       }
 
       /* Page flipping indicators */
@@ -124,10 +143,9 @@
       <datagrid source="cards_db.cards">
         <col fields="status" formatter="card_status" width="8%"></col>
         <col fields="available, id, name" formatter="card_name" width="75%">CARDS P. 1</col>
-        <col fields="num" width="10%">NUM.</col>
+        <col fields="num_class, num" width="10%">NUM.</col>
       </datagrid>
 
-      <!-- Assumes that the initial starting page is always one (index of zero) -->
       <page id='page-left' class='' />
       <page id='page-right' class='page-right' />
 

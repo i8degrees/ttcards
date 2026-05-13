@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 
+namespace tt {
+
 ConfirmationDialogState::ConfirmationDialogState(nom::SDLApp* object) :
   nom::IState( Game::State::ConfirmationDialog, nom::IState::Flags::BackRender, nom::IState::Type::Child ),
   game( NOM_SCAST(Game*, object) )
@@ -55,48 +57,22 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_QBOX") );
-      // return false;
-    }
-  #else
-    if( this->game->question_box_.load_document_file( this->game->config.getString("GUI_QBOX_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_QBOX_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_QBOX =
+    this->game->res_cfg_->get_string("GUI_QBOX");
+  if( this->game->question_box_.load_document_file(GUI_QBOX) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource file:", GUI_QBOX );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
   this->game->question_box_.set_title_text("CHOICE");
 
   this->game->question_box_.show();
 
-  nom::SpriteSheet frames;
-
-  // Initialize interface cursor
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->game->config.getString("INTERFACE_CURSOR_ATLAS") );
-      // return false;
-    }
-  #else
-    if( frames.load_file( this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") ) == false ) {
-      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
-                    "Could not load sprite sheet:",
-                    this->game->config.getString("INTERFACE_CURSOR_ATLAS_SCALE2X") );
-      // return false;
-    }
-  #endif
-
   this->cursor_.set_texture(this->game->cursor_tex_);
-  this->cursor_.set_sprite_sheet(frames);
-  this->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
+  this->cursor_.set_sprite_sheet(this->game->right_cursor_frames_);
+  this->cursor_.set_frame(INTERFACE_CURSOR_SHOWN);
 
   // Build offset coordinate map for the game cursor; this is necessary for
   // syncing key, mouse wheel and joystick input.
@@ -144,71 +120,70 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
   // FIXME:
   // nom::InputActionMapper key_bindings, gamepad_bindings;
 
-  nom::EventCallback pause_game( [&] (const nom::Event& evt) {
-    this->game->set_state(Game::State::Pause);
-  });
-
-  nom::EventCallback cursor_prev( [&] (const nom::Event& evt) {
+  auto cursor_prev( [=](const nom::Event& evt) {
     if( this->cursor_.prev() ) {
       this->game->cursor_move->Play();
     }
   });
 
-  nom::EventCallback cursor_next( [&] (const nom::Event& evt) {
+  auto cursor_next( [=](const nom::Event& evt) {
     if( this->cursor_.next() ) {
       this->game->cursor_move->Play();
     }
   });
 
-  nom::EventCallback select( [&] (const nom::Event& evt) {
+  auto select( [=](const nom::Event& evt) {
     this->send_response();
   });
 
-  nom::EventCallback cancel( [&] (const nom::Event& evt) {
+  auto cancel( [=](const nom::Event& evt) {
     this->game->state()->pop_state(nullptr);
   });
 
   // Equivalent to 'cursor_prev' and 'cursor_next' actions
-  nom::EventCallback mouse_click( [&] (const nom::Event& evt) {
+  auto mouse_click( [=](const nom::Event& evt) {
     this->on_mouse_button_up(evt);
   });
 
   // Equivalent to 'select' action
-  nom::EventCallback mouse_select( [&] (const nom::Event& evt) {
+  auto mouse_select( [=](const nom::Event& evt) {
     this->on_mouse_button_dblclick(evt);
   });
 
-  // Keyboard mappings
+  // ...Keyboard mappings...
 
-  // This state can crash the game when (I *think*) another child state is
-  // pushed onto the stack ... possibly due to the number of states in the
-  // stack at the time.
-  // state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
+  state.insert("cursor_prev", nom::KeyboardAction(SDLK_UP), cursor_prev);
+  state.insert("cursor_next", nom::KeyboardAction(SDLK_DOWN), cursor_next);
+  state.insert("select", nom::KeyboardAction(SDLK_SPACE), select);
+  state.insert("select", nom::KeyboardAction(SDLK_RETURN), select);
+  state.insert("cancel", nom::KeyboardAction(SDLK_ESCAPE), cancel);
 
-  state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
-  state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
-  state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select );
-  state.insert( "select", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), select );
-  state.insert( "cancel", nom::KeyboardAction( SDL_KEYDOWN, SDLK_ESCAPE ), cancel );
+  // ...Mouse button && wheel mappings...
+  state.insert( "click", nom::MouseButtonAction(nom::LEFT_MOUSE_BUTTON,
+                nom::InputState::RELEASED), mouse_click );
+  state.insert( "select", nom::MouseButtonAction(nom::LEFT_MOUSE_BUTTON, 2,
+                nom::InputState::RELEASED), mouse_select );
 
-  // Mouse button mappings
-  state.insert( "click", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT ), mouse_click );
-  state.insert( "select", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT, 2 ), mouse_select );
+  state.insert( "cursor_prev",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_UP), cursor_prev );
+  state.insert( "cursor_next",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_DOWN), cursor_next );
 
-  // Mouse wheel mappings
-  state.insert( "cursor_prev", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), cursor_prev );
-  state.insert( "cursor_next", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), cursor_next );
+  // ...Joystick input mappings...
+  auto& joystick_id = this->game->joystick_id_;
 
-  // Joystick button mappings
+  state.insert( "cursor_prev",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_UP), cursor_prev );
 
-  // This state can crash the game when (I *think*) another child state is
-  // pushed onto the stack ... possibly due to the number of states in the
-  // stack at the time.
-  // state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
-  state.insert( "cursor_prev", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), cursor_prev );
-  state.insert( "cursor_next", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), cursor_next );
-  state.insert( "select", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select );
-  state.insert( "cancel", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), cancel );
+  state.insert( "cursor_next", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_DOWN), cursor_next );
+
+  state.insert( "select", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_A), select );
+
+  state.insert( "cancel", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_B), cancel );
 
   this->game->input_mapper.erase( "ConfirmationDialogState" );
   this->game->input_mapper.insert( "ConfirmationDialogState", state, true );
@@ -237,22 +212,6 @@ void ConfirmationDialogState::on_resume( nom::void_ptr data )
   this->game->input_mapper.activate_only( "ConfirmationDialogState" );
   this->game->input_mapper.activate( "Game" );
 }
-
-// void ConfirmationDialogState::on_user_event(const nom::Event& ev)
-// {
-//   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_EVENTS );
-
-//   // Nothing to do; not the right event type for us!
-//   if( ev.type != SDL_USEREVENT )
-//   {
-//     return;
-//   }
-
-//   if( ev.user.code == GameEvent::AudioEvent )
-//   {
-//     this->game->cursor_move->Play();
-//   }
-// }
 
 void ConfirmationDialogState::on_mouse_button_up(const nom::Event& ev)
 {
@@ -345,3 +304,5 @@ void ConfirmationDialogState::send_response()
 
   this->game->state()->pop_state(response);
 }
+
+} // namespace tt

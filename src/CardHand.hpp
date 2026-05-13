@@ -29,41 +29,70 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_CARD_HAND_HEADERS
 #define GAMEAPP_CARD_HAND_HEADERS
 
-#include <iostream>
-#include <string>
 #include <vector>
-#include <chrono>
 #include <random>
 #include <algorithm>
-#include <functional>
 #include <memory>
 
 #include <nomlib/config.hpp>
-#include <nomlib/serializers.hpp>
 
 #include "Card.hpp"
-#include "CardCollection.hpp"
 #include "config.hpp"
+
+namespace tt {
+
+// Forward declarations
+class CardCollection;
+class CardResourceLoader;
 
 class CardHand
 {
   public:
-    typedef std::shared_ptr<CardHand> SharedPtr;
+    CardHand();
+    ~CardHand();
 
-    CardHand ( void );
-    ~CardHand ( void );
+    /// \brief Initialize the player's hand.
+    ///
+    /// \param pid One of the enumeration values of tt::PlayerIndex
+    ///
+    /// \remarks The player's index controls the ownership and rendering color
+    /// of their cards.
+    ///
+    /// \see ::update
+    bool init(CardResourceLoader* res, PlayerIndex pid);
 
-    bool push_back ( const Card& card );
-    bool erase ( Card& card );
+    /// \brief Re-render the player's hand.
+    ///
+    /// \note This method call is necessary when render-able card attributes
+    /// are modified outside of this class interface.
+    bool update();
 
-    void clearSelectedCard ( void );
-    Card& getSelectedCard ( void );
+    /// \brief Append a card to the player's hand.
+    ///
+    /// \remarks The ownership and rendering color attributes of the card will
+    /// be set to the player determined from this object's instance
+    /// initialization.
+    ///
+    /// \see ::init
+    bool push_back(const Card& card);
+
+    /// \brief ...
+    ///
+    /// \param
+    ///
+    /// \remarks ...
+    bool push_back(const Cards& cards);
+
+    bool erase(const Card& card);
+
+    void clearSelectedCard();
+    const Card& getSelectedCard();
 
     /// \deprecated Use the provided iterators ::previous, ::next,
     /// ::set_position, etc.
-    void selectCard ( Card& card );
+    void selectCard(const Card& card);
 
-    bool exists ( const Card& card ) const;
+    bool exists(const Card& card) const;
 
     /// Make selected card the first element in stack
     ///
@@ -95,60 +124,66 @@ class CardHand
     /// Sets the position we are at in the cards vector
     void set_position(nom::size_type pos);
 
-    void clear ( void );
+    void clear();
+
     bool empty() const;
-    nom::uint32 size ( void ) const;
-    nom::int32 at ( Card& card );
+    nom::uint32 size() const;
+    nom::int32 at(const Card& card);
 
-    /// Creates a randomized player hand with the preferred minimum & maximum
-    /// level ranges in mind, ~~with no duplicate cards present~~.
-    ///
-    /// Do not forget to set the proper player ID on your new card objects
-    /// before heading off into battle!
-    void shuffle( nom::int32 level_min, nom::int32 level_max, const CardCollection& db);
-
-    /// Save the current player's hand to a file as a series of RFC 4627 JSON
-    /// compliant objects.
-    bool save ( const std::string& filename );
-
-    /// Load saved player hand from a file encoded as RFC 4627 compliant JSON
-    /// objects.
-    bool load ( const std::string& filename );
-
-    /// Modify card rank values.
-    ///
-    /// \fixme This method breaks when we use ::set_position && friends
-    void modifyCardRank ( bool modifier, nom::uint32 direction );
+    /// \brief Create a randomized player hand with a set criteria.
+    void
+    add_random_card(  nom::uint32 min_level, nom::uint32 max_level,
+                      const CardCollection* db );
 
     /// Getter for obtaining the strongest card in the player's hand.
     ///
     /// Note that this does not take into account game rules that may be in
     /// effect!
-    const Card strongest ( void );
+    Card strongest();
 
     /// Getter for obtaining the weakest card in the player's hand.
     ///
     /// Note that this does not take into account game rules that may be in
     /// effect!
-    const Card weakest ( void );
+    Card weakest();
 
-    /// \brief Toggle the rendering state of the card face for all the cards in
-    /// the player's hand.
-    void set_face_down(bool state);
+    CardsIterator begin();
+    CardsIterator end();
+
+    ConstCardsIterator begin() const;
+    ConstCardsIterator end() const;
+
+    PlayerID player_id() const;
+    PlayerIndex player_index() const;
 
     /// \todo Declare in private scope
     Cards cards;
 
   private:
     /// Track the current position we are at in the cards vector
-    nom::size_type position_;
+    nom::size_type position_ = 0;
 
     /// Player's active card
     Card selectedCard;
+
+    /// \brief Our reference to the cards resource loader.
+    ///
+    /// \remarks We do not own this pointer, so we **must not** free it!
+    CardResourceLoader* card_res_;
+
+    /// \brief The player identifier.
+    PlayerIndex player_index_ = PLAYER_INVALID;
 };
 
 /// Pretty print the the card attributes.
-///
-std::ostream& operator << ( std::ostream& os, const CardHand& rhs );
+std::ostream& operator <<(std::ostream& os, const CardHand& rhs);
+
+nom::Value
+serialize_hand(const CardHand* phand);
+
+tt::Cards
+deserialize_hand(PlayerID player_id, const nom::Value& objects);
+
+} // namespace tt
 
 #endif // GAMEAPP_CARD_HAND_HEADERS defined

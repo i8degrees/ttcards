@@ -38,7 +38,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "config.hpp"
 
-class DialogCursor: public nom::AnimatedSprite
+namespace tt {
+
+class DialogCursor: public nom::SpriteBatch
 {
   public:
     DialogCursor();
@@ -79,5 +81,7 @@ class DialogCursor: public nom::AnimatedSprite
     std::vector<nom::IntRect> position_map_;
     int cursor_position_;
 };
+
+} // namespace tt
 
 #endif // include guard defined

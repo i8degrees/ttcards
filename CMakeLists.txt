@@ -126,22 +126,27 @@ if( PLATFORM_WINDOWS )
 
 endif( PLATFORM_WINDOWS )
 
-# External dependencies prefix (absolute path to nomlib's third-party directory)
+# ...Engine dependencies...
+
 if( NOT NOMLIB_DEPS_PREFIX )
-  message( FATAL_ERROR "The location of the third-party dependencies must be set. See README.md for details." )
+  NOM_LOG_CRIT( "An absolute directory path to the engine's dependencies must be set. See README.md for details." )
 else()
-  # Used by nomlib's find module
+  # IMPORTANT: NOMLIB_DEPS_ROOT **must** be set before using FIND_PACKAGE to
+  # locate nomlib (nomlib-config.cmake) as it is used by said script. It should
+  # **not** be used anywhere in this project.
   set(  NOMLIB_DEPS_ROOT ${NOMLIB_DEPS_PREFIX} CACHE PATH
-        "nomlib's third-party dependencies path" )
-  message( STATUS "NOMLIB_DEPS_ROOT: ${NOMLIB_DEPS_PREFIX}" )
+        "engine dependencies dir path" )
+  set( NOMLIB_DEPS_ROOT "${NOMLIB_DEPS_PREFIX}" )
+  message( STATUS "NOMLIB_DEPS_ROOT: ${NOMLIB_DEPS_ROOT}" )
 endif()
 
-find_package( nomlib COMPONENTS
-              core file math system graphics gui ptree serializers REQUIRED
-              OPTIONAL_COMPONENTS audio
-)
-
 if( PLATFORM_WINDOWS )
+
+  # Sanitize file path delimiters for Windows installations; this resolves
+  # installation woes within cmake_install.cmake when mixing environment
+  # variables -- forward slashes -- and CMake script paths -- backslashes.
+  string( REPLACE "\\" "/" NOMLIB_DEPS_PREFIX ${NOMLIB_DEPS_ROOT} )
+
   # Redistribution paths must be absolute, a directory and end with a trailing
   # slash character (these are fed to CMake's install command). Only filenames
   # with the extension of '.dll' (case-insensitive) will be copied.
@@ -172,8 +177,18 @@ elseif( PLATFORM_LINUX )
   # TODO
 endif( PLATFORM_WINDOWS )
 
-# Project source tree to build
+# TODO: When building on Windows, if the end-user has both Debug and Release
+# build targets of nomlib installed, we need to modify the component names to
+# reflect which library name to use ('-d' postfix for debug). Hint: I think
+# that our nomlib-config.cmake script should be able to handle this for us
+# automatically.
+find_package( nomlib COMPONENTS
+              core file math system graphics gui ptree serializers REQUIRED
+              OPTIONAL_COMPONENTS audio )
+
+# Project source tree
 include( "${SRC_DIR}/CMakeLists.txt" )
+# add_subdirectory( ${SRC_DIR} )
 
 # Installation phase
 if ( PLATFORM_OSX )
@@ -195,7 +210,7 @@ if ( PLATFORM_OSX )
 
     add_executable  ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
 
-    set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
+    set ( INSTALL_APP_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${BUNDLE_NAME}.app" )
 
     set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
 
@@ -233,25 +248,25 @@ if ( PLATFORM_OSX )
                             "Copyright (c) ${BUNDLE_COPYRIGHT_YEAR} ${BUNDLE_COPYRIGHT_NAME} All rights reserved."
                           )
 
-    add_rpath ( "${RUNTIME_LIBRARIES_SEARCH_PATH}" "${INSTALL_BINARY_PATH}" )
+    add_rpath("${RUNTIME_LIBRARIES_SEARCH_PATH}" "${INSTALL_BINARY_PATH}")
 
     # Bundle our dependencies into our application bundle
     install(  DIRECTORY
               ${NOMLIB_LIBRARIES} # nomlib-component.framework
               DESTINATION "${INSTALL_FRAMEWORK_PATH}"
-              PATTERN ".*" EXCLUDE # do not include dotfiles
-    )
+              PATTERN ".*" EXCLUDE ) # do not include dotfiles
 
-    # CPack refuses to work with me on anything other than a single dot as the
-    # destination target path when we are building a package.
-    install ( TARGETS ${PROJECT_NAME} DESTINATION "${CMAKE_INSTALL_PREFIX}" )
-    #set ( INSTALL_APP_PATH "${CMAKE_INSTALL_PREFIX}" )
+    file( MAKE_DIRECTORY
+          "$ENV{HOME}/Library/Application\ Support/TTcards/Cards"
+          "$ENV{HOME}/Library/Application\ Support/TTcards/SavedGames"
+          "$ENV{HOME}/Library/Application\ Support/TTcards/Screenshots" )
 
-    install ( FILES
-              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config.json"
-              # DESTINATION "${INSTALL_APP_PATH}/Resources"
-              DESTINATION "$ENV{HOME}/Documents/ttcards"
-            )
+    install(  FILES
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_game.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-low-res.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-hi-res.json"
+              DESTINATION "$ENV{HOME}/Library/Application\ Support/TTcards" )
+
   endif ( OSXAPP )
 
 # ...PLATFORM_OSX...
@@ -292,8 +307,24 @@ elseif ( PLATFORM_WINDOWS )
             "${LIBROCKET_FREETYPE_REDIST_DIR}"
             DESTINATION
             "${INSTALL_APP_PATH}"
-            FILES_MATCHING PATTERN "*.dll"
-          )
+            FILES_MATCHING PATTERN "*.dll" )
+
+    file( MAKE_DIRECTORY
+          "$ENV{LOCALAPPDATA}/TTcards/Cards"
+          "$ENV{LOCALAPPDATA}/TTcards/SavedGames"
+          "$ENV{LOCALAPPDATA}/TTcards/Screenshots" )
+
+    # TODO: Use the APPDATA environment variable for the base prefix
+    # installation path of configuration files; it appears to be the most
+    # "universal" default games are using. If we decide to go with this change,
+    # we'll want to probably update nom::WinFile::user_app_support_path, too...
+    #
+    # NOTE: The LOCALAPPDATA environment variable does not exist on Windows XP
+    install(  FILES
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_game.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-low-res.json"
+              "${PROJECT_SOURCE_DIR}/${TTCARDS_RESOURCES_DIR}/config_assets-hi-res.json"
+              DESTINATION "$ENV{LOCALAPPDATA}/TTcards" )
 
 elseif ( PLATFORM_LINUX ) # POSIX install layout
   # TODO: set paths, etc. like we do above with OSX & Windows platforms
@@ -344,26 +375,6 @@ endif ( DOCS )
 target_link_libraries(  ${PROJECT_NAME} ${NOMLIB_LIBRARIES}
                         ${NOMLIB_DEPENDENCIES}
 )
-
-# Auto-generated build-time variables result in modification of the built
-# binary's run-time execution.
-#
-# CMake dependency variables (of which control the location of this insert)
-#
-#   a) PROJECT_VERSION_*
-#   b) CMAKE_INSTALL_PREFIX
-#
-# This means that we must include this configured file *AFTER* any and all
-# modifications -- that matter to us -- occur in this build script.
-
-configure_file  (
-                  "${CMAKE_TEMPLATE_PATH}/version.cpp.in"
-                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.cpp"
-                )
-
-configure_file  ( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
-                  "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp"
-                )
 
 # TODO: Windows platform support
 if ( NOT PLATFORM_WINDOWS )

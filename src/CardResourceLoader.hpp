@@ -26,59 +26,37 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-#include "CardDebug.hpp"
+#ifndef TTCARDS_CARD_RESOURCE_LOADER_HPP
+#define TTCARDS_CARD_RESOURCE_LOADER_HPP
 
-CardDebug::CardDebug ( void ) {}
+#include <memory>
 
-CardDebug::~CardDebug ( void ) {}
+#include <nomlib/graphics.hpp>
 
-void CardDebug::ListCards ( Cards& cards )
+#include "config.hpp"
+#include "types.hpp"
+
+namespace tt {
+
+// Forward declarations
+class GameConfig;
+
+class CardResourceLoader
 {
-  #ifdef DEBUG_CARD_DEBUG
-    if ( cards.empty() == true )
-    {
-      std::cout << "CardDebug::ListCards(): " << "Cards vector is empty." << "\n" << std::endl;
-    }
-  #endif
+  public:
+    /// \brief Load the resources used in rendering cards from a collection.
+    bool init(  const nom::Font& card_font,
+                const GameConfig* config,
+                const std::string& extra_textures_dir );
 
-  std::cout << "\nCardDebug::ListCards";
-  std::cout << "\n====================";
-  std::cout << "\n";
+    std::unique_ptr<nom::Gradient> card_backgrounds_[PlayerID::TOTAL_PLAYER_IDS];
+    std::unique_ptr<nom::SpriteBatch> card_faces_;
+    std::unique_ptr<nom::SpriteBatch> card_elements_;
+    std::unique_ptr<nom::Text> card_text_;
 
-  if ( cards.empty() == true )
-    std::cout << "N/A";
+    std::string extra_textures_dir_;
+};
 
-  for ( nom::uint32 i = 0; i < cards.size(); i++ )
-  {
-    std::cout << cards[i].getID();
-    std::cout << " ";
-    std::cout << cards[i].getLevel();
-    std::cout << " ";
-    std::cout << cards[i].getType();
-    std::cout << " ";
-    std::cout << cards[i].getElement();
-    std::cout << " ";
+} // namespace tt
 
-    std::cout << cards[i].getNorthRank();
-    std::cout << ", ";
-
-    std::cout << cards[i].getEastRank();
-    std::cout << ", ";
-
-    std::cout << cards[i].getSouthRank();
-    std::cout << ", ";
-
-    std::cout << cards[i].getWestRank();
-    std::cout << " ";
-
-    std::cout << cards[i].getName();
-    std::cout << " ";
-    std::cout << cards[i].getPlayerID();
-    std::cout << " ";
-    std::cout << cards[i].getPlayerOwner();
-
-    std::cout << std::endl;
-  }
-
-  std::cout << "\n";
-}
+#endif // include guard defined

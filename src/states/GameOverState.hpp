@@ -29,20 +29,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef GAMEAPP_GAMEOVER_HEADERS
 #define GAMEAPP_GAMEOVER_HEADERS
 
-#include <iostream>
-#include <string>
 #include <memory>
-#include <vector>
 
 #include <nomlib/graphics.hpp>
+#include <nomlib/actions.hpp>
 #include <nomlib/gui.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "resources.hpp"
+#include "types.hpp"
 #include "Card.hpp"
-#include "CardRules.hpp"
 #include "GameOverStateCursor.hpp"
+
+namespace tt {
+
+const nom::Point2i TOP_GAMEOVER_ORIGIN =
+  nom::Point2i( BOARD_ORIGIN_X - ( CARD_DIMS.w ),
+                BOARD_ORIGIN_Y + ( CARD_DIMS.h / 3 ) );
+
+const nom::Point2i BOTTOM_GAMEOVER_ORIGIN =
+  nom::Point2i( BOARD_ORIGIN_X - ( CARD_DIMS.w ),
+                BOARD_ORIGIN_Y + ( CARD_DIMS.h ) +
+                ( CARD_DIMS.h / 2 ) + ( CARD_DIMS.h / 4 ) );
+
+const nom::Point2i TOP_GAMEOVER_CURSOR_ORIGIN =
+  nom::Point2i(TOP_GAMEOVER_ORIGIN.x, TOP_GAMEOVER_ORIGIN.y * 2);
 
 // Forward declarations
 class Game;
@@ -56,49 +67,55 @@ class GameOverState: public nom::IState
 
   private:
     /// \todo Change return type to bool
-    void on_init( nom::void_ptr data );
-    void on_exit( nom::void_ptr data );
+    void on_init(nom::void_ptr data);
+    void on_exit(nom::void_ptr data);
 
-    void on_pause( nom::void_ptr data );
-    void on_resume( nom::void_ptr data );
+    void on_pause(nom::void_ptr data);
+    void on_resume(nom::void_ptr data);
 
-    /// \brief Injection of the GUI event loop.
-    ///
-    /// \note This is the current context's event loop (libRocket).
-    bool on_event( const nom::Event& ev ) override;
+    /// \brief The default event handler for this state.
+    bool on_event(const nom::Event& ev) override;
 
     /// \brief Method callback for mouse button actions.
     ///
     /// \see nom::InputMapper.
-    void on_mouse_button_down( const nom::Event& ev );
+    void on_mouse_button_down(const nom::Event& ev);
 
-    void on_user_event( const nom::Event& ev );
+    /// \brief User events handler for this state.
+    void on_user_event(const nom::Event& ev);
 
-    void on_update ( float delta_time );
-    void on_draw( nom::RenderWindow& target );
+    void on_update(nom::real32 delta_time);
+    void on_draw(nom::RenderWindow& target);
+
+    std::shared_ptr<nom::IActionObject>
+    create_scale_card_action(const std::shared_ptr<nom::Sprite>& sp);
+
+    // Set the card rendering layout for the player and opponent
+    bool update_player_positions();
+
+    void play_gameover_animation( CardCollection* db, CardHand* phand,
+                                  int card_pos );
 
     Game* game;
 
-    nom::Timer transistion;
-    bool show_results;
-
     nom::uint32 gameover_state_;
 
-    /// Interface cursor
+    // Input
     GameOverStateCursor cursor_;
+    Card selected_card_;
 
-    Card selected_card;
+    // Animations
+    std::shared_ptr<nom::Sprite> flash_action_sprite_;
+    std::shared_ptr<nom::Sprite> scale_action_sprite_;
 
-    /// Position of player 1 hand
-    nom::Point2i player1_pos;
-
-    /// Position of player 2 hand
-    nom::Point2i player2_pos;
-
-    nom::EventDispatcher event;
+    // nom::uint32 num_trade_cards_ = 0;
+    // STUB
+    nom::uint32 num_trade_cards_ = 1;
 };
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<GameOverState> GameOverStatePtr;
+
+} // namespace tt
 
 #endif // GAMEAPP_GAMEOVER_HEADERS defined

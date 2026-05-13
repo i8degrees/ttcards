@@ -28,146 +28,110 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardCollection.hpp"
 
+// Private headers
+#include <nomlib/serializers.hpp>
+
 using namespace nom;
 
-CardCollection::CardCollection ( void )
+namespace tt {
+
+CardCollection::CardCollection()
 {
   NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-CardCollection::~CardCollection ( void )
+CardCollection::~CardCollection()
 {
   NOM_LOG_TRACE ( TTCARDS_LOG_CATEGORY_TRACE );
 }
 
-void CardCollection::clear ( void )
+void CardCollection::clear()
 {
-  this->cards.clear();
+  this->cards_.clear();
 }
 
-nom::uint32 CardCollection::size ( void ) const
+nom::size_type CardCollection::size() const
 {
-  return this->cards.size();
+  return this->cards_.size();
 }
 
-Card& CardCollection::getCards ( unsigned int idx )
+const Card& CardCollection::front() const
 {
-  return this->cards[idx];
-}
-
-Cards CardCollection::getCards ( void )
-{
-  Cards temp_cards; // temp var for return passing
-
-  for ( nom::uint32 idx = 0; idx < this->cards.size(); idx++ )
-  {
-    temp_cards.push_back ( this->cards[idx] );
+  if( this->cards_.size() > 0 ) {
+    return this->cards_.front();
+  } else {
+    return Card::null;
   }
-
-  return temp_cards;
 }
 
-bool CardCollection::save( const std::string& filename )
+bool CardCollection::save(const std::string& filename)
 {
-  // High-level file I/O interface
-  nom::IValueSerializer* fp = new nom::JsonCppSerializer();
+  nom::Value objects;
+  nom::Value card;
 
-  // Our JSON output will be a JSON object enclosing an array keyed "cards",
-  // of which holds each of our individual, unnamed JSON objects.
-  //
-  // NOTE: I wished for "cards" to be an object as well, but then sorting gets
-  // all messed up -- the "off by six-ish" bug from before -- so the compromise
-  // until we figure these things out is going to have to be this!
-  nom::Value obj( nom::Value::ObjectValues );
-  nom::Value arr( nom::Value::ArrayValues );
-
-  if ( this->cards.size() > MAX_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check before saving: " + filename );
+  auto fp = nom::make_unique_json_serializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
     return false;
   }
 
-  for ( nom::uint32 idx = 0; idx != this->cards.size(); ++idx )
-  {
-    // Serialize each card's attributes; said card attributes become JSON
-    // objects, enclosed within our overall container ("cards" array).
-    arr.push_back( this->cards[idx].serialize() );
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
 
-    // Top-level array node
-    obj["cards"] = arr;
+    card = tt::serialize_card(*itr);
+    objects["cards"].push_back(card);
   }
 
-  if ( fp->save( obj, filename ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to save JSON file: " + filename );
+  if( fp->save(objects, filename) == false ) {
+    NOM_LOG_ERR(TTCARDS, "Unable to save JSON file: " + filename);
     return false;
   }
-
-  Card::CARDS_COLLECTION = this->cards.size();
 
   return true;
 }
 
-bool CardCollection::load( const std::string& filename )
+bool CardCollection::load(const std::string& filename)
 {
-  // High-level file I/O interface
-  nom::IValueDeserializer* fp = new nom::JsonCppDeserializer();
-  nom::Value value;
-
-  // The card attributes we are loading in will be stored in here, and once a
-  // card has filled its buffer, we push it into its final resting place ...
-  // CardCollection's Card vector.
   Card card;
   Cards cards_buffer;
+  nom::Value value;
 
-  if ( fp->load( filename, value ) == false )
-  {
-NOM_LOG_ERR ( TTCARDS, "Unable to parse JSON input file: " + filename );
+  auto fp = nom::make_unique_json_deserializer();
+  if( fp == nullptr ) {
+    NOM_LOG_ERR(  TTCARDS,
+                  "Could not load input file: failure to allocate memory!" );
     return false;
   }
 
-  if ( value.size() > MAX_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check before loading: " + filename );
+  if( fp->load(filename, value) == false ) {
+    NOM_LOG_ERR(TTCARDS, "Unable to parse JSON input file: " + filename);
     return false;
   }
 
-  for ( auto itr = value["cards"].begin(); itr != value["cards"].end(); ++itr )
-  {
-    nom::Value val = itr->ref();
+  nom::Value deck = value["cards"];
+  for( auto itr = deck.begin(); itr != deck.end(); ++itr ) {
 
-    card.unserialize( val );
+    nom::Value attr = itr->ref();
+    card = tt::deserialize_card(attr);
 
     // Additional attributes
-    card.setPlayerID( Card::NOPLAYER );     // placeholder
-    card.setPlayerOwner( Card::NOPLAYER );  // placeholder
+    card.player_id = PlayerID::PLAYER_ID_INVALID;
+    card.player_owner = PlayerID::PLAYER_ID_INVALID;
 
-    cards_buffer.push_back( card );
-  }
-
-  if ( cards_buffer.size() > MAX_COLLECTION ) // Sanity check
-  {
-    NOM_LOG_ERR ( TTCARDS, "Failed MAX_COLLECTION sanity check after loading: " + filename );
-    return false;
+    cards_buffer.push_back(card);
   }
 
   // All is well, let us make our freshly loaded data permanent
-  this->cards = cards_buffer;
-  Card::CARDS_COLLECTION = this->cards.size();
-
-#ifdef DEBUG_CARD_COLLECTION
-  debug.ListCards ( this->cards );
-#endif
+  this->cards_ = cards_buffer;
 
   return true;
 }
 
-const Card& CardCollection::lookup_by_name( const std::string& name ) const
+const Card& CardCollection::find(const std::string& card_name) const
 {
-  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr )
-  {
-    if( (*itr).getName() == name )
-    {
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
+
+    if( (*itr).name == card_name ) {
       // Successful match
       return *itr;
     }
@@ -177,12 +141,11 @@ const Card& CardCollection::lookup_by_name( const std::string& name ) const
   return Card::null;
 }
 
-const Card& CardCollection::lookup_by_id( int id ) const
+const Card& CardCollection::find(CardID card_id) const
 {
-  for( auto itr = this->cards.begin(); itr != this->cards.end(); ++itr )
-  {
-    if( (*itr).getID() == id )
-    {
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
+
+    if( (*itr).id == card_id ) {
       // Successful match
       return *itr;
     }
@@ -191,3 +154,108 @@ const Card& CardCollection::lookup_by_id( int id ) const
   // No match
   return Card::null;
 }
+
+void CardCollection::append_card(const Card& card)
+{
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
+
+    // Existing card
+    if( *itr == card ) {
+      if( (*itr).num < 99 ) {
+        (*itr).num = (*itr).num + 1;
+      }
+
+      return;
+    }
+  }
+
+  // Card does not exist, so we add it to the deck
+  Card new_card = card;
+  new_card.num = 1;
+  this->cards_.push_back(new_card);
+}
+
+void CardCollection::append_cards(const Cards& cards)
+{
+  for( auto itr = cards.begin(); itr != cards.end(); ++itr ) {
+    this->cards_.push_back(*itr);
+  }
+}
+
+void CardCollection::erase_card(const Card& card)
+{
+  for( auto itr = this->cards_.begin(); itr != this->cards_.end(); ++itr ) {
+
+    // Existing card
+    if( (*itr) == card ) {
+
+      if( (*itr).num > 0 ) {
+        (*itr).num = (*itr).num - 1;
+      }
+
+      if( (*itr).num == 0 ) {
+        this->cards_.erase(itr);
+      }
+
+      return;
+    }
+  }
+}
+
+ConstCardsIterator CardCollection::begin() const
+{
+  return this->cards_.begin();
+}
+
+ConstCardsIterator CardCollection::end() const
+{
+  return this->cards_.end();
+}
+
+CardsIterator CardCollection::begin()
+{
+  return this->cards_.begin();
+}
+
+CardsIterator CardCollection::end()
+{
+  return this->cards_.end();
+}
+
+nom::Value
+serialize_deck(const CardCollection* deck)
+{
+  nom::Value objects(nom::Value::ValueType::Null);
+
+  NOM_ASSERT(deck != nullptr);
+  if( deck == nullptr ) {
+    return objects;
+  }
+
+  auto deck_end = deck->end();
+  for( auto itr = deck->begin(); itr != deck_end; ++itr ) {
+    // Serialize each card as an object
+    objects.push_back( tt::serialize_card(*itr) );
+  }
+
+  return objects;
+}
+
+tt::Cards
+deserialize_deck(const nom::Value& objects)
+{
+  Card card;
+  Cards cards;
+
+  // Reconstruct hand data
+  auto object_end = objects.end();
+  for( auto itr = objects.begin(); itr != object_end; ++itr ) {
+
+    card = tt::deserialize_card(*itr);
+    cards.push_back(card);
+  }
+
+  return cards;
+}
+
+} // namespace tt

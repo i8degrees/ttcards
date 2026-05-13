@@ -28,18 +28,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Game.hpp"
 
-int main ( int argc, char* argv[] )
-{
-  Game engine( argc, argv );
+using namespace nom;
 
-  if ( engine.on_init() == false )
-  {
-    NOM_LOG_ERR ( TTCARDS, "Could not initialize game." );
+int main(int argc, char* argv[])
+{
+  tt::Game engine(argc, argv);
+
+  if( engine.on_init() == false ) {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not initialize game." );
     return NOM_EXIT_FAILURE;
   }
 
   return engine.Run();
-
-  // This is past the point of execution; all execution must reside within our
-  // Game class
 }

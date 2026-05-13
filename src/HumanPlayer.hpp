@@ -34,32 +34,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "config.hpp"
 #include "IPlayer.hpp"
 
+namespace tt {
+
 // Forward declarations
 class CardHand;
-class CardView;
 
 class HumanPlayer: public IPlayer
 {
   public:
+    HumanPlayer(CardHand* hand);
+
     virtual ~HumanPlayer();
 
-    HumanPlayer(CardHand* hand, CardView* view);
+    virtual PlayerType type() const override;
 
-    virtual nom::uint32 player_id() const override;
-    virtual void set_player_id(nom::uint32 id) override;
+    virtual PlayerID player_id() const override;
+    virtual void set_player_id(PlayerID id) override;
 
-    void update() override;
+    void update(nom::real32 delta_time) override;
     void draw(nom::IDrawable::RenderTarget& target) override;
 
   private:
     /// \remarks This object pointer is **not** owned by us; do not free.
     CardHand* hand_;
 
-    /// \remarks This object pointer is **not** owned by us; do not free.
-    CardView* card_renderer_;
-
     /// \brief The unique identifier for the player.
-    nom::uint32 player_id_;
+    PlayerID player_id_;
 };
+
+} // namespace tt
 
 #endif // GAMEAPP_PLAYER_HEADERS defined

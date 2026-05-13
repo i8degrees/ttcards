@@ -28,10 +28,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "PauseState.hpp"
 
+#include "helpers.hpp"
+
 // Forward declarations
 #include "Game.hpp"
 
 using namespace nom;
+
+namespace tt {
 
 PauseState::PauseState(nom::SDLApp* object) :
   nom::IState( Game::State::Pause, nom::IState::Flags::BackRender, nom::IState::Type::Child),
@@ -45,7 +49,7 @@ PauseState::~PauseState()
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void PauseState::on_init( nom::void_ptr data )
+void PauseState::on_init(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
@@ -55,30 +59,39 @@ void PauseState::on_init( nom::void_ptr data )
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->pause_window_.load_document_file( this->game->config.getString("GUI_PAUSE") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_PAUSE") );
-      // return false;
-    }
-  #else
-    if( this->game->pause_window_.load_document_file( this->game->config.getString("GUI_PAUSE_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_PAUSE_SCALE2X") );
-      // return false;
-    }
-  #endif
+  const auto GUI_PAUSE =
+    this->game->res_cfg_->get_string("GUI_PAUSE");
+  if( this->game->pause_window_.load_document_file(GUI_PAUSE) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:", GUI_PAUSE );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
+
+  // ...Render a darkened overlay for this state as a nice visual cue...
+  this->overlay_sprite_ = nom::make_unique<Sprite>();
+  if( this->overlay_sprite_ != nullptr ) {
+    this->overlay_sprite_->init_with_color(Color4i::Black, SCREEN_RESOLUTION);
+    this->overlay_sprite_->set_position(Point2i::zero);
+    this->overlay_sprite_->set_color_blend_mode(BlendMode::BLEND_MODE_BLEND);
+    this->overlay_sprite_->set_alpha(128); // 50% opacity
+  }
 
   this->blink_update.start();
 
   nom::InputActionMapper state;
 
-  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->state()->pop_state( nullptr ); } );
+  auto pause_game( [=](const nom::Event& evt) {
+    this->game->state()->pop_state(nullptr);
+  });
 
-  state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
-  state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+  // ...Keyboard mappings ...
+  state.insert("pause_game", nom::KeyboardAction(SDLK_p), pause_game);
+
+  // ...Joystick mappings ...
+  auto& joystick_id = this->game->joystick_id_;
+  state.insert( "pause_game", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_START), pause_game );
 
   this->game->input_mapper.erase( "PauseState" );
   this->game->input_mapper.insert( "PauseState", state, true );
@@ -91,43 +104,49 @@ void PauseState::on_init( nom::void_ptr data )
   // this->game->input_mapper.disable();
   // this->game->input_mapper.activate_only( "Game" );
 
+  // Stop updating animations and do not show the game cursor
+  this->game->actions_.pause();
+  this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
+
   this->game->pause_window_.set_title_text("PAUSE");
-  this->game->pause_window_.set_message_text( SHORT_VERSION_INFO);
+  this->game->pause_window_.set_message_text( tt::version_string() );
   this->game->pause_window_.show();
 }
 
-void PauseState::on_exit( nom::void_ptr data )
+void PauseState::on_exit(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   this->game->pause_window_.close();
+
   Rocket::Core::Factory::ClearStyleSheetCache();
   Rocket::Core::Factory::ClearTemplateCache();
+
+  // Resume updating animations and show the game cursor
+  this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
+  this->game->actions_.resume();
 }
 
-void PauseState::on_pause( nom::void_ptr data )
+void PauseState::on_pause(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-void PauseState::on_resume( nom::void_ptr data )
+void PauseState::on_resume(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
-bool PauseState::on_event( const nom::Event& ev )
+bool PauseState::on_event(const nom::Event& ev)
 {
-  this->game->gui_window_.process_event(ev);
-
-  return true;
+  return false;
 }
 
-void PauseState::on_update( float delta_time )
+void PauseState::on_update(nom::real32 delta_time)
 {
   this->game->pause_window_.set_title_text("PAUSE");
 
-  if ( this->blink_update.ticks() > 800 )
-  {
+  if( this->blink_update.ticks() > 800 ) {
     this->blink_update.stop();
     this->game->pause_window_.set_title_text("");
     this->blink_text = true;
@@ -138,14 +157,17 @@ void PauseState::on_update( float delta_time )
   this->game->window.update();
 }
 
-void PauseState::on_draw( nom::RenderWindow& target )
+void PauseState::on_draw(nom::RenderWindow& target)
 {
+  TT_RENDER_SPRITE(this->overlay_sprite_);
+
   this->game->gui_window_.draw();
 
-  if ( this->blink_text )
-  {
+  if( this->blink_text == true ) {
     this->game->pause_window_.set_title_text("");
     this->blink_update.start();
     this->blink_text = false;
   }
 }
+
+} // namespace tt

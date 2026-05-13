@@ -28,124 +28,129 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "CardsMenuState.hpp"
 
+// Private headers
+#include "helpers.hpp"
+#include "CardRenderer.hpp"
+
 // Forward declarations
 #include "Game.hpp"
 
 using namespace nom;
 
+namespace tt {
+
 CardsMenuState::CardsMenuState(nom::SDLApp* object) :
   nom::IState( Game::State::CardsMenu ),
-  game( NOM_SCAST(Game*, object) ),
-  cursor_state_(0)
+  game( NOM_SCAST(Game*, object) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  nom::uint pid = 0; // temp var for for loop iteration
-
-  this->game->hand[0].clear();
-  this->game->hand[1].clear();
-
-  // Generate a full player hand for the CPU with whatever -- don't care -- we
-  // do this only for creating a static backdrop to add to this state; see
-  // ::on_draw for details.
-  while( this->game->hand[1].size() < MAX_PLAYER_HAND )
-  {
-    this->game->hand[1].shuffle( 1, 1, this->game->collection);
-  }
-  this->game->hand[1].set_face_down(true);
-
-  // this->game->collection is initialized for us in the main app loop
-  // Borrowed from Player class; this is perhaps a hack-(ish) workaround
-    /* FIXME: */
-  // As we presently expect / depend on this state to always be player1 and we
-  // know the only required data structure being passed onwards is the player1
-  // hand, we can fudge all the cards / objects leading up to said point without
-  // anybody knowing the difference.
-  //
-  for ( pid = 0; pid < this->game->collection.cards.size(); pid++ )
-  {
-    this->game->collection.cards[pid].setPlayerID(Card::PLAYER1);
-  }
-
-  this->selected_card_ = this->game->collection.cards.front();
-
-  this->card_pos = nom::Point2i (
-                                  BOARD_ORIGIN_X + ( CARD_WIDTH * 2 ),
-                                  BOARD_ORIGIN_Y +
-                                  (
-                                    ( CARD_HEIGHT / 2 ) + CARD_HEIGHT * 1
-                                  ) - 8
-                                );
 }
 
 CardsMenuState::~CardsMenuState()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  this->selected_card_ = Card();
 }
 
-void CardsMenuState::on_init( nom::void_ptr data )
+void CardsMenuState::on_init(nom::void_ptr data)
 {
+  uint16 platform_key_mod = KMOD_LCTRL;
+
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  this->game->music_track->Play();
+  this->cursor_state_ = 0;
 
-  // Reset the state of the cards model to ensure no persistent state; this
-  // can lead to subtle bugs or worse if we don't do this
-  this->game->cards_page_model_.reset( new CardsPageDataSource("cards_db") );
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
 
-  if( this->game->cards_menu_.set_context(&this->game->gui_window_) == false )
-  {
-    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could set GUI desktop." );
+  p1_hand.clear();
+  p2_hand.clear();
+
+  // ...Initialize game rules...
+
+  auto& rules = this->game->rules_;
+  auto cfg = this->game->config_.get();
+  this->game->init_game_rules(cfg, rules);
+
+  this->game->hand[PlayerIndex::PLAYER_1].init( this->game->card_res_.get(),
+                                                PlayerIndex::PLAYER_1 );
+  this->game->hand[PlayerIndex::PLAYER_2].init( this->game->card_res_.get(),
+                                                PlayerIndex::PLAYER_2 );
+
+  auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+  auto p2_db = this->game->cards_db_[PlayerIndex::PLAYER_2].get();
+  NOM_ASSERT(p1_db != nullptr);
+  NOM_ASSERT(p2_db != nullptr);
+
+  for( auto itr = p2_db->begin(); itr != p2_db->end(); ++itr ) {
+
+    if( this->game->debug_game_ == false ) {
+      itr->face_down = true;
+    } else {
+      itr->face_down = false;
+    }
+  }
+
+  while( p2_hand.size() < MAX_PLAYER_HAND ) {
+    p2_hand.add_random_card(1, 10, p2_db);
+  }
+
+  // ...Initialize opponent's rendering position -- to the left of player 1...
+  nom::size_type hand_idx = 0;
+  Point2i p2_pos(Point2i::zero);
+  for( auto card = p2_hand.begin(); card != p2_hand.end(); ++card ) {
+
+    p2_pos.x = PLAYER2_ORIGIN_X;
+    p2_pos.y = PLAYER2_ORIGIN_Y + (CARD_HEIGHT / 2) * hand_idx;
+    ++hand_idx;
+
+    auto card_renderer =
+      card->card_renderer;
+    if( card_renderer != nullptr && card_renderer->valid() == true ) {
+      card_renderer->set_position(p2_pos);
+    }
+  }
+
+  if( this->game->cards_page_model_ == nullptr ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Failed to initialize the cards data source UI." );
+    exit(NOM_EXIT_FAILURE);
     // return false;
   }
 
-  #if defined(SCALE_FACTOR) && SCALE_FACTOR == 1
-    if( this->game->cards_menu_.load_document_file( this->game->config.getString("GUI_CARDS_MENU") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_CARDS_MENU") );
-      // return false;
-    }
-  #else
-    if( this->game->cards_menu_.load_document_file( this->game->config.getString("GUI_CARDS_MENU_SCALE2X") ) == false )
-    {
-      NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION, "Could not load file:",
-                    this->game->config.getString("GUI_CARDS_MENU_SCALE2X") );
-      // return false;
-    }
-  #endif
+  if( this->game->cards_menu_.set_context(&this->game->gui_window_) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could set GUI desktop." );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
-  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
-                "---Deck from collection---" );
+  const auto GUI_CARDS_MENU =
+    this->game->res_cfg_->get_string("GUI_CARDS_MENU");
+  if( this->game->cards_menu_.load_document_file(GUI_CARDS_MENU) == false ) {
+    NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Could not load resource from file:",
+                  GUI_CARDS_MENU );
+    exit(NOM_EXIT_FAILURE);
+    // return false;
+  }
 
-  // Create the card pages with an existing collection
+  // Create the card pages with the active player's card deck
   Cards deck;
-  for(  auto itr = this->game->collection.cards.begin();
-        itr != this->game->collection.cards.end(); ++itr )
-  {
-    // FIXME: This breaks card lookup, rendering, etc. due to the fact that up
-    // to this point, we've been depending on the ID of the card matching the
-    // array index.
-    // Options I've thought of: experiment with the idea of modeling the data
-    // with std::map<int,Card>, keeping a copy of the position index with the
-    // card or model (yuck!) ...
-    // if( (*itr).num() > 0 ) {
-      deck.push_back( (*itr) );
-    // }
-
-      NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
-                    (*itr).getID(), ":", (*itr).getName(),
-                    "[", (*itr).num(), "]" );
+  for( auto itr = p1_db->begin(); itr != p1_db->end(); ++itr ) {
+    if( (itr)->num > 0 ) {
+      deck.push_back(*itr);
+    }
   }
 
-  NOM_ASSERT( this->game->cards_page_model_ != nullptr );
-  if( this->game->cards_page_model_ != nullptr ) {
-    this->game->cards_page_model_->insert_cards(0, deck);
-  }
+  // ...Initialize card data for UI presentation...
 
-  // Build card row data
+  this->game->cards_page_model_->erase_cards();
+  this->update_page_count_title(0);
+
+  this->game->cards_page_model_->insert_cards(0, deck);
+
+  // Commit the card data for rendering as early as we can, so the player has
+  // minimal latency
   this->game->gui_window_.update();
 
   NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE,
@@ -153,6 +158,11 @@ void CardsMenuState::on_init( nom::void_ptr data )
                   this->game->cards_page_model_->dump() );
 
   // Event listener for mouse button clicks
+
+  // TODO: This is currently a leaked resource -- no body is freeing it, and it
+  // is our responsibility! I'm not sure whose responsibility it should be,
+  // though -- should it be nom::UIEventListener, nom::UIWidget or
+  // application-level..?
   this->game->cards_menu_.register_event_listener(
     this->game->cards_menu_.document(), "mouseup",
     new nom::UIEventListener( [&] ( Rocket::Core::Event& ev ) {
@@ -181,8 +191,8 @@ void CardsMenuState::on_init( nom::void_ptr data )
       position = (*itr)->GetAbsoluteOffset(Rocket::Core::Box::PADDING);
       size = (*itr)->GetBox().GetSize(Rocket::Core::Box::PADDING);
 
-      row.x = position.x - this->game->cursor_.size().w;
-      row.y = position.y + this->game->cursor_.size().h / 2;
+      row.x = position.x - this->game->cursor_->size().w;
+      row.y = position.y + this->game->cursor_->size().h / 2;
       row.w = size.x;
 
       // This value correlates with the line-height RCSS property value in
@@ -201,61 +211,238 @@ void CardsMenuState::on_init( nom::void_ptr data )
   }
 
   // Starting origin for game cursor
-  this->game->cursor_.set_position( this->cursor_coords_map_[0].position() );
-  this->game->cursor_.set_frame(INTERFACE_CURSOR_RIGHT); // default cursor image
-
-  this->cursor_state_ = 0;  // default state for navigating card menu
+  this->game->cursor_->set_position( this->cursor_coords_map_[0].position() );
+  this->game->cursor_->set_sprite_sheet(this->game->right_cursor_frames_);
+  this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
 
   nom::InputActionMapper state;
 
-  nom::EventCallback cursor_prev( [&] ( const nom::Event& evt ) { this->cursor_prev(); } );
-  nom::EventCallback cursor_next( [&] ( const nom::Event& evt ) { this->cursor_next(); } );
-  nom::EventCallback prev_page( [&] ( const nom::Event& evt ) { this->prev_page(); } );
-  nom::EventCallback next_page( [&] ( const nom::Event& evt ) { this->next_page(); } );
-
-  nom::EventCallback delete_card( [&] ( const nom::Event& evt ) { this->remove_card(this->selected_card_); } );
-  nom::EventCallback select_card( [&] ( const nom::Event& evt ) { this->add_card(this->selected_card_); } );
-
-  // nom::EventCallback click_delete_card( [&] ( const nom::Event& evt ) { this->on_right_mouse_button_up(evt); } );
-  // nom::EventCallback click_select_card( [&] ( const nom::Event& evt ) { this->on_left_mouse_button_up(evt); } );
-
-  nom::EventCallback pause_game( [&] ( const nom::Event& evt ) { this->game->set_state( Game::State::Pause ); } );
-  nom::EventCallback start_game( [&] (const nom::Event& evt) {
-    this->game->set_state( Game::State::ConfirmationDialog );
+  auto cursor_prev( [=](const nom::Event& evt) {
+    this->cursor_prev();
   });
 
-  state.insert( "cursor_prev", nom::KeyboardAction( SDL_KEYDOWN, SDLK_UP ), cursor_prev );
-  state.insert( "cursor_prev", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::UP ), cursor_prev );
-  state.insert( "cursor_prev", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::UP ), cursor_prev );
+  auto cursor_next( [=](const nom::Event& evt) {
+    this->cursor_next();
+  });
 
-  state.insert( "cursor_next", nom::KeyboardAction( SDL_KEYDOWN, SDLK_DOWN ), cursor_next );
-  state.insert( "cursor_next", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_Y, nom::MouseWheelAction::DOWN ), cursor_next );
-  state.insert( "cursor_next", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::DOWN ), cursor_next );
+  auto prev_page( [=](const nom::Event& evt) {
+    this->prev_page();
+  });
 
-  state.insert( "prev_page", nom::KeyboardAction( SDL_KEYDOWN, SDLK_LEFT ), prev_page );
-  state.insert( "prev_page", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::LEFT ), prev_page );
-  state.insert( "prev_page", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::LEFT ), prev_page );
+  auto next_page( [=](const nom::Event& evt) {
+    this->next_page();
+  });
 
-  state.insert( "next_page", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RIGHT ), next_page );
-  state.insert( "next_page", nom::MouseWheelAction( SDL_MOUSEWHEEL, nom::MouseWheelAction::AXIS_X, nom::MouseWheelAction::RIGHT ), next_page );
-  state.insert( "next_page", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::RIGHT ), next_page );
+  auto delete_card( [=](const nom::Event& evt) {
 
-  state.insert( "delete_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_d ), delete_card );
+    // Player's rendered card
+    auto page_pos = this->cursor_position();
+    auto card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+    Card card_sp =
+      this->game->cards_page_model_->find_by_pos(card_pos);
 
-  state.insert( "delete_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CIRCLE ), delete_card );
+    this->remove_player_card(card_sp);
+  });
 
-  state.insert( "select_card", nom::KeyboardAction( SDL_KEYDOWN, SDLK_SPACE ), select_card );
-  state.insert( "select_card", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::CROSS ), select_card );
+  auto select_card( [=, &p1_hand](const nom::Event& evt) {
+    // Player's rendered card
+    auto page_pos = this->cursor_position();
+    auto card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+    Card card_sp =
+      this->game->cards_page_model_->find_by_pos(card_pos);
 
-  // state.insert( "pause_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_p ), pause_game );
-  // state.insert( "pause_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), pause_game );
+    this->add_player_card(card_sp);
+  });
 
-  state.insert( "start_game", nom::KeyboardAction( SDL_KEYDOWN, SDLK_RETURN ), start_game );
-  state.insert( "start_game", nom::JoystickButtonAction( 0, SDL_JOYBUTTONDOWN, nom::PSXBUTTON::START ), start_game );
+  auto start_game( [=](const nom::Event& evt) {
+    this->game->set_state(Game::State::ConfirmationDialog);
+  });
 
-  // Mouse button mappings
-  // state.insert( "click_delete_card", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_RIGHT ), click_delete_card );
-  // state.insert( "click_select_card", nom::MouseButtonAction( SDL_MOUSEBUTTONUP, SDL_BUTTON_LEFT ), click_select_card );
+  // TODO: Rename to save_player_game0 ..?
+  auto save_game0( [=](const nom::Event& evt) {
+
+    if( this->save_player_hand("build0.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  // TODO: Rename to save_player_game1 ..?
+  auto save_game1( [=](const nom::Event& evt) {
+
+    if( this->save_player_hand("build1.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  // TODO: Rename to load_player_game0 ..?
+  auto load_game0( [=](const nom::Event& evt) {
+
+    if( this->load_player_hand("build0.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  // TODO: Rename to load_player_game1 ..?
+  auto load_game1( [=](const nom::Event& evt) {
+
+    if( this->load_player_hand("build1.json") == false ) {
+      this->game->cursor_wrong->Play();
+    }
+
+    // Success!
+    this->game->save_game_sfx->Play();
+  });
+
+  auto clear_player_hand( [=](const nom::Event& evt) mutable {
+
+    // Render an invalid card texture afterwards
+    auto card_sp = Card::null;
+    this->set_display_card(card_sp);
+
+    this->erase_player_cards(&p1_hand);
+    this->game->card_place->Play();
+  });
+
+  // ...Keyboard input mappings...
+
+  state.insert("cursor_prev", nom::KeyboardAction(SDLK_UP), cursor_prev);
+  state.insert("cursor_next", nom::KeyboardAction(SDLK_DOWN), cursor_next);
+  state.insert("prev_page", nom::KeyboardAction(SDLK_LEFT), prev_page);
+  state.insert("next_page", nom::KeyboardAction(SDLK_RIGHT), next_page);
+  state.insert("delete_card", nom::KeyboardAction(SDLK_d), delete_card);
+  state.insert("select_card", nom::KeyboardAction(SDLK_SPACE), select_card);
+  state.insert("start_game", nom::KeyboardAction(SDLK_RETURN), start_game);
+
+  state.insert("save_game0", nom::KeyboardAction(SDLK_1, KMOD_LALT), save_game0);
+  state.insert("save_game1", nom::KeyboardAction(SDLK_2, KMOD_LALT), save_game1);
+
+  state.insert( "load_game0", nom::KeyboardAction(SDLK_1, platform_key_mod),
+                load_game0 );
+  state.insert( "load_game1", nom::KeyboardAction(SDLK_2, platform_key_mod),
+                load_game1);
+  state.insert( "clear_player_hand", nom::KeyboardAction(SDLK_0,
+                platform_key_mod), clear_player_hand);
+
+  // ...Mouse wheel input mappings...
+
+  state.insert( "cursor_prev",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_UP), cursor_prev );
+  state.insert( "cursor_next",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_DOWN), cursor_next );
+  state.insert( "prev_page",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_LEFT), prev_page );
+  state.insert( "next_page",
+                nom::MouseWheelAction(nom::MOUSE_WHEEL_RIGHT), next_page );
+
+  // ...Joystick input mappings...
+  auto& joystick_id = this->game->joystick_id_;
+
+  state.insert( "cursor_prev",
+                nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_UP), cursor_prev );
+
+  state.insert( "cursor_next", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_DOWN), cursor_next );
+
+  state.insert( "prev_page", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_LEFT), prev_page );
+
+  state.insert( "next_page", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_DPAD_RIGHT), next_page );
+
+  state.insert( "delete_card", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_B), delete_card );
+
+  state.insert( "select_card", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_A), select_card );
+
+  state.insert( "start_game", nom::GameControllerButtonAction(joystick_id,
+                nom::GameController::BUTTON_START), start_game );
+
+
+  if( this->game->debug_game_ == true ) {
+
+    // NOTE: ...Testing of CardsPageDataSource functionality...
+
+    auto debug_p1_append_card( [=](const nom::Event& evt) {
+
+      nom::size_type num_deck = (p1_db->size() - 1);
+      uint32 loop_ticks = 0;
+
+      // Pick a card at random
+      while( loop_ticks < 100 ) {
+
+        int random_card_id =
+          nom::uniform_int_rand<int>(0, num_deck);
+
+        Card card = p1_db->find(random_card_id);
+        if( card != Card::null ) {
+          this->append_player_card(card);
+          break;
+        }
+
+        // NOTE: Infinite loop guard
+        ++loop_ticks;
+      }
+    });
+
+    auto debug_p1_append_cards( [=](const nom::Event& evt) {
+
+      int max_per_page =
+        this->game->cards_page_model_->cards_per_page();
+      nom::size_type num_cards = 0;
+      nom::size_type num_deck = (p1_db->size() - 1);
+      Cards cards;
+
+      // Fill one page worth with randomly picked cards
+      while( num_cards < max_per_page ) {
+
+        int random_card_id =
+          nom::uniform_int_rand<int>(0, num_deck);
+
+        Card card = p1_db->find(random_card_id);
+        if( card != Card::null ) {
+          cards.push_back(card);
+          ++num_cards;
+        }
+      }
+
+      this->append_player_cards(cards);
+    });
+
+    auto debug_p1_erase_card( [=](const nom::Event& evt) {
+
+      int page_pos = -1;
+      int card_pos = 0;
+      int erased_pos = 0;
+
+      page_pos = this->cursor_position();
+      card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+
+      if( page_pos != -1 ) {
+        erased_pos = this->game->cards_page_model_->erase_card(card_pos);
+      }
+    });
+
+    state.insert( "debug_p1_append_card", nom::KeyboardAction(SDLK_t),
+                  debug_p1_append_card );
+    state.insert( "debug_p1_append_cards",
+                  nom::KeyboardAction(SDLK_t, platform_key_mod),
+                  debug_p1_append_cards );
+
+    state.insert( "debug_p1_erase_card",
+                  nom::KeyboardAction(SDLK_d, platform_key_mod),
+                  debug_p1_erase_card );
+  } // end if debug game is enabled
 
   this->game->input_mapper.erase( "CardsMenuState" );
   this->game->input_mapper.insert( "CardsMenuState", state, true );
@@ -263,19 +450,28 @@ void CardsMenuState::on_init( nom::void_ptr data )
   this->game->input_mapper.activate( "Game" );
 
   this->game->cards_menu_.show();
+
+  // Yeah buddy!
+  this->game->theme_track_->Play();
+
+  // Set the initial display card -- for selection -- to always be the first
+  // card of the player's deck, and always render the card as if it was
+  // already in the player's deck
+  Card card_sp = p1_db->front();
+  tt::set_card_id(card_sp, p1_hand.player_id() );
+
+  this->set_display_card(card_sp);
 }
 
-void CardsMenuState::on_exit( nom::void_ptr data )
+void CardsMenuState::on_exit(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
-  // Clear the CPU player's hand; it needs to be re-initialized with real data
-  // in PlayState
-  this->game->hand[1].clear();
 
   this->game->cards_menu_.close();
   Rocket::Core::Factory::ClearStyleSheetCache();
   Rocket::Core::Factory::ClearTemplateCache();
+
+  this->game->actions_.cancel_actions();
 }
 
 void CardsMenuState::on_pause(nom::void_ptr data)
@@ -284,7 +480,7 @@ void CardsMenuState::on_pause(nom::void_ptr data)
 
   // Hide the cursor so that it doesn't show up during undesirable states such
   // as during the ConfirmationDialogState or Pause states.
-  this->game->cursor_.set_frame(INTERFACE_CURSOR_NONE);
+  this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
 }
 
 void CardsMenuState::on_resume(nom::void_ptr data)
@@ -292,7 +488,11 @@ void CardsMenuState::on_resume(nom::void_ptr data)
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
   // Restore the rendering of the game cursor
-  this->game->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
+  this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
+
+  // Ensure that the correct input contexts are reset
+  this->game->input_mapper.activate_only("CardsMenuState");
+  this->game->input_mapper.activate("Game");
 
   // Response from the previous game state
   nom::int32_ptr response = static_cast<nom::int32_ptr>(data);
@@ -300,19 +500,31 @@ void CardsMenuState::on_resume(nom::void_ptr data)
   // User is happy with their cards -- let's play! Response from
   // ConfirmationDialogState was 'yes'
   if( response != nullptr && *response == 1 ) {
-    this->game->set_state(Game::State::Play);
-  }
-  else {
-    // Continue running this state; response from ConfirmationDialogState was 'no'
-    this->game->input_mapper.activate_only("CardsMenuState");
-    this->game->input_mapper.activate("Game");
-  }
+
+    NOM_DELETE_PTR(response);
+
+    auto p1_db = this->game->cards_db_[PlayerIndex::PLAYER_1].get();
+    auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+    // auto& p2_hand = this->game->hand[PlayerIndex::PLAYER_2];
+
+    if( this->game->debug_game_ == true ) {
+
+      while( p1_hand.size() < MAX_PLAYER_HAND ) {
+        p1_hand.add_random_card(1, 10, p1_db);
+      }
+    } // end if debug game is enabled
+
+    // Validate conditions necessary to advance onwards
+    if( p1_hand.size() < MAX_PLAYER_HAND ) {
+      this->game->cursor_wrong->Play();
+    } else {
+      this->game->set_state(Game::State::Play);
+    }
+  } // end if response was YES
 }
 
-void CardsMenuState::on_update( float delta_time )
+void CardsMenuState::on_update(nom::real32 delta_time)
 {
-  this->game->card.update();
-
   this->update_cursor();
 
   this->game->window.update();
@@ -321,53 +533,56 @@ void CardsMenuState::on_update( float delta_time )
   this->update_page_indicators();
 }
 
-void CardsMenuState::on_draw( nom::RenderWindow& target )
+void CardsMenuState::on_draw(nom::RenderWindow& target)
 {
   this->game->background.draw(target);
 
-  // Static backdrop for CPU player
-  for( auto idx = 0; idx != this->game->hand[1].size(); ++idx)
-  {
-    this->player2_pos = Point2i (
-                                  PLAYER2_ORIGIN_X,
-                                  PLAYER2_ORIGIN_Y +
-                                  ( CARD_HEIGHT / 2 ) * idx
-                                );
+  // Player 2 is to the left
+  tt::render_player_hand(target, &this->game->hand[PlayerIndex::PLAYER_2]);
 
-    this->game->card.reposition(this->player2_pos);
-    this->game->card.setViewCard(this->game->hand[1].cards[idx]);
-    this->game->card.draw(target);
-  }
-
-  // Active player's card selection(s)
-  for( nom::uint32 idx = 0; idx < this->game->hand[0].size(); idx++ )
-  {
-    this->player1_pos = Point2i (
-                                  PLAYER1_ORIGIN_X,
-                                  PLAYER1_ORIGIN_Y +
-                                  ( CARD_HEIGHT / 2 ) * idx
-                              );
-
-    this->game->card.reposition(this->player1_pos);
-    this->game->card.setViewCard( this->game->hand[0].cards.at ( idx ) );
-    this->game->card.draw(target);
-  }
+  // Player 1 is to the right
+  tt::render_player_hand(target, &this->game->hand[PlayerIndex::PLAYER_1]);
 
   this->game->gui_window_.draw();
-  this->game->cursor_.draw(target);
 
-  this->game->card.setViewCard(this->selected_card_);
-  this->game->card.reposition(this->card_pos);
-  this->game->card.draw(target);
+  TT_RENDER_SPRITE(this->game->cursor_);
+  TT_RENDER_SPRITE(this->p1_selected_card_sprite_);
+}
+
+bool CardsMenuState::set_display_card(Card& card)
+{
+  bool result = false;
+
+  // NOTE: Render the card as if it was already in the player's deck
+  tt::set_card_id(card, this->game->hand[PlayerIndex::PLAYER_1].player_id() );
+
+  auto p1_card_renderer =
+    tt::create_card_renderer(this->game->card_res_.get(), card);
+
+  NOM_ASSERT(p1_card_renderer != nullptr);
+  NOM_ASSERT(p1_card_renderer->valid() == true);
+
+  if( p1_card_renderer != nullptr && p1_card_renderer->valid() == true ) {
+
+    this->p1_selected_card_sprite_ = p1_card_renderer->rendered_card();
+    if( this->update_display_card() == true ) {
+      // Success!
+      result = true;
+    } else {
+      NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                    "Failed to update the player's display card" );
+    }
+  }
+
+  // Err
+  return result;
 }
 
 // Private scope
 
-bool CardsMenuState::on_event( const nom::Event& ev )
+bool CardsMenuState::on_event(const nom::Event& ev)
 {
-  this->game->gui_window_.process_event(ev);
-
-  return true;
+  return false;
 }
 
 void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
@@ -377,7 +592,9 @@ void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
   Element* target = ev.GetTargetElement();
 
   NOM_ASSERT( target != nullptr );
-  if( target == nullptr ) return;
+  if( target == nullptr ) {
+    return;
+  }
 
   if( ev == "mouseup" ) {
 
@@ -385,17 +602,20 @@ void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
       (Input::KeyIdentifier) ev.GetParameter<int>("button", 3);
 
     NOM_ASSERT( this->game->cards_page_model_ != nullptr );
-    if( this->game->cards_page_model_ == nullptr ) return;
-
-    Card card = this->game->cards_page_model_->lookup_by_name( target->GetInnerRML().CString() );
-
-    if( target->GetTagName() == "card" && button == 0 ) // Left click
-    {
-      this->add_card(card);
+    if( this->game->cards_page_model_ == nullptr ) {
+      return;
     }
-    else if( target->GetTagName() == "card" && button == 1 )  // Right click
-    {
-      this->remove_card(card);
+
+    std::string card_name = target->GetInnerRML().CString();
+    Card card =
+      this->game->cards_page_model_->find_by_name(card_name);
+
+    if( target->GetTagName() == "card" && button == 0 ) {
+      // Left click
+      this->add_player_card(card);
+    } else if( target->GetTagName() == "card" && button == 1 ) {
+      // Right click
+      this->remove_player_card(card);
     }
 
     NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_TEST, target->GetInnerRML().CString() );
@@ -416,10 +636,10 @@ void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
 //   if( this->game->cards_page_model_ == nullptr ) return;
 
 //   Card card =
-//     this->game->cards_page_model_->lookup_by_name( target->GetInnerRML().CString() );
+//     this->game->cards_page_model_->find_by_name( target->GetInnerRML().CString() );
 
 //   if( target->IsPointWithinElement(mouse_coords) ) {
-//       this->add_card(card);
+//       this->add_player_card(card);
 //   } // end if target is within mouse hit test
 
 //   NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_TEST, target->GetInnerRML().CString() );
@@ -439,10 +659,10 @@ void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
 //   if( this->game->cards_page_model_ == nullptr ) return;
 
 //   Card card =
-//     this->game->cards_page_model_->lookup_by_name( target->GetInnerRML().CString() );
+//     this->game->cards_page_model_->find_by_name( target->GetInnerRML().CString() );
 
 //   if( target->IsPointWithinElement(mouse_coords) ) {
-//       this->remove_card(card);
+//       this->remove_player_card(card);
 //   } // end if target is within mouse hit test
 
 //   NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_TEST, target->GetInnerRML().CString() );
@@ -450,18 +670,12 @@ void CardsMenuState::on_mouse_button_up(Rocket::Core::Event& ev)
 
 void CardsMenuState::update_cursor()
 {
-  int row_index = 0;      // Card position index as per cards model
-  int pos = 0;            // The card's position index (as per CardCollection)
-
-  if( this->cursor_state_ == 0 )
+  if( this->cursor_state_ == 0 &&
+      this->game->cursor_->position() != Point2i::null )
   {
-    this->game->cursor_.set_frame(INTERFACE_CURSOR_RIGHT);
-
-    row_index = this->cursor_position();
-
-    // Update selected card
-    pos = this->game->cards_page_model_->map_row(row_index);
-    this->selected_card_ = this->game->cards_page_model_->lookup_by_id(pos);
+    this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
+  } else {
+    this->game->cursor_->set_frame(INTERFACE_CURSOR_HIDDEN);
   }
 }
 
@@ -517,15 +731,16 @@ int CardsMenuState::cursor_position()
 
   if( this->game->cards_page_model_ != nullptr ) {
 
-    for(auto idx = 0; idx < this->game->cards_page_model_->per_page(); ++idx)
+    for(  auto idx = 0;
+          idx < this->game->cards_page_model_->cards_per_page();
+          ++idx )
     {
-      if( this->game->cursor_.position().y <= this->cursor_coords_map_.at(idx).y ) {
+      if( this->game->cursor_->position().y <= this->cursor_coords_map_.at(idx).y ) {
         return idx;
-      }
-      else { // catch all safety switch
+      } else {
 
         // assume we are at the last position in the index when all else fails
-        pos = this->game->cards_page_model_->per_page();
+        pos = this->game->cards_page_model_->cards_per_page();
       }
     }
   }
@@ -535,33 +750,52 @@ int CardsMenuState::cursor_position()
 
 void CardsMenuState::set_cursor_position(int pos)
 {
-  this->game->cursor_.set_position( this->cursor_coords_map_.at(pos).position() );
-  NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor_pos:", this->game->cursor_.position() );
+  nom::size_type num_rows = this->cursor_coords_map_.size();
+
+  Point2i render_pos = Point2i::null;
+  if( pos <= num_rows ) {
+    render_pos = this->cursor_coords_map_.at(pos).position();
+    this->game->cursor_->set_position(render_pos);
+  }
 }
 
 void CardsMenuState::prev_page()
 {
   using namespace Rocket::Core;
 
+  Card card_sp(Card::null);
   int page = 0;
+  int page_pos = -1;
+  int card_pos = 0;
+  std::string page_str;
 
   if( this->cursor_state_ == 0 ) {
 
     NOM_ASSERT( this->game->cards_page_model_ != nullptr );
-    if( this->game->cards_page_model_ == nullptr ) return;
+    if( this->game->cards_page_model_ == nullptr ) {
+      return;
+    }
 
     page = this->game->cards_page_model_->page();
 
     // Update cards model, play audio & set column text for previous page
-    if( page > 0 )
-    {
+    if( page > 0 ) {
+
       --page;
       this->game->cards_page_model_->set_page(page);
+      this->update_page_count_title(page);
 
-      this->game->cursor_move->Play();
+      // Player's rendered card
+      page_pos = this->cursor_position();
+      card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+      card_sp =
+        this->game->cards_page_model_->find_by_pos(card_pos);
 
-      // Update column with page number
-      this->game->cards_menu_.set_column_title( 1, "CARDS P. " + std::to_string(page+1) );
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
   } // end if cursor state == 0
 }
@@ -570,27 +804,41 @@ void CardsMenuState::next_page()
 {
   using namespace Rocket::Core;
 
+  Card card_sp(Card::null);
   int page = 0;
   int num_pages = 0;
+  int page_pos = -1;
+  int card_pos = 0;
+  std::string page_str;
 
   if( this->cursor_state_ == 0 ) {
 
     NOM_ASSERT( this->game->cards_page_model_ != nullptr );
-    if( this->game->cards_page_model_ == nullptr ) return;
+    if( this->game->cards_page_model_ == nullptr ) {
+      return;
+    }
 
     page = this->game->cards_page_model_->page();
     num_pages = this->game->cards_page_model_->total_pages();
 
     // Update cards model, play audio & set column text for next page
-    if( page < num_pages - 1 )
-    {
+    if( page < num_pages - 1 ) {
+
       ++page;
       this->game->cards_page_model_->set_page(page);
+      this->update_page_count_title(page);
 
-      this->game->cursor_move->Play();
+      // Player's rendered card
+      page_pos = this->cursor_position();
+      card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+      card_sp =
+        this->game->cards_page_model_->find_by_pos(card_pos);
 
-      // Update column with page number
-      this->game->cards_menu_.set_column_title( 1, "CARDS P. " + std::to_string(page+1) );
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
 
   } // end if cursor state == 0
@@ -598,141 +846,329 @@ void CardsMenuState::next_page()
 
 void CardsMenuState::cursor_prev()
 {
-  int row_index = 0;      // Card position index as per cards model
-  int pos = 0;            // The card's position index (as per CardCollection)
+  Card card_sp(Card::null);
+  int page_pos = -1;
+  int card_pos = 0;
+  Point2i move_to_offset(Point2i::zero);
 
   if( this->cursor_state_ == 0 ) {
 
     // Move up if the game cursor is before the first card entry of the page
-    if( this->game->cursor_.position().y > this->cursor_coords_map_.at(0).y )
-    {
-      this->game->cursor_.move ( 0, -( this->cursor_coords_map_.at(pos).h ) );
-      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_.position().y );
-      row_index = this->cursor_position();
+    if( this->game->cursor_->position().y > this->cursor_coords_map_.at(0).y ) {
 
-      pos = this->game->cards_page_model_->map_row(row_index);
-      this->selected_card_ = this->game->cards_page_model_->lookup_by_id(pos);
+      move_to_offset.x = 0;
+      move_to_offset.y = -(this->cursor_coords_map_.at(card_pos).h);
+      this->game->cursor_->translate(move_to_offset);
 
-      this->game->cursor_move->Play();
+      NOM_DUMP_VAR( TTCARDS_LOG_CATEGORY_TEST, "cursor.y:",
+                    this->game->cursor_->position().y );
+
+      // Player's rendered card
+      page_pos = this->cursor_position();
+      card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+      card_sp =
+        this->game->cards_page_model_->find_by_pos(card_pos);
+
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "page_pos:",
+                      page_pos );
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "card_pos:",
+                      card_pos );
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "card_sp.id:",
+                      card_sp.id );
+
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
   } // end if cursor state == 0
 }
 
 void CardsMenuState::cursor_next()
 {
-  int row_index = 0;      // Card position index as per cards model
-  int pos = 0;            // The card's position index (as per CardCollection)
-  int max_per_page = 0;   // maximum number of cards per one page
+  Card card_sp(Card::null);
+  int page_pos = -1;
+  int max_per_page = 0;
+  int card_pos = 0;
+  Point2i move_to_offset(Point2i::zero);
 
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
   if( this->game->cards_page_model_ != nullptr ) {
     // Next to last card
-    max_per_page = this->game->cards_page_model_->per_page() - 1;
+    max_per_page = this->game->cards_page_model_->cards_per_page() - 1;
     NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.at(max_per_page).y:", this->cursor_coords_map_.at(max_per_page).y );
   }
 
   if( this->cursor_state_ == 0 ) {
 
     // Move down if the game cursor is not at the last card entry of the page
-    if( this->game->cursor_.position().y >= this->cursor_coords_map_.at(0).y &&
-        this->game->cursor_.position().y < this->cursor_coords_map_.at(max_per_page).y ) {
+    if( this->game->cursor_->position().y >= this->cursor_coords_map_.at(0).y &&
+        this->game->cursor_->position().y < this->cursor_coords_map_.at(max_per_page).y )
+    {
+      move_to_offset.x = 0;
+      move_to_offset.y = this->cursor_coords_map_.at(card_pos).h;
+      this->game->cursor_->translate(move_to_offset);
 
-      this->game->cursor_.move( 0, this->cursor_coords_map_.at(pos).h );
-      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_.position().y );
-      row_index = this->cursor_position();
+      NOM_DUMP_VAR(TTCARDS_LOG_CATEGORY_TEST, "cursor.y:", this->game->cursor_->position().y );
 
-      pos = this->game->cards_page_model_->map_row(row_index);
-      this->selected_card_ = this->game->cards_page_model_->lookup_by_id(pos);
+      // Player's rendered card
+      page_pos = this->cursor_position();
+      card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+      card_sp =
+        this->game->cards_page_model_->find_by_pos(card_pos);
 
-      this->game->cursor_move->Play();
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "page_pos:",
+                      page_pos );
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "card_pos:",
+                      card_pos );
+      NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CARDS_MENU_STATE, "card_sp.id:",
+                      card_sp.id );
+
+      if( this->set_display_card(card_sp) == true ) {
+        this->game->cursor_move->Play();
+      } else {
+        this->game->cursor_wrong->Play();
+      }
     }
   } // end if cursor state == 0
 }
 
-void CardsMenuState::add_card(const Card& card)
+void CardsMenuState::add_player_card(const Card& card)
 {
   using namespace Rocket::Core;
 
-  int pos = 0;            // The card's position index (as per CardCollection)
-  int page = 0;           // Current page of model
-  int row_index = 0;      // Element's position of the card (relative to page)
+  int page_pos = -1;
+  int card_pos = 0;
+
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  Point2i p1_card_pos(Point2i::zero);
 
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
-  if( this->game->cards_page_model_ == nullptr ) return;
+  if( this->game->cards_page_model_ == nullptr ) {
+    return;
+  }
 
-  page = this->game->cards_page_model_->page();
   Card c = card;
-  pos = c.getID();
+  page_pos = this->cursor_position();
+  card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
 
   // Card logic for adding a card to the player's hand
   //
   // 1. Decrease available card count by one
   // 2. Sync the cards model to reflect modified card count (-1)
   // 3. Update player hand w/ modified card.
-  // 4. Update game cursor position.
   // 5. Queue audio clip
-  if( c.num() > 0 )
-  {
-    c.set_num( c.num() - 1 );
+  if( c.num > 0 ) {
 
-    if( this->game->hand[0].push_back(c) == true ) {
+    c.num = (c.num - 1);
 
-      this->game->cards_page_model_->insert_card(pos, c);
-      this->selected_card_ = c;
+    if( p1_hand.push_back(c) == true ) {
 
-      // Get the position, relative to current page, from model for
-      // updating game cursor position
-      row_index =
-        this->game->cards_page_model_->map_page_row(pos, page);
-      this->set_cursor_position(row_index);
+      this->game->cards_page_model_->insert_card(card_pos, c);
 
+      tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
+
+      // Success; card has been added to the player's hand
       this->game->card_place->Play();
-    } // end if successful add
+    } else {
+      this->game->cursor_wrong->Play();
+    }
   }
 }
 
-void CardsMenuState::remove_card(const Card& card)
+void CardsMenuState::remove_player_card(const Card& card)
 {
   using namespace Rocket::Core;
 
-  int pos = 0;            // The card's position index (as per CardCollection)
-  int page = 0;           // Current page of model
-  int row_index = 0;      // Element's position of the card (relative to page)
+  int page_pos = -1;
+  int card_pos = 0;
+
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+  Point2i p1_card_pos(Point2i::zero);
 
   NOM_ASSERT( this->game->cards_page_model_ != nullptr );
-  if( this->game->cards_page_model_ == nullptr ) return;
+  if( this->game->cards_page_model_ == nullptr ) {
+    return;
+  }
 
-  page = this->game->cards_page_model_->page();
   Card c = card;
-  pos = c.getID();
+  page_pos = this->cursor_position();
+  card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
 
-  // Used to compare the selected card from the current model with the game
-  // cards collection (number of cards to return)
-  Card ref_card = this->game->collection.cards.at(pos);
+  // Use the opponent's card deck to compare total number of cards (to return)
+  //
+  // TODO: This is stub code and needs to be replaced with an actual deck
+  // query that is independent of the opponent's total number of cards count
+  Card ref_card =
+    this->game->cards_db_[PlayerIndex::PLAYER_1]->find(c.id);
 
   // Card logic for removing a card from the player's hand
   //
   // 1. Increase available card count by one
   // 2. Sync the cards model to reflect modified card count (+1)
   // 3. Remove the card from the player's hand.
-  // 4. Update game cursor position.
   // 5. Queue audio clip
-  if( c.num() < ref_card.num() )
-  {
-    c.set_num( c.num() + 1 );
+  if( c.num < ref_card.num ) {
 
-    if( this->game->hand[0].erase(c) == true ) {
+    c.num = (c.num + 1);
 
-      this->game->cards_page_model_->insert_card(pos, c);
-      this->selected_card_ = card;
+    if( p1_hand.erase(c) == true ) {
 
-      // Get the position, relative to current page, from model for
-      // updating game cursor position
-      row_index =
-        this->game->cards_page_model_->map_page_row(pos, page);
-      this->set_cursor_position(row_index);
+      this->game->cards_page_model_->insert_card(card_pos, c);
+
+      tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
 
       this->game->cursor_cancel->Play();
-    } // end if successful removal
+    } else {
+      this->game->cursor_wrong->Play();
+    }
   }
 }
+
+void CardsMenuState::update_page_count_title(nom::size_type page)
+{
+  const std::string page_str = std::to_string(page + 1);
+  const std::string page_title = "CARDS P. " + page_str;
+
+  this->game->cards_page_model_->set_page(page);
+  this->game->cards_menu_.set_column_title(tt::CARDS_COLUMN_TITLE, page_title);
+  this->update_page_indicators();
+}
+
+void CardsMenuState::append_player_card(const Card& card)
+{
+  int curr_page = this->game->cards_page_model_->page();
+
+  this->game->cards_page_model_->append_card(card);
+
+  if( this->game->cards_page_model_->total_pages() > curr_page ) {
+    // Reset UI
+    this->next_page();
+    this->set_cursor_position(0);
+  }
+}
+
+void CardsMenuState::append_player_cards(const Cards& cards)
+{
+  int curr_page = this->game->cards_page_model_->page();
+
+  this->game->cards_page_model_->append_cards(cards);
+
+  if( this->game->cards_page_model_->total_pages() > curr_page ) {
+    // Reset UI
+    this->next_page();
+    this->set_cursor_position(0);
+  }
+}
+
+void CardsMenuState::erase_player_cards(CardHand* phand)
+{
+  NOM_ASSERT(phand != nullptr);
+  if( phand != nullptr ) {
+    phand->clear();
+  } else {
+    NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
+                  "Failed to erase the player's hand:",
+                  "memory location was NULL." );
+  }
+
+  this->game->cards_page_model_->erase_cards();
+
+  // Reset UI
+  this->update_page_count_title(0);
+  this->set_cursor_position(0);
+
+  // Render invalid card texture
+  auto card_sp = Card::null;
+  this->set_display_card(card_sp);
+}
+
+bool CardsMenuState::save_player_hand(const std::string& filename)
+{
+  auto& paths = this->game->paths_;
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+
+  const std::string SAVE_GAME_PATH =
+    paths["SAVE_DECK_DIR"] + filename;
+
+  if( this->game->save_player_hand( nullptr, &p1_hand, nullptr,
+                                    false, SAVE_GAME_PATH ) == false )
+  {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+
+  // Success!
+  this->game->save_game_sfx->Play();
+  return true;
+}
+
+// TODO: Consider reloading the player's deck when it is empty..?
+bool CardsMenuState::load_player_hand(const std::string& filename)
+{
+  auto& paths = this->game->paths_;
+  auto& p1_hand = this->game->hand[PlayerIndex::PLAYER_1];
+
+  const std::string SAVE_GAME_PATH =
+    paths["SAVE_DECK_DIR"] + filename;
+
+  if( this->game->load_player_hand( nullptr, &p1_hand, nullptr,
+                                    false, SAVE_GAME_PATH ) == false )
+  {
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+
+  if( tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN) > 0 ) {
+
+    // Reset UI
+    this->update_page_count_title(0);
+    this->set_cursor_position(0);
+
+    if( this->update_display_card() == true ) {
+
+      // Success!
+      this->game->save_game_sfx->Play();
+
+      return true;
+    }
+  } else {
+    // Err; the player's hand was not updated
+    this->game->cursor_wrong->Play();
+    return false;
+  }
+}
+
+bool CardsMenuState::update_display_card()
+{
+  bool result = false;
+  auto page_pos = -1;
+  auto card_pos = 0;
+
+  Card card_sp(Card::null);
+  Point2i render_pos(Point2i::zero);
+
+  page_pos = this->cursor_position();
+  card_pos = this->game->cards_page_model_->map_card_pos(page_pos);
+  NOM_ASSERT(card_pos >= 0);
+
+  // Player's rendered card
+  card_sp =
+    this->game->cards_page_model_->find_by_pos(card_pos);
+
+  render_pos.x =
+    BOARD_ORIGIN_X + ( CARD_DIMS.w * 2 );
+
+  render_pos.y =
+    BOARD_ORIGIN_Y + ( (CARD_DIMS.h / 2) + CARD_DIMS.h * 1) - 8;
+
+  if( this->p1_selected_card_sprite_ != nullptr ) {
+    this->p1_selected_card_sprite_->set_position(render_pos);
+    result = true;
+  }
+
+  return result;
+}
+
+} // namespace tt

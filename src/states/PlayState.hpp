@@ -30,27 +30,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GAMEAPP_PLAYSTATE_HEADERS
 
 #include <string>
-#include <iostream>
 #include <memory>
-#include <algorithm>
 
-#ifdef EMSCRIPTEN
-  #include <emscripten.h>
-#endif
-
-#include <nomlib/audio.hpp>
-#include <nomlib/gui.hpp>
 #include <nomlib/graphics.hpp>
+#include <nomlib/actions.hpp>
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
-#include "version.hpp"
-#include "resources.hpp"
-#include "Card.hpp"
+#include "types.hpp"
+
+namespace tt {
 
 // Forward declarations
 class Game;
 class IPlayer;
+struct Card;
 
 class PlayState: public nom::IState
 {
@@ -58,79 +52,81 @@ class PlayState: public nom::IState
     PlayState(nom::SDLApp* object);
     virtual ~PlayState();
 
-    void on_init( nom::void_ptr data );
-    void on_exit( nom::void_ptr data );
-    void on_pause( nom::void_ptr data );
-    void on_resume( nom::void_ptr data );
+    void on_init(nom::void_ptr data) override;
+    void on_exit(nom::void_ptr data) override;
+    void on_pause(nom::void_ptr data) override;
+    void on_resume(nom::void_ptr data) override;
 
-    void on_update( float delta_time );
-    void on_draw( nom::RenderWindow& target );
+    void on_update(float delta_time) override;
+    void on_draw(nom::RenderWindow& target) override;
 
   private:
-    /// \brief Injection of the GUI event loop.
-    ///
-    /// \note This is the current context's event loop (libRocket).
-    bool on_event(const nom::Event& ev);
+    /// \brief The default event handler for this state.
+    bool on_event(const nom::Event& ev) override;
 
     /// \brief Method callback for mouse button actions.
     ///
     /// \see nom::InputMapper.
-    void on_mouse_button_down( const nom::Event& ev );
+    void on_mouse_button_down(const nom::Event& ev);
 
-    unsigned int get_turn ( void );
-    void player_turn ( unsigned int player );
-    void endTurn ( void );
+    PlayerIndex player_turn() const;
 
-    bool isCursorLocked ( void );
-    void lockCursor ( bool lock );
-    void resetCursor ( void );
-    void unlockSelectedCard ( void );
-    void lockSelectedCard ( void );
-    void moveTo ( unsigned int x, unsigned int y );
+    void set_player_turn(PlayerIndex player_id);
 
-    unsigned int getCursorPos ( void );
-    void moveCursorLeft ( void );
-    void moveCursorRight ( void );
-    void moveCursorUp ( void );
-    void moveCursorDown ( void );
+    // Helper method for incrementing to next player's turn
+    void end_turn();
+
+    // ...Helper methods for game cursor input...
+
+    bool cursor_locked();
+    void lock_cursor(bool state);
+    void reset_cursor();
+    void unlock_selected_card();
+    void lock_selected_card();
+
+    /// \brief Helper method for updating board with player's selected card.
+    void move_to(const nom::Point2i& rel_board_pos);
+
+    void
+    flip_cards( const nom::Point2i& rel_board_pos,
+                const std::function<void()>& on_completion_func );
+
+    nom::uint32 cursor_position();
+
+    void set_cursor_position(nom::uint32 cursor_pos);
+
+    void move_cursor_left();
+    void move_cursor_right();
+    void move_cursor_up();
+    void move_cursor_down();
+    void update_cursor();
 
     /// Interface Helper method; shows Card's ID number in a message box for
     /// both cursor states; player's hand and placed board cards -- debug
     /// handling included.
-    void on_update_info_dialogs( void );
-    void updateCursor ( void );
-    void drawCursor ( nom::IDrawable::RenderTarget& target );
+    void on_update_info_dialogs();
 
-    /// Update each player's scoreboard
-    void updateScore ( void );
+    /// \brief Update the players' scoreboard.
+    void update_score();
 
-    /// \brief Method action callback to load a game.
-    ///
-    /// \see nom::InputMapper.
-    ///
-    /// \todo Re-enable debug load game
-    bool load_game( nom::uint32 flags );
-
-    /// \brief Method action callback to save a game.
-    ///
-    /// \see nom::InputMapper.
-    bool save_game( nom::uint32 flags );
+    bool save_game(const std::string& filename);
+    bool load_game(const std::string& filename);
 
     Game* game;
 
     /// \brief Game players
-    std::unique_ptr<IPlayer> players_[TOTAL_PLAYERS];
+    std::unique_ptr<IPlayer> players_[PlayerIndex::TOTAL_PLAYERS];
 
-    /// x, y coords mapping for player1, player2 cursor starting position
-    nom::Point2i player_cursor_coords[2];
+    /// \brief Rendering bounds for the starting origin of the game cursor.
+    nom::Point2i player_cursor_coords_[PlayerIndex::TOTAL_PLAYERS];
 
-    /// x, y coords mapping for player1, player2 scoreboard positions
-    nom::Point2i player_scoreboard[2];
+    /// \brief Rendering bounds for the starting origin of the scoreboard.
+    nom::Point2i player_scoreboard_[PlayerIndex::TOTAL_PLAYERS];
 
-    /// y coords mapping for cursor -> card position index
-    nom::Point2i cursor_coords_map[5];
+    /// \brief Rendering bounds for the game cursor.
+    nom::Point2i cursor_bounds_[MAX_PLAYER_HAND];
 
-    nom::uint32 turn; // FIXME: player1 = 0, player2 = 1
+    PlayerIndex player_turn_ = PlayerIndex::TOTAL_PLAYERS;
 
     enum CursorState
     {
@@ -142,26 +138,50 @@ class PlayState: public nom::IState
     };
 
     /// \brief Cursor state
-    enum CursorState cursor_state_;
+    enum CursorState cursor_state_ = CursorState::PLAYER;
 
     /// locks cursor state to board placement
-    bool cursor_locked;
+    bool cursor_locked_ = false;
 
-    /// Animation "blink" timer for visual notification when interface cursor
-    /// is locked on a card (board drop mode).
-    nom::Timer cursor_blink;
-    bool blink_cursor;
+    nom::uint32 last_delta_ = 0;
 
-    /// Simulate an AI player taking their time in thought about the next move
-    nom::AnimationTimer player_timer[2];
+    /// \brief Simulates the CPU player spending time in thought about their
+    /// next action.
+    nom::real32 cpu_hand_delay_seconds_ = 0.0f;
 
     /// Debug option -- when toggled on, we are able to control both players.
-    bool skip_turn;
+    bool skip_turn_ = false;
 
-    enum GameOverType gameover_state;
+    enum GameOverType gameover_state_;
+
+    std::shared_ptr<nom::Sprite> move_card_up_sprite_;
+    std::shared_ptr<nom::Sprite> flash_action_sprite_;
+
+    std::shared_ptr<nom::Sprite> text_action_sprite_;
+    std::shared_ptr<nom::Sprite> gameover_text_action_sprite_;
+
+    typedef std::function<void(const Card& card)> move_card_up_action_callback;
+
+    void
+    move_card_up_action(  const nom::Point2i& rel_board_pos,
+                          const move_card_up_action_callback&
+                          on_completion_func );
+
+    void check_gameover_conditions();
+
+    std::shared_ptr<nom::IActionObject>
+    create_gameover_text_action(  GameOverType type,
+                                  const std::string& action_name );
+
+    std::shared_ptr<nom::IActionObject>
+    create_text_action(const std::shared_ptr<nom::Sprite>& sp);
+
+    void initialize_cpu_player_turn();
 };
 
 // Convenience declarations for changing state
 typedef std::unique_ptr<PlayState> PlayStatePtr;
+
+} // namespace tt
 
 #endif // include guard defined
