@@ -37,3 +37,6 @@ wiki
 docs/html/*
 !docs/.placeholder
 
+# symbolic links
+third-party
+
