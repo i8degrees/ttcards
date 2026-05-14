@@ -43,6 +43,9 @@ cmake \
     -DNOMLIB_DEPS_PREFIX=/home/jeff/Projects/nomlib.git/third-party/linux \
     -DCMAKE_BUILD_TYPE=Release ..
 ```
+### Docker
+
+* [CI Docker Templates][wiki]
 
 ### Microsoft Windows Vista, 7, 8
 
