@@ -35,14 +35,15 @@ Upon a successful build, you should have an OS X application bundle under your c
 
 ### Linux
 
+#### using cmake presets
+
+cmake >= v3.19
 ```shell
-cmake \
-    -DSDL2_INCLUDE_DIR=/home/jeff/Projects/nomlib.git/third-party/linux/sdl2/include/SDL2 \
-    -DCMAKE_C_COMPILER=/usr/bin/clang \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
-    -DNOMLIB_DEPS_PREFIX=/home/jeff/Projects/nomlib.git/third-party/linux \
-    -DCMAKE_BUILD_TYPE=Release ..
+cmake --preset debug-clang-linux
+cmake --preset debug-clang-cl
+# ...
 ```
+
 ### Docker
 
 * [CI Docker Templates][wiki]
