@@ -40,3 +40,7 @@ docs/html/*
 # symbolic links
 third-party
 
+# vcpkg related
+vcpkg_installed/*
+!vcpkg-lock.json
+
