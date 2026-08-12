@@ -26,6 +26,31 @@ if ( NOT CMAKE_INSTALL_PREFIX )
   set ( CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Install path prefix" )
 endif ( NOT CMAKE_INSTALL_PREFIX )
 
+#
+## vcpkg env
+#
+
+# !! this must be set *before* the project declaration
+# defaults to a static library target
+set(VCPKG_TARGET_TRIPLET "x64-linux" CACHE STRING "")
+
+if(LINUX AND DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-linux-dynamic")
+elif(LINUX AND NOT DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-linux")
+endif()
+
+if(APPLE AND DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
+elif(APPLE AND NOT DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-osx")
+endif()
+
+if(WIN32 AND DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-windows-dynamic")
+elif(WIN32 AND NOT DEFINED BUILD_SHARED_LIBS)
+  set(VCPKG_TARGET_TRIPLET "x64-windows")
+endif()
 
 # Project options
 option ( DEBUG "Enable building with debugging features" off )
@@ -34,16 +59,24 @@ option ( DOCS "Generate HTML based API documentation with Doxygen" off )
 
 # IMPORTANT(JEFF): This initializes our engine versioning variables;
 # `PROJECT_VERSION_MAJOR` & friends
-project( ttcards
+project(ttcards
   VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
   DESCRIPTION "Re-make of Triple Triad PSX game"
-  #HOMEPAGE_URL "https://github.com/i8degrees/ttcards"
+  HOMEPAGE_URL "https://github.com/i8degrees/ttcards"
   #SPDX_LICENSE "BSD-2-Clause-FreeBSD"
-  #LANGUAGES "en"
+  LANGUAGES CXX
 )
 
 # Platform detection
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/platform.cmake" )
+
+# FIXME
+set(libRocket_INCLUDE_DIRS "/home/jeff/Projects/nomlib.git/build/release-dynamic/vcpkg_installed/x64-linux-dynamic/include")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -I${libRocket_INCLUDE_DIRS}")
+
+# Generate compile_commands.json to make it easier to work with clang based
+# tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if ( DEBUG )
   set ( CMAKE_VERBOSE_MAKEFILE ON )
@@ -74,9 +107,6 @@ endif ( DEBUG_ASSERT )
 
 # Utility macros
 include ( "${CMAKE_CURRENT_SOURCE_DIR}/cmake/macros.cmake" )
-
-# Relative path from project root to compiled source files
-set ( SRC_DIR "src" )
 
 # Relative path from project root to header files
 set ( TTCARDS_HEADERS_DIR "include" )
@@ -139,6 +169,10 @@ if ( PLATFORM_LINUX )
   #set( NOMLIB_ROOT "/usr/local/lib/cmake/nomlib" )
 endif ( PLATFORM_LINUX )
 
+find_package(libRocket CONFIG REQUIRED)
+find_package(SDL2 CONFIG REQUIRED)
+find_package(nomlib CONFIG REQUIRED)
+
 if( PLATFORM_WINDOWS )
 
   # Sanitize file path delimiters for Windows installations; this resolves
@@ -181,8 +215,8 @@ elseif( PLATFORM_LINUX )
   set( LIBROCKET_FREETYPE_REDIST_DIR "${NOMLIB_DEPS_PREFIX}/libRocket/bin" )
 endif( PLATFORM_WINDOWS )
 
-# Project source tree
-add_subdirectory( ${SRC_DIR} )
+# Project source tree to build
+add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 
 # Installation phase
 if ( PLATFORM_OSX )
@@ -200,10 +234,6 @@ if ( PLATFORM_OSX )
       )
 
   if ( OSXAPP )
-    set ( EXECUTABLE_FLAGS "MACOSX_BUNDLE" )
-
-    add_executable  ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
-
     set ( INSTALL_APP_PATH "${BUNDLE_NAME}.app" )
 
     set ( INSTALL_ROOT_PATH "${INSTALL_APP_PATH}/Contents" )
@@ -284,8 +314,6 @@ elseif ( PLATFORM_WINDOWS )
     set ( EXECUTABLE_FLAGS "" )
   endif ( NOT DEBUG )
 
-  add_executable ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
-
   # FIXME: Install binaries to our platform-dependent paths we've now set
   #install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
 
@@ -322,8 +350,6 @@ elseif ( PLATFORM_WINDOWS )
 
 elseif ( PLATFORM_LINUX ) # POSIX install layout
   # TODO: set paths, etc. like we do above with OSX & Windows platforms
-
-  add_executable ( ${PROJECT_NAME} ${EXECUTABLE_FLAGS} ${TTCARDS_SOURCE} )
 
   # Install binaries to our platform-dependent paths we've now set
   install ( TARGETS ${PROJECT_NAME} DESTINATION "${INSTALL_APP_PATH}" )
@@ -364,11 +390,6 @@ if ( DOCS )
             PATTERN ".*" EXCLUDE # do not include dotfiles
           )
 endif ( DOCS )
-
-# Linking phase
-target_link_libraries(  ${PROJECT_NAME} ${NOMLIB_LIBRARIES}
-                        ${NOMLIB_DEPENDENCIES}
-)
 
 # TODO: Windows platform support
 if ( NOT PLATFORM_WINDOWS )

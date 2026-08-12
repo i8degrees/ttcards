@@ -1,79 +1,117 @@
 # Project source files
 
-# NOTE: The header files are included here for automated source && header
-# file lists when generating IDE project files, i.e.: Xcode or MSVCPP.
+# >> Auto-generated build-time variables result in modification of the built
+# >> binary's run-time execution.
+configure_file("${CMAKE_TEMPLATE_PATH}/version.cpp.in"
+  "${CMAKE_BINARY_DIR}/version.cpp"
+)
 
-set( STATES_DIR "${SRC_DIR}/states" )
+configure_file("${CMAKE_TEMPLATE_PATH}/version.hpp.in"
+  "${CMAKE_BINARY_DIR}/version.hpp"
+)
 
-# Where to find internal development header files
-include_directories( ${SRC_DIR} )
+add_executable(ttcards
+  WIN32
+  MACOSX_BUNDLE
+  main.cpp
+)
 
-# Where to find external development header files
-include_directories( ${NOMLIB_INCLUDE_DIR} )
-include_directories( ${NOMLIB_EXTERNAL_INCLUDE_DIRS} )
+target_sources(ttcards
+  PRIVATE
+    ${CMAKE_BINARY_DIR}/version.cpp # auto-generated
+    Board.cpp
+    BoardTile.cpp
+    CPU_Player.cpp
+    Card.cpp
+    CardCollection.cpp
+    CardDebug.cpp
+    CardHand.cpp
+    CardRules.cpp
+    CardView.cpp
+    CardsPageDataSource.cpp
+    Game.cpp
+    GameConfig.cpp
+    HumanPlayer.cpp
+    IPlayer.cpp
+    main.cpp
+    resources.cpp
+    states/CardsMenuState.cpp
+    states/ConfirmationDialogState.cpp
+    states/DialogCursor.cpp
+    states/GameOverState.cpp
+    states/GameOverStateCursor.cpp
+    states/PauseState.cpp
+    states/PlayState.cpp
+  PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS ${PROJECT_SOURCE_DIR}
+    FILES
+      Board.hpp
+      BoardTile.hpp
+      CPU_Player.hpp
+      Card.hpp
+      CardCollection.hpp
+      CardDebug.hpp
+      CardHand.hpp
+      CardRules.hpp
+      CardView.hpp
+      CardsPageDataSource.hpp
+      Game.hpp
+      GameConfig.hpp
+      HumanPlayer.hpp
+      IPlayer.hpp
+      config.hpp
+      debug.hpp
+      resources.hpp
+      states/CardsMenuState.hpp
+      states/ConfirmationDialogState.hpp
+      states/DialogCursor.hpp
+      states/GameOverState.hpp
+      states/GameOverStateCursor.hpp
+      states/PauseState.hpp
+      states/PlayState.hpp
+)
 
-# Core game logic
-set(  TTCARDS_SOURCE
-      ${SRC_DIR}/config.hpp
-      ${SRC_DIR}/version.hpp
-      ${SRC_DIR}/main.cpp
-      ${SRC_DIR}/GameConfig.cpp
-      ${SRC_DIR}/GameConfig.hpp
-      ${SRC_DIR}/Board.cpp
-      ${SRC_DIR}/Board.hpp
-      ${SRC_DIR}/BoardTile.cpp
-      ${SRC_DIR}/BoardTile.hpp
-      ${SRC_DIR}/Card.cpp
-      ${SRC_DIR}/Card.hpp
-      ${SRC_DIR}/CardCollection.cpp
-      ${SRC_DIR}/CardCollection.hpp
-      ${SRC_DIR}/CardHand.cpp
-      ${SRC_DIR}/CardHand.hpp
-      ${SRC_DIR}/CardRules.cpp
-      ${SRC_DIR}/CardRules.hpp
-      ${SRC_DIR}/CardResourceLoader.cpp
-      ${SRC_DIR}/CardResourceLoader.hpp
-      ${SRC_DIR}/CardRenderer.cpp
-      ${SRC_DIR}/CardRenderer.hpp
-      ${SRC_DIR}/IPlayer.cpp
-      ${SRC_DIR}/IPlayer.hpp
-      ${SRC_DIR}/HumanPlayer.cpp
-      ${SRC_DIR}/HumanPlayer.hpp
-      ${SRC_DIR}/CPU_Player.cpp
-      ${SRC_DIR}/CPU_Player.hpp
-      ${SRC_DIR}/Game.cpp
-      ${SRC_DIR}/Game.hpp
-      ${SRC_DIR}/CardsPageDataSource.cpp
-      ${SRC_DIR}/CardsPageDataSource.hpp
-      ${SRC_DIR}/helpers.cpp
-      ${SRC_DIR}/helpers.hpp )
+set_target_properties(ttcards
+  PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    DEBUG_POSTFIX "-d"
+    INSTALL_RPATH "$ORIGIN/../lib"
+    INSTALL_RPATH_USE_LINK_PATH TRUE
+)
 
-# Game states logic
-set(  TTCARDS_SOURCE_STATES
-      ${STATES_DIR}/DialogCursor.cpp
-      ${STATES_DIR}/DialogCursor.hpp
-      ${STATES_DIR}/ConfirmationDialogState.cpp
-      ${STATES_DIR}/ConfirmationDialogState.hpp
-      ${STATES_DIR}/GameOverStateCursor.cpp
-      ${STATES_DIR}/GameOverStateCursor.hpp
-      ${STATES_DIR}/GameOverState.cpp
-      ${STATES_DIR}/GameOverState.hpp
-      ${STATES_DIR}/PauseState.cpp
-      ${STATES_DIR}/PauseState.hpp
-      ${STATES_DIR}/CardsMenuState.cpp
-      ${STATES_DIR}/CardsMenuState.hpp
-      ${STATES_DIR}/PlayState.cpp
-      ${STATES_DIR}/PlayState.hpp
+target_include_directories(ttcards
+  PRIVATE
+    ${CMAKE_BINARY_DIR} # version.hpp
+    "~/local/include" # nomlib
+    ${PROJECT_SOURCE_DIR}/src # game header files
+)
 
-      ${STATES_DIR}/MainMenuState.cpp
-      ${STATES_DIR}/MainMenuState.hpp )
+if(TARGET SDL2::SDL2main)
+  target_link_libraries(ttcards
+    PRIVATE
+      $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+  )
+endif(TARGET SDL2::SDL2main)
 
-set(  TTCARDS_SOURCE
-      ${TTCARDS_SOURCE}
-      ${TTCARDS_SOURCE_STATES} )
+target_link_libraries(ttcards
+  PUBLIC
+    #nomlib-audio
+    nomlib-actions
+    nomlib-core
+    nomlib-core
+    nomlib-graphics
+    nomlib-gui
+    nomlib-ptree
+    nomlib-serializers
+    nomlib-system
+    nomlib-system
+  PRIVATE
+    $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>
+    $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>
+    $<IF:$<TARGET_EXISTS:RocketCore>,RocketCore,RocketCore-static>
+    $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
+    $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
+)
 
-# Auto-generate a header file for tracking the project software version
-# NOTE: These rely on PROJECT_VERSION_MAJOR, PROJECT_VERSION_MINOR and
-# PROJECT_VERSION_PATCH being defined.
-configure_file( "${CMAKE_TEMPLATE_PATH}/version.hpp.in"
-                "${PROJECT_SOURCE_DIR}/${SRC_DIR}/version.hpp" )
