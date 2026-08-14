@@ -239,7 +239,7 @@ void PlayState::on_init(nom::void_ptr data)
     nom::uniform_int_rand<nom::uint32>(0, PlayerIndex::TOTAL_PLAYERS - 1);
 
   PlayerIndex chosen_player = NOM_SCAST(PlayerIndex, random_choice);
-#if 0
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->set_player_turn(chosen_player);
 #else
   this->set_player_turn(PlayerIndex::PLAYER_1);
@@ -609,9 +609,9 @@ void PlayState::on_mouse_button_down(const nom::Event& ev)
       this->game->hand[player_turn].set_position(idx);
 
       this->game->cursor_->set_position( Point2i(this->player_cursor_coords_[ player_turn ].x, this->player_cursor_coords_[ player_turn ].y + ( CARD_HEIGHT / 2 ) * idx) );
-
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_move->Play();
-
+#endif
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
       // bug from cropping back up!
@@ -755,8 +755,9 @@ void PlayState::unlock_selected_card()
   this->reset_cursor();
 
   this->lock_cursor(false);
-
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->cursor_cancel->Play();
+#endif
 }
 
 void PlayState::lock_selected_card()
@@ -806,7 +807,9 @@ void PlayState::move_to(const nom::Point2i& rel_board_pos)
   // Audible indicator that the move is **not** allowed
   if( this->game->board_->status(rel_board_pos) != BAD_CARD_ID ) {
     // Move is not allowed; card exists
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return; // Do not end turn
   }
 
@@ -887,8 +890,9 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
       this->game->board_->flip_card(gpos, player_id);
 
       this->update_score();
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->card_flip->Play();
-
+#endif
       if( tt::is_card_rule_set(&rules, CardRule::COMBO_RULE) == true ) {
 
         // Do a second round of flippable cards check for the COMBO rule-set
@@ -932,7 +936,9 @@ PlayState::flip_cards(  const nom::Point2i& rel_board_pos,
             this->game->board_->flip_card(tgpos, player_id);
 
             this->update_score();
+#if defined(TTCARDS_ENABLE_AUDIO)
             this->game->card_flip->Play();
+#endif
           });
         } // end inner for loop (additional flips)
       } // end if combo rule is in effect
@@ -1045,9 +1051,9 @@ PlayState::move_card_up_action( const nom::Point2i& rel_board_pos,
                                           move_card_down } );
   NOM_ASSERT(move_card_sequence != nullptr);
   move_card_sequence->set_name("move_card_up");
-
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->card_place->Play();
-
+#endif
   auto remove_card_up_action =
     nom::create_action<RemoveAction>(move_card_up);
   NOM_ASSERT(remove_card_up_action != nullptr);
@@ -1127,8 +1133,9 @@ void PlayState::move_cursor_left()
       this->game->cursor_->translate(move_to_offset);
     }
   }
-
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->cursor_move->Play();
+#endif
 }
 
 void PlayState::move_cursor_right()
@@ -1146,8 +1153,9 @@ void PlayState::move_cursor_right()
       this->game->cursor_->translate(move_to_offset);
     }
   }
-
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->cursor_move->Play();
+#endif
 }
 
 void PlayState::move_cursor_up()
@@ -1181,7 +1189,9 @@ void PlayState::move_cursor_up()
       this->game->cursor_->translate(move_to_offset);
     }
   }
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->cursor_move->Play();
+#endif
 }
 
 void PlayState::move_cursor_down()
@@ -1217,7 +1227,9 @@ void PlayState::move_cursor_down()
       this->game->cursor_->translate(move_to_offset);
     }
   }
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->cursor_move->Play();
+#endif
 }
 
 void PlayState::update_cursor()
@@ -1372,12 +1384,16 @@ bool PlayState::save_game(const std::string& filename)
   auto board = this->game->board_.get();
 
   if( this->game->save_deck(p1_db, paths["PLAYER_DECK_PATH"]) == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
   if( this->game->save_deck(p2_db, paths["OPPONENT_DECK_PATH"]) == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
@@ -1386,12 +1402,16 @@ bool PlayState::save_game(const std::string& filename)
   if( this->game->save_player_hand( board, &p1_hand, &p2_hand,
                                     true, filename ) == false )
   {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
   // Success!
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->save_game_sfx->Play();
+#endif
   return true;
 }
 
@@ -1406,19 +1426,25 @@ bool PlayState::load_game(const std::string& filename)
   auto board = this->game->board_.get();
 
   if( this->game->load_deck(p1_db, paths["PLAYER_DECK_PATH"]) == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
   if( this->game->load_deck(p2_db, paths["OPPONENT_DECK_PATH"]) == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
   if( this->game->load_player_hand( board, &p1_hand, &p2_hand,
                                     true, filename ) == false )
   {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
@@ -1432,8 +1458,9 @@ bool PlayState::load_game(const std::string& filename)
 
   // Success!
   this->update_score();
-
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->load_game_sfx->Play();
+#endif
   return true;
 }
 
@@ -1504,10 +1531,12 @@ void PlayState::check_gameover_conditions()
       auto gameover_text_action =
         this->create_gameover_text_action(GameOverType::Won, "gameover_action");
 
+#if defined(TTCARDS_ENABLE_AUDIO)
       if( this->game->winning_track->getStatus() != Playing ) {
         this->game->theme_track_->Stop();
         this->game->winning_track->Play();
       }
+#endif
 
       this->game->actions_.run_action(gameover_text_action, [=]() {
         this->gameover_state_ = GameOverType::Won;

@@ -122,13 +122,17 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
 
   auto cursor_prev( [=](const nom::Event& evt) {
     if( this->cursor_.prev() ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_move->Play();
+#endif
     }
   });
 
   auto cursor_next( [=](const nom::Event& evt) {
     if( this->cursor_.next() ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_move->Play();
+#endif
     }
   });
 
@@ -231,12 +235,16 @@ void ConfirmationDialogState::on_mouse_button_up(const nom::Event& ev)
 
   if( yes_response->IsPointWithinElement(mouse_coords) ) {
     if( this->cursor_.prev() ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_move->Play();
+#endif
     }
   }
   else if( no_response->IsPointWithinElement(mouse_coords) ) {
     if( this->cursor_.next() ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_move->Play();
+#endif
     }
   }
 }
@@ -299,7 +307,9 @@ void ConfirmationDialogState::send_response()
     response = new nom::int32(choice+1);
   }
   else {  // Invalid response
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
   }
 
   this->game->state()->pop_state(response);

@@ -55,14 +55,14 @@ class CardsMenuState: public nom::IState
     virtual ~CardsMenuState();
 
     /// \todo Change return type to bool
-    void on_init(nom::void_ptr data);
-    void on_exit( nom::void_ptr data );
+    void on_init(nom::void_ptr data) override;
+    void on_exit( nom::void_ptr data ) override;
 
-    void on_pause(nom::void_ptr data);
-    void on_resume(nom::void_ptr data);
+    void on_pause(nom::void_ptr data) override;
+    void on_resume(nom::void_ptr data) override;
 
-    void on_update(nom::real32 delta_time);
-    void on_draw(nom::RenderWindow& target);
+    void on_update(nom::real32 delta_time) override;
+    void on_draw(nom::RenderWindow& target) override;
 
     /// \brief Render the player's card sprite.
     ///

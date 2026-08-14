@@ -67,14 +67,14 @@ class GameOverState: public nom::IState
 
   private:
     /// \todo Change return type to bool
-    void on_init(nom::void_ptr data);
-    void on_exit(nom::void_ptr data);
+    void on_init(nom::void_ptr data) override;
+    void on_exit(nom::void_ptr data) override;
 
-    void on_pause(nom::void_ptr data);
-    void on_resume(nom::void_ptr data);
+    void on_pause(nom::void_ptr data) override;
+    void on_resume(nom::void_ptr data) override;
 
     /// \brief The default event handler for this state.
-    bool on_event(const nom::Event& ev) override;
+    bool on_event(const nom::Event& ev);
 
     /// \brief Method callback for mouse button actions.
     ///

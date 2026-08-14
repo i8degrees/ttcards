@@ -223,7 +223,9 @@ void GameOverState::on_init(nom::void_ptr data)
     if( this->selected_card_ != Card::null ) {
       this->game->set_state(Game::State::ConfirmationDialog);
     } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
       this->game->set_state(Game::State::MainMenu);
     }
   });
@@ -372,9 +374,9 @@ void GameOverState::on_init(nom::void_ptr data)
 void GameOverState::on_exit(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
-
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->winning_track->Stop();
-
+#endif
   this->game->info_box_.close();
   this->game->card_info_box_.close();
   Rocket::Core::Factory::ClearStyleSheetCache();
@@ -449,8 +451,9 @@ void GameOverState::on_mouse_button_down(const nom::Event& ev)
       this->selected_card_ =
         this->game->hand[PlayerIndex::PLAYER_2].cards[idx];
       this->game->card_info_box_.set_message_text(this->selected_card_.name);
-
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_move->Play();
+#endif
       // We must break the loop here upon the end of a matching coords check
       // in order to prevent a nasty "last card stays permanently selected"
       // bug from cropping back up!
@@ -472,8 +475,9 @@ void GameOverState::on_user_event(const nom::Event& ev)
     this->selected_card_ = player_hand.cards[card_pos];
 
     this->game->card_info_box_.set_message_text(this->selected_card_.name);
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_move->Play();
+#endif
   } else if( ev.user.code == GameEvent::AnimationEvent ) {
     NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_EVENTS, "GameEvent::AnimationEvent" );
 
@@ -485,7 +489,7 @@ void GameOverState::on_user_event(const nom::Event& ev)
     int card_pos = player_hand.position();
     Card& pcard = player_hand.cards[card_pos];
     this->selected_card_ = player_hand.cards[card_pos];
-#if 0
+#if defined(TTCARDS_ENABLE_AUDIO)
     if( this->num_trade_cards_ > 1 ) {
       this->game->cursor_wrong->Play();
       return;
@@ -722,8 +726,9 @@ play_gameover_animation(CardCollection* db, CardHand* phand, int card_pos)
       this->game->actions_.run_action(move_card_action);
     });
   });
-
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->card_flip->Play();
+#endif
 }
 
 } // namespace tt

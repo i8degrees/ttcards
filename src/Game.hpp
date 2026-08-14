@@ -146,14 +146,15 @@ class Game: public nom::SDLApp
     /// flags.
     void dump_collection(PlayerIndex player_index);
 
+#if defined(TTCARDS_ENABLE_AUDIO)
     /// Audio subsystem
     std::unique_ptr<nom::IAudioDevice> audio_dev_;
-
     /// Master volume control
     std::unique_ptr<nom::IListener> listener_;
-
+#endif
     static const int NUM_SOUND_BUFFERS = 9;
 
+#if defined(TTCARDS_ENABLE_AUDIO)
     /// Audio buffers (one buffer per sound)
     std::unique_ptr<nom::ISoundBuffer> sound_buffers[NUM_SOUND_BUFFERS];
 
@@ -182,7 +183,7 @@ class Game: public nom::SDLApp
 
     /// Player 1 has won track
     std::unique_ptr<nom::ISoundSource> winning_track;
-
+#endif
     // Font resources
     nom::Font card_font_;
     nom::Font gameover_font;
@@ -263,15 +264,18 @@ class Game: public nom::SDLApp
     nom::UIMessageBox info_box_;
     nom::UIMessageBox card_info_box_;
 
+    // TODO(JEFF): Relocate this enum outside of the class, in a common header
+    // file, such as config.hpp, types.hpp or so.
     enum State
     {
       CardsMenu = 0,
       Play,
-      GameOver,
+      GameOver = 2,
       Pause,
-      ConfirmationDialog,
+      ConfirmationDialog = 4,
       MainMenu,
-      Options,
+      CreditsMenu,
+      OptionsMenu = 7,
     };
 
     nom::InputStateMapper input_mapper;

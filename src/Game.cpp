@@ -50,12 +50,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //#include "states/States.hpp" // StateFactory
 
 using namespace nom;
-
+using namespace std;
 namespace tt {
 
 Game::Game(nom::int32 argc, char* argv[]) :
   // SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES | INIT_ENGINE_FONTS ),
   SDLApp( OSX_DISABLE_MINIMIZE_ON_LOSS_FOCUS | OSX_DISABLE_FULLSCREEN_SPACES ),
+#if defined(TTCARDS_ENABLE_AUDIO)
   audio_dev_(nullptr),
   listener_(nullptr),
   cursor_move(nullptr),
@@ -67,17 +68,22 @@ Game::Game(nom::int32 argc, char* argv[]) :
   save_game_sfx(nullptr),
   theme_track_(nullptr),
   winning_track(nullptr),
+#endif
   config_(nullptr),
   res_cfg_(nullptr),
   debug_game_(false),
   game(this)
 {
   NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE);
-
+  string git_rev = TTCARDS_VERSION_GIT_REV;
+  string debug_postfix = "";
+#if !defined(NDEBUG)
+  debug_postfix = "-d";
+#endif
   std::ostringstream ttcards_version;
-
   ttcards_version << APP_NAME << " " << "v" << TTCARDS_VERSION_MAJOR << "."
-      << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << "-d"
+      << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << 
+      debug_postfix << "_" << git_rev
       << std::endl;
 
   //this->state_factory = new States();
@@ -235,14 +241,50 @@ Game::Game(nom::int32 argc, char* argv[]) :
     } // end for argv[opt] loop
   } // end argc > 1
 
+  Path p;
+  // FIXME(JEFF): This is not yet implemented (see nomlib-system, UnixFile:IFile)
   working_directory = dir.resource_path();
+
+  // FIXME(JEFF): Once we figure out how we would like to lay this out...
+  // /usr/local/share/ttcards/Resources
+  working_directory = TTCARDS_INSTALL_PREFIX + "/" + "share" + p.native() +
+    nom::to_lowercase_string(APP_NAME) + p.native() +
+  "Resources" + p.native();
+
+  // BUILD_INTERFACE -> . (chdir)
+  // INSTALL_INTERFACE -> /usr/local/share/ttcards/Resources
+  //
+  // STUB(JEFF): Temporary workaround?
+  working_directory = TTCARDS_INSTALL_PREFIX + "/../../Resources";
+  File fp;
+  vector<string> try_paths {
+    // BUILD_INTERFACE (development)
+    ( p.native() + ".." + p.native() + ".." + p.native() + "Resources" ), // 0
+    // INSTALL_INTERFACE (redist)
+    ( TTCARDS_INSTALL_PREFIX + "/" + "share" + p.native() +
+    nom::to_lowercase_string(APP_NAME) + p.native() + "Resources" ), // 1
+  };
+
+  for(auto itr = try_paths.begin(); itr != try_paths.end(); *itr++) {
+    if(*itr != "" && fp.exists(*itr) == false) {
+      try_paths.pop_back();
+    } else if(*itr != "" && fp.exists(*itr) == true) {
+      // ...
+    }
+  }
+  cout << "try_paths" << endl;
+  for(auto itr = try_paths.begin(); itr != try_paths.end(); *itr++) {
+    if(*itr != "") {
+      cout << *itr << endl;
+    }
+  }
 
   // Change the working directory to whatever working_directory has been set to
   //
   // Note that it is important that we do not mess with the working directory
   // path until after our command line arguments have been processed, so that we
   // do not unintentionally mess up relative paths!
-  dir.set_path (working_directory);
+  dir.set_path(working_directory);
 }
 
 Game::~Game()
@@ -268,9 +310,11 @@ bool Game::on_init()
   // ...Initialize file-system paths...
 
 #if defined(NOM_PLATFORM_OSX)
-    fs_root = fp.resource_path() + "/";
+    fs_root = fp.resource_path() + p.native();
 #elif defined(NOM_PLATFORM_WINDOWS)
-    fs_root = this->working_directory + "\\";
+    fs_root = this->working_directory + p.native();
+#elif defined(NOM_PLATFORM_POSIX)
+    fs_root = this->working_directory + p.native();
 #else
     // Has not been tested!
     fs_root = this->working_directory + "/Resources/";
@@ -383,9 +427,12 @@ bool Game::on_init()
     this->window.create(  APP_NAME, RenderWindow::WINDOW_POS_CENTERED,
                           VIDEO_DISPLAY_INDEX, SCREEN_RESOLUTION, window_flags,
                           render_driver, render_flags );
+  // FIXME(JEFF): dialog boxes are broken for opengl context
   if( window_ret == false ) {
     nom::DialogMessageBox(  "Critical Error",
                             "Could not initialize rendering context and window." );
+    NOM_LOG_CRIT(TTCARDS_LOG_CATEGORY_APPLICATION,
+        "Could not initialize rendering context and window.");
     return false;
   }
 
@@ -540,7 +587,9 @@ bool Game::on_init()
   const auto WINDOW_FULLSCREEN =
     this->game->config_->get_bool("WINDOW_FULLSCREEN", false);
   if( WINDOW_FULLSCREEN == true ) {
-    this->window.toggle_fullscreen();
+#if ! defined(NDEBUG)
+    //this->window.toggle_fullscreen();
+#endif
   }
 
   this->set_state_machine( new nom::StateMachine() );
@@ -808,6 +857,7 @@ bool Game::on_init()
     // this->game->fade_window_sprite_->set_position(Point2i::zero);
   }
 
+#if defined(TTCARDS_ENABLE_AUDIO)
   // Initialize audio subsystem...
   if( this->game->config_->get_bool("AUDIO_SFX", true) ||
       this->game->config_->get_bool("AUDIO_TRACKS", true) ) {
@@ -829,10 +879,11 @@ bool Game::on_init()
       this->sound_buffers[idx].reset( new nom::NullSoundBuffer() );
     }
   }
+#endif
 
+#if defined(TTCARDS_ENABLE_AUDIO)
   // Load audio resources
   if( this->game->config_->get_bool("AUDIO_SFX", true) ) {
-
     if ( this->sound_buffers[0]->load( this->config_->get_string("CURSOR_MOVE") ) == false )
     {
       NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("CURSOR_MOVE") );
@@ -867,8 +918,9 @@ bool Game::on_init()
     {
       NOM_LOG_INFO ( TTCARDS, "Could not load resource file: " + this->config_->get_string("SFX_SAVE_GAME") );
     }
+#endif
 
-#if defined(NOM_USE_OPENAL)
+#if defined(TTCARDS_ENABLE_AUDIO) && defined(NOM_USE_OPENAL)
     this->cursor_move.reset( new nom::Sound() );
     this->cursor_cancel.reset( new nom::Sound() );
     this->cursor_wrong.reset( new nom::Sound() );
@@ -876,8 +928,6 @@ bool Game::on_init()
     this->card_flip.reset( new nom::Sound() );
     this->load_game_sfx.reset( new nom::Sound() );
     this->save_game_sfx.reset( new nom::Sound() );
-#endif // defined NOM_USE_OPENAL
-
     this->cursor_move->setBuffer( *this->sound_buffers[0] );
     this->cursor_cancel->setBuffer( *this->sound_buffers[1] );
     this->cursor_wrong->setBuffer( *this->sound_buffers[2] );
@@ -896,7 +946,6 @@ bool Game::on_init()
   }
 
   if( this->game->config_->get_bool("AUDIO_TRACKS", true) ) {
-
     const std::string MUSIC_THEME_TRACK =
       this->config_->get_string("MUSIC_THEME_TRACK");
     const std::string MUSIC_WIN_TRACK =
@@ -924,12 +973,11 @@ bool Game::on_init()
     this->theme_track_.reset( new nom::NullMusic() );
     this->winning_track.reset( new nom::NullMusic() );
   }
-
   // Set default audio volume level
   const auto AUDIO_VOLUME =
     this->game->config_->get_real32("AUDIO_VOLUME", 50.0f);
   this->game->set_volume(AUDIO_VOLUME);
-
+#endif
   // ...Initialize our global input action bindings...
 
   // TODO: Most all of the input action bindings here should be re-initialized
@@ -937,6 +985,11 @@ bool Game::on_init()
 
   this->game->input_mapper.clear();
   nom::InputActionMapper state;
+
+  auto state_machine_debug( [=](const nom::Event& evt) {
+    NOM_LOG_ERR(TTCARDS_LOG_CATEGORY_APPLICATION, "state_id",
+        this->state()->current_state_id());
+  });
 
   auto quit_game( [=](const nom::Event& evt) {
     this->on_game_quit(evt);
@@ -951,15 +1004,19 @@ bool Game::on_init()
   });
 
   auto pause_music( [=](const nom::Event& evt) {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->pause_music();
+#endif
   });
 
   auto mute_volume( [=](const nom::Event& evt) {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->mute_volume();
+#endif
   });
 
   auto increase_volume( [=](const nom::Event& evt) {
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     const real32 GAIN_STEP = 5.0f;
     const real32 MAX_VOLUME_LEVEL = nom::Listener::max_volume();
     auto curr_volume = this->game->listener_->volume();
@@ -969,10 +1026,11 @@ bool Game::on_init()
         nom::round_float<real32>(curr_volume + GAIN_STEP);
       this->game->set_volume(gain);
     }
+#endif
   });
 
   auto decrease_volume( [=](const nom::Event& evt) {
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     const real32 GAIN_STEP = 5.0f;
     const real32 MIN_VOLUME_LEVEL = nom::Listener::min_volume();
     auto curr_volume = this->game->listener_->volume();
@@ -982,6 +1040,7 @@ bool Game::on_init()
         nom::round_float<real32>(curr_volume - GAIN_STEP);
       this->game->set_volume(gain);
     }
+#endif
   });
 
   auto save_screenshot( [=](const nom::Event& evt) {
@@ -1057,6 +1116,11 @@ bool Game::on_init()
   state.insert( "save_screenshot", nom::KeyboardAction(SDLK_F1),
                 save_screenshot );
   state.insert("reload_config", nom::KeyboardAction(SDLK_r), reload_config);
+
+  if( this->game->debug_game_ == true ) {
+    state.insert("state_machine_debug", nom::KeyboardAction(SDLK_s),
+      state_machine_debug);
+  }
 
   this->game->input_mapper.insert( "Game", state, true );
 
@@ -1185,6 +1249,23 @@ void Game::set_state(nom::uint32 id, nom::void_ptr data)
 
       this->state()->set_state( std::move(state_ptr), data );
     } break;
+#if 0 // not impl yet
+    case Game::State::CreditsMenu:
+    {
+      auto state_ptr =
+        CreditsMenuStatePtr( new CreditsMenuState(this->game) );
+
+      this->state()->set_state( std::move(state_ptr), data );
+    } break;
+
+    case Game::State::OptionsMenu:
+    {
+      auto state_ptr =
+        OptionsMenuStatePtr( new OptionsMenuState(this->game) );
+
+      this->state()->set_state( std::move(state_ptr), data );
+    } break;
+#endif
   }
 }
 
@@ -1275,9 +1356,13 @@ Game::fade_window(  real32 duration, const nom::Color4i& color,
   }
 }
 
+// TODO(JEFF): Always prompt the end-user before exiting the game
 void Game::on_game_quit(const nom::Event& evt)
 {
-  this->on_app_quit(evt);
+  NOM_ASSERT(this->state() != nullptr);
+  //if(this->state()->current_state_id() == Game::State::MainMenu) {
+    this->on_app_quit(evt);
+  // }
 }
 
 std::shared_ptr<nom::IActionObject> Game::
@@ -1560,13 +1645,35 @@ bool Game::init_config_paths()
   nom::Path p;
   auto& paths = this->game->paths_;
 
+  // NOTE: Root configuration files
   const std::string ROOT_CONFIG_FILENAME = "config_game.json";
   const std::string HI_RES_CONFIG_FILENAME = "config_assets-hi-res.json";
   const std::string LOW_RES_CONFIG_FILENAME = "config_assets-low-res.json";
 
-  // NOTE: Root configuration files
-  paths["CFG_DIR"] =
-    fp.user_app_support_path() + p.native() + APP_NAME + p.native();
+  // STUB(JEFF): Check for the existance of the file paths listed in the
+  // prepared vector of path strings and choose the "best" (first?) one
+  std::vector<std::string> try_paths = {
+    ( fp.env("TTCARDS_DIR") ), // 0
+    ( this->working_directory ),
+    // uppercase variant for backwards compatibility with older versions
+    ( fp.user_app_support_path() + p.native() + APP_NAME + p.native() ), // 2
+    ( fp.user_app_support_path() + p.native() +
+      nom::to_lowercase_string(APP_NAME) + p.native() ), // 3
+  };
+
+  vector<string> ok_paths;
+  for(auto itr = try_paths.begin(); itr != try_paths.end(); *itr++) {
+    if(*itr != "" && fp.exists(*itr) == false) {
+      cout << "!EEXIST: " << *itr << endl;
+    }
+
+    if(*itr != "" && fp.exists(*itr) == true) {
+      ok_paths.push_back(*itr);
+    }
+  }
+
+  // paths["CFG_DIR"] = ok_paths.at(0);
+  paths["CFG_DIR"] = try_paths.at(try_paths.size() - 1);
 
   if( fp.exists(paths["CFG_DIR"]) == false ) {
     return false;
@@ -1659,12 +1766,15 @@ bool Game::init_game_paths(GameConfig* cfg)
 
 void Game::pause_music()
 {
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->theme_track_->togglePause();
   this->game->winning_track->togglePause();
+#endif
 }
 
 void Game::mute_volume()
 {
+#if defined(TTCARDS_ENABLE_AUDIO)
   auto current_volume = this->game->listener_->volume();
 
   if( current_volume >= 100.0f ) {
@@ -1672,14 +1782,17 @@ void Game::mute_volume()
   } else if( current_volume <= 0.0f ) {
     this->game->set_volume(100.0f);
   }
+#endif
 }
 
 void Game::set_volume(nom::real32 gain)
 {
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->listener_->set_volume(gain);
 
   NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION, "volume:",
                 this->game->listener_->volume() );
+#endif
 }
 
 void Game::save_screenshot()
@@ -1714,6 +1827,9 @@ void Game::reload_config()
 
   NOM_ASSERT(this->state() != nullptr);
 
+  // NOTE(JEFF): Ideally, we would not force a state change here, but this is
+  // the best way to ensure that everything is reloaded properly with new
+  // values applied. This needs more testing in any case!
   this->game->set_state(Game::State::MainMenu);
 
   this->game->debug_game_ =

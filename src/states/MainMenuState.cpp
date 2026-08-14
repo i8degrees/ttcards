@@ -237,7 +237,9 @@ void MainMenuState::on_mouse_button_up(const nom::Event& evt)
     if( menu_text_bounds.contains(mouse_input) ) {
 
       this->set_cursor_position( (itr)->first );
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_move->Play();
+#endif
       this->on_confirm_selection(evt);
       break;
     }
@@ -265,7 +267,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
     case MENU_ENTRY_CONTINUE:
     {
       if( this->continue_game_ == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
         break;
       }
 
@@ -274,7 +278,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the player's deck:",
                       paths["PLAYER_DECK_PATH"] );
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
         break;
       }
 
@@ -286,12 +292,16 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the opponent's deck:",
                       paths["OPPONENT_DECK_PATH"] );
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
         break;
       }
 
       auto fade_transistion( [=]() {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->load_game_sfx->Play();
+#endif
         this->game->set_state(Game::State::CardsMenu);
       });
 
@@ -309,7 +319,9 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the player's deck:",
                       paths["CARDS_DB_PATH"] );
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
         break;
       }
 
@@ -318,12 +330,16 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
         NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                       "Could not load the opponent's deck:",
                       paths["CARDS_DB_PATH"] );
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
         break;
       }
 
       auto fade_transistion( [=]() {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->load_game_sfx->Play();
+#endif
         this->game->set_state(Game::State::CardsMenu);
       });
 
@@ -335,19 +351,25 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
     case MENU_ENTRY_VIEW_CARDS:
     {
       // TODO: Implement!
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     } break;
 
     case MENU_ENTRY_OPTIONS:
     {
       // TODO: Implement!
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     } break;
 
     case MENU_ENTRY_CREDITS:
     {
       // TODO: Implement!
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     } break;
 
     case MENU_ENTRY_QUIT:
@@ -444,8 +466,9 @@ void MainMenuState::cursor_prev()
     move_to_offset.x = 0;
     move_to_offset.y = -(this->cursor_pos_bounds_.at(pos).h);
     this->game->cursor_->translate(move_to_offset);
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_move->Play();
+#endif
   }
 }
 
@@ -460,8 +483,9 @@ void MainMenuState::cursor_next()
     move_to_offset.x = 0;
     move_to_offset.y = this->cursor_pos_bounds_.at(pos).h;
     this->game->cursor_->translate(move_to_offset);
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_move->Play();
+#endif
   }
 }
 

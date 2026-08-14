@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Card.hpp"
 
 // Private headers
+#include <nomlib/ptree.hpp>
 #include <nomlib/ptree/Value.hpp>
 
 // Forward declarations

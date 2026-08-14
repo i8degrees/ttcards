@@ -69,7 +69,11 @@ void CardsMenuState::on_init(nom::void_ptr data)
 
   auto& rules = this->game->rules_;
   auto cfg = this->game->config_.get();
-  this->game->init_game_rules(cfg, rules);
+  if(this->game->init_game_rules(cfg, rules) != true) {
+    NOM_LOG_ERR(TTCARDS_LOG_CATEGORY_APPLICATION,
+      "Failed to initialize game rules.");
+    exit(0);
+  }
 
   this->game->hand[PlayerIndex::PLAYER_1].init( this->game->card_res_.get(),
                                                 PlayerIndex::PLAYER_1 );
@@ -262,44 +266,54 @@ void CardsMenuState::on_init(nom::void_ptr data)
   auto save_game0( [=](const nom::Event& evt) {
 
     if( this->save_player_hand("build0.json") == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     }
 
+#if defined(TTCARDS_ENABLE_AUDIO)
     // Success!
     this->game->save_game_sfx->Play();
+#endif
   });
 
   // TODO: Rename to save_player_game1 ..?
   auto save_game1( [=](const nom::Event& evt) {
-
     if( this->save_player_hand("build1.json") == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     }
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     // Success!
     this->game->save_game_sfx->Play();
+#endif
   });
 
   // TODO: Rename to load_player_game0 ..?
   auto load_game0( [=](const nom::Event& evt) {
-
     if( this->load_player_hand("build0.json") == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     }
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     // Success!
     this->game->save_game_sfx->Play();
+#endif
   });
 
   // TODO: Rename to load_player_game1 ..?
   auto load_game1( [=](const nom::Event& evt) {
-
     if( this->load_player_hand("build1.json") == false ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     }
-
+#if defined(TTCARDS_ENABLE_AUDIO)
     // Success!
     this->game->save_game_sfx->Play();
+#endif
   });
 
   auto clear_player_hand( [=](const nom::Event& evt) mutable {
@@ -309,11 +323,15 @@ void CardsMenuState::on_init(nom::void_ptr data)
     this->set_display_card(card_sp);
 
     this->erase_player_cards(&p1_hand);
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->card_place->Play();
+#endif
   });
 
-  // ...Keyboard input mappings...
+  //NOM_CONNECT_INPUT_MAPPING(obj, key, action, func)
+  //NOM_CONNECT_INPUT_MAPPING(state, "cursor_prev", nom::KeyboardAction(SDLK_UP), cursor_prev);
 
+  // ...Keyboard input mappings...
   state.insert("cursor_prev", nom::KeyboardAction(SDLK_UP), cursor_prev);
   state.insert("cursor_next", nom::KeyboardAction(SDLK_DOWN), cursor_next);
   state.insert("prev_page", nom::KeyboardAction(SDLK_LEFT), prev_page);
@@ -367,8 +385,6 @@ void CardsMenuState::on_init(nom::void_ptr data)
 
   state.insert( "start_game", nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_START), start_game );
-
-
   if( this->game->debug_game_ == true ) {
 
     // NOTE: ...Testing of CardsPageDataSource functionality...
@@ -432,7 +448,6 @@ void CardsMenuState::on_init(nom::void_ptr data)
         erased_pos = this->game->cards_page_model_->erase_card(card_pos);
       }
     });
-
     state.insert( "debug_p1_append_card", nom::KeyboardAction(SDLK_t),
                   debug_p1_append_card );
     state.insert( "debug_p1_append_cards",
@@ -444,16 +459,18 @@ void CardsMenuState::on_init(nom::void_ptr data)
                   debug_p1_erase_card );
   } // end if debug game is enabled
 
-  this->game->input_mapper.erase( "CardsMenuState" );
-  this->game->input_mapper.insert( "CardsMenuState", state, true );
-  this->game->input_mapper.activate_only( "CardsMenuState" );
-  this->game->input_mapper.activate( "Game" );
+  this->game->input_mapper.erase("CardsMenuState");
+  this->game->input_mapper.insert("CardsMenuState", state, true);
+  this->game->input_mapper.activate_only("CardsMenuState");
+  this->game->input_mapper.activate("Game");
+  // this->game->input_mapper.dump();
 
   this->game->cards_menu_.show();
 
+#if defined(TTCARDS_ENABLE_AUDIO)
   // Yeah buddy!
   this->game->theme_track_->Play();
-
+#endif
   // Set the initial display card -- for selection -- to always be the first
   // card of the player's deck, and always render the card as if it was
   // already in the player's deck
@@ -516,7 +533,9 @@ void CardsMenuState::on_resume(nom::void_ptr data)
 
     // Validate conditions necessary to advance onwards
     if( p1_hand.size() < MAX_PLAYER_HAND ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     } else {
       this->game->set_state(Game::State::Play);
     }
@@ -792,9 +811,13 @@ void CardsMenuState::prev_page()
         this->game->cards_page_model_->find_by_pos(card_pos);
 
       if( this->set_display_card(card_sp) == true ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_move->Play();
+#endif
       } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
       }
     }
   } // end if cursor state == 0
@@ -835,9 +858,13 @@ void CardsMenuState::next_page()
         this->game->cards_page_model_->find_by_pos(card_pos);
 
       if( this->set_display_card(card_sp) == true ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_move->Play();
+#endif
       } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
       }
     }
 
@@ -877,9 +904,13 @@ void CardsMenuState::cursor_prev()
                       card_sp.id );
 
       if( this->set_display_card(card_sp) == true ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_move->Play();
+#endif
       } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
       }
     }
   } // end if cursor state == 0
@@ -926,9 +957,13 @@ void CardsMenuState::cursor_next()
                       card_sp.id );
 
       if( this->set_display_card(card_sp) == true ) {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_move->Play();
+#endif
       } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
         this->game->cursor_wrong->Play();
+#endif
       }
     }
   } // end if cursor state == 0
@@ -970,9 +1005,13 @@ void CardsMenuState::add_player_card(const Card& card)
       tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
 
       // Success; card has been added to the player's hand
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->card_place->Play();
+#endif
     } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     }
   }
 }
@@ -1018,10 +1057,13 @@ void CardsMenuState::remove_player_card(const Card& card)
       this->game->cards_page_model_->insert_card(card_pos, c);
 
       tt::update_hand_rendering(&p1_hand, PLAYER1_ORIGIN);
-
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_cancel->Play();
+#endif
     } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
       this->game->cursor_wrong->Play();
+#endif
     }
   }
 }
@@ -1095,12 +1137,16 @@ bool CardsMenuState::save_player_hand(const std::string& filename)
   if( this->game->save_player_hand( nullptr, &p1_hand, nullptr,
                                     false, SAVE_GAME_PATH ) == false )
   {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
   // Success!
+#if defined(TTCARDS_ENABLE_AUDIO)
   this->game->save_game_sfx->Play();
+#endif
   return true;
 }
 
@@ -1116,7 +1162,9 @@ bool CardsMenuState::load_player_hand(const std::string& filename)
   if( this->game->load_player_hand( nullptr, &p1_hand, nullptr,
                                     false, SAVE_GAME_PATH ) == false )
   {
+#if defined(TTCARDS_ENABLE_AUDIO)
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 
@@ -1127,15 +1175,17 @@ bool CardsMenuState::load_player_hand(const std::string& filename)
     this->set_cursor_position(0);
 
     if( this->update_display_card() == true ) {
-
+#if defined(TTCARDS_ENABLE_AUDIO)
       // Success!
       this->game->save_game_sfx->Play();
-
+#endif
       return true;
     }
   } else {
+#if defined(TTCARDS_ENABLE_AUDIO)
     // Err; the player's hand was not updated
     this->game->cursor_wrong->Play();
+#endif
     return false;
   }
 }
