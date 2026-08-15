@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg-configuration.schema.json",
+  "registries": [
+    {
+      "kind": "git",
+      "baseline": "0ee6801562bdec5a697c17adee7cbeb776cf2a5a",
+      "repository": "https://github.com/i8degrees/vcpkg-ports",
+      "packages": [
+        "librocket",
+        "nomlib"
+      ]
+    }
+  ]
+}
