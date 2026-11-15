@@ -51,17 +51,17 @@ class PauseState: public nom::IState
     virtual ~PauseState();
 
   private:
-    void on_init(nom::void_ptr data);
-    void on_exit(nom::void_ptr data);
+    void on_init(nom::void_ptr data) override;
+    void on_exit(nom::void_ptr data) override;
 
-    void on_pause(nom::void_ptr data);
-    void on_resume(nom::void_ptr data);
+    void on_pause(nom::void_ptr data) override;
+    void on_resume(nom::void_ptr data) override;
 
     /// \brief The default event handler for this state.
     bool on_event(const nom::Event& ev) override;
 
-    void on_update(nom::real32 delta_time);
-    void on_draw(nom::RenderWindow& target);
+    void on_update(nom::real32 delta_time) override;
+    void on_draw(nom::RenderWindow& target) override;
 
     Game* game;
 

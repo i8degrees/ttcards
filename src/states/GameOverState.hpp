@@ -74,7 +74,7 @@ class GameOverState: public nom::IState
     void on_resume(nom::void_ptr data) override;
 
     /// \brief The default event handler for this state.
-    bool on_event(const nom::Event& ev);
+    bool on_event(const nom::Event& ev) override;
 
     /// \brief Method callback for mouse button actions.
     ///
@@ -84,8 +84,8 @@ class GameOverState: public nom::IState
     /// \brief User events handler for this state.
     void on_user_event(const nom::Event& ev);
 
-    void on_update(nom::real32 delta_time);
-    void on_draw(nom::RenderWindow& target);
+    void on_update(nom::real32 delta_time) override;
+    void on_draw(nom::RenderWindow& target) override;
 
     std::shared_ptr<nom::IActionObject>
     create_scale_card_action(const std::shared_ptr<nom::Sprite>& sp);
