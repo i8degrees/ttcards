@@ -197,14 +197,18 @@ file(MAKE_DIRECTORY
   "${LOCAL_DEST}/Screenshots"
 )
 
+# Install the generated documentation files
 if(DOCS)
   # Install generated documentation files
   install(DIRECTORY
     "${PROJECT_BINARY_DIR}/docs/html"
     DESTINATION "${CMAKE_INSTALL_DOCDIR}/${CMAKE_PROJECT_VERSION}"
-    PATTERN ".*" EXCLUDE # do not include dotfiles
     OPTIONAL
     COMPONENT Documentation
+    PATTERN ".*" EXCLUDE # .DS_Store dotfiles
   )
 endif(DOCS)
+
+# TODO(JEFF): Install the gamecontroller_db.txt resource file somewhere
+# See Resources/SharedSupport
 

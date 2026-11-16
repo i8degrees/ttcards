@@ -82,7 +82,7 @@ Game::Game(nom::int32 argc, char* argv[]) :
 #endif
   std::ostringstream ttcards_version;
   ttcards_version << APP_NAME << " " << "v" << TTCARDS_VERSION_MAJOR << "."
-      << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH << 
+      << TTCARDS_VERSION_MINOR << "." << TTCARDS_VERSION_PATCH <<
       debug_postfix << "_" << git_rev
       << std::endl;
 
@@ -291,6 +291,7 @@ Game::~Game()
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE );
 
+  nom::shutdown_game_controller_subsystem();
   this->gui_window_.shutdown();
   nom::shutdown_librocket();
 }
@@ -1051,6 +1052,10 @@ bool Game::on_init()
     this->game->reload_config();
   });
 
+  auto debugbreak( [=](const nom::Event& evt) {
+    __builtin_trap();
+  });
+
   auto platform_key_mod = KMOD_LCTRL;
 
   if( this->game->debug_game_ == true ) {
@@ -1116,6 +1121,10 @@ bool Game::on_init()
   state.insert( "save_screenshot", nom::KeyboardAction(SDLK_F1),
                 save_screenshot );
   state.insert("reload_config", nom::KeyboardAction(SDLK_r), reload_config);
+
+#if !defined(NDEBUG)
+  state.insert("debugbreak", nom::KeyboardAction(SDLK_F12), debugbreak);
+#endif
 
   if( this->game->debug_game_ == true ) {
     state.insert("state_machine_debug", nom::KeyboardAction(SDLK_s),
@@ -1805,6 +1814,9 @@ void Game::save_screenshot()
     NOM_LOG_ERR(  TTCARDS_LOG_CATEGORY_APPLICATION,
                   "Could not dump the screen shot to:", filename );
   }
+
+  NOM_LOG_INFO(TTCARDS_LOG_CATEGORY_APPLICATION,
+    "Saved screenshot to", filename);
 }
 
 void Game::reload_config()

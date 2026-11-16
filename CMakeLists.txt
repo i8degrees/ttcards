@@ -6,6 +6,28 @@ cmake_minimum_required(VERSION 3.24)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 list(APPEND CMAKE_TEMPLATE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/templates")
 
+#
+## vcpkg env
+#
+
+# !! this must be set *before* the project declaration
+# !! defaults to a static library target
+set(VCPKG_TARGET_TRIPLET "x64-linux" CACHE STRING "")
+
+if(LINUX AND DEFINED BUILD_SHARED_LIBS)
+  #set(VCPKG_TARGET_TRIPLET "x64-linux-dynamic")
+endif()
+
+if(APPLE AND DEFINED BUILD_SHARED_LIBS)
+  #set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
+endif()
+
+if(WIN32 AND DEFINED BUILD_SHARED_LIBS)
+  #set(VCPKG_TARGET_TRIPLET "x64-windows-dynamic")
+endif()
+
+message(STATUS "VCPKG_TARGET_TRIPLET ${VCPKG_TARGET_TRIPLET}")
+
 # Adhere to a common hierarchy acording to the chosen platform
 include(GNUInstallDirs)
 include("${CMAKE_SOURCE_DIR}/cmake/project_version.cmake")
@@ -20,32 +42,6 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
 # their own prefix path.
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}" CACHE PATH "Default install path base prefix")
-endif()
-
-#
-## vcpkg env
-#
-
-# !! this must be set *before* the project declaration
-# defaults to a static library target
-set(VCPKG_TARGET_TRIPLET "x64-linux" CACHE STRING "")
-
-if(LINUX AND DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-linux-dynamic")
-elif(LINUX AND NOT DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-linux")
-endif()
-
-if(APPLE AND DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
-elif(APPLE AND NOT DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-osx")
-endif()
-
-if(WIN32 AND DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-windows-dynamic")
-elif(WIN32 AND NOT DEFINED BUILD_SHARED_LIBS)
-  set(VCPKG_TARGET_TRIPLET "x64-windows")
 endif()
 
 # TODO(JEFF): cmake project option
@@ -64,6 +60,7 @@ project(ttcards
   #SPDX_LICENSE "BSD-2-Clause-FreeBSD"
   LANGUAGES CXX
 )
+
 
 include("${CMAKE_SOURCE_DIR}/cmake/StandardProjectSettings.cmake")
 
@@ -126,23 +123,39 @@ endif(DOCS)
 
 # Third-party dependencies
 
+option(BUILD_STATIC_EXE "Link the game dependencies statically" ON)
+
 # TODO(JEFF): Verify this opt works!
 if(BUILD_STATIC_EXE)
-  set(VCPKG_TRIPLET_DIR "x64-linux")
+  #set(VCPKG_TRIPLET_DIR "x64-linux")
   set(BUILD_TYPE "release")
 else(NOT BUILD_STATIC_EXE)
-  set(VCPKG_TRIPLET_DIR "x64-linux-dynamic")
+  #set(VCPKG_TRIPLET_DIR "x64-linux-dynamic")
   set(BUILD_TYPE "release-dynamic")
 endif(BUILD_STATIC_EXE)
 
+# 1. Save the original suffixes
+set(ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
+
+# 2. Force static extensions based on the operating system
+#if(WIN32)
+#set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+    #else()
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    #endif()
+
+find_package(libRocket CONFIG) # REQUIRED
+find_package(SDL2 CONFIG REQUIRED)
+find_package(nomlib CONFIG REQUIRED COMPONENTS static)
+
 # FIXME
-set(libRocket_INCLUDE_DIRS "/home/jeff/Projects/nomlib.git/build/${BUILD_TYPE}/vcpkg_installed/${VCPKG_TRIPLET_DIR}/include")
+# set(libRocket_INCLUDE_DIRS "/home/jeff/Projects/nomlib.git/build/${BUILD_TYPE}/vcpkg_installed/${VCPKG_TRIPLET_DIR}/include")
+#set(libRocket_INCLUDE_DIRS "./vcpkg_installed/${VCPKG_TRIPLET_DIR}/include")
+if(EXISTS ${libRocket_INCLUDE_DIRS})
+  set(libRocket_FOUND TRUE)
+endif()
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I${libRocket_INCLUDE_DIRS}")
 include_directories("${libRocket_INCLUDE_DIRS}")
-
-find_package(libRocket CONFIG REQUIRED)
-find_package(SDL2 CONFIG REQUIRED)
-find_package(nomlib CONFIG REQUIRED)
 
 if(WIN32 AND USE_OLD_WIN_CODE)
 
@@ -195,4 +208,3 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/src/packages")
 include("${PROJECT_SOURCE_DIR}/cmake/CPackConfig.cmake")
 include(InstallRequiredSystemLibraries)
 include(CPack)
-

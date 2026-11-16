@@ -11,6 +11,11 @@ include(GetGitRevisionNumber)
 git_rev_number(GIT_REVISION "--short")
 set(PROJECT_VERSION_GIT_REV "${GIT_REVISION}")
 
+set(NOM_GCDB_RESOURCE_FILE "${PROJECT_SOURCE_DIR}/Resources/SharedSupport/gamecontrollerdb.txt")
+if(NOT EXISTS "${NOM_GCDB_RESOURCE_FILE}")
+  message(WARNING "...")
+endif()
+
 # >> Auto-generated build-time variables result in modification of the built
 # >> binary's run-time execution.
 configure_file("${CMAKE_TEMPLATE_PATH}/version.hpp.in"
@@ -92,16 +97,17 @@ target_compile_features(ttcards
 )
 
 if(TTCARDS_ENABLE_AUDIO_UNIT)
-  # >> TTCARDS_ENABLE_AUDIO is a compile definition taht is likely to go away once
-  # >> it has served its purpose.
-  target_compile_definitions("TTCARDS_ENABLE_AUDIO")
+  # >> TTCARDS_ENABLE_AUDIO is a compile definition that is likely to go away 
+  # >> once it has served its purpose.
+  target_compile_definitions("TTCARDS_ENABLE_AUDIO") # everything
+  # Just the calls for playing the audio streams
+  target_compile_definitions("TTCARDS_ENABLE_AUDIO_PLAYSTOP")
 endif()
 
 target_include_directories(ttcards
   PRIVATE
     ${CMAKE_BINARY_DIR} # version.hpp
     ${PROJECT_SOURCE_DIR}/src # game header files
-    "~/local/include" # nomlib
 )
 
 # See WARNINGS_AS_ERRORS cmake project option
