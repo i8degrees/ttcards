@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "GameState.hpp"
 #include "types.hpp"
 #include "Card.hpp"
 #include "GameOverStateCursor.hpp"
@@ -58,7 +59,7 @@ const nom::Point2i TOP_GAMEOVER_CURSOR_ORIGIN =
 // Forward declarations
 class Game;
 
-class GameOverState: public nom::IState
+class GameOverState: public tt::GameState
 {
   public:
     GameOverState(nom::SDLApp* object, nom::void_ptr state);
@@ -95,8 +96,6 @@ class GameOverState: public nom::IState
 
     void play_gameover_animation( CardCollection* db, CardHand* phand,
                                   int card_pos );
-
-    Game* game;
 
     nom::uint32 gameover_state_;
 

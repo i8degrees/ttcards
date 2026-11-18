@@ -29,6 +29,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "MainMenuState.hpp"
 
 // Private headers
+#include <nomlib/system/filesystem.hpp>
+
 #include "helpers.hpp"
 
 // Forward declarations
@@ -39,15 +41,14 @@ using namespace nom;
 namespace tt {
 
 MainMenuState::MainMenuState(nom::SDLApp* object) :
-  nom::IState(Game::State::MainMenu),
-  game( NOM_SCAST(Game*, object) )
+  tt::GameState( object, Game::State::MainMenu, "MainMenuState" )
 {
-  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE_STATES);
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 MainMenuState::~MainMenuState()
 {
-  NOM_LOG_TRACE(TTCARDS_LOG_CATEGORY_TRACE_STATES);
+  NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
 
 void MainMenuState::on_init(nom::void_ptr data)
@@ -154,9 +155,9 @@ void MainMenuState::on_init(nom::void_ptr data)
                 nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_START), confirm_selection );
 
-  this->game->input_mapper.erase("MainMenuState");
-  this->game->input_mapper.insert("MainMenuState", state, true);
-  this->game->input_mapper.activate_only("MainMenuState");
+  this->game->input_mapper.erase(this->input_context());
+  this->game->input_mapper.insert(this->input_context(), state, true);
+  this->game->input_mapper.activate_only(this->input_context());
   this->game->input_mapper.activate("Game");
 }
 
@@ -184,7 +185,7 @@ void MainMenuState::on_resume(nom::void_ptr data)
   this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
 
   // Ensure that the correct input contexts are reset
-  this->game->input_mapper.activate_only("MainMenuState");
+  this->game->input_mapper.activate_only(this->input_context());
   this->game->input_mapper.activate("Game");
 }
 
@@ -248,7 +249,6 @@ void MainMenuState::on_mouse_button_up(const nom::Event& evt)
 
 void MainMenuState::on_confirm_selection(const nom::Event& evt)
 {
-  File fp;
   auto& paths = this->game->paths_;
 
   const real32 FADE_DURATION = 1.0f;
@@ -312,7 +312,7 @@ void MainMenuState::on_confirm_selection(const nom::Event& evt)
 
     case MENU_ENTRY_NEW_GAME:
     {
-      NOM_ASSERT( fp.exists(paths["CARDS_DB_PATH"]) == true );
+      NOM_ASSERT( filesystem::exists(paths["CARDS_DB_PATH"]) == true );
 
       if( this->game->load_new_deck(p1_db, paths["CARDS_DB_PATH"]) == false ) {
         // Err; could not open or parse file?

@@ -28,6 +28,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 #include "Game.hpp"
 
+#include <limits.h>
+#include <nomlib/system/filesystem.hpp>
+
 // Private headers
 #include "types.hpp"
 #include "version.hpp"
@@ -51,6 +54,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace nom;
 using namespace std;
+
+namespace {
+
+/// Returns the native path separator as a string.
+inline std::string native_sep()
+{
+  return std::string(1, filesystem::path::preferred_separator);
+}
+
+} // namespace
+
 namespace tt {
 
 Game::Game(nom::int32 argc, char* argv[]) :
@@ -87,8 +101,6 @@ Game::Game(nom::int32 argc, char* argv[]) :
       << std::endl;
 
   //this->state_factory = new States();
-
-  nom::File dir;
 
   if( nom::init_third_party(0) == false )
   {
@@ -192,7 +204,7 @@ Game::Game(nom::int32 argc, char* argv[]) :
           NOM_LOG_ERR ( TTCARDS, "Missing parameter <input_filename> for export argument." );
           exit ( NOM_EXIT_FAILURE );
         }
-        else if ( dir.exists ( argv[opt + 1] ) == false )
+        else if ( filesystem::exists ( argv[opt + 1] ) == false )
         {
           NOM_LOG_ERR ( TTCARDS, "File path for <input_filename> does not exist at: " + std::string(argv[opt + 1]) );
           exit ( NOM_EXIT_FAILURE );
@@ -209,7 +221,7 @@ Game::Game(nom::int32 argc, char* argv[]) :
           exit ( NOM_EXIT_FAILURE );
         }
       #if ! defined( NOM_DEBUG ) // Allow overwriting of file I/O if in dev mode
-        else if ( dir.exists ( argv[opt + 2] ) == true )
+        else if ( filesystem::exists ( argv[opt + 2] ) == true )
         {
           NOM_LOG_ERR ( TTCARDS, "File path for <output_filename> already exists at: " + std::string(argv[opt + 2]) );
           exit ( NOM_EXIT_FAILURE );
@@ -241,50 +253,60 @@ Game::Game(nom::int32 argc, char* argv[]) :
     } // end for argv[opt] loop
   } // end argc > 1
 
-  Path p;
-  // FIXME(JEFF): This is not yet implemented (see nomlib-system, UnixFile:IFile)
-  working_directory = dir.resource_path();
+  // Resolve the Resources directory relative to the executable, mirroring the
+  // layout used by the nomlib game controller example.
+  filesystem::path exe_dir;
+  {
+    char resolved[PATH_MAX];
+    if( ::realpath(argv[0], resolved) != nullptr ) {
+      exe_dir = filesystem::path(resolved).parent_path();
+    } else {
+      filesystem::path argv_path(argv[0]);
+      if( argv_path.is_absolute() ) {
+        exe_dir = argv_path.parent_path();
+      } else {
+        exe_dir = ( filesystem::current_path() / argv_path ).parent_path();
+      }
+    }
+  }
 
-  // FIXME(JEFF): Once we figure out how we would like to lay this out...
-  // /usr/local/share/ttcards/Resources
-  working_directory = TTCARDS_INSTALL_PREFIX + "/" + "share" + p.native() +
-    nom::to_lowercase_string(APP_NAME) + p.native() +
-  "Resources" + p.native();
-
-  // BUILD_INTERFACE -> . (chdir)
-  // INSTALL_INTERFACE -> /usr/local/share/ttcards/Resources
-  //
-  // STUB(JEFF): Temporary workaround?
-  working_directory = TTCARDS_INSTALL_PREFIX + "/../../Resources";
-  File fp;
-  vector<string> try_paths {
-    // BUILD_INTERFACE (development)
-    ( p.native() + ".." + p.native() + ".." + p.native() + "Resources" ), // 0
-    // INSTALL_INTERFACE (redist)
-    ( TTCARDS_INSTALL_PREFIX + "/" + "share" + p.native() +
-    nom::to_lowercase_string(APP_NAME) + p.native() + "Resources" ), // 1
+  const vector<filesystem::path> candidates {
+    exe_dir / "Resources",
+    exe_dir / ".." / "Resources",
+    exe_dir / ".." / ".." / "Resources",
+    exe_dir / ".." / ".." / ".." / "Resources",
+    exe_dir / ".." / "share" / nom::to_lowercase_string(APP_NAME) / "Resources",
+    filesystem::current_path() / "Resources"
   };
 
-  for(auto itr = try_paths.begin(); itr != try_paths.end(); *itr++) {
-    if(*itr != "" && fp.exists(*itr) == false) {
-      try_paths.pop_back();
-    } else if(*itr != "" && fp.exists(*itr) == true) {
-      // ...
-    }
-  }
-  cout << "try_paths" << endl;
-  for(auto itr = try_paths.begin(); itr != try_paths.end(); *itr++) {
-    if(*itr != "") {
-      cout << *itr << endl;
+  for( const auto& candidate : candidates ) {
+    if( filesystem::exists(candidate) ) {
+      working_directory = candidate.native();
+      break;
     }
   }
 
-  // Change the working directory to whatever working_directory has been set to
-  //
+  if( working_directory.empty() ) {
+    NOM_LOG_ERR( TTCARDS,
+                 "Could not locate the Resources directory relative to: "
+                 + exe_dir.native() );
+  } else {
+    NOM_LOG_INFO( TTCARDS,
+                  "Resources directory: " + working_directory );
+  }
+
+  // Change the working directory to whatever working_directory has been set to.
   // Note that it is important that we do not mess with the working directory
   // path until after our command line arguments have been processed, so that we
   // do not unintentionally mess up relative paths!
-  dir.set_path(working_directory);
+  if( working_directory.empty() == false ) {
+    try {
+      filesystem::current_path( working_directory );
+    } catch( const std::exception& err ) {
+      NOM_LOG_ERR( TTCARDS,
+                   "Failed to set working directory to: " + working_directory );
+    }
+  }
 }
 
 Game::~Game()
@@ -298,8 +320,6 @@ Game::~Game()
 
 bool Game::on_init()
 {
-  nom::Path p;
-  nom::File fp;
   std::string fs_root;
   auto& paths = this->game->paths_;
 
@@ -310,16 +330,9 @@ bool Game::on_init()
 
   // ...Initialize file-system paths...
 
-#if defined(NOM_PLATFORM_OSX)
-    fs_root = fp.resource_path() + p.native();
-#elif defined(NOM_PLATFORM_WINDOWS)
-    fs_root = this->working_directory + p.native();
-#elif defined(NOM_PLATFORM_POSIX)
-    fs_root = this->working_directory + p.native();
-#else
-    // Has not been tested!
-    fs_root = this->working_directory + "/Resources/";
-#endif
+  // The working directory was already resolved to the Resources folder
+  // during construction; use it as the root for all asset loads.
+  fs_root = this->working_directory + native_sep();
 
   // NOTE: This is used by nom::BMFont interface and libRocket; this sets
   // the game's root directory path by which other file system paths can use as
@@ -333,6 +346,9 @@ bool Game::on_init()
     return false;
   }
 
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                "LOADING: general config from", paths["ROOT_CONFIG_PATH"] );
+
   auto cfg_parser = nom::make_unique_json_deserializer();
   if( cfg_parser == nullptr ) {
     NOM_LOG_CRIT( TTCARDS_LOG_CATEGORY_APPLICATION,
@@ -344,6 +360,7 @@ bool Game::on_init()
 
   this->game->config_ = nom::make_unique<GameConfig>();
   NOM_ASSERT(this->game->config_ != nullptr);
+
   if( this->game->config_->load_file( paths["ROOT_CONFIG_PATH"],
       cfg_parser.get() ) == false )
   {
@@ -352,6 +369,9 @@ bool Game::on_init()
                   paths["ROOT_CONFIG_PATH"] );
     return false;
   }
+
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                "LOADING: assets config from", paths["HI_RES_CONFIG_PATH"] );
 
   // ...Game assets configuration file for locating resource paths...
 
@@ -382,13 +402,16 @@ bool Game::on_init()
   // IMPORTANT: The file-system root prefix must be set before we call the
   // following!
   if( this->init_game_paths( this->game->config_.get() ) == false ) {
-    NOM_LOG_CRIT( NOM_LOG_CATEGORY_APPLICATION,
+    NOM_LOG_CRIT(  NOM_LOG_CATEGORY_APPLICATION,
                   "Failed to initialize game paths" );
     return false;
   }
 
   this->game->debug_game_ =
     this->game->config_->get_bool("DEBUG_GAME", false);
+
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                "INIT: creating window" );
 
   const std::string RENDER_SCALE_QUALITY =
     this->config_->get_string("RENDER_SCALE_QUALITY", "nearest");
@@ -1217,6 +1240,12 @@ int Game::Run()
   return NOM_EXIT_SUCCESS;
 }
 
+nom::StateMachine& Game::state_machine()
+{
+  NOM_ASSERT( this->state() != nullptr );
+  return *this->state();
+}
+
 void Game::set_state(nom::uint32 id, nom::void_ptr data)
 {
   switch(id)
@@ -1228,51 +1257,50 @@ void Game::set_state(nom::uint32 id, nom::void_ptr data)
 
     case Game::State::CardsMenu:
     {
-      this->state()->set_state( CardsMenuStatePtr( new CardsMenuState( this->game ) ), data );
+      this->state_machine().set_state(
+        std::make_unique<CardsMenuState>(this->game), data );
     } break;
 
     case Game::State::Play:
     {
-      this->state()->set_state( PlayStatePtr( new PlayState( this->game ) ), data );
+      this->state_machine().set_state(
+        std::make_unique<PlayState>(this->game), data );
     } break;
 
     case Game::State::GameOver:
     {
-      this->state()->set_state( GameOverStatePtr( new GameOverState( this->game, data ) ), data );
+      this->state_machine().set_state(
+        std::make_unique<GameOverState>(this->game, data), data );
     } break;
 
     case Game::State::Pause:
     {
-      this->state()->set_state( PauseStatePtr( new PauseState( this->game ) ), data );
+      this->state_machine().set_state(
+        std::make_unique<PauseState>(this->game), data );
     } break;
 
     case Game::State::ConfirmationDialog:
     {
-      this->state()->set_state( ConfirmationDialogStatePtr( new ConfirmationDialogState( this->game ) ), data );
+      this->state_machine().set_state(
+        std::make_unique<ConfirmationDialogState>(this->game), data );
     } break;
 
     case Game::State::MainMenu:
     {
-      auto state_ptr =
-        MainMenuStatePtr( new MainMenuState(this->game) );
-
-      this->state()->set_state( std::move(state_ptr), data );
+      this->state_machine().set_state(
+        std::make_unique<MainMenuState>(this->game), data );
     } break;
 #if 0 // not impl yet
     case Game::State::CreditsMenu:
     {
-      auto state_ptr =
-        CreditsMenuStatePtr( new CreditsMenuState(this->game) );
-
-      this->state()->set_state( std::move(state_ptr), data );
+      this->state_machine().set_state(
+        std::make_unique<CreditsMenuState>(this->game), data );
     } break;
 
     case Game::State::OptionsMenu:
     {
-      auto state_ptr =
-        OptionsMenuStatePtr( new OptionsMenuState(this->game) );
-
-      this->state()->set_state( std::move(state_ptr), data );
+      this->state_machine().set_state(
+        std::make_unique<OptionsMenuState>(this->game), data );
     } break;
 #endif
   }
@@ -1592,26 +1620,12 @@ Game::load_player_hand( Board* board, CardHand* p1_hand, CardHand* p2_hand,
 
 bool Game::player_deck_exists() const
 {
-  File fp;
-  bool result = false;
-
-  const auto PLAYER_DECK_PATH =
-    this->game->paths_["PLAYER_DECK_PATH"];
-  result = fp.exists(PLAYER_DECK_PATH);
-
-  return result;
+  return filesystem::exists( this->game->paths_["PLAYER_DECK_PATH"] );
 }
 
 bool Game::opponent_deck_exists() const
 {
-  File fp;
-  bool result = false;
-
-  const auto OPPONENT_DECK_PATH =
-    this->game->paths_["OPPONENT_DECK_PATH"];
-  result = fp.exists(OPPONENT_DECK_PATH);
-
-  return result;
+  return filesystem::exists( this->game->paths_["OPPONENT_DECK_PATH"] );
 }
 
 void Game::dump_board()
@@ -1650,55 +1664,78 @@ void Game::dump_collection(PlayerIndex player_index)
 
 bool Game::init_config_paths()
 {
-  nom::File fp;
-  nom::Path p;
+  using namespace std;
   auto& paths = this->game->paths_;
 
   // NOTE: Root configuration files
-  const std::string ROOT_CONFIG_FILENAME = "config_game.json";
-  const std::string HI_RES_CONFIG_FILENAME = "config_assets-hi-res.json";
-  const std::string LOW_RES_CONFIG_FILENAME = "config_assets-low-res.json";
+  const string ROOT_CONFIG_FILENAME = "config_game.json";
+  const string HI_RES_CONFIG_FILENAME = "config_assets-hi-res.json";
+  const string LOW_RES_CONFIG_FILENAME = "config_assets-low-res.json";
 
-  // STUB(JEFF): Check for the existance of the file paths listed in the
-  // prepared vector of path strings and choose the "best" (first?) one
-  std::vector<std::string> try_paths = {
-    ( fp.env("TTCARDS_DIR") ), // 0
-    ( this->working_directory ),
-    // uppercase variant for backwards compatibility with older versions
-    ( fp.user_app_support_path() + p.native() + APP_NAME + p.native() ), // 2
-    ( fp.user_app_support_path() + p.native() +
-      nom::to_lowercase_string(APP_NAME) + p.native() ), // 3
-  };
+  // Build the user config directory path (formerly fp.user_app_support_path()).
+  string user_config_dir;
+  const char* xdg_config = ::getenv("XDG_CONFIG_HOME");
+  const char* home = ::getenv("HOME");
+  if( xdg_config != nullptr && xdg_config[0] != '\0' ) {
+    user_config_dir = xdg_config;
+  } else if( home != nullptr ) {
+    user_config_dir = string(home) + "/.config";
+  }
 
-  vector<string> ok_paths;
-  for(auto itr = try_paths.begin(); itr != try_paths.end(); *itr++) {
-    if(*itr != "" && fp.exists(*itr) == false) {
-      cout << "!EEXIST: " << *itr << endl;
-    }
+  // Candidate directories to search for the game's configuration files.
+  std::vector<filesystem::path> try_paths;
 
-    if(*itr != "" && fp.exists(*itr) == true) {
-      ok_paths.push_back(*itr);
+  const char* ttcards_dir = ::getenv("TTCARDS_DIR");
+  if( ttcards_dir != nullptr && ttcards_dir[0] != '\0' ) {
+    try_paths.push_back( filesystem::path(ttcards_dir) );
+  }
+
+  if( this->working_directory.empty() == false ) {
+    try_paths.push_back( filesystem::path(this->working_directory) );
+  }
+
+  if( user_config_dir.empty() == false ) {
+    try_paths.push_back( filesystem::path(user_config_dir) / APP_NAME );
+    try_paths.push_back( filesystem::path(user_config_dir) /
+                         nom::to_lowercase_string(APP_NAME) );
+  }
+
+  vector<filesystem::path> ok_paths;
+  for( const auto& candidate : try_paths ) {
+    if( filesystem::exists(candidate) == false ) {
+      cout << "!EEXIST: " << candidate.native() << endl;
+    } else {
+      ok_paths.push_back(candidate);
     }
   }
 
-  // paths["CFG_DIR"] = ok_paths.at(0);
-  paths["CFG_DIR"] = try_paths.at(try_paths.size() - 1);
-
-  if( fp.exists(paths["CFG_DIR"]) == false ) {
+  if( ok_paths.empty() == true ) {
+    NOM_LOG_ERR( TTCARDS_LOG_CATEGORY_APPLICATION,
+                 "Could not find a valid configuration directory" );
     return false;
   }
 
-  paths["ROOT_CONFIG_PATH"] = paths["CFG_DIR"] + ROOT_CONFIG_FILENAME;
-  paths["HI_RES_CONFIG_PATH"] = paths["CFG_DIR"] + HI_RES_CONFIG_FILENAME;
-  paths["LOW_RES_CONFIG_PATH"] = paths["CFG_DIR"] + LOW_RES_CONFIG_FILENAME;
+  // Prefer the first existing candidate; the working directory (Resources)
+  // is the runtime default.
+  filesystem::path cfg_dir = ok_paths.front();
+  paths["CFG_DIR"] = cfg_dir.native() + native_sep();
+
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                "CFG_DIR:", paths["CFG_DIR"] );
+
+  paths["ROOT_CONFIG_PATH"] = (cfg_dir / ROOT_CONFIG_FILENAME).native();
+  paths["HI_RES_CONFIG_PATH"] = (cfg_dir / HI_RES_CONFIG_FILENAME).native();
+  paths["LOW_RES_CONFIG_PATH"] = (cfg_dir / LOW_RES_CONFIG_FILENAME).native();
+
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                "init_config_paths succeeded" );
 
   return true;
 }
 
 bool Game::init_game_paths(GameConfig* cfg)
 {
-  nom::File fp;
-  nom::Path p;
+  using namespace std;
   auto& paths = this->game->paths_;
 
   NOM_ASSERT(cfg != nullptr);
@@ -1706,28 +1743,28 @@ bool Game::init_game_paths(GameConfig* cfg)
     return false;
   }
 
-  const std::string DEBUG_DATA_DIR = "Debug";
-  const std::string SAVE_SCREENSHOT_DIR = "Screenshots";
+  const string DEBUG_DATA_DIR = "Debug";
+  const string SAVE_SCREENSHOT_DIR = "Screenshots";
 
-  const std::string SAVE_GAME_DIR =
+  const string SAVE_GAME_DIR =
     cfg->get_string("SAVE_GAME_DIR", "SavedGames");
 
-  const std::string SAVE_GAME_DECK_DIR =
+  const string SAVE_GAME_DECK_DIR =
     cfg->get_string("SAVE_GAME_DECK_DIR", "Decks");
 
-  const std::string CARDS_DB_FILENAME =
+  const string CARDS_DB_FILENAME =
     cfg->get_string("CARDS_DB_FILENAME", "cards.json");
 
-  const std::string SAVE_GAME_FILENAME =
+  const string SAVE_GAME_FILENAME =
     cfg->get_string("SAVE_GAME_FILENAME", "game.json");
 
-  const std::string PLAYER_DECK_FILENAME =
+  const string PLAYER_DECK_FILENAME =
     cfg->get_string("PLAYER_DECK_FILENAME", "player.json");
 
-  const std::string OPPONENT_DECK_FILENAME =
+  const string OPPONENT_DECK_FILENAME =
     cfg->get_string("OPPONENT_DECK_FILENAME", "opponent.json");
 
-  const std::string EXTRA_CARD_TEXTURE_DIR =
+  const string EXTRA_CARD_TEXTURE_DIR =
     cfg->get_string("EXTRA_CARD_TEXTURE_DIR", "Cards");
 
   // NOTE: Base file name and extensions
@@ -1739,36 +1776,41 @@ bool Game::init_game_paths(GameConfig* cfg)
   // IMPORTANT: The following paths are expected to resolve to valid, absolute
   // file paths, with a trailing platform-dependent path delimiter.
 
+  const string PATH_SEP = native_sep();
+
   // Resources
   paths["DATA_DIR"] = nom::file_root();
 
   // in-game screen-shots storage
   paths["SAVE_SCREENSHOT_DIR"] =
-    paths["CFG_DIR"] + SAVE_SCREENSHOT_DIR + p.native();
+    (filesystem::path(paths["CFG_DIR"]) / SAVE_SCREENSHOT_DIR).native() + PATH_SEP;
 
-  paths["DEBUG_DATA_DIR"] = paths["DATA_DIR"] + DEBUG_DATA_DIR + p.native();
+  paths["DEBUG_DATA_DIR"] =
+    (filesystem::path(paths["DATA_DIR"]) / DEBUG_DATA_DIR).native() + PATH_SEP;
   paths["SAVE_GAME_DIR"] =
-    paths["CFG_DIR"] + SAVE_GAME_DIR + p.native();
+    (filesystem::path(paths["CFG_DIR"]) / SAVE_GAME_DIR).native() + PATH_SEP;
   paths["SAVE_DECK_DIR"] =
-    paths["SAVE_GAME_DIR"] + SAVE_GAME_DECK_DIR + p.native();
-  paths["EXTRA_CARD_TEXTURE_DIR"] = paths["CFG_DIR"] + EXTRA_CARD_TEXTURE_DIR +
-    p.native();
+    (filesystem::path(paths["SAVE_GAME_DIR"]) / SAVE_GAME_DECK_DIR).native() + PATH_SEP;
+  paths["EXTRA_CARD_TEXTURE_DIR"] =
+    (filesystem::path(paths["CFG_DIR"]) / EXTRA_CARD_TEXTURE_DIR).native() + PATH_SEP;
 
-  paths["CARDS_DB_PATH"] = paths["DATA_DIR"] + CARDS_DB_FILENAME;
-  paths["SAVE_GAME_PATH"] = paths["SAVE_GAME_DIR"] + SAVE_GAME_FILENAME;
-  paths["PLAYER_DECK_PATH"] = paths["SAVE_DECK_DIR"] + PLAYER_DECK_FILENAME;
-  paths["OPPONENT_DECK_PATH"] = paths["SAVE_DECK_DIR"] + OPPONENT_DECK_FILENAME;
+  paths["CARDS_DB_PATH"] =
+    (filesystem::path(paths["DATA_DIR"]) / CARDS_DB_FILENAME).native();
+  paths["SAVE_GAME_PATH"] =
+    (filesystem::path(paths["SAVE_GAME_DIR"]) / SAVE_GAME_FILENAME).native();
+  paths["PLAYER_DECK_PATH"] =
+    (filesystem::path(paths["SAVE_DECK_DIR"]) / PLAYER_DECK_FILENAME).native();
+  paths["OPPONENT_DECK_PATH"] =
+    (filesystem::path(paths["SAVE_DECK_DIR"]) / OPPONENT_DECK_FILENAME).native();
 
   // TODO: Add a command line switch to access a dump of these paths?
-  std::string key;
-  std::string path;
   for( auto itr = paths.begin(); itr != paths.end(); ++itr ) {
-    key = itr->first;
-    path = itr->second;
-
-    NOM_LOG_DEBUG(  TTCARDS_LOG_CATEGORY_CFG,
-                    "path key:", key, ":", path );
+    NOM_LOG_DEBUG( TTCARDS_LOG_CATEGORY_CFG,
+                   "path key:", itr->first, ":", itr->second );
   }
+
+  NOM_LOG_INFO( TTCARDS_LOG_CATEGORY_APPLICATION,
+                "init_game_paths succeeded" );
 
   return true;
 }
@@ -1806,7 +1848,6 @@ void Game::set_volume(nom::real32 gain)
 
 void Game::save_screenshot()
 {
-  nom::Path p;
   const std::string filename =
     this->game->paths_["SAVE_SCREENSHOT_DIR"] + "Screenshot.png";
 

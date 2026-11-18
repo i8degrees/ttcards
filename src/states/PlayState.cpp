@@ -57,8 +57,7 @@ using namespace nom;
 namespace tt {
 
 PlayState::PlayState(nom::SDLApp* object) :
-  nom::IState(Game::State::Play),
-  game( NOM_SCAST(Game*, object) )
+  tt::GameState( object, Game::State::Play, "PlayState" )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -101,7 +100,7 @@ void PlayState::on_resume(nom::void_ptr data)
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  this->game->input_mapper.activate_only( "PlayState" );
+  this->game->input_mapper.activate_only( this->input_context() );
   this->game->input_mapper.activate( "Game" );
 }
 
@@ -541,9 +540,9 @@ void PlayState::on_init(nom::void_ptr data)
                 nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_START), pause_game );
 
-  this->game->input_mapper.erase("PlayState");
-  this->game->input_mapper.insert("PlayState", state, true );
-  this->game->input_mapper.activate_only("PlayState");
+  this->game->input_mapper.erase(this->input_context());
+  this->game->input_mapper.insert(this->input_context(), state, true );
+  this->game->input_mapper.activate_only(this->input_context());
   this->game->input_mapper.activate("Game");
 
   this->game->triad_->set_frame(0);

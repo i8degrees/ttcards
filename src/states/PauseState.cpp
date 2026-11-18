@@ -38,8 +38,7 @@ using namespace nom;
 namespace tt {
 
 PauseState::PauseState(nom::SDLApp* object) :
-  nom::IState( Game::State::Pause, nom::IState::Flags::BackRender, nom::IState::Type::Child),
-  game( NOM_SCAST(Game*, object) )
+  tt::GameState( object, Game::State::Pause, "PauseState" )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -93,9 +92,9 @@ void PauseState::on_init(nom::void_ptr data)
   state.insert( "pause_game", nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_START), pause_game );
 
-  this->game->input_mapper.erase( "PauseState" );
-  this->game->input_mapper.insert( "PauseState", state, true );
-  this->game->input_mapper.activate_only( "PauseState" );
+  this->game->input_mapper.erase( this->input_context() );
+  this->game->input_mapper.insert( this->input_context(), state, true );
+  this->game->input_mapper.activate_only( this->input_context() );
   this->game->input_mapper.activate( "Game" );
 
   // Disable all input contexts and leave access to only the global input

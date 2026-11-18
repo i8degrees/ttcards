@@ -67,10 +67,6 @@
       "platform": "(osx & x64), (linux & x64), (windows & x86 & static)",
       "features": [],
       "default-features": false
-    },
-    {
-      "name": "nomlib",
-      "version>=": "0.13.1"
     }
   ],
   "overrides": [
@@ -85,10 +81,6 @@
     {
       "name": "sdl2-ttf",
       "version": "2.24.0"
-    },
-    {
-      "name": "nomlib",
-      "version": "0.13.1#1"
     },
     {
       "name": "openal-soft",

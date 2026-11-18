@@ -36,8 +36,7 @@ using namespace nom;
 namespace tt {
 
 ConfirmationDialogState::ConfirmationDialogState(nom::SDLApp* object) :
-  nom::IState( Game::State::ConfirmationDialog, nom::IState::Flags::BackRender, nom::IState::Type::Child ),
-  game( NOM_SCAST(Game*, object) )
+  tt::GameState( object, Game::State::ConfirmationDialog, "ConfirmationDialogState" )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -189,14 +188,14 @@ void ConfirmationDialogState::on_init( nom::void_ptr data )
   state.insert( "cancel", nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_B), cancel );
 
-  this->game->input_mapper.erase( "ConfirmationDialogState" );
-  this->game->input_mapper.insert( "ConfirmationDialogState", state, true );
+  this->game->input_mapper.erase(this->input_context());
+  this->game->input_mapper.insert(this->input_context(), state, true);
 
   // FIXME:
-  // this->game->input_mapper.insert( "ConfirmationDialogState", key_bindings, true );
-  // this->game->input_mapper.insert( "ConfirmationDialogState", gamepad_bindings, true );
+  // this->game->input_mapper.insert( this->input_context(), key_bindings, true );
+  // this->game->input_mapper.insert( this->input_context(), gamepad_bindings, true );
 
-  this->game->input_mapper.activate_only("ConfirmationDialogState");
+  this->game->input_mapper.activate_only(this->input_context());
   this->game->input_mapper.activate("Game");
 }
 
@@ -213,7 +212,7 @@ void ConfirmationDialogState::on_resume( nom::void_ptr data )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 
-  this->game->input_mapper.activate_only( "ConfirmationDialogState" );
+  this->game->input_mapper.activate_only( this->input_context() );
   this->game->input_mapper.activate( "Game" );
 }
 

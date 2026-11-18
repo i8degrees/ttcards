@@ -40,8 +40,7 @@ using namespace nom;
 namespace tt {
 
 CardsMenuState::CardsMenuState(nom::SDLApp* object) :
-  nom::IState( Game::State::CardsMenu ),
-  game( NOM_SCAST(Game*, object) )
+  tt::GameState( object, Game::State::CardsMenu, "CardsMenuState" )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
 }
@@ -467,9 +466,9 @@ void CardsMenuState::on_init(nom::void_ptr data)
   state.insert( "start_game", nom::GameControllerButtonAction(joystick_id,
                 nom::GameController::BUTTON_START), start_game );
 
-  this->game->input_mapper.erase("CardsMenuState");
-  this->game->input_mapper.insert("CardsMenuState", state, true);
-  this->game->input_mapper.activate_only("CardsMenuState");
+  this->game->input_mapper.erase(this->input_context());
+  this->game->input_mapper.insert(this->input_context(), state, true);
+  this->game->input_mapper.activate_only(this->input_context());
   this->game->input_mapper.activate("Game");
 
   this->game->cards_menu_.show();
@@ -515,7 +514,7 @@ void CardsMenuState::on_resume(nom::void_ptr data)
   this->game->cursor_->set_frame(INTERFACE_CURSOR_SHOWN);
 
   // Ensure that the correct input contexts are reset
-  this->game->input_mapper.activate_only("CardsMenuState");
+  this->game->input_mapper.activate_only(this->input_context());
   this->game->input_mapper.activate("Game");
 
   // Response from the previous game state

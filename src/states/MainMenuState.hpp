@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "GameState.hpp"
 #include "Card.hpp"
 
 namespace tt {
@@ -45,7 +46,7 @@ namespace tt {
 // Forward declarations
 class Game;
 
-class MainMenuState: public nom::IState
+class MainMenuState: public tt::GameState
 {
   public:
     MainMenuState(nom::SDLApp* object);
@@ -97,8 +98,6 @@ class MainMenuState: public nom::IState
 
     /// \brief Move the game cursor to the next menu text entry.
     void cursor_next();
-
-    Game* game = nullptr;
 
     /// \brief The renderable menu entries.
     std::map<nom::size_type, nom::Text> menu_entries_;

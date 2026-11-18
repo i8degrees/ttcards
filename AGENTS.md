@@ -8,6 +8,9 @@ PlayStation (PS1).
 
 ## Build and test
 
+- Any time a JSON file is updated, ensure that it lints correctly by using
+the `json5-validator` tool or a JSON3 with comments parsing enabled.
+
 ### Dependencies
 
 Ensure the following build dependencies are installed:
@@ -62,6 +65,12 @@ Temporary release build:
 cmake -S . --preset release -B /tmp/ttcards
 ```
 
+If a custom configuration path is needed:
+```sh
+# json configuration files
+TTCARDS_DIR=$HOME/.config/ttcards
+```
+
 ### Documentation
 
 To generate the Doxygen HTML documentation, enable the `DOCS` option:
@@ -70,6 +79,11 @@ To generate the Doxygen HTML documentation, enable the `DOCS` option:
 cmake -S . --preset debug -DDOCS=ON
 cmake --build --preset debug
 ```
+
+## Unit Tests
+
+- No official unit tests exist in this project. nomlib's API is extensively
+tested in its repo.
 
 ## Conventions
 
@@ -110,3 +124,6 @@ should only be relied on when explicitly requested.
 
 - `compile_commands.json` and `build/` contents are generated. Do not
 hand-edit or commit them.
+
+- Do not use ssh key for GPG signing when using `git commit` or `git push` from the agent.
+

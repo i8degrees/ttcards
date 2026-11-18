@@ -137,15 +137,20 @@ endif(BUILD_STATIC_EXE)
 # 1. Save the original suffixes
 set(ORIG_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES})
 
+# FIXME(JEFF): Using either one of these trips up our vcpkg dependencies...
+#
 # 2. Force static extensions based on the operating system
-#if(WIN32)
-#set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
-    #else()
-    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-    #endif()
+if(WIN32 OR NOT BUILD_STATIC_EXE) # dynamic
+  #set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+  #message(FATAL_ERROR "vcpkg - dynamic")
+else(BUILD_STATIC_EXE) # static
+  #set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+  #message(FATAL_ERROR "vcpkg - static")
+endif()
 
 find_package(libRocket CONFIG) # REQUIRED
 find_package(SDL2 CONFIG REQUIRED)
+
 find_package(nomlib CONFIG REQUIRED COMPONENTS static)
 
 # FIXME

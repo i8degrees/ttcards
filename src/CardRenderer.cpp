@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "CardResourceLoader.hpp"
 
 // Private headers
-#include <nomlib/system/Path.hpp>
+#include <nomlib/system/filesystem.hpp>
 #include "helpers.hpp"
 
 using namespace nom;
@@ -201,11 +201,10 @@ create_card_renderer(const CardResourceLoader* res, const Card& card)
     // lookup table may be the way to go.
     if( card.texture_path.length() > 0 ) {
 
-      File fp;
       const std::string EXTRA_CARD_TEXTURE_PATH =
         res->extra_textures_dir_ + card.texture_path;
 
-      if( fp.exists(EXTRA_CARD_TEXTURE_PATH) == true ) {
+      if( filesystem::exists(EXTRA_CARD_TEXTURE_PATH) == true ) {
 
         // Render the custom texture
         auto face_tex = std::make_shared<Texture>( Texture() );

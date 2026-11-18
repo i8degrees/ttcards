@@ -85,6 +85,11 @@ class Game: public nom::SDLApp
     /// \see SDLApp
     void set_state(nom::uint32 id, nom::void_ptr data = nullptr);
 
+    /// \brief Accessor for the active SDLApp state machine.
+    ///
+    /// \remarks Mirrors the example App API; the pointer is owned by SDLApp.
+    nom::StateMachine& state_machine();
+
     bool
     init_game_rules(const GameConfig* config, tt::RegionRuleSet& region);
 

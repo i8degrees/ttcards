@@ -20,6 +20,17 @@
 - Converted `TTCARDS_VERSION_GIT_REV` from a preprocessor macro to a `std::string` constant in `version.hpp.in`.
 - Reordered and cleaned up keyboard/controller input mappings in `CardsMenuState`.
 
+### State machine
+- Introduced a common `GameState` base class and modernized state creation in `Game::set_state()` from raw `new`/typedef pointer aliases to `std::make_unique`.
+- Added `Game::state_machine()` accessor.
+
+### Input handling
+- Fixed startup crash caused by stale `nomlib` static-library ABI mismatch; debug and debug-dynamic presets now produce working executables.
+
+### Filesystem
+- Replaced deprecated `nom::File`/`nom::Path` usage with `nom::filesystem::path` and `nom::filesystem::exists`/`current_path` APIs, and improved resource-directory discovery relative to the executable.
+
 ### Documentation
 - Added `AGENTS.md` project instructions for automated agents.
 - Added `.omp/RULES.md` with the rule that `nomlib.git` is read-only.
+- Recorded segfault investigation notes in `wiki/build-logs/segfault_findings.md`.

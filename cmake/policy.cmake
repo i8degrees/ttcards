@@ -34,3 +34,11 @@ endif(POLICY CMP0148)
 if(POLICY CMP0072)
   cmake_policy(SET CMP0072 NEW)
 endif(POLICY CMP0072)
+
+# install() DESTINATION paths are normalized
+# Introduced in CMake v3.31
+# cmake --help-policy CMP0177
+if(POLICY CMP0177)
+  cmake_policy(SET CMP0177 NEW)
+endif(POLICY CMP0177)
+

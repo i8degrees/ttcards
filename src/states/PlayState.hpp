@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "GameState.hpp"
 #include "types.hpp"
 
 namespace tt {
@@ -46,7 +47,7 @@ class Game;
 class IPlayer;
 struct Card;
 
-class PlayState: public nom::IState
+class PlayState: public tt::GameState
 {
   public:
     PlayState(nom::SDLApp* object);
@@ -111,8 +112,6 @@ class PlayState: public nom::IState
 
     bool save_game(const std::string& filename);
     bool load_game(const std::string& filename);
-
-    Game* game;
 
     /// \brief Game players
     std::unique_ptr<IPlayer> players_[PlayerIndex::TOTAL_PLAYERS];

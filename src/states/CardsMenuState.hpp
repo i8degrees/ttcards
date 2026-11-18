@@ -38,6 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "GameState.hpp"
 #include "CardsPageDataSource.hpp"
 #include "Card.hpp"
 
@@ -47,7 +48,7 @@ namespace tt {
 class Game;
 class CardHand;
 
-class CardsMenuState: public nom::IState
+class CardsMenuState: public tt::GameState
 {
   public:
     CardsMenuState(nom::SDLApp* object);
@@ -150,8 +151,6 @@ class CardsMenuState: public nom::IState
     /// updated, and boolean FALSE when the sprite's position has **not** been
     /// updated, such as when the sprite is NULL.
     bool update_display_card();
-
-    Game* game = nullptr;
 
     std::shared_ptr<nom::Sprite> p1_selected_card_sprite_ = nullptr;
 

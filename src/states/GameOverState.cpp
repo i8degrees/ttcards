@@ -42,8 +42,7 @@ using namespace nom;
 namespace tt {
 
 GameOverState::GameOverState(nom::SDLApp* object, nom::void_ptr state) :
-  nom::IState(Game::State::GameOver),
-  game( NOM_SCAST(Game*, object) ),
+  tt::GameState( object, Game::State::GameOver, "GameOverState" ),
   gameover_state_( *static_cast<nom::uint32_ptr>(state) )
 {
   NOM_LOG_TRACE( TTCARDS_LOG_CATEGORY_TRACE_STATES );
@@ -291,9 +290,9 @@ void GameOverState::on_init(nom::void_ptr data)
                   nom::GameController::BUTTON_BACK), restart_game );
   } // end if DEBUG_GAME
 
-  this->game->input_mapper.erase( "GameOverState" );
-  this->game->input_mapper.insert( "GameOverState", state, true );
-  this->game->input_mapper.activate_only( "GameOverState" );
+  this->game->input_mapper.erase( this->input_context() );
+  this->game->input_mapper.insert( this->input_context(), state, true );
+  this->game->input_mapper.activate_only( this->input_context() );
   this->game->input_mapper.activate( "Game" );
 
     // ...Initialization of animation sprites...
@@ -413,7 +412,7 @@ void GameOverState::on_resume(nom::void_ptr data)
     this->game->evt_handler_.push_event(ev);
   }
 
-  this->game->input_mapper.activate_only( "GameOverState" );
+  this->game->input_mapper.activate_only( this->input_context() );
   this->game->input_mapper.activate( "Game" );
 }
 

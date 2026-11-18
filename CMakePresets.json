@@ -11,8 +11,8 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "_CMAKE_INSTALL_PREFIX": "$env{HOME}/local",
-        "NOM_USE_CCACHE": "OFF",
-        "NOM_USE_DISTCC": "OFF"
+        "TTCARDS_USE_CCACHE": "OFF",
+        "TTCARDS_USE_DISTCC": "OFF"
       },
       "environment": {
         "DISTCC_VERBOSE": "1"
@@ -23,8 +23,8 @@
       "hidden": true,
       "displayName": "build project using clang",
       "cacheVariables": {
-        "NOM_USE_CCACHE": "ON",
-        "NOM_USE_DISTCC": "OFF",
+        "TTCARDS_USE_CCACHE": "ON",
+        "TTCARDS_USE_DISTCC": "OFF",
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
       },
@@ -39,8 +39,8 @@
       "hidden": true,
       "displayName": "build project using gcc",
       "cacheVariables": {
-        "NOM_USE_CCACHE": "ON",
-        "NOM_USE_DISTCC": "OFF",
+        "TTCARDS_USE_CCACHE": "ON",
+        "TTCARDS_USE_DISTCC": "OFF",
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++"
       },
@@ -57,8 +57,8 @@
       "generator": "Xcode",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "NOM_USE_CCACHE": "ON",
-        "NOM_USE_DISTCC": "OFF",
+        "TTCARDS_USE_CCACHE": "ON",
+        "TTCARDS_USE_DISTCC": "OFF",
         "CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED": "NO",
         "CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY": ""
       },
@@ -75,8 +75,8 @@
       "cacheVariables": {
         "CMAKE_GENERATOR_PLATFORM": "x64",
         "CMAKE_GENERATOR_TOOLSET": "ClangCL",
-        "NOM_USE_CCACHE": "ON",
-        "NOM_USE_DISTCC": "OFF",
+        "TTCARDS_USE_CCACHE": "ON",
+        "TTCARDS_USE_DISTCC": "OFF",
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
       }
@@ -89,8 +89,8 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_GENERATOR_PLATFORM": "x64",
-        "NOM_USE_CCACHE": "ON",
-        "NOM_USE_DISTCC": "OFF"
+        "TTCARDS_USE_CCACHE": "ON",
+        "TTCARDS_USE_DISTCC": "OFF"
       }
     },
     {

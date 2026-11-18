@@ -105,6 +105,8 @@ if(TTCARDS_ENABLE_AUDIO_UNIT)
 endif()
 
 target_include_directories(ttcards
+  BEFORE PRIVATE
+    /usr/local/include/nomlib # match installed nomlib headers to linked libs
   PRIVATE
     ${CMAKE_BINARY_DIR} # version.hpp
     ${PROJECT_SOURCE_DIR}/src # game header files
@@ -142,6 +144,18 @@ target_link_libraries(ttcards
     $<IF:$<TARGET_EXISTS:RocketControls>,RocketControls,RocketControls-static>
     $<IF:$<TARGET_EXISTS:RocketDebugger>,RocketDebugger,RocketDebugger-static>
 )
+
+if(APPLE)
+  target_link_libraries(ttcards
+    PRIVATE
+      "-framework OpenGL"
+  )
+elseif(UNIX)
+  target_link_libraries(ttcards
+    PRIVATE
+      GL
+  )
+endif()
 
 if(NOM_USE_OPENAL AND TTCARDS_ENABLE_AUDIO_UNIT)
   target_link_libraries(ttcards

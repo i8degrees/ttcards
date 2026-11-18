@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/gui.hpp>
 
 #include "config.hpp"
+#include "GameState.hpp"
 #include "DialogCursor.hpp"
 
 namespace tt {
@@ -44,7 +45,7 @@ namespace tt {
 // Forward declarations
 class Game;
 
-class ConfirmationDialogState: public nom::IState
+class ConfirmationDialogState: public tt::GameState
 {
   public:
     ConfirmationDialogState(nom::SDLApp* object);
@@ -66,8 +67,6 @@ class ConfirmationDialogState: public nom::IState
 
     /// \brief Event handler for player's choice selection.
     void send_response();
-
-    Game* game;
 
     DialogCursor cursor_;
 };

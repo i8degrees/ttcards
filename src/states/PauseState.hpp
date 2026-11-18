@@ -38,13 +38,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <nomlib/system.hpp>
 
 #include "config.hpp"
+#include "GameState.hpp"
 
 namespace tt {
 
 // Forward declarations
 class Game;
 
-class PauseState: public nom::IState
+class PauseState: public tt::GameState
 {
   public:
     PauseState(nom::SDLApp* object);
@@ -62,8 +63,6 @@ class PauseState: public nom::IState
 
     void on_update(nom::real32 delta_time) override;
     void on_draw(nom::RenderWindow& target) override;
-
-    Game* game;
 
     nom::Timer blink_update;
     bool blink_text;
