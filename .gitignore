@@ -16,6 +16,7 @@ install_options
 *.mp3
 *.ogg
 #*.wav
+wiki.git
 wiki
 
 #Resources/audio
@@ -43,4 +44,12 @@ third-party
 # vcpkg related
 vcpkg_installed/*
 !vcpkg-lock.json
+
+#################################
+# AI Hidden Runtime & Scratchpad
+#################################
+
+.agent/observations/
+.agent/memory/
+.agent/security/
 
