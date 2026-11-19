@@ -148,6 +148,8 @@ else(BUILD_STATIC_EXE) # static
   #message(FATAL_ERROR "vcpkg - static")
 endif()
 
+find_package(OpenGL REQUIRED)
+
 find_package(libRocket CONFIG) # REQUIRED
 find_package(SDL2 CONFIG REQUIRED)
 
