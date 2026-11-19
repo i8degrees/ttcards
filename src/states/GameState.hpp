@@ -58,7 +58,7 @@ class GameState: public nom::IState
     virtual ~GameState() = default;
 
     /// \brief Input mapper context key for this state.
-    const std::string& input_context() const { return this->input_context_; }
+    std::string input_context() const override { return this->input_context_; }
 
   protected:
     Game* game;

@@ -153,7 +153,7 @@ if(APPLE)
 elseif(UNIX)
   target_link_libraries(ttcards
     PRIVATE
-      GL
+      OpenGL::GL
   )
 endif()
 
