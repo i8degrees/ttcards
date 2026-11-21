@@ -53,3 +53,5 @@ vcpkg_installed/*
 .agent/memory/
 .agent/security/
 
+.omp/reports/
+
