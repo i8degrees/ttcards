@@ -127,3 +127,12 @@ hand-edit or commit them.
 
 - Do not use ssh key for GPG signing when using `git commit` or `git push` from the agent.
 
+## AI Runtime Artifacts
+
+Whenever a subagent finishes or you complete a review pass, immediately
+write the output to disk using the `write` tool:
+
+- **Scout findings & observations:** Save to `.omp/reports/scout/<YYYY-MM-DD>-<topic>.md`
+- **Security reviews:** Save to `.omp/reports/security/<YYYY-MM-DD>-<scope>.md`
+- **General architectural observations:** Append to `.omp/reports/observations.md`
+
