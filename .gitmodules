@@ -1,3 +1,4 @@
 [submodule "wiki.git"]
 	path = wiki.git
-	url = https://github.com/i8degrees/ttcards.wiki.git
+  url = https://github.com/i8degrees/ttcards.wiki.git
+  ignore = all
